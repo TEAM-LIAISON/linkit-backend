@@ -1,6 +1,8 @@
 package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
+
+import liaison.linkit.resume.domain.Resume;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -51,7 +53,16 @@ public class Member {
     @OneToOne(mappedBy = "member")
     private MemberBasicInform memberBasicInform;
 
-    public Member(final Long id, final String email, final String socialLoginId, final MemberBasicInform memberBasicInform) {
+    @OneToOne(mappedBy = "member")
+    private Resume resume;
+
+    public Member(
+            final Long id,
+            final String socialLoginId,
+            final String email,
+            final MemberBasicInform memberBasicInform,
+            final Resume resume
+    ) {
         this.id = id;
         this.email = email;
         this.socialLoginId = socialLoginId;
@@ -61,11 +72,10 @@ public class Member {
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
         this.memberBasicInform = memberBasicInform;
+        this.resume = resume;
     }
 
-    public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform) {
-        this(null, socialLoginId, email, memberBasicInform);
+    public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform, final Resume resume) {
+        this(null, socialLoginId, email, memberBasicInform, resume);
     }
-
-
 }

@@ -32,7 +32,6 @@ public class MemberBasicInform {
     @Column(length = 50)
     private String teamBuildingStep;
 
-
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
