@@ -9,9 +9,19 @@ public enum ExceptionCode {
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
     // -----문단 구분-----
+    NOT_FOUND_MEMBER_ID(1010, "요청한 ID에 해당하는 멤버가 존재하지 않습니다."),
+
     FAIL_TO_GENERATE_RANDOM_NICKNAME(1012, "랜덤한 닉네임을 생성하는데 실패하였습니다."),
+    NOT_FOUND_MEMBER_INFORM_ID(1016, "요청한 ID에 해당하는 멤버 정보가 존재하지 않습니다."),
     // -----문단 구분-----
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
+    // -----문단 구분-----
+    NULL_ADMIN_AUTHORITY(8101, "잘못된 관리자 권한입니다."),
+
+
+
+
+
     // -----문단 구분-----
     INVALID_AUTHORIZATION_CODE(9001, "유효하지 않은 인증 코드입니다."),
     NOT_SUPPORTED_OAUTH_SERVICE(9002, "해당 OAuth 서비스는 제공하지 않습니다."),

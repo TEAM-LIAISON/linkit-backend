@@ -1,6 +1,8 @@
-package liaison.linkit.member.domain;
+package liaison.linkit.admin.domain;
 
 import jakarta.persistence.*;
+import liaison.linkit.admin.domain.type.AdminType;
+import liaison.linkit.member.domain.MemberState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -12,31 +14,30 @@ import java.time.LocalDateTime;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static liaison.linkit.member.domain.MemberState.ACTIVE;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@SQLDelete(sql = "UPDATE member SET status = 'DELETED' WHERE id = ?")
+@SQLDelete(sql = "UPDATE admin_member SET status = 'DELETED' WHERE id = ?")
 @Where(clause = "status = 'ACTIVE'")
-public class Member {
+public class AdminMember {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "member_id")
     private Long id;
 
-    @Column(nullable = false, length = 30)
-    private String socialLoginId;
+    @Column(nullable = false, unique = true, length = 20)
+    private String username;
 
-    @Column(nullable = false, length = 50)
-    private String email;
+    @Column(nullable = false, length = 64)
+    private String password;
 
     @Column(nullable = false)
     private LocalDateTime lastLoginDate;
 
-    @Column
-    private String imageUrl;
+    @Column(nullable = false)
+    @Enumerated(value = STRING)
+    private AdminType adminType;
 
     @Enumerated(value = STRING)
     private MemberState status;
@@ -48,24 +49,18 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    @OneToOne(mappedBy = "member")
-    private MemberBasicInform memberBasicInform;
-
-    public Member(final Long id, final String email, final String socialLoginId, final MemberBasicInform memberBasicInform) {
+    public AdminMember(final Long id, final String username, final String password, final AdminType adminType) {
         this.id = id;
-        this.email = email;
-        this.socialLoginId = socialLoginId;
+        this.username = username;
+        this.password = password;
         this.lastLoginDate = LocalDateTime.now();
-        this.imageUrl = imageUrl;
-        this.status = ACTIVE;
+        this.adminType = adminType;
+        this.status = MemberState.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
-        this.memberBasicInform = memberBasicInform;
     }
 
-    public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform) {
-        this(null, socialLoginId, email, memberBasicInform);
+    public AdminMember(final String username, final String password, final AdminType adminType) {
+        this(null, username, password, adminType);
     }
-
-
 }

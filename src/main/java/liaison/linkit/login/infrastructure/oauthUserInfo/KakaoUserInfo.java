@@ -9,6 +9,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class KakaoUserInfo implements OauthUserInfo {
     @JsonProperty("id")
     private String socialLoginId;
+
     @JsonProperty("kakao_account")
     private KakaoAccount kakaoAccount;
 
@@ -18,28 +19,11 @@ public class KakaoUserInfo implements OauthUserInfo {
     }
 
     @Override
-    public String getNickname() {
-        return kakaoAccount.kakaoProfile.nickname;
-    }
-
-    @Override
-    public String getImageUrl() {
-        return kakaoAccount.kakaoProfile.image;
-    }
+    public String getEmail(){return kakaoAccount.email;}
 
     @NoArgsConstructor(access = PRIVATE)
     private static class KakaoAccount {
-        @JsonProperty("profile")
-        private KakaoProfile kakaoProfile;
-    }
-
-    @NoArgsConstructor(access = PRIVATE)
-    private static class KakaoProfile {
-
-        @JsonProperty("nickname")
-        private String nickname;
-
-        @JsonProperty("profile_image_url")
-        private String image;
+        @JsonProperty("email")
+        private String email;
     }
 }
