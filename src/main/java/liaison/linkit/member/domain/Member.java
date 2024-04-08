@@ -19,7 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @SQLDelete(sql = "UPDATE member SET status = 'DELETED' WHERE id = ?")
-@Where(clause = "status = 'ACTIVE")
+@Where(clause = "status = 'ACTIVE'")
 public class Member {
     @Id
     @GeneratedValue(strategy = IDENTITY)
