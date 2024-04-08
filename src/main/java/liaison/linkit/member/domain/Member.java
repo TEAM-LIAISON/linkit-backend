@@ -1,6 +1,8 @@
 package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
+
+import liaison.linkit.resume.domain.Resume;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -19,22 +21,23 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @SQLDelete(sql = "UPDATE member SET status = 'DELETED' WHERE id = ?")
-@Where(clause = "status = 'ACTIVE")
+@Where(clause = "status = 'ACTIVE'")
 public class Member {
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
     @Column(nullable = false, length = 30)
     private String socialLoginId;
 
-    @Column(nullable = false, unique = true, length = 20)
-    private String nickname;
+    @Column(nullable = false, length = 50)
+    private String email;
 
     @Column(nullable = false)
     private LocalDateTime lastLoginDate;
 
-    @Column(nullable = false)
+    @Column
     private String imageUrl;
 
     @Enumerated(value = STRING)
@@ -47,22 +50,32 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    public Member(final Long id, final String socialLoginId, final String nickname, final String imageUrl) {
+    @OneToOne(mappedBy = "member")
+    private MemberBasicInform memberBasicInform;
+
+    @OneToOne(mappedBy = "member")
+    private Resume resume;
+
+    public Member(
+            final Long id,
+            final String socialLoginId,
+            final String email,
+            final MemberBasicInform memberBasicInform,
+            final Resume resume
+    ) {
         this.id = id;
+        this.email = email;
         this.socialLoginId = socialLoginId;
-        this.nickname = nickname;
         this.lastLoginDate = LocalDateTime.now();
         this.imageUrl = imageUrl;
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
+        this.memberBasicInform = memberBasicInform;
+        this.resume = resume;
     }
 
-    public Member(final String socialLoginId, final String nickname, final String imageUrl) {
-        this(null, socialLoginId, nickname, imageUrl);
-    }
-
-    public boolean isNicknameChanged(final String inputNickname) {
-        return !nickname.equals(inputNickname);
+    public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform, final Resume resume) {
+        this(null, socialLoginId, email, memberBasicInform, resume);
     }
 }
