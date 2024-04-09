@@ -1,6 +1,7 @@
-package liaison.linkit.resume.domain;
+package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
+import liaison.linkit.member.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,10 @@ public class Education {
     @Column(name = "education_id")
     private Long id;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Column(nullable = false)
     private int admissionYear;
 
@@ -28,7 +33,4 @@ public class Education {
     @Column(nullable = false)
     private String educationDescription;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "resume_id", nullable = false)
-    private Resume resume;
 }

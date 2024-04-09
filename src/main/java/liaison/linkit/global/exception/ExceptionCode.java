@@ -9,8 +9,9 @@ public enum ExceptionCode {
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
     // -----문단 구분-----
+    NOT_FOUND_AWARDS_ID(1001, "요청한 ID에 해당하는 수상 정보가 존재하지 않습니다."),
     NOT_FOUND_MEMBER_ID(1010, "요청한 ID에 해당하는 멤버가 존재하지 않습니다."),
-
+    INVALID_AWARDS_WITH_MEMBER(1011, "요청한 멤버와 ID에 해당하는 이력서가 존재하지 않습니다."),
     FAIL_TO_GENERATE_RANDOM_NICKNAME(1012, "랜덤한 닉네임을 생성하는데 실패하였습니다."),
     NOT_FOUND_MEMBER_INFORM_ID(1016, "요청한 ID에 해당하는 멤버 정보가 존재하지 않습니다."),
     // -----문단 구분-----
