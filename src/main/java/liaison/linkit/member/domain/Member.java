@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static jakarta.persistence.EnumType.STRING;
@@ -39,12 +40,6 @@ public class Member {
     @Column(nullable = false, length = 50)
     private String email;
 
-    @Column(nullable = false)
-    private LocalDateTime lastLoginDate;
-
-    @Column
-    private String imageUrl;
-
     @Enumerated(value = STRING)
     private MemberState status;
 
@@ -65,20 +60,20 @@ public class Member {
             final Long id,
             final String socialLoginId,
             final String email,
+            final List<TeamBuildingField> teamBuildingFields,
             final MemberBasicInform memberBasicInform
     ) {
         this.id = id;
         this.email = email;
         this.socialLoginId = socialLoginId;
-        this.lastLoginDate = LocalDateTime.now();
-        this.imageUrl = imageUrl;
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
+        this.teamBuildingFields = new HashSet<>(teamBuildingFields);
         this.memberBasicInform = memberBasicInform;
     }
 
-    public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform) {
-        this(null, socialLoginId, email, memberBasicInform);
+    public Member(final String socialLoginId, final String email, final List<TeamBuildingField> teamBuildingFields, final MemberBasicInform memberBasicInform) {
+        this(null, socialLoginId, email, teamBuildingFields, memberBasicInform);
     }
 }
