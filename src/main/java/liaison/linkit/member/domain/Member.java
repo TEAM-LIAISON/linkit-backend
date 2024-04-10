@@ -2,6 +2,7 @@ package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
 
+import liaison.linkit.profile.domain.TeamBuildingField;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -10,6 +11,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -51,6 +54,9 @@ public class Member {
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
+
+    @OneToMany(mappedBy = "member", orphanRemoval = true)
+    private Set<TeamBuildingField> teamBuildingFields = new HashSet<>();
 
     @OneToOne(mappedBy = "member")
     private MemberBasicInform memberBasicInform;

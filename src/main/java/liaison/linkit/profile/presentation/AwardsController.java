@@ -8,13 +8,10 @@ import liaison.linkit.profile.dto.request.AwardsCreateRequest;
 import liaison.linkit.profile.dto.request.AwardsUpdateRequest;
 import liaison.linkit.profile.dto.response.AwardsResponse;
 import liaison.linkit.profile.service.AwardsService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController

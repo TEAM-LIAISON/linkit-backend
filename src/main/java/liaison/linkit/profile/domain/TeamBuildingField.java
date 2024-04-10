@@ -14,7 +14,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(of = "id")
-public class TeamBuildingTag {
+public class TeamBuildingField {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -23,6 +23,9 @@ public class TeamBuildingTag {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(nullable = false, length = 25)
+    private int fieldCode;
+
     @Column(nullable = false, length = 50)
-    private String name;
+    private String fieldName;
 }
