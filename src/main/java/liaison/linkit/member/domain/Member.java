@@ -2,7 +2,7 @@ package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
 
-import liaison.linkit.resume.domain.Resume;
+import liaison.linkit.profile.domain.TeamBuildingField;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -11,6 +11,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -23,6 +26,9 @@ import static lombok.AccessLevel.PROTECTED;
 @SQLDelete(sql = "UPDATE member SET status = 'DELETED' WHERE id = ?")
 @Where(clause = "status = 'ACTIVE'")
 public class Member {
+
+    private static final String DEFAULT_MEMBER_IMAGE_NAME = "default-image.png";
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_id")
@@ -34,12 +40,6 @@ public class Member {
     @Column(nullable = false, length = 50)
     private String email;
 
-    @Column(nullable = false)
-    private LocalDateTime lastLoginDate;
-
-    @Column
-    private String imageUrl;
-
     @Enumerated(value = STRING)
     private MemberState status;
 
@@ -50,32 +50,30 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    @OneToOne(mappedBy = "member")
-    private MemberBasicInform memberBasicInform;
+    @OneToMany(mappedBy = "member", orphanRemoval = true)
+    private Set<TeamBuildingField> teamBuildingFields = new HashSet<>();
 
     @OneToOne(mappedBy = "member")
-    private Resume resume;
+    private MemberBasicInform memberBasicInform;
 
     public Member(
             final Long id,
             final String socialLoginId,
             final String email,
-            final MemberBasicInform memberBasicInform,
-            final Resume resume
+            final List<TeamBuildingField> teamBuildingFields,
+            final MemberBasicInform memberBasicInform
     ) {
         this.id = id;
         this.email = email;
         this.socialLoginId = socialLoginId;
-        this.lastLoginDate = LocalDateTime.now();
-        this.imageUrl = imageUrl;
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
+        this.teamBuildingFields = new HashSet<>(teamBuildingFields);
         this.memberBasicInform = memberBasicInform;
-        this.resume = resume;
     }
 
-    public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform, final Resume resume) {
-        this(null, socialLoginId, email, memberBasicInform, resume);
+    public Member(final String socialLoginId, final String email, final List<TeamBuildingField> teamBuildingFields, final MemberBasicInform memberBasicInform) {
+        this(null, socialLoginId, email, teamBuildingFields, memberBasicInform);
     }
 }

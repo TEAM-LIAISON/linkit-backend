@@ -1,14 +1,24 @@
 package liaison.linkit.member.dto.request;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+
 public class MemberBasicInformRequest {
-    private final String username;
+    private final String memberName;
     private final String contact;
-    private final String major;
-    private final String job;
-    private final String teamBuildingStep;
+    private final MemberRoleRequest memberRole;
+    private final boolean marketingAgree;
+
+    public MemberBasicInformRequest(
+            final String memberName,
+            final String contact,
+            final MemberRoleRequest memberRole,
+            boolean marketingAgree
+    ) {
+        this.memberName = memberName;
+        this.contact = contact;
+        this.memberRole = memberRole;
+        this.marketingAgree = marketingAgree;
+    }
 }
