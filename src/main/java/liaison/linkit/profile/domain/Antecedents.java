@@ -2,7 +2,7 @@ package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
-import lombok.AccessLevel;
+import liaison.linkit.profile.dto.request.AntecedentsUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -72,5 +72,14 @@ public class Antecedents {
                 endMonth,
                 antecedentsDescription
         );
+    }
+
+    public void update(final AntecedentsUpdateRequest antecedentsUpdateRequest) {
+        this.projectName = antecedentsUpdateRequest.getProjectName();
+        this.projectRole = antecedentsUpdateRequest.getProjectRole();
+        this.startYear = antecedentsUpdateRequest.getStartYear();
+        this.startMonth = antecedentsUpdateRequest.getStartMonth();
+        this.endYear = antecedentsUpdateRequest.getEndYear();
+        this.endMonth = antecedentsUpdateRequest.getEndMonth();
     }
 }
