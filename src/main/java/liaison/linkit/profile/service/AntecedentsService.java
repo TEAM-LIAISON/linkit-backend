@@ -1,7 +1,6 @@
 package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Antecedents;

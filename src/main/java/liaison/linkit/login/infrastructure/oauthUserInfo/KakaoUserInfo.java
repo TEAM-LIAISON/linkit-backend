@@ -9,7 +9,6 @@ import static lombok.AccessLevel.PRIVATE;
 public class KakaoUserInfo implements OauthUserInfo {
     @JsonProperty("id")
     private String socialLoginId;
-
     @JsonProperty("kakao_account")
     private KakaoAccount kakaoAccount;
 

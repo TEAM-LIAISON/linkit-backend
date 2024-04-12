@@ -29,9 +29,7 @@ public class MemberService {
     public void save(Long memberId, MemberBasicInformRequest memberBasicInformRequest) {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
-
         final MemberRole memberRole = memberRoleRepository.findMemberRolesByRoleName(memberBasicInformRequest.getMemberRole().getRoleName());
-
         final MemberBasicInform newBasicMemberBasicInform = new MemberBasicInform(
                 memberBasicInformRequest.getMemberName(),
                 memberBasicInformRequest.getContact(),
@@ -39,8 +37,6 @@ public class MemberService {
                 memberBasicInformRequest.isMarketingAgree(),
                 member
         );
-        log.info("memberRole={}", memberBasicInformRequest.getMemberRole().getRoleName());
-
         memberBasicInformRepository.save(newBasicMemberBasicInform);
     }
 

@@ -28,7 +28,13 @@ public class Education {
     private int admissionYear;
 
     @Column(nullable = false)
+    private int admissionMonth;
+
+    @Column(nullable = false)
     private int graduationYear;
+
+    @Column(nullable = false)
+    private int graduationMonth;
 
     @Column(nullable = false)
     private String educationDescription;
