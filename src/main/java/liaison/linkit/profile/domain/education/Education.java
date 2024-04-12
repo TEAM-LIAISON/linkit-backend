@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.education;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
@@ -39,4 +39,15 @@ public class Education {
     @Column(nullable = false)
     private String educationDescription;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "school_id")
+    private School school;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "degree_id")
+    private Degree degree;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "major_id")
+    private Major major;
 }

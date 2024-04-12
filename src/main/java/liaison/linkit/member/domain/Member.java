@@ -1,8 +1,6 @@
 package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
-
-import liaison.linkit.profile.domain.TeamBuildingField;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
@@ -11,9 +9,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -50,9 +45,6 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "member", orphanRemoval = true)
-    private Set<TeamBuildingField> teamBuildingFields = new HashSet<>();
-
     @OneToOne(mappedBy = "member")
     private MemberBasicInform memberBasicInform;
 
@@ -60,7 +52,6 @@ public class Member {
             final Long id,
             final String socialLoginId,
             final String email,
-            final List<TeamBuildingField> teamBuildingFields,
             final MemberBasicInform memberBasicInform
     ) {
         this.id = id;
@@ -69,11 +60,10 @@ public class Member {
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
-        this.teamBuildingFields = new HashSet<>(teamBuildingFields);
         this.memberBasicInform = memberBasicInform;
     }
 
-    public Member(final String socialLoginId, final String email, final List<TeamBuildingField> teamBuildingFields, final MemberBasicInform memberBasicInform) {
-        this(null, socialLoginId, email, teamBuildingFields, memberBasicInform);
+    public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform) {
+        this(null, socialLoginId, email, memberBasicInform);
     }
 }

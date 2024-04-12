@@ -41,5 +41,4 @@ public class AwardsResponse {
                 awards.getAwardsDescription()
         );
     }
-
 }

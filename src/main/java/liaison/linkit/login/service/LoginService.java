@@ -12,8 +12,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
@@ -55,7 +53,7 @@ public class LoginService {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberRepository.existsByEmail(email)) {
-                return memberRepository.save(new Member(socialLoginId, email, null, null));
+                return memberRepository.save(new Member(socialLoginId, email, null));
             }
             tryCount += 1;
         }

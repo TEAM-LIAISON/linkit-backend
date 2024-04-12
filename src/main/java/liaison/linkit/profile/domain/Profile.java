@@ -2,27 +2,25 @@ package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@EqualsAndHashCode(of = "id")
-public class TechTag {
+@NoArgsConstructor(access = PROTECTED)
+public class Profile {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "profile_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column(length = 50, nullable = false)
-    private String name;
+    @Column
+    private String introduction;
 }

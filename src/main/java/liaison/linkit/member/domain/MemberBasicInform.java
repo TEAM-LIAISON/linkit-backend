@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -33,7 +34,7 @@ public class MemberBasicInform {
     private String contact;
 
     // 직무/역할 추가 필요
-    @ManyToOne(fetch = FetchType.LAZY, cascade = ALL)
+    @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "member_role_id")
     private MemberRole memberRole;
 
@@ -41,7 +42,7 @@ public class MemberBasicInform {
     @Column
     private boolean marketingAgree;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
