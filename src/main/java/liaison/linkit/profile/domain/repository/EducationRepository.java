@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface EducationRepository extends JpaRepository<Education, Long> {
 
-    boolean existsByProfileId(Long educationId);
+    boolean existsByProfileId(final Long educationId);
 
     Education findByProfileId(@Param("profileId") final Long profileId);
 
