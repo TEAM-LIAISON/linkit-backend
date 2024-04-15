@@ -2,7 +2,6 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
@@ -20,7 +19,6 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_ID
 public class ProfileService {
 
     private final ProfileRepository profileRepository;
-    private final MemberRepository memberRepository;
 
     public Long validateProfileByMember(Long memberId) {
         if (!profileRepository.existsByMemberId(memberId)) {

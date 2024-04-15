@@ -23,6 +23,8 @@ public enum ExceptionCode {
     INVALID_AWARDS_WITH_MEMBER(1011, "요청한 멤버와 ID에 해당하는 수상 정보가 존재하지 않습니다."),
     INVALID_PROFILE_WITH_MEMBER(1019, "요청한 멤버와 ID에 해당하는 프로필 정보가 존재하지 않습니다."),
     INVALID_EDUCATION_WITH_MEMBER(1021, "요청한 ID에 해당하는 학력 정보가 존재하지 않습니다."),
+    INVALID_PROFILE_TEAM_BUILDING_WITH_MEMBER(1023, "요청한 ID에 해당하는 희망 팀빌딩 정보가 존재하지 않습니다."),
+
     // -----문단 구분-----
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
     NULL_IMAGE(5002, "업로드한 이미지 파일이 NULL입니다."),
