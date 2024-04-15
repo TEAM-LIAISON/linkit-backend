@@ -1,7 +1,6 @@
 package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
-import liaison.linkit.member.dto.request.MemberRoleRequest;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

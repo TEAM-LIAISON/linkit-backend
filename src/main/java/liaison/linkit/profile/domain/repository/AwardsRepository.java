@@ -1,7 +1,6 @@
 package liaison.linkit.profile.domain.repository;
 
 import liaison.linkit.profile.domain.Awards;
-import liaison.linkit.profile.dto.response.AwardsResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,11 +9,11 @@ import java.util.List;
 
 public interface AwardsRepository extends JpaRepository<Awards, Long> {
 
-    boolean existsByMemberId(Long memberId);
+    boolean existsByProfileId(Long profileId);
 
-    @Query("SELECT awards FROM Awards awards WHERE awards.member.id = :memberId")
-    List<Awards> findAllByMemberId(@Param("memberId") final Long memberId);
+    @Query("SELECT awards FROM Awards awards WHERE awards.profile.id = :profileId")
+    List<Awards> findAllByProfileId(@Param("profileId") final Long profileId);
 
-    Awards findByMemberId(@Param("memberId") final Long memberId);
+    Awards findByProfileId(@Param("profileId") final Long profileId);
 
 }

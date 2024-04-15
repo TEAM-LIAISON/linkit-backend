@@ -1,8 +1,7 @@
 package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
-import liaison.linkit.member.domain.Member;
-import lombok.AccessLevel;
+import liaison.linkit.profile.dto.request.AntecedentsUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +23,8 @@ public class Antecedents {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     // 기업명(프로젝트명)
     @Column(nullable = false)
@@ -52,7 +51,7 @@ public class Antecedents {
 
 
     public static Antecedents of(
-            final Member member,
+            final Profile profile,
             final String projectName,
             final String projectRole,
             final int startYear,
@@ -63,7 +62,7 @@ public class Antecedents {
     ) {
         return new Antecedents(
                 null,
-                member,
+                profile,
                 projectName,
                 projectRole,
                 startYear,
@@ -72,5 +71,14 @@ public class Antecedents {
                 endMonth,
                 antecedentsDescription
         );
+    }
+
+    public void update(final AntecedentsUpdateRequest antecedentsUpdateRequest) {
+        this.projectName = antecedentsUpdateRequest.getProjectName();
+        this.projectRole = antecedentsUpdateRequest.getProjectRole();
+        this.startYear = antecedentsUpdateRequest.getStartYear();
+        this.startMonth = antecedentsUpdateRequest.getStartMonth();
+        this.endYear = antecedentsUpdateRequest.getEndYear();
+        this.endMonth = antecedentsUpdateRequest.getEndMonth();
     }
 }

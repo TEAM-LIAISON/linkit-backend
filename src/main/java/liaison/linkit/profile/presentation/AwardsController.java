@@ -29,7 +29,9 @@ public class AwardsController {
         return ResponseEntity.ok().body(awardsResponses);
     }
 
-    // 이력서 수상 항목 1개 등록
+
+
+    // 이력서 수상 항목 1개 생성
     @PostMapping
     @MemberOnly
     public ResponseEntity<AwardsResponse> createAwards(

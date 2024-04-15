@@ -17,8 +17,8 @@ import static liaison.linkit.global.exception.ExceptionCode.INVALID_AUTHORIZATIO
 import static liaison.linkit.global.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
 
 @Component
-public class GoogleOauthProvider implements OauthProvider {
-    private static final String PROVIDER_NAME = "google";
+public class NaverOauthProvider implements OauthProvider {
+    private static final String PROVIDER_NAME = "naver";
 
     protected final String clientId;
     protected final String clientSecret;
@@ -26,12 +26,12 @@ public class GoogleOauthProvider implements OauthProvider {
     protected final String tokenUri;
     protected final String userUri;
 
-    public GoogleOauthProvider(
-            @Value("${GOOGLE_CLIENT_ID}") final String clientId,
-            @Value("${GOOGLE_CLIENT_SECRET}") final String clientSecret,
-            @Value("${GOOGLE_REDIRECT_URL}") final String redirectUri,
-            @Value("${GOOGLE_TOKEN_URI}") final String tokenUri, // Notice the path correction
-            @Value("${GOOGLE_USER_INFO_URI}") final String userUri // Notice the path correction
+    public NaverOauthProvider (
+            @Value("${NAVER_CLIENT_ID}") final String clientId,
+            @Value("${NAVER_CLIENT_SECRET}") final String clientSecret,
+            @Value("${NAVER_REDIRECT_URL}") String redirectUri,
+            @Value("${NAVER_TOKEN_URI}") String tokenUri,
+            @Value("${NAVER_USER_INFO_URI}") String userUri
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
