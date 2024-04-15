@@ -2,22 +2,21 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.global.exception.ExceptionCode;
-import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Awards;
+import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.AwardsRepository;
+import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.AwardsCreateRequest;
 import liaison.linkit.profile.dto.request.AwardsUpdateRequest;
 import liaison.linkit.profile.dto.response.AwardsResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.*;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_AWARDS_WITH_MEMBER;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_AWARDS_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -25,23 +24,23 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 public class AwardsService {
 
     private final AwardsRepository awardsRepository;
-    private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
 
     public Long validateAwardsByMember(Long memberId) {
-        if(!awardsRepository.existsByMemberId(memberId)){
+        Long profileId = profileRepository.findByMemberId(memberId).getId();
+        if(!awardsRepository.existsByProfileId(profileId)){
             throw new AuthException(INVALID_AWARDS_WITH_MEMBER);
         } else {
-            return awardsRepository.findByMemberId(memberId).getId();
+            return awardsRepository.findByProfileId(profileId).getId();
         }
     }
 
     // 회원에 대해서 수상 이력을 저장하는 메서드
     public AwardsResponse save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
+        final Profile profile = profileRepository.findByMemberId(memberId);
 
         final Awards newAwards = Awards.of(
-                member,
+                profile,
                 awardsCreateRequest.getAwardsName(),
                 awardsCreateRequest.getRanking(),
                 awardsCreateRequest.getOrganizer(),
@@ -57,7 +56,8 @@ public class AwardsService {
     // 해당 회원의 모든 수상 이력을 조회하는 메서드 / 수정 이전 화면에서 필요
     @Transactional(readOnly = true)
     public List<AwardsResponse> getAllAwards(final Long memberId) {
-        final List<Awards> awards = awardsRepository.findAllByMemberId(memberId);
+        Long profileId = profileRepository.findByMemberId(memberId).getId();
+        final List<Awards> awards = awardsRepository.findAllByProfileId(profileId);
         return awards.stream()
                 .map(this::getAwardsResponse)
                 .toList();
@@ -68,7 +68,7 @@ public class AwardsService {
         return AwardsResponse.of(awards);
     }
 
-    //
+    // 수상 이력 1개 조회 (비공개 처리 로직 추가 필요)
     @Transactional(readOnly = true)
     public AwardsResponse getAwardsDetail(final Long awardsId){
         final Awards awards = awardsRepository.findById(awardsId)

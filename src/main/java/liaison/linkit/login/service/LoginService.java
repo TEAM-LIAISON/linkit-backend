@@ -7,6 +7,8 @@ import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.MemberRepository;
+import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,7 @@ public class LoginService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final MemberRepository memberRepository;
+    private final ProfileRepository profileRepository;
 
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
@@ -53,7 +56,9 @@ public class LoginService {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberRepository.existsByEmail(email)) {
-                return memberRepository.save(new Member(socialLoginId, email, null));
+                Member member = memberRepository.save(new Member(socialLoginId, email, null));
+                profileRepository.save(new Profile(member, null));
+                return member;
             }
             tryCount += 1;
         }

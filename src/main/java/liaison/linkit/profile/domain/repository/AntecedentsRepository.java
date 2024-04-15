@@ -9,10 +9,11 @@ import java.util.List;
 
 
 public interface AntecedentsRepository extends JpaRepository<Antecedents, Long> {
-    boolean existsByMemberId(Long memberId);
 
-    Antecedents findByMemberId(@Param("memberId") final Long memberId);
+    boolean existsByProfileId(Long profileId);
 
-    @Query("SELECT antecedents FROM Antecedents antecedents WHERE antecedents.member.id = :memberId")
-    List<Antecedents> findAllByMemberId(Long memberId);
+    Antecedents findByProfileId(@Param("profileId") final Long profileId);
+
+    @Query("SELECT antecedents FROM Antecedents antecedents WHERE antecedents.profile.id = :profileId")
+    List<Antecedents> findAllByProfileId(Long profileId);
 }

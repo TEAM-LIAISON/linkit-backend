@@ -1,12 +1,10 @@
 package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
-import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.dto.request.AwardsUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -24,8 +22,8 @@ public class Awards {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     @Column(nullable = false)
     private String awardsName;
@@ -46,7 +44,7 @@ public class Awards {
     private String awardsDescription;
 
     public static Awards of(
-            final Member member,
+            final Profile profile,
             final String awardsName,
             final String ranking,
             final String organizer,
@@ -55,7 +53,7 @@ public class Awards {
             final String awardsDescription) {
         return new Awards(
                 null,
-                member,
+                profile,
                 awardsName,
                 ranking,
                 organizer,

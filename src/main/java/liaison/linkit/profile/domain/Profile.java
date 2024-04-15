@@ -23,4 +23,18 @@ public class Profile {
 
     @Column
     private String introduction;
+
+    public Profile(
+            final Long id,
+            final Member member,
+            final String introduction
+    ) {
+        this.id = id;
+        this.member = member;
+        this.introduction = introduction;
+    }
+
+    public Profile(final Member member, final String introduction) {
+        this(null, member, introduction);
+    }
 }

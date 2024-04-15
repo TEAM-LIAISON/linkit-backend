@@ -1,7 +1,8 @@
 package liaison.linkit.profile.domain.education;
 
 import jakarta.persistence.*;
-import liaison.linkit.member.domain.Member;
+import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.dto.request.EducationUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,8 @@ public class Education {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     @Column(nullable = false)
     private int admissionYear;
@@ -50,4 +51,39 @@ public class Education {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "major_id")
     private Major major;
+
+    public static Education of(
+            final Profile profile,
+            final int admissionYear,
+            final  int admissionMonth,
+            final int graduationYear,
+            final int graduationMonth,
+            final String educationDescription,
+            final School school,
+            final Degree degree,
+            final Major major
+    ){
+        return new Education(
+                null,
+                profile,
+                admissionYear,
+                admissionMonth,
+                graduationYear,
+                graduationMonth,
+                educationDescription,
+                school,
+                degree,
+                major
+        );
+    }
+
+    public void update(final EducationUpdateRequest educationUpdateRequest) {
+        this.admissionYear = educationUpdateRequest.getAdmissionYear();
+        this.admissionMonth = educationUpdateRequest.getGraduationMonth();
+        this.graduationYear = educationUpdateRequest.getGraduationYear();
+        this.graduationMonth = educationUpdateRequest.getGraduationMonth();
+        this.educationDescription = educationUpdateRequest.getEducationDescription();
+        this.school = educationUpdateRequest.getSchool();
+        this.degree = educationUpdateRequest.getDegree();
+    }
 }
