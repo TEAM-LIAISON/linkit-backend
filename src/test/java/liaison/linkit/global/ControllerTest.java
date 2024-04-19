@@ -1,5 +1,7 @@
 package liaison.linkit.global;
 
+import liaison.linkit.admin.AdminLoginArgumentResolver;
+import liaison.linkit.admin.domain.repository.AdminMemberRepository;
 import liaison.linkit.global.restdocs.RestDocsConfiguration;
 import liaison.linkit.login.LoginArgumentResolver;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
@@ -33,11 +35,17 @@ public abstract class ControllerTest {
     @Autowired
     protected LoginArgumentResolver loginArgumentResolver;
 
+    @Autowired
+    protected AdminLoginArgumentResolver adminLoginArgumentResolver;
+
     @MockBean
     protected JwtProvider jwtProvider;
 
     @MockBean
     protected RefreshTokenRepository refreshTokenRepository;
+
+    @MockBean
+    protected AdminMemberRepository adminMemberRepository;
 
     @MockBean
     BearerAuthorizationExtractor bearerExtractor;
