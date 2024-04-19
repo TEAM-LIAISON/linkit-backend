@@ -24,48 +24,68 @@ repositories {
 	mavenCentral()
 }
 
+
+
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    // s3 자리
+    // p6spy 자리
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
     compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java:8.0.33'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
     testImplementation "org.testcontainers:testcontainers:1.17.6"
     testImplementation "org.testcontainers:junit-jupiter:1.17.6"
 
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'com.github.maricn:logback-slack-appender:1.6.1'
+//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//    implementation 'io.micrometer:micrometer-registry-prometheus'
+
+//    implementation 'com.github.maricn:logback-slack-appender:1.6.1'
+
+//    implementation 'org.flywaydb:flyway-core'
+//    implementation 'org.flywaydb:flyway-mysql'
 
 	implementation 'org.mindrot:jbcrypt:0.4'
 }
 
 test {
-    finalizedBy jacocoTestReport
+    finalizedBy 'jacocoTestReport'
 }
 
 jacoco {
-    toolVersion = '0.8.8'
+    toolVersion = '0.8.11'
 }
 
-jacocoTestReport{
+jacocoTestReport {
     reports {
-        xml.required = true
-        html.required = true
+        xml {
+            enabled true
+        }
+        csv {
+            enabled true
+        }
+        html {
+            enabled true
+        }
+
+        xml.destination file(project.layout.buildDirectory.dir("jacoco/index.xml")) as File
+        csv.destination file(project.layout.buildDirectory.dir("jacoco/index.csv")) as File
+        html.destination file(project.layout.buildDirectory.dir("jacoco/index.html")) as File
     }
 }
 
@@ -78,7 +98,6 @@ asciidoctor {
     configurations 'asciidoctorExt'
 }
 
-// asciidoctor 작업의 출력을 프로젝트의 static/docs 디렉토리로 복사하는 작업
 tasks.register('copyApiDocument', Copy) {
     dependsOn asciidoctor
     doFirst {

@@ -19,7 +19,9 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequiredArgsConstructor
 public class LoginController {
+
     public static final int COOKIE_AGE_SECONDS = 604800;
+
     private final LoginService loginService;
 
     @PostMapping("/login/{provider}")
@@ -58,10 +60,10 @@ public class LoginController {
         return ResponseEntity.noContent().build();
     }
 
-//    @DeleteMapping("/account")
-//    @MemberOnly
-//    public ResponseEntity<Void> deleteAccount(@Auth final Accessor accessor) {
-//        loginService.deleteAccount(accessor.getMemberId());
-//        return ResponseEntity.noContent().build();
-//    }
+    @DeleteMapping("/account")
+    @MemberOnly
+    public ResponseEntity<Void> deleteAccount(@Auth final Accessor accessor) {
+        loginService.deleteAccount(accessor.getMemberId());
+        return ResponseEntity.noContent().build();
+    }
 }

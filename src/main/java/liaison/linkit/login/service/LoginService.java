@@ -10,7 +10,6 @@ import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,8 +19,8 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Transactional
 @RequiredArgsConstructor
 public class LoginService {
+
     private static final int MAX_TRY_COUNT = 5;
-    private static final int FOUR_DIGIT_RANGE = 10000;
 
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -31,12 +30,10 @@ public class LoginService {
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
-    private final ApplicationEventPublisher publisher;
 
     public MemberTokens login(final String providerName, final String code) {
         final OauthProvider provider = oauthProviders.mapping(providerName);
         final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
-
         final Member member = findOrCreateMember(
                 oauthUserInfo.getSocialLoginId(),
                 oauthUserInfo.getEmail()
@@ -82,12 +79,8 @@ public class LoginService {
         refreshTokenRepository.deleteById(refreshToken);
     }
 
-//    계정 삭제 로직 추가 구현 필요
-//    public void deleteAccount(final Long memberId) {
-//        final List<Long> tripIds = customTripRepository.findTripIdsByMemberId(memberId);
-//        publishedTripRepository.deleteByTripIds(tripIds);
-//        sharedTripRepository.deleteByTripIds(tripIds);
-//        memberRepository.deleteByMemberId(memberId);
-//        publisher.publishEvent(new MemberDeleteEvent(tripIds, memberId));
-//    }
+    // 수정 필요
+    public void deleteAccount(final Long memberId) {
+        memberRepository.deleteByMemberId(memberId);
+    }
 }
