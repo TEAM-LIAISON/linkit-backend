@@ -86,3 +86,4 @@ include::{snippets}/login-controller-test/delete-account/request-cookies.adoc[]
 ==== 응답
 include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 
+== 이력서 API

@@ -27,7 +27,7 @@ public class AdminLoginController {
 
     @PostMapping("/login")
     public ResponseEntity<AccessTokenResponse> login(
-            @RequestMapping @Valid final AdminLoginRequest adminLoginRequest,
+            @RequestBody @Valid final AdminLoginRequest adminLoginRequest,
             final HttpServletResponse response
     ) {
         final MemberTokens memberTokens = adminLoginService.login(adminLoginRequest);

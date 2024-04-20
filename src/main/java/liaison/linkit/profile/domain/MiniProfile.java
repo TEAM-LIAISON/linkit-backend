@@ -1,7 +1,6 @@
 package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
-import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.dto.request.MiniProfileUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +20,9 @@ public class MiniProfile {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
+
     @Column(length = 40)
     private String oneLineIntroduction;
     private String interests;
@@ -30,14 +30,14 @@ public class MiniProfile {
     private String secondFreeText;
 
     public static MiniProfile of(
-            final Member member,
+            final Profile profile,
             final String oneLineIntroduction,
             final String interests,
             final String firstFreeText,
             final String secondFreeText) {
         return new MiniProfile(
                 null,
-                member,
+                profile,
                 oneLineIntroduction,
                 interests,
                 firstFreeText,

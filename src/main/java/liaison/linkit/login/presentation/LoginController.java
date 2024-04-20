@@ -24,6 +24,7 @@ public class LoginController {
 
     private final LoginService loginService;
 
+    // 로그인
     @PostMapping("/login/{provider}")
     public ResponseEntity<AccessTokenResponse> login(
             @PathVariable final String provider,
@@ -42,6 +43,7 @@ public class LoginController {
         return ResponseEntity.status(CREATED).body(new AccessTokenResponse(memberTokens.getAccessToken()));
     }
 
+    // 토큰 재발행
     @PostMapping("/token")
     public ResponseEntity<AccessTokenResponse> extendLogin(
             @CookieValue("refresh-token") final String refreshToken,
@@ -51,6 +53,7 @@ public class LoginController {
         return ResponseEntity.status(CREATED).body(new AccessTokenResponse(renewalRefreshToken));
     }
 
+    // 로그아웃
     @DeleteMapping("/logout")
     @MemberOnly
     public ResponseEntity<Void> logout(
@@ -60,6 +63,7 @@ public class LoginController {
         return ResponseEntity.noContent().build();
     }
 
+    // 회원 탈퇴
     @DeleteMapping("/account")
     @MemberOnly
     public ResponseEntity<Void> deleteAccount(@Auth final Accessor accessor) {
