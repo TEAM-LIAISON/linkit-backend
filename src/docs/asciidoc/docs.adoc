@@ -86,4 +86,17 @@ include::{snippets}/login-controller-test/delete-account/request-cookies.adoc[]
 ==== 응답
 include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 
-== 이력서 API
+== 미니 프로필 API
+
+=== 미니 프로필 조회
+
+==== 요청
+include::{snippets}/mini-profile-controller-test/get-mini-profile/http-request.adoc[]
+요청 헤더
+include::{snippets}/mini-profile-controller-test/get-mini-profile/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/mini-profile-controller-test/get-mini-profile/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/mini-profile-controller-test/get-mini-profile/http-response.adoc[]
+
