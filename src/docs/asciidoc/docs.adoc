@@ -100,3 +100,18 @@ include::{snippets}/mini-profile-controller-test/get-mini-profile/request-cookie
 ==== 응답
 include::{snippets}/mini-profile-controller-test/get-mini-profile/http-response.adoc[]
 
+=== 미니 프로필 생성
+
+==== 요청
+include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
+요청 헤더
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/mini-profile-controller-test/create-mini-profile/http-response.adoc[]
+
+=== 미니 프로필 수정
+
+=== 미니 프로필 삭제
