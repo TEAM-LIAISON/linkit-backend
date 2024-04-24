@@ -113,5 +113,23 @@ include::{snippets}/mini-profile-controller-test/create-mini-profile/request-coo
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-response.adoc[]
 
 === 미니 프로필 수정
+include::{snippets}/mini-profile-controller-test/update-mini-profile/http-request.adoc[]
+요청 헤더
+include::{snippets}/mini-profile-controller-test/update-mini-profile/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/mini-profile-controller-test/update-mini-profile/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/mini-profile-controller-test/update-mini-profile/http-response.adoc[]
 
 === 미니 프로필 삭제
+
+==== 요청
+include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-request.adoc[]
+요청 헤더
+include::{snippets}/mini-profile-controller-test/delete-mini-profile/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/mini-profile-controller-test/delete-mini-profile/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-response.adoc[]
