@@ -4,10 +4,8 @@ import liaison.linkit.profile.domain.Awards;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static lombok.AccessLevel.PRIVATE;
-
 @Getter
-@RequiredArgsConstructor(access = PRIVATE)
+@RequiredArgsConstructor
 public class AwardsResponse {
 
     private final Long id;

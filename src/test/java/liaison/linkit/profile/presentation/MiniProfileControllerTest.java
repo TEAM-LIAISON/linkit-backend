@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.login.service.LoginService;
 import liaison.linkit.profile.dto.request.MiniProfileCreateRequest;
 import liaison.linkit.profile.dto.request.MiniProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.MiniProfileResponse;
@@ -49,9 +48,6 @@ class MiniProfileControllerTest extends ControllerTest {
 
     @MockBean
     private MiniProfileService miniProfileService;
-
-    @MockBean
-    private LoginService loginService;
 
     @BeforeEach
     void setUp() {
