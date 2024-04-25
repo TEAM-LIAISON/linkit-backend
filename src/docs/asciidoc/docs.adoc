@@ -38,7 +38,7 @@
 [[exception-codes]]
 include::{snippets}/exception-code-controller-test/get-exception-codes/exception-response-fields.adoc[]
 
-== 멤버 API
+== 회원가입 및 로그인 API
 
 === 로그인 (POST /login/:provider)
 ==== 요청
@@ -86,6 +86,34 @@ include::{snippets}/login-controller-test/delete-account/request-cookies.adoc[]
 ==== 응답
 include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 
+== 멤버 API
+
+=== 멤버 기본 정보 등록
+
+==== 요청
+include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
+include::{snippets}/member-controller-test/create-member-basic-inform/request-fields.adoc[]
+요청 헤더
+include::{snippets}/member-controller-test/create-member-basic-inform/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/member-controller-test/create-member-basic-inform/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
+
+=== 멤버 기본 정보 조회
+
+==== 요청
+include::{snippets}/member-controller-test/get-member-basic-inform/http-request.adoc[]
+요청 헤더
+include::{snippets}/member-controller-test/get-member-basic-inform/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/member-controller-test/get-member-basic-inform/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/member-controller-test/get-member-basic-inform/http-response.adoc[]
+include::{snippets}/member-controller-test/get-member-basic-inform/response-fields.adoc[]
+
 == 미니 프로필 API
 
 === 미니 프로필 조회
@@ -99,11 +127,13 @@ include::{snippets}/mini-profile-controller-test/get-mini-profile/request-cookie
 
 ==== 응답
 include::{snippets}/mini-profile-controller-test/get-mini-profile/http-response.adoc[]
+include::{snippets}/mini-profile-controller-test/get-mini-profile/response-fields.adoc[]
 
 === 미니 프로필 생성
 
 ==== 요청
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-fields.adoc[]
 요청 헤더
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-headers.adoc[]
 요청 쿠키
@@ -133,3 +163,52 @@ include::{snippets}/mini-profile-controller-test/delete-mini-profile/request-coo
 
 ==== 응답
 include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-response.adoc[]
+
+== 수상 이력 API
+
+=== 단일 수상 이력 조회
+
+==== 요청
+include::{snippets}/awards-controller-test/get-awards/http-request.adoc[]
+요청 헤더
+include::{snippets}/awards-controller-test/get-awards/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/awards-controller-test/get-awards/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/awards-controller-test/get-awards/http-response.adoc[]
+include::{snippets}/awards-controller-test/get-awards/response-fields.adoc[]
+
+=== 단일 수상 이력 생성
+
+==== 요청
+include::{snippets}/awards-controller-test/create-awards/http-request.adoc[]
+include::{snippets}/awards-controller-test/create-awards/request-fields.adoc[]
+요청 헤더
+include::{snippets}/awards-controller-test/create-awards/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/awards-controller-test/create-awards/request-cookies.adoc[]
+
+=== 단일 수상 이력 수정
+
+==== 요청
+include::{snippets}/awards-controller-test/update-awards/http-request.adoc[]
+include::{snippets}/awards-controller-test/update-awards/request-fields.adoc[]
+요청 헤더
+include::{snippets}/awards-controller-test/update-awards/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/awards-controller-test/update-awards/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/awards-controller-test/update-awards/http-response.adoc[]
+
+=== 단일 수상 이력 삭제
+==== 요청
+include::{snippets}/awards-controller-test/delete-awards/http-request.adoc[]
+요청 헤더
+include::{snippets}/awards-controller-test/delete-awards/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/awards-controller-test/delete-awards/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/awards-controller-test/delete-awards/http-response.adoc[]

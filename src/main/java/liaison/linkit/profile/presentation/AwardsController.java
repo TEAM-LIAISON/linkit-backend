@@ -45,7 +45,9 @@ public class AwardsController {
     // 이력서 수상 항목 1개 조회
     @GetMapping
     @MemberOnly
-    public ResponseEntity<AwardsResponse> getAwards(@Auth final Accessor accessor) {
+    public ResponseEntity<AwardsResponse> getAwards(
+            @Auth final Accessor accessor
+    ) {
         Long awardsId = awardsService.validateAwardsByMember(accessor.getMemberId());
         final AwardsResponse awardsResponse = awardsService.getAwardsDetail(awardsId);
         return ResponseEntity.ok().body(awardsResponse);
