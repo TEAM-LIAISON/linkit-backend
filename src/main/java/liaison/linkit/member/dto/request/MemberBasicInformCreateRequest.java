@@ -1,11 +1,10 @@
 package liaison.linkit.member.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import liaison.linkit.member.domain.MemberRole;
 import lombok.Getter;
 
 @Getter
-public class MemberBasicInformRequest {
+public class MemberBasicInformCreateRequest {
 
     private final String profileImageName;
 
@@ -16,21 +15,21 @@ public class MemberBasicInformRequest {
     private final String contact;
 
     @NotNull(message = "직무 및 역할을 입력해주세요")
-    private final MemberRole memberRole;
+    private final String roleName;
 
     private final boolean marketingAgree;
 
-    public MemberBasicInformRequest(
+    public MemberBasicInformCreateRequest(
             final String profileImageName,
             final String memberName,
             final String contact,
-            final MemberRole memberRole,
+            final String roleName,
             boolean marketingAgree
     ) {
         this.profileImageName = profileImageName;
         this.memberName = memberName;
         this.contact = contact;
-        this.memberRole = memberRole;
+        this.roleName = roleName;
         this.marketingAgree = marketingAgree;
     }
 }
