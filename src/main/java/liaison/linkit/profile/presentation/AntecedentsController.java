@@ -32,12 +32,12 @@ public class AntecedentsController {
     // 이력 1개 생성 요청
     @PostMapping
     @MemberOnly
-    public ResponseEntity<Void> createAntecedents(
+    public ResponseEntity<AntecedentsResponse> createAntecedents(
             @Auth final Accessor accessor,
             @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest
     ){
-        final Long antecedentsId = antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
-        return ResponseEntity.created(URI.create("/antecedents/" + antecedentsId)).build();
+        final AntecedentsResponse antecedentsResponse = antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
+        return ResponseEntity.ok().body(antecedentsResponse);
     }
 
     // 이력 1개 조회 요청

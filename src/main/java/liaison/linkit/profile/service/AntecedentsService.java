@@ -35,7 +35,7 @@ public class AntecedentsService {
         }
     }
 
-    public Long save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest){
+    public AntecedentsResponse save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest){
         final Profile profile = profileRepository.findByMemberId(memberId);
 
         final Antecedents newAntecedents = Antecedents.of(
@@ -50,7 +50,7 @@ public class AntecedentsService {
         );
 
         final Antecedents antecedents = antecedentsRepository.save(newAntecedents);
-        return antecedents.getId();
+        return getAntecedentsResponse(antecedents);
     }
 
     @Transactional(readOnly = true)
