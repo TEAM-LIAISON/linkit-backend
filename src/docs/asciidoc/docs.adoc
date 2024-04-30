@@ -164,6 +164,59 @@ include::{snippets}/mini-profile-controller-test/delete-mini-profile/request-coo
 ==== 응답
 include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-response.adoc[]
 
+== 이력 항목 API
+
+=== 단일 이력 항목 조회
+
+==== 요청
+include::{snippets}/antecedents-controller-test/get-antecedents/http-request.adoc[]
+요청 헤더
+include::{snippets}/antecedents-controller-test/get-antecedents/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/antecedents-controller-test/get-antecedents/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/antecedents-controller-test/get-antecedents/http-response.adoc[]
+include::{snippets}/antecedents-controller-test/get-antecedents/response-fields.adoc[]
+
+=== 단일 이력 항목 생성
+
+==== 요청
+include::{snippets}/antecedents-controller-test/create-antecedents/http-request.adoc[]
+include::{snippets}/antecedents-controller-test/create-antecedents/request-fields.adoc[]
+요청 헤더
+include::{snippets}/antecedents-controller-test/create-antecedents/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/antecedents-controller-test/create-antecedents/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/antecedents-controller-test/create-antecedents/http-response.adoc[]
+
+=== 단일 이력 항목 수정
+
+==== 요청
+include::{snippets}/antecedents-controller-test/update-antecedents/http-request.adoc[]
+include::{snippets}/antecedents-controller-test/update-antecedents/request-fields.adoc[]
+요청 헤더
+include::{snippets}/antecedents-controller-test/update-antecedents/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/antecedents-controller-test/update-antecedents/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/antecedents-controller-test/update-antecedents/http-response.adoc[]
+
+=== 단일 이력 항목 삭제
+
+==== 요청
+include::{snippets}/antecedents-controller-test/delete-antecedents/http-request.adoc[]
+요청 헤더
+include::{snippets}/antecedents-controller-test/delete-antecedents/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/antecedents-controller-test/delete-antecedents/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/antecedents-controller-test/delete-antecedents/http-response.adoc[]
+
 == 수상 항목 API
 
 === 단일 수상 항목 조회

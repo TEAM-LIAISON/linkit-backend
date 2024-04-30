@@ -236,7 +236,7 @@ class AwardsControllerTest extends ControllerTest {
     @Test
     void updateAwards() throws Exception {
         // given
-        final AwardsUpdateRequest request = new AwardsUpdateRequest(
+        final AwardsUpdateRequest updateRequest = new AwardsUpdateRequest(
                 "HISU",
                 "대상",
                 "홍익대학교 공학교육혁신센터",
@@ -248,7 +248,7 @@ class AwardsControllerTest extends ControllerTest {
         doNothing().when(awardsService).update(anyLong(), any(AwardsUpdateRequest.class));
 
         // when
-        final ResultActions resultActions = performPutUpdateRequest(request);
+        final ResultActions resultActions = performPutUpdateRequest(updateRequest);
 
         // then
         resultActions.andExpect(status().isNoContent())
