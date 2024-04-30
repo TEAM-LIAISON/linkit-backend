@@ -35,7 +35,7 @@ public class AwardsService {
         }
     }
 
-    // 회원에 대해서 수상 이력을 저장하는 메서드
+    // 회원에 대해서 수상 항목을 저장하는 메서드
     public AwardsResponse save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
 
@@ -53,7 +53,7 @@ public class AwardsService {
 
     }
 
-    // 해당 회원의 모든 수상 이력을 조회하는 메서드 / 수정 이전 화면에서 필요
+    // 해당 회원의 모든 수상 항목을 조회하는 메서드 / 수정 이전 화면에서 필요
     @Transactional(readOnly = true)
     public List<AwardsResponse> getAllAwards(final Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
@@ -68,7 +68,7 @@ public class AwardsService {
         return AwardsResponse.of(awards);
     }
 
-    // 수상 이력 1개 조회 (비공개 처리 로직 추가 필요)
+    // 수상 항목 1개 조회 (비공개 처리 로직 추가 필요)
     @Transactional(readOnly = true)
     public AwardsResponse getAwardsDetail(final Long awardsId){
         final Awards awards = awardsRepository.findById(awardsId)

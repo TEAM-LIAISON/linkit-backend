@@ -164,9 +164,9 @@ include::{snippets}/mini-profile-controller-test/delete-mini-profile/request-coo
 ==== 응답
 include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-response.adoc[]
 
-== 수상 이력 API
+== 수상 항목 API
 
-=== 단일 수상 이력 조회
+=== 단일 수상 항목 조회
 
 ==== 요청
 include::{snippets}/awards-controller-test/get-awards/http-request.adoc[]
@@ -179,7 +179,7 @@ include::{snippets}/awards-controller-test/get-awards/request-cookies.adoc[]
 include::{snippets}/awards-controller-test/get-awards/http-response.adoc[]
 include::{snippets}/awards-controller-test/get-awards/response-fields.adoc[]
 
-=== 단일 수상 이력 생성
+=== 단일 수상 항목 생성
 
 ==== 요청
 include::{snippets}/awards-controller-test/create-awards/http-request.adoc[]
@@ -189,7 +189,7 @@ include::{snippets}/awards-controller-test/create-awards/request-headers.adoc[]
 요청 쿠키
 include::{snippets}/awards-controller-test/create-awards/request-cookies.adoc[]
 
-=== 단일 수상 이력 수정
+=== 단일 수상 항목 수정
 
 ==== 요청
 include::{snippets}/awards-controller-test/update-awards/http-request.adoc[]
@@ -202,7 +202,7 @@ include::{snippets}/awards-controller-test/update-awards/request-cookies.adoc[]
 ==== 응답
 include::{snippets}/awards-controller-test/update-awards/http-response.adoc[]
 
-=== 단일 수상 이력 삭제
+=== 단일 수상 항목 삭제
 ==== 요청
 include::{snippets}/awards-controller-test/delete-awards/http-request.adoc[]
 요청 헤더

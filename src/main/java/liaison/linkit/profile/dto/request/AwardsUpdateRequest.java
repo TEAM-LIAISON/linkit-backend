@@ -23,7 +23,7 @@ public class AwardsUpdateRequest {
     @NotNull(message = "수상 월을 입력해주세요")
     private final int awardsMonth;
 
-    @NotNull(message = "수상 이력에 대한 설명을 입력해주세요")
-    @Size(max = 200, message = "수상 이력은 200자를 넘을 수 없습니다.")
+    @NotNull(message = "수상 항목에 대한 설명을 입력해주세요")
+    @Size(max = 200, message = "수상 항목은 200자를 넘을 수 없습니다.")
     private final String awardsDescription;
 }
