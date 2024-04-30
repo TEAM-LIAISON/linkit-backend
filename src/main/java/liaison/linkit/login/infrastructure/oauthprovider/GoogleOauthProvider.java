@@ -30,8 +30,8 @@ public class GoogleOauthProvider implements OauthProvider {
             @Value("${GOOGLE_CLIENT_ID}") final String clientId,
             @Value("${GOOGLE_CLIENT_SECRET}") final String clientSecret,
             @Value("${GOOGLE_REDIRECT_URL}") final String redirectUri,
-            @Value("${spring.security.oauth2.client.provider.google.token-uri}") final String tokenUri, // Notice the path correction
-            @Value("${spring.security.oauth2.client.provider.google.user-info-uri}") final String userUri // Notice the path correction
+            @Value("${GOOGLE_TOKEN_URI}") final String tokenUri, // Notice the path correction
+            @Value("${GOOGLE_USER_INFO_URI}") final String userUri // Notice the path correction
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;

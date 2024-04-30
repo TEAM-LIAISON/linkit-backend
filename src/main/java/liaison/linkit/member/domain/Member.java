@@ -19,23 +19,21 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @SQLDelete(sql = "UPDATE member SET status = 'DELETED' WHERE id = ?")
-@Where(clause = "status = 'ACTIVE")
+@Where(clause = "status = 'ACTIVE'")
 public class Member {
+
+    private static final String DEFAULT_MEMBER_IMAGE_NAME = "default-image.png";
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "member_id")
     private Long id;
 
     @Column(nullable = false, length = 30)
     private String socialLoginId;
 
-    @Column(nullable = false, unique = true, length = 20)
-    private String nickname;
-
-    @Column(nullable = false)
-    private LocalDateTime lastLoginDate;
-
-    @Column(nullable = false)
-    private String imageUrl;
+    @Column(nullable = false, length = 50)
+    private String email;
 
     @Enumerated(value = STRING)
     private MemberState status;
@@ -47,22 +45,25 @@ public class Member {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-    public Member(final Long id, final String socialLoginId, final String nickname, final String imageUrl) {
+    @OneToOne(mappedBy = "member")
+    private MemberBasicInform memberBasicInform;
+
+    public Member(
+            final Long id,
+            final String socialLoginId,
+            final String email,
+            final MemberBasicInform memberBasicInform
+    ) {
         this.id = id;
+        this.email = email;
         this.socialLoginId = socialLoginId;
-        this.nickname = nickname;
-        this.lastLoginDate = LocalDateTime.now();
-        this.imageUrl = imageUrl;
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
+        this.memberBasicInform = memberBasicInform;
     }
 
-    public Member(final String socialLoginId, final String nickname, final String imageUrl) {
-        this(null, socialLoginId, nickname, imageUrl);
-    }
-
-    public boolean isNicknameChanged(final String inputNickname) {
-        return !nickname.equals(inputNickname);
+    public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform) {
+        this(null, socialLoginId, email, memberBasicInform);
     }
 }

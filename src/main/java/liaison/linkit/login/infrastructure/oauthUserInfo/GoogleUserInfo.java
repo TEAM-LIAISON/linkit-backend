@@ -13,16 +13,12 @@ public class GoogleUserInfo implements OauthUserInfo {
 
     @JsonProperty("id")
     private String socialLoginId;
-    @JsonProperty("name")
-    private String name;
-    @JsonProperty("picture")
-    private String picture;
+    @JsonProperty("email")
+    private String email;
+
 
     public String getSocialLoginId() {return socialLoginId;}
 
     @Override
-    public String getNickname() {return name;}
-
-    @Override
-    public String getImageUrl() {return picture;}
+    public String getEmail() {return email;}
 }

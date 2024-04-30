@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findBySocialLoginId(String socialLoginId);
 
-    boolean existsByNickname(String nickname);
+    boolean existsByEmail(String email);
 
     @Modifying
     @Query("""

@@ -7,7 +7,7 @@ import static liaison.linkit.global.exception.ExceptionCode.INVALID_ACCESS_TOKEN
 
 @Component
 public class BearerAuthorizationExtractor {
-    private static final String BEARER_TYPE = "BEARER";
+    private static final String BEARER_TYPE = "Bearer ";
 
     public String extractAccessToken(String header) {
         if (header != null && header.startsWith(BEARER_TYPE)) {
