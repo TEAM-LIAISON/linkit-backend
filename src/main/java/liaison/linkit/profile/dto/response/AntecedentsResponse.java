@@ -4,10 +4,8 @@ import liaison.linkit.profile.domain.Antecedents;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static lombok.AccessLevel.PRIVATE;
-
 @Getter
-@RequiredArgsConstructor(access = PRIVATE)
+@RequiredArgsConstructor
 public class AntecedentsResponse {
     private final Long id;
     private final String projectName;

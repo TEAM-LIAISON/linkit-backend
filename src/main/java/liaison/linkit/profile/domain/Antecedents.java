@@ -29,6 +29,7 @@ public class Antecedents {
     // 기업명(프로젝트명)
     @Column(nullable = false)
     private String projectName;
+
     // 직무(역할)
     @Column(nullable = false)
     private String projectRole;
@@ -36,6 +37,7 @@ public class Antecedents {
     // 시작연도
     @Column(nullable = false)
     private int startYear;
+
     // 시작월
     @Column(nullable = false)
     private int startMonth;
@@ -48,7 +50,6 @@ public class Antecedents {
 
     @Column(nullable = false)
     private String antecedentsDescription;
-
 
     public static Antecedents of(
             final Profile profile,

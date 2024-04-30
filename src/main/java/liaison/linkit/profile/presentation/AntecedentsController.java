@@ -43,7 +43,9 @@ public class AntecedentsController {
     // 이력 1개 조회 요청
     @GetMapping
     @MemberOnly
-    public ResponseEntity<AntecedentsResponse> getAntecedents(@Auth final Accessor accessor) {
+    public ResponseEntity<AntecedentsResponse> getAntecedents(
+            @Auth final Accessor accessor
+    ) {
         Long antecedentsId = antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
         final AntecedentsResponse antecedentsResponse = antecedentsService.getAntecedentsDetail(antecedentsId);
         return ResponseEntity.ok().body(antecedentsResponse);

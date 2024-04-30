@@ -21,6 +21,6 @@ public class AwardsCreateRequest {
     @NotNull(message = "수상 월을 입력해주세요")
     private final int awardsMonth;
 
-    @NotNull(message = "수상 이력에 대한 설명을 입력해주세요")
+    @NotNull(message = "수상 항목에 대한 설명을 입력해주세요")
     private final String awardsDescription;
 }

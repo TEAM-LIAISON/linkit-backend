@@ -78,11 +78,12 @@ class AwardsControllerTest extends ControllerTest {
 
     // 단일 수상 항목 등록 테스트
     private ResultActions performPostRequest(final AwardsCreateRequest createRequest) throws Exception {
-        return mockMvc.perform(post("/awards")
-                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                .cookie(COOKIE)
-                .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createRequest))
+        return mockMvc.perform(
+                post("/awards")
+                    .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                    .cookie(COOKIE)
+                    .contentType(APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(createRequest))
         );
     }
 
@@ -105,7 +106,7 @@ class AwardsControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("수상 이력을 조회할 수 있다.")
+    @DisplayName("수상 항목을 조회할 수 있다.")
     @Test
     void getAwards() throws Exception {
         // given
@@ -141,7 +142,7 @@ class AwardsControllerTest extends ControllerTest {
                                 responseFields(
                                         fieldWithPath("id")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("수상 이력 항목 ID")
+                                                .description("수상 항목 ID")
                                                 .attributes(field("constraint", "양의 정수")),
                                         fieldWithPath("awardsName")
                                                 .type(JsonFieldType.STRING)
@@ -165,14 +166,14 @@ class AwardsControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "양의 정수이자 1부터 12까지의 숫자")),
                                         fieldWithPath("awardsDescription")
                                                 .type(JsonFieldType.STRING)
-                                                .description("수상 이력 설명")
+                                                .description("수상 설명")
                                                 .attributes(field("constraint", "문자열"))
                                 )
                         )
                 );
     }
 
-    @DisplayName("단일 수상 이력을 생성할 수 있다.")
+    @DisplayName("단일 수상 항목을 생성할 수 있다.")
     @Test
     void createAwards() throws Exception {
         // given
@@ -224,14 +225,14 @@ class AwardsControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "양의 정수이자 1부터 12까지의 숫자")),
                                         fieldWithPath("awardsDescription")
                                                 .type(JsonFieldType.STRING)
-                                                .description("수상 이력 설명")
+                                                .description("수상 항목 설명")
                                                 .attributes(field("constraint", "문자열"))
                                 )
                         )
                 );
     }
 
-    @DisplayName("단일 수상 이력을 수정할 수 있다.")
+    @DisplayName("단일 수상 항목을 수정할 수 있다.")
     @Test
     void updateAwards() throws Exception {
         // given
@@ -285,14 +286,14 @@ class AwardsControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "양의 정수이자 1부터 12까지의 숫자")),
                                         fieldWithPath("awardsDescription")
                                                 .type(JsonFieldType.STRING)
-                                                .description("수상 이력 설명")
+                                                .description("수상 항목 설명")
                                                 .attributes(field("constraint", "문자열"))
                                 )
                         )
                 );
     }
 
-    @DisplayName("단일 수상 이력을 삭제할 수 있다.")
+    @DisplayName("단일 수상 항목을 삭제할 수 있다.")
     @Test
     void deleteAwards() throws Exception {
         // given
