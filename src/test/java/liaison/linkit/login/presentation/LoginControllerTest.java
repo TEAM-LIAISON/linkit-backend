@@ -71,24 +71,25 @@ public class LoginControllerTest extends ControllerTest {
 
         // when
         final MvcResult mvcResult = resultActions.andExpect(status().isCreated())
-                .andDo(restDocs.document(
-                        pathParameters(
-                                parameterWithName("provider")
-                                        .description("로그인 유형")
-                        ),
-                        requestFields(
-                                fieldWithPath("code")
-                                        .type(JsonFieldType.STRING)
-                                        .description("인가 코드")
-                                        .attributes(field("constraint", "문자열"))
-                        ),
-                        responseFields(
-                                fieldWithPath("accessToken")
-                                        .type(JsonFieldType.STRING)
-                                        .description("access token")
-                                        .attributes(field("constraint", "문자열(jwt)"))
-                        )
-                ))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("provider")
+                                                .description("로그인 유형")
+                                ),
+                                requestFields(
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("인가 코드")
+                                                .attributes(field("constraint", "문자열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("accessToken")
+                                                .type(JsonFieldType.STRING)
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                )
+                        ))
                 .andReturn();
 
         final AccessTokenResponse expected = new AccessTokenResponse(memberTokens.getAccessToken());
