@@ -41,6 +41,7 @@ include::{snippets}/exception-code-controller-test/get-exception-codes/exception
 == 회원가입 및 로그인 API
 
 === 로그인 (POST /login/:provider)
+
 ==== 요청
 include::{snippets}/login-controller-test/login/http-request.adoc[]
 include::{snippets}/login-controller-test/login/path-parameters.adoc[]
@@ -113,6 +114,19 @@ include::{snippets}/member-controller-test/get-member-basic-inform/request-cooki
 ==== 응답
 include::{snippets}/member-controller-test/get-member-basic-inform/http-response.adoc[]
 include::{snippets}/member-controller-test/get-member-basic-inform/response-fields.adoc[]
+
+=== 멤버 이메일 정보 조회
+
+==== 요청
+include::{snippets}/member-controller-test/get-member-email/http-request.adoc[]
+요청 헤더
+include::{snippets}/member-controller-test/get-member-email/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/member-controller-test/get-member-email/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/member-controller-test/get-member-email/http-response.adoc[]
+include::{snippets}/member-controller-test/get-member-email/response-fields.adoc[]
 
 == 미니 프로필 API
 

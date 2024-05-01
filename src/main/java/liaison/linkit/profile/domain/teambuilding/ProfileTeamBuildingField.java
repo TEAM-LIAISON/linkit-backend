@@ -16,6 +16,9 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class ProfileTeamBuildingField {
+
+    // 다대다를 풀어서 설계하는 것은 맞다 (필터링 떄문에 - 단순 저장 정보가 아니다)
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

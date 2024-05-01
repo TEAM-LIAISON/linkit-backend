@@ -11,6 +11,7 @@ import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.member.domain.repository.MemberRoleRepository;
 import liaison.linkit.member.dto.request.MemberBasicInformCreateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
+import liaison.linkit.member.dto.response.MemberResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -64,6 +65,13 @@ public class MemberService {
         final MemberBasicInform memberBasicInform = memberBasicInformRepository.findById(memberBasicInformId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BASIC_INFORM_ID));
         return MemberBasicInformResponse.of(memberBasicInform);
+    }
+
+    @Transactional(readOnly = true)
+    public MemberResponse getMemberEmail(final Long memberId) {
+        final Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
+        return MemberResponse.of(member);
     }
 
 
