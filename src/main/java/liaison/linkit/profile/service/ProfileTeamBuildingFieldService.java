@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_PROFILE_TEAM_BUILDING_WITH_MEMBER;
 
@@ -54,21 +55,20 @@ public class ProfileTeamBuildingFieldService {
         profileTeamBuildingRepository.saveAll(profileTeamBuildingFields);
     }
 
-    private ProfileTeamBuildingResponse getProfileTeamBuildingResponse(
-            final List<ProfileTeamBuildingField> profileTeamBuildingFields
-    ) {
-        List<String> teamBuildingFieldNames = profileTeamBuildingFields.stream()
-                .map(profileTeamBuildingField -> profileTeamBuildingField.getTeamBuildingField().getTeamBuildingFieldName())
-                .toList();
-        return ProfileTeamBuildingResponse.of(teamBuildingFieldNames);
-    }
 
-//    @Transactional(readOnly = true)
-//    public List<ProfileTeamBuildingResponse> getAllProfileTeamBuildings(final Long memberId) {
-//        Long profileId = profileRepository.findByMemberId(memberId).getId();
-//        final List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingRepository.findAllByProfileId(profileId);
-//        return profileTeamBuildingFields.stream()
-//                .map(this::getProfileResponse)
-//                .toList();
-//    }
+    @Transactional(readOnly = true)
+    public ProfileTeamBuildingResponse getAllProfileTeamBuildings(final Long memberId) {
+        Long profileId = profileRepository.findByMemberId(memberId).getId();
+
+        List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingRepository.findAllByProfileId(profileId);
+
+        List<String> teamBuildingFieldNames = profileTeamBuildingFields.stream()
+                .map(profileTeamBuildingField -> teamBuildingRepository.findById(profileTeamBuildingField.getTeamBuildingField().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(TeamBuildingField::getTeamBuildingFieldName)
+                .toList();
+
+        return new ProfileTeamBuildingResponse(teamBuildingFieldNames);
+    }
 }

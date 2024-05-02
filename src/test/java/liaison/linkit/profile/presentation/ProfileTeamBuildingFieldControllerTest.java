@@ -63,7 +63,7 @@ class ProfileTeamBuildingFieldControllerTest extends ControllerTest {
     // 희망 팀빌딩 분야 등록 테스트
     private ResultActions performPostRequest(final ProfileTeamBuildingCreateRequest createRequest) throws Exception {
         return mockMvc.perform(
-                post("/profile_team_building-field")
+                post("/profile_team_building_field")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
