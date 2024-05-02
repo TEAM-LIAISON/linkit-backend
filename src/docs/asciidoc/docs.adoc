@@ -89,7 +89,7 @@ include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 
 == 멤버 API
 
-=== 멤버 기본 정보 등록
+=== 멤버 기본 정보 생성
 
 ==== 요청
 include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
@@ -178,7 +178,22 @@ include::{snippets}/mini-profile-controller-test/delete-mini-profile/request-coo
 ==== 응답
 include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-response.adoc[]
 
-== 희망 팀빌딩 분야 API
+== 프로필 API
+
+== 보유 기술 항목 API
+
+== 희망 팀빌딩 분야 항목 API
+
+=== 희망 팀빌딩 분야 항목 조회
+include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/http-request.adoc[]
+요청 헤더
+include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/http-response.adoc[]
+include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/response-fields.adoc[]
 
 === 희망 팀빌딩 분야 항목 생성
 
@@ -246,6 +261,8 @@ include::{snippets}/antecedents-controller-test/delete-antecedents/request-cooki
 ==== 응답
 include::{snippets}/antecedents-controller-test/delete-antecedents/http-response.adoc[]
 
+== 학력 항목 API
+
 == 수상 항목 API
 
 === 단일 수상 항목 조회
@@ -294,3 +311,5 @@ include::{snippets}/awards-controller-test/delete-awards/request-cookies.adoc[]
 
 ==== 응답
 include::{snippets}/awards-controller-test/delete-awards/http-response.adoc[]
+
+== 첨부 API
