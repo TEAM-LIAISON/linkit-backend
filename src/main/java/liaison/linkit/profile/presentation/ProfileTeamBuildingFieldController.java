@@ -5,7 +5,6 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.ProfileTeamBuildingCreateRequest;
-import liaison.linkit.profile.dto.response.ProfileTeamBuildingResponse;
 import liaison.linkit.profile.service.ProfileTeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/profile_team_building")
+@RequestMapping("/profile_team_building-field")
 public class ProfileTeamBuildingFieldController {
 
     private final ProfileTeamBuildingFieldService profileTeamBuildingFieldService;
@@ -32,12 +31,12 @@ public class ProfileTeamBuildingFieldController {
     // 희망 팀빌딩 항목 등록 (여러개 등록 가능해야함)
     @PostMapping
     @MemberOnly
-    public ResponseEntity<ProfileTeamBuildingResponse> createProfileTeamBuilding(
+    public ResponseEntity<Void> createProfileTeamBuilding(
             @Auth final Accessor accessor,
             @RequestBody @Valid ProfileTeamBuildingCreateRequest profileTeamBuildingCreateRequest
     ) {
-        final ProfileTeamBuildingResponse profileTeamBuildingResponse = profileTeamBuildingFieldService.save(accessor.getMemberId(), profileTeamBuildingCreateRequest);
-        return ResponseEntity.ok().body(profileTeamBuildingResponse);
+        profileTeamBuildingFieldService.save(accessor.getMemberId(), profileTeamBuildingCreateRequest);
+        return ResponseEntity.ok().build();
     }
 
 }
