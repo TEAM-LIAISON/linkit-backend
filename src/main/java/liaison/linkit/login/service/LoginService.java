@@ -54,7 +54,7 @@ public class LoginService {
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberRepository.existsByEmail(email)) {
                 Member member = memberRepository.save(new Member(socialLoginId, email, null));
-                profileRepository.save(new Profile(member, null));
+                profileRepository.save(new Profile(member, "자기소개를 입력해주세요"));
                 return member;
             }
             tryCount += 1;
