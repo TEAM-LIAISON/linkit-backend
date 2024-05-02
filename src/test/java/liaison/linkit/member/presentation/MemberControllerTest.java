@@ -7,6 +7,7 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.member.dto.request.MemberBasicInformCreateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
+import liaison.linkit.member.dto.response.MemberResponse;
 import liaison.linkit.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +22,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
-import static org.apache.http.HttpHeaders.AUTHORIZATION;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -55,6 +57,7 @@ class MemberControllerTest extends ControllerTest {
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
         given(memberService.validateMemberBasicInformByMember(1L)).willReturn(1L);
+
     }
 
     private ResultActions performPostRequest(final MemberBasicInformCreateRequest memberBasicInformCreateRequest) throws Exception {
@@ -75,7 +78,15 @@ class MemberControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("사용자 정보를 조회할 수 있다.")
+    private ResultActions performGetEmailRequest() throws Exception {
+        return mockMvc.perform(
+                get("/members/email")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    @DisplayName("사용자 기본 정보를 조회할 수 있다.")
     @Test
     void getMemberBasicInform() throws Exception {
         // given
@@ -137,7 +148,7 @@ class MemberControllerTest extends ControllerTest {
                 );
     }
 
-    @DisplayName("사용자 정보를 생성할 수 있다.")
+    @DisplayName("사용자 기본 정보를 생성할 수 있다.")
     @Test
     void createMemberBasicInform() throws Exception {
         // given
@@ -186,6 +197,43 @@ class MemberControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("마케팅 수신 동의 여부")
                                                 .attributes(field("constraint", "Boolean & Default FALSE"))
+                                )
+                        )
+                );
+    }
+
+    @DisplayName("사용자 이메일 정보를 조회할 수 있다.")
+    @Test
+    void getMemberEmail() throws Exception {
+        // given
+        final MemberResponse response = new MemberResponse(
+                "kwondm7@naver.com"
+        );
+
+        given(memberService.getMemberEmail(1L))
+                .willReturn(response);
+
+        // when
+        final ResultActions resultActions = performGetEmailRequest();
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("email")
+                                                .type(JsonFieldType.STRING)
+                                                .description("이메일")
+                                                .attributes(field("constraint", "@포함 문자열"))
                                 )
                         )
                 );

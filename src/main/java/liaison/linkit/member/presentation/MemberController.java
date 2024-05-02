@@ -5,6 +5,7 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.dto.request.MemberBasicInformCreateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
+import liaison.linkit.member.dto.response.MemberResponse;
 import liaison.linkit.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,16 @@ public class MemberController {
     ) {
         memberService.save(accessor.getMemberId(), memberBasicInformCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 1.4.1. 개인정보 기입 이메일 정보 제공용
+    @GetMapping("/email")
+    @MemberOnly
+    public ResponseEntity<MemberResponse> getMemberEmail(
+            @Auth final Accessor accessor
+    ) {
+        final MemberResponse memberResponse = memberService.getMemberEmail(accessor.getMemberId());
+        return ResponseEntity.ok().body(memberResponse);
     }
 
     // 수정 및 삭제 추가 구현 필요

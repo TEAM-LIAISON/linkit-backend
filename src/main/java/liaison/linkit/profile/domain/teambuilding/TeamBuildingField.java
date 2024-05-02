@@ -20,5 +20,5 @@ public class TeamBuildingField {
     private Long id;
 
     @Column(name = "team_building_field_name", nullable = false)
-    private String TemaBuildingFieldName;
+    private String TeamBuildingFieldName;
 }

@@ -3,8 +3,6 @@ package liaison.linkit.member.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -18,8 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@SQLDelete(sql = "UPDATE member SET status = 'DELETED' WHERE id = ?")
-@Where(clause = "status = 'ACTIVE'")
+//@Where(clause = "status = 'ACTIVE'")
 public class Member {
 
     private static final String DEFAULT_MEMBER_IMAGE_NAME = "default-image.png";
