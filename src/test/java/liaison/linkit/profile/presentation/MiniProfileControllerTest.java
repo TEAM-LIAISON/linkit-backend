@@ -179,6 +179,7 @@ class MiniProfileControllerTest extends ControllerTest {
 
         when(miniProfileService.save(anyLong(), any(MiniProfileCreateRequest.class)))
                 .thenReturn(expectedResponse);
+
         // when
         final ResultActions resultActions = performPostRequest(miniProfileCreateRequest);
 
