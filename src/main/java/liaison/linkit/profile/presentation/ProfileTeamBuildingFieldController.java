@@ -22,6 +22,7 @@ public class ProfileTeamBuildingFieldController {
     @GetMapping
     @MemberOnly
     public ResponseEntity<ProfileTeamBuildingResponse> getProfileTeamBuildingList(@Auth final Accessor accessor) {
+        profileTeamBuildingFieldService.validateProfileTeamBuildingFieldByMember(accessor.getMemberId());
         final ProfileTeamBuildingResponse profileTeamBuildingResponses = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
         return ResponseEntity.ok().body(profileTeamBuildingResponses);
     }

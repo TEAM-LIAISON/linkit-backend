@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +24,7 @@ public class Profile {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Column
+    @Column(name = "introduction")
     private String introduction;
 
     public Profile(
@@ -36,7 +37,18 @@ public class Profile {
         this.introduction = introduction;
     }
 
-    public Profile(final Member member, final String introduction) {
-        this(null, member, introduction);
+    public static Profile of(
+            final Member member,
+            final String introduction
+    ) {
+        return new Profile(
+                null,
+                member,
+                introduction
+        );
+    }
+
+    public void update(final ProfileUpdateRequest profileUpdateRequest) {
+        this.introduction = profileUpdateRequest.getIntroduction();
     }
 }

@@ -54,7 +54,11 @@ public class LoginService {
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberRepository.existsByEmail(email)) {
                 Member member = memberRepository.save(new Member(socialLoginId, email, null));
-                profileRepository.save(new Profile(member, null));
+                final Profile newProfile = Profile.of(
+                        member,
+                        ""
+                );
+                profileRepository.save(newProfile);
                 return member;
             }
             tryCount += 1;

@@ -35,10 +35,12 @@ public class ProfileService {
         return ProfileResponse.personalProfile(profile);
     }
 
-    // 저장 로직 없이 업데이트만 필요함
     public void update(final Long profileId, final ProfileUpdateRequest profileUpdateRequest) {
         final Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
+
+        profile.update(profileUpdateRequest);
+        profileRepository.save(profile);
     }
 
     public void delete(final Long profileId) {
