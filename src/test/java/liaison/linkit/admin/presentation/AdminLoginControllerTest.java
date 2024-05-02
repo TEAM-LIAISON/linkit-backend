@@ -30,6 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -118,7 +119,7 @@ class AdminLoginControllerTest extends ControllerTest {
         // when
         final ResultActions resultActions = mockMvc.perform(post("/admin/token")
                 .contentType(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.AUTHORIZATION, ACCESS_TOKEN)
+                .header(AUTHORIZATION, ACCESS_TOKEN)
                 .cookie(cookie)
         );
 
@@ -173,7 +174,7 @@ class AdminLoginControllerTest extends ControllerTest {
 
         // when
         final ResultActions resultActions = mockMvc.perform(delete("/admin/logout")
-                .header(HttpHeaders.AUTHORIZATION, ACCESS_TOKEN)
+                .header(AUTHORIZATION, ACCESS_TOKEN)
                 .cookie(cookie)
         );
 

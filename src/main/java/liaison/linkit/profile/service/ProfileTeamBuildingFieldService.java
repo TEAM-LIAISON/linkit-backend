@@ -37,7 +37,7 @@ public class ProfileTeamBuildingFieldService {
         }
     }
 
-    public ProfileTeamBuildingResponse save(final Long memberId, final ProfileTeamBuildingCreateRequest createRequest) {
+    public void save(final Long memberId, final ProfileTeamBuildingCreateRequest createRequest) {
         log.info("member.id={}", memberId);
 
         final Profile profile = profileRepository.findByMemberId(memberId);
@@ -52,8 +52,6 @@ public class ProfileTeamBuildingFieldService {
                 .toList();
 
         profileTeamBuildingRepository.saveAll(profileTeamBuildingFields);
-
-        return getProfileTeamBuildingResponse(profileTeamBuildingFields);
     }
 
     private ProfileTeamBuildingResponse getProfileTeamBuildingResponse(

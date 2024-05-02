@@ -178,6 +178,21 @@ include::{snippets}/mini-profile-controller-test/delete-mini-profile/request-coo
 ==== 응답
 include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-response.adoc[]
 
+== 희망 팀빌딩 분야 API
+
+=== 희망 팀빌딩 분야 항목 생성
+
+==== 요청
+include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
+include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-fields.adoc[]
+요청 헤더
+include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-response.adoc[]
+
 == 이력 항목 API
 
 === 단일 이력 항목 조회
