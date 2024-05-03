@@ -36,3 +36,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Ignore .DS_Store ###
+**/.DS_Store
