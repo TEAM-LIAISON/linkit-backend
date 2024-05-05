@@ -180,7 +180,22 @@ include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-respon
 
 == 프로필 API
 
+=== 프로필 자기소개 항목 조회
+
+==== 요청
+include::{snippets}/profile-controller-test/get-profile-introduction/http-request.adoc[]
+요청 헤더
+include::{snippets}/profile-controller-test/get-profile-introduction/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/profile-controller-test/get-profile-introduction/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/profile-controller-test/get-profile-introduction/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-profile-introduction/response-fields.adoc[]
+
 === 프로필 자기소개 항목 수정
+
+==== 요청
 include::{snippets}/profile-controller-test/update-profile-introduction/http-request.adoc[]
 include::{snippets}/profile-controller-test/update-profile-introduction/request-fields.adoc[]
 요청 헤더
