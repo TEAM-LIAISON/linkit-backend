@@ -180,6 +180,14 @@ include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-respon
 
 == 프로필 API
 
+=== 프로필 자기소개 항목 수정
+include::{snippets}/profile-controller-test/update-profile-introduction/http-request.adoc[]
+include::{snippets}/profile-controller-test/update-profile-introduction/request-fields.adoc[]
+요청 헤더
+include::{snippets}/profile-controller-test/update-profile-introduction/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/profile-controller-test/update-profile-introduction/request-cookies.adoc[]
+
 == 보유 기술 항목 API
 
 == 희망 팀빌딩 분야 항목 API
