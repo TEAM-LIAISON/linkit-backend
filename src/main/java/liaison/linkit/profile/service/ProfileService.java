@@ -41,4 +41,11 @@ public class ProfileService {
         profile.update(updateRequest);
         profileRepository.save(profile);
     }
+
+    public void delete(final Long profileId) {
+        if (!profileRepository.existsById(profileId)) {
+            throw new BadRequestException(NOT_FOUND_PROFILE_ID);
+        }
+        profileRepository.deleteById(profileId);
+    }
 }
