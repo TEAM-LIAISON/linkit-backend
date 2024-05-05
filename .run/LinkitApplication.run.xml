@@ -1,0 +1,36 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="LinkitApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+    <option name="ALTERNATIVE_JRE_PATH" value="corretto-17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <envs>
+      <env name="ACCESS_EXPIRATION_TIME" value="3600000" />
+      <env name="DB_PASSWORD" value="kk040802" />
+      <env name="DB_URL" value="jdbc:mysql://localhost:3306/linkit" />
+      <env name="DB_USERNAME" value="root" />
+      <env name="GOOGLE_CLIENT_ID" value="866779465778-qhte7gckuo2320cfa36kp3vuv579t0d6.apps.googleusercontent.com" />
+      <env name="GOOGLE_CLIENT_SECRET" value="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" />
+      <env name="GOOGLE_REDIRECT_URL" value="http://localhost:9000/api/auth/google/callback" />
+      <env name="GOOGLE_TOKEN_URI" value="https://oauth2.googleapis.com/token" />
+      <env name="GOOGLE_USER_INFO_URI" value="https://www.googleapis.com/oauth2/v2/userinfo" />
+      <env name="KAKAO_CLIENT_ID" value="58cd88d857ed286cce69f4516fb1a5e3" />
+      <env name="KAKAO_CLIENT_SECRET" value="RkXkbK0vl0sxdcPq002YOOgSJRThc1w5" />
+      <env name="KAKAO_REDIRECT_URL" value="http://localhost:3000/login/oauth2/callback/kakao" />
+      <env name="KAKAO_TOKEN_URI" value="https://kauth.kakao.com/oauth/token" />
+      <env name="KAKAO_USER_INFO_URI" value="https://kapi.kakao.com/v2/user/me" />
+      <env name="NAVER_CLIENT_ID" value="bcCOWeo_guWTrh6E4dZc" />
+      <env name="NAVER_CLIENT_SECRET" value="APCsMvDwpF" />
+      <env name="NAVER_REDIRECT_URL" value="http://localhost:9000/api/auth/naver/callback" />
+      <env name="NAVER_TOKEN_URI" value="https://nid.naver.com/oauth2.0/token" />
+      <env name="NAVER_USER_INFO_URI" value="https://openapi.naver.com/v1/nid/me" />
+      <env name="REDIS_HOST" value="localhost" />
+      <env name="REDIS_PORT" value="6379" />
+      <env name="REFRESH_EXPIRATION_TIME" value="7200000" />
+      <env name="SECRET_KEY" value="dGVhbWJ1aWxkaW5nLW1hdGhjaW5nLXNlcnZpY2UtYXMtcGxhdGZvcm0tc3ByaW5nLWJvb3Qtc2VydmVyLXNlcmNyZXQtdG9rZW4=" />
+    </envs>
+    <module name="linkit.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="liaison.linkit.LinkitApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
