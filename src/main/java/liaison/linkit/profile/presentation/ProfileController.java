@@ -18,6 +18,8 @@ public class ProfileController {
 
     public final ProfileService profileService;
 
+    // 프로필 자기소개에 해당하는 부분은 생성 과정이 필요하지 않다.
+
     @GetMapping
     @MemberOnly
     public ResponseEntity<ProfileResponse> getProfiles(
@@ -30,12 +32,22 @@ public class ProfileController {
 
     @PatchMapping
     @MemberOnly
-    public ResponseEntity<Void> updateProfile(
+    public ResponseEntity<Void> updateProfileIntroduction(
             @Auth final Accessor accessor,
             @RequestBody @Valid final ProfileUpdateRequest updateRequest
     ) {
         Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
         profileService.update(profileId, updateRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    @MemberOnly
+    public ResponseEntity<Void> deleteProfileIntroduction(
+            @Auth final Accessor accessor
+    ) {
+        Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
+        profileService.delete(profileId);
         return ResponseEntity.noContent().build();
     }
 }
