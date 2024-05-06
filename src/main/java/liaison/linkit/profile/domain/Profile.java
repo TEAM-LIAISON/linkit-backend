@@ -89,7 +89,23 @@ public class Profile {
     public void addPerfectionTwenty() { this.completion += 20; }
     public void cancelPerfectionTwenty() {this.completion -= 20;}
 
-    // 등록 또는 삭제에서만 호출
+    // Default 항목 3개 관리 (isSkill, isProfileTeamBuildingField, isEducation)
+    public void updateIsSkill(final Boolean isSkill) {
+        this.isSkill = isSkill;
+
+    }
+
+    public void updateIsProfileTeamBuildingField(final Boolean isProfileTeamBuildingField) {
+        this.isProfileTeamBuildingField = isProfileTeamBuildingField;
+
+    }
+
+    public void updateIsEducation(final Boolean isEducation) {
+        this.isEducation = isEducation;
+
+    }
+
+    // 자기소개 등록 또는 삭제에서만 호출
     public void updateIsIntroduction(final Boolean isIntroduction) {
         this.isIntroduction = isIntroduction;
         if (isIntroduction) {
@@ -99,9 +115,29 @@ public class Profile {
         }
     }
 
-    public void updateIsProfileTeamBuildingField(final Boolean isProfileTeamBuildingField) {
-        this.isProfileTeamBuildingField = isProfileTeamBuildingField;
-        if (isProfileTeamBuildingField) {
+    public void updateIsAntecedents(final Boolean isAntecedents) {
+        this.isAntecedents = isAntecedents;
+        if (isAntecedents) {
+            addPerfectionSeven();
+        } else {
+            cancelPerfectionSeven();
+        }
+    }
+
+    // 수상 항목 등록 또는 삭제에서만 호출
+    public void updateIsAwards(final Boolean isAwards) {
+        this.isAwards = isAwards;
+        if (isAwards) {
+            addPerfectionSeven();
+        } else {
+            cancelPerfectionSeven();
+        }
+    }
+
+    // 첨부 항목 등록 또는 삭제에서만 호출
+    public void updateIsAttach(final Boolean isAttach) {
+        this.isAttach = isAttach;
+        if (isAttach) {
             addPerfectionSeven();
         } else {
             cancelPerfectionSeven();

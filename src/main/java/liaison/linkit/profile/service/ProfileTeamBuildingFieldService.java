@@ -48,8 +48,6 @@ public class ProfileTeamBuildingFieldService {
 
         profileTeamBuildingRepository.saveAll(profileTeamBuildingFields);
 
-        profile.updateIsProfileTeamBuildingField(true);
-        profile.updateMemberProfileTypeByCompletion();
 
         profileRepository.save(profile);
     }
