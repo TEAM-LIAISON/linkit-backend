@@ -47,7 +47,7 @@ public class ProfileController {
             @Auth final Accessor accessor
     ) {
         Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
-        profileService.delete(profileId);
+        profileService.deleteIntroduction(profileId);
         return ResponseEntity.noContent().build();
     }
 }

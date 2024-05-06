@@ -5,14 +5,14 @@ public enum MemberProfileType {
     PROFILE_OPEN_PERMISSION,
     MATCHING_PERMISSION;
 
-    public static MemberProfileType openPermission(final boolean isOpen) {
+    public static MemberProfileType openAndClosePermission(final boolean isOpen) {
         if (isOpen) {
             return PROFILE_OPEN_PERMISSION;
         }
         return NO_PERMISSION;
     }
 
-    public static MemberProfileType changePermission(final boolean isMatching) {
+    public static MemberProfileType changeAndOpenPermission(final boolean isMatching) {
         if (isMatching) {
             return MATCHING_PERMISSION;
         }

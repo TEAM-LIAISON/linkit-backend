@@ -26,7 +26,7 @@ public class Profile {
 
     // 전체 프로필 완성도 값 (%) 직결
     @Column(nullable = false)
-    private int perfection;
+    private int completion;
 
     @Column(name = "introduction")
     private String introduction;
@@ -57,12 +57,12 @@ public class Profile {
     public Profile(
             final Long id,
             final Member member,
-            final int perfection,
+            final int completion,
             final String introduction
     ) {
         this.id = id;
         this.member = member;
-        this.perfection = perfection;
+        this.completion = completion;
         this.introduction = introduction;
         this.isIntroduction = false;
         this.isSkill = false;
@@ -75,13 +75,34 @@ public class Profile {
 
     public Profile(
             final Member member,
-            final int perfection,
+            final int completion,
             final String introduction
     ) {
-        this(null, member, perfection, introduction);
+        this(null, member, completion, introduction);
     }
 
-    public void update(final ProfileUpdateRequest updateRequest) {
-        this.introduction = updateRequest.getIntroduction();
+    public void update(final ProfileUpdateRequest updateRequest) {this.introduction = updateRequest.getIntroduction();}
+    public void deleteIntroduction() {this.introduction = null;}
+    public void addPerfectionSeven() {this.completion += 7;}
+    public void cancelPerfectionSeven() {this.completion -= 7;}
+    public void addPerfectionTwenty() { this.completion += 20; }
+    public void cancelPerfectionTwenty() {this.completion -= 20;}
+
+    // 등록 또는 삭제에서만 호출
+    public void updateIsIntroduction(final Boolean isIntroduction) {
+        this.isIntroduction = isIntroduction;
+        if (isIntroduction) {
+            addPerfectionTwenty();
+        } else {
+            cancelPerfectionSeven();
+        }
     }
+
+    public void updateIsProfileTeamBuildingField(final Boolean isProfileTeamBuildingField) {
+        this.isProfileTeamBuildingField = isProfileTeamBuildingField;
+
+    }
+
+
+
 }

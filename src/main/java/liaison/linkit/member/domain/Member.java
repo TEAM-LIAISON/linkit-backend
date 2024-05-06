@@ -76,11 +76,11 @@ public class Member {
         this(null, socialLoginId, email, memberBasicInform);
     }
 
-    public void openPermission(final Boolean isOpen) {
-        this.memberProfileType = MemberProfileType.openPermission(isOpen);
+    public void openAndClosePermission(final Boolean isOpen) {
+        this.memberProfileType = MemberProfileType.openAndClosePermission(isOpen);
     }
 
-    public void changePermission(final Boolean isMatching) {
-        this.memberProfileType = MemberProfileType.changePermission(isMatching);
+    public void changeAndOpenPermission(final Boolean isMatching) {
+        this.memberProfileType = MemberProfileType.changeAndOpenPermission(isMatching);
     }
 }

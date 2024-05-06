@@ -167,7 +167,7 @@ class ProfileControllerTest extends ControllerTest {
     void deleteProfileIntroduction() throws Exception {
         // given
         makeProfile();
-        doNothing().when(profileService).delete(anyLong());
+        doNothing().when(profileService).deleteIntroduction(anyLong());
 
         // when
         final ResultActions resultActions = performDeleteRequest();
