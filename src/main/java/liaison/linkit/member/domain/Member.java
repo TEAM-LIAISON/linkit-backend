@@ -2,7 +2,7 @@ package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.type.ProfileType;
+import liaison.linkit.member.domain.type.MemberProfileType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static liaison.linkit.member.domain.MemberState.ACTIVE;
-import static liaison.linkit.profile.domain.type.ProfileType.NO_PERMISSION;
+import static liaison.linkit.member.domain.type.MemberProfileType.NO_PERMISSION;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -41,7 +41,7 @@ public class Member {
 
     @Column(nullable = false)
     @Enumerated(value = STRING)
-    private ProfileType profileType;
+    private MemberProfileType memberProfileType;
 
     @CreatedDate
     @Column(updatable = false)
@@ -65,7 +65,7 @@ public class Member {
         this.id = id;
         this.socialLoginId = socialLoginId;
         this.email = email;
-        this.profileType = NO_PERMISSION;
+        this.memberProfileType = NO_PERMISSION;
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
@@ -77,10 +77,10 @@ public class Member {
     }
 
     public void openPermission(final Boolean isOpen) {
-        this.profileType = ProfileType.openPermission(isOpen);
+        this.memberProfileType = MemberProfileType.openPermission(isOpen);
     }
 
     public void changePermission(final Boolean isMatching) {
-        this.profileType = ProfileType.changePermission(isMatching);
+        this.memberProfileType = MemberProfileType.changePermission(isMatching);
     }
 }

@@ -31,6 +31,28 @@ public class Profile {
     @Column(name = "introduction")
     private String introduction;
 
+    // 기입 완료 시 참으로 변환
+    @Column(nullable = false)
+    private boolean isIntroduction;
+
+    @Column(nullable = false)
+    private boolean isSkill;
+
+    @Column(nullable = false)
+    private boolean isProfileTeamBuildingField;
+
+    @Column(nullable = false)
+    private boolean isAntecedents;
+
+    @Column(nullable = false)
+    private boolean isEducation;
+
+    @Column(nullable = false)
+    private boolean isAwards;
+
+    @Column(nullable = false)
+    private boolean isAttach;
+
     // 생성자
     public Profile(
             final Long id,
@@ -42,6 +64,13 @@ public class Profile {
         this.member = member;
         this.perfection = perfection;
         this.introduction = introduction;
+        this.isIntroduction = false;
+        this.isSkill = false;
+        this.isProfileTeamBuildingField = false;
+        this.isAntecedents = false;
+        this.isEducation = false;
+        this.isAwards = false;
+        this.isAttach = false;
     }
 
     public Profile(
