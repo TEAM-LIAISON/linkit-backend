@@ -37,11 +37,7 @@ public class ProfileTeamBuildingFieldService {
     }
 
     public void save(final Long memberId, final ProfileTeamBuildingCreateRequest createRequest) {
-        log.info("member.id={}", memberId);
-
         final Profile profile = profileRepository.findByMemberId(memberId);
-
-        log.info("profile.id={}", profile.getId());
 
         final List<TeamBuildingField> teamBuildingFields = teamBuildingRepository
                 .findTeamBuildingFieldsByFieldNames(createRequest.getTeamBuildingFieldNames());
@@ -53,6 +49,8 @@ public class ProfileTeamBuildingFieldService {
         profileTeamBuildingRepository.saveAll(profileTeamBuildingFields);
 
         profile.updateIsProfileTeamBuildingField(true);
+        profile.updateMemberProfileTypeByCompletion();
+
         profileRepository.save(profile);
     }
 

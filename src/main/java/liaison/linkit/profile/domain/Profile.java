@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.domain.type.MemberProfileType;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -94,15 +95,48 @@ public class Profile {
         if (isIntroduction) {
             addPerfectionTwenty();
         } else {
-            cancelPerfectionSeven();
+            cancelPerfectionTwenty();
         }
     }
 
     public void updateIsProfileTeamBuildingField(final Boolean isProfileTeamBuildingField) {
         this.isProfileTeamBuildingField = isProfileTeamBuildingField;
-
+        if (isProfileTeamBuildingField) {
+            addPerfectionSeven();
+        } else {
+            cancelPerfectionSeven();
+        }
     }
 
+    public void updateMemberProfileTypeByCompletion() {
+        // 완성도 값을 호출한다.
+        final int presentCompletion = this.getCompletion();
+        // 사용자의 권한 상태를 호출한다.
+        final MemberProfileType memberProfileType = this.getMember().getMemberProfileType();
 
+        if (presentCompletion >= 0 && presentCompletion < 50) {
+            if (MemberProfileType.NO_PERMISSION.equals(memberProfileType)) {
+                // 아무 조치를 하지 않는다.
+                return;
+            } else {
+                // 같지 않으면 기존에 프로필 열람 및 매칭 요청 권한이 부여된 상태이다.
+                // false 전달하여 NO_PERMISSION 상태로 변경을 진행한다.
+                this.getMember().openAndClosePermission(false);
+            }
+        } else if (presentCompletion >= 50 && presentCompletion < 80) {
+            if (MemberProfileType.PROFILE_OPEN_PERMISSION.equals(memberProfileType)) {
+                return;
+            } else {
+                // true 전달하여 PROFILE_OPEN_PERMISSION 상태로 변경한다.
+                this.getMember().openAndClosePermission(true);
+            }
+        } else {
+            if (MemberProfileType.MATCHING_PERMISSION.equals(memberProfileType)) {
+                return;
+            } else {
+                this.getMember().changeAndOpenPermission(true);
+            }
+        }
+    }
 
 }
