@@ -2,6 +2,7 @@ package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.type.ProfileType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static liaison.linkit.member.domain.MemberState.ACTIVE;
+import static liaison.linkit.profile.domain.type.ProfileType.NO_PERMISSION;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -37,6 +39,10 @@ public class Member {
     @Enumerated(value = STRING)
     private MemberState status;
 
+    @Column(nullable = false)
+    @Enumerated(value = STRING)
+    private ProfileType profileType;
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -57,8 +63,9 @@ public class Member {
             final MemberBasicInform memberBasicInform
     ) {
         this.id = id;
-        this.email = email;
         this.socialLoginId = socialLoginId;
+        this.email = email;
+        this.profileType = NO_PERMISSION;
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
@@ -67,5 +74,13 @@ public class Member {
 
     public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform) {
         this(null, socialLoginId, email, memberBasicInform);
+    }
+
+    public void openPermission(final Boolean isOpen) {
+        this.profileType = ProfileType.openPermission(isOpen);
+    }
+
+    public void changePermission(final Boolean isMatching) {
+        this.profileType = ProfileType.changePermission(isMatching);
     }
 }
