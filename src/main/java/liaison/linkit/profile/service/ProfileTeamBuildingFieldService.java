@@ -47,8 +47,7 @@ public class ProfileTeamBuildingFieldService {
                 .toList();
 
         profileTeamBuildingRepository.saveAll(profileTeamBuildingFields);
-
-
+        profile.updateIsProfileTeamBuildingField(true);
         profileRepository.save(profile);
     }
 

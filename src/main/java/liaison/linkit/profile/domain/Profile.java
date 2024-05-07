@@ -92,17 +92,17 @@ public class Profile {
     // Default 항목 3개 관리 (isSkill, isProfileTeamBuildingField, isEducation)
     public void updateIsSkill(final Boolean isSkill) {
         this.isSkill = isSkill;
-
+        checkAndUpdateByDefault();
     }
 
     public void updateIsProfileTeamBuildingField(final Boolean isProfileTeamBuildingField) {
         this.isProfileTeamBuildingField = isProfileTeamBuildingField;
-
+        checkAndUpdateByDefault();
     }
 
     public void updateIsEducation(final Boolean isEducation) {
         this.isEducation = isEducation;
-
+        checkAndUpdateByDefault();
     }
 
     // 자기소개 등록 또는 삭제에서만 호출
@@ -175,4 +175,14 @@ public class Profile {
         }
     }
 
+    private void checkAndUpdateByDefault() {
+        if (this.isSkill && this.isProfileTeamBuildingField && this.isEducation) {
+            // 전부 참인 경우
+            this.completion = 59;
+            this.getMember().openAndClosePermission(true);
+        } else {
+            this.completion = 0;
+            this.getMember().openAndClosePermission(false);
+        }
+    }
 }
