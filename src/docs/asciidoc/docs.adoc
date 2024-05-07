@@ -115,7 +115,7 @@ include::{snippets}/member-controller-test/get-member-basic-inform/request-cooki
 include::{snippets}/member-controller-test/get-member-basic-inform/http-response.adoc[]
 include::{snippets}/member-controller-test/get-member-basic-inform/response-fields.adoc[]
 
-=== 멤버 이메일 정보 조회
+=== 멤버 이메일 정보 조회 (GET /members/email)
 
 ==== 요청
 include::{snippets}/member-controller-test/get-member-email/http-request.adoc[]
@@ -130,7 +130,7 @@ include::{snippets}/member-controller-test/get-member-email/response-fields.adoc
 
 == 미니 프로필 API
 
-=== 미니 프로필 조회
+=== 미니 프로필 조회 (GET /mini-profile)
 
 ==== 요청
 include::{snippets}/mini-profile-controller-test/get-mini-profile/http-request.adoc[]
@@ -143,7 +143,7 @@ include::{snippets}/mini-profile-controller-test/get-mini-profile/request-cookie
 include::{snippets}/mini-profile-controller-test/get-mini-profile/http-response.adoc[]
 include::{snippets}/mini-profile-controller-test/get-mini-profile/response-fields.adoc[]
 
-=== 미니 프로필 생성
+=== 미니 프로필 생성 (POST /mini-profile)
 
 ==== 요청
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
@@ -156,7 +156,9 @@ include::{snippets}/mini-profile-controller-test/create-mini-profile/request-coo
 ==== 응답
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-response.adoc[]
 
-=== 미니 프로필 수정
+=== 미니 프로필 수정 (PUT /mini-profile)
+
+==== 요청
 include::{snippets}/mini-profile-controller-test/update-mini-profile/http-request.adoc[]
 요청 헤더
 include::{snippets}/mini-profile-controller-test/update-mini-profile/request-headers.adoc[]
@@ -166,7 +168,7 @@ include::{snippets}/mini-profile-controller-test/update-mini-profile/request-coo
 ==== 응답
 include::{snippets}/mini-profile-controller-test/update-mini-profile/http-response.adoc[]
 
-=== 미니 프로필 삭제
+=== 미니 프로필 삭제 (DELETE /mini-profile)
 
 ==== 요청
 include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-request.adoc[]
@@ -180,7 +182,7 @@ include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-respon
 
 == 프로필 API
 
-=== 프로필 자기소개 항목 조회
+=== 프로필 자기소개 항목 조회 (GET /profile)
 
 ==== 요청
 include::{snippets}/profile-controller-test/get-profile-introduction/http-request.adoc[]
@@ -193,7 +195,7 @@ include::{snippets}/profile-controller-test/get-profile-introduction/request-coo
 include::{snippets}/profile-controller-test/get-profile-introduction/http-response.adoc[]
 include::{snippets}/profile-controller-test/get-profile-introduction/response-fields.adoc[]
 
-=== 프로필 자기소개 항목 수정
+=== 프로필 자기소개 항목 수정 (PATCH /profile)
 
 ==== 요청
 include::{snippets}/profile-controller-test/update-profile-introduction/http-request.adoc[]
@@ -203,7 +205,7 @@ include::{snippets}/profile-controller-test/update-profile-introduction/request-
 요청 쿠키
 include::{snippets}/profile-controller-test/update-profile-introduction/request-cookies.adoc[]
 
-=== 프로필 자기소개 항목 삭제
+=== 프로필 자기소개 항목 삭제 (DELETE /profile)
 
 ==== 요청
 include::{snippets}/profile-controller-test/delete-profile-introduction/http-request.adoc[]
@@ -216,7 +218,9 @@ include::{snippets}/profile-controller-test/delete-profile-introduction/request-
 
 == 희망 팀빌딩 분야 항목 API
 
-=== 희망 팀빌딩 분야 항목 조회
+=== 희망 팀빌딩 분야 항목 조회 (GET /profile_team_building_field)
+
+==== 요청
 include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/http-request.adoc[]
 요청 헤더
 include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/request-headers.adoc[]
@@ -227,7 +231,7 @@ include::{snippets}/profile-team-building-field-controller-test/get-profile-team
 include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/http-response.adoc[]
 include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/response-fields.adoc[]
 
-=== 희망 팀빌딩 분야 항목 생성
+=== 희망 팀빌딩 분야 항목 생성 (POST /profile_team_building_field)
 
 ==== 요청
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
@@ -242,7 +246,7 @@ include::{snippets}/profile-team-building-field-controller-test/create-profile-t
 
 == 이력 항목 API
 
-=== 단일 이력 항목 조회
+=== 단일 이력 항목 조회 (GET /antecedents)
 
 ==== 요청
 include::{snippets}/antecedents-controller-test/get-antecedents/http-request.adoc[]
@@ -255,7 +259,7 @@ include::{snippets}/antecedents-controller-test/get-antecedents/request-cookies.
 include::{snippets}/antecedents-controller-test/get-antecedents/http-response.adoc[]
 include::{snippets}/antecedents-controller-test/get-antecedents/response-fields.adoc[]
 
-=== 단일 이력 항목 생성
+=== 단일 이력 항목 생성 (POST /antecedents)
 
 ==== 요청
 include::{snippets}/antecedents-controller-test/create-antecedents/http-request.adoc[]
@@ -268,7 +272,7 @@ include::{snippets}/antecedents-controller-test/create-antecedents/request-cooki
 ==== 응답
 include::{snippets}/antecedents-controller-test/create-antecedents/http-response.adoc[]
 
-=== 단일 이력 항목 수정
+=== 단일 이력 항목 수정 (PUT /antecedents)
 
 ==== 요청
 include::{snippets}/antecedents-controller-test/update-antecedents/http-request.adoc[]
@@ -281,7 +285,7 @@ include::{snippets}/antecedents-controller-test/update-antecedents/request-cooki
 ==== 응답
 include::{snippets}/antecedents-controller-test/update-antecedents/http-response.adoc[]
 
-=== 단일 이력 항목 삭제
+=== 단일 이력 항목 삭제 (DELETE /antecedents)
 
 ==== 요청
 include::{snippets}/antecedents-controller-test/delete-antecedents/http-request.adoc[]
@@ -297,7 +301,7 @@ include::{snippets}/antecedents-controller-test/delete-antecedents/http-response
 
 == 수상 항목 API
 
-=== 단일 수상 항목 조회
+=== 단일 수상 항목 조회 (GET /awards)
 
 ==== 요청
 include::{snippets}/awards-controller-test/get-awards/http-request.adoc[]
@@ -310,7 +314,7 @@ include::{snippets}/awards-controller-test/get-awards/request-cookies.adoc[]
 include::{snippets}/awards-controller-test/get-awards/http-response.adoc[]
 include::{snippets}/awards-controller-test/get-awards/response-fields.adoc[]
 
-=== 단일 수상 항목 생성
+=== 단일 수상 항목 생성 (POST /awards)
 
 ==== 요청
 include::{snippets}/awards-controller-test/create-awards/http-request.adoc[]
@@ -320,7 +324,7 @@ include::{snippets}/awards-controller-test/create-awards/request-headers.adoc[]
 요청 쿠키
 include::{snippets}/awards-controller-test/create-awards/request-cookies.adoc[]
 
-=== 단일 수상 항목 수정
+=== 단일 수상 항목 수정 (PUT /awards)
 
 ==== 요청
 include::{snippets}/awards-controller-test/update-awards/http-request.adoc[]
@@ -333,7 +337,7 @@ include::{snippets}/awards-controller-test/update-awards/request-cookies.adoc[]
 ==== 응답
 include::{snippets}/awards-controller-test/update-awards/http-response.adoc[]
 
-=== 단일 수상 항목 삭제
+=== 단일 수상 항목 삭제 (DELETE /awards)
 ==== 요청
 include::{snippets}/awards-controller-test/delete-awards/http-request.adoc[]
 요청 헤더
