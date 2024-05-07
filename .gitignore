@@ -39,5 +39,8 @@ out/
 ### Ignore .DS_Store ###
 **/.DS_Store
 
+### RestDocs ###
+src/main/resources/static/docs/
+
 ### application.yml ###
 src/main/resources/*.yml
