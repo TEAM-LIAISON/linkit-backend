@@ -3,6 +3,7 @@ package liaison.linkit.login.service;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.login.domain.*;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
+import liaison.linkit.login.dto.MemberTokensAndIsBasicInform;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.member.domain.Member;
@@ -31,17 +32,22 @@ public class LoginService {
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
 
-    public MemberTokens login(final String providerName, final String code) {
+    public MemberTokensAndIsBasicInform login(final String providerName, final String code) {
+
         final OauthProvider provider = oauthProviders.mapping(providerName);
         final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
         final Member member = findOrCreateMember(
                 oauthUserInfo.getSocialLoginId(),
                 oauthUserInfo.getEmail()
         );
+        final boolean isMemberBasicInform = member.getIsMemberBasicInform();
         final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
         final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
         refreshTokenRepository.save(savedRefreshToken);
-        return memberTokens;
+
+        return new MemberTokensAndIsBasicInform(
+                memberTokens.getAccessToken(), memberTokens.getRefreshToken(), isMemberBasicInform
+        );
     }
 
     private Member findOrCreateMember(final String socialLoginId, final String email) {
@@ -82,5 +88,15 @@ public class LoginService {
     // 수정 필요
     public void deleteAccount(final Long memberId) {
         memberRepository.deleteByMemberId(memberId);
+    }
+
+    public boolean getIsMemberBasicInform(final String providerName, final String code) {
+        final OauthProvider provider = oauthProviders.mapping(providerName);
+        final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
+        final Member member = findOrCreateMember(
+                oauthUserInfo.getSocialLoginId(),
+                oauthUserInfo.getEmail()
+        );
+        return member.getIsMemberBasicInform();
     }
 }

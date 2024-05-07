@@ -6,6 +6,8 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.login.dto.AccessTokenResponse;
 import liaison.linkit.login.dto.LoginRequest;
+import liaison.linkit.login.dto.LoginResponse;
+import liaison.linkit.login.dto.MemberTokensAndIsBasicInform;
 import liaison.linkit.login.service.LoginService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,9 +62,10 @@ public class LoginControllerTest extends ControllerTest {
         // given
         final LoginRequest loginRequest = new LoginRequest("code");
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, ACCESS_TOKEN);
+        final MemberTokensAndIsBasicInform memberTokensAndIsBasicInform = new MemberTokensAndIsBasicInform(ACCESS_TOKEN, REFRESH_TOKEN, false);
 
         when(loginService.login(anyString(), anyString()))
-                .thenReturn(memberTokens);
+                .thenReturn(memberTokensAndIsBasicInform);
 
         final ResultActions resultActions = mockMvc.perform(post("/login/{provider}", GOOGLE_PROVIDER)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -87,16 +90,19 @@ public class LoginControllerTest extends ControllerTest {
                                         fieldWithPath("accessToken")
                                                 .type(JsonFieldType.STRING)
                                                 .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
+                                                .attributes(field("constraint", "문자열(jwt)")),
+                                        fieldWithPath("memberBasicInform")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("기본 정보 기입 여부")
+                                                .attributes(field("constraint", "boolean 값"))
                                 )
                         ))
                 .andReturn();
 
-        final AccessTokenResponse expected = new AccessTokenResponse(memberTokens.getAccessToken());
-
-        final AccessTokenResponse actual = objectMapper.readValue(
+        final LoginResponse expected = new LoginResponse(memberTokens.getAccessToken(), false);
+        final LoginResponse actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
-                AccessTokenResponse.class
+                LoginResponse.class
         );
 
         // then

@@ -89,7 +89,7 @@ include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 
 == 멤버 API
 
-=== 멤버 기본 정보 생성
+=== 멤버 기본 정보 생성 (POST /members/basic-inform)
 
 ==== 요청
 include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
@@ -102,7 +102,7 @@ include::{snippets}/member-controller-test/create-member-basic-inform/request-co
 ==== 응답
 include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
 
-=== 멤버 기본 정보 조회
+=== 멤버 기본 정보 조회 (GET /members/basic-inform)
 
 ==== 요청
 include::{snippets}/member-controller-test/get-member-basic-inform/http-request.adoc[]

@@ -4,9 +4,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.login.dto.AccessTokenResponse;
 import liaison.linkit.login.dto.LoginRequest;
+import liaison.linkit.login.dto.LoginResponse;
+import liaison.linkit.login.dto.MemberTokensAndIsBasicInform;
 import liaison.linkit.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -26,13 +27,13 @@ public class LoginController {
 
     // 로그인
     @PostMapping("/login/{provider}")
-    public ResponseEntity<AccessTokenResponse> login(
+    public ResponseEntity<LoginResponse> login(
             @PathVariable final String provider,
             @RequestBody final LoginRequest loginRequest,
             final HttpServletResponse response
     ){
-        final MemberTokens memberTokens = loginService.login(provider, loginRequest.getCode());
-        final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokens.getRefreshToken())
+        final MemberTokensAndIsBasicInform memberTokensAndIsBasicInform = loginService.login(provider, loginRequest.getCode());
+        final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokensAndIsBasicInform.getRefreshToken())
                 .maxAge(COOKIE_AGE_SECONDS)
                 .sameSite("None")
                 .secure(true)
@@ -40,7 +41,13 @@ public class LoginController {
                 .path("/")
                 .build();
         response.addHeader(SET_COOKIE, cookie.toString());
-        return ResponseEntity.status(CREATED).body(new AccessTokenResponse(memberTokens.getAccessToken()));
+
+        return ResponseEntity.status(CREATED).body(
+                new LoginResponse(
+                        memberTokensAndIsBasicInform.getAccessToken(),
+                        memberTokensAndIsBasicInform.getIsMemberBasicInform()
+                )
+        );
     }
 
     // 토큰 재발행
