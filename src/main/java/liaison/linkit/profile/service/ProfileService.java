@@ -38,14 +38,26 @@ public class ProfileService {
         final Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
 
+        // 사용자가 입력한 정보로 업데이트한다.
         profile.update(updateRequest);
+
+        // 저장되었으므로, 완성도 상태를 변경한다.
+        profile.updateIsIntroduction(true);
+
+        // 상태 판단 함수가 필요하다
+        profile.updateMemberProfileTypeByCompletion();
+
+        // DB에 저장한다.
         profileRepository.save(profile);
     }
 
-    public void delete(final Long profileId) {
-        if (!profileRepository.existsById(profileId)) {
-            throw new BadRequestException(NOT_FOUND_PROFILE_ID);
-        }
-        profileRepository.deleteById(profileId);
+    public void deleteIntroduction(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
+
+        profile.deleteIntroduction();
+        profile.updateIsIntroduction(false);
+        profileRepository.save(profile);
     }
+
 }

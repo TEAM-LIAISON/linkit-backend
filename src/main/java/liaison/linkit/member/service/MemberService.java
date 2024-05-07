@@ -25,7 +25,6 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Transactional
 @Slf4j
 public class MemberService {
-
     private final MemberRepository memberRepository;
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final MemberRoleRepository memberRoleRepository;
@@ -52,6 +51,9 @@ public class MemberService {
                 memberBasicInformCreateRequest.isMarketingAgree(),
                 member
         );
+
+        member.changeIsMemberBasicInform(true);
+
         memberBasicInformRepository.save(newBasicMemberBasicInform);
     }
 
@@ -73,7 +75,6 @@ public class MemberService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
         return MemberResponse.of(member);
     }
-
 
 //    public void updateBasicMemberInform(final Long memberId, final MemberBasicInformRequest memberBasicInformRequest){
 //       final Member member = memberRepository.findById(memberId)
