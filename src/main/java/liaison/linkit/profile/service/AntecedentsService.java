@@ -35,7 +35,7 @@ public class AntecedentsService {
         }
     }
 
-    public AntecedentsResponse save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest){
+    public void save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest){
         final Profile profile = profileRepository.findByMemberId(memberId);
 
         final Antecedents newAntecedents = Antecedents.of(
@@ -49,8 +49,10 @@ public class AntecedentsService {
                 antecedentsCreateRequest.getAntecedentsDescription()
         );
 
-        final Antecedents antecedents = antecedentsRepository.save(newAntecedents);
-        return getAntecedentsResponse(antecedents);
+        antecedentsRepository.save(newAntecedents);
+
+        profile.updateIsAntecedents(true);
+        profile.updateMemberProfileTypeByCompletion();
     }
 
     @Transactional(readOnly = true)
@@ -73,18 +75,32 @@ public class AntecedentsService {
         return AntecedentsResponse.of(antecedents);
     }
 
-    public void update(final Long antecedentsId, final AntecedentsUpdateRequest antecedentsUpdateRequest) {
+    public void update(final Long memberId, final AntecedentsUpdateRequest antecedentsUpdateRequest) {
+        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Long antecedentsId = validateAntecedentsByMember(memberId);
+
         final Antecedents antecedents = antecedentsRepository.findById(antecedentsId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_ID));
 
+        // 입력에 대한 제약은 프론트에서 처리해준다.
+        // 들어오는 값은 Not null
         antecedents.update(antecedentsUpdateRequest);
         antecedentsRepository.save(antecedents);
+
+        profile.updateMemberProfileTypeByCompletion();
     }
 
-    public void delete(final Long antecedentsId) {
+    public void delete(final Long memberId) {
+        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Long antecedentsId = validateAntecedentsByMember(memberId);
+
         if (!antecedentsRepository.existsById(antecedentsId)) {
             throw new BadRequestException(NOT_FOUND_ANTECEDENTS_ID);
         }
+
         antecedentsRepository.deleteById(antecedentsId);
+
+        profile.updateIsAntecedents(false);
+        profile.updateMemberProfileTypeByCompletion();
     }
 }

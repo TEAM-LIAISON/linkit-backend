@@ -145,8 +145,10 @@ public class Profile {
     }
 
     public void updateMemberProfileTypeByCompletion() {
+
         // 완성도 값을 호출한다.
         final int presentCompletion = this.getCompletion();
+
         // 사용자의 권한 상태를 호출한다.
         final MemberProfileType memberProfileType = this.getMember().getMemberProfileType();
 
@@ -175,6 +177,7 @@ public class Profile {
         }
     }
 
+    // Default 항목에 대한 검사 진행
     private void checkAndUpdateByDefault() {
         if (this.isSkill && this.isProfileTeamBuildingField && this.isEducation) {
             // 전부 참인 경우

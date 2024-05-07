@@ -9,10 +9,10 @@ import liaison.linkit.profile.dto.request.AntecedentsUpdateRequest;
 import liaison.linkit.profile.dto.response.AntecedentsResponse;
 import liaison.linkit.profile.service.AntecedentsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -36,8 +36,8 @@ public class AntecedentsController {
             @Auth final Accessor accessor,
             @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest
     ){
-        final AntecedentsResponse antecedentsResponse = antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
-        return ResponseEntity.ok().body(antecedentsResponse);
+        antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // 이력 1개 조회 요청
@@ -58,17 +58,17 @@ public class AntecedentsController {
         @Auth final Accessor accessor,
         @RequestBody @Valid final AntecedentsUpdateRequest antecedentsUpdateRequest
     ){
-        Long antecedentsId = antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
-        antecedentsService.update(antecedentsId, antecedentsUpdateRequest);
+        antecedentsService.update(accessor.getMemberId(), antecedentsUpdateRequest);
         return ResponseEntity.noContent().build();
     }
 
-    // 이력 1개 수정 요청
+    // 이력 1개 삭제 요청
     @DeleteMapping
     @MemberOnly
     public ResponseEntity<Void> deleteAntecedents(@Auth final Accessor accessor) {
         Long antecedentsId = antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
         antecedentsService.delete(antecedentsId);
+
         return ResponseEntity.noContent().build();
     }
 }

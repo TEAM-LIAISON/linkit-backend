@@ -50,8 +50,10 @@ public class EducationService {
                 educationCreateRequest.getMajor()
         );
         final Education education = educationRepository.save(newEducation);
-        // 학력 항목이 기입되었음을 나타냄
+
+        // 학력 항목이 기입되었음을 나타냄 -> true 전달
         profile.updateIsEducation(true);
+
         return getEducationResponse(education);
     }
 

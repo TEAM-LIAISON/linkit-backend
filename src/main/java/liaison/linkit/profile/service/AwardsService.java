@@ -36,7 +36,7 @@ public class AwardsService {
     }
 
     // 회원에 대해서 수상 항목을 저장하는 메서드
-    public AwardsResponse save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
+    public void save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
 
         final Awards newAwards = Awards.of(
@@ -48,9 +48,11 @@ public class AwardsService {
                 awardsCreateRequest.getAwardsMonth(),
                 awardsCreateRequest.getAwardsDescription()
         );
-        final Awards awards = awardsRepository.save(newAwards);
-        return getAwardsResponse(awards);
-
+        awardsRepository.save(newAwards);
+        // 수상 이력이 등록되었음으로 변경
+        profile.updateIsAwards(true);
+        // 접근 권한 판단 함수 실행
+        profile.updateMemberProfileTypeByCompletion();
     }
 
     // 해당 회원의 모든 수상 항목을 조회하는 메서드 / 수정 이전 화면에서 필요
@@ -76,18 +78,29 @@ public class AwardsService {
         return AwardsResponse.personalAwards(awards);
     }
 
-    public void update(final Long awardsId, final AwardsUpdateRequest awardsUpdateRequest){
+    public void update(final Long memberId, final AwardsUpdateRequest awardsUpdateRequest){
+        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Long awardsId = validateAwardsByMember(memberId);
+
         final Awards awards = awardsRepository.findById(awardsId)
                 .orElseThrow(() ->  new BadRequestException(NOT_FOUND_AWARDS_ID));
 
         awards.update(awardsUpdateRequest);
         awardsRepository.save(awards);
+
+        profile.updateMemberProfileTypeByCompletion();
     }
 
-    public void delete(final Long awardsId) {
+    public void delete(final Long memberId) {
+        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Long awardsId = validateAwardsByMember(memberId);
+
         if(!awardsRepository.existsById(awardsId)){
             throw new BadRequestException(NOT_FOUND_AWARDS_ID);
         }
         awardsRepository.deleteById(awardsId);
+
+        profile.updateIsAwards(false);
+        profile.updateMemberProfileTypeByCompletion();
     }
 }

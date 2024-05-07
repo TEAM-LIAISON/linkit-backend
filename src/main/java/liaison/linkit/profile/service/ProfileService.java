@@ -44,7 +44,7 @@ public class ProfileService {
         // 저장되었으므로, 완성도 상태를 변경한다.
         profile.updateIsIntroduction(true);
 
-        // 상태 판단 함수가 필요하다
+        // 상태 판단 함수가 필요하다 -> +- 20에 따른 상태 판단 진행
         profile.updateMemberProfileTypeByCompletion();
 
         // DB에 저장한다.
@@ -57,6 +57,8 @@ public class ProfileService {
 
         profile.deleteIntroduction();
         profile.updateIsIntroduction(false);
+        profile.updateMemberProfileTypeByCompletion();
+
         profileRepository.save(profile);
     }
 
