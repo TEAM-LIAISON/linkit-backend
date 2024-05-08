@@ -20,7 +20,7 @@ public class ProfileController {
 
     // 프로필 자기소개에 해당하는 부분은 생성 과정이 필요하지 않다.
 
-    @GetMapping
+    @GetMapping("/introduction")
     @MemberOnly
     public ResponseEntity<ProfileResponse> getProfiles(
             @Auth final Accessor accessor
@@ -30,7 +30,7 @@ public class ProfileController {
         return ResponseEntity.ok().body(profileResponse);
     }
 
-    @PatchMapping
+    @PatchMapping("/introduction")
     @MemberOnly
     public ResponseEntity<Void> updateProfileIntroduction(
             @Auth final Accessor accessor,
@@ -50,4 +50,6 @@ public class ProfileController {
         profileService.deleteIntroduction(profileId);
         return ResponseEntity.noContent().build();
     }
+
+    // 마이페이지 컨트롤러
 }

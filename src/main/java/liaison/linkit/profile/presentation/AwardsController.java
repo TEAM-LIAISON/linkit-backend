@@ -9,6 +9,7 @@ import liaison.linkit.profile.dto.request.AwardsUpdateRequest;
 import liaison.linkit.profile.dto.response.AwardsResponse;
 import liaison.linkit.profile.service.AwardsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +33,12 @@ public class AwardsController {
     // 이력서 수상 항목 1개 생성
     @PostMapping
     @MemberOnly
-    public ResponseEntity<AwardsResponse> createAwards(
+    public ResponseEntity<Void> createAwards(
             @Auth final Accessor accessor,
             @RequestBody @Valid AwardsCreateRequest awardsCreateRequest
     ){
-        final AwardsResponse awardsResponse = awardsService.save(accessor.getMemberId(), awardsCreateRequest);
-        return ResponseEntity.ok().body(awardsResponse);
+        awardsService.save(accessor.getMemberId(), awardsCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // 이력서 수상 항목 1개 조회
@@ -58,8 +59,7 @@ public class AwardsController {
             @Auth final Accessor accessor,
             @RequestBody @Valid final AwardsUpdateRequest awardsUpdateRequest
     ) {
-        Long awardsId = awardsService.validateAwardsByMember(accessor.getMemberId());
-        awardsService.update(awardsId, awardsUpdateRequest);
+        awardsService.update(accessor.getMemberId(), awardsUpdateRequest);
         return ResponseEntity.noContent().build();
     }
 
@@ -67,8 +67,7 @@ public class AwardsController {
     @DeleteMapping
     @MemberOnly
     public ResponseEntity<Void> deleteAwards(@Auth final Accessor accessor){
-        Long awardsId = awardsService.validateAwardsByMember(accessor.getMemberId());
-        awardsService.delete(awardsId);
+        awardsService.delete(accessor.getMemberId());
         return ResponseEntity.noContent().build();
     }
 
