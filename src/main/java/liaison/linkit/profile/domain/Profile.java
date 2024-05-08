@@ -37,7 +37,7 @@ public class Profile {
     private boolean isIntroduction;
 
     @Column(nullable = false)
-    private boolean isSkill;
+    private boolean isProfileSkill;
 
     @Column(nullable = false)
     private boolean isProfileTeamBuildingField;
@@ -66,7 +66,7 @@ public class Profile {
         this.completion = completion;
         this.introduction = introduction;
         this.isIntroduction = false;
-        this.isSkill = false;
+        this.isProfileSkill = false;
         this.isProfileTeamBuildingField = false;
         this.isAntecedents = false;
         this.isEducation = false;
@@ -90,10 +90,6 @@ public class Profile {
     public void cancelPerfectionTwenty() {this.completion -= 20;}
 
     // Default 항목 3개 관리 (isSkill, isProfileTeamBuildingField, isEducation)
-    public void updateIsSkill(final Boolean isSkill) {
-        this.isSkill = isSkill;
-        checkAndUpdateByDefault();
-    }
 
     public void updateIsProfileTeamBuildingField(final Boolean isProfileTeamBuildingField) {
         this.isProfileTeamBuildingField = isProfileTeamBuildingField;
@@ -102,6 +98,11 @@ public class Profile {
 
     public void updateIsEducation(final Boolean isEducation) {
         this.isEducation = isEducation;
+        checkAndUpdateByDefault();
+    }
+
+    public void updateIsProfileSkill(final boolean isProfileSkill) {
+        this.isProfileSkill = isProfileSkill;
         checkAndUpdateByDefault();
     }
 
@@ -114,6 +115,8 @@ public class Profile {
             cancelPerfectionTwenty();
         }
     }
+
+
 
     public void updateIsAntecedents(final Boolean isAntecedents) {
         this.isAntecedents = isAntecedents;
@@ -179,7 +182,7 @@ public class Profile {
 
     // Default 항목에 대한 검사 진행
     private void checkAndUpdateByDefault() {
-        if (this.isSkill && this.isProfileTeamBuildingField && this.isEducation) {
+        if (this.isProfileSkill && this.isProfileTeamBuildingField && this.isEducation) {
             // 전부 참인 경우
             this.completion = 59;
             this.getMember().openAndClosePermission(true);
@@ -188,4 +191,6 @@ public class Profile {
             this.getMember().openAndClosePermission(false);
         }
     }
+
+
 }

@@ -12,8 +12,6 @@ public interface ProfileTeamBuildingRepository extends JpaRepository<ProfileTeam
 
     boolean existsByProfileId(final Long profileId);
 
-     ProfileTeamBuildingField findByProfileId(@Param("profileId") final Long profileId);
-
      @Query("SELECT profileTeamBuilding FROM ProfileTeamBuildingField profileTeamBuilding WHERE profileTeamBuilding.profile.id = :profileId")
     List<ProfileTeamBuildingField> findAllByProfileId(@Param("profileId") final Long profileId);
 }

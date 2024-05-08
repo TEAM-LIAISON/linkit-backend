@@ -9,6 +9,7 @@ import liaison.linkit.profile.dto.request.EducationUpdateRequest;
 import liaison.linkit.profile.dto.response.EducationResponse;
 import liaison.linkit.profile.service.EducationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,12 +32,12 @@ public class EducationController {
     // 교육 항목 1개 생성
     @PostMapping
     @MemberOnly
-    public ResponseEntity<EducationResponse> createEducation(
+    public ResponseEntity<Void> createEducation(
             @Auth final Accessor accessor,
             @RequestBody @Valid EducationCreateRequest educationCreateRequest
     ) {
-        final EducationResponse educationResponse = educationService.save(accessor.getMemberId(), educationCreateRequest);
-        return ResponseEntity.ok().body(educationResponse);
+        educationService.save(accessor.getMemberId(), educationCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // 교육 항목 1개 조회

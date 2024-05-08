@@ -29,7 +29,7 @@ public class ProfileTeamBuildingFieldService {
     private final ProfileTeamBuildingRepository profileTeamBuildingRepository;
     private final TeamBuildingRepository teamBuildingRepository;
 
-    public void validateProfileTeamBuildingFieldByMember(Long memberId) {
+    public void validateProfileTeamBuildingFieldByMember(final Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
         if (!profileTeamBuildingRepository.existsByProfileId(profileId)) {
             throw new AuthException(INVALID_PROFILE_TEAM_BUILDING_WITH_MEMBER);

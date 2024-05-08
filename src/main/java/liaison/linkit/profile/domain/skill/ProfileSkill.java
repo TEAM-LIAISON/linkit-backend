@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain.skill;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class ProfileSkill {
     @Id
