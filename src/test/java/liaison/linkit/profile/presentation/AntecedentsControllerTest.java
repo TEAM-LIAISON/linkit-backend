@@ -198,7 +198,7 @@ public class AntecedentsControllerTest extends ControllerTest {
         final ResultActions resultActions = performPostRequest(antecedentsCreateRequest);
 
         // then
-        resultActions.andExpect(status().isOk())
+        resultActions.andExpect(status().isCreated())
                 .andDo(
                         restDocs.document(
                                 requestCookies(

@@ -23,8 +23,4 @@ public class Attach {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
-
-    // 웹 링크 문자열로 바로 저장
-    @Column(name = "web_link")
-    private String webLink;
 }

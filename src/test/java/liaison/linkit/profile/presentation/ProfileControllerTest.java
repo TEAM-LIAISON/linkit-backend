@@ -64,7 +64,7 @@ class ProfileControllerTest extends ControllerTest {
 
     private ResultActions performGetRequest() throws Exception {
         return mockMvc.perform(
-                get("/profile")
+                get("/profile/introduction")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -72,7 +72,7 @@ class ProfileControllerTest extends ControllerTest {
 
     private ResultActions performPatchRequest(final ProfileUpdateRequest updateRequest) throws Exception {
         return mockMvc.perform(
-                patch("/profile")
+                patch("/profile/introduction")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
