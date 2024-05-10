@@ -66,8 +66,7 @@ public class AntecedentsController {
     @DeleteMapping
     @MemberOnly
     public ResponseEntity<Void> deleteAntecedents(@Auth final Accessor accessor) {
-        Long antecedentsId = antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
-        antecedentsService.delete(antecedentsId);
+        antecedentsService.delete(accessor.getMemberId());
 
         return ResponseEntity.noContent().build();
     }

@@ -1,0 +1,65 @@
+package liaison.linkit.profile.presentation;
+
+import jakarta.validation.Valid;
+import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.MemberOnly;
+import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.profile.dto.request.Attach.AttachUrlCreateRequest;
+import liaison.linkit.profile.dto.request.Attach.AttachUrlUpdateRequest;
+import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
+import liaison.linkit.profile.service.AttachService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/attach")
+public class AttachController {
+
+    private final AttachService attachService;
+
+    // 외부 링크 1개 생성 요청
+    @PostMapping("/url")
+    @MemberOnly
+    public ResponseEntity<Void> createAttachUrl(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid AttachUrlCreateRequest attachUrlCreateRequest
+    ) {
+        attachService.save(accessor.getMemberId(), attachUrlCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 외부 링크 1개 조회 요청
+    @GetMapping("/url")
+    @MemberOnly
+    public ResponseEntity<AttachUrlResponse> getAttachUrl(
+            @Auth final Accessor accessor
+    ) {
+        Long attachUrlId = attachService.validateAttachUrlByMember(accessor.getMemberId());
+        final AttachUrlResponse attachUrlResponse = attachService.getAttachUrlDetail(attachUrlId);
+        return ResponseEntity.ok().body(attachUrlResponse);
+    }
+
+    // 외부 링크 1개 수정 요청
+    @PutMapping("/url")
+    @MemberOnly
+    public ResponseEntity<Void> updateAttachUrl(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid final AttachUrlUpdateRequest updateRequest
+    ) {
+        attachService.update(accessor.getMemberId(), updateRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 외부 링크 1개 삭제 요청
+    @DeleteMapping("/url")
+    @MemberOnly
+    public ResponseEntity<Void> deleteAttachUrl(
+            @Auth Accessor accessor
+    ) {
+        attachService.delete(accessor.getMemberId());
+        return ResponseEntity.noContent().build();
+    }
+}
