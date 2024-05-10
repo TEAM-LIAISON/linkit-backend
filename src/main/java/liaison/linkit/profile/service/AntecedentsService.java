@@ -26,7 +26,7 @@ public class AntecedentsService {
     private final AntecedentsRepository antecedentsRepository;
     private final ProfileRepository profileRepository;
 
-    public Long validateAntecedentsByMember(Long memberId) {
+    public Long validateAntecedentsByMember(final Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
         if (!antecedentsRepository.existsByProfileId(profileId)) {
             throw new AuthException(INVALID_ANTECEDENTS_WITH_MEMBER);

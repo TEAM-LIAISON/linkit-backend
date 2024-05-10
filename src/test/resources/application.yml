@@ -57,6 +57,16 @@ spring:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.H2Dialect
 
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_S3_ACCESS_KEY}
+      secret-key: ${AWS_S3_SECRET_KEY}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
 security:
   jwt:
     secret-key: dGVhbWJ1aWxkaW5nLW1hdGhjaW5nLXNlcnZpY2UtYXMtcGxhdGZvcm0tc3ByaW5nLWJvb3Qtc2VydmVyLXNlcmNyZXQtdG9rZW4=

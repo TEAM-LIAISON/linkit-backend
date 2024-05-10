@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface AntecedentsRepository extends JpaRepository<Antecedents, Long> {
 
-    boolean existsByProfileId(Long profileId);
+    boolean existsByProfileId(final Long profileId);
 
     Antecedents findByProfileId(@Param("profileId") final Long profileId);
 

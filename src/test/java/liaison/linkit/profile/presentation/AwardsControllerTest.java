@@ -191,7 +191,7 @@ class AwardsControllerTest extends ControllerTest {
         final ResultActions resultActions = performPostRequest(awardsCreateRequest);
 
         // then
-        resultActions.andExpect(status().isOk())
+        resultActions.andExpect(status().isCreated())
                 .andDo(
                         restDocs.document(
                                 requestCookies(
