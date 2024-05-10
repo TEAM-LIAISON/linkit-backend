@@ -35,7 +35,12 @@ public enum ExceptionCode {
     // -----문단 구분-----
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
     NULL_IMAGE(5002, "업로드한 이미지 파일이 NULL입니다."),
+    EMPTY_IMAGE(5003, "업로드 가능한 이미지 개수를 초과했습니다."),
+    EXCEED_IMAGE_SIZE(5004, "업로드 가능한 이미지 개수를 초과했습니다."),
+    INVALID_IMAGE_URL(5005, "요청한 이미지 URL의 형식이 잘못되었습니다."),
+    INVALID_IMAGE_PATH(5101, "이미지를 저장할 경로가 올바르지 않습니다."),
     FAIL_IMAGE_NAME_HASH(5102, "이미지 이름을 해싱하는 데 실패했습니다."),
+    INVALID_IMAGE(5103, "올바르지 않은 이미지 파일입니다."),
     // -----문단 구분-----
     INVALID_USER_NAME(8001, "존재하지 않는 사용자입니다."),
     INVALID_PASSWORD(8002, "비밀번호가 일치하지 않습니다."),
