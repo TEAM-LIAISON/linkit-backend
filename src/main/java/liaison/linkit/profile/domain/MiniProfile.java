@@ -25,16 +25,23 @@ public class MiniProfile {
 
     @Column(length = 40)
     private String oneLineIntroduction;
+
     private String interests;
+
     private String firstFreeText;
+
     private String secondFreeText;
+
+//    private String profileImageName;
 
     public static MiniProfile of(
             final Profile profile,
             final String oneLineIntroduction,
             final String interests,
             final String firstFreeText,
-            final String secondFreeText) {
+            final String secondFreeText
+//            final String profileImageName
+    ) {
         return new MiniProfile(
                 null,
                 profile,
@@ -42,6 +49,7 @@ public class MiniProfile {
                 interests,
                 firstFreeText,
                 secondFreeText
+//                profileImageName
         );
     }
 
