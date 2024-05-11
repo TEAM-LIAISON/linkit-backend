@@ -1,4 +1,4 @@
-name: Linkit Dev CI/CD
+name: linkit Dev CI/CD
 
 on:
   pull_request:
@@ -44,7 +44,7 @@ jobs:
           mkdir -p deploy
           cp build/libs/*.jar deploy/application.jar
           cp Procfile deploy/Procfile
-          cp -r .ebextensions-dev deploy/.ebextensions
+          cp -r .ebextensions_dev deploy/.ebextensions
           cp -r .platform deploy/.platform
           cd deploy && zip -r deploy.zip .
 

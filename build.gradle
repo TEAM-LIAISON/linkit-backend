@@ -122,3 +122,7 @@ tasks.register('copySecret', Copy) {
 build {
     dependsOn copyApiDocument
 }
+
+jar  {
+    enabled = false
+}
