@@ -90,9 +90,6 @@ public class AttachService {
         }
 
         attachUrlRepository.deleteById(attachUrlId);
-
-        profile.updateIsAttach(false);
-        profile.updateMemberProfileTypeByCompletion();
     }
 
 

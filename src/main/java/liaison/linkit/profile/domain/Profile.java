@@ -52,7 +52,10 @@ public class Profile {
     private boolean isAwards;
 
     @Column(nullable = false)
-    private boolean isAttach;
+    private boolean isAttachUrl;
+
+    @Column(nullable = false)
+    private boolean isAttachFile;
 
     // 생성자
     public Profile(
@@ -71,7 +74,8 @@ public class Profile {
         this.isAntecedents = false;
         this.isEducation = false;
         this.isAwards = false;
-        this.isAttach = false;
+        this.isAttachUrl = false;
+        this.isAttachFile = false;
     }
 
     public Profile(
@@ -116,8 +120,6 @@ public class Profile {
         }
     }
 
-
-
     public void updateIsAntecedents(final Boolean isAntecedents) {
         this.isAntecedents = isAntecedents;
         if (isAntecedents) {
@@ -138,13 +140,12 @@ public class Profile {
     }
 
     // 첨부 항목 등록 또는 삭제에서만 호출
-    public void updateIsAttach(final Boolean isAttach) {
-        this.isAttach = isAttach;
-        if (isAttach) {
-            addPerfectionSeven();
-        } else {
-            cancelPerfectionSeven();
-        }
+    public void updateIsAttachUrl(final Boolean isAttachUrl) {
+
+    }
+
+    public void updateIsAttachFile(final Boolean isAttachFile) {
+        
     }
 
     public void updateMemberProfileTypeByCompletion() {
