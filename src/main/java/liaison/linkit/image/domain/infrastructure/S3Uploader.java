@@ -17,7 +17,7 @@ import static liaison.linkit.global.exception.ExceptionCode.INVALID_IMAGE_PATH;
 
 @Component
 @RequiredArgsConstructor
-public class ImageUploader {
+public class S3Uploader {
 
     private static final String CACHE_CONTROL_VALUE = "max-age=3153600";
 
@@ -26,14 +26,15 @@ public class ImageUploader {
     @Value("${AWS_S3_BUCKET_NAME}")
     private String bucket;
 
-    private String folder;
+    @Value("${AWS_S3_IMAGE_FOLDER_NAME}")
+    private String imageFolder;
 
     public String uploadMiniProfileImage(final ImageFile miniProfileImageFile) {
         return uploadImage(miniProfileImageFile);
     }
 
     private String uploadImage(final ImageFile imageFile) {
-        final String path = folder + imageFile.getHashedName();
+        final String path = imageFolder + imageFile.getHashedName();
         final ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(imageFile.getContentType());
         metadata.setContentLength(imageFile.getSize());

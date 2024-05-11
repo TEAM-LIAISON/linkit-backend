@@ -24,4 +24,18 @@ public class AttachFile {
     @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @Column(nullable = false)
+    private String attachFile;
+
+    public static AttachFile of(
+            final Profile profile,
+            final String attachFile)
+    {
+        return new AttachFile(
+                null,
+                profile,
+                attachFile
+        );
+    }
 }

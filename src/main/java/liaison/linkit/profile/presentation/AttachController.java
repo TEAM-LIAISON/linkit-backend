@@ -4,8 +4,10 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.profile.dto.request.Attach.AttachFileCreateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlUpdateRequest;
+import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
 import liaison.linkit.profile.service.AttachService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +29,7 @@ public class AttachController {
             @Auth final Accessor accessor,
             @RequestBody @Valid AttachUrlCreateRequest attachUrlCreateRequest
     ) {
-        attachService.save(accessor.getMemberId(), attachUrlCreateRequest);
+        attachService.saveImage(accessor.getMemberId(), attachUrlCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -62,4 +64,26 @@ public class AttachController {
         attachService.delete(accessor.getMemberId());
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/file")
+    @MemberOnly
+    public ResponseEntity<Void> createAttachFle(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid final AttachFileCreateRequest createRequest
+    ) {
+        attachService.saveFile(accessor.getMemberId(), createRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+
+    @GetMapping("/file")
+    @MemberOnly
+    public ResponseEntity<AttachFileResponse> getAttachFile(
+            @Auth Accessor accessor
+    ) {
+        Long attachFileId = attachService.validateAttachFileByMember(accessor.getMemberId());
+        final AttachFileResponse attachFileResponse = attachService.getAttachFileDetail(attachFileId);
+        return ResponseEntity.ok().body(attachFileResponse);
+    }
+
 }

@@ -2,20 +2,22 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
+import liaison.linkit.profile.domain.Attach.AttachFile;
 import liaison.linkit.profile.domain.Attach.AttachUrl;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.Attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.Attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.dto.request.Attach.AttachFileCreateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlUpdateRequest;
+import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_ATTACH_URL_WITH_PROFILE;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_ATTACH_URL_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,16 @@ public class AttachService {
         }
     }
 
-    public void save(final Long memberId, final AttachUrlCreateRequest attachUrlCreateRequest) {
+    public Long validateAttachFileByMember(final Long memberId) {
+        final Long profileId = profileRepository.findByMemberId(memberId).getId();
+        if (!attachFileRepository.existsByProfileId(profileId)) {
+            throw new AuthException(INVALID_ATTACH_FILE_WITH_PROFILE);
+        } else {
+            return attachFileRepository.findByProfileId(profileId).getId();
+        }
+    }
+
+    public void saveImage(final Long memberId, final AttachUrlCreateRequest attachUrlCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
 
         final AttachUrl newAttachUrl = AttachUrl.of(
@@ -45,8 +56,8 @@ public class AttachService {
 
         attachUrlRepository.save(newAttachUrl);
 
-        profile.updateIsAttach(true);
-        profile.updateMemberProfileTypeByCompletion();
+        // 프로필 상태 관리 첨부용으로 추가 필요
+        // profile.updateMemberProfileTypeByCompletion();
     }
 
     public AttachUrlResponse getAttachUrlDetail(final Long attachUrlId) {
@@ -81,5 +92,25 @@ public class AttachService {
 
         profile.updateIsAttach(false);
         profile.updateMemberProfileTypeByCompletion();
+    }
+
+    public void saveFile(final Long memberId, final AttachFileCreateRequest createRequest) {
+        final Profile profile = profileRepository.findByMemberId(memberId);
+
+        final AttachFile newAttachFile = AttachFile.of(
+                profile,
+                createRequest.getAttachFile()
+        );
+
+        attachFileRepository.save(newAttachFile);
+
+        // 프로필 상태 관리 첨부용으로 추가 필요
+    }
+
+
+    public AttachFileResponse getAttachFileDetail(final Long attachFileId) {
+        final AttachFile attachFile = attachFileRepository.findById(attachFileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_ID));
+        return AttachFileResponse.personalAttachFile(attachFile);
     }
 }
