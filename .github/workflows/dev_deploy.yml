@@ -22,7 +22,7 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-        shell: bash# (6).권한 부여
+        shell: bash # (6).권한 부여
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
