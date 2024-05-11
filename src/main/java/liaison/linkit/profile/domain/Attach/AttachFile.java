@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain.Attach;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.dto.request.Attach.AttachFileUpdateRequest;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -37,5 +38,10 @@ public class AttachFile {
                 profile,
                 attachFile
         );
+    }
+
+
+    public void update(final AttachFileUpdateRequest updateRequest) {
+        this.attachFile = updateRequest.getAttachFile();
     }
 }

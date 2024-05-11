@@ -5,6 +5,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.Attach.AttachFileCreateRequest;
+import liaison.linkit.profile.dto.request.Attach.AttachFileUpdateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
@@ -51,7 +52,7 @@ public class AttachController {
             @Auth final Accessor accessor,
             @RequestBody @Valid final AttachUrlUpdateRequest updateRequest
     ) {
-        attachService.update(accessor.getMemberId(), updateRequest);
+        attachService.updateImage(accessor.getMemberId(), updateRequest);
         return ResponseEntity.noContent().build();
     }
 
@@ -59,11 +60,13 @@ public class AttachController {
     @DeleteMapping("/url")
     @MemberOnly
     public ResponseEntity<Void> deleteAttachUrl(
-            @Auth Accessor accessor
+            @Auth final Accessor accessor
     ) {
-        attachService.delete(accessor.getMemberId());
+        attachService.deleteImage(accessor.getMemberId());
         return ResponseEntity.noContent().build();
     }
+
+
 
     @PostMapping("/file")
     @MemberOnly
@@ -75,15 +78,32 @@ public class AttachController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
     @GetMapping("/file")
     @MemberOnly
     public ResponseEntity<AttachFileResponse> getAttachFile(
-            @Auth Accessor accessor
+            @Auth final Accessor accessor
     ) {
         Long attachFileId = attachService.validateAttachFileByMember(accessor.getMemberId());
         final AttachFileResponse attachFileResponse = attachService.getAttachFileDetail(attachFileId);
         return ResponseEntity.ok().body(attachFileResponse);
     }
 
+    @PutMapping("/file")
+    @MemberOnly
+    public ResponseEntity<Void> updateAttachFile(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid final AttachFileUpdateRequest updateRequest
+    ) {
+        attachService.updateFile(accessor.getMemberId(), updateRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/file")
+    @MemberOnly
+    public ResponseEntity<Void> deleteAttachFile(
+            @Auth final Accessor accessor
+    ) {
+        attachService.deleteFile(accessor.getMemberId());
+        return ResponseEntity.noContent().build();
+    }
 }

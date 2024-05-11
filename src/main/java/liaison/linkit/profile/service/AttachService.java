@@ -9,6 +9,7 @@ import liaison.linkit.profile.domain.repository.Attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.Attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.Attach.AttachFileCreateRequest;
+import liaison.linkit.profile.dto.request.Attach.AttachFileUpdateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
@@ -66,7 +67,7 @@ public class AttachService {
         return AttachUrlResponse.personalAttachUrl(attachUrl);
     }
 
-    public void update(final Long memberId, final AttachUrlUpdateRequest updateRequest) {
+    public void updateImage(final Long memberId, final AttachUrlUpdateRequest updateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
         final Long attachUrlId = validateAttachUrlByMember(memberId);
 
@@ -80,7 +81,7 @@ public class AttachService {
         profile.updateMemberProfileTypeByCompletion();
     }
 
-    public void delete(final Long memberId) {
+    public void deleteImage(final Long memberId) {
         final Profile profile = profileRepository.findByMemberId(memberId);
         final Long attachUrlId = validateAttachUrlByMember(memberId);
 
@@ -93,6 +94,8 @@ public class AttachService {
         profile.updateIsAttach(false);
         profile.updateMemberProfileTypeByCompletion();
     }
+
+
 
     public void saveFile(final Long memberId, final AttachFileCreateRequest createRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
@@ -112,5 +115,29 @@ public class AttachService {
         final AttachFile attachFile = attachFileRepository.findById(attachFileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_ID));
         return AttachFileResponse.personalAttachFile(attachFile);
+    }
+
+    public void updateFile(final Long memberId, final AttachFileUpdateRequest updateRequest) {
+        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Long attachFileId = validateAttachFileByMember(memberId);
+
+        final AttachFile attachFile = attachFileRepository.findById(attachFileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_ID));
+
+        attachFile.update(updateRequest);
+        attachFileRepository.save(attachFile);
+    }
+
+    public void deleteFile(final Long memberId) {
+        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Long attachFileId = validateAttachFileByMember(memberId);
+
+        if (!attachFileRepository.existsByProfileId(attachFileId)) {
+            throw new BadRequestException(NOT_FOUND_ATTACH_FILE_ID);
+        }
+
+        attachFileRepository.deleteById(attachFileId);
+
+        // 프로그레스바 상태 관련 함수 추가 필요
     }
 }
