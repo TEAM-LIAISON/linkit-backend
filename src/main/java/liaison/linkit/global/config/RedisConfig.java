@@ -32,4 +32,5 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new GenericToStringSerializer<>(Long.class));
         return redisTemplate;
     }
+
 }
