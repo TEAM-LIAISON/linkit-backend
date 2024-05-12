@@ -23,10 +23,10 @@ public class S3Uploader {
 
     private final AmazonS3 s3Client;
 
-    @Value("${AWS_S3_BUCKET_NAME}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${AWS_S3_IMAGE_FOLDER_NAME}")
+    @Value("${cloud.aws.s3.image-folder}")
     private String imageFolder;
 
     public String uploadMiniProfileImage(final ImageFile miniProfileImageFile) {
