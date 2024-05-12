@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import liaison.linkit.global.exception.ImageException;
 import liaison.linkit.image.domain.ImageFile;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,7 @@ import static liaison.linkit.global.exception.ExceptionCode.INVALID_IMAGE_PATH;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class S3Uploader {
 
     private static final String CACHE_CONTROL_VALUE = "max-age=3153600";
@@ -29,7 +31,11 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.image-folder}")
     private String imageFolder;
 
+
     public String uploadMiniProfileImage(final ImageFile miniProfileImageFile) {
+        log.info("S3 bucket={}", bucket);
+        log.info("S3 imageFolder={}", imageFolder);
+
         return uploadImage(miniProfileImageFile);
     }
 
