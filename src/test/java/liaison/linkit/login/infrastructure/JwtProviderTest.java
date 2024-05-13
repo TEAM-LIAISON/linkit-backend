@@ -32,7 +32,7 @@ class JwtProviderTest {
     private static final String SAMPLE_SUBJECT = "thisIsSampleSubject";
     private static final String SAMPLE_INVALID_SECRET_KEY = "LJW25,jjongwa,mcodnjs,hgo641,waterricecake,Let'sGo";
 
-    @Value("${security.jwt.secret-key}")
+    @Value("${jwt.secret}")
     private String realSecretKey;
 
     @Autowired
