@@ -26,6 +26,11 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew clean build -x test
+        env:
+          spring.jwt.key: ${{ secrets.SECRET_KEY }}
+          spring.jwt.access-expiration-time: ${{ secrets.ACCESS_EXPIRATION_TIME }}
+          spring.jwt.refresh-expiration-time: ${{ secrets.REFRESH_EXPIRATION_TIME }}
+
         shell: bash # (7).build시작
 
       - name: Get current time
