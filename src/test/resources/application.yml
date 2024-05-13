@@ -1,22 +1,24 @@
 spring:
-  datasource :
-    url: jdbc:h2:mem:test
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+  datasource:
+    url: ${database.url}
+    username: ${database.username}
+    password: ${database.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
-
+      host: ${redis.host}
+      port: ${redis.port}
+  sql:
+    init:
+      mode: never
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
-            redirect-uri: ${KAKAO_REDIRECT_URL}
+            client-id: ${kakao.client.id}
+            client-secret: ${kakao.client.secret}
+            redirect-uri: ${kakao.redirect.url}
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope:
@@ -24,51 +26,85 @@ spring:
               - profile_image
             client-name: Kakao
           naver:
-            client-id: ${NAVER_CLIENT_ID}
-            client-secret: ${NAVER_CLIENT_SECRET}
-            redirect-uri: ${NAVER_REDIRECT_URL}
+            client-id: ${naver.client.id}
+            client-secret: ${naver.client.secret}
+            redirect-uri: ${naver.redirect.url}
             authorization-grant-type: authorization_code
             scope: name, email
             client-name: Naver
           google:
-            client-id: ${GOOGLE_CLIENT_ID}
-            client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: ${GOOGLE_REDIRECT_URL}
+            client-id: ${google.client.id}
+            client-secret: ${google.client.secret}
+            redirect-uri: ${google.redirect.url}
             scope:
               - email
               - profile
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: ${KAKAO_TOKEN_URI}
-            user-info-uri: ${KAKAO_USER_INFO_URI}
+            token-uri: ${kakao.token.uri}
+            user-info-uri: ${kakao.user.info.uri}
             user-info-authentication-method: header
             user-name-attribute: id
           naver:
             authorization-uri: https://nid.naver.com/oauth2.0/authorize
-            token-uri: ${NAVER_TOKEN_URI}
-            user-info-uri: ${NAVER_USER_INFO_URI}
+            token-uri: ${naver.token.uri}
+            user-info-uri: ${naver.user.info.uri}
             user-name-attribute: response
           google:
-            token-uri: ${GOOGLE_TOKEN_URI}
-            user-info-uri: ${GOOGLE_USER_INFO_URI}
+            token-uri: ${google.token.uri}
+            user-info-uri: ${google.user.info.uri}
   jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+        format_sql: true
+        use_sql_comments: true
     hibernate:
-      ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.H2Dialect
+      ddl-auto: create
 
-cloud:
-  aws:
-    credentials:
-      access-key: ${AWS_S3_ACCESS_KEY}
-      secret-key: ${AWS_S3_SECRET_KEY}
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
+  servlet:
+    multipart:
+      enabled: true # 멀티파트 업로드 지원여부
+      file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
+      max-file-size: 5MB # 한개 파일의 최대 사이즈 (default: 1MB)
+      max-request-size: 10MB # 한개 요청의 최대 사이즈 (default: 10MB)
+  cloud:
+    aws:
+      credentials:
+        secret-key: ${aws.s3.access.key}
+        access-key: ${aws.s3.secret.key}
+      region:
+        static: ${aws.region}
+      s3:
+        bucket: ${aws.s3.bucket.name}
+        image-folder: ${aws.s3.image.folder.name}
+        file-folder: ${aws.s3.file.folder.name}
 
-security:
-  jwt:
-    secret-key: dGVhbWJ1aWxkaW5nLW1hdGhjaW5nLXNlcnZpY2UtYXMtcGxhdGZvcm0tc3ByaW5nLWJvb3Qtc2VydmVyLXNlcmNyZXQtdG9rZW4=
-    access-expiration-time: 3600000
-    refresh-expiration-time: 7200000
+#cloud:
+#  aws:
+#    credentials:
+#      access-key: ${aws.s3.access.key}
+#      secret-key: ${aws.s3.secret.key}
+#    region:
+#      static: ${aws.region}
+#    stack:
+#      auto: false
+#    s3:
+#      bucket: ${aws.s3.bucket.name}
+#      image-folder: ${aws.s3.image.folder.name}
+#      file-folder: ${aws.s3.file.folder.name}
+
+
+jwt:
+  secret: ${secret.key}
+  access-expiration-time: ${access.expiration.time}
+  refresh-expiration-time: ${refresh.expiration.time}
+
+
+#logging:
+#  level:
+#    org:
+#      springframework: DEBUG

@@ -14,13 +14,13 @@ import org.springframework.context.annotation.Configuration;
 public class S3Config {
     private static final Logger log = LoggerFactory.getLogger(S3Config.class);
 
-    @Value("${cloud.aws.credentials.access-key}")
+    @Value("${spring.cloud.aws.credentials.access-key}")
     private String accessKey;
 
-    @Value("${cloud.aws.credentials.secret-key}")
+    @Value("${spring.cloud.aws.credentials.secret-key}")
     private String secretKey;
 
-    @Value("${cloud.aws.region.static}")
+    @Value("${aws.region}")
     private String region;
 
     @Bean
