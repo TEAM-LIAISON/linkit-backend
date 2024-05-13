@@ -26,9 +26,9 @@ public class JwtProvider {
     private final Long refreshExpirationTime;
 
     public JwtProvider(
-            @Value("${security.jwt.secret-key}") final String secretKey,
-            @Value("${security.jwt.access-expiration-time}") final Long accessExpirationTime,
-            @Value("${security.jwt.refresh-expiration-time}") final Long refreshExpirationTime
+            @Value("${spring.jwt.key}") final String secretKey,
+            @Value("${spring.jwt.access-expiration-time}") final Long accessExpirationTime,
+            @Value("${spring.jwt.refresh-expiration-time}") final Long refreshExpirationTime
     ) {
         try {
             this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
