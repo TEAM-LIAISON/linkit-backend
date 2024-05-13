@@ -42,5 +42,5 @@ out/
 ### RestDocs ###
 src/main/resources/static/docs/
 
-### application.yml ###
-src/main/resources/*.yml
+#### application.yml ###
+#src/main/resources/*.yml
