@@ -41,7 +41,6 @@ class JwtProviderTest {
     private MemberTokens makeTestMemberTokens() {
         return jwtProvider.generateLoginToken(SAMPLE_SUBJECT);
     }
-
     private String makeTestJwt(final Long expirationTime, final String subject, final String secretKey) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + expirationTime);
