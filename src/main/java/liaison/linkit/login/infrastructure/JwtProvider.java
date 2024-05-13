@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import liaison.linkit.global.exception.ExpiredPeriodJwtException;
 import liaison.linkit.global.exception.InvalidJwtException;
 import liaison.linkit.login.domain.MemberTokens;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,7 @@ import java.util.Date;
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Component
+@Slf4j
 public class JwtProvider {
 
     public static final String EMPTY_SUBJECT = "";
@@ -24,14 +26,21 @@ public class JwtProvider {
     private final Long refreshExpirationTime;
 
     public JwtProvider(
-            @Value("${SECRET_KEY}") final String secretKey,
-            @Value("${ACCESS_EXPIRATION_TIME}") final Long accessExpirationTime,
-            @Value("${REFRESH_EXPIRATION_TIME}") final Long refreshExpirationTime
+            @Value("${security.jwt.secret-key}") final String secretKey,
+            @Value("${security.jwt.access-expiration-time}") final Long accessExpirationTime,
+            @Value("${security.jwt.refresh-expiration-time}") final Long refreshExpirationTime
     ) {
-        this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
-        this.accessExpirationTime = accessExpirationTime;
-        this.refreshExpirationTime = refreshExpirationTime;
+        try {
+            this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+            this.accessExpirationTime = accessExpirationTime;
+            this.refreshExpirationTime = refreshExpirationTime;
+        } catch (Exception e) {
+            // 로그를 통해 예외 내용 확인
+            log.error("JwtProvider 초기화 중 오류 발생", e);
+            throw e;  // 여기서 재발생시켜 스택 트레이스를 확인할 수 있습니다.
+        }
     }
+
 
     public MemberTokens generateLoginToken(final String subject) {
         final String refreshToken = createToken(EMPTY_SUBJECT, refreshExpirationTime);
