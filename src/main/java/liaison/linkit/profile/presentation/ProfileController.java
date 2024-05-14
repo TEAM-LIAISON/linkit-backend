@@ -5,7 +5,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
-import liaison.linkit.profile.dto.response.ProfileResponse;
+import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +22,12 @@ public class ProfileController {
 
     @GetMapping("/introduction")
     @MemberOnly
-    public ResponseEntity<ProfileResponse> getProfiles(
+    public ResponseEntity<ProfileIntroductionResponse> getProfileIntroduction(
             @Auth final Accessor accessor
     ) {
         Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
-        final ProfileResponse profileResponse = profileService.getProfileDetail(profileId);
-        return ResponseEntity.ok().body(profileResponse);
+        final ProfileIntroductionResponse profileIntroductionResponse = profileService.getProfileIntroduction(profileId);
+        return ResponseEntity.ok().body(profileIntroductionResponse);
     }
 
     @PatchMapping("/introduction")
@@ -52,4 +52,16 @@ public class ProfileController {
     }
 
     // 마이페이지 컨트롤러
+//    @GetMapping
+//    @MemberOnly
+//    public ResponseEntity<ProfileResponse> getProfile(
+//            @Auth final Accessor accessor
+//    ) {
+//        Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
+//
+//        final ProfileResponse profileResponse = profileService.getProfile(profileId);
+//
+//        // ProfileResponse에 [3. 내 이력서]를 모두 담아야 한다.
+//        return ResponseEntity.ok().body(profileResponse);
+//    }
 }

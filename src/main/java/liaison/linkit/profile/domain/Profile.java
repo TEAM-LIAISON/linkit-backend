@@ -51,6 +51,10 @@ public class Profile {
     @Column(nullable = false)
     private boolean isAwards;
 
+    // Attach 2개를 한번에 관리하는 컬럼이 있어야 프론트에 던져줄 수 있음.
+    @Column(nullable = false)
+    private boolean isAttach;
+
     @Column(nullable = false)
     private boolean isAttachUrl;
 
@@ -74,6 +78,7 @@ public class Profile {
         this.isAntecedents = false;
         this.isEducation = false;
         this.isAwards = false;
+        this.isAttach = false;
         this.isAttachUrl = false;
         this.isAttachFile = false;
     }

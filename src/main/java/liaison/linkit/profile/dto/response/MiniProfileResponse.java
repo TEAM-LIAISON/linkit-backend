@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MiniProfileResponse {
 
-    private final Long id;
     private final String oneLineIntroduction;
     private final String interests;
     private final String firstFreeText;
@@ -17,7 +16,6 @@ public class MiniProfileResponse {
 
     public static MiniProfileResponse of(final MiniProfile miniProfile) {
         return new MiniProfileResponse(
-                miniProfile.getId(),
                 miniProfile.getOneLineIntroduction(),
                 miniProfile.getInterests(),
                 miniProfile.getFirstFreeText(),
@@ -27,7 +25,6 @@ public class MiniProfileResponse {
 
     public static MiniProfileResponse personalMiniProfile(final MiniProfile miniProfile) {
         return new MiniProfileResponse(
-                miniProfile.getId(),
                 miniProfile.getOneLineIntroduction(),
                 miniProfile.getInterests(),
                 miniProfile.getFirstFreeText(),

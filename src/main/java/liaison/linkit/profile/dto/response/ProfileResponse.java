@@ -1,6 +1,5 @@
 package liaison.linkit.profile.dto.response;
 
-import liaison.linkit.profile.domain.Profile;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -8,17 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProfileResponse {
 
-    private final String introduction;
+    private final MiniProfileResponse miniProfileResponse;
 
-    public static ProfileResponse of(final Profile profile) {
-        return new ProfileResponse(
-                profile.getIntroduction()
-        );
-    }
-
-    public static ProfileResponse personalProfile(final Profile profile) {
-        return new ProfileResponse(
-                profile.getIntroduction()
-        );
-    }
 }

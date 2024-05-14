@@ -6,7 +6,7 @@ import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
-import liaison.linkit.profile.dto.response.ProfileResponse;
+import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,10 +28,10 @@ public class ProfileService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileResponse getProfileDetail(final Long profileId) {
+    public ProfileIntroductionResponse getProfileIntroduction(final Long profileId) {
         final Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
-        return ProfileResponse.personalProfile(profile);
+        return ProfileIntroductionResponse.profileIntroduction(profile);
     }
 
     public void update(final Long profileId, final ProfileUpdateRequest updateRequest) {
