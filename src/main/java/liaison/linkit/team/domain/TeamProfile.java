@@ -18,6 +18,9 @@ public class TeamProfile {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(name = "team_profile_completion")
+    private int teamProfileCompletion;
+
     @Column(name = "team_introduction")
     private String teamIntroduction;
 
