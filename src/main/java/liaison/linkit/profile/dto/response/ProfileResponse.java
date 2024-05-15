@@ -1,9 +1,10 @@
 package liaison.linkit.profile.dto.response;
 
-import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
-import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
+import liaison.linkit.profile.dto.response.Attach.AttachResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -14,9 +15,32 @@ public class ProfileResponse {
     private final ProfileIntroductionResponse profileIntroductionResponse;
     private final ProfileSkillResponse profileSkillResponse;
     private final ProfileTeamBuildingResponse profileTeamBuildingResponse;
-    private final AntecedentsResponse antecedentsResponse;
-    // 학력 자리
-    private final AwardsResponse awardsResponse;
-    private final AttachUrlResponse attachUrlResponse;
-    private final AttachFileResponse attachFileResponse;
+    private final List<AntecedentsResponse> antecedentsResponse;
+    private final List<EducationResponse> educationResponse;
+    private final List<AwardsResponse> awardsResponse;
+    private final AttachResponse attachResponse;
+
+    public static ProfileResponse profileItems(
+            final MiniProfileResponse miniProfileResponse,
+            final CompletionResponse completionResponse,
+            final ProfileIntroductionResponse profileIntroductionResponse,
+            final ProfileSkillResponse profileSkillResponse,
+            final ProfileTeamBuildingResponse profileTeamBuildingResponse,
+            final List<AntecedentsResponse> antecedentsResponses,
+            final List<EducationResponse> educationResponses,
+            final List<AwardsResponse> awardsResponses,
+            final AttachResponse attachResponse
+    ) {
+        return new ProfileResponse(
+                miniProfileResponse,
+                completionResponse,
+                profileIntroductionResponse,
+                profileSkillResponse,
+                profileTeamBuildingResponse,
+                antecedentsResponses,
+                educationResponses,
+                awardsResponses,
+                attachResponse
+        );
+    }
 }

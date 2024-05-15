@@ -9,6 +9,7 @@ import liaison.linkit.profile.dto.request.Attach.AttachFileUpdateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.Attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
+import liaison.linkit.profile.dto.response.Attach.AttachResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
 import liaison.linkit.profile.service.AttachService;
 import lombok.RequiredArgsConstructor;
@@ -105,5 +106,14 @@ public class AttachController {
     ) {
         attachService.deleteFile(accessor.getMemberId());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/list")
+    @MemberOnly
+    public ResponseEntity<AttachResponse> getAttachList(
+            @Auth final Accessor accessor
+    ) {
+        final AttachResponse attachResponse = attachService.getAttachList(accessor.getMemberId());
+        return ResponseEntity.ok().body(attachResponse);
     }
 }

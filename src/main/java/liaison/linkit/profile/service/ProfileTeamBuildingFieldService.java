@@ -65,6 +65,6 @@ public class ProfileTeamBuildingFieldService {
                 .map(TeamBuildingField::getTeamBuildingFieldName)
                 .toList();
 
-        return new ProfileTeamBuildingResponse(teamBuildingFieldNames);
+        return ProfileTeamBuildingResponse.of(teamBuildingFieldNames);
     }
 }
