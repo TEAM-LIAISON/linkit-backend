@@ -4,11 +4,12 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.Attach.AttachFileCreateRequest;
-import liaison.linkit.profile.dto.request.Attach.AttachFileUpdateRequest;
-import liaison.linkit.profile.dto.request.Attach.AttachUrlCreateRequest;
-import liaison.linkit.profile.dto.request.Attach.AttachUrlUpdateRequest;
+import liaison.linkit.profile.dto.request.attach.AttachFileCreateRequest;
+import liaison.linkit.profile.dto.request.attach.AttachFileUpdateRequest;
+import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
+import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
+import liaison.linkit.profile.dto.response.Attach.AttachResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
 import liaison.linkit.profile.service.AttachService;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +47,7 @@ public class AttachController {
     }
 
     // 외부 링크 1개 수정 요청
-    @PutMapping("/url")
+    @PatchMapping("/url")
     @MemberOnly
     public ResponseEntity<Void> updateAttachUrl(
             @Auth final Accessor accessor,
@@ -88,7 +89,7 @@ public class AttachController {
         return ResponseEntity.ok().body(attachFileResponse);
     }
 
-    @PutMapping("/file")
+    @PatchMapping("/file")
     @MemberOnly
     public ResponseEntity<Void> updateAttachFile(
             @Auth final Accessor accessor,
@@ -105,5 +106,14 @@ public class AttachController {
     ) {
         attachService.deleteFile(accessor.getMemberId());
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/list")
+    @MemberOnly
+    public ResponseEntity<AttachResponse> getAttachList(
+            @Auth final Accessor accessor
+    ) {
+        final AttachResponse attachResponse = attachService.getAttachList(accessor.getMemberId());
+        return ResponseEntity.ok().body(attachResponse);
     }
 }

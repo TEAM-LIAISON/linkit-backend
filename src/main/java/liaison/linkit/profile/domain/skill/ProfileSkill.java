@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain.skill;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.dto.request.skill.ProfileSkillUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,4 +28,19 @@ public class ProfileSkill {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "skill_id")
     private Skill skill;
+
+    public static ProfileSkill of(
+            final Profile profile,
+            final Skill skill
+    ) {
+        return new ProfileSkill(
+                null,
+                profile,
+                skill
+        );
+    }
+
+    public void update(final ProfileSkillUpdateRequest updateRequest) {
+
+    }
 }

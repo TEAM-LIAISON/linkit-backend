@@ -52,7 +52,7 @@ public class AntecedentsController {
     }
 
     // 이력 1개 수정 요청
-    @PutMapping
+    @PatchMapping
     @MemberOnly
     public ResponseEntity<Void> updateAntecedents(
         @Auth final Accessor accessor,

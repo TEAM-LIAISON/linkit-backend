@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.request;
+package liaison.linkit.profile.dto.request.skill;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileTeamBuildingCreateRequest {
-
-    private List<String> teamBuildingFieldNames;
+public class ProfileSkillUpdateRequest {
+    private List<String> skillNames;
 }

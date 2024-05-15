@@ -53,7 +53,7 @@ public class AwardsController {
     }
 
     // 이력서 수상 항목 1개 수정
-    @PutMapping
+    @PatchMapping
     @MemberOnly
     public ResponseEntity<Void> updateAwards(
             @Auth final Accessor accessor,

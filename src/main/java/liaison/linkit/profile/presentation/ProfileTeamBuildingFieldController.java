@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.ProfileTeamBuildingCreateRequest;
+import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
 import liaison.linkit.profile.dto.response.ProfileTeamBuildingResponse;
 import liaison.linkit.profile.service.ProfileTeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;

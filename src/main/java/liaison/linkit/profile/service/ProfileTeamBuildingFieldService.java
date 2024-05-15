@@ -7,7 +7,7 @@ import liaison.linkit.profile.domain.repository.ProfileTeamBuildingRepository;
 import liaison.linkit.profile.domain.repository.TeamBuildingRepository;
 import liaison.linkit.profile.domain.teambuilding.ProfileTeamBuildingField;
 import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;
-import liaison.linkit.profile.dto.request.ProfileTeamBuildingCreateRequest;
+import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
 import liaison.linkit.profile.dto.response.ProfileTeamBuildingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +65,6 @@ public class ProfileTeamBuildingFieldService {
                 .map(TeamBuildingField::getTeamBuildingFieldName)
                 .toList();
 
-        return new ProfileTeamBuildingResponse(teamBuildingFieldNames);
+        return ProfileTeamBuildingResponse.of(teamBuildingFieldNames);
     }
 }

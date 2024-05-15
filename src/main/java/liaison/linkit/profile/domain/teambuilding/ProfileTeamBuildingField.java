@@ -2,7 +2,7 @@ package liaison.linkit.profile.domain.teambuilding;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.ProfileTeamBuildingUpdateRequest;
+import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.request;
+package liaison.linkit.profile.dto.request.teamBuilding;
 
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;

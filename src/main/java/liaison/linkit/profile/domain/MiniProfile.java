@@ -1,7 +1,7 @@
 package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
-import liaison.linkit.profile.dto.request.MiniProfileUpdateRequest;
+import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

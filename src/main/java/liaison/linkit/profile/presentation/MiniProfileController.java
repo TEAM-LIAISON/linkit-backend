@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.MiniProfileCreateRequest;
-import liaison.linkit.profile.dto.request.MiniProfileUpdateRequest;
+import liaison.linkit.profile.dto.request.miniProfile.MiniProfileCreateRequest;
+import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.MiniProfileResponse;
 import liaison.linkit.profile.service.MiniProfileService;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class MiniProfileController {
     }
 
     // 미니 프로필 항목 수정
-    @PutMapping
+    @PatchMapping
     @MemberOnly
     public ResponseEntity<Void> updateMiniProfile(
             @Auth final Accessor accessor,

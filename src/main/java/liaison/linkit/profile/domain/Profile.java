@@ -7,7 +7,11 @@ import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -25,9 +29,13 @@ public class Profile {
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
+    @OneToMany(mappedBy = "profile", cascade = REMOVE)
+    private List<Awards> awardsList = new ArrayList<>();
+
     // 전체 프로필 완성도 값 (%) 직결
     @Column(nullable = false)
     private int completion;
+
 
     @Column(name = "introduction")
     private String introduction;
