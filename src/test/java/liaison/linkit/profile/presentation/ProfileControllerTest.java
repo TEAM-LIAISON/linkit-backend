@@ -6,7 +6,7 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.ProfileCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
-import liaison.linkit.profile.dto.response.ProfileResponse;
+import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.service.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -92,11 +92,11 @@ class ProfileControllerTest extends ControllerTest {
     @Test
     void getProfileIntroduction() throws Exception{
         // given
-        final ProfileResponse response = new ProfileResponse(
+        final ProfileIntroductionResponse response = new ProfileIntroductionResponse(
                 "프로필 자기소개 항목입니다."
         );
 
-        given(profileService.getProfileDetail(1L))
+        given(profileService.getProfileIntroduction(1L))
                 .willReturn(response);
 
         // when
