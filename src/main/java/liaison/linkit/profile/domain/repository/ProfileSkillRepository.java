@@ -12,4 +12,6 @@ public interface ProfileSkillRepository extends JpaRepository<ProfileSkill, Long
 
     @Query("SELECT profileSkill FROM ProfileSkill profileSkill WHERE profileSkill.profile.id = :profileId")
     List<ProfileSkill> findAllByProfileId(@Param("profileId") final Long profileId);
+
+    ProfileSkill findByProfileId(@Param("profileId") Long profileId);
 }

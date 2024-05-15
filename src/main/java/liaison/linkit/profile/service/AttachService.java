@@ -74,6 +74,7 @@ public class AttachService {
         return AttachUrlResponse.personalAttachUrl(attachUrl);
     }
 
+    // 수정 메서드
     public void updateImage(final Long memberId, final AttachUrlUpdateRequest updateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
         final Long attachUrlId = validateAttachUrlByMember(memberId);
@@ -88,6 +89,7 @@ public class AttachService {
         profile.updateMemberProfileTypeByCompletion();
     }
 
+    // 삭제 메서드
     public void deleteImage(final Long memberId) {
         final Profile profile = profileRepository.findByMemberId(memberId);
         final Long attachUrlId = validateAttachUrlByMember(memberId);
@@ -114,7 +116,7 @@ public class AttachService {
         // 프로필 상태 관리 첨부용으로 추가 필요
     }
 
-
+    // 조회 메서드
     public AttachFileResponse getAttachFileDetail(final Long attachFileId) {
         final AttachFile attachFile = attachFileRepository.findById(attachFileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_ID));
@@ -125,6 +127,7 @@ public class AttachService {
         return AttachFileResponse.personalAttachFile(attachFile);
     }
 
+    // 수정 메서드
     public void updateFile(final Long memberId, final AttachFileUpdateRequest updateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
         final Long attachFileId = validateAttachFileByMember(memberId);

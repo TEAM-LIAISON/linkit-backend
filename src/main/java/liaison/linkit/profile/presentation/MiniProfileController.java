@@ -39,7 +39,7 @@ public class MiniProfileController {
     }
 
     // 미니 프로필 항목 수정
-    @PutMapping
+    @PatchMapping
     @MemberOnly
     public ResponseEntity<Void> updateMiniProfile(
             @Auth final Accessor accessor,

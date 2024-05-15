@@ -7,7 +7,8 @@ import liaison.linkit.profile.domain.repository.ProfileSkillRepository;
 import liaison.linkit.profile.domain.repository.SkillRepository;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.skill.Skill;
-import liaison.linkit.profile.dto.request.ProfileSkillCreateRequest;
+import liaison.linkit.profile.dto.request.Skill.ProfileSkillCreateRequest;
+import liaison.linkit.profile.dto.request.Skill.ProfileSkillUpdateRequest;
 import liaison.linkit.profile.dto.response.ProfileSkillResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,12 @@ public class ProfileSkillService {
     private final ProfileSkillRepository profileSkillRepository;
     private final SkillRepository skillRepository;
 
-    public void validateProfileSkillByMember(final Long memberId) {
+    public Long validateProfileSkillByMember(final Long memberId) {
         final Long profileId = profileRepository.findByMemberId(memberId).getId();
         if (!profileSkillRepository.existsByProfileId(profileId)) {
             throw new AuthException(INVALID_PROFILE_SKILL_WITH_MEMBER);
+        } else {
+            return profileSkillRepository.findByProfileId(profileId).getId();
         }
     }
 
@@ -64,4 +67,20 @@ public class ProfileSkillService {
     }
 
 
+    public void updateSkill(final Long memberId, final ProfileSkillUpdateRequest updateRequest) {
+        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Long profileSkillId = validateProfileSkillByMember(memberId);
+        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(profile.getId());
+
+        final List<Skill> skills = skillRepository
+                .findSkillNamesBySkillNames(updateRequest.getSkillNames());
+
+        profileSkillRepository.deleteAll(profileSkills);
+
+        final List<ProfileSkill> newProfileSkills = skills.stream()
+                .map(skill -> new ProfileSkill(null, profile, skill))
+                .toList();
+
+        profileSkillRepository.saveAll(newProfileSkills);
+    }
 }

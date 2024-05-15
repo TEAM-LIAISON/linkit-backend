@@ -47,7 +47,7 @@ public class AttachController {
     }
 
     // 외부 링크 1개 수정 요청
-    @PutMapping("/url")
+    @PatchMapping("/url")
     @MemberOnly
     public ResponseEntity<Void> updateAttachUrl(
             @Auth final Accessor accessor,
@@ -89,7 +89,7 @@ public class AttachController {
         return ResponseEntity.ok().body(attachFileResponse);
     }
 
-    @PutMapping("/file")
+    @PatchMapping("/file")
     @MemberOnly
     public ResponseEntity<Void> updateAttachFile(
             @Auth final Accessor accessor,

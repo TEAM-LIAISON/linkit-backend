@@ -50,7 +50,7 @@ public class EducationController {
     }
 
     // 교육 항목 1개 수정
-    @PutMapping
+    @PatchMapping
     @MemberOnly
     public ResponseEntity<Void> updateEducation(
             @Auth final Accessor accessor,
