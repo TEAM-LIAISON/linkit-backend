@@ -1,11 +1,11 @@
-package liaison.linkit.profile.dto.request;
+package liaison.linkit.profile.dto.request.miniProfile;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MiniProfileUpdateRequest {
+public class MiniProfileCreateRequest {
     private final String oneLineIntroduction;
     private final String interests;
     private final String firstFreeText;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.dto.request.ProfileTeamBuildingCreateRequest;
+import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
 import liaison.linkit.profile.dto.response.ProfileTeamBuildingResponse;
 import liaison.linkit.profile.service.ProfileTeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;

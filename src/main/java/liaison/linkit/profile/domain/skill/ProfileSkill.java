@@ -2,7 +2,7 @@ package liaison.linkit.profile.domain.skill;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.Skill.ProfileSkillUpdateRequest;
+import liaison.linkit.profile.dto.request.skill.ProfileSkillUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

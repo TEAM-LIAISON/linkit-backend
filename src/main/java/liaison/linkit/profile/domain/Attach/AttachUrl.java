@@ -2,7 +2,7 @@ package liaison.linkit.profile.domain.Attach;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.Attach.AttachUrlUpdateRequest;
+import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
