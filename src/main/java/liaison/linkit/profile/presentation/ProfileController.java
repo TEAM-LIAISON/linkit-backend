@@ -51,7 +51,7 @@ public class ProfileController {
         return ResponseEntity.noContent().build();
     }
 
-    // 마이페이지 컨트롤러
+//    // 마이페이지 컨트롤러
 //    @GetMapping
 //    @MemberOnly
 //    public ResponseEntity<ProfileResponse> getProfile(

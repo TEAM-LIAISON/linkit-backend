@@ -96,7 +96,7 @@ class ProfileControllerTest extends ControllerTest {
                 "프로필 자기소개 항목입니다."
         );
 
-        given(profileService.getProfileDetail(1L))
+        given(profileService.getProfileIntroduction(1L))
                 .willReturn(response);
 
         // when

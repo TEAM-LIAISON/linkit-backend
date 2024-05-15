@@ -3,6 +3,8 @@
 :source-highlighter: highlightjs
 :sectlinks:
 
+=== 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
+
 [[overview-http-status-codes]]
 === HTTP status codes
 

@@ -106,7 +106,6 @@ class MiniProfileControllerTest extends ControllerTest {
     void getMiniProfile() throws Exception {
         // given
         final MiniProfileResponse response = new MiniProfileResponse(
-                1L,
                 "안녕하세요.",
                 "Java / Spring Boot / MySQL",
                 "홍익대학교 컴퓨터공학과",
@@ -133,10 +132,6 @@ class MiniProfileControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 responseFields(
-                                        fieldWithPath("id")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("개인용 미니 프로필 ID")
-                                                .attributes(field("constraint", "양의 정수")),
                                         fieldWithPath("oneLineIntroduction")
                                                 .type(JsonFieldType.STRING)
                                                 .description("한 줄 소개")
@@ -170,7 +165,6 @@ class MiniProfileControllerTest extends ControllerTest {
         );
 
         MiniProfileResponse expectedResponse = new MiniProfileResponse(
-                1L,
                 "안녕하세요.",
                 "Java / Spring Boot / MySQL",
                 "홍익대학교 컴퓨터공학과",

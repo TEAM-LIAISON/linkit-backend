@@ -40,13 +40,13 @@ public class CompletionResponse {
     public static CompletionResponse profileCompletion(final Profile profile) {
         return new CompletionResponse(
                 profile.getCompletion(),
-                profile.isIntroduction(),
-                profile.isProfileSkill(),
-                profile.isProfileTeamBuildingField(),
-                profile.isAntecedents(),
-                profile.isEducation(),
-                profile.isAwards(),
-                profile.isAttach()
+                profile.getIsIntroduction(),
+                profile.getIsProfileSkill(),
+                profile.getIsProfileTeamBuildingField(),
+                profile.getIsAntecedents(),
+                profile.getIsEducation(),
+                profile.getIsAwards(),
+                profile.getIsAttach()
         );
     }
 

@@ -4,7 +4,9 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.domain.repository.*;
+import liaison.linkit.profile.domain.repository.Attach.AttachFileRepository;
+import liaison.linkit.profile.domain.repository.Attach.AttachUrlRepository;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,29 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_ID
 @RequiredArgsConstructor
 @Transactional
 public class ProfileService {
+
+    // 프로필 리포지토리 -> 자기소개, 회원 정보 담당
     private final ProfileRepository profileRepository;
+    // 미니 프로필 정보 담당
+    private final MiniProfileRepository miniProfileRepository;
+    // 보유 기술 정보 담당
+    private final ProfileSkillRepository profileSkillRepository;
+    // 희망 팀빌딩 분야 정보 담당
+    private final ProfileTeamBuildingRepository profileTeamBuildingRepository;
+    // 이력 정보 담당
+    private final AntecedentsRepository antecedentsRepository;
+
+    // 학력 정보 담당
+    // -> ERD부터 설계 작업, 개발 DB에 인서트 필요
+
+    // 수상 정보 담당
+    private final AwardsService awardsService;
+
+    // 첨부 링크 정보 담당
+    private final AttachUrlRepository attachUrlRepository;
+
+    // 첨부 이미지(파일 경로) 정보 담당
+    private final AttachFileRepository attachFileRepository;
 
     public Long validateProfileByMember(final Long memberId) {
         if (!profileRepository.existsByMemberId(memberId)) {
@@ -62,4 +86,13 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 
+//    public ProfileResponse getProfile(final Long profileId) {
+//        // 프로필 아이디를 받는다.
+//        // 해당 프로필 아이디를 통해서 미니 프로필 / 완성도 / 7개의 전체 항목에 대한 variable 항목들을 가져와야 한다.
+//        // 1. 검증 로직 구현 -> 사용자가 단일로 보유하고 있는 프로필을 찾는다.
+//        final Profile profile = profileRepository.findById(profileId)
+//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
+//        // 문제는 있을 수도 있고 없을 수도 있다는 점이다.
+//        // 하나의 프로필 응답에 전체 프로필 항목 및 관리 정보를 담아서 반환하는 방식을 선택한다.
+//    }
 }

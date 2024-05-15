@@ -198,5 +198,39 @@ public class Profile {
         }
     }
 
+    public boolean getIsIntroduction() {
+        return isIntroduction;
+    }
 
+    public boolean getIsProfileSkill() {
+        return isProfileSkill;
+    }
+
+    public boolean getIsProfileTeamBuildingField() {
+        return isProfileTeamBuildingField;
+    }
+
+    public boolean getIsAntecedents() {
+        return isAntecedents;
+    }
+
+    public boolean getIsEducation() {
+        return isEducation;
+    }
+
+    public boolean getIsAwards() {
+        return isAwards;
+    }
+
+    public boolean getIsAttach() {
+        return isAttach;
+    }
+
+    public boolean getIsAttachUrl() {
+        return isAttachUrl;
+    }
+
+    public boolean getIsAttachFile() {
+        return isAttachFile;
+    }
 }
