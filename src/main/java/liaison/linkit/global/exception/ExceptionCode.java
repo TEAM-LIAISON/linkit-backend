@@ -21,6 +21,8 @@ public enum ExceptionCode {
     NOT_FOUND_ATTACH_URL_ID(1028, "요청한 ID에 해당하는 첨부 URL 정보가 존재하지 않습니다."),
     NOT_FOUND_ATTACH_FILE_ID(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
     NOT_FOUND_PROFILE_SKILL_ID(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
+    NOT_FOUND_HISTORY_ID(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
+
 
     INVALID_ANTECEDENTS_WITH_MEMBER(1017, "요청한 멤버와 ID에 해당하는 이력 정보가 존재하지 않습니다."),
     INVALID_MINI_PROFILE_WITH_MEMBER(1013, "요청한 멤버와 ID에 해당하는 미니 프로필이 존재하지 않습니다."),
@@ -32,6 +34,7 @@ public enum ExceptionCode {
     INVALID_PROFILE_SKILL_WITH_MEMBER(1026, "요청한 ID에 해당하는 보유 기술 정보가 존재하지 않습니다."),
     INVALID_ATTACH_URL_WITH_PROFILE(1027, "요청한 ID에 해당하는 첨부 URL 정보가 존재하지 않습니다."),
     INVALID_ATTACH_FILE_WITH_PROFILE(1028, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
+    INVALID_HISTORY_WITH_TEAM_PROFILE(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
 
     // -----문단 구분-----
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),

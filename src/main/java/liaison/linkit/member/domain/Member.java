@@ -3,6 +3,7 @@ package liaison.linkit.member.domain;
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.member.domain.type.MemberProfileType;
+import liaison.linkit.team.domain.TeamProfile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
@@ -55,6 +56,9 @@ public class Member {
 
     @OneToOne(mappedBy = "member")
     private Profile profile;
+
+    @OneToOne(mappedBy = "member")
+    private TeamProfile teamProfile;
 
     // MemberBasicInform 기입 여부 판단 코드 추가? (프론트 상태 관리용)
     @Column(nullable = false)

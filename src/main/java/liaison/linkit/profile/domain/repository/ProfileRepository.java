@@ -14,5 +14,5 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
            """)
     Profile findByMemberId(@Param("memberId") final Long memberId);
 
-    boolean existsByMemberId(Long memberId);
+    boolean existsByMemberId(final Long memberId);
 }
