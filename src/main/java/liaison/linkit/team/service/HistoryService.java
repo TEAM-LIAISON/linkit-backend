@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_HISTORY_WITH_TEAM_PROFILE;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_HISTORY_ID;
 
@@ -32,6 +34,19 @@ public class HistoryService {
             return historyRepository.findByTeamProfileId(teamProfileId).getId();
         }
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<HistoryResponse> getAllHistories(final Long memberId) {
+        Long teamProfileId = teamProfileRepository.findByMemberId(memberId).getId();
+        final List<History> histories = historyRepository.findAllByTeamProfileId(teamProfileId);
+        return histories.stream()
+                .map(this::getHistoryResponse)
+                .toList();
+    }
+
+    private HistoryResponse getHistoryResponse(final History history) {
+        return HistoryResponse.of(history);
     }
 
     public void save(final Long memberId, final HistoryCreateRequest historyCreateRequest) {
@@ -71,4 +86,19 @@ public class HistoryService {
         history.update(historyUpdateRequest);
         historyRepository.save(history);
     }
+
+    public void delete(final Long memberId) {
+        final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId);
+        final Long historyId = validateHistoryByMember(memberId);
+
+        if (!historyRepository.existsById(historyId)) {
+            throw new BadRequestException(NOT_FOUND_HISTORY_ID);
+        }
+
+        historyRepository.deleteById(historyId);
+
+        // 프로그레스바 업데이트 로직 구현 필요
+    }
+
+
 }

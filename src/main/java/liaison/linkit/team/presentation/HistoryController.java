@@ -13,16 +13,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/team/history")
 public class HistoryController {
 
     private final HistoryService historyService;
-//
-//    @GetMapping("/list")
-//    @MemberOnly
-//    public ResponseEntity<List<HistoryResponse>> get
+
+    @GetMapping("/list")
+    @MemberOnly
+    public ResponseEntity<List<HistoryResponse>> getHistories(
+            @Auth final Accessor accessor
+    ) {
+        final List<HistoryResponse> historyResponses = historyService.getAllHistories(accessor.getMemberId());
+        return ResponseEntity.ok().body(historyResponses);
+    }
 
     @PostMapping
     @MemberOnly
@@ -51,6 +58,15 @@ public class HistoryController {
             @RequestBody @Valid HistoryUpdateRequest historyUpdateRequest
     ) {
         historyService.update(accessor.getMemberId(), historyUpdateRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    @MemberOnly
+    public ResponseEntity<Void> deleteHistory(
+            @Auth final Accessor accessor
+    ) {
+        historyService.delete(accessor.getMemberId());
         return ResponseEntity.noContent().build();
     }
 }

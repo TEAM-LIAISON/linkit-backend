@@ -15,5 +15,5 @@ public interface AntecedentsRepository extends JpaRepository<Antecedents, Long> 
     Antecedents findByProfileId(@Param("profileId") final Long profileId);
 
     @Query("SELECT antecedents FROM Antecedents antecedents WHERE antecedents.profile.id = :profileId")
-    List<Antecedents> findAllByProfileId(Long profileId);
+    List<Antecedents> findAllByProfileId(final Long profileId);
 }

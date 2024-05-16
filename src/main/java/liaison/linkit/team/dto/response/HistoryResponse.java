@@ -27,4 +27,16 @@ public class HistoryResponse {
                 history.isInProgress()
         );
     }
+
+    public static HistoryResponse of(final History history) {
+        return new HistoryResponse(
+                history.getHistoryOneLineIntroduction(),
+                history.getStartYear(),
+                history.getStartMonth(),
+                history.getEndYear(),
+                history.getEndMonth(),
+                history.getHistoryIntroduction(),
+                history.isInProgress()
+        );
+    }
 }
