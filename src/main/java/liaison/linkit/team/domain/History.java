@@ -1,6 +1,7 @@
 package liaison.linkit.team.domain;
 
 import jakarta.persistence.*;
+import liaison.linkit.team.dto.request.HistoryUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,8 +40,41 @@ public class History {
     private int endMonth;
 
     @Column(name = "history_introduction")
-    private int historyIntroduction;
+    private String historyIntroduction;
 
     @Column(name = "in_progress")
     private boolean inProgress;
+
+    public static History of(
+            final TeamProfile teamProfile,
+            final String historyOneLineIntroduction,
+            final int startYear,
+            final int startMonth,
+            final int endYear,
+            final int endMonth,
+            final String historyIntroduction,
+            final boolean inProgress
+    ) {
+        return new History(
+                null,
+                teamProfile,
+                historyOneLineIntroduction,
+                startYear,
+                startMonth,
+                endYear,
+                endMonth,
+                historyIntroduction,
+                inProgress
+        );
+    }
+
+    public void update(final HistoryUpdateRequest historyUpdateRequest) {
+        this.historyOneLineIntroduction = historyUpdateRequest.getHistoryOneLineIntroduction();
+        this.startYear = historyUpdateRequest.getStartYear();
+        this.startMonth = historyUpdateRequest.getStartMonth();
+        this.endYear = historyUpdateRequest.getEndYear();
+        this.endMonth = historyUpdateRequest.getEndMonth();
+        this.historyIntroduction = historyUpdateRequest.getHistoryIntroduction();
+        this.inProgress = historyUpdateRequest.isInProgress();
+    }
 }
