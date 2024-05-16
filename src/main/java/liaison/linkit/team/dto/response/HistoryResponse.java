@@ -13,7 +13,7 @@ public class HistoryResponse {
     private final int startMonth;
     private final int endYear;
     private final int endMonth;
-    private final int historyIntroduction;
+    private final String historyIntroduction;
     private final boolean inProgress;
 
     public static HistoryResponse personalHistory(final History history) {
