@@ -1,6 +1,8 @@
 package liaison.linkit.profile.dto.request;
 
+import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.education.Degree;
+import liaison.linkit.profile.domain.education.Education;
 import liaison.linkit.profile.domain.education.Major;
 import liaison.linkit.profile.domain.education.School;
 import lombok.AllArgsConstructor;
@@ -16,7 +18,27 @@ public class EducationCreateRequest {
     private final int graduationMonth;
     private final String educationDescription;
 
-    private final School school;
-    private final Degree degree;
-    private final Major major;
+    private final String schoolName;
+    private final String degreeName;
+    private final String majorName;
+
+    public Education toEntity(
+            final Profile profile,
+            final School school,
+            final Degree degree,
+            final Major major
+    ) {
+        return new Education(
+                null,
+                profile,
+                admissionYear,
+                admissionMonth,
+                graduationYear,
+                graduationMonth,
+                educationDescription,
+                school,
+                degree,
+                major
+        );
+    }
 }

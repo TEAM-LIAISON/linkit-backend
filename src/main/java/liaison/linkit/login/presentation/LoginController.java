@@ -45,7 +45,8 @@ public class LoginController {
         return ResponseEntity.status(CREATED).body(
                 new LoginResponse(
                         memberTokensAndIsBasicInform.getAccessToken(),
-                        memberTokensAndIsBasicInform.getIsMemberBasicInform()
+                        memberTokensAndIsBasicInform.getIsMemberBasicInform(),
+                        memberTokensAndIsBasicInform.getEmail()
                 )
         );
     }

@@ -1,6 +1,8 @@
 package liaison.linkit.profile.dto.request;
 
 import jakarta.validation.constraints.NotNull;
+import liaison.linkit.profile.domain.Antecedents;
+import liaison.linkit.profile.domain.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -27,4 +29,18 @@ public class AntecedentsCreateRequest {
 
     @NotNull(message = "이력 설명을 입력해주세요")
     private final String antecedentsDescription;
+
+    public Antecedents toEntity(final Profile profile) {
+        return new Antecedents(
+                null,
+                profile,
+                projectName,
+                projectRole,
+                startYear,
+                startMonth,
+                endYear,
+                endMonth,
+                antecedentsDescription
+        );
+    }
 }

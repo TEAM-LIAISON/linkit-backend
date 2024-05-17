@@ -15,15 +15,11 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class MemberBasicInform {
 
-    private static final String DEFAULT_IMAGE_NAME = "default-profile-image.png";
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_basic_inform_id")
     private Long id;
-
-    @Column(nullable = false)
-    private String profileImageName;
 
     // 성함
     @Column(nullable = false, length = 30)
@@ -56,7 +52,6 @@ public class MemberBasicInform {
             final Member member)
     {
         this.id = id;
-        this.profileImageName = DEFAULT_IMAGE_NAME;
         this.memberName = memberName;
         this.contact = contact;
         this.memberRole = memberRole;

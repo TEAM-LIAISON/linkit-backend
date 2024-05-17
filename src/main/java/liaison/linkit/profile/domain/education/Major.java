@@ -22,5 +22,5 @@ public class Major {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String majorType;
+    private String majorName;
 }
