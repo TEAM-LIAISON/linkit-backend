@@ -43,11 +43,16 @@ include::{snippets}/member-controller-test/create-member-basic-inform/request-co
 ==== 응답
 include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
 
+== 1.5. 온보딩 가이드 기입
+=== 1.5.2. 나의 역량 (2/3)
+include::{snippets}/profile-controller-test/create-default-profile/http-request.adoc[]
+include::{snippets}/profile-controller-test/create-default-profile/request-fields.adoc[]
+요청 헤더
+include::{snippets}/profile-controller-test/create-default-profile/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/profile-controller-test/create-default-profile/request-cookies.adoc[]
+
 == 회원가입 및 로그인 API
-
-
-
-
 
 === 로그아웃 (DELETE /logout)
 

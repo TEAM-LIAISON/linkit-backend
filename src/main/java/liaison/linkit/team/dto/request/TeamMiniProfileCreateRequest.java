@@ -10,6 +10,7 @@ public class TeamMiniProfileCreateRequest {
 
     // 팀 규모 & 업종 분야 필요
 
+
     @NotNull(message = "팀 이름을 입력해주세요.")
     private final String teamName;
 

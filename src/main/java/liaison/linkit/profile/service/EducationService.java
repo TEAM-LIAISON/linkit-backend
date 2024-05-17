@@ -3,8 +3,14 @@ package liaison.linkit.profile.service;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
-import liaison.linkit.profile.domain.repository.EducationRepository;
+import liaison.linkit.profile.domain.education.Major;
+import liaison.linkit.profile.domain.education.School;
+import liaison.linkit.profile.domain.repository.Education.DegreeRepository;
+import liaison.linkit.profile.domain.repository.Education.EducationRepository;
+import liaison.linkit.profile.domain.repository.Education.MajorRepository;
+import liaison.linkit.profile.domain.repository.Education.SchoolRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.EducationCreateRequest;
 import liaison.linkit.profile.dto.request.EducationUpdateRequest;
@@ -25,6 +31,9 @@ public class EducationService {
 
     private final ProfileRepository profileRepository;
     private final EducationRepository educationRepository;
+    private final SchoolRepository schoolRepository;
+    private final DegreeRepository degreeRepository;
+    private final MajorRepository majorRepository;
 
     public Long validateEducationByMember(Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
@@ -37,6 +46,9 @@ public class EducationService {
 
     public void save(final Long memberId, final EducationCreateRequest educationCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
+        final School school = schoolRepository.findBySchoolName(educationCreateRequest.getSchoolName());
+        final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName());
+        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName());
 
         final Education newEducation = Education.of(
                 profile,
@@ -45,9 +57,9 @@ public class EducationService {
                 educationCreateRequest.getGraduationYear(),
                 educationCreateRequest.getGraduationMonth(),
                 educationCreateRequest.getEducationDescription(),
-                educationCreateRequest.getSchool(),
-                educationCreateRequest.getDegree(),
-                educationCreateRequest.getMajor()
+                school,
+                degree,
+                major
         );
         educationRepository.save(newEducation);
         // 학력 항목이 기입되었음을 나타냄 -> true 전달

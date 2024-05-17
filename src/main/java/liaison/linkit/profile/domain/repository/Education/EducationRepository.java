@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain.repository;
+package liaison.linkit.profile.domain.repository.Education;
 
 import liaison.linkit.profile.domain.education.Education;
 import org.springframework.data.jpa.repository.JpaRepository;

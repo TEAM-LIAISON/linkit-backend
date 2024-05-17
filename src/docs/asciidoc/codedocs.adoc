@@ -34,6 +34,6 @@
 | 서버 에러
 |===
 
-=== Exception codes
+=== Exception codes (code, message 수정 많이 남음)
 [[exception-codes]]
 include::{snippets}/exception-code-controller-test/get-exception-codes/exception-response-fields.adoc[]
