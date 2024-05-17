@@ -24,7 +24,7 @@ public class MiniProfileService {
     private final MiniProfileRepository miniProfileRepository;
     private final ProfileRepository profileRepository;
 
-    public Long validateMiniProfileByMember(Long memberId) {
+    public Long validateMiniProfileByMember(final Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
         if (!miniProfileRepository.existsByProfileId(profileId)) {
             throw new AuthException(INVALID_MINI_PROFILE_WITH_MEMBER);
@@ -33,7 +33,7 @@ public class MiniProfileService {
         }
     }
 
-    public MiniProfileResponse save(final Long memberId, final MiniProfileCreateRequest miniProfileCreateRequest) {
+    public void save(final Long memberId, final MiniProfileCreateRequest miniProfileCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
 
         final MiniProfile newMiniProfile = MiniProfile.of(
@@ -43,8 +43,8 @@ public class MiniProfileService {
                 miniProfileCreateRequest.getFirstFreeText(),
                 miniProfileCreateRequest.getSecondFreeText()
         );
-        final MiniProfile miniProfile = miniProfileRepository.save(newMiniProfile);
-        return getMiniProfileResponse(miniProfile);
+
+        miniProfileRepository.save(newMiniProfile);
     }
 
     private MiniProfileResponse getMiniProfileResponse(final MiniProfile miniProfile) {

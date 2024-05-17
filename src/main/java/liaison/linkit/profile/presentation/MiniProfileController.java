@@ -9,6 +9,7 @@ import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.MiniProfileResponse;
 import liaison.linkit.profile.service.MiniProfileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +17,15 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/mini-profile")
 public class MiniProfileController {
+
     private final MiniProfileService miniProfileService;
 
     // 해당 회원이 가지고 있는 미니 프로필 정보를 가져옴
     @GetMapping
     @MemberOnly
-    public ResponseEntity<MiniProfileResponse> getMiniProfile(@Auth final Accessor accessor) {
+    public ResponseEntity<MiniProfileResponse> getMiniProfile(
+            @Auth final Accessor accessor
+    ) {
         Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
         final MiniProfileResponse miniProfileResponse = miniProfileService.getMiniProfileDetail(miniProfileId);
         return ResponseEntity.ok().body(miniProfileResponse);
@@ -30,12 +34,12 @@ public class MiniProfileController {
     // 미니 프로필 생성 요청
     @PostMapping
     @MemberOnly
-    public ResponseEntity<MiniProfileResponse> createMiniProfile(
+    public ResponseEntity<Void> createMiniProfile(
             @Auth final Accessor accessor,
             @RequestBody @Valid MiniProfileCreateRequest miniProfileCreateRequest
     ){
-        final MiniProfileResponse miniProfileResponse = miniProfileService.save(accessor.getMemberId(), miniProfileCreateRequest);
-        return ResponseEntity.ok().body(miniProfileResponse);
+        miniProfileService.save(accessor.getMemberId(), miniProfileCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // 미니 프로필 항목 수정

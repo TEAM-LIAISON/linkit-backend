@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -19,7 +20,8 @@ public class TeamIntroduction {
     @Column(name = "team_introduction_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @JoinColumn(name = "team_profile_id", unique = true)
     private TeamProfile teamProfile;
 
     @Column(name = "team_introduction_content")

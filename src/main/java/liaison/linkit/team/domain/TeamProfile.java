@@ -2,6 +2,7 @@ package liaison.linkit.team.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,11 +23,14 @@ public class TeamProfile {
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
+    @OneToOne(mappedBy = "teamProfile")
+    private TeamMiniProfile teamMiniProfile;
+
+    @OneToOne(mappedBy = "teamProfile")
+    private TeamIntroduction teamIntroduction;
+
     @Column(name = "team_profile_completion")
     private int teamProfileCompletion;
-
-    @Column(name = "team_introduction")
-    private String teamIntroduction;
 
     @Column(nullable = false)
     private boolean isTeamTeamBuildingField;

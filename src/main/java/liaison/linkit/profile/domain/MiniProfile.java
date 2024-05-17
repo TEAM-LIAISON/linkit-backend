@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -19,8 +21,8 @@ public class MiniProfile {
     @Column(name = "mini_profile_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "profile_id")
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @JoinColumn(name = "profile_id", unique = true)
     private Profile profile;
 
     @Column(length = 40)

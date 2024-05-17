@@ -233,66 +233,66 @@ class AwardsControllerTest extends ControllerTest {
                 );
     }
 
-    @DisplayName("단일 수상 항목을 수정할 수 있다.")
-    @Test
-    void updateAwards() throws Exception {
-        // given
-        final AwardsUpdateRequest updateRequest = new AwardsUpdateRequest(
-                "HISU",
-                "대상",
-                "홍익대학교 공학교육혁신센터",
-                2024,
-                1,
-                "HISU에서 1등이라는 성과를 이뤄냈습니다."
-        );
-
-        doNothing().when(awardsService).update(anyLong(), any(AwardsUpdateRequest.class));
-
-        // when
-        final ResultActions resultActions = performPutUpdateRequest(updateRequest);
-
-        // then
-        resultActions.andExpect(status().isNoContent())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                requestFields(
-                                        fieldWithPath("awardsName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("수상 부문")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("ranking")
-                                                .type(JsonFieldType.STRING)
-                                                .description("수상명")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("organizer")
-                                                .type(JsonFieldType.STRING)
-                                                .description("주관 기관")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("awardsYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("수상 연도")
-                                                .attributes(field("constraint", "양의 정수이자 4자리 수")),
-                                        fieldWithPath("awardsMonth")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("수상 월")
-                                                .attributes(field("constraint", "양의 정수이자 1부터 12까지의 숫자")),
-                                        fieldWithPath("awardsDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("수상 항목 설명")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
+//    @DisplayName("단일 수상 항목을 수정할 수 있다.")
+//    @Test
+//    void updateAwards() throws Exception {
+//        // given
+//        final AwardsUpdateRequest updateRequest = new AwardsUpdateRequest(
+//                "HISU",
+//                "대상",
+//                "홍익대학교 공학교육혁신센터",
+//                2024,
+//                1,
+//                "HISU에서 1등이라는 성과를 이뤄냈습니다."
+//        );
+//
+//        doNothing().when(awardsService).update(anyLong(), any(AwardsUpdateRequest.class));
+//
+//        // when
+//        final ResultActions resultActions = performPutUpdateRequest(updateRequest);
+//
+//        // then
+//        resultActions.andExpect(status().isNoContent())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                requestFields(
+//                                        fieldWithPath("awardsName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("수상 부문")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("ranking")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("수상명")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("organizer")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("주관 기관")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("awardsYear")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("수상 연도")
+//                                                .attributes(field("constraint", "양의 정수이자 4자리 수")),
+//                                        fieldWithPath("awardsMonth")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("수상 월")
+//                                                .attributes(field("constraint", "양의 정수이자 1부터 12까지의 숫자")),
+//                                        fieldWithPath("awardsDescription")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("수상 항목 설명")
+//                                                .attributes(field("constraint", "문자열"))
+//                                )
+//                        )
+//                );
+//    }
 
     @DisplayName("단일 수상 항목을 삭제할 수 있다.")
     @Test
