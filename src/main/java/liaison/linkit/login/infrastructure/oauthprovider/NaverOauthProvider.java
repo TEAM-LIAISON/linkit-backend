@@ -1,20 +1,23 @@
 package liaison.linkit.login.infrastructure.oauthprovider;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.login.domain.OauthAccessToken;
 import liaison.linkit.login.domain.OauthProvider;
 import liaison.linkit.login.domain.OauthUserInfo;
-import liaison.linkit.login.infrastructure.oauthUserInfo.GoogleUserInfo;
+import liaison.linkit.login.infrastructure.oauthUserInfo.NaverUserInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_AUTHORIZATION_CODE;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
 
 @Component
 public class NaverOauthProvider implements OauthProvider {
@@ -47,20 +50,35 @@ public class NaverOauthProvider implements OauthProvider {
     public OauthUserInfo getUserInfo(final String code) {
         final String accessToken = requestAccessToken(code);
         final HttpHeaders headers = new HttpHeaders();
+
         headers.setBearerAuth(accessToken);
-        final HttpEntity<MultiValueMap<String, String>> userInfoRequestEntity = new HttpEntity<>(headers);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        final ResponseEntity<GoogleUserInfo> response = restTemplate.exchange(
-                userUri,
-                HttpMethod.GET,
-                userInfoRequestEntity,
-                GoogleUserInfo.class
-        );
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> responseUser;
+        try {
+            responseUser = restTemplate.exchange(
+                    "https://openapi.naver.com/v1/nid/me",
+                    HttpMethod.GET,
+                    new HttpEntity<>(headers),
+                    String.class
+            );
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Failed to retrieve user info", e);
         }
-        throw new AuthException(NOT_SUPPORTED_OAUTH_SERVICE);
+
+        String userInfo = responseUser.getBody();
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        try {
+            JsonNode jsonNode = objectMapper.readTree(userInfo);
+            JsonNode responseNode = jsonNode.get("response");
+            String id = responseNode.get("id").asText();
+            String email = responseNode.get("email").asText();
+            return new NaverUserInfo(id, email);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to parse user info", e);
+        }
     }
 
     private String requestAccessToken(final String code) {

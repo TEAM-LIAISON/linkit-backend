@@ -26,8 +26,8 @@ public class AwardsService {
     private final AwardsRepository awardsRepository;
     private final ProfileRepository profileRepository;
 
-    public Long validateAwardsByMember(Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
+    public Long validateAwardsByMember(final Long memberId) {
+        final Long profileId = profileRepository.findByMemberId(memberId).getId();
         if(!awardsRepository.existsByProfileId(profileId)){
             throw new AuthException(INVALID_AWARDS_WITH_MEMBER);
         } else {

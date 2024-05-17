@@ -54,6 +54,7 @@ public class KakaoOauthProvider implements OauthProvider {
         final String accessToken = requestAccessToken(code);
         final HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
+
         final HttpEntity<MultiValueMap<String, String>> userInfoRequestEntity = new HttpEntity<>(headers);
 
         final Map<String, Boolean> queryParam = new HashMap<>();

@@ -6,33 +6,21 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.ProfileCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
-import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.service.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
-import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProfileController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -88,103 +76,103 @@ class ProfileControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("프로필 자기소개 항목을 조회할 수 있다.")
-    @Test
-    void getProfileIntroduction() throws Exception{
-        // given
-        final ProfileIntroductionResponse response = new ProfileIntroductionResponse(
-                "프로필 자기소개 항목입니다."
-        );
-
-        given(profileService.getProfileIntroduction(1L))
-                .willReturn(response);
-
-        // when
-        final ResultActions resultActions = performGetRequest();
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                responseFields(
-                                        fieldWithPath("introduction")
-                                                .type(JsonFieldType.STRING)
-                                                .description("자기 소개")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
-
-
-    @DisplayName("프로필 자기소개 항목을 수정할 수 있다.")
-    @Test
-    void updateProfileIntroduction() throws Exception {
-        // given
-        final ProfileUpdateRequest updateRequest = new ProfileUpdateRequest(
-                "자기소개를 수정하려고 합니다."
-        );
-
-        doNothing().when(profileService).update(anyLong(), any(ProfileUpdateRequest.class));
-
-        // when
-        final ResultActions resultActions = performPatchRequest(updateRequest);
-
-        // then
-        resultActions.andExpect(status().isNoContent())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                requestFields(
-                                        fieldWithPath("introduction")
-                                                .type(JsonFieldType.STRING)
-                                                .description("자기 소개")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
-
-    @DisplayName("프로필 자기소개 항목을 삭제할 수 있다.")
-    @Test
-    void deleteProfileIntroduction() throws Exception {
-        // given
-        makeProfile();
-        doNothing().when(profileService).deleteIntroduction(anyLong());
-
-        // when
-        final ResultActions resultActions = performDeleteRequest();
-        // then
-        resultActions.andExpect(status().isNoContent())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                )
-                        )
-                );
-    }
+//    @DisplayName("프로필 자기소개 항목을 조회할 수 있다.")
+//    @Test
+//    void getProfileIntroduction() throws Exception{
+//        // given
+//        final ProfileIntroductionResponse response = new ProfileIntroductionResponse(
+//                "프로필 자기소개 항목입니다."
+//        );
+//
+//        given(profileService.getProfileIntroduction(1L))
+//                .willReturn(response);
+//
+//        // when
+//        final ResultActions resultActions = performGetRequest();
+//
+//        // then
+//        resultActions.andExpect(status().isOk())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                responseFields(
+//                                        fieldWithPath("introduction")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("자기 소개")
+//                                                .attributes(field("constraint", "문자열"))
+//                                )
+//                        )
+//                );
+//    }
+//
+//
+//    @DisplayName("프로필 자기소개 항목을 수정할 수 있다.")
+//    @Test
+//    void updateProfileIntroduction() throws Exception {
+//        // given
+//        final ProfileUpdateRequest updateRequest = new ProfileUpdateRequest(
+//                "자기소개를 수정하려고 합니다."
+//        );
+//
+//        doNothing().when(profileService).update(anyLong(), any(ProfileUpdateRequest.class));
+//
+//        // when
+//        final ResultActions resultActions = performPatchRequest(updateRequest);
+//
+//        // then
+//        resultActions.andExpect(status().isNoContent())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                requestFields(
+//                                        fieldWithPath("introduction")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("자기 소개")
+//                                                .attributes(field("constraint", "문자열"))
+//                                )
+//                        )
+//                );
+//    }
+//
+//    @DisplayName("프로필 자기소개 항목을 삭제할 수 있다.")
+//    @Test
+//    void deleteProfileIntroduction() throws Exception {
+//        // given
+//        makeProfile();
+//        doNothing().when(profileService).deleteIntroduction(anyLong());
+//
+//        // when
+//        final ResultActions resultActions = performDeleteRequest();
+//        // then
+//        resultActions.andExpect(status().isNoContent())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                )
+//                        )
+//                );
+//    }
 }

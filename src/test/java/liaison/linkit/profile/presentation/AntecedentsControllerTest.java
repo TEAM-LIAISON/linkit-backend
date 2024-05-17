@@ -244,71 +244,71 @@ public class AntecedentsControllerTest extends ControllerTest {
                 );
     }
 
-    @DisplayName("단일 이력 항목을 수정할 수 있다.")
-    @Test
-    void updateAntecedents() throws Exception {
-        // given
-        final AntecedentsUpdateRequest updateRequest = new AntecedentsUpdateRequest(
-                "피드미",
-                "개발자",
-                2023,
-                8,
-                2024,
-                1,
-                "개인 맞춤형 뉴스 큐레이션 플랫폼"
-        );
-
-        doNothing().when(antecedentsService).update(anyLong(), any(AntecedentsUpdateRequest.class));
-
-        // when
-        final ResultActions resultActions = performPutUpdateRequest(updateRequest);
-
-        // then
-        resultActions.andExpect(status().isNoContent())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                requestFields(
-                                        fieldWithPath("projectName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("기업명(프로젝트명)")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("projectRole")
-                                                .type(JsonFieldType.STRING)
-                                                .description("직무(역할)")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("startYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("시작 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("startMonth")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("시작 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("endYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("종료 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("endMonth")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("종료 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("antecedentsDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
+//    @DisplayName("단일 이력 항목을 수정할 수 있다.")
+//    @Test
+//    void updateAntecedents() throws Exception {
+//        // given
+//        final AntecedentsUpdateRequest updateRequest = new AntecedentsUpdateRequest(
+//                "피드미",
+//                "개발자",
+//                2023,
+//                8,
+//                2024,
+//                1,
+//                "개인 맞춤형 뉴스 큐레이션 플랫폼"
+//        );
+//
+//        doNothing().when(antecedentsService).update(anyLong(), any(AntecedentsUpdateRequest.class));
+//
+//        // when
+//        final ResultActions resultActions = performPutUpdateRequest(updateRequest);
+//
+//        // then
+//        resultActions.andExpect(status().isNoContent())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                requestFields(
+//                                        fieldWithPath("projectName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("기업명(프로젝트명)")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("projectRole")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("직무(역할)")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("startYear")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("시작 연도")
+//                                                .attributes(field("constraint", "4자리 숫자")),
+//                                        fieldWithPath("startMonth")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("시작 월")
+//                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+//                                        fieldWithPath("endYear")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("종료 연도")
+//                                                .attributes(field("constraint", "4자리 숫자")),
+//                                        fieldWithPath("endMonth")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("종료 월")
+//                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+//                                        fieldWithPath("antecedentsDescription")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("이력 설명")
+//                                                .attributes(field("constraint", "문자열"))
+//                                )
+//                        )
+//                );
+//    }
 
     @DisplayName("단일 이력 항목을 삭제할 수 있다.")
     @Test

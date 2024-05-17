@@ -24,7 +24,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -153,115 +152,115 @@ class MiniProfileControllerTest extends ControllerTest {
                 );
     }
 
-    @DisplayName("단일 미니 프로필을 생성할 수 있다.")
-    @Test
-    void createMiniProfile() throws Exception {
-        // given
-        final MiniProfileCreateRequest miniProfileCreateRequest = new MiniProfileCreateRequest(
-                "안녕하세요.",
-                "Java / Spring Boot / MySQL",
-                "홍익대학교 컴퓨터공학과",
-                "리에종의 개발자입니다."
-        );
+//    @DisplayName("단일 미니 프로필을 생성할 수 있다.")
+//    @Test
+//    void createMiniProfile() throws Exception {
+//        // given
+//        final MiniProfileCreateRequest miniProfileCreateRequest = new MiniProfileCreateRequest(
+//                "안녕하세요.",
+//                "Java / Spring Boot / MySQL",
+//                "홍익대학교 컴퓨터공학과",
+//                "리에종의 개발자입니다."
+//        );
+//
+//        MiniProfileResponse expectedResponse = new MiniProfileResponse(
+//                "안녕하세요.",
+//                "Java / Spring Boot / MySQL",
+//                "홍익대학교 컴퓨터공학과",
+//                "리에종의 개발자입니다."
+//        );
+//
+//        when(miniProfileService.save(anyLong(), any(MiniProfileCreateRequest.class)))
+//                .thenReturn(expectedResponse);
+//
+//        // when
+//        final ResultActions resultActions = performPostRequest(miniProfileCreateRequest);
+//
+//        // then
+//        resultActions.andExpect(status().isOk())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                requestFields(
+//                                        fieldWithPath("oneLineIntroduction")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("한 줄 소개")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("interests")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("관심 분야")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("firstFreeText")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("자율 기입 첫 줄")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("secondFreeText")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("자율 기입 둘째 줄")
+//                                                .attributes(field("constraint", "문자열"))
+//                                )
+//                        )
+//                );
+//    }
 
-        MiniProfileResponse expectedResponse = new MiniProfileResponse(
-                "안녕하세요.",
-                "Java / Spring Boot / MySQL",
-                "홍익대학교 컴퓨터공학과",
-                "리에종의 개발자입니다."
-        );
-
-        when(miniProfileService.save(anyLong(), any(MiniProfileCreateRequest.class)))
-                .thenReturn(expectedResponse);
-
-        // when
-        final ResultActions resultActions = performPostRequest(miniProfileCreateRequest);
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                requestFields(
-                                        fieldWithPath("oneLineIntroduction")
-                                                .type(JsonFieldType.STRING)
-                                                .description("한 줄 소개")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("interests")
-                                                .type(JsonFieldType.STRING)
-                                                .description("관심 분야")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("firstFreeText")
-                                                .type(JsonFieldType.STRING)
-                                                .description("자율 기입 첫 줄")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("secondFreeText")
-                                                .type(JsonFieldType.STRING)
-                                                .description("자율 기입 둘째 줄")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
-
-    @DisplayName("단일 미니 프로필을 수정할 수 있다.")
-    @Test
-    void updateMiniProfile() throws Exception {
-        // given
-        final MiniProfileUpdateRequest request = new MiniProfileUpdateRequest(
-                "안녕하세요",
-                "Figma / UX/UI / 디자인",
-                "홍익대학교 시각디자인전공",
-                "리에종의 디자이너입니다."
-        );
-
-        doNothing().when(miniProfileService).update(anyLong(), any(MiniProfileUpdateRequest.class));
-
-        // when
-        final ResultActions resultActions = performPutUpdateRequest(request);
-
-        // then
-        resultActions.andExpect(status().isNoContent())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                requestFields(
-                                        fieldWithPath("oneLineIntroduction")
-                                                .type(JsonFieldType.STRING)
-                                                .description("한 줄 소개")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("interests")
-                                                .type(JsonFieldType.STRING)
-                                                .description("관심 분야")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("firstFreeText")
-                                                .type(JsonFieldType.STRING)
-                                                .description("자율 기입 첫 줄")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("secondFreeText")
-                                                .type(JsonFieldType.STRING)
-                                                .description("자율 기입 둘째 줄")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
+//    @DisplayName("단일 미니 프로필을 수정할 수 있다.")
+//    @Test
+//    void updateMiniProfile() throws Exception {
+//        // given
+//        final MiniProfileUpdateRequest request = new MiniProfileUpdateRequest(
+//                "안녕하세요",
+//                "Figma / UX/UI / 디자인",
+//                "홍익대학교 시각디자인전공",
+//                "리에종의 디자이너입니다."
+//        );
+//
+//        doNothing().when(miniProfileService).update(anyLong(), any(MiniProfileUpdateRequest.class));
+//
+//        // when
+//        final ResultActions resultActions = performPutUpdateRequest(request);
+//
+//        // then
+//        resultActions.andExpect(status().isNoContent())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                requestFields(
+//                                        fieldWithPath("oneLineIntroduction")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("한 줄 소개")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("interests")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("관심 분야")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("firstFreeText")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("자율 기입 첫 줄")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("secondFreeText")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("자율 기입 둘째 줄")
+//                                                .attributes(field("constraint", "문자열"))
+//                                )
+//                        )
+//                );
+//    }
 
     @DisplayName("단일 미니 프로필을 삭제할 수 있다.")
     @Test

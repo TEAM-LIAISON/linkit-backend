@@ -29,13 +29,15 @@ public class Profile {
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
+    @OneToOne(mappedBy = "profile")
+    private MiniProfile miniProfile;
+
     @OneToMany(mappedBy = "profile", cascade = REMOVE)
     private List<Awards> awardsList = new ArrayList<>();
 
     // 전체 프로필 완성도 값 (%) 직결
     @Column(nullable = false)
     private int completion;
-
 
     @Column(name = "introduction")
     private String introduction;
