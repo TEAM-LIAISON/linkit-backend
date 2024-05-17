@@ -41,6 +41,7 @@ public class S3Uploader {
 
     private String uploadImage(final ImageFile imageFile) {
         final String path = imageFolder + imageFile.getHashedName();
+        log.info("path={}", path);
         final ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(imageFile.getContentType());
         metadata.setContentLength(imageFile.getSize());
