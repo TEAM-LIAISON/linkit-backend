@@ -30,7 +30,8 @@ include::{snippets}/login-controller-test/extend-login/http-response.adoc[]
 include::{snippets}/login-controller-test/extend-login/response-fields.adoc[]
 
 == 1.4. 정보 기입
-=== 1.4.1. 개인정보 기입 (초대코드 아직 구현 X)
+=== 1.4.1. 개인정보 기입 [초대코드 아직 구현 X] (POST /members/basic-inform)
+
 ==== 요청
 include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
 include::{snippets}/member-controller-test/create-member-basic-inform/request-fields.adoc[]
@@ -41,6 +42,7 @@ include::{snippets}/member-controller-test/create-member-basic-inform/request-co
 
 ==== 응답
 include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
+
 == 회원가입 및 로그인 API
 
 
@@ -73,7 +75,7 @@ include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 
 == 멤버 API
 
-=== 멤버 기본 정보 생성 (POST /members/basic-inform)
+
 
 
 

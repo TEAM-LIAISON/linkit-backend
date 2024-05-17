@@ -133,7 +133,7 @@ class MemberControllerTest extends ControllerTest {
                                         fieldWithPath("roleName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("직무 및 역할")
-                                                .attributes(field("constraint", "문자열")),
+                                                .attributes(field("constraint", "문자열 (5개 항목만 인식 가능)")),
                                         fieldWithPath("marketingAgree")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("마케팅 수신 동의 여부")
