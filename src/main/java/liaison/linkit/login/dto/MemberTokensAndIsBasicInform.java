@@ -9,6 +9,7 @@ public class MemberTokensAndIsBasicInform {
     private final String accessToken;
     private final String refreshToken;
     private final boolean isMemberBasicInform;
+    private final String email;
 
     public boolean getIsMemberBasicInform() {
         return this.isMemberBasicInform;

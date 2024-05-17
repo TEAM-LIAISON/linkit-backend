@@ -46,7 +46,7 @@ public class LoginService {
         refreshTokenRepository.save(savedRefreshToken);
 
         return new MemberTokensAndIsBasicInform(
-                memberTokens.getAccessToken(), memberTokens.getRefreshToken(), isMemberBasicInform
+                memberTokens.getAccessToken(), memberTokens.getRefreshToken(), isMemberBasicInform, oauthUserInfo.getEmail()
         );
     }
 

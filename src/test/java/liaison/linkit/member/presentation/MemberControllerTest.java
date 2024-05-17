@@ -92,7 +92,6 @@ class MemberControllerTest extends ControllerTest {
         // given
         final MemberBasicInformResponse response = new MemberBasicInformResponse(
                 1L,
-                "default-profile-image.png",
                 "권동민",
                 "010-3661-4067",
                 "개발자",
@@ -123,10 +122,6 @@ class MemberControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("멤버 기본 정보 ID")
                                                 .attributes(field("constraint", "양의 정수")),
-                                        fieldWithPath("profileImageName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("프로필 이미지 경로")
-                                                .attributes(field("constraint", "aws S3 url")),
                                         fieldWithPath("memberName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("성함")
@@ -153,7 +148,6 @@ class MemberControllerTest extends ControllerTest {
     void createMemberBasicInform() throws Exception {
         // given
         final MemberBasicInformCreateRequest createRequest = new MemberBasicInformCreateRequest(
-                "default-profile-image.png",
                 "권동민",
                 "010-3661-4067",
                 "개발자",
@@ -177,10 +171,6 @@ class MemberControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 requestFields(
-                                        fieldWithPath("profileImageName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("프로필 이미지 경로")
-                                                .attributes(field("constraint", "aws S3 url")),
                                         fieldWithPath("memberName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("성함")

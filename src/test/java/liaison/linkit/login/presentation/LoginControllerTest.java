@@ -49,6 +49,7 @@ public class LoginControllerTest extends ControllerTest {
     private final static String REFRESH_TOKEN = "refreshToken";
     private final static String ACCESS_TOKEN = "accessToken";
     private final static String RENEW_ACCESS_TOKEN = "I'mNewAccessToken!";
+    private final static String EMAIL = "linkit@gmail.com";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -62,7 +63,7 @@ public class LoginControllerTest extends ControllerTest {
         // given
         final LoginRequest loginRequest = new LoginRequest("code");
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, ACCESS_TOKEN);
-        final MemberTokensAndIsBasicInform memberTokensAndIsBasicInform = new MemberTokensAndIsBasicInform(ACCESS_TOKEN, REFRESH_TOKEN, false);
+        final MemberTokensAndIsBasicInform memberTokensAndIsBasicInform = new MemberTokensAndIsBasicInform(ACCESS_TOKEN, REFRESH_TOKEN, false, EMAIL);
 
         when(loginService.login(anyString(), anyString()))
                 .thenReturn(memberTokensAndIsBasicInform);
@@ -78,7 +79,7 @@ public class LoginControllerTest extends ControllerTest {
                         restDocs.document(
                                 pathParameters(
                                         parameterWithName("provider")
-                                                .description("로그인 유형")
+                                                .description("로그인 유형 (플랫폼 영어 이름)")
                                 ),
                                 requestFields(
                                         fieldWithPath("code")
@@ -93,13 +94,17 @@ public class LoginControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)")),
                                         fieldWithPath("memberBasicInform")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("기본 정보 기입 여부")
-                                                .attributes(field("constraint", "boolean 값"))
+                                                .description("기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("email")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소셜 로그인 이메일")
+                                                .attributes(field("constraint", "문자열"))
                                 )
                         ))
                 .andReturn();
 
-        final LoginResponse expected = new LoginResponse(memberTokens.getAccessToken(), false);
+        final LoginResponse expected = new LoginResponse(memberTokens.getAccessToken(), false, EMAIL);
         final LoginResponse actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
                 LoginResponse.class
@@ -108,6 +113,8 @@ public class LoginControllerTest extends ControllerTest {
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
+
+
 
     @DisplayName("accessToken 재발급을 통해 로그인을 인정할 수 있다.")
     @Test

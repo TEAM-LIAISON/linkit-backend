@@ -5,44 +5,8 @@
 
 === 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
 
-[[overview-http-status-codes]]
-=== HTTP status codes
-
-|===
-| 상태 코드 | 설명
-
-| `200 OK`
-| 성공
-
-| `201 Created`
-| 리소스 생성
-
-| `204 NO_CONTENT`
-| 성공 후 반환 값 없음
-
-| `400 Bad Request`
-| 잘못된 요청
-
-| `401 Unauthorized`
-| 비인증 상태
-
-| `403 Forbidden`
-| 권한 거부
-
-| `404 Not Found`
-| 존재하지 않는 요청 리소스
-
-| `500 Internal Server Error`
-| 서버 에러
-|===
-
-=== Exception codes
-[[exception-codes]]
-include::{snippets}/exception-code-controller-test/get-exception-codes/exception-response-fields.adoc[]
-
-== 회원가입 및 로그인 API
-
-=== 로그인 (POST /login/:provider)
+== 1.2 로그인
+=== 1.2.1 간편로그인 [각 플랫폼 동일] (POST /login/:provider)
 
 ==== 요청
 include::{snippets}/login-controller-test/login/http-request.adoc[]
@@ -54,7 +18,7 @@ include::{snippets}/login-controller-test/login/http-response.adoc[]
 응답 쿠키
 include::{snippets}/login-controller-test/login/response-fields.adoc[]
 
-=== 토큰 재발급 (POST /token)
+=== (access-token 만료 시) 토큰 재발급 (POST /token)
 
 ==== 요청
 include::{snippets}/login-controller-test/extend-login/http-request.adoc[]
@@ -64,6 +28,24 @@ include::{snippets}/login-controller-test/extend-login/request-cookies.adoc[]
 ==== 응답
 include::{snippets}/login-controller-test/extend-login/http-response.adoc[]
 include::{snippets}/login-controller-test/extend-login/response-fields.adoc[]
+
+== 1.4. 정보 기입
+=== 1.4.1. 개인정보 기입 (초대코드 아직 구현 X)
+==== 요청
+include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
+include::{snippets}/member-controller-test/create-member-basic-inform/request-fields.adoc[]
+요청 헤더
+include::{snippets}/member-controller-test/create-member-basic-inform/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/member-controller-test/create-member-basic-inform/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
+== 회원가입 및 로그인 API
+
+
+
+
 
 === 로그아웃 (DELETE /logout)
 
@@ -93,16 +75,7 @@ include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 
 === 멤버 기본 정보 생성 (POST /members/basic-inform)
 
-==== 요청
-include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
-include::{snippets}/member-controller-test/create-member-basic-inform/request-fields.adoc[]
-요청 헤더
-include::{snippets}/member-controller-test/create-member-basic-inform/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/member-controller-test/create-member-basic-inform/request-cookies.adoc[]
 
-==== 응답
-include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
 
 === 멤버 기본 정보 조회 (GET /members/basic-inform)
 

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 public class MemberBasicInformResponse {
 
     private final Long id;
-    private final String profileImageName;
     private final String memberName;
     private final String contact;
     private final String roleName;
@@ -18,7 +17,6 @@ public class MemberBasicInformResponse {
     public static MemberBasicInformResponse of(final MemberBasicInform memberBasicInform) {
         return new MemberBasicInformResponse(
                 memberBasicInform.getId(),
-                memberBasicInform.getProfileImageName(),
                 memberBasicInform.getMemberName(),
                 memberBasicInform.getContact(),
                 memberBasicInform.getMemberRole().getRoleName(),

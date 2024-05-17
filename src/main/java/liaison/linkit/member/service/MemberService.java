@@ -25,6 +25,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Transactional
 @Slf4j
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final MemberRoleRepository memberRoleRepository;
