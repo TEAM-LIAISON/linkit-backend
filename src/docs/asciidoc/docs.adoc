@@ -52,6 +52,7 @@ include::{snippets}/profile-controller-test/create-default-profile/request-heade
 요청 쿠키
 include::{snippets}/profile-controller-test/create-default-profile/request-cookies.adoc[]
 
+=== 1.5.3. (미니)이력서 완성
 == 회원가입 및 로그인 API
 
 === 로그아웃 (DELETE /logout)
