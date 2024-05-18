@@ -11,6 +11,7 @@ import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class LoginService {
 
     private static final int MAX_TRY_COUNT = 5;
@@ -61,6 +63,8 @@ public class LoginService {
             if (!memberRepository.existsByEmail(email)) {
                 Member member = memberRepository.save(new Member(socialLoginId, email, null));
                 profileRepository.save(new Profile(member, 0,"자기소개를 입력해주세요"));
+                log.info("memberId={}", member.getId());
+
                 return member;
             }
             tryCount += 1;

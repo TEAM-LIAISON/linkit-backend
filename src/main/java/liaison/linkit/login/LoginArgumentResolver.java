@@ -11,6 +11,7 @@ import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -26,6 +27,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final String REFRESH_TOKEN = "refresh-token";
@@ -57,11 +59,18 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         try {
             final String refreshToken = extractRefreshToken(request.getCookies());
             final String accessToken = extractor.extractAccessToken(webRequest.getHeader(AUTHORIZATION));
+            log.info("refreshToken={}", refreshToken);
+            log.info("accessToken={}", accessToken);
+
+            log.info("터지는 여부 1");
             jwtProvider.validateTokens(new MemberTokens(refreshToken, accessToken));
+            log.info("터지는 여부 2");
 
             final Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
+            log.info("터지는 여부 3");
             return Accessor.member(memberId);
         } catch (final RefreshTokenException e) {
+            log.info("asdf");
             return Accessor.guest();
         }
     }

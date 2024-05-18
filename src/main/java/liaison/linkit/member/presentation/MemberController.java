@@ -38,6 +38,7 @@ public class MemberController {
             @Auth final Accessor accessor,
             @RequestBody MemberBasicInformCreateRequest memberBasicInformCreateRequest
     ) {
+
         memberService.save(accessor.getMemberId(), memberBasicInformCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
