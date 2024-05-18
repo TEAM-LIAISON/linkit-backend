@@ -38,7 +38,8 @@ public class MemberService {
         }
     }
 
-    public void save(Long memberId, MemberBasicInformCreateRequest memberBasicInformCreateRequest) {
+    public void save(final Long memberId, final MemberBasicInformCreateRequest memberBasicInformCreateRequest) {
+        log.info("memberId={}", memberId);
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
 
