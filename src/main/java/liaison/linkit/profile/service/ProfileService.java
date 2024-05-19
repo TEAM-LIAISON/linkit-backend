@@ -10,12 +10,14 @@ import liaison.linkit.profile.domain.education.Education;
 import liaison.linkit.profile.domain.education.Major;
 import liaison.linkit.profile.domain.education.School;
 import liaison.linkit.profile.domain.repository.*;
-import liaison.linkit.profile.domain.repository.Attach.AttachFileRepository;
-import liaison.linkit.profile.domain.repository.Attach.AttachUrlRepository;
-import liaison.linkit.profile.domain.repository.Education.DegreeRepository;
-import liaison.linkit.profile.domain.repository.Education.EducationRepository;
-import liaison.linkit.profile.domain.repository.Education.MajorRepository;
-import liaison.linkit.profile.domain.repository.Education.SchoolRepository;
+import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
+import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
+import liaison.linkit.profile.domain.repository.education.DegreeRepository;
+import liaison.linkit.profile.domain.repository.education.EducationRepository;
+import liaison.linkit.profile.domain.repository.education.MajorRepository;
+import liaison.linkit.profile.domain.repository.education.SchoolRepository;
+import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
+import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.domain.teambuilding.ProfileTeamBuildingField;
@@ -46,8 +48,8 @@ public class ProfileService {
     private final ProfileSkillRepository profileSkillRepository;
     private final SkillRepository skillRepository;
     // 희망 팀빌딩 분야 정보 담당
-    private final ProfileTeamBuildingRepository profileTeamBuildingRepository;
-    private final TeamBuildingRepository teamBuildingRepository;
+    private final ProfileTeamBuildingFieldRepository profileTeamBuildingFieldRepository;
+    private final TeamBuildingFieldRepository teamBuildingFieldRepository;
 
     // 이력 정보 담당
     private final AntecedentsRepository antecedentsRepository;
@@ -80,7 +82,7 @@ public class ProfileService {
     {
         final Profile profile = profileRepository.findByMemberId(memberId);
 
-        final List<TeamBuildingField> teamBuildingFields = teamBuildingRepository
+        final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
                 .findTeamBuildingFieldsByFieldNames(defaultProfileCreateRequest.getProfileTeamBuildingResponse().getTeamBuildingFieldNames());
         final List<Skill> skills = skillRepository.findSkillNamesBySkillNames(defaultProfileCreateRequest.getProfileSkillCreateRequest().getSkillNames());
 
@@ -105,7 +107,7 @@ public class ProfileService {
         final List<Antecedents> antecedents = defaultProfileCreateRequest
                 .getAntecedentsCreateRequest().stream().map(request -> request.toEntity(profile)).toList();
 
-        profileTeamBuildingRepository.saveAll(profileTeamBuildingFields);
+        profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
         profileSkillRepository.saveAll(profileSkills);
         educationRepository.saveAll(educations);
         antecedentsRepository.saveAll(antecedents);

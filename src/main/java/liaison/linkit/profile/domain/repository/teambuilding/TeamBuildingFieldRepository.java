@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain.repository;
+package liaison.linkit.profile.domain.repository.teambuilding;
 
 import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface TeamBuildingRepository extends JpaRepository<TeamBuildingField, Long> {
+public interface TeamBuildingFieldRepository extends JpaRepository<TeamBuildingField, Long> {
 
     @Query("""
            SELECT t

@@ -94,7 +94,7 @@ class MemberControllerTest extends ControllerTest {
                 1L,
                 "권동민",
                 "010-3661-4067",
-                "개발자",
+                "개발",
                 true
         );
 
@@ -150,7 +150,7 @@ class MemberControllerTest extends ControllerTest {
         final MemberBasicInformCreateRequest createRequest = new MemberBasicInformCreateRequest(
                 "권동민",
                 "010-3661-4067",
-                "개발자",
+                "개발",
                 true
         );
 
@@ -182,7 +182,7 @@ class MemberControllerTest extends ControllerTest {
                                         fieldWithPath("roleName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("직무 및 역할")
-                                                .attributes(field("constraint", "문자열")),
+                                                .attributes(field("constraint", "문자열 & 5가지 항목(기획 ~ 비즈니스)만 처리 가능")),
                                         fieldWithPath("marketingAgree")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("마케팅 수신 동의 여부")
