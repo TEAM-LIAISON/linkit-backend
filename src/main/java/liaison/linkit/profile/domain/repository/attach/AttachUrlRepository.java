@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain.repository.Attach;
+package liaison.linkit.profile.domain.repository.attach;
 
 import liaison.linkit.profile.domain.Attach.AttachUrl;
 import org.springframework.data.jpa.repository.JpaRepository;

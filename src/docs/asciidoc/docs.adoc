@@ -15,7 +15,6 @@ include::{snippets}/login-controller-test/login/request-fields.adoc[]
 
 ==== 응답
 include::{snippets}/login-controller-test/login/http-response.adoc[]
-응답 쿠키
 include::{snippets}/login-controller-test/login/response-fields.adoc[]
 
 === (access-token 만료 시) 토큰 재발급 (POST /token)

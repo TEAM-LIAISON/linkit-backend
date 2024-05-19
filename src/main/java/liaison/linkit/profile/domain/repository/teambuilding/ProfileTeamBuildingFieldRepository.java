@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain.repository;
+package liaison.linkit.profile.domain.repository.teambuilding;
 
 import liaison.linkit.profile.domain.teambuilding.ProfileTeamBuildingField;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 
-public interface ProfileTeamBuildingRepository extends JpaRepository<ProfileTeamBuildingField, Long> {
+public interface ProfileTeamBuildingFieldRepository extends JpaRepository<ProfileTeamBuildingField, Long> {
 
     boolean existsByProfileId(final Long profileId);
 

@@ -3,8 +3,8 @@ package liaison.linkit.profile.service;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.domain.repository.ProfileTeamBuildingRepository;
-import liaison.linkit.profile.domain.repository.TeamBuildingRepository;
+import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
+import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.teambuilding.ProfileTeamBuildingField;
 import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
@@ -26,12 +26,12 @@ import static liaison.linkit.global.exception.ExceptionCode.INVALID_PROFILE_TEAM
 public class ProfileTeamBuildingFieldService {
 
     private final ProfileRepository profileRepository;
-    private final ProfileTeamBuildingRepository profileTeamBuildingRepository;
-    private final TeamBuildingRepository teamBuildingRepository;
+    private final ProfileTeamBuildingFieldRepository profileTeamBuildingFieldRepository;
+    private final TeamBuildingFieldRepository teamBuildingFieldRepository;
 
     public void validateProfileTeamBuildingFieldByMember(final Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if (!profileTeamBuildingRepository.existsByProfileId(profileId)) {
+        if (!profileTeamBuildingFieldRepository.existsByProfileId(profileId)) {
             throw new AuthException(INVALID_PROFILE_TEAM_BUILDING_WITH_MEMBER);
         }
     }
@@ -39,14 +39,14 @@ public class ProfileTeamBuildingFieldService {
     public void save(final Long memberId, final ProfileTeamBuildingCreateRequest createRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
 
-        final List<TeamBuildingField> teamBuildingFields = teamBuildingRepository
+        final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
                 .findTeamBuildingFieldsByFieldNames(createRequest.getTeamBuildingFieldNames());
 
         final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
                 .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
                 .toList();
 
-        profileTeamBuildingRepository.saveAll(profileTeamBuildingFields);
+        profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
         profile.updateIsProfileTeamBuildingField(true);
         profileRepository.save(profile);
     }
@@ -56,10 +56,10 @@ public class ProfileTeamBuildingFieldService {
     public ProfileTeamBuildingResponse getAllProfileTeamBuildings(final Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
 
-        List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingRepository.findAllByProfileId(profileId);
+        List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingFieldRepository.findAllByProfileId(profileId);
 
         List<String> teamBuildingFieldNames = profileTeamBuildingFields.stream()
-                .map(profileTeamBuildingField -> teamBuildingRepository.findById(profileTeamBuildingField.getTeamBuildingField().getId()))
+                .map(profileTeamBuildingField -> teamBuildingFieldRepository.findById(profileTeamBuildingField.getTeamBuildingField().getId()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(TeamBuildingField::getTeamBuildingFieldName)
