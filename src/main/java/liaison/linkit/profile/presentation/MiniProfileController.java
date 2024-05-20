@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,9 +37,10 @@ public class MiniProfileController {
     @MemberOnly
     public ResponseEntity<Void> createMiniProfile(
             @Auth final Accessor accessor,
-            @RequestBody @Valid MiniProfileCreateRequest miniProfileCreateRequest
+            @RequestPart @Valid MiniProfileCreateRequest miniProfileCreateRequest,
+            @RequestPart MultipartFile miniProfileImage
     ){
-        miniProfileService.save(accessor.getMemberId(), miniProfileCreateRequest);
+        miniProfileService.save(accessor.getMemberId(), miniProfileCreateRequest, miniProfileImage);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

@@ -25,12 +25,11 @@ public class S3Uploader {
 
     private final AmazonS3 s3Client;
 
-    @Value("${aws.s3.bucket.name}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${aws.s3.image.folder.name}")
+    @Value("${cloud.aws.s3.image-folder}")
     private String imageFolder;
-
 
     public String uploadMiniProfileImage(final ImageFile miniProfileImageFile) {
         log.info("S3 bucket={}", bucket);
@@ -42,18 +41,53 @@ public class S3Uploader {
     private String uploadImage(final ImageFile imageFile) {
         final String path = imageFolder + imageFile.getHashedName();
         log.info("path={}", path);
+
         final ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(imageFile.getContentType());
         metadata.setContentLength(imageFile.getSize());
         metadata.setCacheControl(CACHE_CONTROL_VALUE);
 
         try (final InputStream inputStream = imageFile.getInputStream()) {
+            log.info("inputStream={}", inputStream);
+            log.info("bucket={}", bucket);
+            log.info("path={}", path);
             s3Client.putObject(bucket, path, inputStream, metadata);
         } catch (final AmazonServiceException e) {
+            log.info("e={}", e);
             throw new ImageException(INVALID_IMAGE_PATH);
         } catch (final IOException e) {
             throw new ImageException(INVALID_IMAGE);
         }
+
         return imageFile.getHashedName();
     }
+
+//    private String uploadImage(final ImageFile imageFile) {
+//        // Ensure the imageFolder ends with a "/" to correctly form the path
+//        final String path = imageFolder.endsWith("/") ? imageFolder : imageFolder + "/";
+//        final String fullPath = path + imageFile.getHashedName(); // Construct the full path with the image name
+//
+//        log.info("Full path={}", fullPath);
+//
+//        final ObjectMetadata metadata = new ObjectMetadata();
+//        metadata.setContentType(imageFile.getContentType());
+//        metadata.setContentLength(imageFile.getSize());
+//        metadata.setCacheControl(CACHE_CONTROL_VALUE);
+//
+//        try (final InputStream inputStream = imageFile.getInputStream()) {
+//            // Detailed logging for debugging
+//            log.info("Attempting to upload to bucket: {}, Path: {}", bucket, fullPath);
+//            s3Client.putObject(bucket, fullPath, inputStream, metadata);
+//            log.info("Upload successful");
+//        } catch (final AmazonServiceException e) {
+//            log.error("AWS error during file upload: {}, Error Message: {}", e.getErrorCode(), e.getMessage());
+//            throw new ImageException(INVALID_IMAGE_PATH);
+//        } catch (final IOException e) {
+//            log.error("IO Exception: {}", e.getMessage());
+//            throw new ImageException(INVALID_IMAGE);
+//        }
+//
+//        return imageFile.getHashedName();
+//    }
+
 }
