@@ -63,7 +63,7 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
   servlet:
     multipart:
@@ -71,17 +71,20 @@ spring:
       file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
       max-file-size: 5MB # 한개 파일의 최대 사이즈 (default: 1MB)
       max-request-size: 10MB # 한개 요청의 최대 사이즈 (default: 10MB)
-  cloud:
-    aws:
-      credentials:
-        secret-key: ${aws.s3.access.key}
-        access-key: ${aws.s3.secret.key}
-      region:
-        static: ${aws.region}
-      s3:
-        bucket: ${aws.s3.bucket.name}
-        image-folder: ${aws.s3.image.folder.name}
-        file-folder: ${aws.s3.file.folder.name}
+      
+cloud:
+  aws:
+    credentials:
+      access-key: ${aws.s3.access.key}
+      secret-key: ${aws.s3.secret.key}
+    region:
+      static: ${aws.region}
+    s3:
+      bucket: ${aws.s3.bucket.name}
+      image-folder: ${aws.s3.image.folder.name}
+      file-folder: ${aws.s3.file.folder.name}
+    stack:
+      auto: false
 
 jwt:
   secret: ${secret.key}

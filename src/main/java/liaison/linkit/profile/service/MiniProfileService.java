@@ -12,6 +12,7 @@ import liaison.linkit.profile.dto.response.MiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_MINI_PROFILE_WITH_MEMBER;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MINI_PROFILE_ID;
@@ -33,15 +34,19 @@ public class MiniProfileService {
         }
     }
 
-    public void save(final Long memberId, final MiniProfileCreateRequest miniProfileCreateRequest) {
+    public void save(final Long memberId,
+                     final MiniProfileCreateRequest miniProfileCreateRequest,
+                     final MultipartFile multipartFile
+    ) {
         final Profile profile = profileRepository.findByMemberId(memberId);
-
         final MiniProfile newMiniProfile = MiniProfile.of(
                 profile,
-                miniProfileCreateRequest.getOneLineIntroduction(),
-                miniProfileCreateRequest.getInterests(),
-                miniProfileCreateRequest.getFirstFreeText(),
-                miniProfileCreateRequest.getSecondFreeText()
+                miniProfileCreateRequest.getProfileTitle(),
+                miniProfileCreateRequest.getUploadPeriod(),
+                miniProfileCreateRequest.isUploadDeadline(),
+                miniProfileCreateRequest.getMiniProfileImg(),
+                miniProfileCreateRequest.getMyValue(),
+                miniProfileCreateRequest.getSkillSets()
         );
 
         miniProfileRepository.save(newMiniProfile);

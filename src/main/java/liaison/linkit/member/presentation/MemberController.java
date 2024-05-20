@@ -43,6 +43,8 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+
+
     // 1.4.1. 개인정보 기입 이메일 정보 제공용
     @GetMapping("/email")
     @MemberOnly

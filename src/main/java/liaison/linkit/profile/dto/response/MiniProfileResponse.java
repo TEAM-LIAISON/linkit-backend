@@ -4,31 +4,39 @@ import liaison.linkit.profile.domain.MiniProfile;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @RequiredArgsConstructor
 public class MiniProfileResponse {
 
-    private final String oneLineIntroduction;
-    private final String interests;
-    private final String firstFreeText;
-    private final String secondFreeText;
+    private final String profileTitle;
+    private final LocalDate uploadPeriod;
+    private final boolean uploadDeadline;
+    private final String miniProfileImg;
+    private final String myValue;
+    private final String skillSets;
 
 
     public static MiniProfileResponse of(final MiniProfile miniProfile) {
         return new MiniProfileResponse(
-                miniProfile.getOneLineIntroduction(),
-                miniProfile.getInterests(),
-                miniProfile.getFirstFreeText(),
-                miniProfile.getSecondFreeText()
+                miniProfile.getProfileTitle(),
+                miniProfile.getUploadPeriod(),
+                miniProfile.isUploadDeadline(),
+                miniProfile.getMiniProfileImg(),
+                miniProfile.getMyValue(),
+                miniProfile.getSkillSets()
         );
     }
 
     public static MiniProfileResponse personalMiniProfile(final MiniProfile miniProfile) {
         return new MiniProfileResponse(
-                miniProfile.getOneLineIntroduction(),
-                miniProfile.getInterests(),
-                miniProfile.getFirstFreeText(),
-                miniProfile.getSecondFreeText()
+                miniProfile.getProfileTitle(),
+                miniProfile.getUploadPeriod(),
+                miniProfile.isUploadDeadline(),
+                miniProfile.getMiniProfileImg(),
+                miniProfile.getMyValue(),
+                miniProfile.getSkillSets()
         );
     }
 

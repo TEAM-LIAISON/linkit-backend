@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -25,40 +27,53 @@ public class MiniProfile {
     @JoinColumn(name = "profile_id", unique = true)
     private Profile profile;
 
+    // 프로필 제목
     @Column(length = 40)
-    private String oneLineIntroduction;
+    private String profileTitle;
 
-    private String interests;
+    // 프로필 업로드 기간
+    private LocalDate uploadPeriod;
 
-    private String firstFreeText;
+    // 프로필 마감 여부
+    private boolean uploadDeadline;
 
-    private String secondFreeText;
+    // 미니 프로필 이미지 경로
+    private String miniProfileImg;
 
-//    private String profileImageName;
+    // 나의 가치
+    private String myValue;
+
+    // 나의 스킬셋
+    private String skillSets;
 
     public static MiniProfile of(
             final Profile profile,
-            final String oneLineIntroduction,
-            final String interests,
-            final String firstFreeText,
-            final String secondFreeText
-//            final String profileImageName
+            final String profileTitle,
+            final LocalDate uploadPeriod,
+            final boolean uploadDeadline,
+            final String miniProfileImg,
+            final String myValue,
+            final String skillSets
+
     ) {
         return new MiniProfile(
                 null,
                 profile,
-                oneLineIntroduction,
-                interests,
-                firstFreeText,
-                secondFreeText
-//                profileImageName
+                profileTitle,
+                uploadPeriod,
+                uploadDeadline,
+                miniProfileImg,
+                myValue,
+                skillSets
         );
     }
 
     public void update(final MiniProfileUpdateRequest miniProfileUpdateRequest) {
-        this.oneLineIntroduction = miniProfileUpdateRequest.getOneLineIntroduction();
-        this.interests = miniProfileUpdateRequest.getInterests();
-        this.firstFreeText = miniProfileUpdateRequest.getFirstFreeText();
-        this.secondFreeText = miniProfileUpdateRequest.getSecondFreeText();
+        this.profileTitle = miniProfileUpdateRequest.getProfileTitle();
+        this.uploadPeriod = miniProfileUpdateRequest.getUploadPeriod();
+        this.uploadDeadline = miniProfileUpdateRequest.isUploadDeadline();
+        this.miniProfileImg = miniProfileUpdateRequest.getMiniProfileImg();
+        this.myValue = miniProfileUpdateRequest.getMyValue();
+        this.skillSets = miniProfileUpdateRequest.getSkillSets();
     }
 }
