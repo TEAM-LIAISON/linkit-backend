@@ -37,7 +37,6 @@ public class LoginController {
                 .maxAge(COOKIE_AGE_SECONDS)
                 .sameSite("None")
                 .secure(true)
-                .httpOnly(true)
                 .path("/")
                 .build();
         response.addHeader(SET_COOKIE, cookie.toString());

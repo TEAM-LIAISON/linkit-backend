@@ -30,7 +30,6 @@ include::{snippets}/login-controller-test/extend-login/response-fields.adoc[]
 
 == 1.4. 정보 기입
 === 1.4.1. 개인정보 기입 [초대코드 아직 구현 X] (POST /members/basic-inform)
-
 ==== 요청
 include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
 include::{snippets}/member-controller-test/create-member-basic-inform/request-fields.adoc[]
@@ -44,6 +43,7 @@ include::{snippets}/member-controller-test/create-member-basic-inform/http-respo
 
 == 1.5. 온보딩 가이드 기입
 === 1.5.2. 나의 역량 (2/3)
+==== 요청
 include::{snippets}/profile-controller-test/create-default-profile/http-request.adoc[]
 include::{snippets}/profile-controller-test/create-default-profile/request-fields.adoc[]
 요청 헤더
@@ -51,7 +51,11 @@ include::{snippets}/profile-controller-test/create-default-profile/request-heade
 요청 쿠키
 include::{snippets}/profile-controller-test/create-default-profile/request-cookies.adoc[]
 
-=== 1.5.3. (미니)이력서 완성
+=== 1.5.3. (미니) 이력서 완성 (3/3)
+==== 요청
+include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileCreateRequest-fields.adoc[]
+
 == 회원가입 및 로그인 API
 
 === 로그아웃 (DELETE /logout)
