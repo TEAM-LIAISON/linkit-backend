@@ -214,11 +214,11 @@ class MiniProfileControllerTest extends ControllerTest {
                         ),
                         requestParts(
                                 partWithName("miniProfileCreateRequest").description("미니 프로필 생성 객체"),
-                                partWithName("miniProfileImage").description("미니 프로필 이미지").optional()
+                                partWithName("miniProfileImage").description("미니 프로필 이미지")
                         ),
                         requestPartFields("miniProfileCreateRequest",
                                 fieldWithPath("profileTitle").description("프로필 제목"),
-                                fieldWithPath("uploadPeriod").description("프로필 업로드 기간"),
+                                fieldWithPath("uploadPeriod").description("프로필 업로드 기간").attributes(field("constraint", "LocalDate")),
                                 fieldWithPath("uploadDeadline").description("마감 선택 여부"),
                                 fieldWithPath("myValue").description("협업 시 중요한 나의 가치"),
                                 fieldWithPath("skillSets").description("나의 스킬셋")

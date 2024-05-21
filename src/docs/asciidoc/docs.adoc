@@ -54,6 +54,7 @@ include::{snippets}/profile-controller-test/create-default-profile/request-cooki
 === 1.5.3. (미니) 이력서 완성 (3/3)
 ==== 요청
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-parts.adoc[]
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileCreateRequest-fields.adoc[]
 
 == 회원가입 및 로그인 API
