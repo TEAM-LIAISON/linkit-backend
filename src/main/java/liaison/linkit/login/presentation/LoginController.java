@@ -35,8 +35,8 @@ public class LoginController {
         final MemberTokensAndIsBasicInform memberTokensAndIsBasicInform = loginService.login(provider, loginRequest.getCode());
         final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokensAndIsBasicInform.getRefreshToken())
                 .maxAge(COOKIE_AGE_SECONDS)
-                .sameSite("None")
                 .path("/")
+                .httpOnly(false)
                 .build();
         response.addHeader(SET_COOKIE, cookie.toString());
 

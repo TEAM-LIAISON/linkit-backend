@@ -43,7 +43,6 @@ public class TeamMiniProfile {
     @Column(name = "teamLink")
     private String teamLink;
 
-
 //    public static TeamMiniProfile of(
 //            final IndustrySector industrySector,
 //            final TeamSize teamSize,

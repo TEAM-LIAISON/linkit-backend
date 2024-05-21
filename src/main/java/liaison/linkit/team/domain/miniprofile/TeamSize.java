@@ -1,5 +1,6 @@
 package liaison.linkit.team.domain.miniprofile;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -17,5 +18,6 @@ public class TeamSize {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-
+    @Column(name = "size_type")
+    private String sizeType;
 }
