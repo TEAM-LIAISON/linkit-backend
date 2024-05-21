@@ -44,38 +44,6 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
                 .hasParameterAnnotation(Auth.class);
     }
 
-//    @Override
-//    public Accessor resolveArgument(
-//            final MethodParameter parameter,
-//            final ModelAndViewContainer mavContainer,
-//            final NativeWebRequest webRequest,
-//            final WebDataBinderFactory binderFactory
-//    ) {
-//        final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-//        if (request == null) {
-//            throw new BadRequestException(INVALID_REQUEST);
-//        }
-//
-//        try {
-//            final String refreshToken = extractRefreshToken(request.getCookies(), "refreshTokenKey"); // Assume your refresh token cookie is named "refreshTokenKey"
-//            final String accessToken = extractor.extractAccessToken(webRequest.getHeader(AUTHORIZATION));
-//            log.info("refreshToken={}", refreshToken);
-//            log.info("accessToken={}", accessToken);
-//
-//            log.info("터지는 여부 1");
-//            jwtProvider.validateTokens(new MemberTokens(refreshToken, accessToken));
-//            log.info("터지는 여부 2");
-//
-//            final Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
-//            log.info("터지는 여부 3");
-//            return Accessor.member(memberId);
-//        } catch (final RefreshTokenException e) {
-//            log.info("asdf");
-//            return Accessor.guest();
-//        }
-//    }
-
-
     @Override
     public Accessor resolveArgument(
             final MethodParameter parameter,
@@ -89,7 +57,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         }
 
         try {
-            final String refreshToken = extractRefreshToken(request.getCookies(), "refresh-token"); // Assume your refresh token cookie is named "refreshTokenKey"
+            final String refreshToken = extractRefreshToken(request.getCookies());
             final String accessToken = extractor.extractAccessToken(webRequest.getHeader(AUTHORIZATION));
             log.info("refreshToken={}", refreshToken);
             log.info("accessToken={}", accessToken);
@@ -107,24 +75,13 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         }
     }
 
-//    private String extractRefreshToken(final Cookie... cookies) {
-//        if (cookies == null) {
-//            throw new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN);
-//        }
-//        return Arrays.stream(cookies)
-//                .filter(this::isValidRefreshToken)
-//                .findFirst()
-//                .orElseThrow(() -> new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN))
-//                .getValue();
-//    }
-
-
-    private String extractRefreshToken(final Cookie[] cookies, String key) {
+    private String extractRefreshToken(final Cookie... cookies) {
+        System.out.println("cookies = " + cookies);
         if (cookies == null) {
             throw new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN);
         }
         return Arrays.stream(cookies)
-                .filter(cookie -> key.equals(cookie.getName()))
+                .filter(this::isValidRefreshToken)
                 .findFirst()
                 .orElseThrow(() -> new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN))
                 .getValue();
