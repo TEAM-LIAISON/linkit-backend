@@ -36,7 +36,6 @@ public class LoginController {
         final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokensAndIsBasicInform.getRefreshToken())
                 .maxAge(COOKIE_AGE_SECONDS)
                 .sameSite("None")
-                .secure(true)
                 .path("/")
                 .build();
         response.addHeader(SET_COOKIE, cookie.toString());
