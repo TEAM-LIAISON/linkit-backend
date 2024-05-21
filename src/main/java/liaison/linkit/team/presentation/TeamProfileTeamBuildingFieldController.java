@@ -19,6 +19,17 @@ public class TeamProfileTeamBuildingFieldController {
 
     private final TeamProfileTeamBuildingFieldService teamProfileTeamBuildingFieldService;
 
+    // 희망 팀빌딩 항목 전체 등록
+    @PostMapping
+    @MemberOnly
+    public ResponseEntity<Void> createTeamProfileTeamBuilding(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid TeamProfileTeamBuildingFieldCreateRequest teamProfileTeamBuildingFieldCreateRequest
+    ) {
+        teamProfileTeamBuildingFieldService.save(accessor.getMemberId(), teamProfileTeamBuildingFieldCreateRequest);
+        return ResponseEntity.ok().build();
+    }
+
     // 희망 팀빌딩 항목 전체 조회
     @GetMapping
     @MemberOnly
@@ -31,13 +42,5 @@ public class TeamProfileTeamBuildingFieldController {
         return ResponseEntity.ok().body(teamProfileTeamBuildingFieldResponse);
     }
 
-    @PostMapping
-    @MemberOnly
-    public ResponseEntity<Void> createTeamProfileTeamBuilding(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid TeamProfileTeamBuildingFieldCreateRequest teamProfileTeamBuildingFieldCreateRequest
-    ) {
-        teamProfileTeamBuildingFieldService.save(accessor.getMemberId(), teamProfileTeamBuildingFieldCreateRequest);
-        return ResponseEntity.ok().build();
-    }
+
 }
