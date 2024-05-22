@@ -110,7 +110,7 @@ class ProfileTeamBuildingFieldControllerTest extends ControllerTest {
                                 requestFields(
                                         fieldWithPath("teamBuildingFieldNames")
                                                 .type(JsonFieldType.ARRAY)
-                                                .description("희망 팀빋딩 분야")
+                                                .description("희망 팀빋딩 분야(7가지 항목)")
                                                 .attributes(field("constraint", "문자열의 배열"))
                                 )
                         ));

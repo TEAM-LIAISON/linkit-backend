@@ -183,6 +183,7 @@ public class AntecedentsControllerTest extends ControllerTest {
     @DisplayName("단일 이력 항목을 생성할 수 있다.")
     @Test
     void createAntecedents() throws Exception {
+
         // given
         final AntecedentsCreateRequest antecedentsCreateRequest = new AntecedentsCreateRequest(
                 "오더이즈",

@@ -42,14 +42,22 @@ include::{snippets}/member-controller-test/create-member-basic-inform/request-co
 include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
 
 == 1.5. 온보딩 가이드 기입
-=== 1.5.2. 나의 역량 (2/3)
+=== 1.5.2. 나의 역량 (2/3) - 희망 팀빌딩 분야
 ==== 요청
-include::{snippets}/profile-controller-test/create-default-profile/http-request.adoc[]
-include::{snippets}/profile-controller-test/create-default-profile/request-fields.adoc[]
+include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
+include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-fields.adoc[]
 요청 헤더
-include::{snippets}/profile-controller-test/create-default-profile/request-headers.adoc[]
+include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-headers.adoc[]
 요청 쿠키
-include::{snippets}/profile-controller-test/create-default-profile/request-cookies.adoc[]
+include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-cookies.adoc[]
+
+=== 1.5.2. 나의 역량 (2/3) - 희망 역할
+
+=== 1.5.2. 나의 역량 (2/3) - 보유 기술
+
+=== 1.5.2. 나의 역량 (2/3) - 학력
+
+=== 1.5.2. 나의 역량 (2/3) - 이력
 
 === 1.5.3. (미니) 이력서 완성 (3/3)
 ==== 요청
@@ -134,7 +142,9 @@ include::{snippets}/mini-profile-controller-test/get-mini-profile/response-field
 
 ==== 요청
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
-include::{snippets}/mini-profile-controller-test/create-mini-profile/request-fields.adoc[]
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-parts.adoc[]
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileCreateRequest-fields.adoc[]
+
 요청 헤더
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-headers.adoc[]
 요청 쿠키
