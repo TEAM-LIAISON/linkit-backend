@@ -18,7 +18,9 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
@@ -62,6 +64,14 @@ class MiniProfileControllerTest extends ControllerTest {
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
         given(miniProfileService.validateMiniProfileByMember(1L)).willReturn(1L);
+    }
+
+    protected MockMultipartFile getMockMultipartFile() {
+        String name = "miniProfileImage";
+        String contentType = "multipart/form-data";
+        String path = "./src/test/resources/static/images/logo.png";
+
+        return new MockMultipartFile(name, path, contentType, path.getBytes(StandardCharsets.UTF_8));
     }
 
 //    private void makeMiniProfile() throws Exception {
@@ -174,7 +184,8 @@ class MiniProfileControllerTest extends ControllerTest {
                 "혁신, 팀워크, 의지",
                 "Java, Spring, AWS, Microservices, Docker"
         );
-
+//
+//        final MockMultipartFile miniProfileImage = getMockMultipartFile();
         final MockMultipartFile miniProfileImage = new MockMultipartFile(
                 "miniProfileImage",
                 "logo.png",
@@ -189,13 +200,30 @@ class MiniProfileControllerTest extends ControllerTest {
                 objectMapper.writeValueAsString(miniProfileCreateRequest).getBytes(StandardCharsets.UTF_8)
         );
 
+        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
+                RestDocumentationRequestBuilders.multipart("/mini-profile", miniProfileImage, createRequest);
+
+
         // when
+
+//        final ResultActions resultActions = mockMvc.perform(
+//                customRestDocumentationRequestBuilder
+//                        .file(miniProfileImage)
+//                        .file(createRequest)
+//                        .accept(APPLICATION_JSON)
+//                        .contentType(MediaType.MULTIPART_FORM_DATA)
+//                        .characterEncoding("UTF-8")
+//                        .content(objectMapper.writeValueAsString(miniProfileCreateRequest))
+//                        .header("Authorization", "Bearer accessToken")
+//                        .cookie(COOKIE)
+//        );
 
         final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST,"/mini-profile")
                 .file(miniProfileImage)
                 .file(createRequest)
                 .accept(APPLICATION_JSON)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
+//                .content(objectMapper.writeValueAsString(miniProfileCreateRequest))
                 .characterEncoding("UTF-8")
                 .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                 .cookie(COOKIE));
@@ -214,7 +242,8 @@ class MiniProfileControllerTest extends ControllerTest {
                         ),
                         requestParts(
                                 partWithName("miniProfileCreateRequest").description("미니 프로필 생성 객체"),
-                                partWithName("miniProfileImage").description("미니 프로필 이미지")
+                                partWithName("miniProfileImage")
+                                        .description("미니 프로필 이미지 파일. 지원되는 형식은 .png, .jpg 등이 있습니다.")
                         ),
                         requestPartFields("miniProfileCreateRequest",
                                 fieldWithPath("profileTitle").description("프로필 제목"),

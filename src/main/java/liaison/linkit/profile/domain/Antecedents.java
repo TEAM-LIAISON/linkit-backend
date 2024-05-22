@@ -26,11 +26,11 @@ public class Antecedents {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    // 기업명(프로젝트명)
+    // 회사명
     @Column(nullable = false)
     private String projectName;
 
-    // 직무(역할)
+    // 포지션
     @Column(nullable = false)
     private String projectRole;
 
