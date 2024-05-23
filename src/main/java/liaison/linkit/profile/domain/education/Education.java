@@ -41,8 +41,8 @@ public class Education {
     private String educationDescription;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "school_id")
-    private School school;
+    @JoinColumn(name = "university_id")
+    private University university;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "degree_id")
@@ -59,7 +59,7 @@ public class Education {
             final int graduationYear,
             final int graduationMonth,
             final String educationDescription,
-            final School school,
+            final University university,
             final Degree degree,
             final Major major
     ){
@@ -71,7 +71,7 @@ public class Education {
                 graduationYear,
                 graduationMonth,
                 educationDescription,
-                school,
+                university,
                 degree,
                 major
         );
@@ -83,7 +83,7 @@ public class Education {
         this.graduationYear = educationUpdateRequest.getGraduationYear();
         this.graduationMonth = educationUpdateRequest.getGraduationMonth();
         this.educationDescription = educationUpdateRequest.getEducationDescription();
-        this.school = educationUpdateRequest.getSchool();
+        this.university = educationUpdateRequest.getUniversity();
         this.degree = educationUpdateRequest.getDegree();
     }
 }

@@ -8,14 +8,14 @@ import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
 import liaison.linkit.profile.domain.education.Major;
-import liaison.linkit.profile.domain.education.School;
+import liaison.linkit.profile.domain.education.University;
 import liaison.linkit.profile.domain.repository.*;
 import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
 import liaison.linkit.profile.domain.repository.education.MajorRepository;
-import liaison.linkit.profile.domain.repository.education.SchoolRepository;
+import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
@@ -56,7 +56,7 @@ public class ProfileService {
 
     // 학력 정보 담당
     private final EducationRepository educationRepository;
-    private final SchoolRepository schoolRepository;
+    private final UniversityRepository universityRepository;
     private final DegreeRepository degreeRepository;
     private final MajorRepository majorRepository;
     // -> ERD부터 설계 작업, 개발 DB에 인서트 필요
@@ -97,10 +97,10 @@ public class ProfileService {
         final List<Education> educations = defaultProfileCreateRequest
                 .getEducationCreateRequest().stream()
                 .map(request -> {
-                    School school = schoolRepository.findBySchoolName(request.getSchoolName());
+                    University university = universityRepository.findByUniversityName(request.getUniversityName());
                     Degree degree = degreeRepository.findByDegreeName(request.getDegreeName());
                     Major major = majorRepository.findByMajorName(request.getMajorName());
-                    return request.toEntity(profile, school, degree, major);
+                    return request.toEntity(profile, university, degree, major);
                 }).collect(Collectors.toList());
 
 

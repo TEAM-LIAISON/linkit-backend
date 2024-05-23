@@ -207,7 +207,7 @@ class ProfileControllerTest extends ControllerTest {
                                 fieldWithPath("educationCreateRequest[].graduationYear").description("졸업 연도").attributes(field("constraint", "양의 정수")),
                                 fieldWithPath("educationCreateRequest[].graduationMonth").description("졸업 월").attributes(field("constraint", "양의 정수")),
                                 fieldWithPath("educationCreateRequest[].educationDescription").description("학력 설명").attributes(field("constraint", "문자열")),
-                                fieldWithPath("educationCreateRequest[].schoolName").description("학교 이름").attributes(field("constraint", "문자열")),
+                                fieldWithPath("educationCreateRequest[].universityName").description("학교 이름").attributes(field("constraint", "문자열")),
                                 fieldWithPath("educationCreateRequest[].degreeName").description("학위 이름").attributes(field("constraint", "문자열")),
                                 fieldWithPath("educationCreateRequest[].majorName").description("전공 이름").attributes(field("constraint", "문자열")),
                                 subsectionWithPath("antecedentsCreateRequest").description("이력 항목").attributes(field("constraint", "객체(배열)")),
