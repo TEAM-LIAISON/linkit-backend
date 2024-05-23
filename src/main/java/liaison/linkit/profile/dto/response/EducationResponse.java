@@ -3,7 +3,7 @@ package liaison.linkit.profile.dto.response;
 import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
 import liaison.linkit.profile.domain.education.Major;
-import liaison.linkit.profile.domain.education.School;
+import liaison.linkit.profile.domain.education.University;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ public class EducationResponse {
     private final int graduationMonth;
     private final String educationDescription;
 
-    private final School school;
+    private final University university;
     private final Degree degree;
     private final Major major;
 
@@ -32,7 +32,7 @@ public class EducationResponse {
                 education.getGraduationYear(),
                 education.getGraduationMonth(),
                 education.getEducationDescription(),
-                education.getSchool(),
+                education.getUniversity(),
                 education.getDegree(),
                 education.getMajor()
         );
@@ -46,7 +46,7 @@ public class EducationResponse {
                 education.getGraduationYear(),
                 education.getGraduationMonth(),
                 education.getEducationDescription(),
-                education.getSchool(),
+                education.getUniversity(),
                 education.getDegree(),
                 education.getMajor()
         );

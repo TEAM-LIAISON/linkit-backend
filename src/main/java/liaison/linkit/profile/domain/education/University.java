@@ -4,24 +4,23 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
+@Builder
 @Entity
 @Getter
-@NoArgsConstructor(access = PROTECTED)
-public class School {
+public class University {
 
     // 대학교 이름만 다룬다.
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "school_id")
+    @Column(name = "university_id")
     private Long id;
 
-    @Column(name = "school_name")
-    private String schoolName;
+    @Column(name = "university_name")
+    private String universityName;
 }

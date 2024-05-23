@@ -6,11 +6,11 @@ import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
 import liaison.linkit.profile.domain.education.Major;
-import liaison.linkit.profile.domain.education.School;
+import liaison.linkit.profile.domain.education.University;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
 import liaison.linkit.profile.domain.repository.education.MajorRepository;
-import liaison.linkit.profile.domain.repository.education.SchoolRepository;
+import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.EducationCreateRequest;
 import liaison.linkit.profile.dto.request.EducationUpdateRequest;
@@ -31,7 +31,7 @@ public class EducationService {
 
     private final ProfileRepository profileRepository;
     private final EducationRepository educationRepository;
-    private final SchoolRepository schoolRepository;
+    private final UniversityRepository universityRepository;
     private final DegreeRepository degreeRepository;
     private final MajorRepository majorRepository;
 
@@ -46,7 +46,7 @@ public class EducationService {
 
     public void save(final Long memberId, final EducationCreateRequest educationCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
-        final School school = schoolRepository.findBySchoolName(educationCreateRequest.getSchoolName());
+        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName());
         final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName());
         final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName());
 
@@ -57,7 +57,7 @@ public class EducationService {
                 educationCreateRequest.getGraduationYear(),
                 educationCreateRequest.getGraduationMonth(),
                 educationCreateRequest.getEducationDescription(),
-                school,
+                university,
                 degree,
                 major
         );

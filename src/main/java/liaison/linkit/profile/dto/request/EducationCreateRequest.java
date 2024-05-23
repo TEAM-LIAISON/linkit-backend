@@ -4,7 +4,7 @@ import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
 import liaison.linkit.profile.domain.education.Major;
-import liaison.linkit.profile.domain.education.School;
+import liaison.linkit.profile.domain.education.University;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -18,13 +18,13 @@ public class EducationCreateRequest {
     private final int graduationMonth;
     private final String educationDescription;
 
-    private final String schoolName;
+    private final String universityName;
     private final String degreeName;
     private final String majorName;
 
     public Education toEntity(
             final Profile profile,
-            final School school,
+            final University university,
             final Degree degree,
             final Major major
     ) {
@@ -36,7 +36,7 @@ public class EducationCreateRequest {
                 graduationYear,
                 graduationMonth,
                 educationDescription,
-                school,
+                university,
                 degree,
                 major
         );

@@ -2,7 +2,7 @@ package liaison.linkit.profile.dto.request;
 
 import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Major;
-import liaison.linkit.profile.domain.education.School;
+import liaison.linkit.profile.domain.education.University;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -15,7 +15,7 @@ public class EducationUpdateRequest {
     private final int graduationMonth;
     private final String educationDescription;
 
-    private final School school;
+    private final University university;
     private final Degree degree;
     private final Major major;
 }
