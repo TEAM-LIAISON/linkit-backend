@@ -44,7 +44,7 @@ public class EducationService {
         }
     }
 
-    public void save(final Long memberId, final EducationCreateRequest educationCreateRequest) {
+    public EducationResponse save(final Long memberId, final EducationCreateRequest educationCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
         final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName());
         final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName());
@@ -58,9 +58,11 @@ public class EducationService {
                 degree,
                 major
         );
-        educationRepository.save(newEducation);
+
+        Education savedEducation = educationRepository.save(newEducation);
         // 학력 항목이 기입되었음을 나타냄 -> true 전달
         profile.updateIsEducation(true);
+        return getEducationResponse(savedEducation);
     }
 
     private EducationResponse getEducationResponse(final Education education) {

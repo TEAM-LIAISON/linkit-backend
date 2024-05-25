@@ -56,6 +56,7 @@ include::{snippets}/profile-team-building-field-controller-test/create-profile-t
 === 1.5.2. 나의 역량 (2/3) - 보유 기술
 
 === 1.5.2. 나의 역량 (2/3) - 학력
+
 ==== 요청
 include::{snippets}/education-controller-test/create-education/http-request.adoc[]
 include::{snippets}/education-controller-test/create-education/request-fields.adoc[]
@@ -64,7 +65,10 @@ include::{snippets}/education-controller-test/create-education/request-headers.a
 요청 쿠키
 include::{snippets}/education-controller-test/create-education/request-cookies.adoc[]
 
-=== 1.5.2. 나의 역량 (2/3) - 이력
+==== 응답
+include::{snippets}/education-controller-test/create-education/response-body.adoc[]
+
+=== 1.5.2. 나의 역량 (2/3) - 이력 등록 [POST /education]
 include::{snippets}/antecedents-controller-test/create-antecedents/http-request.adoc[]
 include::{snippets}/antecedents-controller-test/create-antecedents/request-fields.adoc[]
 요청 헤더
