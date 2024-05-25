@@ -63,7 +63,7 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
   batch:
     jdbc:
       initialize-schema: always
@@ -96,6 +96,9 @@ jwt:
 
 university:
   csv-path: ${university.path}
+
+teamBuildingField:
+  csv-path: ${teamBuildingField.path}
 #logging:
 #  level:
 #    org:

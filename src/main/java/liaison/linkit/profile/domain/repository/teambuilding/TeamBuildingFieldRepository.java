@@ -12,7 +12,7 @@ public interface TeamBuildingFieldRepository extends JpaRepository<TeamBuildingF
     @Query("""
            SELECT t
            FROM TeamBuildingField t
-           WHERE t.TeamBuildingFieldName in :teamBuildingFieldNames
+           WHERE t.teamBuildingFieldName in :teamBuildingFieldNames
            """)
     List<TeamBuildingField> findTeamBuildingFieldsByFieldNames(@Param("teamBuildingFieldNames") final List<String> teamBuildingFieldNames);
 }

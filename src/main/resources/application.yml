@@ -67,6 +67,7 @@ spring:
   batch:
     jdbc:
       initialize-schema: always
+
   servlet:
     multipart:
       enabled: true # 멀티파트 업로드 지원여부
@@ -96,6 +97,10 @@ jwt:
 
 university:
   csv-path: ${university.path}
+
+teamBuildingField:
+  csv-path: ${teamBuildingField.path}
+
 #logging:
 #  level:
 #    org:
