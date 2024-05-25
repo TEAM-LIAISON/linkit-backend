@@ -9,7 +9,6 @@ import liaison.linkit.profile.dto.request.AntecedentsUpdateRequest;
 import liaison.linkit.profile.dto.response.AntecedentsResponse;
 import liaison.linkit.profile.service.AntecedentsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,8 +35,8 @@ public class AntecedentsController {
             @Auth final Accessor accessor,
             @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest
     ){
-        antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        AntecedentsResponse antecedentsResponse = antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
+        return ResponseEntity.ok().body(antecedentsResponse);
     }
 
     // 이력 1개 조회 요청
