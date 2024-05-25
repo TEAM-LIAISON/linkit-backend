@@ -41,7 +41,7 @@ include::{snippets}/member-controller-test/create-member-basic-inform/request-co
 ==== 응답
 include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
 
-== 1.5. 온보딩 가이드 기입
+== 1.5. 내 이력서 온보딩 가이드 기입
 === 1.5.2. 나의 역량 (2/3) - 희망 팀빌딩 분야
 ==== 요청
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
@@ -64,6 +64,10 @@ include::{snippets}/profile-team-building-field-controller-test/create-profile-t
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-parts.adoc[]
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileCreateRequest-fields.adoc[]
+
+== 1.5. 팀 소개서 온보딩 가이드 기입
+=== 1.5.2. 팀
+
 
 == 회원가입 및 로그인 API
 

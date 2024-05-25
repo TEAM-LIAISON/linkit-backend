@@ -14,12 +14,12 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class ActivityRegion {
-
+    // 활동 지역 데이터 시/도 + 시/군/구
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "activity_region_id")
     private Long id;
 
-    @Column(name = "regioin_name")
+    @Column(name = "region_name")
     private String regionName;
 }

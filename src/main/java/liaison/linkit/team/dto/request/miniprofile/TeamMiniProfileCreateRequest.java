@@ -1,4 +1,4 @@
-package liaison.linkit.team.dto.request;
+package liaison.linkit.team.dto.request.miniprofile;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

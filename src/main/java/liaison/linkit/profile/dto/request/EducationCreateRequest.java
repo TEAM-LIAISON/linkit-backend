@@ -13,14 +13,14 @@ import lombok.Getter;
 public class EducationCreateRequest {
 
     private final int admissionYear;
-    private final int admissionMonth;
     private final int graduationYear;
-    private final int graduationMonth;
-    private final String educationDescription;
 
+    // 학교명
     private final String universityName;
-    private final String degreeName;
+    // 전공명
     private final String majorName;
+    // 재학 기간 관련 타입
+    private final String degreeName;
 
     public Education toEntity(
             final Profile profile,
@@ -32,10 +32,7 @@ public class EducationCreateRequest {
                 null,
                 profile,
                 admissionYear,
-                admissionMonth,
                 graduationYear,
-                graduationMonth,
-                educationDescription,
                 university,
                 degree,
                 major

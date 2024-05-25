@@ -53,10 +53,7 @@ public class EducationService {
         final Education newEducation = Education.of(
                 profile,
                 educationCreateRequest.getAdmissionYear(),
-                educationCreateRequest.getAdmissionMonth(),
                 educationCreateRequest.getGraduationYear(),
-                educationCreateRequest.getGraduationMonth(),
-                educationCreateRequest.getEducationDescription(),
                 university,
                 degree,
                 major
