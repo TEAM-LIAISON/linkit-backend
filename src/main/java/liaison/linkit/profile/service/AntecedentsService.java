@@ -45,8 +45,7 @@ public class AntecedentsService {
                 antecedentsCreateRequest.getStartYear(),
                 antecedentsCreateRequest.getStartMonth(),
                 antecedentsCreateRequest.getEndYear(),
-                antecedentsCreateRequest.getEndMonth(),
-                antecedentsCreateRequest.getAntecedentsDescription()
+                antecedentsCreateRequest.getEndMonth()
         );
 
         antecedentsRepository.save(newAntecedents);

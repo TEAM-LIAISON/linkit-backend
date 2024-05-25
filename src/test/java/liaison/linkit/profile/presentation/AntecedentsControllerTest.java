@@ -63,8 +63,7 @@ public class AntecedentsControllerTest extends ControllerTest {
                 2023,
                 3,
                 2023,
-                6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                6
         );
     }
 
@@ -119,8 +118,7 @@ public class AntecedentsControllerTest extends ControllerTest {
                 2023,
                 3,
                 2023,
-                6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                6
         );
 
         given(antecedentsService.getAntecedentsDetail(1L))
@@ -170,11 +168,7 @@ public class AntecedentsControllerTest extends ControllerTest {
                                         fieldWithPath("endMonth")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("종료 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("antecedentsDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
-                                                .attributes(field("constraint", "문자열"))
+                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택"))
                                 )
                         )
                 );
@@ -191,8 +185,7 @@ public class AntecedentsControllerTest extends ControllerTest {
                 2023,
                 3,
                 2023,
-                6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                6
         );
 
         // when
@@ -235,11 +228,7 @@ public class AntecedentsControllerTest extends ControllerTest {
                                         fieldWithPath("endMonth")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("종료 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("antecedentsDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
-                                                .attributes(field("constraint", "문자열"))
+                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택"))
                                 )
                         )
                 );

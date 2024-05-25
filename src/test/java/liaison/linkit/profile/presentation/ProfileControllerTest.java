@@ -153,8 +153,7 @@ class ProfileControllerTest extends ControllerTest {
                 2023,
                 3,
                 2024,
-                10,
-                "팀빌딩 매칭 서비스"
+                10
         );
         final AntecedentsCreateRequest secondRequest = new AntecedentsCreateRequest(
                 "오더이즈",
@@ -162,8 +161,7 @@ class ProfileControllerTest extends ControllerTest {
                 2023,
                 3,
                 2023,
-                6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                6
         );
         antecedentsCreateRequests.add(firstRequest);
         antecedentsCreateRequests.add(secondRequest);
@@ -207,8 +205,7 @@ class ProfileControllerTest extends ControllerTest {
                                 fieldWithPath("antecedentsCreateRequest[].startYear").description("프로젝트 시작 기간").attributes(field("constraint", "양의 정수")),
                                 fieldWithPath("antecedentsCreateRequest[].startMonth").description("프로젝트 시작 월").attributes(field("constraint", "양의 정수")),
                                 fieldWithPath("antecedentsCreateRequest[].endYear").description("프로젝트 종료 기간").attributes(field("constraint", "양의 정수")),
-                                fieldWithPath("antecedentsCreateRequest[].endMonth").description("프로젝트 종료 월").attributes(field("constraint", "양의 정수")),
-                                fieldWithPath("antecedentsCreateRequest[].antecedentsDescription").description("이력 항목 설명").attributes(field("constraint", "문자열"))
+                                fieldWithPath("antecedentsCreateRequest[].endMonth").description("프로젝트 종료 월").attributes(field("constraint", "양의 정수"))
                         )
                 ));
     }
