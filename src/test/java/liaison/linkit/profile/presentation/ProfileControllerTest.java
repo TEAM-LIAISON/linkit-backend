@@ -131,23 +131,17 @@ class ProfileControllerTest extends ControllerTest {
         final List<EducationCreateRequest> educationCreateRequests = new ArrayList<>();
         final EducationCreateRequest firstEduRequest = new EducationCreateRequest(
                 2022,
-                1,
                 2024,
-                9,
-                "홍익대학교 학생",
                 "홍익대학교",
-                "학사",
-                "컴퓨터공학과"
+                "컴퓨터공학과",
+                "재학 중"
         );
         final EducationCreateRequest secondEduRequest = new EducationCreateRequest(
                 2021,
-                3,
                 2025,
-                9,
-                "홍익대학교 졸업생",
                 "홍익대학교",
-                "졸업",
-                "예술학과"
+                "예술학과",
+                "졸업"
         );
         educationCreateRequests.add(firstEduRequest);
         educationCreateRequests.add(secondEduRequest);
@@ -203,13 +197,10 @@ class ProfileControllerTest extends ControllerTest {
                                 fieldWithPath("profileSkillCreateRequest.skillNames").description("보유 기술 이름").attributes(field("constraint", "문자열(배열)")),
                                 subsectionWithPath("educationCreateRequest").description("학력 항목").attributes(field("constraint", "객체 (배열)")),
                                 fieldWithPath("educationCreateRequest[].admissionYear").description("입학 연도").attributes(field("constraint", "양의 정수")),
-                                fieldWithPath("educationCreateRequest[].admissionMonth").description("입학 월").attributes(field("constraint", "양의 정수")),
                                 fieldWithPath("educationCreateRequest[].graduationYear").description("졸업 연도").attributes(field("constraint", "양의 정수")),
-                                fieldWithPath("educationCreateRequest[].graduationMonth").description("졸업 월").attributes(field("constraint", "양의 정수")),
-                                fieldWithPath("educationCreateRequest[].educationDescription").description("학력 설명").attributes(field("constraint", "문자열")),
                                 fieldWithPath("educationCreateRequest[].universityName").description("학교 이름").attributes(field("constraint", "문자열")),
-                                fieldWithPath("educationCreateRequest[].degreeName").description("학위 이름").attributes(field("constraint", "문자열")),
                                 fieldWithPath("educationCreateRequest[].majorName").description("전공 이름").attributes(field("constraint", "문자열")),
+                                fieldWithPath("educationCreateRequest[].degreeName").description("학위 이름").attributes(field("constraint", "문자열")),
                                 subsectionWithPath("antecedentsCreateRequest").description("이력 항목").attributes(field("constraint", "객체(배열)")),
                                 fieldWithPath("antecedentsCreateRequest[].projectName").description("프로젝트명/회사명").attributes(field("constraint", "문자열")),
                                 fieldWithPath("antecedentsCreateRequest[].projectRole").description("포지션").attributes(field("constraint", "문자열")),

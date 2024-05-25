@@ -12,24 +12,6 @@ public class TeamMiniProfileController {
 
     private final TeamMiniProfileService teamMiniProfileService;
 
-//    @PostMapping
-//    @MemberOnly
-//    public ResponseEntity<Void> createTeamMiniProfile(
-//            @Auth final Accessor accessor,
-//            @RequestBody @Valid TeamMiniProfileCreateRequest teamMiniProfileCreateRequest
-//    ) {
-//        teamMiniProfileService.save(accessor.getMemberId(), teamMiniProfileCreateRequest);
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
-//    }
-//
-//    @GetMapping
-//    @MemberOnly
-//    public ResponseEntity<TeamMiniProfileResponse> getTeamMiniProfile(
-//            @Auth final Accessor accessor
-//    ) {
-//        Long teamMiniProfileId = teamMiniProfileService.validateTeamMiniProfileByMember(accessor.getMemberId());
-//        final TeamMiniProfileResponse teamMiniProfileResponse = teamMiniProfileService.getTeamMiniProfileDetail(teamMiniProfileId);
-//        return ResponseEntity.ok().body(teamMiniProfileResponse);
-//    }
+
 
 }

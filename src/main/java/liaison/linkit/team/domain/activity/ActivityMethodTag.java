@@ -19,7 +19,8 @@ public class ActivityMethodTag {
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "activity_method_tag_id")
     private Long id;
-
+    
+    // 활동 방식 태그 4개 (사무실 있음, 사무실 없음, 대면 활동 선호, 대면 + 비대면)
     @Column(name = "activity_tag_name")
     private String activityTagName;
 }

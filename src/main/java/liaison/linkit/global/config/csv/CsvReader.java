@@ -1,48 +1,62 @@
-//package liaison.linkit.global.config.csv;
-//
-//import liaison.linkit.profile.dto.csv.UniversityDto;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.batch.item.file.FlatFileItemReader;
-//import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-//import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-//import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.core.io.ClassPathResource;
-//
-//@Configuration
-//@RequiredArgsConstructor
-//@Slf4j
-//public class CsvReader {
-//    /**
-//     * 대학 정보 파일 읽기
-//     */
-//
-//    @Bean
-//    public FlatFileItemReader<UniversityDto> csvUniversityReader(){
-//        /* 파일읽기 */
-//        FlatFileItemReader<UniversityDto> flatFileItemReader = new FlatFileItemReader<>();
-//        flatFileItemReader.setResource(new ClassPathResource("/csv/university.csv")); //읽을 파일 경로 지정
-//        flatFileItemReader.setEncoding("UTF-8"); //인토딩 설정
-//
-//        /* defaultLineMapper: 읽으려는 데이터 LineMapper을 통해 Dto로 매핑 */
-//        DefaultLineMapper<UniversityDto> defaultLineMapper = new DefaultLineMapper<>();
-//        log.info("csv 읽기 실행 여부");
-//        /* delimitedLineTokenizer : csv 파일에서 구분자 지정하고 구분한 데이터 setNames를 통해 각 이름 설정 */
-//        DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(","); //csv 파일에서 구분자
-//        delimitedLineTokenizer.setNames("universityName"); //행으로 읽은 데이터 매칭할 데이터 각 이름
-//        defaultLineMapper.setLineTokenizer(delimitedLineTokenizer); //lineTokenizer 설정
-//
-//        /* beanWrapperFieldSetMapper: 매칭할 class 타입 지정 */
-//        BeanWrapperFieldSetMapper<UniversityDto> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
-//        beanWrapperFieldSetMapper.setTargetType(UniversityDto.class);
-//
-//        defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper); //fieldSetMapper 지정
-//
-//        flatFileItemReader.setLineMapper(defaultLineMapper); //lineMapper 지정
-//
-//        return flatFileItemReader;
-//
-//    }
-//}
+package liaison.linkit.global.config.csv;
+
+import liaison.linkit.profile.dto.csv.UniversityCsvData;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
+import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.separator.DefaultRecordSeparatorPolicy;
+import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+
+@Slf4j
+@Configuration
+@RequiredArgsConstructor
+public class CsvReader {
+    // Reader 목록
+    // University - 학교명(대학)
+    // Major - 전공(중복 제거)
+    // Degree - 학위(정해진 학위 세트 있음)
+    // 희망 팀빌딩 분야
+    // 주요 기술
+
+    // 추가 필요
+    @Value("${university.csv-path}")
+    private String universityCsv;
+
+    @Bean
+    public FlatFileItemReader<UniversityCsvData> csvUniversityReader() {
+        log.info("어디서 터질까 1");
+        // 파일 경로 지정 및 인코딩
+        FlatFileItemReader<UniversityCsvData> flatFileItemReader = new FlatFileItemReader<>();
+        flatFileItemReader.setResource(new ClassPathResource(universityCsv));
+        flatFileItemReader.setEncoding("UTF-8");
+        log.info("어디서 터질까 2");
+        // 데이터 내부에 개행이 있으면 꼭! 추가해주세요
+        flatFileItemReader.setRecordSeparatorPolicy(new DefaultRecordSeparatorPolicy());
+        log.info("어디서 터질까 3");
+        // 읽어온 파일을 한 줄씩 읽기
+        DefaultLineMapper<UniversityCsvData> defaultLineMapper = new DefaultLineMapper<>();
+        // 따로 설정하지 않으면 기본값은 ","
+        DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
+
+        // "name", "phoneNumber", "comment", "address" 필드 설정
+        delimitedLineTokenizer.setNames(UniversityCsvData.getFieldNames().toArray(String[]::new));
+        defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
+
+        // 매칭할 class 타입 지정(필드 지정)
+        BeanWrapperFieldSetMapper<UniversityCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        beanWrapperFieldSetMapper.setTargetType(UniversityCsvData.class);
+
+        defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
+        flatFileItemReader.setLineMapper(defaultLineMapper);
+        log.info("어디서 터질까 4");
+        log.info("flatFileItemReader={}", flatFileItemReader);
+
+        return flatFileItemReader;
+    }
+}

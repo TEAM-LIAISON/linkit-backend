@@ -18,6 +18,7 @@ public class TeamSize {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    // 팀빌딩 규모 (1~5인) / (5~10인) / (10~20인) / (20인 이상)
     @Column(name = "size_type")
     private String sizeType;
 }

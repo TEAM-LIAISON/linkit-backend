@@ -15,10 +15,7 @@ public class EducationResponse {
 
     private final Long id;
     private final int admissionYear;
-    private final int admissionMonth;
     private final int graduationYear;
-    private final int graduationMonth;
-    private final String educationDescription;
 
     private final University university;
     private final Degree degree;
@@ -28,10 +25,7 @@ public class EducationResponse {
         return new EducationResponse(
                 education.getId(),
                 education.getAdmissionYear(),
-                education.getAdmissionMonth(),
                 education.getGraduationYear(),
-                education.getGraduationMonth(),
-                education.getEducationDescription(),
                 education.getUniversity(),
                 education.getDegree(),
                 education.getMajor()
@@ -42,10 +36,7 @@ public class EducationResponse {
         return new EducationResponse(
                 education.getId(),
                 education.getAdmissionYear(),
-                education.getAdmissionMonth(),
                 education.getGraduationYear(),
-                education.getGraduationMonth(),
-                education.getEducationDescription(),
                 education.getUniversity(),
                 education.getDegree(),
                 education.getMajor()

@@ -19,6 +19,7 @@ public class IndustrySector {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    // 팀빌딩 분야
     @Column(name = "sector_name")
     private String sectorName;
 }

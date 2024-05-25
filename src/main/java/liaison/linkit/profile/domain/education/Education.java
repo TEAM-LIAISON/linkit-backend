@@ -29,16 +29,7 @@ public class Education {
     private int admissionYear;
 
     @Column(nullable = false)
-    private int admissionMonth;
-
-    @Column(nullable = false)
     private int graduationYear;
-
-    @Column(nullable = false)
-    private int graduationMonth;
-
-    @Column(nullable = false)
-    private String educationDescription;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "university_id")
@@ -55,10 +46,7 @@ public class Education {
     public static Education of(
             final Profile profile,
             final int admissionYear,
-            final  int admissionMonth,
             final int graduationYear,
-            final int graduationMonth,
-            final String educationDescription,
             final University university,
             final Degree degree,
             final Major major
@@ -67,10 +55,7 @@ public class Education {
                 null,
                 profile,
                 admissionYear,
-                admissionMonth,
                 graduationYear,
-                graduationMonth,
-                educationDescription,
                 university,
                 degree,
                 major
@@ -79,10 +64,7 @@ public class Education {
 
     public void update(final EducationUpdateRequest educationUpdateRequest) {
         this.admissionYear = educationUpdateRequest.getAdmissionYear();
-        this.admissionMonth = educationUpdateRequest.getGraduationMonth();
         this.graduationYear = educationUpdateRequest.getGraduationYear();
-        this.graduationMonth = educationUpdateRequest.getGraduationMonth();
-        this.educationDescription = educationUpdateRequest.getEducationDescription();
         this.university = educationUpdateRequest.getUniversity();
         this.degree = educationUpdateRequest.getDegree();
     }
