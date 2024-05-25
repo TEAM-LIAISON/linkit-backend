@@ -101,6 +101,8 @@ university:
 teamBuildingField:
   csv-path: ${teamBuildingField.path}
 
+major:
+  csv-path: ${major.path}
 #logging:
 #  level:
 #    org:

@@ -63,10 +63,11 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
   batch:
     jdbc:
       initialize-schema: always
+
   servlet:
     multipart:
       enabled: true # 멀티파트 업로드 지원여부
@@ -99,6 +100,9 @@ university:
 
 teamBuildingField:
   csv-path: ${teamBuildingField.path}
+
+major:
+  csv-path: ${major.path}
 #logging:
 #  level:
 #    org:
