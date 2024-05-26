@@ -112,3 +112,6 @@ teamScale:
 
 memberRole:
   csv-path: ${memberRole.path}
+
+industrySector:
+  csv-path: ${industrySector.path}

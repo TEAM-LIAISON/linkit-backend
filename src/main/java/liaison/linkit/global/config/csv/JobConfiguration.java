@@ -1,5 +1,7 @@
 package liaison.linkit.global.config.csv;
 
+import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorReader;
+import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorWriter;
 import liaison.linkit.global.config.csv.major.CsvMajorReader;
 import liaison.linkit.global.config.csv.major.CsvMajorWriter;
 import liaison.linkit.global.config.csv.memberRole.CsvMemberRoleReader;
@@ -17,6 +19,7 @@ import liaison.linkit.profile.dto.csv.MajorCsvData;
 import liaison.linkit.profile.dto.csv.RegionCsvData;
 import liaison.linkit.profile.dto.csv.TeamBuildingFieldCsvData;
 import liaison.linkit.profile.dto.csv.UniversityCsvData;
+import liaison.linkit.team.dto.csv.IndustrySectorCsvData;
 import liaison.linkit.team.dto.csv.TeamScaleCsvData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +55,9 @@ public class JobConfiguration {
     private final CsvMemberRoleReader csvMemberRoleReader;
     private final CsvMemberRoleWriter csvMemberRoleWriter;
 
+    private final CsvIndustrySectorReader csvIndustrySectorReader;
+    private final CsvIndustrySectorWriter csvIndustrySectorWriter;
+
     // Step & Job upload
     @Bean
     public Job simpleDataLoadJob(JobRepository jobRepository,
@@ -60,7 +66,8 @@ public class JobConfiguration {
                                  Step majorDataLoadStep,
                                  Step regionDataLoadStep,
                                  Step teamScaleDataLoadStep,
-                                 Step memberRoleDataLoadStep) {
+                                 Step memberRoleDataLoadStep,
+                                 Step industrySectorDataLoadStep) {
         return new JobBuilder("linkitInformationLoadJob", jobRepository)
                 .start(universityDataLoadStep) // 스텝 실행
                 .next(teamBuildingFieldDataLoadStep)
@@ -68,6 +75,7 @@ public class JobConfiguration {
                 .next(regionDataLoadStep)
                 .next(teamScaleDataLoadStep)
                 .next(memberRoleDataLoadStep)
+                .next(industrySectorDataLoadStep)
                 .build();
         // 필요 시 listener 추가 가능
     }
@@ -144,6 +152,19 @@ public class JobConfiguration {
                 .<MemberRoleCsvData, MemberRoleCsvData>chunk(10, platformTransactionManager)
                 .reader(csvMemberRoleReader.csvMemberRoleReader())
                 .writer(csvMemberRoleWriter)
+                .allowStartIfComplete(true)
+                .build();
+    }
+
+    @Bean
+    public Step industrySectorDataLoadStep(
+            JobRepository jobRepository,
+            PlatformTransactionManager platformTransactionManager
+    ) {
+        return new StepBuilder("industrySectorDataLoadStep", jobRepository)
+                .<IndustrySectorCsvData, IndustrySectorCsvData>chunk(10, platformTransactionManager)
+                .reader(csvIndustrySectorReader.csvIndustrySectorReader())
+                .writer(csvIndustrySectorWriter)
                 .allowStartIfComplete(true)
                 .build();
     }

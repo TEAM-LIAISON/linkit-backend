@@ -24,4 +24,13 @@ public class IndustrySector {
 
     @Column(name = "sector_name")
     private String sectorName;
+
+    public static IndustrySector of(
+            final String sectorName
+    ) {
+        return new IndustrySector(
+                null,
+                sectorName
+        );
+    }
 }
