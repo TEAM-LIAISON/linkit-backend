@@ -1,8 +1,8 @@
 package liaison.linkit.team.service;
 
-import liaison.linkit.team.domain.repository.Activity.ActivityMethodRepository;
-import liaison.linkit.team.domain.repository.Activity.ActivityMethodTagRepository;
-import liaison.linkit.team.domain.repository.Activity.RegionRepository;
+import liaison.linkit.team.domain.repository.activity.ActivityMethodRepository;
+import liaison.linkit.team.domain.repository.activity.ActivityMethodTagRepository;
+import liaison.linkit.team.domain.repository.activity.RegionRepository;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

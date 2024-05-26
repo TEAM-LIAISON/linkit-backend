@@ -1,4 +1,4 @@
-package liaison.linkit.team.domain.repository.Activity;
+package liaison.linkit.team.domain.repository.activity;
 
 import liaison.linkit.team.domain.activity.ActivityMethodTag;
 import org.springframework.data.jpa.repository.JpaRepository;
