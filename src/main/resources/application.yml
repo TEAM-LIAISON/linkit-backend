@@ -115,3 +115,6 @@ memberRole:
 
 industrySector:
   csv-path: ${industrySector.path}
+
+activityMethodTag:
+  csv-path: ${activityMethodTag.path}
