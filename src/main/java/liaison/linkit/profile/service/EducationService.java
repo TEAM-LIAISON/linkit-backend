@@ -86,12 +86,18 @@ public class EducationService {
                 .toList();
     }
 
-    public void update(final Long educationId, final EducationUpdateRequest educationUpdateRequest) {
+    public EducationResponse update(final Long educationId, final EducationUpdateRequest educationUpdateRequest) {
+
         final Education education = educationRepository.findById(educationId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_EDUCATION_ID));
 
-        education.update(educationUpdateRequest);
+        final University university = universityRepository.findByUniversityName(educationUpdateRequest.getUniversityName());
+        final Degree degree = degreeRepository.findByDegreeName(educationUpdateRequest.getDegreeName());
+        final Major major = majorRepository.findByMajorName(educationUpdateRequest.getMajorName());
+
+        education.update(educationUpdateRequest, university, major, degree);
         educationRepository.save(education);
+        return getEducationResponse(education);
     }
 
     public void delete(final Long educationId) {

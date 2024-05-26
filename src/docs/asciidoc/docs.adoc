@@ -42,7 +42,8 @@ include::{snippets}/member-controller-test/create-member-basic-inform/request-co
 include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
 
 == 1.5. 내 이력서 온보딩 가이드 기입
-=== 1.5.2. 나의 역량 (2/3) - 희망 팀빌딩 분야
+=== 1.5.2. 나의 역량 (2/3) - 희망 분야 생성
+=== [POST /profile_team_building_field]
 ==== 요청
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-fields.adoc[]
@@ -55,7 +56,8 @@ include::{snippets}/profile-team-building-field-controller-test/create-profile-t
 
 === 1.5.2. 나의 역량 (2/3) - 보유 기술
 
-=== 1.5.2. 나의 역량 (2/3) - 학력 등록 [POST /education]
+=== 1.5.2. 나의 역량 (2/3) - 학력 생성
+=== [POST /education]
 ==== 요청
 include::{snippets}/education-controller-test/create-education/http-request.adoc[]
 include::{snippets}/education-controller-test/create-education/request-fields.adoc[]
@@ -67,6 +69,18 @@ include::{snippets}/education-controller-test/create-education/request-cookies.a
 ==== 응답
 include::{snippets}/education-controller-test/create-education/response-body.adoc[]
 include::{snippets}/education-controller-test/create-education/response-fields.adoc[]
+
+=== 1.5.2. 나의 역량 (2/3) - 학력 수정
+=== [PUT /education/{educationId}]
+==== 요청
+include::{snippets}/education-controller-test/update-education/http-request.adoc[]
+include::{snippets}/education-controller-test/update-education/path-parameters.adoc[]
+include::{snippets}/education-controller-test/update-education/request-fields.adoc[]
+
+=== 1.5.2. 나의 역량 (2/3) - 학력 삭제
+=== [DELETE /education/{educationId}]
+include::{snippets}/education-controller-test/delete-education/http-request.adoc[]
+include::{snippets}/education-controller-test/delete-education/path-parameters.adoc[]
 
 === 1.5.2. 나의 역량 (2/3) - 이력 등록 [POST /antecedents]
 ==== 요청

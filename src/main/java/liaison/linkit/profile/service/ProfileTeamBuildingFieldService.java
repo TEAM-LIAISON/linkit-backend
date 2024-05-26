@@ -36,17 +36,22 @@ public class ProfileTeamBuildingFieldService {
         }
     }
 
+    // 희망 팀빌딩 분야 저장 비즈니스 로직
     public void save(final Long memberId, final ProfileTeamBuildingCreateRequest createRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
 
         final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
                 .findTeamBuildingFieldsByFieldNames(createRequest.getTeamBuildingFieldNames());
 
+        // Request DTO -> 각 문자열을 TeamBuildingField 테이블에서 찾아서 가져옴
         final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
                 .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
                 .toList();
 
+        // profileTeamBuildingFieldRepository 모두 저장
         profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
+
+        // 프로그레스바 처리 비즈니스 로직
         profile.updateIsProfileTeamBuildingField(true);
         profileRepository.save(profile);
     }

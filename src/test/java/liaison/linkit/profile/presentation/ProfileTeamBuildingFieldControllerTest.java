@@ -59,11 +59,6 @@ class ProfileTeamBuildingFieldControllerTest extends ControllerTest {
         doNothing().when(profileTeamBuildingFieldService).validateProfileTeamBuildingFieldByMember(anyLong());
     }
 
-    private void makeProfileTeamBuildingField() throws Exception {
-        List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
-        final ProfileTeamBuildingCreateRequest createRequest = new ProfileTeamBuildingCreateRequest(teamBuildingFieldNames);
-    }
-
     // 희망 팀빌딩 분야 조회 테스트
     private ResultActions performGetRequest() throws Exception {
         return mockMvc.perform(
