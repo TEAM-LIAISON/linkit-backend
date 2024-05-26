@@ -103,7 +103,7 @@ teamBuildingField:
 
 major:
   csv-path: ${major.path}
-#logging:
-#  level:
-#    org:
-#      springframework: DEBUG
+
+region:
+  csv-path: ${region.path}
+

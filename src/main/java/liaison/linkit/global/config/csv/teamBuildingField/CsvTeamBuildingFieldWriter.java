@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CsvTeamBuildingFieldWriter implements ItemWriter<TeamBuildingFieldCsvData> {
+
     private final TeamBuildingFieldRepository teamBuildingFieldRepository;
 
     @Override

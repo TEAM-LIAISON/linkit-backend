@@ -2,11 +2,14 @@ package liaison.linkit.global.config.csv;
 
 import liaison.linkit.global.config.csv.major.CsvMajorReader;
 import liaison.linkit.global.config.csv.major.CsvMajorWriter;
+import liaison.linkit.global.config.csv.region.CsvRegionReader;
+import liaison.linkit.global.config.csv.region.CsvRegionWriter;
 import liaison.linkit.global.config.csv.teamBuildingField.CsvTeamBuildingFieldReader;
 import liaison.linkit.global.config.csv.teamBuildingField.CsvTeamBuildingFieldWriter;
 import liaison.linkit.global.config.csv.university.CsvUniversityReader;
 import liaison.linkit.global.config.csv.university.CsvUniversityWriter;
 import liaison.linkit.profile.dto.csv.MajorCsvData;
+import liaison.linkit.profile.dto.csv.RegionCsvData;
 import liaison.linkit.profile.dto.csv.TeamBuildingFieldCsvData;
 import liaison.linkit.profile.dto.csv.UniversityCsvData;
 import lombok.RequiredArgsConstructor;
@@ -34,16 +37,21 @@ public class JobConfiguration {
     private final CsvMajorReader csvMajorReader;
     private final CsvMajorWriter csvMajorWriter;
 
+    private final CsvRegionReader csvRegionReader;
+    private final CsvRegionWriter csvRegionWriter;
+
     // Step & Job upload
     @Bean
     public Job simpleDataLoadJob(JobRepository jobRepository,
                                  Step universityDataLoadStep,
                                  Step teamBuildingFieldDataLoadStep,
-                                 Step majorDataLoadStep) {
+                                 Step majorDataLoadStep,
+                                 Step regionDataLoadStep) {
         return new JobBuilder("linkitInformationLoadJob", jobRepository)
                 .start(universityDataLoadStep) // 스텝 실행
                 .next(teamBuildingFieldDataLoadStep)
                 .next(majorDataLoadStep)
+                .next(regionDataLoadStep)
                 .build();
         // 필요 시 listener 추가 가능
     }
@@ -81,6 +89,19 @@ public class JobConfiguration {
                 .<MajorCsvData, MajorCsvData>chunk(1000, platformTransactionManager)
                 .reader(csvMajorReader.csvMajorReader())
                 .writer(csvMajorWriter)
+                .allowStartIfComplete(true)
+                .build();
+    }
+
+    @Bean
+    public Step regionDataLoadStep(
+            JobRepository jobRepository,
+            PlatformTransactionManager platformTransactionManager
+    ) {
+        return new StepBuilder("regionDataLoadStep", jobRepository)
+                .<RegionCsvData, RegionCsvData>chunk(1000, platformTransactionManager)
+                .reader(csvRegionReader.csvRegionReader())
+                .writer(csvRegionWriter)
                 .allowStartIfComplete(true)
                 .build();
     }

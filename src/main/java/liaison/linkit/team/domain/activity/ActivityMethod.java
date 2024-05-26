@@ -26,7 +26,7 @@ public class ActivityMethod {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "activity_region_id")
-    private ActivityRegion activityRegion;
+    private Region region;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "activity_method_tag_id")
