@@ -107,3 +107,14 @@ major:
 region:
   csv-path: ${region.path}
 
+teamScale:
+  csv-path: ${teamScale.path}
+
+memberRole:
+  csv-path: ${memberRole.path}
+
+industrySector:
+  csv-path: ${industrySector.path}
+
+activityMethodTag:
+  csv-path: ${activityMethodTag.path}
