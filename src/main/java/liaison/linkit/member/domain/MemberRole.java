@@ -22,4 +22,13 @@ public class MemberRole {
 
     @Column(nullable = false, length = 50)
     private String roleName;
+
+    public static MemberRole of(
+            final String roleName
+    ) {
+        return new MemberRole(
+                null,
+                roleName
+        );
+    }
 }

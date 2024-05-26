@@ -109,3 +109,6 @@ region:
 
 teamScale:
   csv-path: ${teamScale.path}
+
+memberRole:
+  csv-path: ${memberRole.path}
