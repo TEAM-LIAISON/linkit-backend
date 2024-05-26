@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,13 +13,23 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class TeamSize {
+public class TeamScale {
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "team_size_id")
     private Long id;
 
-    // 팀빌딩 규모 (1~5인) / (5~10인) / (10~20인) / (20인 이상)
     @Column(name = "size_type")
     private String sizeType;
+
+    public static TeamScale of(
+            final String sizeType
+    ) {
+        return new TeamScale(
+                null,
+                sizeType
+        );
+    }
 }

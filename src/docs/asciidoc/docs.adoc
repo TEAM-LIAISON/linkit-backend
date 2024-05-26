@@ -55,9 +55,31 @@ include::{snippets}/profile-team-building-field-controller-test/create-profile-t
 
 === 1.5.2. 나의 역량 (2/3) - 보유 기술
 
-=== 1.5.2. 나의 역량 (2/3) - 학력
+=== 1.5.2. 나의 역량 (2/3) - 학력 등록 [POST /education]
+==== 요청
+include::{snippets}/education-controller-test/create-education/http-request.adoc[]
+include::{snippets}/education-controller-test/create-education/request-fields.adoc[]
+요청 헤더
+include::{snippets}/education-controller-test/create-education/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/education-controller-test/create-education/request-cookies.adoc[]
 
-=== 1.5.2. 나의 역량 (2/3) - 이력
+==== 응답
+include::{snippets}/education-controller-test/create-education/response-body.adoc[]
+include::{snippets}/education-controller-test/create-education/response-fields.adoc[]
+
+=== 1.5.2. 나의 역량 (2/3) - 이력 등록 [POST /antecedents]
+==== 요청
+include::{snippets}/antecedents-controller-test/create-antecedents/http-request.adoc[]
+include::{snippets}/antecedents-controller-test/create-antecedents/request-fields.adoc[]
+요청 헤더
+include::{snippets}/antecedents-controller-test/create-antecedents/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/antecedents-controller-test/create-antecedents/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/antecedents-controller-test/create-antecedents/response-body.adoc[]
+include::{snippets}/antecedents-controller-test/create-antecedents/response-fields.adoc[]
 
 === 1.5.3. (미니) 이력서 완성 (3/3)
 ==== 요청

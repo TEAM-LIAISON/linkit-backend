@@ -1,34 +1,32 @@
 package liaison.linkit.profile.dto.response;
 
-import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
-import liaison.linkit.profile.domain.education.Major;
-import liaison.linkit.profile.domain.education.University;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import static lombok.AccessLevel.PRIVATE;
-
 @Getter
-@RequiredArgsConstructor(access = PRIVATE)
+@RequiredArgsConstructor
 public class EducationResponse {
 
     private final Long id;
     private final int admissionYear;
     private final int graduationYear;
 
-    private final University university;
-    private final Degree degree;
-    private final Major major;
+    // 학교명
+    private final String universityName;
+    // 전공명
+    private final String majorName;
+    // 재학 기간 관련 타입
+    private final String degreeName;
 
     public static EducationResponse of(final Education education) {
         return new EducationResponse(
                 education.getId(),
                 education.getAdmissionYear(),
                 education.getGraduationYear(),
-                education.getUniversity(),
-                education.getDegree(),
-                education.getMajor()
+                education.getUniversity().getUniversityName(),
+                education.getDegree().getDegreeName(),
+                education.getMajor().getMajorName()
         );
     }
 
@@ -37,9 +35,9 @@ public class EducationResponse {
                 education.getId(),
                 education.getAdmissionYear(),
                 education.getGraduationYear(),
-                education.getUniversity(),
-                education.getDegree(),
-                education.getMajor()
+                education.getUniversity().getUniversityName(),
+                education.getDegree().getDegreeName(),
+                education.getMajor().getMajorName()
         );
     }
 }

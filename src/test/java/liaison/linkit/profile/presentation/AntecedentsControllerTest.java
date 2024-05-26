@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
@@ -63,8 +64,7 @@ public class AntecedentsControllerTest extends ControllerTest {
                 2023,
                 3,
                 2023,
-                6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                6
         );
     }
 
@@ -119,8 +119,7 @@ public class AntecedentsControllerTest extends ControllerTest {
                 2023,
                 3,
                 2023,
-                6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                6
         );
 
         given(antecedentsService.getAntecedentsDetail(1L))
@@ -170,11 +169,7 @@ public class AntecedentsControllerTest extends ControllerTest {
                                         fieldWithPath("endMonth")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("종료 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("antecedentsDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
-                                                .attributes(field("constraint", "문자열"))
+                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택"))
                                 )
                         )
                 );
@@ -191,15 +186,27 @@ public class AntecedentsControllerTest extends ControllerTest {
                 2023,
                 3,
                 2023,
-                6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                6
         );
+
+        final AntecedentsResponse antecedentsResponse = new AntecedentsResponse(
+                1L,
+                "오더이즈",
+                "프로젝트 매니저",
+                2023,
+                3,
+                2023,
+                6
+        );
+
+        when(antecedentsService.save(anyLong(), any(AntecedentsCreateRequest.class)))
+                .thenReturn(antecedentsResponse);
 
         // when
         final ResultActions resultActions = performPostRequest(antecedentsCreateRequest);
 
         // then
-        resultActions.andExpect(status().isCreated())
+        resultActions.andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
                                 requestCookies(
@@ -235,11 +242,30 @@ public class AntecedentsControllerTest extends ControllerTest {
                                         fieldWithPath("endMonth")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("종료 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("antecedentsDescription")
+                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("id")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("이력 ID"),
+                                        fieldWithPath("projectName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
-                                                .attributes(field("constraint", "문자열"))
+                                                .description("기업명(프로젝트명)"),
+                                        fieldWithPath("projectRole")
+                                                .type(JsonFieldType.STRING)
+                                                .description("직무(역할)"),
+                                        fieldWithPath("startYear")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("시작 연도"),
+                                        fieldWithPath("startMonth")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("시작 월"),
+                                        fieldWithPath("endYear")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("종료 연도"),
+                                        fieldWithPath("endMonth")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("종료 월")
                                 )
                         )
                 );

@@ -27,9 +27,6 @@ public class AntecedentsCreateRequest {
     @NotNull(message = "종료 월을 입력해주세요")
     private final int endMonth;
 
-    @NotNull(message = "이력 설명을 입력해주세요")
-    private final String antecedentsDescription;
-
     public Antecedents toEntity(final Profile profile) {
         return new Antecedents(
                 null,
@@ -39,8 +36,7 @@ public class AntecedentsCreateRequest {
                 startYear,
                 startMonth,
                 endYear,
-                endMonth,
-                antecedentsDescription
+                endMonth
         );
     }
 }

@@ -32,7 +32,7 @@ public class TeamMiniProfile {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "team_size_id")
-    private TeamSize teamSize;
+    private TeamScale teamScale;
 
     @Column(name = "team_name")
     private String teamName;

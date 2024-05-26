@@ -35,7 +35,7 @@ public class AntecedentsService {
         }
     }
 
-    public void save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest){
+    public AntecedentsResponse save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest){
         final Profile profile = profileRepository.findByMemberId(memberId);
 
         final Antecedents newAntecedents = Antecedents.of(
@@ -45,14 +45,15 @@ public class AntecedentsService {
                 antecedentsCreateRequest.getStartYear(),
                 antecedentsCreateRequest.getStartMonth(),
                 antecedentsCreateRequest.getEndYear(),
-                antecedentsCreateRequest.getEndMonth(),
-                antecedentsCreateRequest.getAntecedentsDescription()
+                antecedentsCreateRequest.getEndMonth()
         );
 
-        antecedentsRepository.save(newAntecedents);
+        Antecedents savedAntecedents = antecedentsRepository.save(newAntecedents);
 
         profile.updateIsAntecedents(true);
         profile.updateMemberProfileTypeByCompletion();
+
+        return getAntecedentsResponse(savedAntecedents);
     }
 
     @Transactional(readOnly = true)

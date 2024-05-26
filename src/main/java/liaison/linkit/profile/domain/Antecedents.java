@@ -48,9 +48,6 @@ public class Antecedents {
     @Column(nullable = false)
     private int endMonth;
 
-    @Column(nullable = false)
-    private String antecedentsDescription;
-
     public static Antecedents of(
             final Profile profile,
             final String projectName,
@@ -58,8 +55,7 @@ public class Antecedents {
             final int startYear,
             final int startMonth,
             final int endYear,
-            final int endMonth,
-            final String antecedentsDescription
+            final int endMonth
     ) {
         return new Antecedents(
                 null,
@@ -69,8 +65,7 @@ public class Antecedents {
                 startYear,
                 startMonth,
                 endYear,
-                endMonth,
-                antecedentsDescription
+                endMonth
         );
     }
 

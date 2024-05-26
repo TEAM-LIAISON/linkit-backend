@@ -1,4 +1,4 @@
-package liaison.linkit.team.domain.repository;
+package liaison.linkit.team.domain.repository.miniprofile;
 
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
