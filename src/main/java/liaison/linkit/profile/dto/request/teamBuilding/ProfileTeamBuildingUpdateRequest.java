@@ -1,13 +1,14 @@
 package liaison.linkit.profile.dto.request.teamBuilding;
 
-import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProfileTeamBuildingUpdateRequest {
-    private final Profile profile;
-    private final TeamBuildingField teamBuildingField;
+    private List<String> teamBuildingFieldNames;
 }

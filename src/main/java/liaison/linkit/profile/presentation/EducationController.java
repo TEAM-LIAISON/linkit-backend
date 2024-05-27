@@ -28,7 +28,7 @@ public class EducationController {
         return ResponseEntity.ok().body(educationResponses);
     }
 
-    // 교육 항목 1개 생성
+    // 교육 항목 1개 생성 -> Education 테이블에 저장된 PK를 반환한다.
     @PostMapping
     @MemberOnly
     public ResponseEntity<EducationResponse> createEducation(
@@ -49,23 +49,26 @@ public class EducationController {
     }
 
     // 교육 항목 1개 수정
-    @PatchMapping
+    @PutMapping("/{educationId}")
     @MemberOnly
-    public ResponseEntity<Void> updateEducation(
+    public ResponseEntity<EducationResponse> updateEducation(
             @Auth final Accessor accessor,
+            @PathVariable final Long educationId,
             @RequestBody @Valid final EducationUpdateRequest educationUpdateRequest
     ){
-        Long educationId = educationService.validateEducationByMember(accessor.getMemberId());
-        educationService.update(educationId, educationUpdateRequest);
-        return ResponseEntity.noContent().build();
+        educationService.validateEducationByMember(accessor.getMemberId());
+        EducationResponse educationResponse = educationService.update(educationId, educationUpdateRequest);
+        return ResponseEntity.ok().body(educationResponse);
     }
 
     // 교육 항목 1개 삭제
-    @DeleteMapping
+    @DeleteMapping("/{educationId}")
     @MemberOnly
-    public ResponseEntity<Void> deleteEducation(@Auth final Accessor accessor) {
-        Long educationId = educationService.validateEducationByMember(accessor.getMemberId());
-        educationService.delete(educationId);
+    public ResponseEntity<Void> deleteEducation(
+            @Auth final Accessor accessor,
+            @PathVariable final Long educationId
+    ) {
+        educationService.delete(accessor.getMemberId(), educationId);
         return ResponseEntity.noContent().build();
     }
 }

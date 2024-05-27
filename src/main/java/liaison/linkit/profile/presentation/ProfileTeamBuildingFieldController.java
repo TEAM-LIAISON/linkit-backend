@@ -5,7 +5,8 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
-import liaison.linkit.profile.dto.response.ProfileTeamBuildingResponse;
+import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdateRequest;
+import liaison.linkit.profile.dto.response.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.ProfileTeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +22,10 @@ public class ProfileTeamBuildingFieldController {
     // 희망 팀빌딩 항목 전체 조회
     @GetMapping
     @MemberOnly
-    public ResponseEntity<ProfileTeamBuildingResponse> getProfileTeamBuildingList(@Auth final Accessor accessor) {
+    public ResponseEntity<ProfileTeamBuildingFieldResponse> getProfileTeamBuildingList(@Auth final Accessor accessor) {
         profileTeamBuildingFieldService.validateProfileTeamBuildingFieldByMember(accessor.getMemberId());
-        final ProfileTeamBuildingResponse profileTeamBuildingResponses = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
-        return ResponseEntity.ok().body(profileTeamBuildingResponses);
+        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponses = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
+        return ResponseEntity.ok().body(profileTeamBuildingFieldResponses);
     }
 
     // 희망 팀빌딩 항목 등록 (여러개 등록 가능해야함)
@@ -36,6 +37,18 @@ public class ProfileTeamBuildingFieldController {
     ) {
         profileTeamBuildingFieldService.save(accessor.getMemberId(), profileTeamBuildingCreateRequest);
         return ResponseEntity.ok().build();
+    }
+
+    @PutMapping
+    @MemberOnly
+    public ResponseEntity<ProfileTeamBuildingFieldResponse> updateProfileTeamBuildingField(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid final ProfileTeamBuildingUpdateRequest updateRequest
+    ) {
+        profileTeamBuildingFieldService.validateProfileTeamBuildingFieldByMember(accessor.getMemberId());
+        ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse =
+                profileTeamBuildingFieldService.update(accessor.getMemberId(), updateRequest);
+        return ResponseEntity.ok().body(profileTeamBuildingFieldResponse);
     }
 
 }

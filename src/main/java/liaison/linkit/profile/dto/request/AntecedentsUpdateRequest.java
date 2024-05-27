@@ -25,6 +25,6 @@ public class AntecedentsUpdateRequest {
     @NotNull(message = "종료 월을 입력해주세요")
     private final int endMonth;
 
-    @NotNull(message = "이력 설명을 입력해주세요")
-    private final String antecedentsDescription;
+    @NotNull(message = "재직 여부를 선택해주세요")
+    private final boolean retirement;
 }

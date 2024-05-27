@@ -23,6 +23,7 @@ public enum ExceptionCode {
     NOT_FOUND_PROFILE_SKILL_ID(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
     NOT_FOUND_HISTORY_ID(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
     NOT_FOUND_TEAM_MINI_PROFILE_ID(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
+    NOT_FOUND_PROFILE_TEAM_BUILDING_ID(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
 
     INVALID_ANTECEDENTS_WITH_MEMBER(1017, "요청한 멤버와 ID에 해당하는 이력 정보가 존재하지 않습니다."),
     INVALID_MINI_PROFILE_WITH_MEMBER(1013, "요청한 멤버와 ID에 해당하는 미니 프로필이 존재하지 않습니다."),

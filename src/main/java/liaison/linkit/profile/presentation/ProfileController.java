@@ -97,7 +97,7 @@ public class ProfileController {
         final ProfileSkillResponse profileSkillResponse = profileSkillService.getAllProfileSkills(accessor.getMemberId());
 
         // 5. 희망 팀빌딩 분야
-        final ProfileTeamBuildingResponse profileTeamBuildingResponse = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
+        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
 
         // 6. 이력
         final List<AntecedentsResponse> antecedentsResponses = antecedentsService.getAllAntecedents(accessor.getMemberId());
@@ -116,7 +116,7 @@ public class ProfileController {
                 completionResponse,
                 profileIntroductionResponse,
                 profileSkillResponse,
-                profileTeamBuildingResponse,
+                profileTeamBuildingFieldResponse,
                 antecedentsResponses,
                 educationResponses,
                 awardsResponses,

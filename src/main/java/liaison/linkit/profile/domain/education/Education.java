@@ -62,10 +62,16 @@ public class Education {
         );
     }
 
-    public void update(final EducationUpdateRequest educationUpdateRequest) {
+    public void update(
+            final EducationUpdateRequest educationUpdateRequest,
+            final University university,
+            final Major major,
+            final Degree degree
+    ) {
         this.admissionYear = educationUpdateRequest.getAdmissionYear();
         this.graduationYear = educationUpdateRequest.getGraduationYear();
-        this.university = educationUpdateRequest.getUniversity();
-        this.degree = educationUpdateRequest.getDegree();
+        this.university = university;
+        this.major = major;
+        this.degree = degree;
     }
 }
