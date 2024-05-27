@@ -51,22 +51,25 @@ public class AntecedentsController {
     }
 
     // 이력 1개 수정 요청
-    @PatchMapping
+    @PutMapping("/{antecedentsId}")
     @MemberOnly
-    public ResponseEntity<Void> updateAntecedents(
+    public ResponseEntity<AntecedentsResponse> updateAntecedents(
         @Auth final Accessor accessor,
+        @PathVariable final Long antecedentsId,
         @RequestBody @Valid final AntecedentsUpdateRequest antecedentsUpdateRequest
     ){
-        antecedentsService.update(accessor.getMemberId(), antecedentsUpdateRequest);
-        return ResponseEntity.noContent().build();
+        AntecedentsResponse antecedentsResponse = antecedentsService.update(accessor.getMemberId(), antecedentsId, antecedentsUpdateRequest);
+        return ResponseEntity.ok().body(antecedentsResponse);
     }
 
     // 이력 1개 삭제 요청
-    @DeleteMapping
+    @DeleteMapping("/{antecedentsId}")
     @MemberOnly
-    public ResponseEntity<Void> deleteAntecedents(@Auth final Accessor accessor) {
-        antecedentsService.delete(accessor.getMemberId());
-
+    public ResponseEntity<Void> deleteAntecedents(
+            @Auth final Accessor accessor,
+            @PathVariable final Long antecedentsId
+    ) {
+        antecedentsService.delete(accessor.getMemberId(), antecedentsId);
         return ResponseEntity.noContent().build();
     }
 }

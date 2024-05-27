@@ -153,7 +153,8 @@ class ProfileControllerTest extends ControllerTest {
                 2023,
                 3,
                 2024,
-                10
+                10,
+                false
         );
         final AntecedentsCreateRequest secondRequest = new AntecedentsCreateRequest(
                 "오더이즈",
@@ -161,7 +162,8 @@ class ProfileControllerTest extends ControllerTest {
                 2023,
                 3,
                 2023,
-                6
+                6,
+                false
         );
         antecedentsCreateRequests.add(firstRequest);
         antecedentsCreateRequests.add(secondRequest);

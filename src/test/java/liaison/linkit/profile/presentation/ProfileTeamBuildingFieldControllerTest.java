@@ -5,7 +5,8 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
-import liaison.linkit.profile.dto.response.ProfileTeamBuildingResponse;
+import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdateRequest;
+import liaison.linkit.profile.dto.response.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.ProfileTeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -33,8 +35,7 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProfileTeamBuildingFieldController.class)
@@ -59,12 +60,10 @@ class ProfileTeamBuildingFieldControllerTest extends ControllerTest {
         doNothing().when(profileTeamBuildingFieldService).validateProfileTeamBuildingFieldByMember(anyLong());
     }
 
-    // 희망 팀빌딩 분야 조회 테스트
-    private ResultActions performGetRequest() throws Exception {
-        return mockMvc.perform(
-                get("/profile_team_building_field")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
+    private void makeProfileTeamBuildingField() throws Exception {
+        List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
+        final ProfileTeamBuildingCreateRequest profileTeamBuildingCreateRequest = new ProfileTeamBuildingCreateRequest(
+                teamBuildingFieldNames
         );
     }
 
@@ -76,6 +75,27 @@ class ProfileTeamBuildingFieldControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createRequest))
+        );
+    }
+
+    // 희망 팀빌딩 분야 조회 테스트
+    private ResultActions performGetRequest() throws Exception {
+        return mockMvc.perform(
+                get("/profile_team_building_field")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+        );
+    }
+
+    // 희망 팀빌딩 분야 수정 테스트
+    private ResultActions performPutRequest(final ProfileTeamBuildingUpdateRequest updateRequest) throws Exception {
+        return mockMvc.perform(
+                put("/profile_team_building_field")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateRequest))
         );
     }
 
@@ -116,7 +136,7 @@ class ProfileTeamBuildingFieldControllerTest extends ControllerTest {
     void getProfileTeamBuildingFields() throws Exception {
         // given
         List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
-        final ProfileTeamBuildingResponse response = new ProfileTeamBuildingResponse(teamBuildingFieldNames);
+        final ProfileTeamBuildingFieldResponse response = new ProfileTeamBuildingFieldResponse(teamBuildingFieldNames);
 
         given(profileTeamBuildingFieldService.getAllProfileTeamBuildings(anyLong())).willReturn(response);
 
@@ -140,6 +160,51 @@ class ProfileTeamBuildingFieldControllerTest extends ControllerTest {
                                         fieldWithPath("teamBuildingFieldNames")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("희망 팀빋딩 분야")
+                                                .attributes(field("constraint", "문자열의 배열"))
+                                )
+                        )
+                );
+    }
+
+    @DisplayName("희망 팀빌딩 분야 항목들을 수정할 수 있다.")
+    @Test
+    void updateProfileTeamBuildingField() throws Exception {
+        // given
+        List<String> teamBuildingFieldNames = Arrays.asList("포트폴리오", "스터디", "창업");
+        final ProfileTeamBuildingUpdateRequest updateRequest = new ProfileTeamBuildingUpdateRequest(teamBuildingFieldNames);
+        final ProfileTeamBuildingFieldResponse response = new ProfileTeamBuildingFieldResponse(teamBuildingFieldNames);
+
+        doNothing().when(profileTeamBuildingFieldService).validateProfileTeamBuildingFieldByMember(anyLong());
+
+        when(profileTeamBuildingFieldService.update(anyLong(), any(ProfileTeamBuildingUpdateRequest.class)))
+                .thenReturn(response);
+
+        // when
+        final ResultActions resultActions = performPutRequest(updateRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestFields(
+                                        fieldWithPath("teamBuildingFieldNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("희망 팀빋딩 분야(7가지 항목)")
+                                                .attributes(field("constraint", "문자열의 배열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("teamBuildingFieldNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("희망 팀빋딩 분야(7가지 항목)")
                                                 .attributes(field("constraint", "문자열의 배열"))
                                 )
                         )

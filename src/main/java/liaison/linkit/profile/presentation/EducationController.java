@@ -68,8 +68,7 @@ public class EducationController {
             @Auth final Accessor accessor,
             @PathVariable final Long educationId
     ) {
-        educationService.validateEducationByMember(accessor.getMemberId());
-        educationService.delete(educationId);
+        educationService.delete(accessor.getMemberId(), educationId);
         return ResponseEntity.noContent().build();
     }
 }

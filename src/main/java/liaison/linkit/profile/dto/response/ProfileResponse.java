@@ -14,7 +14,7 @@ public class ProfileResponse {
     private final CompletionResponse completionResponse;
     private final ProfileIntroductionResponse profileIntroductionResponse;
     private final ProfileSkillResponse profileSkillResponse;
-    private final ProfileTeamBuildingResponse profileTeamBuildingResponse;
+    private final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse;
     private final List<AntecedentsResponse> antecedentsResponse;
     private final List<EducationResponse> educationResponse;
     private final List<AwardsResponse> awardsResponse;
@@ -25,7 +25,7 @@ public class ProfileResponse {
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
             final ProfileSkillResponse profileSkillResponse,
-            final ProfileTeamBuildingResponse profileTeamBuildingResponse,
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
             final List<AntecedentsResponse> antecedentsResponses,
             final List<EducationResponse> educationResponses,
             final List<AwardsResponse> awardsResponses,
@@ -36,7 +36,7 @@ public class ProfileResponse {
                 completionResponse,
                 profileIntroductionResponse,
                 profileSkillResponse,
-                profileTeamBuildingResponse,
+                profileTeamBuildingFieldResponse,
                 antecedentsResponses,
                 educationResponses,
                 awardsResponses,

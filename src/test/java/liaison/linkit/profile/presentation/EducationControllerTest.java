@@ -286,12 +286,12 @@ class EducationControllerTest extends ControllerTest {
         when(educationService.validateEducationByMember(anyLong()))
                 .thenReturn(1L);
 
-        doNothing().when(educationService).delete(anyLong());
+        doNothing().when(educationService).delete(anyLong(), anyLong());
         // when
         final ResultActions resultActions = performDeleteRequest(1);
 
         // then
-        verify(educationService).delete(anyLong());
+        verify(educationService).delete(anyLong(), anyLong());
 
         resultActions.andExpect(status().isNoContent())
                 .andDo(

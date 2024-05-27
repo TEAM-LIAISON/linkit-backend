@@ -48,6 +48,9 @@ public class Antecedents {
     @Column(nullable = false)
     private int endMonth;
 
+    @Column(nullable = false)
+    private boolean retirement;
+
     public static Antecedents of(
             final Profile profile,
             final String projectName,
@@ -55,7 +58,8 @@ public class Antecedents {
             final int startYear,
             final int startMonth,
             final int endYear,
-            final int endMonth
+            final int endMonth,
+            final boolean retirement
     ) {
         return new Antecedents(
                 null,
@@ -65,7 +69,8 @@ public class Antecedents {
                 startYear,
                 startMonth,
                 endYear,
-                endMonth
+                endMonth,
+                retirement
         );
     }
 
@@ -76,5 +81,6 @@ public class Antecedents {
         this.startMonth = antecedentsUpdateRequest.getStartMonth();
         this.endYear = antecedentsUpdateRequest.getEndYear();
         this.endMonth = antecedentsUpdateRequest.getEndMonth();
+        this.retirement = antecedentsUpdateRequest.isRetirement();
     }
 }

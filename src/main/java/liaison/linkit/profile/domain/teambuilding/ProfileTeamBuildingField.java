@@ -2,7 +2,6 @@ package liaison.linkit.profile.domain.teambuilding;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,10 +39,5 @@ public class ProfileTeamBuildingField {
                 profile,
                 teamBuildingField
         );
-    }
-
-    public void update(final ProfileTeamBuildingUpdateRequest profileTeamBuildingUpdateRequest) {
-        this.profile = profileTeamBuildingUpdateRequest.getProfile();
-        this.teamBuildingField = profileTeamBuildingUpdateRequest.getTeamBuildingField();
     }
 }

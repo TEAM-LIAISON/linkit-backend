@@ -45,7 +45,8 @@ public class AntecedentsService {
                 antecedentsCreateRequest.getStartYear(),
                 antecedentsCreateRequest.getStartMonth(),
                 antecedentsCreateRequest.getEndYear(),
-                antecedentsCreateRequest.getEndMonth()
+                antecedentsCreateRequest.getEndMonth(),
+                antecedentsCreateRequest.isRetirement()
         );
 
         Antecedents savedAntecedents = antecedentsRepository.save(newAntecedents);
@@ -76,31 +77,34 @@ public class AntecedentsService {
         return AntecedentsResponse.of(antecedents);
     }
 
-    public void update(final Long memberId, final AntecedentsUpdateRequest antecedentsUpdateRequest) {
+    public AntecedentsResponse update(final Long memberId, final Long antecedentsId, final AntecedentsUpdateRequest antecedentsUpdateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long antecedentsId = validateAntecedentsByMember(memberId);
 
         final Antecedents antecedents = antecedentsRepository.findById(antecedentsId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_ID));
 
-        // 입력에 대한 제약은 프론트에서 처리해준다.
-        // 들어오는 값은 Not null
+        // 입력 받은 요청을 토대로 객체 변환
         antecedents.update(antecedentsUpdateRequest);
         antecedentsRepository.save(antecedents);
 
+        // 완성도 로직
         profile.updateMemberProfileTypeByCompletion();
+
+        // 객체 응답 반환 로직
+        return getAntecedentsResponse(antecedents);
     }
 
-    public void delete(final Long memberId) {
+    public void delete(final Long memberId, final Long antecedentsId) {
         final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long antecedentsId = validateAntecedentsByMember(memberId);
 
         if (!antecedentsRepository.existsById(antecedentsId)) {
             throw new BadRequestException(NOT_FOUND_ANTECEDENTS_ID);
         }
 
+        // 삭제
         antecedentsRepository.deleteById(antecedentsId);
 
+        // 완성도 로직
         profile.updateIsAntecedents(false);
         profile.updateMemberProfileTypeByCompletion();
     }

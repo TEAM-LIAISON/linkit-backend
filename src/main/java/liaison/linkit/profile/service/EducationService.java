@@ -100,7 +100,7 @@ public class EducationService {
         return getEducationResponse(education);
     }
 
-    public void delete(final Long educationId) {
+    public void delete(final Long memberId, final Long educationId) {
         if (!educationRepository.existsById(educationId)) {
             throw new BadRequestException(NOT_FOUND_EDUCATION_ID);
         }

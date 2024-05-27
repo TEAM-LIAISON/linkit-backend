@@ -8,7 +8,8 @@ import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRe
 import liaison.linkit.profile.domain.teambuilding.ProfileTeamBuildingField;
 import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
-import liaison.linkit.profile.dto.response.ProfileTeamBuildingResponse;
+import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdateRequest;
+import liaison.linkit.profile.dto.response.ProfileTeamBuildingFieldResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,7 @@ public class ProfileTeamBuildingFieldService {
 
 
     @Transactional(readOnly = true)
-    public ProfileTeamBuildingResponse getAllProfileTeamBuildings(final Long memberId) {
+    public ProfileTeamBuildingFieldResponse getAllProfileTeamBuildings(final Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
 
         List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingFieldRepository.findAllByProfileId(profileId);
@@ -70,6 +71,33 @@ public class ProfileTeamBuildingFieldService {
                 .map(TeamBuildingField::getTeamBuildingFieldName)
                 .toList();
 
-        return ProfileTeamBuildingResponse.of(teamBuildingFieldNames);
+        return ProfileTeamBuildingFieldResponse.of(teamBuildingFieldNames);
+    }
+
+    public ProfileTeamBuildingFieldResponse update(
+            final Long memberId,
+            final ProfileTeamBuildingUpdateRequest updateRequest
+    ) {
+        Long profileId = profileRepository.findByMemberId(memberId).getId();
+        final Profile profile = profileRepository.findByMemberId(memberId);
+
+        profileTeamBuildingFieldRepository.deleteAllByProfileId(profileId);
+
+        final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
+                .findTeamBuildingFieldsByFieldNames(updateRequest.getTeamBuildingFieldNames());
+
+        // Request DTO -> 각 문자열을 TeamBuildingField 테이블에서 찾아서 가져옴
+        final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
+                .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
+                .toList();
+
+        // profileTeamBuildingFieldRepository 모두 저장
+        profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
+
+        List<String> teamBuildingFieldNames = teamBuildingFields.stream()
+                .map(TeamBuildingField::getTeamBuildingFieldName)
+                .toList();
+
+        return new ProfileTeamBuildingFieldResponse(teamBuildingFieldNames);
     }
 }

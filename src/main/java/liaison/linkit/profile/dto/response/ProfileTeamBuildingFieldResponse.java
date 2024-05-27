@@ -7,12 +7,12 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class ProfileTeamBuildingResponse {
+public class ProfileTeamBuildingFieldResponse {
 
     private final List<String> teamBuildingFieldNames;
 
-    public static ProfileTeamBuildingResponse of(final List<String> profileTeamBuildingFieldNames) {
-        return new ProfileTeamBuildingResponse(
+    public static ProfileTeamBuildingFieldResponse of(final List<String> profileTeamBuildingFieldNames) {
+        return new ProfileTeamBuildingFieldResponse(
                 profileTeamBuildingFieldNames
         );
     }
