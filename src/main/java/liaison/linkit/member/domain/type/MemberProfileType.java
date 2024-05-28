@@ -15,4 +15,5 @@ public enum MemberProfileType {
     // 내 이력서 작성 O / 팀 소개서 작성 O
     BOTH_PROFILE_WRITER;
 
+
 }
