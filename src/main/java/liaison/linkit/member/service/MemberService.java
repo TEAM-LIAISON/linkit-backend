@@ -7,15 +7,17 @@ import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.MemberRole;
 import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
 import liaison.linkit.member.domain.repository.MemberRepository;
-
 import liaison.linkit.member.domain.repository.MemberRoleRepository;
 import liaison.linkit.member.dto.request.MemberBasicInformCreateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
 import liaison.linkit.member.dto.response.MemberResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
@@ -38,7 +40,7 @@ public class MemberService {
         }
     }
 
-    public void save(final Long memberId, final MemberBasicInformCreateRequest memberBasicInformCreateRequest) {
+    public void save(final Long memberId, final MemberBasicInformCreateRequest memberBasicInformCreateRequest) throws ResponseStatusException {
         log.info("memberId={}", memberId);
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
@@ -55,8 +57,19 @@ public class MemberService {
         );
 
         member.changeIsMemberBasicInform(true);
+        try {
+            memberBasicInformRepository.save(newBasicMemberBasicInform);
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("Duplicate entry")) {
+                String duplicateKey = e.getMessage().split("'")[1]; // 오류 메시지 구조에 따라 다를 수 있음
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "DUPLICATE_ENTRY: 중복된 데이터가 존재합니다. 키 값: " + duplicateKey);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "데이터 저장 중 오류가 발생했습니다.");
+            }
+        }
 
-        memberBasicInformRepository.save(newBasicMemberBasicInform);
+
+
     }
 
     public Long getMemberRole(final String roleName) {
