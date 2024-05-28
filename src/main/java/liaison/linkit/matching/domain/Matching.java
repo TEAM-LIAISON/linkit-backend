@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -36,6 +37,7 @@ public class Matching {
 
     // 어떤 소개서에 요청 보낸 것인지 type 필요
     @Column(name = "matching_type")
+    @Enumerated(value = STRING)
     private MatchingType matchingType;
 
     @Column(name = "request_message")
@@ -45,5 +47,18 @@ public class Matching {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-
+    public Matching(
+            final Long id,
+            final Member member,
+            final Long receiveMatchingId,
+            final MatchingType matchingType,
+            final String requestMessage,
+            final LocalDateTime createdAt
+    ) {
+        this.member = member;
+        this.receiveMatchingId = receiveMatchingId;
+        this.matchingType = matchingType;
+        this.requestMessage = requestMessage;
+        this.createdAt = LocalDateTime.now();
+    }
 }
