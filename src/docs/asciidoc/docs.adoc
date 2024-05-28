@@ -67,9 +67,7 @@ include::{snippets}/profile-team-building-field-controller-test/update-profile-t
 include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/response-body.adoc[]
 include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/response-fields.adoc[]
 
-=== 1.5.2. 내 이력서 - 희망 역할 (미완성)
-
-=== 1.5.2. 내 이력서 - 보유 기술 (미완성)
+=== 1.5.2. 내 이력서 - 희망 역할 및 보유 기술(미완성)
 
 === 1.5.2. 내 이력서 - 학력 생성
 === [POST /education]
@@ -146,8 +144,6 @@ include::{snippets}/mini-profile-controller-test/create-mini-profile/request-par
 
 == 1.5. 팀 소개서 온보딩 가이드 기입
 === 1.5.3. 팀 소개서 - 활동방식 생성
-
-
 
 == 회원가입 및 로그인 API
 

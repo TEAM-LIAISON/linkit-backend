@@ -8,12 +8,14 @@ import lombok.RequiredArgsConstructor;
 public enum ExceptionCode {
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
-    NOT_FOUND_AWARDS_ID(1001, "요청한 ID에 해당하는 수상 정보가 존재하지 않습니다."),
-    NOT_FOUND_MEMBER_ROLE_ID(1002, "요청한 ID에 해당하는 직무/역할이 존재하지 않습니다."),
-    NOT_FOUND_MEMBER_ID(1010, "요청한 ID에 해당하는 멤버가 존재하지 않습니다."),
-    FAIL_TO_GENERATE_RANDOM_NICKNAME(1012, "랜덤한 닉네임을 생성하는데 실패하였습니다."),
+
+    FAIL_TO_GENERATE_MEMBER(1001, "랜덤한 닉네임을 생성하는데 실패하였습니다."),
+
+    NOT_FOUND_MEMBER_ID(1002, "요청한 ID에 해당하는 멤버(회원)가 존재하지 않습니다."),
+    NOT_FOUND_MEMBER_ROLE_ID(1003, "요청한 ID에 해당하는 직무/역할이 존재하지 않습니다."),
+    NOT_FOUND_AWARDS_ID(1004, "요청한 ID에 해당하는 수상 정보가 존재하지 않습니다."),
+
     NOT_FOUND_MINI_PROFILE_ID(1014, "요청한 ID에 해당하는 미니 프로필이 존재하지 않습니다."),
-    NOT_FOUND_MEMBER_INFORM_ID(1016, "요청한 ID에 해당하는 멤버 정보가 존재하지 않습니다."),
     NOT_FOUND_ANTECEDENTS_ID(1018, "요청한 ID에 해당하는 이력 정보가 존재하지 않습니다."),
     NOT_FOUND_PROFILE_ID(1020, "요청한 ID에 해당하는 프로필 정보가 존재하지 않습니다."),
     NOT_FOUND_EDUCATION_ID(1022, "요청한 ID에 해당하는 학력 정보가 존재하지 않습니다."),

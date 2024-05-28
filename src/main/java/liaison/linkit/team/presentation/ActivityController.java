@@ -21,6 +21,7 @@ public class ActivityController {
 
     private final ActivityService activityService;
 
+    // 활동 분야 및 지역 저장
     @PostMapping
     @MemberOnly
     public ResponseEntity<Void> createActivity(
@@ -32,5 +33,6 @@ public class ActivityController {
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
 
 }

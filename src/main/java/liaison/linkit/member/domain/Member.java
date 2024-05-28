@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static liaison.linkit.member.domain.MemberState.ACTIVE;
-import static liaison.linkit.member.domain.type.MemberProfileType.NO_PERMISSION;
+import static liaison.linkit.member.domain.type.MemberProfileType.EMPTY_PROFILE;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -72,7 +72,7 @@ public class Member {
         this.id = id;
         this.socialLoginId = socialLoginId;
         this.email = email;
-        this.memberProfileType = NO_PERMISSION;
+        this.memberProfileType = EMPTY_PROFILE;
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
@@ -81,10 +81,6 @@ public class Member {
     }
 
     public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform) {this(null, socialLoginId, email, memberBasicInform);}
-
-    public void openAndClosePermission(final Boolean isOpen) {this.memberProfileType = MemberProfileType.openAndClosePermission(isOpen);}
-
-    public void changeAndOpenPermission(final Boolean isMatching) {this.memberProfileType = MemberProfileType.changeAndOpenPermission(isMatching);}
 
     public void changeIsMemberBasicInform(final Boolean isMemberBasicInform) {this.isMemberBasicInform = isMemberBasicInform;}
 
