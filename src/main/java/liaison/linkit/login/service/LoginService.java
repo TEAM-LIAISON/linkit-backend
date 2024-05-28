@@ -69,7 +69,7 @@ public class LoginService {
             }
             tryCount += 1;
         }
-        throw new AuthException(FAIL_TO_GENERATE_RANDOM_NICKNAME);
+        throw new AuthException(FAIL_TO_GENERATE_MEMBER);
     }
 
     public String renewalAccessToken(final String refreshTokenRequest, final String authorizationHeader) {
