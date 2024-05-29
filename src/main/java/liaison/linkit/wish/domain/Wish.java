@@ -35,4 +35,17 @@ public class Wish {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    public Wish(
+            final Long id,
+            final Member member,
+            final Long receiveWishId,
+            final WishType wishType,
+            final LocalDateTime createdAt
+    ) {
+        this.id = id;
+        this.member = member;
+        this.receiveWishId = receiveWishId;
+        this.wishType = wishType;
+        this.createdAt = LocalDateTime.now();
+    }
 }
