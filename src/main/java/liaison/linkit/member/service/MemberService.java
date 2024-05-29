@@ -57,6 +57,7 @@ public class MemberService {
         );
 
         member.changeIsMemberBasicInform(true);
+
         try {
             memberBasicInformRepository.save(newBasicMemberBasicInform);
         } catch (DataIntegrityViolationException e) {
@@ -67,9 +68,6 @@ public class MemberService {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "데이터 저장 중 오류가 발생했습니다.");
             }
         }
-
-
-
     }
 
     public Long getMemberRole(final String roleName) {
