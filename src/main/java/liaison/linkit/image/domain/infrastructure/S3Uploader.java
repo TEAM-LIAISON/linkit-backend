@@ -54,9 +54,14 @@ public class S3Uploader {
             log.info("path={}", path);
             s3Client.putObject(bucket, path, inputStream, metadata);
             log.info("upload Successful");
+
             String objectUrl = "https://" + cloudFrontDomain + "/" + path;
+
+
             log.info("Object URL = {}", objectUrl);
+
             return objectUrl;
+
         } catch (final AmazonServiceException e) {
             log.info("e={}", e);
             throw new ImageException(INVALID_IMAGE_PATH);

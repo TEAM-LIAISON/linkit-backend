@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.login.dto.AccessTokenResponse;
-import liaison.linkit.login.dto.LoginRequest;
-import liaison.linkit.login.dto.LoginResponse;
-import liaison.linkit.login.dto.MemberTokensAndIsBasicInform;
+import liaison.linkit.login.dto.*;
 import liaison.linkit.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -32,21 +29,25 @@ public class LoginController {
             @RequestBody final LoginRequest loginRequest,
             final HttpServletResponse response
     ){
-        final MemberTokensAndIsBasicInform memberTokensAndIsBasicInform = loginService.login(provider, loginRequest.getCode());
-        final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokensAndIsBasicInform.getRefreshToken())
+        final MemberTokensAndOnBoardingStepInform memberTokensAndOnBoardingStepInform
+                = loginService.login(provider, loginRequest.getCode());
+
+        final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokensAndOnBoardingStepInform.getRefreshToken())
                 .maxAge(COOKIE_AGE_SECONDS)
                 .secure(true)
                 .sameSite("None")
                 .path("/")
                 .httpOnly(true)
                 .build();
+
         response.addHeader(SET_COOKIE, cookie.toString());
 
         return ResponseEntity.status(CREATED).body(
                 new LoginResponse(
-                        memberTokensAndIsBasicInform.getAccessToken(),
-                        memberTokensAndIsBasicInform.getIsMemberBasicInform(),
-                        memberTokensAndIsBasicInform.getEmail()
+                        memberTokensAndOnBoardingStepInform.getAccessToken(),
+                        memberTokensAndOnBoardingStepInform.getEmail(),
+                        memberTokensAndOnBoardingStepInform.isMemberBasicInform(),
+                        memberTokensAndOnBoardingStepInform.isProfile()
                 )
         );
     }

@@ -59,9 +59,13 @@ public class Member {
     @OneToOne(mappedBy = "member")
     private TeamProfile teamProfile;
 
-    // MemberBasicInform 기입 여부 판단 코드 추가? (프론트 상태 관리용)
     @Column(nullable = false)
-    private boolean isMemberBasicInform;
+    private boolean existMemberBasicInform;
+
+    // 내 이력서 또는 팀 소개서 2개 중 하나라도 온보딩 작성이 완료된 경우
+    // false(Default) -> false면 어떠한 이력서도 작성되어 있지 않다.
+    @Column(nullable = false)
+    private boolean existOnBoardingProfile;
 
     public Member(
             final Long id,
@@ -77,12 +81,18 @@ public class Member {
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
         this.memberBasicInform = memberBasicInform;
-        this.isMemberBasicInform = false;
+        this.existMemberBasicInform = false;
+        this.existOnBoardingProfile = false;
     }
 
-    public Member(final String socialLoginId, final String email, final MemberBasicInform memberBasicInform) {this(null, socialLoginId, email, memberBasicInform);}
+    public Member(
+            final String socialLoginId,
+            final String email,
+            final MemberBasicInform memberBasicInform
+    ) {
+        this(null, socialLoginId, email, memberBasicInform);
+    }
 
-    public void changeIsMemberBasicInform(final Boolean isMemberBasicInform) {this.isMemberBasicInform = isMemberBasicInform;}
-
-    public boolean getIsMemberBasicInform() {return this.isMemberBasicInform;}
+    public void changeIsMemberBasicInform(final Boolean existMemberBasicInform) {
+        this.existMemberBasicInform = existMemberBasicInform;}
 }

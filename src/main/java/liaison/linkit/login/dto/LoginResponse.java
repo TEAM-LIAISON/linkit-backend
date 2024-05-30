@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class LoginResponse {
     private final String accessToken;
-    private final boolean isMemberBasicInform;
     private final String email;
+    private final boolean existMemberBasicInform;
+    private final boolean existOnBoardingProfile;
 }
