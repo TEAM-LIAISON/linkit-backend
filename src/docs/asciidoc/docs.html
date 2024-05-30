@@ -690,14 +690,15 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Wed, 5 Jun 2024 11:02:14 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 6 Jun 2024 14:52:41 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
-Content-Length: 98
+Content-Length: 139
 
 {
   "accessToken" : "accessToken",
   "email" : "linkit@gmail.com",
-  "memberBasicInform" : false
+  "existMemberBasicInform" : false,
+  "existOnBoardingProfile" : false
 }</code></pre>
 </div>
 </div>
@@ -721,14 +722,19 @@ Content-Length: 98
 <td class="tableblock halign-left valign-top"><p class="tableblock">access token</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberBasicInform</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소셜 로그인 이메일</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>existMemberBasicInform</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">소셜 로그인 이메일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>existOnBoardingProfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 온보딩은 완성)</p></td>
 </tr>
 </tbody>
 </table>

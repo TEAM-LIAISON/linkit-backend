@@ -29,11 +29,6 @@ public class MemberBasicInform {
     @Column(nullable = false, length = 30)
     private String contact;
 
-    // 직무/역할 추가 필요
-    @ManyToOne(fetch = LAZY, cascade = ALL)
-    @JoinColumn(name = "member_role_id")
-    private MemberRole memberRole;
-
     // 뉴스레터 및 마케팅 정보 수신동의
     @Column
     private boolean marketingAgree;
@@ -47,14 +42,12 @@ public class MemberBasicInform {
             final Long id,
             final String memberName,
             final String contact,
-            final MemberRole memberRole,
             final boolean marketingAgree,
-            final Member member)
-    {
+            final Member member
+    ) {
         this.id = id;
         this.memberName = memberName;
         this.contact = contact;
-        this.memberRole = memberRole;
         this.marketingAgree = marketingAgree;
         this.member = member;
     }
@@ -62,9 +55,8 @@ public class MemberBasicInform {
     public MemberBasicInform(
             final String memberName,
             final String contact,
-            final MemberRole memberRole,
             final boolean marketingAgree,
             final Member member) {
-        this(null, memberName, contact, memberRole, marketingAgree, member);
+        this(null, memberName, contact, marketingAgree, member);
     }
 }
