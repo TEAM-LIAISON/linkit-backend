@@ -3,7 +3,7 @@ package liaison.linkit.login.service;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.login.domain.*;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
-import liaison.linkit.login.dto.MemberTokensAndIsBasicInform;
+import liaison.linkit.login.dto.MemberTokensAndOnBoardingStepInform;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.member.domain.Member;
@@ -34,21 +34,34 @@ public class LoginService {
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
 
-    public MemberTokensAndIsBasicInform login(final String providerName, final String code) {
-
+    public MemberTokensAndOnBoardingStepInform login(final String providerName, final String code) {
         final OauthProvider provider = oauthProviders.mapping(providerName);
         final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
+
+        // 소셜로그인 ID와 이메일 정보는 해당 플랫폼으로부터 가져옴
         final Member member = findOrCreateMember(
                 oauthUserInfo.getSocialLoginId(),
                 oauthUserInfo.getEmail()
         );
-        final boolean isMemberBasicInform = member.getIsMemberBasicInform();
+
+        // 멤버 테이블에서 기본 정보 입력 여부를 조회함
+        final boolean existMemberBasicInform = member.isExistMemberBasicInform();
+
+        // 멤버 테이블에서 내 이력서 또는 팀 소개서의 작성 여부를 조회해야함.
+        final boolean existOnBoardingProfile = member.isExistOnBoardingProfile();
+
         final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
+
+        // 리프레시 토큰 저장
         final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
         refreshTokenRepository.save(savedRefreshToken);
 
-        return new MemberTokensAndIsBasicInform(
-                memberTokens.getAccessToken(), memberTokens.getRefreshToken(), isMemberBasicInform, oauthUserInfo.getEmail()
+        return new MemberTokensAndOnBoardingStepInform(
+                memberTokens.getAccessToken(),
+                memberTokens.getRefreshToken(),
+                oauthUserInfo.getEmail(),
+                existMemberBasicInform,
+                existOnBoardingProfile
         );
     }
 
@@ -94,13 +107,5 @@ public class LoginService {
         memberRepository.deleteByMemberId(memberId);
     }
 
-    public boolean getIsMemberBasicInform(final String providerName, final String code) {
-        final OauthProvider provider = oauthProviders.mapping(providerName);
-        final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
-        final Member member = findOrCreateMember(
-                oauthUserInfo.getSocialLoginId(),
-                oauthUserInfo.getEmail()
-        );
-        return member.getIsMemberBasicInform();
-    }
+
 }
