@@ -32,6 +32,7 @@ public class MemberController {
         return ResponseEntity.ok().body(memberBasicInformResponse);
     }
 
+    // 회원 기본 정보 등록 API
     @PostMapping("/basic-inform")
     @MemberOnly
     public ResponseEntity<Void> createMemberBasicInform(
@@ -42,8 +43,6 @@ public class MemberController {
         memberService.save(accessor.getMemberId(), memberBasicInformCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
-
 
     // 1.4.1. 개인정보 기입 이메일 정보 제공용
     @GetMapping("/email")

@@ -12,8 +12,8 @@ public class MemberTokensAndOnBoardingStepInform {
     private final String email;
 
     // 일단 기본 정보 기입 여부 전달 필요
-    private final boolean isMemberBasicInform;
+    private final boolean existMemberBasicInform;
 
     // 내 이력서 또는 팀 소개서 하나라도 완료되었는지 여부
-    private final boolean isProfile;
+    private final boolean existOnBoardingProfile;
 }

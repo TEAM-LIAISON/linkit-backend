@@ -11,7 +11,6 @@ public class MemberBasicInformResponse {
     private final Long id;
     private final String memberName;
     private final String contact;
-    private final String roleName;
     private final boolean marketingAgree;
 
     public static MemberBasicInformResponse of(final MemberBasicInform memberBasicInform) {
@@ -19,7 +18,6 @@ public class MemberBasicInformResponse {
                 memberBasicInform.getId(),
                 memberBasicInform.getMemberName(),
                 memberBasicInform.getContact(),
-                memberBasicInform.getMemberRole().getRoleName(),
                 memberBasicInform.isMarketingAgree()
         );
     }

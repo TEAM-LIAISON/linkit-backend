@@ -12,20 +12,15 @@ public class MemberBasicInformCreateRequest {
     @NotNull(message = "연락처를 입력해주세요")
     private final String contact;
 
-    @NotNull(message = "직무 및 역할을 입력해주세요")
-    private final String roleName;
-
     private final boolean marketingAgree;
 
     public MemberBasicInformCreateRequest(
             final String memberName,
             final String contact,
-            final String roleName,
             boolean marketingAgree
     ) {
         this.memberName = memberName;
         this.contact = contact;
-        this.roleName = roleName;
         this.marketingAgree = marketingAgree;
     }
 }

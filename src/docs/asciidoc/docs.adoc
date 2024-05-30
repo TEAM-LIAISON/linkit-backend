@@ -43,6 +43,19 @@ include::{snippets}/member-controller-test/create-member-basic-inform/request-co
 include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
 
 == 1.5. 내 이력서 온보딩 가이드 기입
+=== 1.5.1. 개인/팀 나누기 (1/3) - 내 이력서 등록하기 버튼
+=== [GET /profile/onBoarding]
+==== 요청
+include::{snippets}/profile-controller-test/get-on-boarding-profile/http-request.adoc[]
+요청 헤더
+include::{snippets}/profile-controller-test/get-on-boarding-profile/request-headers.adoc[]
+요청 쿠키
+include::{snippets}/profile-controller-test/get-on-boarding-profile/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/profile-controller-test/get-on-boarding-profile/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-on-boarding-profile/response-fields.adoc[]
+
 === 1.5.2. 내 이력서 - 희망 분야 생성
 === [POST /profile_team_building_field]
 ==== 요청

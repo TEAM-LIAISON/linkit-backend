@@ -45,13 +45,10 @@ public class MemberService {
         final Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
 
-        final MemberRole memberRole = memberRoleRepository.findById(getMemberRole(memberBasicInformCreateRequest.getRoleName()))
-                .orElseThrow(()-> new BadRequestException(NOT_FOUND_MEMBER_ROLE_ID));
 
         final MemberBasicInform newBasicMemberBasicInform = new MemberBasicInform(
                 memberBasicInformCreateRequest.getMemberName(),
                 memberBasicInformCreateRequest.getContact(),
-                memberRole,
                 memberBasicInformCreateRequest.isMarketingAgree(),
                 member
         );
