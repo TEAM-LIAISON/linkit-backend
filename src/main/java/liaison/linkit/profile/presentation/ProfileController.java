@@ -10,6 +10,7 @@ import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.Attach.AttachResponse;
 import liaison.linkit.profile.service.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/profile")
+@Slf4j
 public class ProfileController {
 
     public final ProfileService profileService;
@@ -29,6 +31,46 @@ public class ProfileController {
     public final EducationService educationService;
     public final AwardsService awardsService;
     public final AttachService attachService;
+
+    @GetMapping("/onBoarding")
+    @MemberOnly
+    public ResponseEntity<OnBoardingProfileResponse> getOnBoardingProfile(
+            @Auth final Accessor accessor
+    ) {
+        // 해당 사용자의 내 이력서 PK 조회
+        Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
+
+        final Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
+        log.info("miniProfileId={}", miniProfileId);
+        // 해당 PK를 통해서 각 테이블들의 정보를 조회
+
+        // 1. 희망 팀빌딩 분야
+        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
+        log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
+
+        // 2. 희망하는 역할
+        final ProfileSkillResponse profileSkillResponse = profileSkillService.getAllProfileSkills(accessor.getMemberId());
+
+        // 3. 학교 정보
+        final List<EducationResponse> educationResponses = educationService.getAllEducations(accessor.getMemberId());
+
+        // 4. 이력 정보
+        final List<AntecedentsResponse> antecedentsResponses = antecedentsService.getAllAntecedents(accessor.getMemberId());
+
+        // 5. 미니 프로필 정보
+        final MiniProfileResponse miniProfileResponse = miniProfileService.getMiniProfileDetail(miniProfileId);
+
+        final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
+                profileTeamBuildingFieldResponse,
+                profileSkillResponse,
+                educationResponses,
+                antecedentsResponses,
+                miniProfileResponse
+        );
+
+        return ResponseEntity.ok().body(onBoardingProfileResponse);
+    }
+
 
     // Default 나의 역량 생성 메서드
     @PostMapping("/default")

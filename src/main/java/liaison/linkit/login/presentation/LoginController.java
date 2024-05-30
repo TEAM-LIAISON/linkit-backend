@@ -46,8 +46,8 @@ public class LoginController {
                 new LoginResponse(
                         memberTokensAndOnBoardingStepInform.getAccessToken(),
                         memberTokensAndOnBoardingStepInform.getEmail(),
-                        memberTokensAndOnBoardingStepInform.isMemberBasicInform(),
-                        memberTokensAndOnBoardingStepInform.isProfile()
+                        memberTokensAndOnBoardingStepInform.isExistMemberBasicInform(),
+                        memberTokensAndOnBoardingStepInform.isExistOnBoardingProfile()
                 )
         );
     }
