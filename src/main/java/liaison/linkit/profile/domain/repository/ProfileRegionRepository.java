@@ -8,4 +8,6 @@ public interface ProfileRegionRepository extends JpaRepository<ProfileRegion, Lo
 
     ProfileRegion findByProfileId(@Param("profileId") final Long profileId);
 
+    boolean existsByProfileId(final Long profileId);
+
 }

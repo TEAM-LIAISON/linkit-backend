@@ -1,5 +1,6 @@
 package liaison.linkit.profile.service;
 
+import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileRegion;
 import liaison.linkit.profile.domain.repository.ProfileRegionRepository;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_PROFILE_REGION_WITH_MEMBER;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -20,6 +23,15 @@ public class ProfileRegionService {
     final ProfileRegionRepository profileRegionRepository;
     final ProfileRepository profileRepository;
     final RegionRepository regionRepository;
+
+    public Long validateProfileRegionByMember(final Long memberId) {
+        final Long profileId = profileRepository.findByMemberId(memberId).getId();
+        if (!profileRegionRepository.existsByProfileId(profileId)) {
+            throw new AuthException(INVALID_PROFILE_REGION_WITH_MEMBER);
+        } else {
+            return profileRegionRepository.findByProfileId(profileId).getId();
+        }
+    }
 
     public void save(
             final Long memberId,

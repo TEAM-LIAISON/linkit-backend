@@ -10,6 +10,11 @@ public class ProfileRegionResponse {
     private final String cityName;
     private final String divisionName;
 
+    public ProfileRegionResponse() {
+        this.cityName = null;
+        this.divisionName = null;
+    }
+
 //    public static ProfileRegionResponse of(final ProfileRegion profileRegion) {
 //        return new ProfileRegionResponse(
 //                profileRegion.getRegion().getCityName(),

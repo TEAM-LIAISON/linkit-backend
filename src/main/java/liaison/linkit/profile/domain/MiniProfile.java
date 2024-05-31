@@ -11,12 +11,11 @@ import java.time.LocalDate;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 public class MiniProfile {
     @Id
     @GeneratedValue(strategy = IDENTITY)
