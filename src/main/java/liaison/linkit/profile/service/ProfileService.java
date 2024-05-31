@@ -179,16 +179,19 @@ public class ProfileService {
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
             // 2. 희망하는 역할
             final ProfileSkillResponse profileSkillResponse,
-            // 3. 학교 정보
+            // 3. 지역 및 위치 정보
+            final ProfileRegionResponse profileRegionResponse,
+            // 4. 학교 정보
             final List<EducationResponse> educationResponses,
-            // 4. 이력 정보
+            // 5. 이력 정보
             final List<AntecedentsResponse> antecedentsResponses,
-            // 5. 미니 프로필 정보
+            // 6. 미니 프로필 정보
             final MiniProfileResponse miniProfileResponse
     ) {
         return OnBoardingProfileResponse.onBoardingProfileItems(
                 profileTeamBuildingFieldResponse,
                 profileSkillResponse,
+                profileRegionResponse,
                 educationResponses,
                 antecedentsResponses,
                 miniProfileResponse

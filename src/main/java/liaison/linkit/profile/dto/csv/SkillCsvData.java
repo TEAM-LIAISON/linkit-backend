@@ -1,0 +1,24 @@
+package liaison.linkit.profile.dto.csv;
+
+import lombok.Data;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+@Data
+public class SkillCsvData {
+    // 직무 분야
+    private String roleField;
+    // 기술 이름
+    private String skillName;
+
+    public static List<String> getFieldNames() {
+        Field[] declaredFields = SkillCsvData.class.getDeclaredFields();
+        List<String> result = new ArrayList<>();
+        for (Field declaredField : declaredFields) {
+            result.add(declaredField.getName());
+        }
+        return result;
+    }
+}

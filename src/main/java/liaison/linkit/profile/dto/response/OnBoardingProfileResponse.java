@@ -13,6 +13,7 @@ public class OnBoardingProfileResponse {
 
     private final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse;
     private final ProfileSkillResponse profileSkillResponse;
+    private final ProfileRegionResponse profileRegionResponse;
     private final List<EducationResponse> educationResponses;
     private final List<AntecedentsResponse> antecedentsResponses;
     private final MiniProfileResponse miniProfileResponse;
@@ -20,6 +21,7 @@ public class OnBoardingProfileResponse {
     public static OnBoardingProfileResponse onBoardingProfileItems(
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
             final ProfileSkillResponse profileSkillResponse,
+            final ProfileRegionResponse profileRegionResponse,
             final List<EducationResponse> educationResponses,
             final List<AntecedentsResponse> antecedentsResponses,
             final MiniProfileResponse miniProfileResponse
@@ -27,6 +29,7 @@ public class OnBoardingProfileResponse {
         return new OnBoardingProfileResponse(
                 profileTeamBuildingFieldResponse,
                 profileSkillResponse,
+                profileRegionResponse,
                 educationResponses,
                 antecedentsResponses,
                 miniProfileResponse

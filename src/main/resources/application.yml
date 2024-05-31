@@ -118,3 +118,6 @@ industrySector:
 
 activityMethodTag:
   csv-path: ${activityMethodTag.path}
+
+skill:
+  csv-path: ${skill.path}

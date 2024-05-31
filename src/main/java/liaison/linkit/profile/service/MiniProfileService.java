@@ -5,7 +5,7 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ImageException;
 import liaison.linkit.image.domain.ImageFile;
 import liaison.linkit.image.domain.S3ImageEvent;
-import liaison.linkit.image.domain.infrastructure.S3Uploader;
+import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.profile.domain.MiniProfile;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.MiniProfileRepository;
