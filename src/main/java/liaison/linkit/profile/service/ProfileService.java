@@ -59,8 +59,6 @@ public class ProfileService {
     private final UniversityRepository universityRepository;
     private final DegreeRepository degreeRepository;
     private final MajorRepository majorRepository;
-    // -> ERD부터 설계 작업, 개발 DB에 인서트 필요
-
 
     // 첨부 링크 정보 담당
     private final AttachUrlRepository attachUrlRepository;
@@ -75,6 +73,7 @@ public class ProfileService {
             return profileRepository.findByMemberId(memberId).getId();
         }
     }
+    // 디폴트 항목 저장
 
     public void saveDefault(
             final Long memberId,
@@ -111,7 +110,6 @@ public class ProfileService {
         profileSkillRepository.saveAll(profileSkills);
         educationRepository.saveAll(educations);
         antecedentsRepository.saveAll(antecedents);
-
     }
 
     @Transactional(readOnly = true)
@@ -119,6 +117,13 @@ public class ProfileService {
         final Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
         return ProfileIntroductionResponse.profileIntroduction(profile);
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileOnBoardingIsValueResponse getProfileOnBoardingIsValue(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
+        return ProfileOnBoardingIsValueResponse.profileOnBoardingIsValue(profile);
     }
 
     public void update(final Long profileId, final ProfileUpdateRequest updateRequest) {

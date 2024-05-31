@@ -9,6 +9,7 @@ import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.repository.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class LoginService {
 
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
+    private final MiniProfileRepository miniProfileRepository;
 
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
@@ -78,8 +80,11 @@ public class LoginService {
                 Member member = memberRepository.save(new Member(socialLoginId, email, null));
 
                 // 내 이력서는 자동으로 생성된다. -> 미니 프로필도 함께 생성되어야 한다.
-                profileRepository.save(new Profile(member, 0,"자기소개를 입력해주세요"));
+                Profile savedProfile = profileRepository.save(new Profile(member, 0,"자기소개를 입력해주세요"));
                 log.info("memberId={}", member.getId());
+
+//                final MiniProfile miniProfile = MiniProfile.of(savedProfile,null,null,true,null,null, null);
+//                miniProfileRepository.save(miniProfile);
 
                 return member;
             }

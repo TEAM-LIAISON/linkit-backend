@@ -34,29 +34,39 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = REMOVE)
     private List<Awards> awardsList = new ArrayList<>();
 
-    // 전체 프로필 완성도 값 (%) 직결
+    // 전체 프로필 완성도 값 (%)
     @Column(nullable = false)
     private int completion;
 
+    // 자기소개
     @Column(name = "introduction")
     private String introduction;
 
-    // 기입 완료 시 참으로 변환
+    // 자기소개 입력 여부
     @Column(nullable = false)
     private boolean isIntroduction;
 
+    // 기술 항목 기입 여부
     @Column(nullable = false)
     private boolean isProfileSkill;
 
+    // 희망 팀빌딩 분야 항목
     @Column(nullable = false)
     private boolean isProfileTeamBuildingField;
 
+    // 지역 및 위치 항목
+    @Column(nullable = false)
+    private boolean isProfileRegion;
+
+    // 이력 항목
     @Column(nullable = false)
     private boolean isAntecedents;
 
+    // 교육 항목
     @Column(nullable = false)
     private boolean isEducation;
 
+    // 수상 항목
     @Column(nullable = false)
     private boolean isAwards;
 
@@ -64,11 +74,16 @@ public class Profile {
     @Column(nullable = false)
     private boolean isAttach;
 
+    // URL 항목 기입 여부
     @Column(nullable = false)
     private boolean isAttachUrl;
 
+    // 파일 항목 기입 여부
     @Column(nullable = false)
     private boolean isAttachFile;
+
+    @Column(nullable = false)
+    private boolean isMiniProfile;
 
     // 생성자
     public Profile(
@@ -84,12 +99,14 @@ public class Profile {
         this.isIntroduction = false;
         this.isProfileSkill = false;
         this.isProfileTeamBuildingField = false;
+        this.isProfileRegion = false;
         this.isAntecedents = false;
         this.isEducation = false;
         this.isAwards = false;
         this.isAttach = false;
         this.isAttachUrl = false;
         this.isAttachFile = false;
+        this.isMiniProfile = false;
     }
 
     public Profile(
@@ -234,6 +251,10 @@ public class Profile {
     public boolean getIsAttach() {
         return isAttach;
     }
+
+    public boolean getIsMiniProfile() { return isMiniProfile; }
+
+    public boolean getIsProfileRegion() { return isProfileRegion; }
 
     public boolean getIsAttachUrl() {
         return isAttachUrl;

@@ -12,11 +12,19 @@ public class MiniProfileResponse {
 
     private final String profileTitle;
     private final LocalDate uploadPeriod;
-    private final boolean uploadDeadline;
+    private final Boolean uploadDeadline;
     private final String miniProfileImg;
     private final String myValue;
     private final String skillSets;
 
+    public MiniProfileResponse() {
+        this.profileTitle = null;
+        this.uploadPeriod = null;
+        this.uploadDeadline = null;
+        this.miniProfileImg = null;
+        this.myValue = null;
+        this.skillSets = null;
+    }
 
     public static MiniProfileResponse of(final MiniProfile miniProfile) {
         return new MiniProfileResponse(

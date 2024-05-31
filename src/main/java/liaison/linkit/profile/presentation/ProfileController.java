@@ -40,29 +40,41 @@ public class ProfileController {
             @Auth final Accessor accessor
     ) {
         // 해당 사용자의 내 이력서 PK 조회
-        Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
+        final Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
 
-        // 해당 PK를 통해서 각 테이블들의 정보를 조회
-        // 근데 미니 프로필이 없으면? - 오류가 터지겠지
-        final Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
+        // boolean 값 가져옴
+        final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse
+                = profileService.getProfileOnBoardingIsValue(profileId);
+
+        // 미니 프로필 응답 정상 작동 파악 완료
+        final MiniProfileResponse miniProfileResponse
+                = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
+
+        log.info("miniProfileResponse={}", miniProfileResponse);
 
         // 1. 희망 팀빌딩 분야
-        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
+        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
+                = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
+        log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
 
-        // 2. 희망하는 역할
-        final ProfileSkillResponse profileSkillResponse = profileSkillService.getAllProfileSkills(accessor.getMemberId());
+        // 2. 희망하는 역할 및 기술
+        final ProfileSkillResponse profileSkillResponse
+                = getProfileSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileSkill());
+        log.info("profileSkillResponse={}", profileSkillResponse);
 
         // 3. 지역 및 위치 정보
-        final ProfileRegionResponse profileRegionResponse = profileRegionService.getProfileRegion(accessor.getMemberId());
+        final ProfileRegionResponse profileRegionResponse
+                = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
+
+        log.info("profileRegionResponse={}", profileRegionResponse);
 
         // 4. 학교 정보
-        final List<EducationResponse> educationResponses = educationService.getAllEducations(accessor.getMemberId());
+        final List<EducationResponse> educationResponses
+                = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
 
         // 5. 이력 정보
-        final List<AntecedentsResponse> antecedentsResponses = antecedentsService.getAllAntecedents(accessor.getMemberId());
-
-        // 6. 미니 프로필 정보
-        final MiniProfileResponse miniProfileResponse = miniProfileService.getMiniProfileDetail(accessor.getMemberId());
+        final List<AntecedentsResponse> antecedentsResponses
+                = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
 
         final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
                 profileTeamBuildingFieldResponse,
@@ -75,6 +87,8 @@ public class ProfileController {
 
         return ResponseEntity.ok().body(onBoardingProfileResponse);
     }
+
+
 
 
     // Default 나의 역량 생성 메서드
@@ -171,5 +185,79 @@ public class ProfileController {
         );
 
         return ResponseEntity.ok().body(profileResponse);
+    }
+
+    private MiniProfileResponse getMiniProfileResponse(
+            final Long memberId,
+            final boolean isMiniProfile
+    ) {
+        // 해당 프로필에서 is 값들로 null 던져줄지 판단
+        // true인 경우 -> 저장되어 있는 항목이다.
+        if (isMiniProfile) {
+            final Long miniProfileId = miniProfileService.validateMiniProfileByMember(memberId);
+            return miniProfileService.getMiniProfileDetail(miniProfileId);
+        } else {
+            return new MiniProfileResponse();
+        }
+    }
+    private ProfileTeamBuildingFieldResponse getProfileTeamBuildingResponse(
+            final Long memberId,
+            final boolean isProfileTeamBuildingField
+    ) {
+        if (isProfileTeamBuildingField) {
+            // 존재 여부 다시 판단해주고
+            profileTeamBuildingFieldService.validateProfileTeamBuildingFieldByMember(memberId);
+            return profileTeamBuildingFieldService.getAllProfileTeamBuildings(memberId);
+        } else {
+            return new ProfileTeamBuildingFieldResponse();
+        }
+    }
+
+    private ProfileSkillResponse getProfileSkillResponse(
+            final Long memberId,
+            final boolean isProfileSkill
+    ) {
+        if (isProfileSkill) {
+            profileSkillService.validateProfileSkillByMember(memberId);
+            return profileSkillService.getAllProfileSkills(memberId);
+        } else {
+            return new ProfileSkillResponse();
+        }
+    }
+
+    private ProfileRegionResponse getProfileRegionResponse(
+            final Long memberId,
+            final boolean isProfileRegion
+    ) {
+        if (isProfileRegion) {
+            profileRegionService.validateProfileRegionByMember(memberId);
+            return profileRegionService.getProfileRegion(memberId);
+        } else {
+            return null;
+        }
+    }
+
+    private List<EducationResponse> getEducationResponses(
+            final Long memberId,
+            final boolean isEducation
+    ) {
+        if (isEducation) {
+            educationService.validateEducationByMember(memberId);
+            return educationService.getAllEducations(memberId);
+        } else {
+            return null;
+        }
+    }
+
+    private List<AntecedentsResponse> getAntecedentsResponses(
+            final Long memberId,
+            final boolean isAntecedents
+    ) {
+        if (isAntecedents) {
+            antecedentsService.validateAntecedentsByMember(memberId);
+            return antecedentsService.getAllAntecedents(memberId);
+        } else {
+            return null;
+        }
     }
 }

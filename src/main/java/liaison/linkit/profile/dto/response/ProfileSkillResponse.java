@@ -10,6 +10,10 @@ import java.util.List;
 public class ProfileSkillResponse {
     private final List<String> profileSkillNames;
 
+    public ProfileSkillResponse() {
+        this.profileSkillNames = null;
+    }
+
     public static ProfileSkillResponse of(final List<String> profileSkillNames) {
         return new ProfileSkillResponse(
                 profileSkillNames
