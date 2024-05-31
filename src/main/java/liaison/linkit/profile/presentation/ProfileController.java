@@ -41,6 +41,7 @@ public class ProfileController {
             @Auth final Accessor accessor
     ) {
         // 해당 사용자의 내 이력서 PK 조회
+        // 일단 프로필이 제대로 생성되었어야 함.
         final Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
         log.info("profileId={}", profileId);
 
@@ -73,6 +74,7 @@ public class ProfileController {
         final List<EducationResponse> educationResponses
                 = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
         log.info("educationResponses={}", educationResponses);
+
         // 5. 이력 정보
         final List<AntecedentsResponse> antecedentsResponses
                 = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
@@ -122,7 +124,7 @@ public class ProfileController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/introduction")
     @MemberOnly
     public ResponseEntity<Void> deleteProfileIntroduction(
             @Auth final Accessor accessor
@@ -185,6 +187,8 @@ public class ProfileController {
 
         return ResponseEntity.ok().body(profileResponse);
     }
+
+
 
     private MiniProfileResponse getMiniProfileResponse(
             final Long memberId,

@@ -39,15 +39,30 @@ public class ProfileSkillService {
 
     public void save(final Long memberId, final ProfileSkillCreateRequest profileSkillCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
+        if (profileSkillRepository.existsByProfileId(profile.getId())) {
+            // 존재했으면 삭제부터
+            profileSkillRepository.deleteAllByProfileId(profile.getId());
 
-        final List<Skill> skills = skillRepository
-                .findSkillNamesBySkillNames(profileSkillCreateRequest.getSkillNames());
+            final List<Skill> skills = skillRepository
+                    .findSkillNamesBySkillNames(profileSkillCreateRequest.getSkillNames());
 
-        final List<ProfileSkill> profileSkills = skills.stream()
-                .map(skill -> new ProfileSkill(null, profile, skill))
-                .toList();
+            final List<ProfileSkill> profileSkills = skills.stream()
+                    .map(skill -> new ProfileSkill(null, profile, skill))
+                    .toList();
 
-        profileSkillRepository.saveAll(profileSkills);
+            profileSkillRepository.saveAll(profileSkills);
+        } else {
+            // 존재하지 않았으면 그냥 저장
+            final List<Skill> skills = skillRepository
+                    .findSkillNamesBySkillNames(profileSkillCreateRequest.getSkillNames());
+
+            final List<ProfileSkill> profileSkills = skills.stream()
+                    .map(skill -> new ProfileSkill(null, profile, skill))
+                    .toList();
+
+            profileSkillRepository.saveAll(profileSkills);
+        }
+
         profile.updateIsProfileSkill(true);
     }
 

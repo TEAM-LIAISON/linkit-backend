@@ -54,7 +54,6 @@ public class ProfileTeamBuildingFieldService {
 
             // profileTeamBuildingFieldRepository 모두 저장
             profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
-
         } else {
             final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
                     .findTeamBuildingFieldsByFieldNames(createRequest.getTeamBuildingFieldNames());

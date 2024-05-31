@@ -28,7 +28,7 @@ public class ProfileTeamBuildingFieldController {
         return ResponseEntity.ok().body(profileTeamBuildingFieldResponses);
     }
 
-    // 희망 팀빌딩 항목 등록 (여러개 등록 가능해야함)
+    // 희망 팀빌딩 항목 생성 (기존에 존재하는 경우, 전체 삭제 이후 다시 기입)
     @PostMapping
     @MemberOnly
     public ResponseEntity<Void> createProfileTeamBuilding(
@@ -39,6 +39,7 @@ public class ProfileTeamBuildingFieldController {
         return ResponseEntity.ok().build();
     }
 
+    // 수정 컨트롤러
     @PutMapping
     @MemberOnly
     public ResponseEntity<ProfileTeamBuildingFieldResponse> updateProfileTeamBuildingField(
