@@ -34,6 +34,7 @@ public class ProfileController {
     public final ProfileRegionService profileRegionService;
 
     // 온보딩 과정 GET 요청 조회 로직 (희망 팀빌딩 분야부터 미니 프로필까지 6개)
+    // 얘는 무조건 불러오기만 함. 상태 변경하지 않음.
     @GetMapping("/onBoarding")
     @MemberOnly
     public ResponseEntity<OnBoardingProfileResponse> getOnBoardingProfile(
@@ -66,16 +67,16 @@ public class ProfileController {
         // 3. 지역 및 위치 정보
         final ProfileRegionResponse profileRegionResponse
                 = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
-
         log.info("profileRegionResponse={}", profileRegionResponse);
 
         // 4. 학교 정보
         final List<EducationResponse> educationResponses
                 = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
-
+        log.info("educationResponses={}", educationResponses);
         // 5. 이력 정보
         final List<AntecedentsResponse> antecedentsResponses
                 = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
+        log.info("antecedentsResponses={}", antecedentsResponses);
 
         final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
                 profileTeamBuildingFieldResponse,
@@ -88,9 +89,6 @@ public class ProfileController {
 
         return ResponseEntity.ok().body(onBoardingProfileResponse);
     }
-
-
-
 
     // Default 나의 역량 생성 메서드
     @PostMapping("/default")
