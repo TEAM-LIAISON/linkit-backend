@@ -68,6 +68,9 @@ class ProfileControllerTest extends ControllerTest {
     @MockBean
     private AttachService attachService;
 
+    @MockBean
+    private ProfileRegionService profileRegionService;
+
     @BeforeEach
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
@@ -151,6 +154,14 @@ class ProfileControllerTest extends ControllerTest {
         given(profileSkillService.getAllProfileSkills(1L))
                 .willReturn(profileSkillResponse);
 
+        // 3. 지역 및 위치 정보
+        final ProfileRegionResponse profileRegionResponse = new ProfileRegionResponse(
+                "서울특별시",
+                "강남구"
+        );
+
+        given(profileRegionService.getProfileRegion(1L)).willReturn(profileRegionResponse);
+
         // 3. 학교 정보
          final EducationResponse educationResponse1 = new EducationResponse(
                  1L,
@@ -217,12 +228,19 @@ class ProfileControllerTest extends ControllerTest {
         final OnBoardingProfileResponse onBoardingProfileResponse = new OnBoardingProfileResponse(
                 profileTeamBuildingFieldResponse,
                 profileSkillResponse,
+                profileRegionResponse,
                 educationResponses,
                 antecedentsResponses,
                 miniProfileResponse
         );
 
-        given(profileService.getOnBoardingProfile(profileTeamBuildingFieldResponse, profileSkillResponse, educationResponses, antecedentsResponses, miniProfileResponse))
+        given(profileService.getOnBoardingProfile(
+                profileTeamBuildingFieldResponse,
+                profileSkillResponse,
+                profileRegionResponse,
+                educationResponses,
+                antecedentsResponses,
+                miniProfileResponse))
                 .willReturn(onBoardingProfileResponse);
 
         // when
@@ -247,6 +265,10 @@ class ProfileControllerTest extends ControllerTest {
 
                                         subsectionWithPath("profileSkillResponse").description("보유 기술 항목").attributes(field("constraint", "객체")),
                                         fieldWithPath("profileSkillResponse.profileSkillNames").description("보유 기술 이름").attributes(field("constraint", "문자열(배열)")),
+
+                                        subsectionWithPath("profileRegionResponse").description("지역 및 위치 항목").attributes(field("constraint", "객체")),
+                                        fieldWithPath("profileRegionResponse.cityName").description("시/구 이름").attributes(field("constraint", "문자열")),
+                                        fieldWithPath("profileRegionResponse.divisionName").description("시/군/구 이름").attributes(field("constraint", "문자열")),
 
                                         subsectionWithPath("educationResponses").description("학력 항목").attributes(field("constraint", "객체 (배열)")),
                                         fieldWithPath("educationResponses[].id").description("학력 ID").attributes(field("constraint", "양의 정수")),

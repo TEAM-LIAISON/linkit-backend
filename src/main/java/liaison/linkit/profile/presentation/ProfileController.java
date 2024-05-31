@@ -31,6 +31,7 @@ public class ProfileController {
     public final EducationService educationService;
     public final AwardsService awardsService;
     public final AttachService attachService;
+    public final ProfileRegionService profileRegionService;
 
     @GetMapping("/onBoarding")
     @MemberOnly
@@ -51,18 +52,22 @@ public class ProfileController {
         // 2. 희망하는 역할
         final ProfileSkillResponse profileSkillResponse = profileSkillService.getAllProfileSkills(accessor.getMemberId());
 
-        // 3. 학교 정보
+        // 3. 지역 및 위치 정보
+        final ProfileRegionResponse profileRegionResponse = profileRegionService.getProfileRegion(accessor.getMemberId());
+
+        // 4. 학교 정보
         final List<EducationResponse> educationResponses = educationService.getAllEducations(accessor.getMemberId());
 
-        // 4. 이력 정보
+        // 5. 이력 정보
         final List<AntecedentsResponse> antecedentsResponses = antecedentsService.getAllAntecedents(accessor.getMemberId());
 
-        // 5. 미니 프로필 정보
+        // 6. 미니 프로필 정보
         final MiniProfileResponse miniProfileResponse = miniProfileService.getMiniProfileDetail(miniProfileId);
 
         final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
                 profileTeamBuildingFieldResponse,
                 profileSkillResponse,
+                profileRegionResponse,
                 educationResponses,
                 antecedentsResponses,
                 miniProfileResponse

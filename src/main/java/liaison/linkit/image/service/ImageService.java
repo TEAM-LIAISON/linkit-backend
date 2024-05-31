@@ -3,7 +3,7 @@ package liaison.linkit.image.service;
 import liaison.linkit.global.exception.ImageException;
 import liaison.linkit.image.domain.ImageFile;
 import liaison.linkit.image.domain.S3ImageEvent;
-import liaison.linkit.image.domain.infrastructure.S3Uploader;
+import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.image.dto.MiniProfileImageResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
