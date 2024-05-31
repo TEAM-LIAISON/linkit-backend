@@ -33,6 +33,7 @@ public class ProfileController {
     public final AttachService attachService;
     public final ProfileRegionService profileRegionService;
 
+    // 온보딩 과정 GET 요청 조회 로직 (희망 팀빌딩 분야부터 미니 프로필까지 6개)
     @GetMapping("/onBoarding")
     @MemberOnly
     public ResponseEntity<OnBoardingProfileResponse> getOnBoardingProfile(
@@ -41,13 +42,12 @@ public class ProfileController {
         // 해당 사용자의 내 이력서 PK 조회
         Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
 
-        final Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
-        log.info("miniProfileId={}", miniProfileId);
         // 해당 PK를 통해서 각 테이블들의 정보를 조회
+        // 근데 미니 프로필이 없으면? - 오류가 터지겠지
+        final Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
 
         // 1. 희망 팀빌딩 분야
         final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
-        log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
 
         // 2. 희망하는 역할
         final ProfileSkillResponse profileSkillResponse = profileSkillService.getAllProfileSkills(accessor.getMemberId());
@@ -62,7 +62,7 @@ public class ProfileController {
         final List<AntecedentsResponse> antecedentsResponses = antecedentsService.getAllAntecedents(accessor.getMemberId());
 
         // 6. 미니 프로필 정보
-        final MiniProfileResponse miniProfileResponse = miniProfileService.getMiniProfileDetail(miniProfileId);
+        final MiniProfileResponse miniProfileResponse = miniProfileService.getMiniProfileDetail(accessor.getMemberId());
 
         final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
                 profileTeamBuildingFieldResponse,

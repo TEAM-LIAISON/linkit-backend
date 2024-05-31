@@ -692,7 +692,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 6 Jun 2024 17:14:49 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Fri, 7 Jun 2024 04:30:21 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 139
 
@@ -1015,7 +1015,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1394
+Content-Length: 1498
 
 {
   "profileTeamBuildingFieldResponse" : {
@@ -1023,6 +1023,10 @@ Content-Length: 1394
   },
   "profileSkillResponse" : {
     "profileSkillNames" : [ "Figma", "Notion" ]
+  },
+  "profileRegionResponse" : {
+    "cityName" : "서울특별시",
+    "divisionName" : "강남구"
   },
   "educationResponses" : [ {
     "id" : 1,
@@ -1102,6 +1106,21 @@ Content-Length: 1394
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileSkillResponse.profileSkillNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">보유 기술 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileRegionResponse</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지역 및 위치 항목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileRegionResponse.cityName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시/구 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileRegionResponse.divisionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시/군/구 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>educationResponses</code></p></td>

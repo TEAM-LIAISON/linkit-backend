@@ -74,7 +74,10 @@ public class LoginService {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberRepository.existsByEmail(email)) {
+                // 만약 이메일에 의해서 존재하지 않는 회원임이 판단된다면
                 Member member = memberRepository.save(new Member(socialLoginId, email, null));
+
+                // 내 이력서는 자동으로 생성된다. -> 미니 프로필도 함께 생성되어야 한다.
                 profileRepository.save(new Profile(member, 0,"자기소개를 입력해주세요"));
                 log.info("memberId={}", member.getId());
 
