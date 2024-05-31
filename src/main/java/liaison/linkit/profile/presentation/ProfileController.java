@@ -41,6 +41,7 @@ public class ProfileController {
     ) {
         // 해당 사용자의 내 이력서 PK 조회
         final Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
+        log.info("profileId={}", profileId);
 
         // boolean 값 가져옴
         final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse
