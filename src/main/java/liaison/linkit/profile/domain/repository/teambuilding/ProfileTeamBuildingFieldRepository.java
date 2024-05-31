@@ -21,5 +21,5 @@ public interface ProfileTeamBuildingFieldRepository extends JpaRepository<Profil
     @Modifying
     @Transactional  // 메서드가 트랜잭션 내에서 실행되어야 함을 나타낸다.
     @Query("DELETE FROM ProfileTeamBuildingField profileTeamBuildingField WHERE profileTeamBuildingField.profile.id = :profileId")
-    void deleteAllByProfileId(Long profileId);
+    void deleteAllByProfileId(@Param("profileId") final Long profileId);
 }
