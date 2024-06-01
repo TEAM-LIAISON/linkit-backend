@@ -8,15 +8,16 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class ProfileSkillResponse {
-    private final List<String> profileSkillNames;
+    private final List<SkillPair> skillPairs;
 
-    public ProfileSkillResponse() {
-        this.profileSkillNames = null;
+    @Getter
+    @RequiredArgsConstructor
+    public static class SkillPair {
+        private final String roleField;
+        private final String skillName;
     }
 
-    public static ProfileSkillResponse of(final List<String> profileSkillNames) {
-        return new ProfileSkillResponse(
-                profileSkillNames
-        );
+    public static ProfileSkillResponse of(List<SkillPair> skillPairs) {
+        return new ProfileSkillResponse(skillPairs);
     }
 }

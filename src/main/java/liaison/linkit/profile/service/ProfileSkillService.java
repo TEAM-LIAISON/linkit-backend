@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_PROFILE_SKILL_WITH_MEMBER;
 
@@ -63,14 +62,18 @@ public class ProfileSkillService {
 
         log.info("profileSkills={}", profileSkills);
 
-        List<String> profileSkillNames = profileSkills.stream()
-                .map(profileSkill -> skillRepository.findById(profileSkill.getSkill().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(Skill::getSkillName)
-                .toList();
+        List<ProfileSkillResponse.SkillPair> skillPairs = profileSkills.stream()
+                .map(profileSkill -> {
+                    Skill skill = skillRepository.findById(profileSkill.getSkill().getId())
+                            .orElseThrow(() -> new RuntimeException("Skill not found"));
 
-        return new ProfileSkillResponse(profileSkillNames);
+                    return new ProfileSkillResponse.SkillPair(
+                            skill.getRoleField(),
+                            skill.getSkillName()
+                    );
+                }).toList();
+
+        return ProfileSkillResponse.of(skillPairs);
     }
 
 

@@ -223,7 +223,7 @@ public class ProfileController {
             profileSkillService.validateProfileSkillByMember(memberId);
             return profileSkillService.getAllProfileSkills(memberId);
         } else {
-            return new ProfileSkillResponse();
+            return null;
         }
     }
 

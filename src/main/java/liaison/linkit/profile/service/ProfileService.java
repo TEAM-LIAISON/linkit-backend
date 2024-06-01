@@ -51,7 +51,7 @@ public class ProfileService {
 
     // 첨부 링크 정보 담당
     private final AttachUrlRepository attachUrlRepository;
-
+    
     // 첨부 이미지(파일 경로) 정보 담당
     private final AttachFileRepository attachFileRepository;
 
