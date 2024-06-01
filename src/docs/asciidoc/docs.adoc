@@ -66,20 +66,6 @@ include::{snippets}/profile-team-building-field-controller-test/create-profile-t
 요청 쿠키
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-cookies.adoc[]
 
-=== 1.5.2. 내 이력서 - 희망 분야 수정
-=== [PUT /profile_team_building_field]
-==== 요청
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/http-request.adoc[]
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/request-fields.adoc[]
-요청 헤더
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/response-body.adoc[]
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/response-fields.adoc[]
-
 === 1.5.2. 내 이력서 - 활동 지역 생성
 === [POST /profile-region]
 ==== 요청

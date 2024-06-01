@@ -38,12 +38,20 @@ public class ProfileRegionService {
             final ProfileRegionCreateRequest profileRegionCreateRequest
     ) {
         final Profile profile = profileRepository.findByMemberId(memberId);
-        final Region region = regionRepository
-                .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(), profileRegionCreateRequest.getDivisionName());
+        if (profileRegionRepository.existsByProfileId(profile.getId())) {
+            final ProfileRegion savedProfileRegion = profileRegionRepository.findByProfileId(profile.getId());
+            profileRegionRepository.delete(savedProfileRegion);
 
-        ProfileRegion profileRegion = new ProfileRegion((null), profile, region);
-
-        profileRegionRepository.save(profileRegion);
+            final Region region = regionRepository
+                    .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(), profileRegionCreateRequest.getDivisionName());
+            ProfileRegion newProfileRegion = new ProfileRegion((null), profile, region);
+            profileRegionRepository.save(newProfileRegion);
+        } else {
+            final Region region = regionRepository
+                    .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(), profileRegionCreateRequest.getDivisionName());
+            ProfileRegion profileRegion = new ProfileRegion((null), profile, region);
+            profileRegionRepository.save(profileRegion);
+        }
     }
 
     @Transactional(readOnly = true)

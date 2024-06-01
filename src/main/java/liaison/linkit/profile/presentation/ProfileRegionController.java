@@ -28,7 +28,6 @@ public class ProfileRegionController {
             @RequestBody @Valid ProfileRegionCreateRequest profileRegionCreateRequest
     ) {
         profileRegionService.save(accessor.getMemberId(), profileRegionCreateRequest);
-
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
