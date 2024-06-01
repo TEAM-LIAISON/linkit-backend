@@ -158,14 +158,12 @@ class ProfileControllerTest extends ControllerTest {
                 .willReturn(profileTeamBuildingFieldResponse);
 
         // 2. 역할 및 기술
+        List<String> roleFields = Arrays.asList("SW 개발자", "SW 개발자");
+        List<String> skillNames = Arrays.asList("Java", "React");
+        final ProfileSkillResponse profileSkillResponse = ProfileSkillResponse.of(roleFields, skillNames);
 
-        List<ProfileSkillResponse.SkillPair> skillPairs = Arrays.asList(
-                new ProfileSkillResponse.SkillPair("SW 개발자", "Java"),
-                new ProfileSkillResponse.SkillPair("SW 개발자", "React")
-
-        );
-        final ProfileSkillResponse profileSkillResponse = ProfileSkillResponse.of(skillPairs);
         given(profileSkillService.getAllProfileSkills(1L)).willReturn(profileSkillResponse);
+
 
         // 3. 지역 및 위치 정보
         final ProfileRegionResponse profileRegionResponse = new ProfileRegionResponse(
@@ -277,8 +275,8 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("profileTeamBuildingFieldResponse.teamBuildingFieldNames").description("희망 팀빌딩 분야 이름").attributes(field("constraint", "문자열(배열)")),
 
                                         subsectionWithPath("profileSkillResponse").description("보유 기술 및 역할 목록").attributes(field("constraint", "객체")),
-                                        fieldWithPath("profileSkillResponse.skillPairs[].roleField").description("보유한 역할").attributes(field("constraint", "문자열")),
-                                        fieldWithPath("profileSkillResponse.skillPairs[].skillName").description("보유한 기술 이름").attributes(field("constraint", "문자열")),
+                                        fieldWithPath("profileSkillResponse.roleFields[]").description("보유한 역할").attributes(field("constraint", "문자열(배열)")),
+                                        fieldWithPath("profileSkillResponse.skillNames[]").description("보유한 기술 이름").attributes(field("constraint", "문자열(배열)")),
 
                                         subsectionWithPath("profileRegionResponse").description("지역 및 위치 항목").attributes(field("constraint", "객체")),
                                         fieldWithPath("profileRegionResponse.cityName").description("시/구 이름").attributes(field("constraint", "문자열")),

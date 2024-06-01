@@ -1,8 +1,6 @@
 package liaison.linkit.profile.dto.request;
 
 import jakarta.validation.constraints.NotNull;
-import liaison.linkit.profile.domain.Antecedents;
-import liaison.linkit.profile.domain.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -30,18 +28,4 @@ public class AntecedentsCreateRequest {
 
     @NotNull(message = "재직 여부를 선택해주세요")
     private final boolean retirement;
-
-    public Antecedents toEntity(final Profile profile) {
-        return new Antecedents(
-                null,
-                profile,
-                projectName,
-                projectRole,
-                startYear,
-                startMonth,
-                endYear,
-                endMonth,
-                retirement
-        );
-    }
 }

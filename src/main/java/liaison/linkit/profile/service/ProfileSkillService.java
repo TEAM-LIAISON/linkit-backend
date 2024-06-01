@@ -14,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_PROFILE_SKILL_WITH_MEMBER;
 
@@ -42,11 +44,24 @@ public class ProfileSkillService {
             profileSkillRepository.deleteAllByProfileId(profile.getId());
         }
 
-        final List<ProfileSkill> profileSkills = profileSkillCreateRequest.getSkillPairs().stream()
-                .map(skillPair -> {
-                    Skill skill = skillRepository.findByRoleFieldAndSkillName(skillPair.getRoleField(),skillPair.getSkillName());
-                    return new ProfileSkill(null, profile, skill, skillPair.getRoleField(), skillPair.getSkillName());
-                }).toList();
+        List<String> roleFields = profileSkillCreateRequest.getRoleFields();
+        List<String> skillNames = profileSkillCreateRequest.getSkillNames();
+
+        // Ensure that the lists have the same length to prevent index out of bounds exception
+        if (roleFields.size() != skillNames.size()) {
+            throw new IllegalArgumentException("The number of roles and skills must be the same.");
+        }
+
+        List<ProfileSkill> profileSkills = new ArrayList<>();
+        for (int i = 0; i < roleFields.size(); i++) {
+            String roleField = roleFields.get(i);
+            String skillName = skillNames.get(i);
+
+            Skill skill = skillRepository.findByRoleFieldAndSkillName(roleField, skillName);
+
+            ProfileSkill profileSkill = new ProfileSkill(null, profile, skill, roleField, skillName);
+            profileSkills.add(profileSkill);
+        }
 
         profileSkillRepository.saveAll(profileSkills);
 
@@ -62,18 +77,19 @@ public class ProfileSkillService {
 
         log.info("profileSkills={}", profileSkills);
 
-        List<ProfileSkillResponse.SkillPair> skillPairs = profileSkills.stream()
+// 역할 필드와 기술 이름을 각각의 리스트로 생성
+        List<String> roleFields = profileSkills.stream()
+                .map(profileSkill -> profileSkill.getRoleField()) // 가정: ProfileSkill에 roleField라는 필드가 있다.
+                .collect(Collectors.toList());
+
+        List<String> skillNames = profileSkills.stream()
                 .map(profileSkill -> {
                     Skill skill = skillRepository.findById(profileSkill.getSkill().getId())
                             .orElseThrow(() -> new RuntimeException("Skill not found"));
+                    return skill.getSkillName();
+                }).collect(Collectors.toList());
 
-                    return new ProfileSkillResponse.SkillPair(
-                            skill.getRoleField(),
-                            skill.getSkillName()
-                    );
-                }).toList();
-
-        return ProfileSkillResponse.of(skillPairs);
+        return ProfileSkillResponse.of(roleFields, skillNames);
     }
 
 

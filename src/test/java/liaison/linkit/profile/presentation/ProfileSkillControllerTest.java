@@ -70,35 +70,28 @@ public class ProfileSkillControllerTest extends ControllerTest {
     @Test
     void createProfileSkill() throws Exception {
         // given
-        List<ProfileSkillCreateRequest.SkillPair> skillPairs = Arrays.asList(
-                new ProfileSkillCreateRequest.SkillPair("SW 개발자", "Java"),
-                new ProfileSkillCreateRequest.SkillPair("SW 개발자", "React")
-        );
-
-        final ProfileSkillCreateRequest profileSkillCreateRequest = ProfileSkillCreateRequest.of(skillPairs);
+        List<String> roleFields = Arrays.asList("SW 개발자", "SW 개발자");
+        List<String> skillNames = Arrays.asList("Java", "React");
+        final ProfileSkillCreateRequest profileSkillCreateRequest = ProfileSkillCreateRequest.of(roleFields, skillNames);
 
         // when
         final ResultActions resultActions = performPostRequest(profileSkillCreateRequest);
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(
-                        restDocs.document(
+                .andDo(restDocs.document(
                                 requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
+                                        cookieWithName("refresh-token").description("갱신 토큰")
                                 ),
                                 requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
+                                        headerWithName("Authorization").description("access token").attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 requestFields(
-                                        subsectionWithPath("skillPairs").description("보유 기술 및 역할 목록 쌍").attributes(field("constraint", "객체")),
-                                        fieldWithPath("skillPairs[].roleField").description("보유한 역할").attributes(field("constraint", "문자열")),
-                                        fieldWithPath("skillPairs[].skillName").description("보유한 기술 이름").attributes(field("constraint", "문자열"))
+                                        fieldWithPath("roleFields[]").description("보유한 역할 목록").attributes(field("constraint", "문자열 배열")),
+                                        fieldWithPath("skillNames[]").description("보유한 기술 이름 목록").attributes(field("constraint", "문자열 배열"))
                                 )
                         )
                 );
     }
 }
+
