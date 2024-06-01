@@ -1,13 +1,13 @@
 package liaison.linkit.team.domain.announcement;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import liaison.linkit.team.domain.TeamProfile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -21,6 +21,10 @@ public class TeamMemberAnnouncement {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = LAZY, cascade = ALL)
+    @JoinColumn(name = "team_profile_id")
+    private TeamProfile teamProfile;
+
     // 주요 업무
     @Column(name = "main_business")
     private String mainBusiness;
@@ -32,5 +36,6 @@ public class TeamMemberAnnouncement {
     // 지원 절차
     @Column(name = "application_process")
     private String applicationProcess;
+
 
 }

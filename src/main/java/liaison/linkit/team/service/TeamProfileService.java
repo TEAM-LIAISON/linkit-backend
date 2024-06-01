@@ -4,7 +4,11 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.dto.response.OnBoardingTeamProfileResponse;
 import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
+import liaison.linkit.team.dto.response.activity.ActivityResponse;
+import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
+import liaison.linkit.team.dto.response.onBoarding.OnBoardingFirstResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,4 +37,15 @@ public class TeamProfileService {
         return TeamProfileOnBoardingIsValueResponse.teamProfileOnBoardingIsValue(teamProfile);
     }
 
+    public OnBoardingTeamProfileResponse getOnBoardingTeamProfile(
+            final OnBoardingFirstResponse onBoardingFirstResponse,
+            final ActivityResponse activityResponse,
+            final TeamMiniProfileResponse teamMiniProfileResponse
+    ) {
+        return OnBoardingTeamProfileResponse.onBoardingTeamProfileItems(
+                onBoardingFirstResponse,
+                activityResponse,
+                teamMiniProfileResponse
+        );
+    }
 }

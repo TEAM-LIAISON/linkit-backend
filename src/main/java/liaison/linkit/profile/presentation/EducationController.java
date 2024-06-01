@@ -35,7 +35,7 @@ public class EducationController {
             @Auth final Accessor accessor,
             @RequestBody @Valid EducationCreateRequest educationCreateRequest
     ) {
-        EducationResponse educationResponse = educationService.save(accessor.getMemberId(), educationCreateRequest);
+        final EducationResponse educationResponse = educationService.save(accessor.getMemberId(), educationCreateRequest);
         return ResponseEntity.ok().body(educationResponse);
     }
 

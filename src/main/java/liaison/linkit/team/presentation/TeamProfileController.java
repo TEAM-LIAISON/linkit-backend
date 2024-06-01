@@ -5,6 +5,8 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.team.dto.request.DefaultTeamProfileCreateRequest;
+import liaison.linkit.team.dto.response.OnBoardingTeamProfileResponse;
+import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
 import liaison.linkit.team.dto.response.TeamProfileTeamBuildingFieldResponse;
 import liaison.linkit.team.dto.response.activity.ActivityMethodResponse;
 import liaison.linkit.team.dto.response.activity.ActivityRegionResponse;
@@ -19,10 +21,7 @@ import liaison.linkit.team.service.TeamProfileTeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,39 +35,48 @@ public class TeamProfileController {
     public final ActivityService activityService;
 
 
-//    @GetMapping("/onBoarding")
-//    @MemberOnly
-//    public ResponseEntity<OnBoardingTeamProfileResponse> getOnBoardingTeamProfile(
-//            @Auth final Accessor accessor
-//    ) {
-//        // 팀 프로필 아이디 가져오기
-//        final Long teamProfileId = teamProfileService.validateTeamProfileByMember(accessor.getMemberId());
-//        log.info("teamProfileId={}", teamProfileId);
-//
-//        // 저장 여부 파악하는 boolean 가져오기
-//        final TeamProfileOnBoardingIsValueResponse teamProfileOnBoardingIsValueResponse
-//                = teamProfileService.getTeamProfileOnBoardingIsValue(teamProfileId);
-//
-//        // 1. 희망 팀빌딩 분야 및 팀 미니 프로필 내부 항목
-//        final OnBoardingFirstResponse onBoardingFirstResponse
-//                = getOnBoardingFirstResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isTeamTeamBuildingField());
-//
-//        log.info("onBoardingFirstResponse={}", onBoardingFirstResponse);
-//
-//        // 2. 활동 방식 응답
-//        final ActivityResponse activityResponse
-//                = getActivityResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isActivity());
-//
-//        log.info("activityResponse={}", activityResponse);
-//
-//        // 3. 팀원 역할 응답
-//
-//        // 팀 소개서 미니 프로필 응답
-//        final TeamMiniProfileResponse teamMiniProfileResponse
-//                = getTeamMiniProfileResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isTeamMiniProfile());
-//
-//        log.info("teamMiniProfileResponse={}", teamMiniProfileResponse);
-//    }
+    @GetMapping("/onBoarding")
+    @MemberOnly
+    public ResponseEntity<OnBoardingTeamProfileResponse> getOnBoardingTeamProfile(
+            @Auth final Accessor accessor
+    ) {
+        // 팀 프로필 아이디 가져오기
+        final Long teamProfileId = teamProfileService.validateTeamProfileByMember(accessor.getMemberId());
+        log.info("teamProfileId={}", teamProfileId);
+
+        // 저장 여부 파악하는 boolean 가져오기
+        final TeamProfileOnBoardingIsValueResponse teamProfileOnBoardingIsValueResponse
+                = teamProfileService.getTeamProfileOnBoardingIsValue(teamProfileId);
+
+        // 1. 희망 팀빌딩 분야 및 팀 미니 프로필 내부 항목
+        final OnBoardingFirstResponse onBoardingFirstResponse
+                = getOnBoardingFirstResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isTeamTeamBuildingField());
+
+        log.info("onBoardingFirstResponse={}", onBoardingFirstResponse);
+
+        // 2. 활동 방식 응답
+        final ActivityResponse activityResponse
+                = getActivityResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isActivity());
+
+        log.info("activityResponse={}", activityResponse);
+
+        // 3. 팀원 역할 응답
+
+
+        // 팀 소개서 미니 프로필 응답
+        final TeamMiniProfileResponse teamMiniProfileResponse
+                = getTeamMiniProfileResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isTeamMiniProfile());
+
+        log.info("teamMiniProfileResponse={}", teamMiniProfileResponse);
+
+        final OnBoardingTeamProfileResponse onBoardingTeamProfileResponse = teamProfileService.getOnBoardingTeamProfile(
+                onBoardingFirstResponse,
+                activityResponse,
+                teamMiniProfileResponse
+        );
+
+        return ResponseEntity.ok().body(onBoardingTeamProfileResponse);
+    }
 
     private OnBoardingFirstResponse getOnBoardingFirstResponse(
             final Long memberId,
