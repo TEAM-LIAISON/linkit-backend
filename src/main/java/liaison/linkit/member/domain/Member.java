@@ -30,6 +30,15 @@ public class Member {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @OneToOne(mappedBy = "member")
+    private MemberBasicInform memberBasicInform;
+
+    @OneToOne(mappedBy = "member")
+    private Profile profile;
+
+    @OneToOne(mappedBy = "member")
+    private TeamProfile teamProfile;
+
     @Column(nullable = false, length = 100)
     private String socialLoginId;
 
@@ -49,15 +58,6 @@ public class Member {
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
-
-    @OneToOne(mappedBy = "member")
-    private MemberBasicInform memberBasicInform;
-
-    @OneToOne(mappedBy = "member")
-    private Profile profile;
-
-    @OneToOne(mappedBy = "member")
-    private TeamProfile teamProfile;
 
     @Column(nullable = false)
     private boolean existMemberBasicInform;

@@ -35,7 +35,7 @@ public class AntecedentsController {
             @Auth final Accessor accessor,
             @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest
     ){
-        AntecedentsResponse antecedentsResponse = antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
+        final AntecedentsResponse antecedentsResponse = antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
         return ResponseEntity.ok().body(antecedentsResponse);
     }
 
@@ -45,7 +45,7 @@ public class AntecedentsController {
     public ResponseEntity<AntecedentsResponse> getAntecedents(
             @Auth final Accessor accessor
     ) {
-        Long antecedentsId = antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
+        final Long antecedentsId = antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
         final AntecedentsResponse antecedentsResponse = antecedentsService.getAntecedentsDetail(antecedentsId);
         return ResponseEntity.ok().body(antecedentsResponse);
     }
@@ -58,7 +58,7 @@ public class AntecedentsController {
         @PathVariable final Long antecedentsId,
         @RequestBody @Valid final AntecedentsUpdateRequest antecedentsUpdateRequest
     ){
-        AntecedentsResponse antecedentsResponse = antecedentsService.update(accessor.getMemberId(), antecedentsId, antecedentsUpdateRequest);
+        final AntecedentsResponse antecedentsResponse = antecedentsService.update(accessor.getMemberId(), antecedentsId, antecedentsUpdateRequest);
         return ResponseEntity.ok().body(antecedentsResponse);
     }
 

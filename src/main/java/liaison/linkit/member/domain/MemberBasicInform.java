@@ -21,6 +21,10 @@ public class MemberBasicInform {
     @Column(name = "member_basic_inform_id")
     private Long id;
 
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @JoinColumn(name = "member_id", unique = true)
+    private Member member;
+
     // 성함
     @Column(nullable = false, length = 30)
     private String memberName;
@@ -32,10 +36,6 @@ public class MemberBasicInform {
     // 뉴스레터 및 마케팅 정보 수신동의
     @Column
     private boolean marketingAgree;
-
-    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "member_id", unique = true)
-    private Member member;
 
     // 생성자
     public MemberBasicInform(
