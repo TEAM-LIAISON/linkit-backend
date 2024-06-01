@@ -11,11 +11,14 @@ import liaison.linkit.team.domain.repository.activity.ActivityMethodTagRepositor
 import liaison.linkit.team.domain.repository.activity.ActivityRegionRepository;
 import liaison.linkit.team.domain.repository.activity.RegionRepository;
 import liaison.linkit.team.dto.request.activity.ActivityCreateRequest;
+import liaison.linkit.team.dto.response.activity.ActivityMethodResponse;
+import liaison.linkit.team.dto.response.activity.ActivityRegionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,34 +33,15 @@ public class ActivityService {
     final ActivityRegionRepository activityRegionRepository;
     final RegionRepository regionRepository;
 
-    public void save(
-            final Long memberId,
-            final ActivityCreateRequest activityCreateRequest
-    ) {
-        final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId);
-
-        // 활동 방식 태그 이름 구현 로직
-        final List<ActivityMethodTag> activityMethodTags = activityMethodTagRepository
-                .findActivityMethodTagByActivityTagNames(activityCreateRequest.getActivityTagNames());
-
-
-
-        final List<ActivityMethod> activityMethods = activityMethodTags.stream()
-                .map(activityMethodTag -> new ActivityMethod(null, teamProfile, activityMethodTag))
-                .toList();
-
-        // activityMethodRepository 저장
-
-
-        // Request DTO -> 각 문자열을 ActivityMethodTag 테이블에서 찾아서 가져옴
-    }
-
     // 활동 방식 저장
     public void saveActivityMethod(
             final Long memberId,
             final ActivityCreateRequest activityCreateRequest
     ) {
         final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId);
+        if (activityMethodRepository.existsByTeamProfileId(teamProfile.getId())) {
+            activityMethodRepository.deleteAllByTeamProfileId(teamProfile.getId());
+        }
 
         // 활동 방식 태그 이름 구현 로직
         final List<ActivityMethodTag> activityMethodTags = activityMethodTagRepository
@@ -68,6 +52,8 @@ public class ActivityService {
                 .toList();
 
         activityMethodRepository.saveAll(activityMethods);
+
+        teamProfile.updateIsActivityMethod(true);
     }
 
     // 활동 지역 저장
@@ -77,6 +63,10 @@ public class ActivityService {
     ) {
         final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId);
 
+        if (activityRegionRepository.existsByTeamProfileId(teamProfile.getId())) {
+            activityRegionRepository.deleteAllByTeamProfileId(teamProfile.getId());
+        }
+
         // 지역 정보 구현 로직
         final Region region = regionRepository
                 .findRegionByCityNameAndDivisionName(activityCreateRequest.getCityName(), activityCreateRequest.getDivisionName());
@@ -84,5 +74,33 @@ public class ActivityService {
         ActivityRegion activityRegion = new ActivityRegion(null, teamProfile, region);
 
         activityRegionRepository.save(activityRegion);
+
+        teamProfile.updateIsActivityRegion(true);
+    }
+
+    // 활동 방식 전체 조회
+    @Transactional(readOnly = true)
+    public ActivityMethodResponse getAllActivityMethods(final Long memberId) {
+
+        Long teamProfileId = teamProfileRepository.findByMemberId(memberId).getId();
+
+        List<ActivityMethod> activityMethods = activityMethodRepository.findAllByTeamProfileId(teamProfileId);
+
+        List<String> activityTagNames = activityMethods.stream()
+                .map(activityMethod -> activityMethodTagRepository.findById(activityMethod.getActivityMethodTag().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(ActivityMethodTag::getActivityTagName)
+                .toList();
+
+        return ActivityMethodResponse.of(activityTagNames);
+    }
+
+    @Transactional(readOnly = true)
+    public ActivityRegionResponse getActivityRegion(final Long memberId) {
+        Long teamProfileId = teamProfileRepository.findByMemberId(memberId).getId();
+        ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(teamProfileId);
+
+        return new ActivityRegionResponse(activityRegion.getRegion().getCityName(), activityRegion.getRegion().getDivisionName());
     }
 }

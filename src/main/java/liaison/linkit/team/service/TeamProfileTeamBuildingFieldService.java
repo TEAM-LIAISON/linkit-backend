@@ -53,6 +53,11 @@ public class TeamProfileTeamBuildingFieldService {
     public void save(final Long memberId, final TeamProfileTeamBuildingFieldCreateRequest createRequest) {
         final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId);
 
+        // 기존에 기입했었다면, 삭제 먼저
+        if (teamProfileTeamBuildingFieldRepository.existsByTeamProfileId(teamProfile.getId())) {
+            teamProfileTeamBuildingFieldRepository.deleteAllByTeamProfileId(teamProfile.getId());
+        }
+
         final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
                 .findTeamBuildingFieldsByFieldNames(createRequest.getTeamBuildingFieldNames());
 
@@ -62,5 +67,7 @@ public class TeamProfileTeamBuildingFieldService {
 
         teamProfileTeamBuildingFieldRepository.saveAll(teamProfileTeamBuildingFields);
 
+        // 존재 여부 변수 변경
+        teamProfile.updateIsTeamProfileTeamBuildingField(true);
     }
 }

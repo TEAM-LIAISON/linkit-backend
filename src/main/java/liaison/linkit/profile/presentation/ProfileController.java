@@ -48,7 +48,7 @@ public class ProfileController {
         final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse
                 = profileService.getProfileOnBoardingIsValue(profileId);
 
-        // 미니 프로필 응답 정상 작동 파악 완료
+        // 미니 프로필 응답
         final MiniProfileResponse miniProfileResponse
                 = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
 

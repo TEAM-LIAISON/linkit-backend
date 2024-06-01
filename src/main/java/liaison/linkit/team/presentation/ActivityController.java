@@ -28,7 +28,10 @@ public class ActivityController {
             @Auth final Accessor accessor,
             @RequestBody @Valid ActivityCreateRequest activityCreateRequest
     ) {
+        // 활동 방식은 활동 방식 테이블에 저장
         activityService.saveActivityMethod(accessor.getMemberId(), activityCreateRequest);
+
+        // 활동 지역은 활동 지역 테이블에 저장
         activityService.saveActivityRegion(accessor.getMemberId(), activityCreateRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
