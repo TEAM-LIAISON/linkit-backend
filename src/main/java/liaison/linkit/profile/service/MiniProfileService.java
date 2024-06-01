@@ -59,6 +59,8 @@ public class MiniProfileService {
         );
 
         miniProfileRepository.save(newMiniProfile);
+
+        profile.updateIsMiniProfile(true);
     }
 
     private MiniProfileResponse getMiniProfileResponse(final MiniProfile miniProfile) {

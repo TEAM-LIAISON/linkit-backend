@@ -175,6 +175,10 @@ public class Profile {
         }
     }
 
+    public void updateIsMiniProfile(final Boolean isMiniProfile) {
+        this.isMiniProfile = isMiniProfile;
+    }
+
     // 첨부 항목 등록 또는 삭제에서만 호출
     public void updateIsAttachUrl(final Boolean isAttachUrl) {
 
@@ -268,6 +272,7 @@ public class Profile {
     public boolean getIsAttachFile() {
         return isAttachFile;
     }
+
 
 
 }
