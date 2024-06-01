@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class AntecedentsCreateRequest {
+
     @NotNull(message = "기업명(프로젝트명)을 입력해주세요")
     private final String projectName;
 
