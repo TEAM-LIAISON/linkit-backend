@@ -66,20 +66,6 @@ include::{snippets}/profile-team-building-field-controller-test/create-profile-t
 요청 쿠키
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-cookies.adoc[]
 
-=== 1.5.2. 내 이력서 - 희망 분야 수정
-=== [PUT /profile_team_building_field]
-==== 요청
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/http-request.adoc[]
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/request-fields.adoc[]
-요청 헤더
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/response-body.adoc[]
-include::{snippets}/profile-team-building-field-controller-test/update-profile-team-building-field/response-fields.adoc[]
-
 === 1.5.2. 내 이력서 - 활동 지역 생성
 === [POST /profile-region]
 ==== 요청
@@ -90,7 +76,8 @@ include::{snippets}/profile-region-controller-test/create-profile-region/request
 요청 쿠키
 include::{snippets}/profile-region-controller-test/create-profile-region/request-cookies.adoc[]
 
-=== 1.5.2. 내 이력서 - 희망 역할 및 보유 기술(미완성)
+=== 1.5.2. 내 이력서 - 역할 및 기술 생성
+
 
 === 1.5.2. 내 이력서 - 학력 생성
 === [POST /education]

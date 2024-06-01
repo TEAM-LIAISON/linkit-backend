@@ -1,6 +1,7 @@
 package liaison.linkit.profile.domain.education;
 
 import jakarta.persistence.*;
+import liaison.linkit.team.domain.miniprofile.IndustrySector;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +21,13 @@ public class Degree {
 
     @Column(name = "degree_name", nullable = false)
     private String degreeName;
+
+    public static Degree of(
+            final String degreeName
+    ) {
+        return new Degree(
+                null,
+                degreeName
+        );
+    }
 }

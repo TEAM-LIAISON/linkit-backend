@@ -3,12 +3,7 @@ package liaison.linkit.profile.service;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ExceptionCode;
-import liaison.linkit.profile.domain.Antecedents;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.education.Degree;
-import liaison.linkit.profile.domain.education.Education;
-import liaison.linkit.profile.domain.education.Major;
-import liaison.linkit.profile.domain.education.University;
 import liaison.linkit.profile.domain.repository.*;
 import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
@@ -18,11 +13,6 @@ import liaison.linkit.profile.domain.repository.education.MajorRepository;
 import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
-import liaison.linkit.profile.domain.skill.ProfileSkill;
-import liaison.linkit.profile.domain.skill.Skill;
-import liaison.linkit.profile.domain.teambuilding.ProfileTeamBuildingField;
-import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;
-import liaison.linkit.profile.dto.request.DefaultProfileCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.Attach.AttachResponse;
@@ -31,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_ID;
 
@@ -73,44 +62,44 @@ public class ProfileService {
             return profileRepository.findByMemberId(memberId).getId();
         }
     }
+
     // 디폴트 항목 저장
-
-    public void saveDefault(
-            final Long memberId,
-            final DefaultProfileCreateRequest defaultProfileCreateRequest)
-    {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-
-        final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
-                .findTeamBuildingFieldsByFieldNames(defaultProfileCreateRequest.getProfileTeamBuildingResponse().getTeamBuildingFieldNames());
-        final List<Skill> skills = skillRepository.findSkillNamesBySkillNames(defaultProfileCreateRequest.getProfileSkillCreateRequest().getSkillNames());
-
-        final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
-                .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
-                .toList();
-
-        final List<ProfileSkill> profileSkills = skills.stream()
-                .map(skill -> new ProfileSkill(null, profile, skill))
-                .toList();
-
-        final List<Education> educations = defaultProfileCreateRequest
-                .getEducationCreateRequest().stream()
-                .map(request -> {
-                    University university = universityRepository.findByUniversityName(request.getUniversityName());
-                    Degree degree = degreeRepository.findByDegreeName(request.getDegreeName());
-                    Major major = majorRepository.findByMajorName(request.getMajorName());
-                    return request.toEntity(profile, university, degree, major);
-                }).collect(Collectors.toList());
-
-
-        final List<Antecedents> antecedents = defaultProfileCreateRequest
-                .getAntecedentsCreateRequest().stream().map(request -> request.toEntity(profile)).toList();
-
-        profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
-        profileSkillRepository.saveAll(profileSkills);
-        educationRepository.saveAll(educations);
-        antecedentsRepository.saveAll(antecedents);
-    }
+//    public void saveDefault(
+//            final Long memberId,
+//            final DefaultProfileCreateRequest defaultProfileCreateRequest)
+//    {
+//        final Profile profile = profileRepository.findByMemberId(memberId);
+//
+//        final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
+//                .findTeamBuildingFieldsByFieldNames(defaultProfileCreateRequest.getProfileTeamBuildingResponse().getTeamBuildingFieldNames());
+//        final List<Skill> skills = skillRepository.findSkillNamesBySkillNames(defaultProfileCreateRequest.getProfileSkillCreateRequest().getSkillNames());
+//
+//        final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
+//                .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
+//                .toList();
+//
+//        final List<ProfileSkill> profileSkills = skills.stream()
+//                .map(skill -> new ProfileSkill(null, profile, skill))
+//                .toList();
+//
+//        final List<Education> educations = defaultProfileCreateRequest
+//                .getEducationCreateRequest().stream()
+//                .map(request -> {
+//                    University university = universityRepository.findByUniversityName(request.getUniversityName());
+//                    Degree degree = degreeRepository.findByDegreeName(request.getDegreeName());
+//                    Major major = majorRepository.findByMajorName(request.getMajorName());
+//                    return request.toEntity(profile, university, degree, major);
+//                }).collect(Collectors.toList());
+//
+//
+//        final List<Antecedents> antecedents = defaultProfileCreateRequest
+//                .getAntecedentsCreateRequest().stream().map(request -> request.toEntity(profile)).toList();
+//
+//        profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
+//        profileSkillRepository.saveAll(profileSkills);
+//        educationRepository.saveAll(educations);
+//        antecedentsRepository.saveAll(antecedents);
+//    }
 
     @Transactional(readOnly = true)
     public ProfileIntroductionResponse getProfileIntroduction(final Long profileId) {
