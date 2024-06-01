@@ -16,6 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class Skill {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "skill_id")

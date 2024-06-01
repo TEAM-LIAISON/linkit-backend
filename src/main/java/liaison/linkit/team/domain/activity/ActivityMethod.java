@@ -27,4 +27,6 @@ public class ActivityMethod {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "activity_method_tag_id")
     private ActivityMethodTag activityMethodTag;
+
+
 }
