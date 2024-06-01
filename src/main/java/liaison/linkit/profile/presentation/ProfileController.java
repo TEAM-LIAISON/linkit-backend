@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.DefaultProfileCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.Attach.AttachResponse;
@@ -92,16 +91,16 @@ public class ProfileController {
         return ResponseEntity.ok().body(onBoardingProfileResponse);
     }
 
-    // Default 나의 역량 생성 메서드
-    @PostMapping("/default")
-    @MemberOnly
-    public ResponseEntity<Void> createDefaultProfile(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final DefaultProfileCreateRequest defaultProfileCreateRequest
-    ) {
-        profileService.saveDefault(accessor.getMemberId(), defaultProfileCreateRequest);
-        return ResponseEntity.ok().build();
-    }
+//    // Default 나의 역량 생성 메서드
+//    @PostMapping("/default")
+//    @MemberOnly
+//    public ResponseEntity<Void> createDefaultProfile(
+//            @Auth final Accessor accessor,
+//            @RequestBody @Valid final DefaultProfileCreateRequest defaultProfileCreateRequest
+//    ) {
+//        profileService.saveDefault(accessor.getMemberId(), defaultProfileCreateRequest);
+//        return ResponseEntity.ok().build();
+//    }
 
     @GetMapping("/introduction")
     @MemberOnly

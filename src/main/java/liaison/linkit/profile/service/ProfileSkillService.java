@@ -8,7 +8,6 @@ import liaison.linkit.profile.domain.repository.SkillRepository;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.dto.request.skill.ProfileSkillCreateRequest;
-import liaison.linkit.profile.dto.request.skill.ProfileSkillUpdateRequest;
 import liaison.linkit.profile.dto.response.ProfileSkillResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,30 +39,18 @@ public class ProfileSkillService {
     public void save(final Long memberId, final ProfileSkillCreateRequest profileSkillCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
         if (profileSkillRepository.existsByProfileId(profile.getId())) {
-            // 존재했으면 삭제부터
             profileSkillRepository.deleteAllByProfileId(profile.getId());
-
-            final List<Skill> skills = skillRepository
-                    .findSkillNamesBySkillNames(profileSkillCreateRequest.getSkillNames());
-
-            final List<ProfileSkill> profileSkills = skills.stream()
-                    .map(skill -> new ProfileSkill(null, profile, skill))
-                    .toList();
-
-            profileSkillRepository.saveAll(profileSkills);
-        } else {
-            // 존재하지 않았으면 그냥 저장
-            final List<Skill> skills = skillRepository
-                    .findSkillNamesBySkillNames(profileSkillCreateRequest.getSkillNames());
-
-            final List<ProfileSkill> profileSkills = skills.stream()
-                    .map(skill -> new ProfileSkill(null, profile, skill))
-                    .toList();
-
-            profileSkillRepository.saveAll(profileSkills);
         }
 
-        profile.updateIsProfileSkill(true);
+        final List<ProfileSkill> profileSkills = profileSkillCreateRequest.getSkillPairs().stream()
+                .map(skillPair -> {
+                    Skill skill = skillRepository.findByRoleFieldAndSkillName(skillPair.getRoleField(),skillPair.getSkillName());
+                    return new ProfileSkill(null, profile, skill, skillPair.getRoleField(), skillPair.getSkillName());
+                }).toList();
+
+        profileSkillRepository.saveAll(profileSkills);
+
+//        profile.updateIsProfileSkill(true);
     }
 
     @Transactional(readOnly = true)
@@ -82,20 +69,20 @@ public class ProfileSkillService {
     }
 
 
-    public void updateSkill(final Long memberId, final ProfileSkillUpdateRequest updateRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long profileSkillId = validateProfileSkillByMember(memberId);
-        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(profile.getId());
-
-        final List<Skill> skills = skillRepository
-                .findSkillNamesBySkillNames(updateRequest.getSkillNames());
-
-        profileSkillRepository.deleteAll(profileSkills);
-
-        final List<ProfileSkill> newProfileSkills = skills.stream()
-                .map(skill -> new ProfileSkill(null, profile, skill))
-                .toList();
-
-        profileSkillRepository.saveAll(newProfileSkills);
-    }
+//    public void updateSkill(final Long memberId, final ProfileSkillUpdateRequest updateRequest) {
+//        final Profile profile = profileRepository.findByMemberId(memberId);
+//        final Long profileSkillId = validateProfileSkillByMember(memberId);
+//        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(profile.getId());
+//
+//        final List<Skill> skills = skillRepository
+//                .findSkillNamesBySkillNames(updateRequest.getSkillNames());
+//
+//        profileSkillRepository.deleteAll(profileSkills);
+//
+//        final List<ProfileSkill> newProfileSkills = skills.stream()
+//                .map(skill -> new ProfileSkill(null, profile, skill))
+//                .toList();
+//
+//        profileSkillRepository.saveAll(newProfileSkills);
+//    }
 }

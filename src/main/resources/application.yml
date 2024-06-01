@@ -121,3 +121,6 @@ activityMethodTag:
 
 skill:
   csv-path: ${skill.path}
+
+degree:
+  csv-path: ${degree.path}

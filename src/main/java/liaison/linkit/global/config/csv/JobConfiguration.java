@@ -2,6 +2,8 @@ package liaison.linkit.global.config.csv;
 
 import liaison.linkit.global.config.csv.activityMethodTag.CsvActivityMethodTagReader;
 import liaison.linkit.global.config.csv.activityMethodTag.CsvActivityMethodTagWriter;
+import liaison.linkit.global.config.csv.degree.CsvDegreeReader;
+import liaison.linkit.global.config.csv.degree.CsvDegreeWriter;
 import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorReader;
 import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorWriter;
 import liaison.linkit.global.config.csv.major.CsvMajorReader;
@@ -66,6 +68,9 @@ public class JobConfiguration {
     private final CsvSkillReader csvSkillReader;
     private final CsvSkillWriter csvSkillWriter;
 
+    private final CsvDegreeReader csvDegreeReader;
+    private final CsvDegreeWriter csvDegreeWriter;
+
     // Step & Job upload
     @Bean
     public Job simpleDataLoadJob(JobRepository jobRepository,
@@ -77,7 +82,8 @@ public class JobConfiguration {
                                  Step memberRoleDataLoadStep,
                                  Step industrySectorDataLoadStep,
                                  Step activityMethodTagDataLoadStep,
-                                 Step skillDataLoadStep) {
+                                 Step skillDataLoadStep,
+                                 Step degreeDataLoadStep) {
         return new JobBuilder("linkitInformationLoadJob", jobRepository)
                 .start(universityDataLoadStep) // 스텝 실행
                 .next(teamBuildingFieldDataLoadStep)
@@ -88,6 +94,7 @@ public class JobConfiguration {
                 .next(industrySectorDataLoadStep)
                 .next(activityMethodTagDataLoadStep)
                 .next(skillDataLoadStep)
+                .next(degreeDataLoadStep)
                 .build();
         // 필요 시 listener 추가 가능
     }
@@ -203,6 +210,19 @@ public class JobConfiguration {
                 .<SkillCsvData, SkillCsvData>chunk(10, platformTransactionManager)
                 .reader(csvSkillReader.csvRegionReader())
                 .writer(csvSkillWriter)
+                .allowStartIfComplete(true)
+                .build();
+    }
+
+    @Bean
+    public Step degreeDataLoadStep(
+            JobRepository jobRepository,
+            PlatformTransactionManager platformTransactionManager
+    ) {
+        return new StepBuilder("degreeDataLoadStep", jobRepository)
+                .<DegreeCsvData, DegreeCsvData>chunk(10, platformTransactionManager)
+                .reader(csvDegreeReader.csvIndustrySectorReader())
+                .writer(csvDegreeWriter)
                 .allowStartIfComplete(true)
                 .build();
     }

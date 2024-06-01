@@ -76,7 +76,8 @@ include::{snippets}/profile-region-controller-test/create-profile-region/request
 요청 쿠키
 include::{snippets}/profile-region-controller-test/create-profile-region/request-cookies.adoc[]
 
-=== 1.5.2. 내 이력서 - 희망 역할 및 보유 기술(미완성)
+=== 1.5.2. 내 이력서 - 역할 및 기술 생성
+
 
 === 1.5.2. 내 이력서 - 학력 생성
 === [POST /education]

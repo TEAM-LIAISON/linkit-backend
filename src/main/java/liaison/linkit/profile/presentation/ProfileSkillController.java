@@ -5,7 +5,6 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.skill.ProfileSkillCreateRequest;
-import liaison.linkit.profile.dto.request.skill.ProfileSkillUpdateRequest;
 import liaison.linkit.profile.dto.response.ProfileSkillResponse;
 import liaison.linkit.profile.service.ProfileSkillService;
 import lombok.RequiredArgsConstructor;
@@ -41,14 +40,14 @@ public class ProfileSkillController {
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping
-    @MemberOnly
-    public ResponseEntity<Void> updateProfileSkill(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final ProfileSkillUpdateRequest updateRequest
-    ) {
-        profileSkillService.updateSkill(accessor.getMemberId(), updateRequest);
-        return ResponseEntity.noContent().build();
-    }
+//    @PatchMapping
+//    @MemberOnly
+//    public ResponseEntity<Void> updateProfileSkill(
+//            @Auth final Accessor accessor,
+//            @RequestBody @Valid final ProfileSkillUpdateRequest updateRequest
+//    ) {
+//        profileSkillService.updateSkill(accessor.getMemberId(), updateRequest);
+//        return ResponseEntity.noContent().build();
+//    }
     
 }
