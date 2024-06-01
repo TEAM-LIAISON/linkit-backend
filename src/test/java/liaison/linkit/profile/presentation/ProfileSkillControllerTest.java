@@ -16,13 +16,24 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Arrays;
+import java.util.List;
+
+import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProfileSkillController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -59,9 +70,35 @@ public class ProfileSkillControllerTest extends ControllerTest {
     @Test
     void createProfileSkill() throws Exception {
         // given
+        List<ProfileSkillCreateRequest.SkillPair> skillPairs = Arrays.asList(
+                new ProfileSkillCreateRequest.SkillPair("SW 개발자", "Java"),
+                new ProfileSkillCreateRequest.SkillPair("SW 개발자", "React")
+        );
+
+        final ProfileSkillCreateRequest profileSkillCreateRequest = ProfileSkillCreateRequest.of(skillPairs);
 
         // when
+        final ResultActions resultActions = performPostRequest(profileSkillCreateRequest);
 
         // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                requestFields(
+                                        subsectionWithPath("skillPairs").description("보유 기술 및 역할 목록 쌍").attributes(field("constraint", "객체")),
+                                        fieldWithPath("skillPairs[].roleField").description("보유한 역할").attributes(field("constraint", "문자열")),
+                                        fieldWithPath("skillPairs[].skillName").description("보유한 기술 이름").attributes(field("constraint", "문자열"))
+                                )
+                        )
+                );
     }
 }

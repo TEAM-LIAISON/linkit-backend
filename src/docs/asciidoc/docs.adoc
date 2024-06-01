@@ -67,7 +67,7 @@ include::{snippets}/profile-team-building-field-controller-test/create-profile-t
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-cookies.adoc[]
 
 === 1.5.2. 내 이력서 - 활동 지역 생성
-=== [POST /profile-region]
+=== [POST /profile_region]
 ==== 요청
 include::{snippets}/profile-region-controller-test/create-profile-region/http-request.adoc[]
 include::{snippets}/profile-region-controller-test/create-profile-region/request-fields.adoc[]
@@ -77,6 +77,10 @@ include::{snippets}/profile-region-controller-test/create-profile-region/request
 include::{snippets}/profile-region-controller-test/create-profile-region/request-cookies.adoc[]
 
 === 1.5.2. 내 이력서 - 역할 및 기술 생성
+==== [POST /profile_skill]
+==== 요청
+include::{snippets}/profile-skill-controller-test/create-profile-skill/http-request.adoc[]
+include::{snippets}/profile-skill-controller-test/create-profile-skill/request-fields.adoc[]
 
 
 === 1.5.2. 내 이력서 - 학력 생성

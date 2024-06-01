@@ -157,7 +157,7 @@ class ProfileControllerTest extends ControllerTest {
         given(profileTeamBuildingFieldService.getAllProfileTeamBuildings(1L))
                 .willReturn(profileTeamBuildingFieldResponse);
 
-        // 2. 희망하는 역할
+        // 2. 역할 및 기술
 
         List<ProfileSkillResponse.SkillPair> skillPairs = Arrays.asList(
                 new ProfileSkillResponse.SkillPair("SW 개발자", "Java"),
