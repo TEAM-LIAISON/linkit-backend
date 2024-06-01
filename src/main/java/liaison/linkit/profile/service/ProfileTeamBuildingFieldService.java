@@ -43,29 +43,18 @@ public class ProfileTeamBuildingFieldService {
         // 이미 저장되어 있었던 부분이면?
         if (profileTeamBuildingFieldRepository.existsByProfileId(profile.getId())) {
             profileTeamBuildingFieldRepository.deleteAllByProfileId(profile.getId());
-
-            final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
-                    .findTeamBuildingFieldsByFieldNames(createRequest.getTeamBuildingFieldNames());
-
-            // Request DTO -> 각 문자열을 TeamBuildingField 테이블에서 찾아서 가져옴
-            final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
-                    .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
-                    .toList();
-
-            // profileTeamBuildingFieldRepository 모두 저장
-            profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
-        } else {
-            final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
-                    .findTeamBuildingFieldsByFieldNames(createRequest.getTeamBuildingFieldNames());
-
-            // Request DTO -> 각 문자열을 TeamBuildingField 테이블에서 찾아서 가져옴
-            final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
-                    .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
-                    .toList();
-
-            // profileTeamBuildingFieldRepository 모두 저장
-            profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
         }
+
+        final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
+                .findTeamBuildingFieldsByFieldNames(createRequest.getTeamBuildingFieldNames());
+
+        // Request DTO -> 각 문자열을 TeamBuildingField 테이블에서 찾아서 가져옴
+        final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
+                .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
+                .toList();
+
+        // profileTeamBuildingFieldRepository 모두 저장
+        profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
 
         // 프로그레스바 처리 비즈니스 로직
         profile.updateIsProfileTeamBuildingField(true);

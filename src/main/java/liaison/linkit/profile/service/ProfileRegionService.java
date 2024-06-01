@@ -41,17 +41,15 @@ public class ProfileRegionService {
         if (profileRegionRepository.existsByProfileId(profile.getId())) {
             final ProfileRegion savedProfileRegion = profileRegionRepository.findByProfileId(profile.getId());
             profileRegionRepository.delete(savedProfileRegion);
-
-            final Region region = regionRepository
-                    .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(), profileRegionCreateRequest.getDivisionName());
-            ProfileRegion newProfileRegion = new ProfileRegion((null), profile, region);
-            profileRegionRepository.save(newProfileRegion);
-        } else {
-            final Region region = regionRepository
-                    .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(), profileRegionCreateRequest.getDivisionName());
-            ProfileRegion profileRegion = new ProfileRegion((null), profile, region);
-            profileRegionRepository.save(profileRegion);
         }
+
+        final Region region = regionRepository
+                .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(), profileRegionCreateRequest.getDivisionName());
+        ProfileRegion newProfileRegion = new ProfileRegion((null), profile, region);
+        profileRegionRepository.save(newProfileRegion);
+
+        // 해당 프로필에 활동 위치 및 지역이 생성된 것을 지정해준다.
+        profile.updateIsProfileRegion(true);
     }
 
     @Transactional(readOnly = true)

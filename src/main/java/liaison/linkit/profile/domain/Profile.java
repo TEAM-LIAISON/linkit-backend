@@ -141,6 +141,11 @@ public class Profile {
         checkAndUpdateByDefault();
     }
 
+    public void updateIsProfileRegion(final boolean isProfileRegion) {
+        this.isProfileRegion = isProfileRegion;
+        // 프로그레스 상태 관리 로직 추가할 것 (6/1)
+    }
+
     // 자기소개 등록 또는 삭제에서만 호출
     public void updateIsIntroduction(final Boolean isIntroduction) {
         this.isIntroduction = isIntroduction;
@@ -263,4 +268,6 @@ public class Profile {
     public boolean getIsAttachFile() {
         return isAttachFile;
     }
+
+
 }
