@@ -17,7 +17,7 @@ public class ProfileSkillResponse {
         private final String skillName;
     }
 
-    public static ProfileSkillResponse of(List<SkillPair> skillPairs) {
+    public static ProfileSkillResponse of(final List<SkillPair> skillPairs) {
         return new ProfileSkillResponse(skillPairs);
     }
 }

@@ -63,7 +63,7 @@ public class ProfileRegionControllerTest extends ControllerTest {
 
     private ResultActions performPostRequest(final ProfileRegionCreateRequest profileRegionCreateRequest) throws Exception {
         return mockMvc.perform(
-                post("/profile-region")
+                post("/profile_region")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
