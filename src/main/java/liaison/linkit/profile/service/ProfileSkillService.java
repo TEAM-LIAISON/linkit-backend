@@ -10,34 +10,34 @@ import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.dto.request.skill.ProfileSkillCreateRequest;
 import liaison.linkit.profile.dto.response.ProfileSkillResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_PROFILE_SKILL_WITH_MEMBER;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ProfileSkillService {
 
     private final ProfileRepository profileRepository;
     private final ProfileSkillRepository profileSkillRepository;
     private final SkillRepository skillRepository;
 
-    public Long validateProfileSkillByMember(final Long memberId) {
+    public void validateProfileSkillByMember(final Long memberId) {
         final Long profileId = profileRepository.findByMemberId(memberId).getId();
         if (!profileSkillRepository.existsByProfileId(profileId)) {
             throw new AuthException(INVALID_PROFILE_SKILL_WITH_MEMBER);
-        } else {
-            return profileSkillRepository.findByProfileId(profileId).getId();
         }
     }
 
     public void save(final Long memberId, final ProfileSkillCreateRequest profileSkillCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
+
         if (profileSkillRepository.existsByProfileId(profile.getId())) {
             profileSkillRepository.deleteAllByProfileId(profile.getId());
         }
@@ -50,22 +50,30 @@ public class ProfileSkillService {
 
         profileSkillRepository.saveAll(profileSkills);
 
-//        profile.updateIsProfileSkill(true);
+        profile.updateIsProfileSkill(true);
     }
 
     @Transactional(readOnly = true)
     public ProfileSkillResponse getAllProfileSkills(final Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
+        log.info("Profile Skill 조회 문제 확인 여부");
+
         List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(profileId);
 
-        List<String> profileSkillNames = profileSkills.stream()
-                .map(profileSkill -> skillRepository.findById(profileSkill.getProfile().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(Skill::getSkillName)
-                .toList();
+        log.info("profileSkills={}", profileSkills);
 
-        return new ProfileSkillResponse(profileSkillNames);
+        List<ProfileSkillResponse.SkillPair> skillPairs = profileSkills.stream()
+                .map(profileSkill -> {
+                    Skill skill = skillRepository.findById(profileSkill.getSkill().getId())
+                            .orElseThrow(() -> new RuntimeException("Skill not found"));
+
+                    return new ProfileSkillResponse.SkillPair(
+                            skill.getRoleField(),
+                            skill.getSkillName()
+                    );
+                }).toList();
+
+        return ProfileSkillResponse.of(skillPairs);
     }
 
 

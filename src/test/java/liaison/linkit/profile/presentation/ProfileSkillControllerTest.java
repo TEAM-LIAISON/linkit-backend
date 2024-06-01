@@ -17,6 +17,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -41,7 +42,7 @@ public class ProfileSkillControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        given(profileSkillService.validateProfileSkillByMember(1L)).willReturn(1L);
+        doNothing().when(profileSkillService).validateProfileSkillByMember(anyLong());
     }
 
     private ResultActions performPostRequest(final ProfileSkillCreateRequest createRequest) throws Exception {
