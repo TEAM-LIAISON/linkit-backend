@@ -68,6 +68,33 @@ public class TeamProfile {
     @Column(nullable = false)
     private boolean isTeamMiniProfile;
 
+    public TeamProfile(
+            final Long id,
+            final Member member,
+            final int teamProfileCompletion
+    ) {
+        this.id = id;
+        this.member = member;
+        this.teamProfileCompletion = teamProfileCompletion;
+        this.isTeamTeamBuildingField = false;
+        this.isTeamMemberAnnouncement = false;
+        this.isActivity = false;
+        this.isActivityMethod = false;
+        this.isActivityRegion = false;
+        this.isTeamIntroduction = false;
+        this.isTeamMemberIntroduction = false;
+        this.isHistory = false;
+        this.isTeamMiniProfile = false;
+    }
+
+    public TeamProfile(
+            final Member member,
+            final int teamProfileCompletion
+    ) {
+        this(null, member, teamProfileCompletion);
+    }
+
+
     public void updateIsTeamProfileTeamBuildingField(final Boolean isTeamTeamBuildingField) {
         this.isTeamTeamBuildingField = isTeamTeamBuildingField;
         // 프로그레스 처리 로직 추가 필요
@@ -89,10 +116,13 @@ public class TeamProfile {
         }
     }
 
+    public void updateIsTeamMiniProfile(final Boolean isTeamMiniProfile) {
+        this.isTeamMiniProfile = isTeamMiniProfile;
+    }
+
     public boolean getIsTeamTeamBuildingField() {
         return isTeamTeamBuildingField;
     }
-
     public boolean getIsTeamMemberAnnouncement() {
         return isTeamMemberAnnouncement;
     }
@@ -117,5 +147,6 @@ public class TeamProfile {
     public boolean getIsTeamMiniProfile() {
         return isTeamMiniProfile;
     }
+
 
 }

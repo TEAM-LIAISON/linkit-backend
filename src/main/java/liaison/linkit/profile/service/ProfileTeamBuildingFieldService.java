@@ -39,7 +39,9 @@ public class ProfileTeamBuildingFieldService {
 
     // 희망 팀빌딩 분야 저장 비즈니스 로직
     public void save(final Long memberId, final ProfileTeamBuildingCreateRequest createRequest) {
+
         final Profile profile = profileRepository.findByMemberId(memberId);
+
         // 이미 저장되어 있었던 부분이면?
         if (profileTeamBuildingFieldRepository.existsByProfileId(profile.getId())) {
             profileTeamBuildingFieldRepository.deleteAllByProfileId(profile.getId());

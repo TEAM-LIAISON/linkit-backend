@@ -4,7 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.team.dto.request.DefaultTeamProfileCreateRequest;
+import liaison.linkit.team.dto.request.onBoarding.OnBoardingFirstRequest;
 import liaison.linkit.team.dto.response.OnBoardingTeamProfileResponse;
 import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
 import liaison.linkit.team.dto.response.TeamProfileTeamBuildingFieldResponse;
@@ -20,6 +20,7 @@ import liaison.linkit.team.service.TeamProfileService;
 import liaison.linkit.team.service.TeamProfileTeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -78,6 +79,22 @@ public class TeamProfileController {
         return ResponseEntity.ok().body(onBoardingTeamProfileResponse);
     }
 
+
+    @PostMapping("/onBoarding/first")
+    @MemberOnly
+    public ResponseEntity<Void> createOnBoardingFirst(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid final OnBoardingFirstRequest onBoardingFirstRequest
+    ) {
+        // 일단 희망 팀빌딩 분야부터 처리
+        teamProfileTeamBuildingFieldService.saveTeamBuildingField(accessor.getMemberId(), onBoardingFirstRequest.getTeamBuildingFieldNames());
+
+        // 미니 프로필에 있는 팀 제목, 규모, 분야 저장
+        teamMiniProfileService.saveOnBoarding(accessor.getMemberId(), onBoardingFirstRequest);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     private OnBoardingFirstResponse getOnBoardingFirstResponse(
             final Long memberId,
             final boolean isTeamTeamBuildingField
@@ -126,15 +143,5 @@ public class TeamProfileController {
         } else {
             return null;
         }
-    }
-
-    @PostMapping("/default")
-    @MemberOnly
-    public ResponseEntity<Void> createDefaultTeamProfile(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final DefaultTeamProfileCreateRequest defaultTeamProfileCreateRequest
-    ) {
-//        teamProfileService.saveDefault(accessor.getMemberId(), defaultTeamProfileCreateRequest);
-        return ResponseEntity.ok().build();
     }
 }
