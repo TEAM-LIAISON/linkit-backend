@@ -16,6 +16,7 @@ import liaison.linkit.profile.dto.request.EducationCreateRequest;
 import liaison.linkit.profile.dto.request.EducationUpdateRequest;
 import liaison.linkit.profile.dto.response.EducationResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_EDUCATION_
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class EducationService {
 
     private final ProfileRepository profileRepository;
