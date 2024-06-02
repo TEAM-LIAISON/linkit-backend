@@ -10,6 +10,7 @@ import liaison.linkit.profile.dto.response.Attach.AttachResponse;
 import liaison.linkit.profile.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,62 +35,119 @@ public class ProfileController {
 
     // 온보딩 과정 GET 요청 조회 로직 (희망 팀빌딩 분야부터 미니 프로필까지 6개)
     // 얘는 무조건 불러오기만 함. 상태 변경하지 않음.
+//    @GetMapping("/onBoarding")
+//    @MemberOnly
+//    public ResponseEntity<OnBoardingProfileResponse> getOnBoardingProfile(
+//            @Auth final Accessor accessor
+//    ) {
+//
+//        log.info("---온보딩 조회 요청이 들어왔습니다---");
+//        // 해당 사용자의 내 이력서 PK 조회
+//        // 일단 프로필이 제대로 생성되었어야 함.
+//        final Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
+//        log.info("profileId={}", profileId);
+//
+//        // boolean 값 가져옴
+//        final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse
+//                = profileService.getProfileOnBoardingIsValue(profileId);
+//
+//        // 미니 프로필 응답
+//        final MiniProfileResponse miniProfileResponse
+//                = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
+//
+//        log.info("miniProfileResponse={}", miniProfileResponse);
+//
+//        // 1. 희망 팀빌딩 분야
+//        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
+//                = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
+//        log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
+//
+//        // 2. 희망하는 역할 및 기술
+//        final ProfileSkillResponse profileSkillResponse
+//                = getProfileSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileSkill());
+//        log.info("profileSkillResponse={}", profileSkillResponse);
+//
+//        // 3. 지역 및 위치 정보
+//        final ProfileRegionResponse profileRegionResponse
+//                = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
+//        log.info("profileRegionResponse={}", profileRegionResponse);
+//
+//        // 4. 학교 정보
+//        final List<EducationResponse> educationResponses
+//                = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
+//        log.info("educationResponses={}", educationResponses);
+//
+//        // 5. 이력 정보
+//        final List<AntecedentsResponse> antecedentsResponses
+//                = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
+//        log.info("antecedentsResponses={}", antecedentsResponses);
+//
+//        final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
+//                profileTeamBuildingFieldResponse,
+//                profileSkillResponse,
+//                profileRegionResponse,
+//                educationResponses,
+//                antecedentsResponses,
+//                miniProfileResponse
+//        );
+//
+//        return ResponseEntity.ok().body(onBoardingProfileResponse);
+//    }
+
+
+
     @GetMapping("/onBoarding")
     @MemberOnly
-    public ResponseEntity<OnBoardingProfileResponse> getOnBoardingProfile(
-            @Auth final Accessor accessor
-    ) {
-        // 해당 사용자의 내 이력서 PK 조회
-        // 일단 프로필이 제대로 생성되었어야 함.
-        final Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
-        log.info("profileId={}", profileId);
+    public ResponseEntity<?> getOnBoardingProfile(@Auth final Accessor accessor) {
+        try {
+            log.info("---온보딩 조회 요청이 들어왔습니다---");
+            final Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
+            log.info("profileId={}", profileId);
 
-        // boolean 값 가져옴
-        final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse
-                = profileService.getProfileOnBoardingIsValue(profileId);
+            final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse
+                    = profileService.getProfileOnBoardingIsValue(profileId);
 
-        // 미니 프로필 응답
-        final MiniProfileResponse miniProfileResponse
-                = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
+            final MiniProfileResponse miniProfileResponse
+                    = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
 
-        log.info("miniProfileResponse={}", miniProfileResponse);
+            log.info("miniProfileResponse={}", miniProfileResponse);
 
-        // 1. 희망 팀빌딩 분야
-        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
-                = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
-        log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
+                    = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
+            log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
 
-        // 2. 희망하는 역할 및 기술
-        final ProfileSkillResponse profileSkillResponse
-                = getProfileSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileSkill());
-        log.info("profileSkillResponse={}", profileSkillResponse);
+            final ProfileSkillResponse profileSkillResponse
+                    = getProfileSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileSkill());
+            log.info("profileSkillResponse={}", profileSkillResponse);
 
-        // 3. 지역 및 위치 정보
-        final ProfileRegionResponse profileRegionResponse
-                = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
-        log.info("profileRegionResponse={}", profileRegionResponse);
+            final ProfileRegionResponse profileRegionResponse
+                    = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
+            log.info("profileRegionResponse={}", profileRegionResponse);
 
-        // 4. 학교 정보
-        final List<EducationResponse> educationResponses
-                = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
-        log.info("educationResponses={}", educationResponses);
+            final List<EducationResponse> educationResponses
+                    = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
+            log.info("educationResponses={}", educationResponses);
 
-        // 5. 이력 정보
-        final List<AntecedentsResponse> antecedentsResponses
-                = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
-        log.info("antecedentsResponses={}", antecedentsResponses);
+            final List<AntecedentsResponse> antecedentsResponses
+                    = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
+            log.info("antecedentsResponses={}", antecedentsResponses);
 
-        final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
-                profileTeamBuildingFieldResponse,
-                profileSkillResponse,
-                profileRegionResponse,
-                educationResponses,
-                antecedentsResponses,
-                miniProfileResponse
-        );
+            final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
+                    profileTeamBuildingFieldResponse,
+                    profileSkillResponse,
+                    profileRegionResponse,
+                    educationResponses,
+                    antecedentsResponses,
+                    miniProfileResponse
+            );
 
-        return ResponseEntity.ok().body(onBoardingProfileResponse);
+            return ResponseEntity.ok().body(onBoardingProfileResponse);
+        } catch (Exception e) {
+            log.error("온보딩 조회 과정에서 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("온보딩 정보를 불러오는 과정에서 문제가 발생했습니다.");
+        }
     }
+
 
 //    // Default 나의 역량 생성 메서드
 //    @PostMapping("/default")

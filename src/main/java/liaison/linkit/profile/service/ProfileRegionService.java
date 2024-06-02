@@ -37,20 +37,44 @@ public class ProfileRegionService {
             final Long memberId,
             final ProfileRegionCreateRequest profileRegionCreateRequest
     ) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        if (profileRegionRepository.existsByProfileId(profile.getId())) {
-            final ProfileRegion savedProfileRegion = profileRegionRepository.findByProfileId(profile.getId());
-            profileRegionRepository.delete(savedProfileRegion);
+        try {
+            final Profile profile = profileRepository.findByMemberId(memberId);
+            if (profile == null) {
+                throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
+            }
+
+            if (profileRegionRepository.existsByProfileId(profile.getId())) {
+                final ProfileRegion savedProfileRegion = profileRegionRepository.findByProfileId(profile.getId());
+                if (savedProfileRegion != null) {
+                    profileRegionRepository.delete(savedProfileRegion);
+                }
+            }
+
+            final Region region = regionRepository.findRegionByCityNameAndDivisionName(
+                    profileRegionCreateRequest.getCityName(),
+                    profileRegionCreateRequest.getDivisionName()
+            );
+            if (region == null) {
+                throw new IllegalArgumentException("Region not found for city: " +
+                        profileRegionCreateRequest.getCityName() + " and division: " +
+                        profileRegionCreateRequest.getDivisionName());
+            }
+
+            ProfileRegion newProfileRegion = new ProfileRegion(null, profile, region);
+            profileRegionRepository.save(newProfileRegion);
+
+            profile.updateIsProfileRegion(true);
+
+        } catch (IllegalArgumentException e) {
+            // Handle known exceptions here
+            throw e;  // or return a custom response or error code
+
+        } catch (Exception e) {
+            // Handle unexpected exceptions
+            throw new RuntimeException("An unexpected error occurred while saving profile region data", e);
         }
-
-        final Region region = regionRepository
-                .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(), profileRegionCreateRequest.getDivisionName());
-        ProfileRegion newProfileRegion = new ProfileRegion((null), profile, region);
-        profileRegionRepository.save(newProfileRegion);
-
-        // 해당 프로필에 활동 위치 및 지역이 생성된 것을 지정해준다.
-        profile.updateIsProfileRegion(true);
     }
+
 
     @Transactional(readOnly = true)
     public ProfileRegionResponse getProfileRegion(final Long memberId) {
