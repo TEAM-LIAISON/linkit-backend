@@ -33,17 +33,17 @@ public class EducationController {
     // 교육 항목 1개 생성 -> Education 테이블에 저장된 PK를 반환한다.
     @PostMapping
     @MemberOnly
-    public ResponseEntity<EducationResponse> createEducation(
+    public ResponseEntity<List<EducationResponse>> createEducation(
             @Auth final Accessor accessor,
-            @RequestBody @Valid EducationCreateRequest educationCreateRequest
+            @RequestBody @Valid List<EducationCreateRequest> educationCreateRequests
     ) {
         log.info("교육 항목 생성 요청이 들어옴");
-        log.info("educationCreateRequest.getUniversityName()", educationCreateRequest.getUniversityName());
-        log.info("educationCreateRequest.getMajorName()", educationCreateRequest.getMajorName());
-        log.info("educationCreateRequest.getDegreeName()", educationCreateRequest.getDegreeName());
+//        log.info("educationCreateRequest.getUniversityName()", educationCreateRequest.getUniversityName());
+//        log.info("educationCreateRequest.getMajorName()", educationCreateRequest.getMajorName());
+//        log.info("educationCreateRequest.getDegreeName()", educationCreateRequest.getDegreeName());
 
-        final EducationResponse educationResponse = educationService.save(accessor.getMemberId(), educationCreateRequest);
-        return ResponseEntity.ok().body(educationResponse);
+        final List<EducationResponse> educationResponses = educationService.save(accessor.getMemberId(), educationCreateRequests);
+        return ResponseEntity.ok().body(educationResponses);
     }
 
     // 교육 항목 1개 조회

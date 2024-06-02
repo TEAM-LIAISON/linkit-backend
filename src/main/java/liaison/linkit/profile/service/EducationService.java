@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_EDUCATION_WITH_MEMBER;
@@ -48,49 +49,44 @@ public class EducationService {
 //        }
     }
 
-    public EducationResponse save(final Long memberId, final EducationCreateRequest educationCreateRequest) {
-        try {
-            final Profile profile = profileRepository.findByMemberId(memberId);
-            if (profile == null) {
-                throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
-            }
+    public List<EducationResponse> save(final Long memberId, final List<EducationCreateRequest> educationCreateRequests) {
+        List<EducationResponse> responses = new ArrayList<>();
 
-            final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName());
+        final Profile profile = profileRepository.findByMemberId(memberId);
+        if (profile == null) {
+            throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
+        }
+
+        for (EducationCreateRequest request : educationCreateRequests) {
+            final University university = universityRepository.findByUniversityName(request.getUniversityName());
             if (university == null) {
-                throw new IllegalArgumentException("University not found: " + educationCreateRequest.getUniversityName());
+                throw new IllegalArgumentException("University not found: " + request.getUniversityName());
             }
 
-            final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName());
+            final Degree degree = degreeRepository.findByDegreeName(request.getDegreeName());
             if (degree == null) {
-                throw new IllegalArgumentException("Degree not found: " + educationCreateRequest.getDegreeName());
+                throw new IllegalArgumentException("Degree not found: " + request.getDegreeName());
             }
 
-            final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName());
+            final Major major = majorRepository.findByMajorName(request.getMajorName());
             if (major == null) {
-                throw new IllegalArgumentException("Major not found: " + educationCreateRequest.getMajorName());
+                throw new IllegalArgumentException("Major not found: " + request.getMajorName());
             }
 
             final Education newEducation = Education.of(
                     profile,
-                    educationCreateRequest.getAdmissionYear(),
-                    educationCreateRequest.getGraduationYear(),
+                    request.getAdmissionYear(),
+                    request.getGraduationYear(),
                     university,
                     degree,
                     major
             );
 
             Education savedEducation = educationRepository.save(newEducation);
-            profile.updateIsEducation(true);
-            return getEducationResponse(savedEducation);
-
-        } catch (IllegalArgumentException e) {
-            // Handle known exceptions here
-            throw e;  // or return a custom response or error code
-
-        } catch (Exception e) {
-            // Handle unexpected exceptions
-            throw new RuntimeException("An unexpected error occurred while saving education data", e);
+            responses.add(getEducationResponse(savedEducation));
         }
+        profile.updateIsEducation(true);
+        return responses;
     }
 
 
