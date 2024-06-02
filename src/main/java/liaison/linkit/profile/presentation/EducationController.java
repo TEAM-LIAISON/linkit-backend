@@ -9,6 +9,7 @@ import liaison.linkit.profile.dto.request.EducationUpdateRequest;
 import liaison.linkit.profile.dto.response.EducationResponse;
 import liaison.linkit.profile.service.EducationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/education")
+@Slf4j
 public class EducationController {
     private final EducationService educationService;
 
@@ -35,6 +37,7 @@ public class EducationController {
             @Auth final Accessor accessor,
             @RequestBody @Valid EducationCreateRequest educationCreateRequest
     ) {
+        log.info("교육 항목 생성 요청이 들어옴");
         final EducationResponse educationResponse = educationService.save(accessor.getMemberId(), educationCreateRequest);
         return ResponseEntity.ok().body(educationResponse);
     }

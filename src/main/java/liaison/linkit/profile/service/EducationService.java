@@ -47,25 +47,50 @@ public class EducationService {
     }
 
     public EducationResponse save(final Long memberId, final EducationCreateRequest educationCreateRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName());
-        final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName());
-        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName());
+        try {
+            final Profile profile = profileRepository.findByMemberId(memberId);
+            if (profile == null) {
+                throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
+            }
 
-        final Education newEducation = Education.of(
-                profile,
-                educationCreateRequest.getAdmissionYear(),
-                educationCreateRequest.getGraduationYear(),
-                university,
-                degree,
-                major
-        );
+            final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName());
+            if (university == null) {
+                throw new IllegalArgumentException("University not found: " + educationCreateRequest.getUniversityName());
+            }
 
-        Education savedEducation = educationRepository.save(newEducation);
-        // 학력 항목이 기입되었음을 나타냄 -> true 전달
-        profile.updateIsEducation(true);
-        return getEducationResponse(savedEducation);
+            final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName());
+            if (degree == null) {
+                throw new IllegalArgumentException("Degree not found: " + educationCreateRequest.getDegreeName());
+            }
+
+            final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName());
+            if (major == null) {
+                throw new IllegalArgumentException("Major not found: " + educationCreateRequest.getMajorName());
+            }
+
+            final Education newEducation = Education.of(
+                    profile,
+                    educationCreateRequest.getAdmissionYear(),
+                    educationCreateRequest.getGraduationYear(),
+                    university,
+                    degree,
+                    major
+            );
+
+            Education savedEducation = educationRepository.save(newEducation);
+            profile.updateIsEducation(true);
+            return getEducationResponse(savedEducation);
+
+        } catch (IllegalArgumentException e) {
+            // Handle known exceptions here
+            throw e;  // or return a custom response or error code
+
+        } catch (Exception e) {
+            // Handle unexpected exceptions
+            throw new RuntimeException("An unexpected error occurred while saving education data", e);
+        }
     }
+
 
     private EducationResponse getEducationResponse(final Education education) {
         return EducationResponse.of(education);
