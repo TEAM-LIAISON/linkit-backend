@@ -1,11 +1,11 @@
-package liaison.linkit.profile.dto.request;
+package liaison.linkit.profile.dto.request.education;
 
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class EducationCreateRequest {
 
     @NotNull(message = "입학 연도를 입력해주세요")

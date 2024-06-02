@@ -1,5 +1,6 @@
 package liaison.linkit.profile.dto.request;
 
+import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
 import liaison.linkit.profile.dto.request.skill.ProfileSkillCreateRequest;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
 import lombok.AllArgsConstructor;

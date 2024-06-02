@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.EducationCreateRequest;
-import liaison.linkit.profile.dto.request.EducationUpdateRequest;
+import liaison.linkit.profile.dto.request.education.EducationListCreateRequest;
+import liaison.linkit.profile.dto.request.education.EducationUpdateRequest;
 import liaison.linkit.profile.dto.response.EducationResponse;
 import liaison.linkit.profile.service.EducationService;
 import lombok.RequiredArgsConstructor;
@@ -35,14 +35,14 @@ public class EducationController {
     @MemberOnly
     public ResponseEntity<List<EducationResponse>> createEducation(
             @Auth final Accessor accessor,
-            @RequestBody @Valid List<EducationCreateRequest> educationCreateRequests
+            @RequestBody @Valid EducationListCreateRequest educationListCreateRequest
     ) {
         log.info("교육 항목 생성 요청이 들어옴");
 //        log.info("educationCreateRequest.getUniversityName()", educationCreateRequest.getUniversityName());
 //        log.info("educationCreateRequest.getMajorName()", educationCreateRequest.getMajorName());
 //        log.info("educationCreateRequest.getDegreeName()", educationCreateRequest.getDegreeName());
 
-        final List<EducationResponse> educationResponses = educationService.save(accessor.getMemberId(), educationCreateRequests);
+        final List<EducationResponse> educationResponses = educationService.save(accessor.getMemberId(), educationListCreateRequest.getEducationList());
         return ResponseEntity.ok().body(educationResponses);
     }
 

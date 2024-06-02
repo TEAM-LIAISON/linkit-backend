@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.request;
+package liaison.linkit.profile.dto.request.education;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
