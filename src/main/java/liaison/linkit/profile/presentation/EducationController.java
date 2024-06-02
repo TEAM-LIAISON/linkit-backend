@@ -38,6 +38,10 @@ public class EducationController {
             @RequestBody @Valid EducationCreateRequest educationCreateRequest
     ) {
         log.info("교육 항목 생성 요청이 들어옴");
+        log.info("educationCreateRequest.getUniversityName()", educationCreateRequest.getUniversityName());
+        log.info("educationCreateRequest.getMajorName()", educationCreateRequest.getMajorName());
+        log.info("educationCreateRequest.getDegreeName()", educationCreateRequest.getDegreeName());
+
         final EducationResponse educationResponse = educationService.save(accessor.getMemberId(), educationCreateRequest);
         return ResponseEntity.ok().body(educationResponse);
     }
