@@ -4,9 +4,15 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.image.infrastructure.S3Uploader;
+import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.domain.miniprofile.IndustrySector;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
+import liaison.linkit.team.domain.miniprofile.TeamScale;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.miniprofile.IndustrySectorRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
+import liaison.linkit.team.domain.repository.miniprofile.TeamScaleRepository;
+import liaison.linkit.team.dto.request.onBoarding.OnBoardingFirstRequest;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileEarlyOnBoardingResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +28,9 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MINI_
 public class TeamMiniProfileService {
     private final TeamMiniProfileRepository teamMiniProfileRepository;
     private final TeamProfileRepository teamProfileRepository;
+    private final IndustrySectorRepository industrySectorRepository;
+    private final TeamScaleRepository teamScaleRepository;
+
     private final S3Uploader s3Uploader;
     private final ApplicationEventPublisher publisher;
 
@@ -45,6 +54,41 @@ public class TeamMiniProfileService {
         final TeamMiniProfile teamMiniProfile = teamMiniProfileRepository.findById(teamMiniProfileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MINI_PROFILE_ID));
         return TeamMiniProfileEarlyOnBoardingResponse.personalTeamMiniProfileOnBoarding(teamMiniProfile);
+    }
+
+    public void saveOnBoarding(
+            final Long memberId,
+            final OnBoardingFirstRequest onBoardingFirstRequest
+    ) {
+        final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId);
+
+        if (teamMiniProfileRepository.existsByTeamProfileId(teamProfile.getId())) {
+            teamMiniProfileRepository.deleteByTeamProfileId(teamProfile.getId());
+        }
+
+        // IndustrySector 찾기
+        final IndustrySector industrySector = industrySectorRepository.findBySectorName(onBoardingFirstRequest.getSectorName());
+
+        // TeamScale 찾기
+        final TeamScale teamScale = teamScaleRepository.findBySizeType(onBoardingFirstRequest.getSizeType());
+
+
+        final TeamMiniProfile teamMiniProfile = TeamMiniProfile.of(
+                teamProfile,
+                industrySector,
+                teamScale,
+                onBoardingFirstRequest.getTeamName(),
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+        );
+
+        teamMiniProfileRepository.save(teamMiniProfile);
+
+        teamProfile.updateIsTeamMiniProfile(true);
     }
 
 

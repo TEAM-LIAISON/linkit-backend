@@ -11,6 +11,8 @@ import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,8 @@ public class LoginService {
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
     private final MiniProfileRepository miniProfileRepository;
+
+    private final TeamProfileRepository teamProfileRepository;
 
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
@@ -78,11 +82,15 @@ public class LoginService {
             if (!memberRepository.existsByEmail(email)) {
                 // 만약 이메일에 의해서 존재하지 않는 회원임이 판단된다면
                 Member member = memberRepository.save(new Member(socialLoginId, email, null));
+                log.info("memberId={}", member.getId());
 
                 // 내 이력서는 자동으로 생성된다. -> 미니 프로필도 함께 생성되어야 한다.
                 Profile savedProfile = profileRepository.save(new Profile(member, 0,"자기소개를 입력해주세요"));
-                log.info("memberId={}", member.getId());
+                log.info("savedProfile.ID={}", savedProfile.getId());
 
+                TeamProfile savedTeamProfile = teamProfileRepository.save(new TeamProfile(member, 0));
+
+                log.info("savedTeamProfile.ID={}", savedTeamProfile.getId());
 //                final MiniProfile miniProfile = MiniProfile.of(savedProfile,null,null,true,null,null, null);
 //                miniProfileRepository.save(miniProfile);
 

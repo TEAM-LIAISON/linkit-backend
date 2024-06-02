@@ -10,4 +10,6 @@ public interface TeamMiniProfileRepository extends JpaRepository<TeamMiniProfile
     boolean existsByTeamProfileId(final Long teamProfileId);
 
     TeamMiniProfile findByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
+
+    void deleteByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 }

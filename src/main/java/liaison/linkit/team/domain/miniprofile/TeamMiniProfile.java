@@ -11,12 +11,11 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 public class TeamMiniProfile {
 
     @Id
@@ -67,4 +66,30 @@ public class TeamMiniProfile {
     private String teamDetailInform;
 
 
+    public static TeamMiniProfile of(
+            final TeamProfile teamProfile,
+            final IndustrySector industrySector,
+            final TeamScale teamScale,
+            final String teamName,
+            final String miniProfileTitle,
+            final LocalDateTime teamUploadPeriod,
+            final Boolean teamUploadDeadline,
+            final String teamLogoImage,
+            final String teamValue,
+            final String teamDetailInform
+    ) {
+        return new TeamMiniProfile(
+                null,
+                teamProfile,
+                industrySector,
+                teamScale,
+                teamName,
+                miniProfileTitle,
+                teamUploadPeriod,
+                teamUploadDeadline,
+                teamLogoImage,
+                teamValue,
+                teamDetailInform
+        );
+    }
 }

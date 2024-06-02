@@ -70,4 +70,29 @@ public class TeamProfileTeamBuildingFieldService {
         // 존재 여부 변수 변경
         teamProfile.updateIsTeamProfileTeamBuildingField(true);
     }
+
+    public void saveTeamBuildingField(
+            final Long memberId,
+            final List<String> teamBuildingFieldNames
+    ) {
+        final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId);
+
+        if (teamProfileTeamBuildingFieldRepository.existsByTeamProfileId(teamProfile.getId())) {
+            teamProfileTeamBuildingFieldRepository.deleteAllByTeamProfileId(teamProfile.getId());
+        }
+
+        final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
+                .findTeamBuildingFieldsByFieldNames(teamBuildingFieldNames);
+
+        // Request DTO -> 각 문자열을 TeamBuildingField 테이블에서 찾아서 가져옴
+        final List<TeamProfileTeamBuildingField> teamProfileTeamBuildingFields = teamBuildingFields.stream()
+                .map(teamBuildingField -> new TeamProfileTeamBuildingField(null, teamProfile, teamBuildingField))
+                .toList();
+
+        teamProfileTeamBuildingFieldRepository.saveAll(teamProfileTeamBuildingFields);
+
+        // 프로그레스바 처리 비즈니스 로직
+        teamProfile.updateIsTeamProfileTeamBuildingField(true);
+
+    }
 }
