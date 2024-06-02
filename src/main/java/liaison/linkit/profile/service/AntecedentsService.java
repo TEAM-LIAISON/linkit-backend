@@ -35,27 +35,41 @@ public class AntecedentsService {
         }
     }
 
-    public AntecedentsResponse save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest){
-        final Profile profile = profileRepository.findByMemberId(memberId);
+    public AntecedentsResponse save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest) {
+        try {
+            final Profile profile = profileRepository.findByMemberId(memberId);
+            if (profile == null) {
+                throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
+            }
 
-        final Antecedents newAntecedents = Antecedents.of(
-                profile,
-                antecedentsCreateRequest.getProjectName(),
-                antecedentsCreateRequest.getProjectRole(),
-                antecedentsCreateRequest.getStartYear(),
-                antecedentsCreateRequest.getStartMonth(),
-                antecedentsCreateRequest.getEndYear(),
-                antecedentsCreateRequest.getEndMonth(),
-                antecedentsCreateRequest.isRetirement()
-        );
+            final Antecedents newAntecedents = Antecedents.of(
+                    profile,
+                    antecedentsCreateRequest.getProjectName(),
+                    antecedentsCreateRequest.getProjectRole(),
+                    antecedentsCreateRequest.getStartYear(),
+                    antecedentsCreateRequest.getStartMonth(),
+                    antecedentsCreateRequest.getEndYear(),
+                    antecedentsCreateRequest.getEndMonth(),
+                    antecedentsCreateRequest.isRetirement()
+            );
 
-        Antecedents savedAntecedents = antecedentsRepository.save(newAntecedents);
+            Antecedents savedAntecedents = antecedentsRepository.save(newAntecedents);
 
-        profile.updateIsAntecedents(true);
-        profile.updateMemberProfileTypeByCompletion();
+            profile.updateIsAntecedents(true);
+            profile.updateMemberProfileTypeByCompletion();
 
-        return getAntecedentsResponse(savedAntecedents);
+            return getAntecedentsResponse(savedAntecedents);
+
+        } catch (IllegalArgumentException e) {
+            // Handle known exceptions here
+            throw e;  // or return a custom response or error code
+
+        } catch (Exception e) {
+            // Handle unexpected exceptions
+            throw new RuntimeException("An unexpected error occurred while saving antecedents data", e);
+        }
     }
+
 
     @Transactional(readOnly = true)
     public AntecedentsResponse getAntecedentsDetail(final Long antecedentsId) {

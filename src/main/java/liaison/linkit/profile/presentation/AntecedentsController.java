@@ -9,6 +9,7 @@ import liaison.linkit.profile.dto.request.AntecedentsUpdateRequest;
 import liaison.linkit.profile.dto.response.AntecedentsResponse;
 import liaison.linkit.profile.service.AntecedentsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/antecedents")
+@Slf4j
 public class AntecedentsController {
 
     private final AntecedentsService antecedentsService;
@@ -35,6 +37,7 @@ public class AntecedentsController {
             @Auth final Accessor accessor,
             @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest
     ){
+        log.info("이력 생성 요청 발생");
         final AntecedentsResponse antecedentsResponse = antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
         return ResponseEntity.ok().body(antecedentsResponse);
     }
