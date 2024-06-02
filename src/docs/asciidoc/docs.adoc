@@ -77,7 +77,7 @@ include::{snippets}/profile-region-controller-test/create-profile-region/request
 include::{snippets}/profile-region-controller-test/create-profile-region/request-cookies.adoc[]
 
 === 1.5.2. 내 이력서 - 역할 및 기술 생성
-==== [POST /profile_skill]
+===  [POST /profile_skill]
 ==== 요청
 include::{snippets}/profile-skill-controller-test/create-profile-skill/http-request.adoc[]
 include::{snippets}/profile-skill-controller-test/create-profile-skill/request-fields.adoc[]

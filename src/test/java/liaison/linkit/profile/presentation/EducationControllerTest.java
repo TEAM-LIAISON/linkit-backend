@@ -58,7 +58,8 @@ class EducationControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        given(educationService.validateEducationByMember(1L)).willReturn(1L);
+        doNothing().when(educationService).validateEducationByMember(anyLong());
+
     }
 
     private void makeEducation() throws Exception {
@@ -210,9 +211,6 @@ class EducationControllerTest extends ControllerTest {
                 "졸업"
         );
 
-        when(educationService.validateEducationByMember(anyLong()))
-                .thenReturn(1L);
-
         when(educationService.update(anyLong(), any(EducationUpdateRequest.class)))
                 .thenReturn(educationResponse);
 
@@ -283,8 +281,6 @@ class EducationControllerTest extends ControllerTest {
     void deleteEducation() throws Exception {
         // given
         makeEducation();
-        when(educationService.validateEducationByMember(anyLong()))
-                .thenReturn(1L);
 
         doNothing().when(educationService).delete(anyLong(), anyLong());
         // when
