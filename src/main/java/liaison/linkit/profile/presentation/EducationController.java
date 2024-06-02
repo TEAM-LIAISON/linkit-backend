@@ -40,13 +40,13 @@ public class EducationController {
     }
 
     // 교육 항목 1개 조회
-    @GetMapping
-    @MemberOnly
-    public ResponseEntity<EducationResponse> getEducation(@Auth final Accessor accessor) {
-        Long educationId = educationService.validateEducationByMember(accessor.getMemberId());
-        final EducationResponse educationResponse = educationService.getEducationDetail(educationId);
-        return ResponseEntity.ok().body(educationResponse);
-    }
+//    @GetMapping
+//    @MemberOnly
+//    public ResponseEntity<EducationResponse> getEducation(@Auth final Accessor accessor) {
+//        educationService.validateEducationByMember(accessor.getMemberId());
+//        final EducationResponse educationResponse = educationService.getEducationDetail(educationId);
+//        return ResponseEntity.ok().body(educationResponse);
+//    }
 
     // 교육 항목 1개 수정
     @PutMapping("/{educationId}")

@@ -35,13 +35,15 @@ public class EducationService {
     private final DegreeRepository degreeRepository;
     private final MajorRepository majorRepository;
 
-    public Long validateEducationByMember(Long memberId) {
+    public void validateEducationByMember(Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
         if (!educationRepository.existsByProfileId(profileId)) {
             throw new AuthException(INVALID_EDUCATION_WITH_MEMBER);
-        } else {
-            return educationRepository.findByProfileId(profileId).getId();
         }
+//        else {
+//            // 여러 개 찾을 수 있음
+//            return educationRepository.findByProfileId(profileId).getId();
+//        }
     }
 
     public EducationResponse save(final Long memberId, final EducationCreateRequest educationCreateRequest) {
