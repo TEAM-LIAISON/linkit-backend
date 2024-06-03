@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.request;
+package liaison.linkit.profile.dto.request.antecedents;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
