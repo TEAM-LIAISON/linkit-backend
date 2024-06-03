@@ -6,14 +6,15 @@ import liaison.linkit.profile.domain.Antecedents;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.AntecedentsRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.dto.request.AntecedentsCreateRequest;
-import liaison.linkit.profile.dto.request.AntecedentsUpdateRequest;
+import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
+import liaison.linkit.profile.dto.request.antecedents.AntecedentsUpdateRequest;
 import liaison.linkit.profile.dto.response.AntecedentsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_ANTECEDENTS_WITH_MEMBER;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_ANTECEDENTS_ID;
@@ -26,50 +27,52 @@ public class AntecedentsService {
     private final AntecedentsRepository antecedentsRepository;
     private final ProfileRepository profileRepository;
 
-    public Long validateAntecedentsByMember(final Long memberId) {
+    public void validateAntecedentsByMember(final Long memberId) {
         Long profileId = profileRepository.findByMemberId(memberId).getId();
         if (!antecedentsRepository.existsByProfileId(profileId)) {
             throw new AuthException(INVALID_ANTECEDENTS_WITH_MEMBER);
-        } else {
-            return antecedentsRepository.findByProfileId(profileId).getId();
         }
     }
 
-    public AntecedentsResponse save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest) {
-        try {
-            final Profile profile = profileRepository.findByMemberId(memberId);
-            if (profile == null) {
-                throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
-            }
-
-            final Antecedents newAntecedents = Antecedents.of(
-                    profile,
-                    antecedentsCreateRequest.getProjectName(),
-                    antecedentsCreateRequest.getProjectRole(),
-                    antecedentsCreateRequest.getStartYear(),
-                    antecedentsCreateRequest.getStartMonth(),
-                    antecedentsCreateRequest.getEndYear(),
-                    antecedentsCreateRequest.getEndMonth(),
-                    antecedentsCreateRequest.isRetirement()
-            );
-
-            Antecedents savedAntecedents = antecedentsRepository.save(newAntecedents);
-
-            profile.updateIsAntecedents(true);
-            profile.updateMemberProfileTypeByCompletion();
-
-            return getAntecedentsResponse(savedAntecedents);
-
-        } catch (IllegalArgumentException e) {
-            // Handle known exceptions here
-            throw e;  // or return a custom response or error code
-
-        } catch (Exception e) {
-            // Handle unexpected exceptions
-            throw new RuntimeException("An unexpected error occurred while saving antecedents data", e);
+    @Transactional
+    public List<AntecedentsResponse> saveAll(
+            final Long memberId,
+            final List<AntecedentsCreateRequest> antecedentsCreateRequests
+    ) {
+        Profile profile = profileRepository.findByMemberId(memberId);
+        if (profile == null) {
+            throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
         }
+
+        // 저장 로직을 반복 실행하여 모든 경력 데이터 저장
+        List<Antecedents> savedAntecedents = antecedentsCreateRequests.stream().map(request -> {
+            return saveAntecedent(profile, request);
+        }).toList();
+
+        // 프로필 업데이트
+        profile.updateIsAntecedents(true);
+        profile.updateMemberProfileTypeByCompletion();
+
+        // 저장된 각 경력 정보에 대한 응답 생성
+        return savedAntecedents.stream()
+                .map(this::getAntecedentsResponse)
+                .collect(Collectors.toList());
     }
 
+    private Antecedents saveAntecedent(Profile profile, AntecedentsCreateRequest request) {
+        Antecedents newAntecedents = Antecedents.of(
+                profile,
+                request.getProjectName(),
+                request.getProjectRole(),
+                request.getStartYear(),
+                request.getStartMonth(),
+                request.getEndYear(),
+                request.getEndMonth(),
+                request.isRetirement()
+        );
+
+        return antecedentsRepository.save(newAntecedents);
+    }
 
     @Transactional(readOnly = true)
     public AntecedentsResponse getAntecedentsDetail(final Long antecedentsId) {

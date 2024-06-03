@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.AntecedentsCreateRequest;
-import liaison.linkit.profile.dto.request.AntecedentsUpdateRequest;
+import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
+import liaison.linkit.profile.dto.request.antecedents.AntecedentsUpdateRequest;
 import liaison.linkit.profile.dto.response.AntecedentsResponse;
 import liaison.linkit.profile.service.AntecedentsService;
 import lombok.RequiredArgsConstructor;
@@ -33,25 +33,25 @@ public class AntecedentsController {
     // 이력 1개 생성 요청
     @PostMapping
     @MemberOnly
-    public ResponseEntity<AntecedentsResponse> createAntecedents(
+    public ResponseEntity<List<AntecedentsResponse>> createAntecedents(
             @Auth final Accessor accessor,
-            @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest
+            @RequestBody @Valid List<AntecedentsCreateRequest> antecedentsCreateRequests
     ){
         log.info("이력 생성 요청 발생");
-        final AntecedentsResponse antecedentsResponse = antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
-        return ResponseEntity.ok().body(antecedentsResponse);
+        final List<AntecedentsResponse> antecedentsResponses = antecedentsService.saveAll(accessor.getMemberId(), antecedentsCreateRequests);
+        return ResponseEntity.ok().body(antecedentsResponses);
     }
 
-    // 이력 1개 조회 요청
-    @GetMapping
-    @MemberOnly
-    public ResponseEntity<AntecedentsResponse> getAntecedents(
-            @Auth final Accessor accessor
-    ) {
-        final Long antecedentsId = antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
-        final AntecedentsResponse antecedentsResponse = antecedentsService.getAntecedentsDetail(antecedentsId);
-        return ResponseEntity.ok().body(antecedentsResponse);
-    }
+//    // 이력 1개 조회 요청
+//    @GetMapping
+//    @MemberOnly
+//    public ResponseEntity<AntecedentsResponse> getAntecedents(
+//            @Auth final Accessor accessor
+//    ) {
+//        antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
+//        final AntecedentsResponse antecedentsResponse = antecedentsService.getAntecedentsDetail(antecedentsId);
+//        return ResponseEntity.ok().body(antecedentsResponse);
+//    }
 
     // 이력 1개 수정 요청
     @PutMapping("/{antecedentsId}")
