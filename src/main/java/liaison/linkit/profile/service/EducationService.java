@@ -57,6 +57,12 @@ public class EducationService {
             throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
         }
 
+        // 교육항목 존재 이력이 있다면, 우선 삭제
+        if (educationRepository.existsByProfileId(profile.getId())) {
+            educationRepository.deleteAllByProfileId(profile.getId());
+        }
+
+        // 반복문을 통해 저장한다.
         for (EducationCreateRequest request : educationCreateRequests) {
             final University university = universityRepository.findByUniversityName(request.getUniversityName());
             if (university == null) {
@@ -85,6 +91,8 @@ public class EducationService {
             Education savedEducation = educationRepository.save(newEducation);
             responses.add(getEducationResponse(savedEducation));
         }
+
+        // 반복문 종료 후에 프로필의 상태를 업데이트한다.
         profile.updateIsEducation(true);
         return responses;
     }

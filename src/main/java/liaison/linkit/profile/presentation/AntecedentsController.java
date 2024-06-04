@@ -30,7 +30,7 @@ public class AntecedentsController {
         return ResponseEntity.ok().body(antecedentsResponses);
     }
 
-    // 이력 1개 생성 요청
+    // 온보딩 이력 생성 요청
     @PostMapping
     @MemberOnly
     public ResponseEntity<List<AntecedentsResponse>> createAntecedents(

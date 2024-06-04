@@ -40,6 +40,7 @@ public class ProfileSkillService {
     public void save(final Long memberId, final ProfileSkillCreateRequest profileSkillCreateRequest) {
         final Profile profile = profileRepository.findByMemberId(memberId);
 
+        // 마찬가지로 존재하는 이력이 있는 항목이라면 삭제를 하고 저장한다.
         if (profileSkillRepository.existsByProfileId(profile.getId())) {
             profileSkillRepository.deleteAllByProfileId(profile.getId());
         }

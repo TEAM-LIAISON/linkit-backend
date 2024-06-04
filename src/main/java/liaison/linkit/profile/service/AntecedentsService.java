@@ -39,9 +39,16 @@ public class AntecedentsService {
             final Long memberId,
             final List<AntecedentsCreateRequest> antecedentsCreateRequests
     ) {
+        // 리스트 형태로 이력 생성 요청이 들어옴
+        // 기존에 저장되어 있던 모든 이력을 삭제하고 다시 생성해줘야 함.
         Profile profile = profileRepository.findByMemberId(memberId);
         if (profile == null) {
             throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
+        }
+
+        // 기존에 존재하던 해당 프로필의 모든 이력 항목을 삭제한다.
+        if (antecedentsRepository.existsByProfileId(profile.getId())) {
+            antecedentsRepository.deleteAllByProfileId(profile.getId());
         }
 
         // 저장 로직을 반복 실행하여 모든 경력 데이터 저장

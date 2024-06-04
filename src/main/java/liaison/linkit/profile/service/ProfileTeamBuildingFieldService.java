@@ -42,7 +42,7 @@ public class ProfileTeamBuildingFieldService {
 
         final Profile profile = profileRepository.findByMemberId(memberId);
 
-        // 이미 저장되어 있었던 부분이면?
+        // 이미 저장된 이력이 존재하는 프로필의 경우 먼저 삭제한다.
         if (profileTeamBuildingFieldRepository.existsByProfileId(profile.getId())) {
             profileTeamBuildingFieldRepository.deleteAllByProfileId(profile.getId());
         }
@@ -57,6 +57,8 @@ public class ProfileTeamBuildingFieldService {
 
         // profileTeamBuildingFieldRepository 모두 저장
         profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
+
+        // 06_04 확인 완료 아래 프로그레스바는 추후 구현 필요
 
         // 프로그레스바 처리 비즈니스 로직
         profile.updateIsProfileTeamBuildingField(true);
