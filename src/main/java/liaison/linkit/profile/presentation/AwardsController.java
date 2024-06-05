@@ -5,7 +5,6 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.AwardsCreateRequest;
-import liaison.linkit.profile.dto.request.AwardsUpdateRequest;
 import liaison.linkit.profile.dto.response.AwardsResponse;
 import liaison.linkit.profile.service.AwardsService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/awards")
 public class AwardsController {
-
     private final AwardsService awardsService;
 
     // 이력서 수상 항목 전체 조회
@@ -47,28 +45,29 @@ public class AwardsController {
     public ResponseEntity<AwardsResponse> getAwards(
             @Auth final Accessor accessor
     ) {
-        Long awardsId = awardsService.validateAwardsByMember(accessor.getMemberId());
-        final AwardsResponse awardsResponse = awardsService.getAwardsDetail(awardsId);
+        awardsService.validateAwardsByMember(accessor.getMemberId());
+        final AwardsResponse awardsResponse = awardsService.getAwardsDetail(accessor.getMemberId());
+
         return ResponseEntity.ok().body(awardsResponse);
     }
 
-    // 이력서 수상 항목 1개 수정
-    @PatchMapping
-    @MemberOnly
-    public ResponseEntity<Void> updateAwards(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final AwardsUpdateRequest awardsUpdateRequest
-    ) {
-        awardsService.update(accessor.getMemberId(), awardsUpdateRequest);
-        return ResponseEntity.noContent().build();
-    }
-
-    // 이력서 수상 항목 1개 삭제
-    @DeleteMapping
-    @MemberOnly
-    public ResponseEntity<Void> deleteAwards(@Auth final Accessor accessor){
-        awardsService.delete(accessor.getMemberId());
-        return ResponseEntity.noContent().build();
-    }
+//    // 이력서 수상 항목 1개 수정
+//    @PatchMapping
+//    @MemberOnly
+//    public ResponseEntity<Void> updateAwards(
+//            @Auth final Accessor accessor,
+//            @RequestBody @Valid final AwardsUpdateRequest awardsUpdateRequest
+//    ) {
+//        awardsService.update(accessor.getMemberId(), awardsUpdateRequest);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    // 이력서 수상 항목 1개 삭제
+//    @DeleteMapping
+//    @MemberOnly
+//    public ResponseEntity<Void> deleteAwards(@Auth final Accessor accessor){
+//        awardsService.delete(accessor.getMemberId());
+//        return ResponseEntity.noContent().build();
+//    }
 
 }

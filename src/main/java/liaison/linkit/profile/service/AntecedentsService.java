@@ -16,32 +16,58 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_ANTECEDENTS_WITH_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_ANTECEDENTS_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class AntecedentsService {
 
-    private final AntecedentsRepository antecedentsRepository;
     private final ProfileRepository profileRepository;
+    private final AntecedentsRepository antecedentsRepository;
 
-    public void validateAntecedentsByMember(final Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if (!antecedentsRepository.existsByProfileId(profileId)) {
-            throw new AuthException(INVALID_ANTECEDENTS_WITH_MEMBER);
+    // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
+    private Profile getProfile(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    // 어떤 이력 정보 1개만 조회할 때
+    private Antecedents getAntecedents(final Long antecedentsId) {
+        return antecedentsRepository.findByProfileId(antecedentsId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_BY_ID));
+    }
+
+    // 내 이력서 하나에 대한 모든 이력 정보 리스트 조회
+    private List<Antecedents> getAntecedentsList(final Long profileId) {
+        try {
+            return antecedentsRepository.findAllByProfileId(profileId);
+        } catch (Exception e) {
+            throw new BadRequestException(NOT_FOUND_ANTECEDENTS_BY_PROFILE_ID);
         }
     }
+
+    // 멤버 아이디로부터 이력 항목 유효성 판단
+    public void validateAntecedentsByMember(final Long memberId) {
+        if (!antecedentsRepository.existsByProfileId(getProfile(memberId).getId())) {
+            throw new AuthException(NOT_FOUND_ANTECEDENTS_BY_PROFILE_ID);
+        }
+    }
+
+    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     @Transactional
     public List<AntecedentsResponse> saveAll(
             final Long memberId,
             final List<AntecedentsCreateRequest> antecedentsCreateRequests
     ) {
-        Profile profile = profileRepository.findByMemberId(memberId);
-        if (profile == null) {
-            throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
+        // 리스트 형태로 이력 생성 요청이 들어옴
+        // 기존에 저장되어 있던 모든 이력을 삭제하고 다시 생성해줘야 함.
+        final Profile profile = getProfile(memberId);
+
+        // 기존에 존재하던 해당 프로필의 모든 이력 항목을 삭제한다.
+        if (antecedentsRepository.existsByProfileId(profile.getId())) {
+            antecedentsRepository.deleteAllByProfileId(profile.getId());
         }
 
         // 저장 로직을 반복 실행하여 모든 경력 데이터 저장
@@ -75,7 +101,7 @@ public class AntecedentsService {
     }
 
     @Transactional(readOnly = true)
-    public AntecedentsResponse getAntecedentsDetail(final Long antecedentsId) {
+    public AntecedentsResponse getPersonalAntecedents(final Long antecedentsId) {
         final Antecedents antecedents = antecedentsRepository.findById(antecedentsId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_ID));
         return AntecedentsResponse.personalAntecedents(antecedents);
@@ -83,8 +109,8 @@ public class AntecedentsService {
 
     @Transactional(readOnly = true)
     public List<AntecedentsResponse> getAllAntecedents(Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        final List<Antecedents> antecedents = antecedentsRepository.findAllByProfileId(profileId);
+        final Profile profile = getProfile(memberId);
+        final List<Antecedents> antecedents = antecedentsRepository.findAllByProfileId(profile.getId());
         return antecedents.stream()
                 .map(this::getAntecedentsResponse)
                 .toList();
@@ -95,7 +121,7 @@ public class AntecedentsService {
     }
 
     public AntecedentsResponse update(final Long memberId, final Long antecedentsId, final AntecedentsUpdateRequest antecedentsUpdateRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Profile profile = getProfile(memberId);
 
         final Antecedents antecedents = antecedentsRepository.findById(antecedentsId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_ID));
@@ -112,7 +138,7 @@ public class AntecedentsService {
     }
 
     public void delete(final Long memberId, final Long antecedentsId) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Profile profile = getProfile(memberId);
 
         if (!antecedentsRepository.existsById(antecedentsId)) {
             throw new BadRequestException(NOT_FOUND_ANTECEDENTS_ID);

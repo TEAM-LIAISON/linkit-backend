@@ -22,7 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+
 
 @Service
 @RequiredArgsConstructor
@@ -55,13 +56,20 @@ public class ProfileService {
     // 첨부 이미지(파일 경로) 정보 담당
     private final AttachFileRepository attachFileRepository;
 
-    public Long validateProfileByMember(final Long memberId) {
+    // 프로필 (내 이력서) 1개 조회
+    private Profile getProfileByMember(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    // 멤버 아이디로 내 이력서 유효성을 검증하는 로직
+    public void validateProfileByMember(final Long memberId) {
         if (!profileRepository.existsByMemberId(memberId)) {
             throw new AuthException(ExceptionCode.INVALID_PROFILE_WITH_MEMBER);
-        } else {
-            return profileRepository.findByMemberId(memberId).getId();
         }
     }
+
+    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     // 디폴트 항목 저장
 //    public void saveDefault(
@@ -102,23 +110,19 @@ public class ProfileService {
 //    }
 
     @Transactional(readOnly = true)
-    public ProfileIntroductionResponse getProfileIntroduction(final Long profileId) {
-        final Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
+    public ProfileIntroductionResponse getProfileIntroduction(final Long memberId) {
+        final Profile profile = getProfileByMember(memberId);
         return ProfileIntroductionResponse.profileIntroduction(profile);
     }
 
     @Transactional(readOnly = true)
-    public ProfileOnBoardingIsValueResponse getProfileOnBoardingIsValue(final Long profileId) {
-        final Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
+    public ProfileOnBoardingIsValueResponse getProfileOnBoardingIsValue(final Long memberId) {
+        final Profile profile = getProfileByMember(memberId);
         return ProfileOnBoardingIsValueResponse.profileOnBoardingIsValue(profile);
     }
 
-    public void update(final Long profileId, final ProfileUpdateRequest updateRequest) {
-        final Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
-
+    public void update(final Long memberId, final ProfileUpdateRequest updateRequest) {
+        final Profile profile = getProfileByMember(memberId);
         // 사용자가 입력한 정보로 업데이트한다.
         profile.update(updateRequest);
 
@@ -132,9 +136,9 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 
-    public void deleteIntroduction(final Long profileId) {
-        final Profile profile = profileRepository.findById(profileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_ID));
+    public void deleteIntroduction(final Long memberId) {
+        // 프로필 조회
+        final Profile profile = getProfileByMember(memberId);
 
         profile.deleteIntroduction();
         profile.updateIsIntroduction(false);

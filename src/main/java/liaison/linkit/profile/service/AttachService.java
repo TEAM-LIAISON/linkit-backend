@@ -5,13 +5,11 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Attach.AttachFile;
 import liaison.linkit.profile.domain.Attach.AttachUrl;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
-import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.attach.AttachFileCreateRequest;
-import liaison.linkit.profile.dto.request.attach.AttachFileUpdateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
-import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
@@ -32,26 +30,61 @@ public class AttachService {
     private final AttachUrlRepository attachUrlRepository;
     private final AttachFileRepository attachFileRepository;
 
-    public Long validateAttachUrlByMember(final Long memberId) {
-        final Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if (!attachUrlRepository.existsByProfileId(profileId)) {
+    // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
+    private Profile getProfile(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    // 단일 첨부 URL 조회
+    private AttachUrl getAttachUrl(final Long attachUrlId) {
+        return attachUrlRepository.findById(attachUrlId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_URL_BY_ID));
+    }
+
+    // 전체 첨부 URL 조회
+    private List<AttachUrl> getAttachUrls(final Long profileId) {
+        try {
+            return attachUrlRepository.findAllByProfileId(profileId);
+        } catch (Exception e) {
+            throw new BadRequestException(NOT_FOUND_ATTACH_URLS_BY_PROFILE_ID);
+        }
+
+    }
+
+    // 해당 회원이 1개라도 Attach URL 보유하고 있는지
+    public void validateAttachUrlByMember(final Long memberId) {
+        if (!attachUrlRepository.existsByProfileId(getProfile(memberId).getId())) {
             throw new AuthException(INVALID_ATTACH_URL_WITH_PROFILE);
-        } else {
-            return attachUrlRepository.findByProfileId(profileId).getId();
         }
     }
 
-    public Long validateAttachFileByMember(final Long memberId) {
-        final Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if (!attachFileRepository.existsByProfileId(profileId)) {
-            throw new AuthException(INVALID_ATTACH_FILE_WITH_PROFILE);
-        } else {
-            return attachFileRepository.findByProfileId(profileId).getId();
+    // 단일 첨부 File 조회
+    private AttachFile getAttachFile(final Long attachFileId) {
+        return attachFileRepository.findById(attachFileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_BY_ID));
+    }
+
+    // 전체 첨부 File 조회
+    private List<AttachFile> getAttachFiles(final Long profileId) {
+        try {
+            return attachFileRepository.findAllByProfileId(profileId);
+        } catch (Exception e) {
+            throw new BadRequestException(NOT_FOUND_ATTACH_URLS_BY_PROFILE_ID);
         }
     }
+
+    // 해당 회원이 1개라도 Attach File 보유하고 있는지
+    public void validateAttachFileByMember(final Long memberId) {
+        if (!attachFileRepository.existsByProfileId(getProfile(memberId).getId())) {
+            throw new AuthException(INVALID_ATTACH_FILE_WITH_PROFILE);
+        }
+    }
+
+    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     public void saveImage(final Long memberId, final AttachUrlCreateRequest attachUrlCreateRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Profile profile = getProfile(memberId);
 
         final AttachUrl newAttachUrl = AttachUrl.of(
                 profile,
@@ -74,37 +107,37 @@ public class AttachService {
         return AttachUrlResponse.personalAttachUrl(attachUrl);
     }
 
-    // 수정 메서드
-    public void updateImage(final Long memberId, final AttachUrlUpdateRequest updateRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long attachUrlId = validateAttachUrlByMember(memberId);
-
-        final AttachUrl attachUrl = attachUrlRepository.findById(attachUrlId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_URL_ID));
-
-        attachUrl.update(updateRequest);
-        attachUrlRepository.save(attachUrl);
-
-        // 수정에 대해서는 값 변경 함수를 호출하지 않는다.
-        profile.updateMemberProfileTypeByCompletion();
-    }
-
-    // 삭제 메서드
-    public void deleteImage(final Long memberId) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long attachUrlId = validateAttachUrlByMember(memberId);
-
-        if (!attachUrlRepository.existsById(attachUrlId)) {
-            throw new BadRequestException(NOT_FOUND_ATTACH_URL_ID);
-        }
-
-        attachUrlRepository.deleteById(attachUrlId);
-    }
+//    // 수정 메서드
+//    public void updateImage(final Long memberId, final AttachUrlUpdateRequest updateRequest) {
+//        final Profile profile = getProfile(memberId)
+//        final Long attachUrlId = validateAttachUrlByMember(memberId);
+//
+//        final AttachUrl attachUrl = attachUrlRepository.findById(attachUrlId)
+//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_URL_ID));
+//
+//        attachUrl.update(updateRequest);
+//        attachUrlRepository.save(attachUrl);
+//
+//        // 수정에 대해서는 값 변경 함수를 호출하지 않는다.
+//        profile.updateMemberProfileTypeByCompletion();
+//    }
+//
+//    // 삭제 메서드
+//    public void deleteImage(final Long memberId) {
+//        final Profile profile = profileRepository.findByMemberId(memberId);
+//        final Long attachUrlId = validateAttachUrlByMember(memberId);
+//
+//        if (!attachUrlRepository.existsById(attachUrlId)) {
+//            throw new BadRequestException(NOT_FOUND_ATTACH_URL_ID);
+//        }
+//
+//        attachUrlRepository.deleteById(attachUrlId);
+//    }
 
 
 
     public void saveFile(final Long memberId, final AttachFileCreateRequest createRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Profile profile = getProfile(memberId);
 
         final AttachFile newAttachFile = AttachFile.of(
                 profile,
@@ -127,35 +160,36 @@ public class AttachService {
         return AttachFileResponse.personalAttachFile(attachFile);
     }
 
-    // 수정 메서드
-    public void updateFile(final Long memberId, final AttachFileUpdateRequest updateRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long attachFileId = validateAttachFileByMember(memberId);
-
-        final AttachFile attachFile = attachFileRepository.findById(attachFileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_ID));
-
-        attachFile.update(updateRequest);
-        attachFileRepository.save(attachFile);
-    }
-
-    public void deleteFile(final Long memberId) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long attachFileId = validateAttachFileByMember(memberId);
-
-        if (!attachFileRepository.existsByProfileId(attachFileId)) {
-            throw new BadRequestException(NOT_FOUND_ATTACH_FILE_ID);
-        }
-
-        attachFileRepository.deleteById(attachFileId);
-
-        // 프로그레스바 상태 관련 함수 추가 필요
-    }
+//    // 수정 메서드
+//    public void updateFile(final Long memberId, final AttachFileUpdateRequest updateRequest) {
+//        final Profile profile = getProfile(memberId);
+//        final Long attachFileId = validateAttachFileByMember(memberId);
+//
+//        final AttachFile attachFile = attachFileRepository.findById(attachFileId)
+//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_ID));
+//
+//        attachFile.update(updateRequest);
+//        attachFileRepository.save(attachFile);
+//    }
+//
+//    public void deleteFile(final Long memberId) {
+//        final Profile profile = profileRepository.findByMemberId(memberId);
+//        final Long attachFileId = validateAttachFileByMember(memberId);
+//
+//        if (!attachFileRepository.existsByProfileId(attachFileId)) {
+//            throw new BadRequestException(NOT_FOUND_ATTACH_FILE_ID);
+//        }
+//
+//        attachFileRepository.deleteById(attachFileId);
+//
+//        // 프로그레스바 상태 관련 함수 추가 필요
+//    }
 
     public AttachResponse getAttachList(final Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        final List<AttachUrl> attachUrls = attachUrlRepository.findAllByProfileId(profileId);
-        final List<AttachFile> attachFiles = attachFileRepository.findAllByProfileId(profileId);
+        final Profile profile = getProfile(memberId);
+
+        final List<AttachUrl> attachUrls = attachUrlRepository.findAllByProfileId(profile.getId());
+        final List<AttachFile> attachFiles = attachFileRepository.findAllByProfileId(profile.getId());
 
         final List<AttachUrlResponse> attachUrlResponses = attachUrls.stream().map(this::getAttachUrlResponse).toList();
         final List<AttachFileResponse> attachFileResponses = attachFiles.stream().map(this::getAttachFileResponse).toList();

@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProfileSkillRepository extends JpaRepository<ProfileSkill, Long> {
     boolean existsByProfileId(final Long profileId);
@@ -19,7 +20,7 @@ public interface ProfileSkillRepository extends JpaRepository<ProfileSkill, Long
            """)
     List<ProfileSkill> findAllByProfileId(@Param("profileId") final Long profileId);
 
-    ProfileSkill findByProfileId(@Param("profileId") Long profileId);
+    Optional<ProfileSkill> findByProfileId(@Param("profileId") Long profileId);
 
     @Modifying
     @Transactional  // 메서드가 트랜잭션 내에서 실행되어야 함을 나타낸다.

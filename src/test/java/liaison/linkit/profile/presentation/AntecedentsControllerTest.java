@@ -51,13 +51,17 @@ public class AntecedentsControllerTest extends ControllerTest {
     @MockBean
     private AntecedentsService antecedentsService;
 
+
+    // 초기 설정을 진행해준다
     @BeforeEach
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
+        doNothing().when(antecedentsService).validateAntecedentsByMember(anyLong());
     }
 
+    // 생성자를 활용해서 이력 항목을 만들어둔다.
     private void makeAntecedents() throws Exception {
         final AntecedentsCreateRequest antecedentsCreateRequest = new AntecedentsCreateRequest(
                 "리에종",

@@ -27,8 +27,8 @@ public class MemberController {
     public ResponseEntity<MemberBasicInformResponse> getMemberBasicInform(
             @Auth final Accessor accessor
     ) {
-        Long memberBasicInformId = memberService.validateMemberBasicInformByMember(accessor.getMemberId());
-        final MemberBasicInformResponse memberBasicInformResponse = memberService.getMemberBasicInformDetail(memberBasicInformId);
+        memberService.validateMemberBasicInformByMember(accessor.getMemberId());
+        final MemberBasicInformResponse memberBasicInformResponse = memberService.getPersonalMemberBasicInform(accessor.getMemberId());
         return ResponseEntity.ok().body(memberBasicInformResponse);
     }
 

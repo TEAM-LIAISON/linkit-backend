@@ -56,8 +56,7 @@ class MemberControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        given(memberService.validateMemberBasicInformByMember(1L)).willReturn(1L);
-
+        doNothing().when(memberService).validateMemberBasicInformByMember(1L);
     }
 
     private ResultActions performPostRequest(final MemberBasicInformCreateRequest memberBasicInformCreateRequest) throws Exception {
@@ -97,8 +96,7 @@ class MemberControllerTest extends ControllerTest {
                 true
         );
 
-        given(memberService.getMemberBasicInformDetail(1L))
-                .willReturn(response);
+        given(memberService.getPersonalMemberBasicInform(1L)).willReturn(response);
 
         // when
         final ResultActions resultActions = performGetRequest();

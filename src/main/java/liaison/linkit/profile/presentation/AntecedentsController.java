@@ -15,22 +15,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// 이력 컨트롤러
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/antecedents")
 @Slf4j
 public class AntecedentsController {
-
     private final AntecedentsService antecedentsService;
 
-    @GetMapping("/list")
-    @MemberOnly
-    public ResponseEntity<List<AntecedentsResponse>> getAntecedentsList(@Auth final Accessor accessor) {
-        final List<AntecedentsResponse> antecedentsResponses = antecedentsService.getAllAntecedents(accessor.getMemberId());
-        return ResponseEntity.ok().body(antecedentsResponses);
-    }
-
-    // 이력 1개 생성 요청
+    // 온보딩 이력 생성 요청
     @PostMapping
     @MemberOnly
     public ResponseEntity<List<AntecedentsResponse>> createAntecedents(
@@ -39,6 +32,14 @@ public class AntecedentsController {
     ){
         log.info("이력 생성 요청 발생");
         final List<AntecedentsResponse> antecedentsResponses = antecedentsService.saveAll(accessor.getMemberId(), antecedentsCreateRequests);
+        return ResponseEntity.ok().body(antecedentsResponses);
+    }
+
+
+    @GetMapping("/list")
+    @MemberOnly
+    public ResponseEntity<List<AntecedentsResponse>> getAntecedentsList(@Auth final Accessor accessor) {
+        final List<AntecedentsResponse> antecedentsResponses = antecedentsService.getAllAntecedents(accessor.getMemberId());
         return ResponseEntity.ok().body(antecedentsResponses);
     }
 

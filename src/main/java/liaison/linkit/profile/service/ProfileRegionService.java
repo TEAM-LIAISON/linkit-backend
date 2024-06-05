@@ -1,6 +1,7 @@
 package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
+import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileRegion;
 import liaison.linkit.profile.domain.repository.ProfileRegionRepository;
@@ -13,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_PROFILE_REGION_WITH_MEMBER;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -24,36 +25,44 @@ public class ProfileRegionService {
     final ProfileRepository profileRepository;
     final RegionRepository regionRepository;
 
-    public Long validateProfileRegionByMember(final Long memberId) {
-        final Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if (!profileRegionRepository.existsByProfileId(profileId)) {
-            throw new AuthException(INVALID_PROFILE_REGION_WITH_MEMBER);
-        } else {
-            return profileRegionRepository.findByProfileId(profileId).getId();
+    // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
+    private Profile getProfile(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    // "내 이력서"에 1대 1로 매핑되어 있는 미니 프로필 조회 메서드
+    private ProfileRegion getProfileRegion(final Long profileId) {
+        return profileRegionRepository.findByProfileId(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_REGION_BY_PROFILE_ID));
+    }
+
+    // 멤버 아이디로 미니 프로필의 유효성을 검증하는 로직
+    public void validateProfileRegionByMember(final Long memberId) {
+        if (!profileRegionRepository.existsByProfileId(getProfile(memberId).getId())) {
+            throw new AuthException(NOT_FOUND_PROFILE_REGION_BY_MEMBER_ID);
         }
     }
+
+    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     public void save(
             final Long memberId,
             final ProfileRegionCreateRequest profileRegionCreateRequest
     ) {
         try {
-            final Profile profile = profileRepository.findByMemberId(memberId);
-            if (profile == null) {
-                throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
-            }
+            final Profile profile = getProfile(memberId);
+            final ProfileRegion savedProfileRegion = getProfileRegion(profile.getId());
 
-            if (profileRegionRepository.existsByProfileId(profile.getId())) {
-                final ProfileRegion savedProfileRegion = profileRegionRepository.findByProfileId(profile.getId());
-                if (savedProfileRegion != null) {
-                    profileRegionRepository.delete(savedProfileRegion);
-                }
+            if (savedProfileRegion != null) {
+                profileRegionRepository.delete(savedProfileRegion);
             }
 
             final Region region = regionRepository.findRegionByCityNameAndDivisionName(
                     profileRegionCreateRequest.getCityName(),
                     profileRegionCreateRequest.getDivisionName()
             );
+
             if (region == null) {
                 throw new IllegalArgumentException("Region not found for city: " +
                         profileRegionCreateRequest.getCityName() + " and division: " +
@@ -75,12 +84,10 @@ public class ProfileRegionService {
         }
     }
 
-
     @Transactional(readOnly = true)
-    public ProfileRegionResponse getProfileRegion(final Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        ProfileRegion profileRegion = profileRegionRepository.findByProfileId(profileId);
-
+    public ProfileRegionResponse getPersonalProfileRegion(final Long memberId) {
+        final Profile profile = getProfile(memberId);
+        ProfileRegion profileRegion = getProfileRegion(profile.getId());
         return new ProfileRegionResponse(profileRegion.getRegion().getCityName(), profileRegion.getRegion().getDivisionName());
     }
 

@@ -1,7 +1,7 @@
 package liaison.linkit.team.domain;
 
 import jakarta.persistence.*;
-import liaison.linkit.member.domain.MemberRole;
+import liaison.linkit.member.domain.Role;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +26,7 @@ public class TeamMemberIntroduction {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_role")
-    private MemberRole memberRole;
+    private Role role;
 
     @Column(name = "member_name")
     private String memberName;

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberResponse {
     private final String email;
 
-    public static MemberResponse of(final Member member) {
+    public static MemberResponse getEmail(final Member member) {
         return new MemberResponse(
                 member.getEmail()
         );

@@ -27,8 +27,8 @@ public class MiniProfileController {
     public ResponseEntity<MiniProfileResponse> getMiniProfile(
             @Auth final Accessor accessor
     ) {
-        Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
-        final MiniProfileResponse miniProfileResponse = miniProfileService.getMiniProfileDetail(miniProfileId);
+        miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
+        final MiniProfileResponse miniProfileResponse = miniProfileService.getPersonalMiniProfile(accessor.getMemberId());
         return ResponseEntity.ok().body(miniProfileResponse);
     }
 
@@ -51,8 +51,8 @@ public class MiniProfileController {
             @Auth final Accessor accessor,
             @RequestBody @Valid final MiniProfileUpdateRequest miniProfileUpdateRequest
     ){
-        Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
-        miniProfileService.update(miniProfileId, miniProfileUpdateRequest);
+        miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
+        miniProfileService.update(accessor.getMemberId(), miniProfileUpdateRequest);
         return ResponseEntity.noContent().build();
     }
 
@@ -60,8 +60,10 @@ public class MiniProfileController {
     @DeleteMapping
     @MemberOnly
     public ResponseEntity<Void> deleteMiniProfile(@Auth final Accessor accessor) {
-        Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
-        miniProfileService.delete(miniProfileId);
+
+        miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
+        miniProfileService.delete(accessor.getMemberId());
+
         return ResponseEntity.noContent().build();
     }
 }

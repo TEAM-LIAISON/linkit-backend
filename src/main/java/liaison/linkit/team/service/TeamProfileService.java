@@ -13,8 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_TEAM_PROFILE_WITH_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,19 +22,26 @@ public class TeamProfileService {
 
     private final TeamProfileRepository teamProfileRepository;
 
-    public Long validateTeamProfileByMember(final Long memberId) {
+    // 회원에 대한 팀 소개서 정보를 가져온다. (1개만 저장되어 있음)
+    private TeamProfile getTeamProfileByMember(final Long memberId) {
+        return teamProfileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
+    }
+
+    // 멤버 ID -> 팀 소개서 유효성 검증 -> 유효하지 않다면 에러코드 반환
+    public void validateTeamProfileByMember(final Long memberId) {
         if (!teamProfileRepository.existsByMemberId(memberId)) {
-            throw new AuthException(INVALID_TEAM_PROFILE_WITH_MEMBER);
-        } else {
-            return teamProfileRepository.findByMemberId(memberId).getId();
+            throw new AuthException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID);
         }
     }
 
-    public TeamProfileOnBoardingIsValueResponse getTeamProfileOnBoardingIsValue(final Long teamProfileId) {
-        final TeamProfile teamProfile = teamProfileRepository.findById(teamProfileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
-        return TeamProfileOnBoardingIsValueResponse.teamProfileOnBoardingIsValue(teamProfile);
+
+
+    // 팀 소개서 온보딩 값 존재성 boolean 값들 전달
+    public TeamProfileOnBoardingIsValueResponse getTeamProfileOnBoardingIsValue(final Long memberId) {
+        return TeamProfileOnBoardingIsValueResponse.teamProfileOnBoardingIsValue(getTeamProfileByMember(memberId));
     }
+
 
     public OnBoardingTeamProfileResponse getOnBoardingTeamProfile(
             final OnBoardingFirstResponse onBoardingFirstResponse,

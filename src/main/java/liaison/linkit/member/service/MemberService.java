@@ -4,13 +4,12 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
-import liaison.linkit.member.domain.MemberRole;
 import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
 import liaison.linkit.member.domain.repository.MemberRepository;
-import liaison.linkit.member.domain.repository.MemberRoleRepository;
 import liaison.linkit.member.dto.request.MemberBasicInformCreateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
 import liaison.linkit.member.dto.response.MemberResponse;
+import liaison.linkit.profile.domain.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -28,24 +27,34 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Slf4j
 public class MemberService {
 
+    // 회원 기본 정보를 다룸
+
     private final MemberRepository memberRepository;
     private final MemberBasicInformRepository memberBasicInformRepository;
-    private final MemberRoleRepository memberRoleRepository;
+    private final ProfileRepository profileRepository;
 
-    public Long validateMemberBasicInformByMember(final Long memberId) {
+    // 회원 정보를 가져오는 메서드
+    private Member getMember(final Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BY_MEMBER_ID));
+    }
+
+    // 회원 기본 정보를 가져오는 메서드
+    private MemberBasicInform getMemberBasicInform(final Long memberId) {
+        return memberBasicInformRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID));
+    }
+
+    // 멤버 아이디로 회원 기본 정보의 유효성을 검증하는 로직
+    public void validateMemberBasicInformByMember(final Long memberId) {
         if (!memberBasicInformRepository.existsByMemberId(memberId)) {
-            throw new AuthException(INVALID_MEMBER_BASIC_INFORM_WITH_MEMBER);
-        } else {
-            return memberBasicInformRepository.findByMemberId(memberId).getId();
+            throw new AuthException(NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID);
         }
     }
 
+    // 회원 기본 정보 저장 메서드
     public void save(final Long memberId, final MemberBasicInformCreateRequest memberBasicInformCreateRequest) throws ResponseStatusException {
-        log.info("memberId={}", memberId);
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
-
-
+        final Member member = getMember(memberId);
         final MemberBasicInform newBasicMemberBasicInform = new MemberBasicInform(
                 memberBasicInformCreateRequest.getMemberName(),
                 memberBasicInformCreateRequest.getContact(),
@@ -67,23 +76,18 @@ public class MemberService {
         }
     }
 
-    public Long getMemberRole(final String roleName) {
-        final MemberRole memberRole = memberRoleRepository.findMemberRolesByRoleName(roleName);
-        return memberRole.getId();
-    }
-
+    // (해당 회원의) 회원 기본 정보를 조회하는 메서드
     @Transactional(readOnly = true)
-    public MemberBasicInformResponse getMemberBasicInformDetail(final Long memberBasicInformId) {
-        final MemberBasicInform memberBasicInform = memberBasicInformRepository.findById(memberBasicInformId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BASIC_INFORM_ID));
-        return MemberBasicInformResponse.of(memberBasicInform);
+    public MemberBasicInformResponse getPersonalMemberBasicInform(final Long memberId) {
+        final MemberBasicInform memberBasicInform = getMemberBasicInform(memberId);
+        return MemberBasicInformResponse.personalMemberBasicInform(memberBasicInform);
     }
 
+    // (해당 회원의) 회원 기본 정보 중 이메일을 조회하는 메서드
     @Transactional(readOnly = true)
     public MemberResponse getMemberEmail(final Long memberId) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
-        return MemberResponse.of(member);
+        final Member member = getMember(memberId);
+        return MemberResponse.getEmail(member);
     }
 
 //    public void updateBasicMemberInform(final Long memberId, final MemberBasicInformRequest memberBasicInformRequest){
