@@ -13,7 +13,7 @@ public class MemberBasicInformResponse {
     private final String contact;
     private final boolean marketingAgree;
 
-    public static MemberBasicInformResponse of(final MemberBasicInform memberBasicInform) {
+    public static MemberBasicInformResponse personalMemberBasicInform(final MemberBasicInform memberBasicInform) {
         return new MemberBasicInformResponse(
                 memberBasicInform.getId(),
                 memberBasicInform.getMemberName(),

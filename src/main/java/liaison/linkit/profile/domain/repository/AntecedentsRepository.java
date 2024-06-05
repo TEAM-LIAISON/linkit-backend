@@ -8,13 +8,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface AntecedentsRepository extends JpaRepository<Antecedents, Long> {
 
     boolean existsByProfileId(final Long profileId);
 
-    Antecedents findByProfileId(@Param("profileId") final Long profileId);
+    Optional<Antecedents> findByProfileId(@Param("profileId") final Long profileId);
 
     @Query("SELECT antecedents FROM Antecedents antecedents WHERE antecedents.profile.id = :profileId")
     List<Antecedents> findAllByProfileId(final Long profileId);

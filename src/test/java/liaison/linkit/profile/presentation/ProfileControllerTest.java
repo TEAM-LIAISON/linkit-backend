@@ -77,8 +77,12 @@ class ProfileControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        given(profileService.validateProfileByMember(1L)).willReturn(1L);
-        given(miniProfileService.validateMiniProfileByMember(1L)).willReturn(1L);
+
+        // 서비스 계층 -> validate -> 리턴하는 값 (1L) 지정.
+        doNothing().when(profileService).validateProfileByMember(1L);
+
+        // 미니 프로필 리턴 Value 1L
+        doNothing().when(miniProfileService).validateMiniProfileByMember(1L);
     }
 
     private void makeProfile() throws Exception {
@@ -171,7 +175,7 @@ class ProfileControllerTest extends ControllerTest {
                 "강남구"
         );
 
-        given(profileRegionService.getProfileRegion(1L)).willReturn(profileRegionResponse);
+        given(profileRegionService.getPersonalProfileRegion(1L)).willReturn(profileRegionResponse);
 
         // 3. 학교 정보
          final EducationResponse educationResponse1 = new EducationResponse(
@@ -234,7 +238,7 @@ class ProfileControllerTest extends ControllerTest {
                 "Java, Spring, AWS, Microservices, Docker"
         );
 
-        given(miniProfileService.getMiniProfileDetail(1L)).willReturn(miniProfileResponse);
+        given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
 
         final OnBoardingProfileResponse onBoardingProfileResponse = new OnBoardingProfileResponse(
                 profileTeamBuildingFieldResponse,

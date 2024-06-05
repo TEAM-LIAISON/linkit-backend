@@ -1,7 +1,7 @@
 package liaison.linkit.global.config.csv.memberRole;
 
-import liaison.linkit.member.domain.MemberRole;
-import liaison.linkit.member.domain.repository.MemberRoleRepository;
+import liaison.linkit.member.domain.Role;
+import liaison.linkit.member.domain.repository.RoleRepository;
 import liaison.linkit.member.dto.csv.MemberRoleCsvData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,19 +15,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class CsvMemberRoleWriter implements ItemWriter<MemberRoleCsvData> {
-    private final MemberRoleRepository memberRoleRepository;
+    private final RoleRepository roleRepository;
 
     @Override
     @Transactional
     public void write(Chunk<? extends MemberRoleCsvData> chunk) throws Exception {
 
-        Chunk<MemberRole> memberRoles = new Chunk<>();
+        Chunk<Role> memberRoles = new Chunk<>();
 
         chunk.forEach(memberRoleCsvData -> {
-            MemberRole memberRole = MemberRole.of(memberRoleCsvData.getRoleName());
-            memberRoles.add(memberRole);
+            Role role = Role.of(memberRoleCsvData.getRoleName());
+            memberRoles.add(role);
         });
 
-        memberRoleRepository.saveAll(memberRoles);
+        roleRepository.saveAll(memberRoles);
     }
 }

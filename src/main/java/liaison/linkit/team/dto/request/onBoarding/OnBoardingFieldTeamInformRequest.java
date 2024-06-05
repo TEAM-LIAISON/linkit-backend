@@ -7,7 +7,7 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class OnBoardingFirstRequest {
+public class OnBoardingFieldTeamInformRequest {
     private final List<String> teamBuildingFieldNames;
     private final String teamName;
     private final String sectorName;

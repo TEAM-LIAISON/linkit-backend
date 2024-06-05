@@ -63,7 +63,7 @@ class MiniProfileControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        given(miniProfileService.validateMiniProfileByMember(1L)).willReturn(1L);
+        doNothing().when(miniProfileService).validateMiniProfileByMember(1L);
     }
 
     protected MockMultipartFile getMockMultipartFile() {

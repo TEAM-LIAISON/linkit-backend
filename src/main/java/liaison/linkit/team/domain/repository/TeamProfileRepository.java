@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface TeamProfileRepository extends JpaRepository<TeamProfile, Long> {
 
     @Query("""
@@ -12,7 +14,7 @@ public interface TeamProfileRepository extends JpaRepository<TeamProfile, Long> 
            FROM TeamProfile teamProfile
            WHERE teamProfile.member.id = :memberId
            """)
-    TeamProfile findByMemberId(@Param("memberId") final Long memberId);
+    Optional<TeamProfile> findByMemberId(@Param("memberId") final Long memberId);
 
     boolean existsByMemberId(final Long memberId);
 }

@@ -1,6 +1,7 @@
 package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
+import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
@@ -18,7 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_PROFILE_TEAM_BUILDING_WITH_MEMBER;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,17 +32,35 @@ public class ProfileTeamBuildingFieldService {
     private final ProfileTeamBuildingFieldRepository profileTeamBuildingFieldRepository;
     private final TeamBuildingFieldRepository teamBuildingFieldRepository;
 
+    // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
+    private Profile getProfile(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    // 희망 팀빌딩 분야 전체 조회
+    private List<ProfileTeamBuildingField> getProfileTeamBuildingFields(final Long memberId) {
+        try {
+            return profileTeamBuildingFieldRepository.findAllByProfileId(getProfile(memberId).getId());
+        } catch (Exception e) {
+            throw new BadRequestException(NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID);
+        }
+
+    }
+
+    // 유효성 검증
     public void validateProfileTeamBuildingFieldByMember(final Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if (!profileTeamBuildingFieldRepository.existsByProfileId(profileId)) {
-            throw new AuthException(INVALID_PROFILE_TEAM_BUILDING_WITH_MEMBER);
+        if (!profileTeamBuildingFieldRepository.existsByProfileId(getProfile(memberId).getId())) {
+            throw new AuthException(NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID);
         }
     }
+
+    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     // 희망 팀빌딩 분야 저장 비즈니스 로직
     public void save(final Long memberId, final ProfileTeamBuildingCreateRequest createRequest) {
 
-        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Profile profile = getProfile(memberId);
 
         // 이미 저장된 이력이 존재하는 프로필의 경우 먼저 삭제한다.
         if (profileTeamBuildingFieldRepository.existsByProfileId(profile.getId())) {
@@ -65,12 +85,11 @@ public class ProfileTeamBuildingFieldService {
         profileRepository.save(profile);
     }
 
-
     @Transactional(readOnly = true)
     public ProfileTeamBuildingFieldResponse getAllProfileTeamBuildings(final Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
+        final Profile profile = getProfile(memberId);
 
-        List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingFieldRepository.findAllByProfileId(profileId);
+        List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingFieldRepository.findAllByProfileId(profile.getId());
 
         List<String> teamBuildingFieldNames = profileTeamBuildingFields.stream()
                 .map(profileTeamBuildingField -> teamBuildingFieldRepository.findById(profileTeamBuildingField.getTeamBuildingField().getId()))
@@ -86,10 +105,9 @@ public class ProfileTeamBuildingFieldService {
             final Long memberId,
             final ProfileTeamBuildingUpdateRequest updateRequest
     ) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        final Profile profile = profileRepository.findByMemberId(memberId);
+        final Profile profile = getProfile(memberId);
 
-        profileTeamBuildingFieldRepository.deleteAllByProfileId(profileId);
+        profileTeamBuildingFieldRepository.deleteAllByProfileId(profile.getId());
 
         final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
                 .findTeamBuildingFieldsByFieldNames(updateRequest.getTeamBuildingFieldNames());

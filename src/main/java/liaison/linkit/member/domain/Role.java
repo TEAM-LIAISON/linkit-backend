@@ -14,7 +14,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberRole {
+public class Role {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_role_id")
@@ -23,10 +23,10 @@ public class MemberRole {
     @Column(nullable = false, length = 50)
     private String roleName;
 
-    public static MemberRole of(
+    public static Role of(
             final String roleName
     ) {
-        return new MemberRole(
+        return new Role(
                 null,
                 roleName
         );

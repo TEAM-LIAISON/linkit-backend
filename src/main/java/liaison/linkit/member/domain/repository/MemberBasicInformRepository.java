@@ -14,5 +14,5 @@ public interface MemberBasicInformRepository extends JpaRepository<MemberBasicIn
 
     boolean existsByMemberId(Long memberId);
 
-    MemberBasicInform findByMemberId(@Param("memberId") final Long memberId);
+    Optional<MemberBasicInform> findByMemberId(@Param("memberId") final Long memberId);
 }

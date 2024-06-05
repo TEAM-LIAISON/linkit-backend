@@ -15,9 +15,9 @@ public enum ExceptionCode {
     NOT_FOUND_MEMBER_ROLE_ID(1003, "요청한 ID에 해당하는 직무/역할이 존재하지 않습니다."),
     NOT_FOUND_AWARDS_ID(1004, "요청한 ID에 해당하는 수상 정보가 존재하지 않습니다."),
 
-    NOT_FOUND_MINI_PROFILE_ID(1014, "요청한 ID에 해당하는 미니 프로필이 존재하지 않습니다."),
+
     NOT_FOUND_ANTECEDENTS_ID(1018, "요청한 ID에 해당하는 이력 정보가 존재하지 않습니다."),
-    NOT_FOUND_PROFILE_ID(1020, "요청한 ID에 해당하는 프로필 정보가 존재하지 않습니다."),
+
     NOT_FOUND_EDUCATION_ID(1022, "요청한 ID에 해당하는 학력 정보가 존재하지 않습니다."),
     NOT_FOUND_MEMBER_BASIC_INFORM_ID(1025, "요청한 ID에 해당하는 멤버 기본 정보가 존재하지 않습니다."),
     NOT_FOUND_ATTACH_URL_ID(1028, "요청한 ID에 해당하는 첨부 URL 정보가 존재하지 않습니다."),
@@ -43,7 +43,8 @@ public enum ExceptionCode {
     INVALID_TEAM_MINI_PROFILE_WITH_MEMBER(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
     INVALID_TEAM_PROFILE_TEAM_BUILDING_WITH_MEMBER(1030, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
     INVALID_PROFILE_REGION_WITH_MEMBER(1031, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
-    INVALID_TEAM_PROFILE_WITH_MEMBER(1031, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
+
+
 
     // -----문단 구분-----
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
@@ -75,8 +76,54 @@ public enum ExceptionCode {
     FAIL_TO_VALIDATE_TOKEN(9105, "토큰 유효성 검사 중 오류가 발생했습니다."),
     NOT_FOUND_REFRESH_TOKEN(9106, "refresh-token에 해당하는 쿠키 정보가 없습니다."),
     INVALID_AUTHORITY(9201, "해당 요청에 대한 접근 권한이 없습니다."),
-    INTERNAL_SEVER_ERROR(9999, "서버 에러가 발생하였습니다. 관리자에게 문의해 주세요.");
+    INTERNAL_SEVER_ERROR(9999, "서버 에러가 발생하였습니다. 관리자에게 문의해 주세요."),
+
+
+    // 수정 완료 코드
+
+    // 1. antecedents 2. attach (URL/FILE) 3. awards
+
+    NOT_FOUND_MEMBER_BY_MEMBER_ID(1004, "사용자의 ID에 해당하는 회원 정보가 존재하지 않습니다."),
+    NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID(1004, "사용자의 ID에 해당하는 회원 기본 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_PROFILE_BY_MEMBER_ID(1004, "사용자의 ID에 해당하는 내 이력서 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 내 이력서용 미니 프로필 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_PROFILE_REGION_BY_MEMBER_ID(1006, "사용자의 ID에 해당하는 내 이력서용 미니 프로필 정보가 존재하지 않습니다."),
+    NOT_FOUND_PROFILE_REGION_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 내 이력서용 미니 프로필 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_PROFILE_SKILL_BY_ID(1004, "해당 보유 기술 및 역할 ID에 해당하는 보유 기술 및 역할 정보가 존재하지 않습니다."),
+    NOT_FOUND_PROFILE_SKILLS_BY_PROFILE_ID(1004, "사용자의 내 이력서 ID에 해당하는 보유 기술 및 역할 리스트 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_ANTECEDENTS_BY_ID(1007, "해당 이력 ID에 해당하는 이력 정보가 존재하지 않습니다."),
+    NOT_FOUND_ANTECEDENTS_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 이력 리스트 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_EDUCATION_BY_ID(1007, "해당 학력 ID에 해당하는 학력 정보가 존재하지 않습니다."),
+    NOT_FOUND_EDUCATIONS_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 학력 리스트 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_AWARDS_BY_ID(1007, "해당 학력 ID에 해당하는 학력 정보가 존재하지 않습니다."),
+    NOT_FOUND_AWARDS_LIST_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 학력 리스트 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_ATTACH_URL_BY_ID(1007, "해당 학력 ID에 해당하는 학력 정보가 존재하지 않습니다."),
+    NOT_FOUND_ATTACH_URLS_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 학력 리스트 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_ATTACH_FILE_BY_ID(1007, "해당 학력 ID에 해당하는 학력 정보가 존재하지 않습니다."),
+    NOT_FOUND_ATTACH_FILES_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 학력 리스트 정보가 존재하지 않습니다."),
+
+    NOT_FOUND_MINI_PROFILE_BY_MEMBER_ID(1006, "사용자의 ID에 해당하는 내 이력서용 미니 프로필 정보가 존재하지 않습니다."),
+    NOT_FOUND_MINI_PROFILE_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 내 이력서용 미니 프로필 정보가 존재하지 않습니다."),
+
+
+
+    // 팀 소개서 관련 항목
+    NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다.");
+
+
 
     private final int code;
     private final String message;
+
+
+
 }

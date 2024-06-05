@@ -5,9 +5,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.attach.AttachFileCreateRequest;
-import liaison.linkit.profile.dto.request.attach.AttachFileUpdateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
-import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/attach")
 public class AttachController {
-
     private final AttachService attachService;
 
     // 외부 링크 1개 생성 요청
@@ -41,31 +38,31 @@ public class AttachController {
     public ResponseEntity<AttachUrlResponse> getAttachUrl(
             @Auth final Accessor accessor
     ) {
-        Long attachUrlId = attachService.validateAttachUrlByMember(accessor.getMemberId());
-        final AttachUrlResponse attachUrlResponse = attachService.getAttachUrlDetail(attachUrlId);
+        attachService.validateAttachUrlByMember(accessor.getMemberId());
+        final AttachUrlResponse attachUrlResponse = attachService.getAttachUrlDetail(accessor.getMemberId());
         return ResponseEntity.ok().body(attachUrlResponse);
     }
 
     // 외부 링크 1개 수정 요청
-    @PatchMapping("/url")
-    @MemberOnly
-    public ResponseEntity<Void> updateAttachUrl(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final AttachUrlUpdateRequest updateRequest
-    ) {
-        attachService.updateImage(accessor.getMemberId(), updateRequest);
-        return ResponseEntity.noContent().build();
-    }
-
-    // 외부 링크 1개 삭제 요청
-    @DeleteMapping("/url")
-    @MemberOnly
-    public ResponseEntity<Void> deleteAttachUrl(
-            @Auth final Accessor accessor
-    ) {
-        attachService.deleteImage(accessor.getMemberId());
-        return ResponseEntity.noContent().build();
-    }
+//    @PatchMapping("/url")
+//    @MemberOnly
+//    public ResponseEntity<Void> updateAttachUrl(
+//            @Auth final Accessor accessor,
+//            @RequestBody @Valid final AttachUrlUpdateRequest updateRequest
+//    ) {
+//        attachService.updateImage(accessor.getMemberId(), updateRequest);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    // 외부 링크 1개 삭제 요청
+//    @DeleteMapping("/url")
+//    @MemberOnly
+//    public ResponseEntity<Void> deleteAttachUrl(
+//            @Auth final Accessor accessor
+//    ) {
+//        attachService.deleteImage(accessor.getMemberId());
+//        return ResponseEntity.noContent().build();
+//    }
 
 
 
@@ -84,29 +81,29 @@ public class AttachController {
     public ResponseEntity<AttachFileResponse> getAttachFile(
             @Auth final Accessor accessor
     ) {
-        Long attachFileId = attachService.validateAttachFileByMember(accessor.getMemberId());
-        final AttachFileResponse attachFileResponse = attachService.getAttachFileDetail(attachFileId);
+        attachService.validateAttachFileByMember(accessor.getMemberId());
+        final AttachFileResponse attachFileResponse = attachService.getAttachFileDetail(accessor.getMemberId());
         return ResponseEntity.ok().body(attachFileResponse);
     }
-
-    @PatchMapping("/file")
-    @MemberOnly
-    public ResponseEntity<Void> updateAttachFile(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final AttachFileUpdateRequest updateRequest
-    ) {
-        attachService.updateFile(accessor.getMemberId(), updateRequest);
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/file")
-    @MemberOnly
-    public ResponseEntity<Void> deleteAttachFile(
-            @Auth final Accessor accessor
-    ) {
-        attachService.deleteFile(accessor.getMemberId());
-        return ResponseEntity.noContent().build();
-    }
+//
+//    @PatchMapping("/file")
+//    @MemberOnly
+//    public ResponseEntity<Void> updateAttachFile(
+//            @Auth final Accessor accessor,
+//            @RequestBody @Valid final AttachFileUpdateRequest updateRequest
+//    ) {
+//        attachService.updateFile(accessor.getMemberId(), updateRequest);
+//        return ResponseEntity.noContent().build();
+//    }
+//
+//    @DeleteMapping("/file")
+//    @MemberOnly
+//    public ResponseEntity<Void> deleteAttachFile(
+//            @Auth final Accessor accessor
+//    ) {
+//        attachService.deleteFile(accessor.getMemberId());
+//        return ResponseEntity.noContent().build();
+//    }
 
     @GetMapping("/list")
     @MemberOnly

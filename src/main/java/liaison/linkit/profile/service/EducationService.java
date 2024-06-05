@@ -23,8 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_EDUCATION_WITH_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_EDUCATION_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -38,31 +37,48 @@ public class EducationService {
     private final DegreeRepository degreeRepository;
     private final MajorRepository majorRepository;
 
-    public void validateEducationByMember(Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if (!educationRepository.existsByProfileId(profileId)) {
-            throw new AuthException(INVALID_EDUCATION_WITH_MEMBER);
-        }
-//        else {
-//            // 여러 개 찾을 수 있음
-//            return educationRepository.findByProfileId(profileId).getId();
-//        }
+    // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
+    private Profile getProfile(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
     }
 
-    public List<EducationResponse> save(final Long memberId, final List<EducationCreateRequest> educationCreateRequests) {
-        List<EducationResponse> responses = new ArrayList<>();
+    // 어떤 학력 정보 1개만 조회할 때
+    private Education getEducation(final Long educationId) {
+        return educationRepository.findById(educationId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_EDUCATION_BY_ID));
+    }
 
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        if (profile == null) {
-            throw new IllegalArgumentException("Profile not found for memberId: " + memberId);
+    // 내 이력서 하나에 대한 모든 학력 정보 리스트 조회
+    private List<Education> getEducations(final Long profileId) {
+        try {
+            return educationRepository.findAllByProfileId(profileId);
+        } catch (Exception e) {
+            throw new BadRequestException(NOT_FOUND_EDUCATIONS_BY_PROFILE_ID);
         }
+    }
 
-        // 교육항목 존재 이력이 있다면, 우선 삭제
+    // 멤버로부터 프로필 아이디를 조회해서 학력 정보 존재성을 판단
+    public void validateEducationByMember(final Long memberId) {
+        if (!educationRepository.existsByProfileId(getProfile(memberId).getId())) {
+            throw new AuthException(NOT_FOUND_EDUCATIONS_BY_PROFILE_ID);
+        }
+    }
+
+    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
+
+    public List<EducationResponse> save(final Long memberId, final List<EducationCreateRequest> educationCreateRequests) {
+
+        final Profile profile = getProfile(memberId);
+
+        // 교육항목 존재 이력이 있다면, 우선 전체 삭제
         if (educationRepository.existsByProfileId(profile.getId())) {
             educationRepository.deleteAllByProfileId(profile.getId());
         }
 
-        // 반복문을 통해 저장한다.
+        List<EducationResponse> responses = new ArrayList<>();
+
+        // 반복문을 통해 들어온 순서대로 저장한다.
         for (EducationCreateRequest request : educationCreateRequests) {
             final University university = universityRepository.findByUniversityName(request.getUniversityName());
             if (university == null) {
@@ -112,8 +128,8 @@ public class EducationService {
 
     @Transactional(readOnly = true)
     public List<EducationResponse> getAllEducations(final Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        final List<Education> educations = educationRepository.findAllByProfileId(profileId);
+        final Profile profile = getProfile(memberId);
+        final List<Education> educations = educationRepository.findAllByProfileId(profile.getId());
         return educations.stream()
                 .map(this::getEducationResponse)
                 .toList();

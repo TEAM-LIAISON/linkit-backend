@@ -22,6 +22,17 @@ import java.util.List;
 public class EducationController {
     private final EducationService educationService;
 
+    // 온보딩 학력 생성 요청
+    @PostMapping
+    @MemberOnly
+    public ResponseEntity<List<EducationResponse>> createEducation(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid EducationListCreateRequest educationListCreateRequest
+    ) {
+        final List<EducationResponse> educationResponses = educationService.save(accessor.getMemberId(), educationListCreateRequest.getEducationList());
+        return ResponseEntity.ok().body(educationResponses);
+    }
+
     // 교육 항목 전체 조회
     @GetMapping("/list")
     @MemberOnly
@@ -30,21 +41,7 @@ public class EducationController {
         return ResponseEntity.ok().body(educationResponses);
     }
 
-    // 교육 항목 1개 생성 -> Education 테이블에 저장된 PK를 반환한다.
-    @PostMapping
-    @MemberOnly
-    public ResponseEntity<List<EducationResponse>> createEducation(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid EducationListCreateRequest educationListCreateRequest
-    ) {
-        log.info("교육 항목 생성 요청이 들어옴");
-//        log.info("educationCreateRequest.getUniversityName()", educationCreateRequest.getUniversityName());
-//        log.info("educationCreateRequest.getMajorName()", educationCreateRequest.getMajorName());
-//        log.info("educationCreateRequest.getDegreeName()", educationCreateRequest.getDegreeName());
 
-        final List<EducationResponse> educationResponses = educationService.save(accessor.getMemberId(), educationListCreateRequest.getEducationList());
-        return ResponseEntity.ok().body(educationResponses);
-    }
 
     // 교육 항목 1개 조회
 //    @GetMapping
