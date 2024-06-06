@@ -1,7 +1,7 @@
 package liaison.linkit.global.config.csv.region;
 
 import liaison.linkit.profile.dto.csv.RegionCsvData;
-import liaison.linkit.team.domain.activity.Region;
+import liaison.linkit.region.domain.Region;
 import liaison.linkit.team.domain.repository.activity.RegionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

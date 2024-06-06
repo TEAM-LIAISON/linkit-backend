@@ -1,6 +1,6 @@
 package liaison.linkit.team.domain.repository.activity;
 
-import liaison.linkit.team.domain.activity.ActivityRegion;
+import liaison.linkit.region.domain.ActivityRegion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

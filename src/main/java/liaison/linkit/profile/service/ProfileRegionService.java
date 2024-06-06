@@ -8,7 +8,7 @@ import liaison.linkit.profile.domain.repository.ProfileRegionRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.ProfileRegionCreateRequest;
 import liaison.linkit.profile.dto.response.ProfileRegionResponse;
-import liaison.linkit.team.domain.activity.Region;
+import liaison.linkit.region.domain.Region;
 import liaison.linkit.team.domain.repository.activity.RegionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
