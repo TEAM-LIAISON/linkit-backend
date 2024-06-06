@@ -3,8 +3,8 @@
 //import liaison.linkit.team.domain.TeamProfile;
 //import liaison.linkit.team.domain.activity.ActivityMethod;
 //import liaison.linkit.team.domain.activity.ActivityMethodTag;
-//import liaison.linkit.team.domain.activity.ActivityRegion;
-//import liaison.linkit.team.domain.activity.Region;
+//import liaison.linkit.region.domain.ActivityRegion;
+//import liaison.linkit.region.domain.Region;
 //import liaison.linkit.team.domain.repository.TeamProfileRepository;
 //import liaison.linkit.team.domain.repository.activity.ActivityMethodRepository;
 //import liaison.linkit.team.domain.repository.activity.ActivityMethodTagRepository;
