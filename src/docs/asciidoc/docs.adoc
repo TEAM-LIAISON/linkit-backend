@@ -157,7 +157,11 @@ include::{snippets}/mini-profile-controller-test/create-mini-profile/request-par
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileCreateRequest-fields.adoc[]
 
 == 1.5. 팀 소개서 온보딩 가이드 기입
-=== 1.5.3. 팀 소개서 - 활동방식 생성
+=== 1.5.3. 팀 소개서 - 활동방식 및 활동지역 생성
+==== 요청
+include::{snippets}/activity-controller-test/post-activity/http-request.adoc[]
+include::{snippets}/activity-controller-test/post-activity/request-fields.adoc[]
+
 
 == 회원가입 및 로그인 API
 
