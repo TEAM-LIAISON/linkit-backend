@@ -37,7 +37,7 @@ public class ActivityService {
     final ActivityRegionRepository activityRegionRepository;
     final RegionRepository regionRepository;
 
-    final TeamProfile getTeamProfile(final Long memberId) {
+    private TeamProfile getTeamProfile(final Long memberId) {
         return teamProfileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
     }
