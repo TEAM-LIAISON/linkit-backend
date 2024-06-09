@@ -8,6 +8,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class OnBoardingFieldTeamInformRequest {
+
     // 희망 팀빌딩 분야 리스트 형태
     private final List<String> teamBuildingFieldNames;
 
@@ -20,3 +21,5 @@ public class OnBoardingFieldTeamInformRequest {
     // 분야
     private final String sectorName;
 }
+
+
