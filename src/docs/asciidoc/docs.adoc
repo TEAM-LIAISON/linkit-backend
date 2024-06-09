@@ -157,7 +157,14 @@ include::{snippets}/mini-profile-controller-test/create-mini-profile/request-par
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileCreateRequest-fields.adoc[]
 
 == 1.5. 팀 소개서 온보딩 가이드 기입
+=== 1.5.3. 팀 소개서 - 팀빌딩 분야 및 팀 기본 정보 생성
+=== [POST /team_profile/field/basic-team]
+==== 요청
+include::{snippets}/team-profile-controller-test/post-on-boarding-field-team-inform/http-request.adoc[]
+include::{snippets}/team-profile-controller-test/post-on-boarding-field-team-inform/request-fields.adoc[]
+
 === 1.5.3. 팀 소개서 - 활동방식 및 활동지역 생성
+==== [POST /activity-method]
 ==== 요청
 include::{snippets}/activity-controller-test/post-activity/http-request.adoc[]
 include::{snippets}/activity-controller-test/post-activity/request-fields.adoc[]
