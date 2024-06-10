@@ -65,7 +65,6 @@ public class TeamMiniProfile {
     @Column(name = "team_detail_inform")
     private String teamDetailInform;
 
-
     public static TeamMiniProfile of(
             final TeamProfile teamProfile,
             final IndustrySector industrySector,
