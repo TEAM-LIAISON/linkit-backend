@@ -18,6 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+// 내 이력서
 public class Profile {
 
     @Id
@@ -34,9 +35,9 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = REMOVE)
     private List<Awards> awardsList = new ArrayList<>();
 
-    // 전체 프로필 완성도 값 (%)
+    // 전체 프로필 완성도 값 (%) - 소수점 가능
     @Column(nullable = false)
-    private int completion;
+    private double completion;
 
     // 자기소개
     @Column(name = "introduction")
@@ -89,7 +90,7 @@ public class Profile {
     public Profile(
             final Long id,
             final Member member,
-            final int completion,
+            final double completion,
             final String introduction
     ) {
         this.id = id;
