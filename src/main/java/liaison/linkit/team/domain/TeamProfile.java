@@ -31,7 +31,7 @@ public class TeamProfile {
 
     // 팀 프로필 완성도
     @Column(name = "team_profile_completion")
-    private int teamProfileCompletion;
+    private double teamProfileCompletion;
 
     // 팀 프로필 희망 팀빌딩 분야
     @Column(nullable = false)
