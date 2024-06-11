@@ -5,7 +5,7 @@ import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.member.dto.request.MemberBasicInformCreateRequest;
+import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformCreateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
 import liaison.linkit.member.dto.response.MemberResponse;
 import liaison.linkit.member.service.MemberService;

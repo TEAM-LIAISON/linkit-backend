@@ -6,7 +6,8 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
 import liaison.linkit.member.domain.repository.MemberRepository;
-import liaison.linkit.member.dto.request.MemberBasicInformCreateRequest;
+import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformCreateRequest;
+import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformUpdateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
 import liaison.linkit.member.dto.response.MemberResponse;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
@@ -90,36 +91,23 @@ public class MemberService {
         return MemberResponse.getEmail(member);
     }
 
-//    public void updateBasicMemberInform(final Long memberId, final MemberBasicInformRequest memberBasicInformRequest){
-//       final Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
-//
-//       final MemberBasicInform memberBasicInform = memberBasicInformRepository.findByMember(member)
-//               .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_INFORM_ID));
-//
-//       final MemberBasicInform updateBasicMemberBasicInform = new MemberBasicInform(
-//               memberBasicInform.getId(),
-//               memberBasicInformRequest.getUsername(),
-//               memberBasicInformRequest.getContact(),
-//               memberBasicInformRequest.getMajor(),
-//               memberBasicInformRequest.getJob(),
-//               memberBasicInformRequest.getTeamBuildingStep()
-//       );
-//
-//       memberBasicInformRepository.save(updateBasicMemberBasicInform);
-//    }
+    public void update(
+            final Long memberId,
+            final MemberBasicInformUpdateRequest memberBasicInformUpdateRequest
+    ) {
+        final Member member = getMember(memberId);
+        final MemberBasicInform updateMemberBasicInform = new MemberBasicInform(
+                memberId,
+                memberBasicInformUpdateRequest.getMemberName(),
+                memberBasicInformUpdateRequest.getContact(),
+                memberBasicInformUpdateRequest.isMarketingAgree(),
+                member
+        );
 
-//    private MemberBasicInform findOrCreateMemberInform(final Long memberId, final MemberBasicInformRequest memberBasicInformRequest) {
-//        final Member member = memberRepository.findById(memberId)
-//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
-//        return memberBasicInformRepository.findByMember(member)
-//                .orElseGet(() -> createMemberInform(member, memberBasicInformRequest));
-//    }
-//
-//    private MemberBasicInform createMemberInform(final Member member, final MemberBasicInformRequest memberBasicInformRequest){
-//        if(!memberBasicInformRepository.existsByMember(member)){
-//
-//            return memberBasicInformRepository.save(new )
-//        }
-//    }
+        // 저장되어 있던 회원 기본 정보 삭제
+        memberBasicInformRepository.delete(member.getMemberBasicInform());
+
+        // 새롭게 전달 받은 회원 기본 정보 저장
+        memberBasicInformRepository.save(updateMemberBasicInform);
+    }
 }

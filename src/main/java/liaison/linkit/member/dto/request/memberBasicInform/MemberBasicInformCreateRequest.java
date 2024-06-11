@@ -1,4 +1,4 @@
-package liaison.linkit.member.dto.request;
+package liaison.linkit.member.dto.request.memberBasicInform;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -12,6 +12,7 @@ public class MemberBasicInformCreateRequest {
     @NotNull(message = "연락처를 입력해주세요")
     private final String contact;
 
+    @NotNull(message = "마케팅 정보 수신 동의를 체크해주세요")
     private final boolean marketingAgree;
 
     public MemberBasicInformCreateRequest(
