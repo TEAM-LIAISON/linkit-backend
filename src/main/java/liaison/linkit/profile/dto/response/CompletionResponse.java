@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CompletionResponse {
     // 프로필 완성도 % = completion
-    private final int completion;
+    private final double completion;
 
     // 상태도 던져줘야하나?
     // -> 아직 미확정
