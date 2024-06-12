@@ -1,5 +1,6 @@
-package liaison.linkit.profile.dto.request;
+package liaison.linkit.region.dto.request;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfileRegionCreateRequest {
     // region 관련
+    @NotNull(message = "시/도를 선택하세요")
     private String cityName;
+    @NotNull(message = "시/군/구를 선택하세요")
     private String divisionName;
 }

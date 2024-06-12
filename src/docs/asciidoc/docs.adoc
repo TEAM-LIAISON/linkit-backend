@@ -1,9 +1,9 @@
-= LINKIT
+= Linkit
 :toc: left
 :source-highlighter: highlightjs
 :sectlinks:
 
-=== 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
+== 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
 
 == 1.2 로그인
 === 1.2.1 간편로그인 [각 플랫폼 동일]
@@ -223,6 +223,3 @@ include::{snippets}/member-controller-test/get-member-email/request-cookies.adoc
 ==== 응답
 include::{snippets}/member-controller-test/get-member-email/http-response.adoc[]
 include::{snippets}/member-controller-test/get-member-email/response-fields.adoc[]
-
-
-

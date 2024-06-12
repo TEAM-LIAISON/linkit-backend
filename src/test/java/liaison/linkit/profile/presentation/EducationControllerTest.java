@@ -47,15 +47,12 @@ class EducationControllerTest extends ControllerTest {
     @MockBean
     private EducationService educationService;
 
-
-
     @BeforeEach
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
         doNothing().when(educationService).validateEducationByMember(anyLong());
-
     }
 
     private void makeEducation() throws Exception {

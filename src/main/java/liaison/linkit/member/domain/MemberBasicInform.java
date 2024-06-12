@@ -15,7 +15,6 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class MemberBasicInform {
 
-
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "member_basic_inform_id")

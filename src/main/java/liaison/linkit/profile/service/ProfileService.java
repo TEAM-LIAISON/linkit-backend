@@ -16,6 +16,7 @@ import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRe
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.Attach.AttachResponse;
+import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
