@@ -1,11 +1,11 @@
-package liaison.linkit.profile.presentation;
+package liaison.linkit.region.presentation;
 
 import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.ProfileRegionCreateRequest;
-import liaison.linkit.profile.service.ProfileRegionService;
+import liaison.linkit.region.dto.request.ProfileRegionCreateRequest;
+import liaison.linkit.region.service.ProfileRegionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

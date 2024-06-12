@@ -10,6 +10,8 @@ import liaison.linkit.profile.dto.request.ProfileCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.service.*;
+import liaison.linkit.region.dto.response.ProfileRegionResponse;
+import liaison.linkit.region.service.ProfileRegionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

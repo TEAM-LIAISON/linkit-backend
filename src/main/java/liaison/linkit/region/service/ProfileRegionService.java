@@ -1,4 +1,4 @@
-package liaison.linkit.profile.service;
+package liaison.linkit.region.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
@@ -6,8 +6,8 @@ import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileRegion;
 import liaison.linkit.profile.domain.repository.ProfileRegionRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.dto.request.ProfileRegionCreateRequest;
-import liaison.linkit.profile.dto.response.ProfileRegionResponse;
+import liaison.linkit.region.dto.request.ProfileRegionCreateRequest;
+import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import liaison.linkit.region.domain.Region;
 import liaison.linkit.team.domain.repository.activity.RegionRepository;
 import lombok.RequiredArgsConstructor;

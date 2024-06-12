@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.response;
+package liaison.linkit.region.dto.response;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -19,15 +19,6 @@ public class ProfileTeamBuildingFieldController {
 
     private final ProfileTeamBuildingFieldService profileTeamBuildingFieldService;
 
-    // 희망 팀빌딩 항목 전체 조회
-    @GetMapping
-    @MemberOnly
-    public ResponseEntity<ProfileTeamBuildingFieldResponse> getProfileTeamBuildingList(@Auth final Accessor accessor) {
-        profileTeamBuildingFieldService.validateProfileTeamBuildingFieldByMember(accessor.getMemberId());
-        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponses = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
-        return ResponseEntity.ok().body(profileTeamBuildingFieldResponses);
-    }
-
     // 희망 팀빌딩 항목 생성 (기존에 존재하는 경우, 전체 삭제 이후 다시 기입)
     @PostMapping
     @MemberOnly
@@ -37,6 +28,17 @@ public class ProfileTeamBuildingFieldController {
     ) {
         profileTeamBuildingFieldService.save(accessor.getMemberId(), profileTeamBuildingCreateRequest);
         return ResponseEntity.ok().build();
+    }
+
+    // 희망 팀빌딩 항목 전체 조회
+    @GetMapping
+    @MemberOnly
+    public ResponseEntity<ProfileTeamBuildingFieldResponse> getProfileTeamBuildingList(
+            @Auth final Accessor accessor
+    ) {
+        profileTeamBuildingFieldService.validateProfileTeamBuildingFieldByMember(accessor.getMemberId());
+        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponses = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
+        return ResponseEntity.ok().body(profileTeamBuildingFieldResponses);
     }
 
     // 수정 컨트롤러

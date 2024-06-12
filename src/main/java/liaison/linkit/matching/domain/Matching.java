@@ -31,7 +31,7 @@ public class Matching {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    // 내 이력서 ID, 팀 소개서 ID
+    // 내 이력서 ID, 팀 소개서 ID -> 중복 값이 될 가능성이 높다
     @Column(name = "receive_matching_id")
     private Long receiveMatchingId;
 
@@ -40,6 +40,7 @@ public class Matching {
     @Enumerated(value = STRING)
     private MatchingType matchingType;
 
+    // 요청할 때 보내는 메시지
     @Column(name = "request_message")
     private String requestMessage;
 

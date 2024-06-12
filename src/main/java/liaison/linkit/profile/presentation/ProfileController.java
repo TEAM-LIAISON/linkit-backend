@@ -7,6 +7,8 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.service.*;
+import liaison.linkit.region.dto.response.ProfileRegionResponse;
+import liaison.linkit.region.service.ProfileRegionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
