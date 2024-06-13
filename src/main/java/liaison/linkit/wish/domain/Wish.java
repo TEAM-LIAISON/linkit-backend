@@ -48,4 +48,6 @@ public class Wish {
         this.wishType = wishType;
         this.createdAt = LocalDateTime.now();
     }
+
+
 }
