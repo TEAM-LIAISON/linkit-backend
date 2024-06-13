@@ -39,8 +39,11 @@ out/
 ### Ignore .DS_Store ###
 **/.DS_Store
 
-#### RestDocs ###
+### RestDocs ###
 src/main/resources/static/docs/
 
-#### application.yml ###
+### application.yml ###
 #src/main/resources/*.yml
+
+### .gitmessage.txt ###
+.gitmessage.txt
