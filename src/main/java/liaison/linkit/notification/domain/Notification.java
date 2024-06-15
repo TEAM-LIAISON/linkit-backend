@@ -1,13 +1,14 @@
 package liaison.linkit.notification.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import liaison.linkit.global.BaseEntity;
+import liaison.linkit.member.domain.Member;
+import liaison.linkit.notification.domain.type.NotificationType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -28,5 +29,43 @@ public class Notification extends BaseEntity {
     @Column(name = "notification_id")
     private Long id;
 
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
+    @Column(name = "is_deleted")
+    private boolean isDeleted;
+
+    @Column(name = "is_read")
+    private boolean isRead;
+
+    @Column(name = "content")
+    private String content;
+
+    // 쪽지의 타입
+    @Enumerated(value = STRING)
+    @Column(name = "notification_type")
+    private NotificationType notificationType;
+
+    public Notification(
+            final Long id,
+            final Member member,
+            final String content,
+            final NotificationType notificationType
+    ) {
+        this.id = id;
+        this.member = member;
+        this.isDeleted = false;
+        this.isRead = false;
+        this.content = content;
+        this.notificationType = notificationType;
+    }
+
+    public Notification(
+            final Member member,
+            final String content,
+            final NotificationType notificationType
+    ) {
+        this(null, member, content, notificationType);
+    }
 }

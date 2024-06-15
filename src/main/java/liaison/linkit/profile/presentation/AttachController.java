@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/attach")
 public class AttachController {
+
     private final AttachService attachService;
 
     // 외부 링크 1개 생성 요청
@@ -28,7 +29,7 @@ public class AttachController {
             @Auth final Accessor accessor,
             @RequestBody @Valid AttachUrlCreateRequest attachUrlCreateRequest
     ) {
-        attachService.saveImage(accessor.getMemberId(), attachUrlCreateRequest);
+        attachService.saveUrl(accessor.getMemberId(), attachUrlCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -64,8 +65,6 @@ public class AttachController {
 //        return ResponseEntity.noContent().build();
 //    }
 
-
-
     @PostMapping("/file")
     @MemberOnly
     public ResponseEntity<Void> createAttachFle(
@@ -85,6 +84,7 @@ public class AttachController {
         final AttachFileResponse attachFileResponse = attachService.getAttachFileDetail(accessor.getMemberId());
         return ResponseEntity.ok().body(attachFileResponse);
     }
+
 //
 //    @PatchMapping("/file")
 //    @MemberOnly
