@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.domain.type.ProfileType;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,7 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = REMOVE)
     private List<Awards> awardsList = new ArrayList<>();
 
-    // 전체 프로필 완성도 값 (%) - 소수점 가능
+    // 전체 프로필 완성도 값 (%) - 소수점 가능 (double 자료형)
     @Column(nullable = false)
     private double completion;
 
@@ -43,46 +44,47 @@ public class Profile {
     @Column(name = "introduction")
     private String introduction;
 
-    // 자기소개 입력 여부
+    // 내 이력서 - 자기소개 항목 입력 여부
     @Column(nullable = false)
     private boolean isIntroduction;
 
-    // 기술 항목 기입 여부
+    // 내 이력서 - 보유 기술 항목 기입 여부
     @Column(nullable = false)
     private boolean isProfileSkill;
 
-    // 희망 팀빌딩 분야 항목
+    // 내 이력서 - 희망 팀빌딩 분야 항목 입력 여부
     @Column(nullable = false)
     private boolean isProfileTeamBuildingField;
 
-    // 지역 및 위치 항목
+    // 내 이력서 - 지역 및 위치 항목 입력 여부
     @Column(nullable = false)
     private boolean isProfileRegion;
 
-    // 이력 항목
+    // 내 이력서 - 이력 항목 기입 여부
     @Column(nullable = false)
     private boolean isAntecedents;
 
-    // 교육 항목
+    // 내 이력서 - 학력 항목 기입 여부
     @Column(nullable = false)
     private boolean isEducation;
 
-    // 수상 항목
+    // 내 이력서 - 수상 항목 기입 여부
     @Column(nullable = false)
     private boolean isAwards;
 
-    // Attach 2개를 한번에 관리하는 컬럼이 있어야 프론트에 던져줄 수 있음.
+    // 내 이력서 - 첨부 항목 기입 여부
     @Column(nullable = false)
     private boolean isAttach;
 
-    // URL 항목 기입 여부
+    // 내 이력서 - 첨부 URL 항목 기입 여부
     @Column(nullable = false)
     private boolean isAttachUrl;
 
-    // 파일 항목 기입 여부
+    // 내 이력서 - 첨부 File 항목 기입 여부
     @Column(nullable = false)
     private boolean isAttachFile;
 
+    // 내 이력서 - 미니 프로필 항목 존재 여부
     @Column(nullable = false)
     private boolean isMiniProfile;
 
@@ -117,6 +119,12 @@ public class Profile {
     ) {
         this(null, member, completion, introduction);
     }
+
+    // 보유기술, 희망 팀빌딩 분야, 위치 및 지역, 학력 59%
+    // 자기소개 20%
+    // 이력 7%
+    // 수상 7%
+    // 첨부 7%
 
     public void update(final ProfileUpdateRequest updateRequest) {this.introduction = updateRequest.getIntroduction();}
     public void deleteIntroduction() {this.introduction = null;}
@@ -176,20 +184,33 @@ public class Profile {
         }
     }
 
+    // 미니프로필 존재 여부 전환
     public void updateIsMiniProfile(final Boolean isMiniProfile) {
         this.isMiniProfile = isMiniProfile;
     }
 
     // 첨부 항목 등록 또는 삭제에서만 호출
     public void updateIsAttachUrl(final Boolean isAttachUrl) {
-
+        this.isAttachUrl = isAttachUrl;
     }
 
     public void updateIsAttachFile(final Boolean isAttachFile) {
-        
+        this.isAttachFile = isAttachFile;
     }
 
     public void updateMemberProfileTypeByCompletion() {
+        final double presentCompletion = this.getCompletion();
+        final ProfileType profileType = this.getMember().getProfileType();
+
+//        if (presentCompletion >= 0 && presentCompletion < 50) {
+//            if (ProfileType.NO_PERMISSION.equals(profileType)) {
+//                return;
+//            } else {
+//                // 해당 상태를 변경해줘야함.
+//                this.getMember().
+//            }
+//        }
+
 //
 //        // 완성도 값을 호출한다.
 //        final int presentCompletion = this.getCompletion();

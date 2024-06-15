@@ -84,7 +84,6 @@ public class AttachService {
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     public void saveUrl(final Long memberId, final AttachUrlCreateRequest attachUrlCreateRequest) {
-
         final Profile profile = getProfile(memberId);
         final AttachUrl newAttachUrl = AttachUrl.of(
                 profile,
@@ -93,9 +92,8 @@ public class AttachService {
         );
 
         attachUrlRepository.save(newAttachUrl);
-
-        // 프로필 상태 관리 첨부용으로 추가 필요
-        // profile.updateMemberProfileTypeByCompletion();
+        profile.updateIsAttachUrl(true);
+        profile.updateMemberProfileTypeByCompletion();
     }
 
     public AttachUrlResponse getAttachUrlDetail(final Long attachUrlId) {

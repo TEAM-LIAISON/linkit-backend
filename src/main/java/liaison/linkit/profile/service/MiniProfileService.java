@@ -49,9 +49,7 @@ public class MiniProfileService {
             throw new AuthException(NOT_FOUND_MINI_PROFILE_BY_MEMBER_ID);
         }
     }
-
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
-
 
     // 미니 프로필 저장 메서드
     public void save(
@@ -76,7 +74,6 @@ public class MiniProfileService {
         );
 
         miniProfileRepository.save(newMiniProfile);
-
         profile.updateIsMiniProfile(true);
     }
 
@@ -85,7 +82,6 @@ public class MiniProfileService {
     public MiniProfileResponse getPersonalMiniProfile(final Long memberId) {
         final Profile profile = getProfile(memberId);
         final MiniProfile miniProfile = getMiniProfile(profile.getId());
-        // 개인 미니 이력서 조회
         return MiniProfileResponse.personalMiniProfile(miniProfile);
     }
 
@@ -98,7 +94,7 @@ public class MiniProfileService {
         miniProfileRepository.save(miniProfile);
     }
 
-    // 특정 미니 프로필을 삭제하고 싶다고 요청을 보낸 상황
+    // 미니 프로필 삭제
     public void delete(final Long memberId){
         final Profile profile = getProfile(memberId);
         final MiniProfile miniProfile = getMiniProfile(profile.getId());
@@ -107,8 +103,9 @@ public class MiniProfileService {
             // 삭제할 수 있는 미니 프로필이 존재하지 않음.
             throw new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_MEMBER_ID);
         }
+
         miniProfileRepository.deleteById(miniProfile.getId());
-        // 프로그레스 처리 필요
+        profile.updateIsMiniProfile(false);
     }
 
 
