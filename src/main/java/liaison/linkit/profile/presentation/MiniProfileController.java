@@ -21,7 +21,7 @@ public class MiniProfileController {
 
     private final MiniProfileService miniProfileService;
 
-    // 해당 회원이 가지고 있는 미니 프로필 정보를 가져옴
+    // 미니 프로필 조회 요청
     @GetMapping
     @MemberOnly
     public ResponseEntity<MiniProfileResponse> getMiniProfile(

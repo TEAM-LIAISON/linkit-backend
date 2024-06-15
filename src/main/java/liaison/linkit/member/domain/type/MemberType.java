@@ -1,7 +1,7 @@
 package liaison.linkit.member.domain.type;
 
 // 회원의 내 이력서 및 팀 소개서 작성 여부에 따른 타입 설정
-public enum MemberProfileType {
+public enum MemberType {
 
     // 내 이력서 및 팀 소개서 모두 작성하지 않은 상태 -> 처음에 회원가입 진행했을 때 상태
     // 모두 작성하지 않은 경우 Error Code -> 사용자가 내 이력서 또는 팀 소개서를 등록하세요 알림을 띄워준다.

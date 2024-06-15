@@ -1,7 +1,9 @@
 package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
-import liaison.linkit.member.domain.type.MemberProfileType;
+import liaison.linkit.member.domain.type.MemberType;
+import liaison.linkit.member.domain.type.ProfileType;
+import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.team.domain.TeamProfile;
 import lombok.Getter;
@@ -15,7 +17,8 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static liaison.linkit.member.domain.MemberState.ACTIVE;
-import static liaison.linkit.member.domain.type.MemberProfileType.EMPTY_PROFILE;
+import static liaison.linkit.member.domain.type.MemberType.EMPTY_PROFILE;
+import static liaison.linkit.member.domain.type.ProfileType.NO_PERMISSION;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -50,7 +53,15 @@ public class Member {
 
     @Column(nullable = false)
     @Enumerated(value = STRING)
-    private MemberProfileType memberProfileType;
+    private MemberType memberType;
+
+    @Column(nullable = false)
+    @Enumerated(value = STRING)
+    private ProfileType profileType;
+
+    @Column(nullable = false)
+    @Enumerated(value = STRING)
+    private TeamProfileType teamProfileType;
 
     @CreatedDate
     @Column(updatable = false)
@@ -76,7 +87,9 @@ public class Member {
         this.id = id;
         this.socialLoginId = socialLoginId;
         this.email = email;
-        this.memberProfileType = EMPTY_PROFILE;
+        this.memberType = EMPTY_PROFILE;
+        this.profileType = NO_PERMISSION;
+
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
@@ -94,5 +107,8 @@ public class Member {
     }
 
     public void changeIsMemberBasicInform(final Boolean existMemberBasicInform) {
-        this.existMemberBasicInform = existMemberBasicInform;}
+        this.existMemberBasicInform = existMemberBasicInform;
+    }
+
+
 }

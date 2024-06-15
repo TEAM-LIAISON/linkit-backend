@@ -29,5 +29,4 @@ public class MiniProfileCreateRequest {
     @NotNull(message = "나의 스킬셋을 알려주세요")
     // 나의 스킬셋
     private final String skillSets;
-
 }
