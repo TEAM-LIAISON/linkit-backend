@@ -83,11 +83,12 @@ public class AttachService {
 
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
-    public void saveImage(final Long memberId, final AttachUrlCreateRequest attachUrlCreateRequest) {
-        final Profile profile = getProfile(memberId);
+    public void saveUrl(final Long memberId, final AttachUrlCreateRequest attachUrlCreateRequest) {
 
+        final Profile profile = getProfile(memberId);
         final AttachUrl newAttachUrl = AttachUrl.of(
                 profile,
+                attachUrlCreateRequest.getAttachUrlTitle(),
                 attachUrlCreateRequest.getAttachUrl()
         );
 

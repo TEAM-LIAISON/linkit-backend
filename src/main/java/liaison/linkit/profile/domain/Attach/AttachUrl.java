@@ -27,15 +27,20 @@ public class AttachUrl {
     private Profile profile;
 
     @Column(nullable = false)
+    private String attachUrlTitle;
+
+    @Column(nullable = false)
     private String attachUrl;
 
     public static AttachUrl of(
             final Profile profile,
+            final String attachUrlTitle,
             final String attachUrl
     ) {
         return new AttachUrl(
                 null,
                 profile,
+                attachUrlTitle,
                 attachUrl
         );
     }
