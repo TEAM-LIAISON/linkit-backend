@@ -67,13 +67,15 @@ public class EducationService {
 
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
-    public List<EducationResponse> save(final Long memberId, final List<EducationCreateRequest> educationCreateRequests) {
+    public void save(final Long memberId, final List<EducationCreateRequest> educationCreateRequests) {
 
         final Profile profile = getProfile(memberId);
 
         // 교육항목 존재 이력이 있다면, 우선 전체 삭제
         if (educationRepository.existsByProfileId(profile.getId())) {
             educationRepository.deleteAllByProfileId(profile.getId());
+            profile.updateIsEducation(false);
+            profile.updateMemberProfileTypeByCompletion();
         }
 
         List<EducationResponse> responses = new ArrayList<>();
@@ -110,7 +112,7 @@ public class EducationService {
 
         // 반복문 종료 후에 프로필의 상태를 업데이트한다.
         profile.updateIsEducation(true);
-        return responses;
+        profile.updateMemberProfileTypeByCompletion();
     }
 
 

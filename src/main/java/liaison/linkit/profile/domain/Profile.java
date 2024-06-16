@@ -128,8 +128,13 @@ public class Profile {
 
     public void update(final ProfileUpdateRequest updateRequest) {this.introduction = updateRequest.getIntroduction();}
     public void deleteIntroduction() {this.introduction = null;}
+
+    public void addPerfectionDefault() {this.completion += 11.8;}
+    public void cancelPerfectionDefault() {this.completion -= 11.8;}
+
     public void addPerfectionSeven() {this.completion += 7;}
     public void cancelPerfectionSeven() {this.completion -= 7;}
+
     public void addPerfectionTwenty() { this.completion += 20; }
     public void cancelPerfectionTwenty() {this.completion -= 20;}
 
@@ -137,22 +142,38 @@ public class Profile {
 
     public void updateIsProfileTeamBuildingField(final Boolean isProfileTeamBuildingField) {
         this.isProfileTeamBuildingField = isProfileTeamBuildingField;
-        checkAndUpdateByDefault();
+        if (isProfileTeamBuildingField) {
+            addPerfectionDefault();
+        } else {
+            cancelPerfectionDefault();
+        }
     }
 
     public void updateIsEducation(final Boolean isEducation) {
         this.isEducation = isEducation;
-        checkAndUpdateByDefault();
+        if (isEducation) {
+            addPerfectionDefault();
+        } else {
+            cancelPerfectionDefault();
+        }
     }
 
     public void updateIsProfileSkill(final boolean isProfileSkill) {
         this.isProfileSkill = isProfileSkill;
-        checkAndUpdateByDefault();
+        if (isProfileSkill) {
+            addPerfectionDefault();
+        } else {
+            cancelPerfectionDefault();
+        }
     }
 
     public void updateIsProfileRegion(final boolean isProfileRegion) {
         this.isProfileRegion = isProfileRegion;
-        // 프로그레스 상태 관리 로직 추가할 것 (6/1)
+        if (isProfileRegion) {
+            addPerfectionDefault();
+        } else {
+            cancelPerfectionDefault();
+        }
     }
 
     // 자기소개 등록 또는 삭제에서만 호출
@@ -202,45 +223,26 @@ public class Profile {
         final double presentCompletion = this.getCompletion();
         final ProfileType profileType = this.getMember().getProfileType();
 
-//        if (presentCompletion >= 0 && presentCompletion < 50) {
-//            if (ProfileType.NO_PERMISSION.equals(profileType)) {
-//                return;
-//            } else {
-//                // 해당 상태를 변경해줘야함.
-//                this.getMember().
-//            }
-//        }
-
-//
-//        // 완성도 값을 호출한다.
-//        final int presentCompletion = this.getCompletion();
-//
-//        // 사용자의 권한 상태를 호출한다.
-//        final MemberProfileType memberProfileType = this.getMember().getMemberProfileType();
-//
-//        if (presentCompletion >= 0 && presentCompletion < 50) {
-//            if (MemberProfileType.NO_PERMISSION.equals(memberProfileType)) {
-//                // 아무 조치를 하지 않는다.
-//                return;
-//            } else {
-//                // 같지 않으면 기존에 프로필 열람 및 매칭 요청 권한이 부여된 상태이다.
-//                // false 전달하여 NO_PERMISSION 상태로 변경을 진행한다.
-//                this.getMember().openAndClosePermission(false);
-//            }
-//        } else if (presentCompletion >= 50 && presentCompletion < 80) {
-//            if (MemberProfileType.PROFILE_OPEN_PERMISSION.equals(memberProfileType)) {
-//                return;
-//            } else {
-//                // true 전달하여 PROFILE_OPEN_PERMISSION 상태로 변경한다.
-//                this.getMember().openAndClosePermission(true);
-//            }
-//        } else {
-//            if (MemberProfileType.MATCHING_PERMISSION.equals(memberProfileType)) {
-//                return;
-//            } else {
-//                this.getMember().changeAndOpenPermission(true);
-//            }
-//        }
+        if (presentCompletion >= 0 && presentCompletion < 50) {
+            if (ProfileType.NO_PERMISSION.equals(profileType)) {
+                return;
+            } else {
+                // 해당 상태를 변경해줘야함.
+                this.getMember().setProfileType(ProfileType.NO_PERMISSION);
+            }
+        } else if (presentCompletion >= 50 && presentCompletion < 80) {
+            if (ProfileType.ALLOW_BROWSE.equals(profileType)) {
+                return;
+            } else {
+                this.getMember().setProfileType(ProfileType.ALLOW_BROWSE);
+            }
+        } else {
+            if (ProfileType.ALLOW_MATCHING.equals(profileType)) {
+                return;
+            } else {
+                this.getMember().setProfileType(ProfileType.ALLOW_MATCHING);
+            }
+        }
     }
 
     // Default 항목에 대한 검사 진행

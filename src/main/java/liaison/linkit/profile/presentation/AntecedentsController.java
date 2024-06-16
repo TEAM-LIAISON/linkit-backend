@@ -26,13 +26,13 @@ public class AntecedentsController {
     // 온보딩 이력 생성 요청
     @PostMapping
     @MemberOnly
-    public ResponseEntity<List<AntecedentsResponse>> createAntecedents(
+    public ResponseEntity<Void> createAntecedents(
             @Auth final Accessor accessor,
             @RequestBody @Valid List<AntecedentsCreateRequest> antecedentsCreateRequests
     ){
         log.info("이력 생성 요청 발생");
-        final List<AntecedentsResponse> antecedentsResponses = antecedentsService.saveAll(accessor.getMemberId(), antecedentsCreateRequests);
-        return ResponseEntity.ok().body(antecedentsResponses);
+        antecedentsService.saveAll(accessor.getMemberId(), antecedentsCreateRequests);
+        return ResponseEntity.ok().build();
     }
 
 

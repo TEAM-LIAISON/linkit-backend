@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
@@ -57,7 +56,7 @@ public class AntecedentsService {
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     @Transactional
-    public List<AntecedentsResponse> saveAll(
+    public void saveAll(
             final Long memberId,
             final List<AntecedentsCreateRequest> antecedentsCreateRequests
     ) {
@@ -68,6 +67,8 @@ public class AntecedentsService {
         // 기존에 존재하던 해당 프로필의 모든 이력 항목을 삭제한다.
         if (antecedentsRepository.existsByProfileId(profile.getId())) {
             antecedentsRepository.deleteAllByProfileId(profile.getId());
+            profile.updateIsAntecedents(false);
+            profile.updateMemberProfileTypeByCompletion();
         }
 
         // 저장 로직을 반복 실행하여 모든 경력 데이터 저장
@@ -78,11 +79,6 @@ public class AntecedentsService {
         // 프로필 업데이트
         profile.updateIsAntecedents(true);
         profile.updateMemberProfileTypeByCompletion();
-
-        // 저장된 각 경력 정보에 대한 응답 생성
-        return savedAntecedents.stream()
-                .map(this::getAntecedentsResponse)
-                .collect(Collectors.toList());
     }
 
     private Antecedents saveAntecedent(Profile profile, AntecedentsCreateRequest request) {
