@@ -56,6 +56,8 @@ public class ProfileRegionService {
 
             if (savedProfileRegion != null) {
                 profileRegionRepository.delete(savedProfileRegion);
+                profile.updateIsProfileRegion(false);
+                profile.updateMemberProfileTypeByCompletion();
             }
 
             final Region region = regionRepository.findRegionByCityNameAndDivisionName(
@@ -71,13 +73,11 @@ public class ProfileRegionService {
 
             ProfileRegion newProfileRegion = new ProfileRegion(null, profile, region);
             profileRegionRepository.save(newProfileRegion);
-
             profile.updateIsProfileRegion(true);
-
+            profile.updateMemberProfileTypeByCompletion();
         } catch (IllegalArgumentException e) {
             // Handle known exceptions here
             throw e;  // or return a custom response or error code
-
         } catch (Exception e) {
             // Handle unexpected exceptions
             throw new RuntimeException("An unexpected error occurred while saving profile region data", e);

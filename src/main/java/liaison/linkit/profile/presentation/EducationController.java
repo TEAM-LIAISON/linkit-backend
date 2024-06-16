@@ -25,12 +25,12 @@ public class EducationController {
     // 온보딩 학력 생성 요청
     @PostMapping
     @MemberOnly
-    public ResponseEntity<List<EducationResponse>> createEducation(
+    public ResponseEntity<Void> createEducation(
             @Auth final Accessor accessor,
             @RequestBody @Valid EducationListCreateRequest educationListCreateRequest
     ) {
-        final List<EducationResponse> educationResponses = educationService.save(accessor.getMemberId(), educationListCreateRequest.getEducationList());
-        return ResponseEntity.ok().body(educationResponses);
+        educationService.save(accessor.getMemberId(), educationListCreateRequest.getEducationList());
+        return ResponseEntity.ok().build();
     }
 
     // 교육 항목 전체 조회

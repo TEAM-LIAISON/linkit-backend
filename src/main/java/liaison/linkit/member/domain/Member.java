@@ -110,5 +110,8 @@ public class Member {
         this.existMemberBasicInform = existMemberBasicInform;
     }
 
+    public void setProfileType(final ProfileType profileType) {
+        this.profileType = profileType;
+    }
 
 }

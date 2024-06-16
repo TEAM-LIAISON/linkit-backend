@@ -18,17 +18,6 @@ public class ProfileSkillController {
 
     private final ProfileSkillService profileSkillService;
 
-    // 보유 기술 전체 조회
-    @GetMapping
-    @MemberOnly
-    public ResponseEntity<ProfileSkillResponse> getProfileSkillList(
-            @Auth final Accessor accessor
-    ) {
-        profileSkillService.validateProfileSkillByMember(accessor.getMemberId());
-        final ProfileSkillResponse profileSkillResponses = profileSkillService.getAllProfileSkills(accessor.getMemberId());
-        return ResponseEntity.ok().body(profileSkillResponses);
-    }
-
     // 보유 기술 생성
     @PostMapping
     @MemberOnly
@@ -38,6 +27,17 @@ public class ProfileSkillController {
     ) {
         profileSkillService.save(accessor.getMemberId(), profileSkillCreateRequest);
         return ResponseEntity.ok().build();
+    }
+
+    // 보유 기술 전체 조회
+    @GetMapping
+    @MemberOnly
+    public ResponseEntity<ProfileSkillResponse> getProfileSkillList(
+            @Auth final Accessor accessor
+    ) {
+        profileSkillService.validateProfileSkillByMember(accessor.getMemberId());
+        final ProfileSkillResponse profileSkillResponses = profileSkillService.getAllProfileSkills(accessor.getMemberId());
+        return ResponseEntity.ok().body(profileSkillResponses);
     }
 
 //    @PatchMapping

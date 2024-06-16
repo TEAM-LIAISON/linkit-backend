@@ -67,6 +67,8 @@ public class ProfileSkillService {
         // 마찬가지로 존재하는 이력이 있는 항목이라면 삭제를 하고 저장한다.
         if (profileSkillRepository.existsByProfileId(profile.getId())) {
             profileSkillRepository.deleteAllByProfileId(profile.getId());
+            profile.updateIsProfileSkill(false);
+            profile.updateMemberProfileTypeByCompletion();
         }
 
         List<String> roleFields = profileSkillCreateRequest.getRoleFields();
@@ -89,8 +91,8 @@ public class ProfileSkillService {
         }
 
         profileSkillRepository.saveAll(profileSkills);
-
         profile.updateIsProfileSkill(true);
+        profile.updateMemberProfileTypeByCompletion();
     }
 
     @Transactional(readOnly = true)
