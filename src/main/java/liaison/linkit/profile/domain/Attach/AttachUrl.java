@@ -26,21 +26,22 @@ public class AttachUrl {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
+    // 웹 링크 이름
     @Column(nullable = false)
-    private String attachUrlTitle;
+    private String attachUrlName;
 
     @Column(nullable = false)
     private String attachUrl;
 
     public static AttachUrl of(
             final Profile profile,
-            final String attachUrlTitle,
+            final String attachUrlName,
             final String attachUrl
     ) {
         return new AttachUrl(
                 null,
                 profile,
-                attachUrlTitle,
+                attachUrlName,
                 attachUrl
         );
     }
