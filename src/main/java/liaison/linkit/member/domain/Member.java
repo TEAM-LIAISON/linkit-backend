@@ -89,7 +89,7 @@ public class Member {
         this.email = email;
         this.memberType = EMPTY_PROFILE;
         this.profileType = NO_PERMISSION;
-
+        this.teamProfileType = TeamProfileType.NO_PERMISSION;
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();

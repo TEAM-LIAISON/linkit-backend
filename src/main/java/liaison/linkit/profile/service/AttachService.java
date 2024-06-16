@@ -87,7 +87,7 @@ public class AttachService {
         final Profile profile = getProfile(memberId);
         final AttachUrl newAttachUrl = AttachUrl.of(
                 profile,
-                attachUrlCreateRequest.getAttachUrlTitle(),
+                attachUrlCreateRequest.getAttachUrlName(),
                 attachUrlCreateRequest.getAttachUrl()
         );
 

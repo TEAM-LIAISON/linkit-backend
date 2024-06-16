@@ -9,7 +9,7 @@ import lombok.Getter;
 public class AttachUrlCreateRequest {
 
     @NotNull(message = "첨부 URL 제목을 입력해주세요")
-    private final String attachUrlTitle;
+    private final String attachUrlName;
 
     @NotNull(message = "첨부 URL을 입력해주세요.")
     private final String attachUrl;
