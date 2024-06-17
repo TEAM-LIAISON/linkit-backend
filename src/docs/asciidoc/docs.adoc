@@ -223,3 +223,22 @@ include::{snippets}/member-controller-test/get-member-email/request-cookies.adoc
 ==== 응답
 include::{snippets}/member-controller-test/get-member-email/http-response.adoc[]
 include::{snippets}/member-controller-test/get-member-email/response-fields.adoc[]
+
+
+== 내 이력서 API
+=== 내 이력서 - 첨부 URL 생성 [POST /attach/url - 2024/06/17 추가]
+
+==== 요청
+include::{snippets}/attach-controller-test/create-attach-url/http-request.adoc[]
+include::{snippets}/attach-controller-test/create-attach-url/request-fields.adoc[]
+
+=== 내 이력서 - 첨부 URL 수정 [PUT /attach/url/:attachUrlId]
+==== 요청
+include::{snippets}/attach-controller-test/update-attach-url/http-request.adoc[]
+include::{snippets}/attach-controller-test/update-attach-url/path-parameters.adoc[]
+include::{snippets}/attach-controller-test/update-attach-url/request-fields.adoc[]
+
+=== 내 이력서 - 첨부 URL 삭제 [DELETE /attach/url/:attachUrlId]
+==== 요청
+include::{snippets}/attach-controller-test/delete-attach-url/http-request.adoc[]
+include::{snippets}/attach-controller-test/delete-attach-url/path-parameters.adoc[]

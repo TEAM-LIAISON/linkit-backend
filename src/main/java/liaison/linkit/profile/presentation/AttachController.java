@@ -6,6 +6,7 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.attach.AttachFileCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
+import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
@@ -45,25 +46,30 @@ public class AttachController {
     }
 
     // 외부 링크 1개 수정 요청
-//    @PatchMapping("/url")
-//    @MemberOnly
-//    public ResponseEntity<Void> updateAttachUrl(
-//            @Auth final Accessor accessor,
-//            @RequestBody @Valid final AttachUrlUpdateRequest updateRequest
-//    ) {
-//        attachService.updateImage(accessor.getMemberId(), updateRequest);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    // 외부 링크 1개 삭제 요청
-//    @DeleteMapping("/url")
-//    @MemberOnly
-//    public ResponseEntity<Void> deleteAttachUrl(
-//            @Auth final Accessor accessor
-//    ) {
-//        attachService.deleteImage(accessor.getMemberId());
-//        return ResponseEntity.noContent().build();
-//    }
+    @PutMapping("/url/{attachUrlId}")
+    @MemberOnly
+    public ResponseEntity<Void> updateAttachUrl(
+            @Auth final Accessor accessor,
+            @PathVariable final Long attachUrlId,
+            @RequestBody @Valid final AttachUrlUpdateRequest updateRequest
+    ) {
+        // 유효성 검사 먼저
+        attachService.validateAttachUrlByMember(accessor.getMemberId());
+        attachService.updateUrl(attachUrlId, updateRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 외부 링크 1개 삭제 요청
+    @DeleteMapping("/url/{attachUrlId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteAttachUrl(
+            @Auth final Accessor accessor,
+            @PathVariable final Long attachUrlId
+    ) {
+        attachService.validateAttachUrlByMember(accessor.getMemberId());
+        attachService.deleteUrl(accessor.getMemberId(), attachUrlId);
+        return ResponseEntity.noContent().build();
+    }
 
     @PostMapping("/file")
     @MemberOnly

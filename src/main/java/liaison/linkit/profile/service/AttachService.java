@@ -10,6 +10,7 @@ import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.dto.request.attach.AttachFileCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
+import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachResponse;
 import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
@@ -106,34 +107,26 @@ public class AttachService {
         return AttachUrlResponse.personalAttachUrl(attachUrl);
     }
 
-//    // 수정 메서드
-//    public void updateImage(final Long memberId, final AttachUrlUpdateRequest updateRequest) {
-//        final Profile profile = getProfile(memberId)
-//        final Long attachUrlId = validateAttachUrlByMember(memberId);
-//
-//        final AttachUrl attachUrl = attachUrlRepository.findById(attachUrlId)
-//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_URL_ID));
-//
-//        attachUrl.update(updateRequest);
-//        attachUrlRepository.save(attachUrl);
-//
-//        // 수정에 대해서는 값 변경 함수를 호출하지 않는다.
-//        profile.updateMemberProfileTypeByCompletion();
-//    }
-//
-//    // 삭제 메서드
-//    public void deleteImage(final Long memberId) {
-//        final Profile profile = profileRepository.findByMemberId(memberId);
-//        final Long attachUrlId = validateAttachUrlByMember(memberId);
-//
-//        if (!attachUrlRepository.existsById(attachUrlId)) {
-//            throw new BadRequestException(NOT_FOUND_ATTACH_URL_ID);
-//        }
-//
-//        attachUrlRepository.deleteById(attachUrlId);
-//    }
+    // 수정 메서드
+    // 특정 URL 수정
+    public void updateUrl(final Long attachUrlId, final AttachUrlUpdateRequest updateRequest) {
+        final AttachUrl attachUrl = getAttachUrl(attachUrlId);
+        attachUrl.update(updateRequest);
+    }
 
+    // 삭제 메서드
+    public void deleteUrl(final Long memberId, final Long attachUrlId) {
+        final Profile profile = getProfile(memberId);
+        final AttachUrl attachUrl = getAttachUrl(attachUrlId);
 
+        attachUrlRepository.deleteById(attachUrl.getId());
+
+        if (!attachUrlRepository.existsByProfileId(profile.getId())) {
+            // attachUrl 하나라도 존재하지 않는 상황
+            profile.cancelPerfectionSeven();
+            profile.updateMemberProfileTypeByCompletion();
+        }
+    }
 
     public void saveFile(final Long memberId, final AttachFileCreateRequest createRequest) {
         final Profile profile = getProfile(memberId);
@@ -195,5 +188,4 @@ public class AttachService {
 
         return AttachResponse.getAttachResponse(attachUrlResponses, attachFileResponses);
     }
-
 }

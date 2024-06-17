@@ -212,8 +212,7 @@ public class AntecedentsControllerTest extends ControllerTest {
 //                false
 //        );
 //
-//        when(antecedentsService.save(anyLong(), any(AntecedentsCreateRequest.class)))
-//                .thenReturn(antecedentsResponse);
+//        when(antecedentsService.saveAll(anyLong(), any(AntecedentsCreateRequest.class).
 //
 //        // when
 //        final ResultActions resultActions = performPostRequest(antecedentsCreateRequest);
