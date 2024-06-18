@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.response;
+package liaison.linkit.profile.dto.response.IsValue;
 
 import liaison.linkit.profile.domain.Profile;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class ProfileOnBoardingIsValueResponse {
     // 이력 항목
     private final boolean isAntecedents;
 
-    // 교육 항목
+    // 학력 항목
     private final boolean isEducation;
 
     // 미니 프로필 항목

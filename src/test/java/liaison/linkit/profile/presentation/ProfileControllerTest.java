@@ -9,6 +9,11 @@ import liaison.linkit.profile.dto.request.DefaultProfileCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
+import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
+import liaison.linkit.profile.dto.response.Attach.AttachResponse;
+import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
+import liaison.linkit.profile.dto.response.IsValue.ProfileIsValueResponse;
+import liaison.linkit.profile.dto.response.IsValue.ProfileOnBoardingIsValueResponse;
 import liaison.linkit.profile.service.*;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import liaison.linkit.region.service.ProfileRegionService;
@@ -94,6 +99,15 @@ class ProfileControllerTest extends ControllerTest {
     private ResultActions performGetOnBoardingProfileRequest() throws Exception {
         return mockMvc.perform(
                 get("/profile/onBoarding")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+        );
+    }
+
+    private ResultActions performGetProfileRequest() throws Exception {
+        return mockMvc.perform(
+                get("/profile")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -240,6 +254,7 @@ class ProfileControllerTest extends ControllerTest {
 
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
 
+        // 온보딩 응답
         final OnBoardingProfileResponse onBoardingProfileResponse = new OnBoardingProfileResponse(
                 profileTeamBuildingFieldResponse,
                 profileSkillResponse,
@@ -314,102 +329,226 @@ class ProfileControllerTest extends ControllerTest {
                 );
     }
 
-//    @DisplayName("내 이력서 기본 입력 항목을 생성할 수 있다.")
-//    @Test
-//    void createDefaultProfile() throws Exception {
-//        // given
-//        List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
-//        final ProfileTeamBuildingCreateRequest profileTeamBuildingCreateRequest = new ProfileTeamBuildingCreateRequest(teamBuildingFieldNames);
-//
-//        List<String> skillNames = Arrays.asList("Figma", "Notion");
-//        final ProfileSkillCreateRequest profileSkillCreateRequest = new ProfileSkillCreateRequest(skillNames);
-//
-//        final List<EducationCreateRequest> educationCreateRequests = new ArrayList<>();
-//        final EducationCreateRequest firstEduRequest = new EducationCreateRequest(
-//                2022,
-//                2024,
-//                "홍익대학교",
-//                "컴퓨터공학과",
-//                "재학 중"
-//        );
-//        final EducationCreateRequest secondEduRequest = new EducationCreateRequest(
-//                2021,
-//                2025,
-//                "홍익대학교",
-//                "예술학과",
-//                "졸업"
-//        );
-//        educationCreateRequests.add(firstEduRequest);
-//        educationCreateRequests.add(secondEduRequest);
-//
-//        final List<AntecedentsCreateRequest> antecedentsCreateRequests = new ArrayList<>();
-//        final AntecedentsCreateRequest firstRequest = new AntecedentsCreateRequest(
-//                "linkit",
-//                "프로젝트 매니저",
-//                2023,
-//                3,
-//                2024,
-//                10,
-//                false
-//        );
-//        final AntecedentsCreateRequest secondRequest = new AntecedentsCreateRequest(
-//                "오더이즈",
-//                "프로젝트 매니저",
-//                2023,
-//                3,
-//                2023,
-//                6,
-//                false
-//        );
-//        antecedentsCreateRequests.add(firstRequest);
-//        antecedentsCreateRequests.add(secondRequest);
-//
-//        final DefaultProfileCreateRequest defaultProfileCreateRequest = new DefaultProfileCreateRequest(
-//                profileTeamBuildingCreateRequest,
-//                profileSkillCreateRequest,
-//                educationCreateRequests,
-//                antecedentsCreateRequests
-//        );
-//
-//        // when
-//        final ResultActions resultActions = performPostDefaultRequest(defaultProfileCreateRequest);
-//
-//        // then
+    @DisplayName("내 이력서를 조회할 수 있다.")
+    @Test
+    void getProfile() throws Exception {
+        // given
+        final ProfileIsValueResponse profileIsValueResponse = new ProfileIsValueResponse(
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+        );
+
+        given(profileService.getProfileIsValue(1L)).willReturn(profileIsValueResponse);
+
+        // 1. 미니 프로필 (V)
+        final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
+                "시니어 소프트웨어 개발자",
+                LocalDate.of(2024, 10,20),
+                true,
+                "https://image.linkit.im/images/linkit_logo.png",
+                "혁신, 팀워크, 의지",
+                "Java, Spring, AWS, Microservices, Docker"
+        );
+
+        given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
+
+        // 2. 완성도 & 존재 여부 (V)
+        final CompletionResponse completionResponse = new CompletionResponse(
+            100.0,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true,
+                true
+        );
+
+        given(completionService.getCompletion(1L)).willReturn(completionResponse);
+
+        // 3. 자기소개
+        final ProfileIntroductionResponse profileIntroductionResponse = new ProfileIntroductionResponse(
+                "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
+        );
+        given(profileService.getProfileIntroduction(1L)).willReturn(profileIntroductionResponse);
+
+        // 4. 보유기술 (V)
+        List<String> roleFields = Arrays.asList("SW 개발자", "SW 개발자");
+        List<String> skillNames = Arrays.asList("Java", "React");
+        final ProfileSkillResponse profileSkillResponse = ProfileSkillResponse.of(roleFields, skillNames);
+        given(profileSkillService.getAllProfileSkills(1L)).willReturn(profileSkillResponse);
+
+        // 5. 희망 팀빌딩 분야 (V)
+        List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
+        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = new ProfileTeamBuildingFieldResponse(
+                teamBuildingFieldNames
+        );
+
+        given(profileTeamBuildingFieldService.getAllProfileTeamBuildings(1L))
+                .willReturn(profileTeamBuildingFieldResponse);
+
+        // 6. 활동 지역 및 위치 (V)
+        final ProfileRegionResponse profileRegionResponse = new ProfileRegionResponse(
+                "서울특별시",
+                "강남구"
+        );
+
+        given(profileRegionService.getPersonalProfileRegion(1L)).willReturn(profileRegionResponse);
+
+        // 7. 이력 (V)
+        final AntecedentsResponse antecedentsResponse1 = new AntecedentsResponse(
+                1L,
+                "linkit",
+                "프로젝트 매니저",
+                2023,
+                3,
+                2024,
+                10,
+                false
+        );
+
+        final AntecedentsResponse antecedentsResponse2 = new AntecedentsResponse(
+                2L,
+                "오더이즈",
+                "프로젝트 매니저",
+                2023,
+                3,
+                2023,
+                6,
+                false
+        );
+
+        List<AntecedentsResponse> antecedentsResponses = Arrays.asList(antecedentsResponse1, antecedentsResponse2);
+
+        given(antecedentsService.getAllAntecedents(1L)).willReturn(antecedentsResponses);
+
+        // 8. 학력
+        final EducationResponse educationResponse1 = new EducationResponse(
+                1L,
+                2022,
+                2024,
+                "홍익대학교",
+                "컴퓨터공학과",
+                "재학 중"
+        );
+
+        final EducationResponse educationResponse2 = new EducationResponse(
+                2L,
+                2021,
+                2025,
+                "홍익대학교",
+                "예술학과",
+                "졸업"
+        );
+
+        List<EducationResponse> educationResponses = Arrays.asList(educationResponse1, educationResponse2);
+        given(educationService.getAllEducations(1L))
+                .willReturn(educationResponses);
+
+        // 9. 수상
+        final AwardsResponse firstAwardsResponse = new AwardsResponse(
+            1L,
+                "홍익대학교 창업경진대회",
+                "대상",
+                "홍익대학교 창업교육센터",
+                2024,
+                5,
+                "홍익대학교 창업경진대회에서 1등이라는 성과를 이뤄냈습니다."
+        );
+
+        final AwardsResponse secondAwardsResponse = new AwardsResponse(
+                2L,
+                "성균관대학교 캠퍼스타운 입주경진대회",
+                "선정",
+                "성균관대학교 캠퍼스타운",
+                2024,
+                3,
+                "성균관대학교 캠퍼스타운에 최종 선정되었습니다."
+        );
+        final List<AwardsResponse> awardsResponses = Arrays.asList(firstAwardsResponse, secondAwardsResponse);
+        given(awardsService.getAllAwards(1L)).willReturn(awardsResponses);
+
+        // 10. 첨부
+        final AttachUrlResponse firstAttachUrlResponse = new AttachUrlResponse(
+                "깃허브",
+                "https://github.com/TEAM-LIAISON"
+        );
+
+        final AttachUrlResponse secondAttachUrlResponse = new AttachUrlResponse(
+                "노션",
+                "https://www.notion.so/ko-kr"
+        );
+
+        final AttachFileResponse firstAttachFileResponse = new AttachFileResponse(
+            "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
+        );
+
+        final List<AttachUrlResponse> attachUrlResponseList = Arrays.asList(firstAttachUrlResponse, secondAttachUrlResponse);
+        final List<AttachFileResponse> attachFileResponseList = Arrays.asList(firstAttachFileResponse);
+        final AttachResponse attachResponses = new AttachResponse(
+                attachUrlResponseList,
+                attachFileResponseList
+        );
+
+        final ProfileResponse profileResponse = new ProfileResponse(
+                miniProfileResponse,
+                completionResponse,
+                profileIntroductionResponse,
+                profileSkillResponse,
+                profileTeamBuildingFieldResponse,
+                antecedentsResponses,
+                educationResponses,
+                awardsResponses,
+                attachResponses
+        );
+
+        given(profileService.getProfile(
+                miniProfileResponse,
+                completionResponse,
+                profileIntroductionResponse,
+                profileSkillResponse,
+                profileTeamBuildingFieldResponse,
+                antecedentsResponses,
+                educationResponses,
+                awardsResponses,
+                attachResponses
+        )).willReturn(profileResponse);
+
+        // when
+        final ResultActions resultActions = performGetProfileRequest();
+
+        // then
 //        resultActions.andExpect(status().isOk())
-//                .andDo(restDocs.document(
-//                        requestCookies(
-//                                cookieWithName("refresh-token")
-//                                        .description("갱신 토큰")
-//                        ),
-//                        requestHeaders(
-//                                headerWithName("Authorization")
-//                                        .description("access token")
-//                                        .attributes(field("constraint", "문자열(jwt)"))
-//                        ),
-//                        requestFields(
-//                                subsectionWithPath("profileTeamBuildingResponse").description("희망 팀빌딩 분야 항목").attributes(field("constraint", "객체")),
-//                                fieldWithPath("profileTeamBuildingResponse.teamBuildingFieldNames").description("희망 팀빌딩 분야 이름").attributes(field("constraint", "문자열(배열)")),
-//                                subsectionWithPath("profileSkillCreateRequest").description("보유 기술 항목").attributes(field("constraint", "객체")),
-//                                fieldWithPath("profileSkillCreateRequest.skillNames").description("보유 기술 이름").attributes(field("constraint", "문자열(배열)")),
-//                                subsectionWithPath("educationCreateRequest").description("학력 항목").attributes(field("constraint", "객체 (배열)")),
-//                                fieldWithPath("educationCreateRequest[].admissionYear").description("입학 연도").attributes(field("constraint", "양의 정수")),
-//                                fieldWithPath("educationCreateRequest[].graduationYear").description("졸업 연도").attributes(field("constraint", "양의 정수")),
-//                                fieldWithPath("educationCreateRequest[].universityName").description("학교 이름").attributes(field("constraint", "문자열")),
-//                                fieldWithPath("educationCreateRequest[].majorName").description("전공 이름").attributes(field("constraint", "문자열")),
-//                                fieldWithPath("educationCreateRequest[].degreeName").description("학위 이름").attributes(field("constraint", "문자열")),
-//                                subsectionWithPath("antecedentsCreateRequest").description("이력 항목").attributes(field("constraint", "객체(배열)")),
-//                                fieldWithPath("antecedentsCreateRequest[].projectName").description("프로젝트명/회사명").attributes(field("constraint", "문자열")),
-//                                fieldWithPath("antecedentsCreateRequest[].projectRole").description("포지션").attributes(field("constraint", "문자열")),
-//                                fieldWithPath("antecedentsCreateRequest[].startYear").description("프로젝트 시작 기간").attributes(field("constraint", "양의 정수")),
-//                                fieldWithPath("antecedentsCreateRequest[].startMonth").description("프로젝트 시작 월").attributes(field("constraint", "양의 정수")),
-//                                fieldWithPath("antecedentsCreateRequest[].endYear").description("프로젝트 종료 기간").attributes(field("constraint", "양의 정수")),
-//                                fieldWithPath("antecedentsCreateRequest[].endMonth").description("프로젝트 종료 월").attributes(field("constraint", "양의 정수"))
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                responseFields(
+//                                        subsectionWithPath("miniProfileResponse"),
+//                                        subsectionWithPath("completionResponse"),
+//                                        subsectionWithPath("miniProfileResponse"),
+//                                        subsectionWithPath("miniProfileResponse"),
+//
+//
+//                                )
 //                        )
-//                ));
-//    }
-
-
-
+//                );
+    }
 
 //    @DisplayName("프로필 자기소개 항목을 조회할 수 있다.")
 //    @Test

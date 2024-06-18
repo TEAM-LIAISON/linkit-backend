@@ -10,6 +10,10 @@ public class ProfileIntroductionResponse {
 
     private final String introduction;
 
+    public ProfileIntroductionResponse() {
+        this.introduction = null;
+    }
+
     public static ProfileIntroductionResponse of(final Profile profile) {
         return new ProfileIntroductionResponse(
                 profile.getIntroduction()

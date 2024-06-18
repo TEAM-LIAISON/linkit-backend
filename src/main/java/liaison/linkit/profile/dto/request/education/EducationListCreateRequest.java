@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class EducationListCreateRequest {
-    @NotNull(message = "교육 리스트를 입력해주세요")
+    @NotNull(message = "학력 리스트를 입력해주세요")
     private List<EducationCreateRequest> educationList;
 
     public EducationListCreateRequest(List<EducationCreateRequest> educationList) {

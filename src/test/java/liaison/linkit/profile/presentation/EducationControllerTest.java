@@ -100,7 +100,7 @@ class EducationControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("교육 항목을 생성할 수 있다.")
+    @DisplayName("학력 항목을 생성할 수 있다.")
     @Test
     void createEducation() throws Exception {
         // given
@@ -171,7 +171,7 @@ class EducationControllerTest extends ControllerTest {
 
     }
 
-    @DisplayName("교육 항목을 수정할 수 있다.")
+    @DisplayName("학력 항목을 수정할 수 있다.")
     @Test
     void updateEducation() throws Exception {
         // given
@@ -204,7 +204,7 @@ class EducationControllerTest extends ControllerTest {
                         restDocs.document(
                                 pathParameters(
                                         parameterWithName("educationId")
-                                                .description("교육 항목 ID")
+                                                .description("학력 항목 ID")
                                 ),
                                 requestFields(
                                         fieldWithPath("admissionYear")
@@ -231,7 +231,7 @@ class EducationControllerTest extends ControllerTest {
                                 responseFields(
                                         fieldWithPath("id")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("교육 ID"),
+                                                .description("학력 ID"),
                                         fieldWithPath("admissionYear")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("입학 연도")
@@ -275,7 +275,7 @@ class EducationControllerTest extends ControllerTest {
                         restDocs.document(
                                 pathParameters(
                                         parameterWithName("educationId")
-                                                .description("교육 항목 ID")
+                                                .description("학력 항목 ID")
                                 )
                         )
                 );

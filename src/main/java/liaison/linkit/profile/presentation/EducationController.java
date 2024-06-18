@@ -33,7 +33,7 @@ public class EducationController {
         return ResponseEntity.ok().build();
     }
 
-    // 교육 항목 전체 조회
+    // 학력 항목 전체 조회
     @GetMapping("/list")
     @MemberOnly
     public ResponseEntity<List<EducationResponse>> getEducationList(@Auth final Accessor accessor) {
@@ -43,7 +43,7 @@ public class EducationController {
 
 
 
-    // 교육 항목 1개 조회
+    // 학력 항목 1개 조회
 //    @GetMapping
 //    @MemberOnly
 //    public ResponseEntity<EducationResponse> getEducation(@Auth final Accessor accessor) {
@@ -52,7 +52,7 @@ public class EducationController {
 //        return ResponseEntity.ok().body(educationResponse);
 //    }
 
-    // 교육 항목 1개 수정
+    // 학력 항목 1개 수정
     @PutMapping("/{educationId}")
     @MemberOnly
     public ResponseEntity<EducationResponse> updateEducation(
@@ -65,7 +65,7 @@ public class EducationController {
         return ResponseEntity.ok().body(educationResponse);
     }
 
-    // 교육 항목 1개 삭제
+    // 학력 항목 1개 삭제
     @DeleteMapping("/{educationId}")
     @MemberOnly
     public ResponseEntity<Void> deleteEducation(
