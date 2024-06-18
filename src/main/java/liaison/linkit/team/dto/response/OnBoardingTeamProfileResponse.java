@@ -2,7 +2,7 @@ package liaison.linkit.team.dto.response;
 
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
-import liaison.linkit.team.dto.response.onBoarding.OnBoardingFirstResponse;
+import liaison.linkit.team.dto.response.onBoarding.OnBoardingFieldTeamInformResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -10,17 +10,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OnBoardingTeamProfileResponse {
 
-    private final OnBoardingFirstResponse onBoardingFirstResponse;
+    private final OnBoardingFieldTeamInformResponse onBoardingFieldTeamInformResponse;
     private final ActivityResponse activityResponse;
     private final TeamMiniProfileResponse teamMiniProfileResponse;
 
     public static OnBoardingTeamProfileResponse onBoardingTeamProfileItems(
-            final OnBoardingFirstResponse onBoardingFirstResponse,
+            final OnBoardingFieldTeamInformResponse onBoardingFieldTeamInformResponse,
             final ActivityResponse activityResponse,
             final TeamMiniProfileResponse teamMiniProfileResponse
     ) {
         return new OnBoardingTeamProfileResponse(
-            onBoardingFirstResponse,
+                onBoardingFieldTeamInformResponse,
             activityResponse,
             teamMiniProfileResponse
         );

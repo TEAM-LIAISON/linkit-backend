@@ -95,7 +95,6 @@ include::{snippets}/education-controller-test/create-education/request-cookies.a
 
 ==== 응답
 include::{snippets}/education-controller-test/create-education/response-body.adoc[]
-include::{snippets}/education-controller-test/create-education/response-fields.adoc[]
 
 === 1.5.2. 내 이력서 - 학력 수정
 === [PUT /education/{educationId}]
@@ -121,7 +120,6 @@ include::{snippets}/antecedents-controller-test/create-antecedents/request-cooki
 
 ==== 응답
 include::{snippets}/antecedents-controller-test/create-antecedents/response-body.adoc[]
-include::{snippets}/antecedents-controller-test/create-antecedents/response-fields.adoc[]
 
 === 1.5.2. 내 이력서 - 이력 수정
 === [PUT /antecedents/{antecedentsId}]
@@ -150,13 +148,23 @@ include::{snippets}/antecedents-controller-test/delete-antecedents/request-heade
 include::{snippets}/antecedents-controller-test/delete-antecedents/request-cookies.adoc[]
 
 
-=== 1.5.3. (미니) 이력서 완성 (3/3)
+=== 1.5.3. 내 이력서 - 미니 프로필 생성
+=== [POST /mini-profile]
 ==== 요청
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-parts.adoc[]
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileCreateRequest-fields.adoc[]
 
 == 1.5. 팀 소개서 온보딩 가이드 기입
+=== 1.5.1. 개인/팀 나누기 (1/3) = 팀 소개서 등록하기 버튼
+=== [GET /team_profile/onBoarding]
+==== 요청
+include::{snippets}/team-profile-controller-test/get-on-boarding-team-profile/http-request.adoc[]
+
+==== 응답
+include::{snippets}/team-profile-controller-test/get-on-boarding-team-profile/http-response.adoc[]
+include::{snippets}/team-profile-controller-test/get-on-boarding-team-profile/response-fields.adoc[]
+
 === 1.5.3. 팀 소개서 - 팀빌딩 분야 및 팀 기본 정보 생성
 === [POST /team_profile/field/basic-team]
 ==== 요청
@@ -164,11 +172,17 @@ include::{snippets}/team-profile-controller-test/post-on-boarding-field-team-inf
 include::{snippets}/team-profile-controller-test/post-on-boarding-field-team-inform/request-fields.adoc[]
 
 === 1.5.3. 팀 소개서 - 활동방식 및 활동지역 생성
-==== [POST /activity-method]
+=== [POST /activity-method]
 ==== 요청
 include::{snippets}/activity-controller-test/post-activity/http-request.adoc[]
 include::{snippets}/activity-controller-test/post-activity/request-fields.adoc[]
 
+=== 1.5.3. 팀 소개서 - 팀 미니 프로필 생성
+=== [POST /team/mini-profile]
+==== 요청
+include::{snippets}/team-mini-profile-controller-test/create-team-mini-profile/http-request.adoc[]
+include::{snippets}/team-mini-profile-controller-test/create-team-mini-profile/request-parts.adoc[]
+include::{snippets}/team-mini-profile-controller-test/create-team-mini-profile/request-part-teamMiniProfileCreateRequest-fields.adoc[]
 
 == 회원가입 및 로그인 API
 
@@ -211,15 +225,24 @@ include::{snippets}/member-controller-test/get-member-basic-inform/request-cooki
 include::{snippets}/member-controller-test/get-member-basic-inform/http-response.adoc[]
 include::{snippets}/member-controller-test/get-member-basic-inform/response-fields.adoc[]
 
-=== 멤버 이메일 정보 조회 (GET /members/email)
+
+
+
+== 내 이력서 API
+=== 내 이력서 - 첨부 URL 생성 [POST /attach/url - 2024/06/17 추가]
 
 ==== 요청
-include::{snippets}/member-controller-test/get-member-email/http-request.adoc[]
-요청 헤더
-include::{snippets}/member-controller-test/get-member-email/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/member-controller-test/get-member-email/request-cookies.adoc[]
+include::{snippets}/attach-controller-test/create-attach-url/http-request.adoc[]
+include::{snippets}/attach-controller-test/create-attach-url/request-fields.adoc[]
 
-==== 응답
-include::{snippets}/member-controller-test/get-member-email/http-response.adoc[]
-include::{snippets}/member-controller-test/get-member-email/response-fields.adoc[]
+=== 내 이력서 - 첨부 URL 수정 [PUT /attach/url/:attachUrlId]
+==== 요청
+include::{snippets}/attach-controller-test/update-attach-url/http-request.adoc[]
+include::{snippets}/attach-controller-test/update-attach-url/path-parameters.adoc[]
+include::{snippets}/attach-controller-test/update-attach-url/request-fields.adoc[]
+
+=== 내 이력서 - 첨부 URL 삭제 [DELETE /attach/url/:attachUrlId]
+==== 요청
+include::{snippets}/attach-controller-test/delete-attach-url/http-request.adoc[]
+include::{snippets}/attach-controller-test/delete-attach-url/path-parameters.adoc[]
+

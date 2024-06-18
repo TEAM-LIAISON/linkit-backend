@@ -134,3 +134,6 @@ skill:
 
 degree:
   csv-path: ${degree.path}
+#logging:
+#  level:
+#    org.springframework: DEBUG

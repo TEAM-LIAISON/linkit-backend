@@ -26,7 +26,6 @@
 //            @Auth final Accessor accessor,
 //            @RequestBody @Valid TeamProfileTeamBuildingFieldCreateRequest teamProfileTeamBuildingFieldCreateRequest
 //    ) {
-//
 //        teamProfileTeamBuildingFieldService.save(accessor.getMemberId(), teamProfileTeamBuildingFieldCreateRequest);
 //        return ResponseEntity.ok().build();
 //    }

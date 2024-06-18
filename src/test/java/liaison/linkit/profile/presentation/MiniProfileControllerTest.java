@@ -206,18 +206,6 @@ class MiniProfileControllerTest extends ControllerTest {
 
         // when
 
-//        final ResultActions resultActions = mockMvc.perform(
-//                customRestDocumentationRequestBuilder
-//                        .file(miniProfileImage)
-//                        .file(createRequest)
-//                        .accept(APPLICATION_JSON)
-//                        .contentType(MediaType.MULTIPART_FORM_DATA)
-//                        .characterEncoding("UTF-8")
-//                        .content(objectMapper.writeValueAsString(miniProfileCreateRequest))
-//                        .header("Authorization", "Bearer accessToken")
-//                        .cookie(COOKIE)
-//        );
-
         final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST,"/mini-profile")
                 .file(miniProfileImage)
                 .file(createRequest)
@@ -253,7 +241,6 @@ class MiniProfileControllerTest extends ControllerTest {
                                 fieldWithPath("skillSets").description("나의 스킬셋")
                         )
                 ));
-
     }
 
 //    @DisplayName("단일 미니 프로필을 수정할 수 있다.")

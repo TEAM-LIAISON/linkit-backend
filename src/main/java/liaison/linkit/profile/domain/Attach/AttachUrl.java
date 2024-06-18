@@ -47,6 +47,7 @@ public class AttachUrl {
     }
 
     public void update(final AttachUrlUpdateRequest updateRequest) {
+        this.attachUrlName = updateRequest.getAttachUrlName();
         this.attachUrl = updateRequest.getAttachUrl();
     }
 }

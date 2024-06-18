@@ -18,7 +18,6 @@ import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static liaison.linkit.member.domain.MemberState.ACTIVE;
 import static liaison.linkit.member.domain.type.MemberType.EMPTY_PROFILE;
-import static liaison.linkit.member.domain.type.ProfileType.NO_PERMISSION;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -88,7 +87,7 @@ public class Member {
         this.socialLoginId = socialLoginId;
         this.email = email;
         this.memberType = EMPTY_PROFILE;
-        this.profileType = NO_PERMISSION;
+        this.profileType = ProfileType.NO_PERMISSION;
         this.teamProfileType = TeamProfileType.NO_PERMISSION;
         this.status = ACTIVE;
         this.createdAt = LocalDateTime.now();

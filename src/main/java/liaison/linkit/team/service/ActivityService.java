@@ -1,5 +1,6 @@
 package liaison.linkit.team.service;
 
+import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.region.domain.ActivityRegion;
 import liaison.linkit.region.domain.Region;
@@ -14,6 +15,7 @@ import liaison.linkit.team.domain.repository.activity.RegionRepository;
 import liaison.linkit.team.dto.request.activity.ActivityCreateRequest;
 import liaison.linkit.team.dto.response.activity.ActivityMethodResponse;
 import liaison.linkit.team.dto.response.activity.ActivityRegionResponse;
+import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -37,10 +39,25 @@ public class ActivityService {
     final ActivityRegionRepository activityRegionRepository;
     final RegionRepository regionRepository;
 
+
+
     private TeamProfile getTeamProfile(final Long memberId) {
         return teamProfileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
     }
+
+    public void validateActivityMethodByMember(final Long memberId) {
+        if (!activityMethodRepository.existsByTeamProfileId(getTeamProfile(memberId).getId())) {
+            throw new AuthException(NOT_FOUND_ACTIVITY_METHOD_BY_TEAM_PROFILE_ID);
+        }
+    }
+
+    public void validateActivityRegionByMember(final Long memberId) {
+        if (!activityRegionRepository.existsByTeamProfileId(getTeamProfile(memberId).getId())) {
+            throw new AuthException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID);
+        }
+    }
+
 
 
     // 활동 방식 저장
@@ -119,5 +136,9 @@ public class ActivityService {
         ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(teamProfile.getId());
 
         return new ActivityRegionResponse(activityRegion.getRegion().getCityName(), activityRegion.getRegion().getDivisionName());
+    }
+
+    public ActivityResponse getActivity(final Long memberId) {
+        return new ActivityResponse(getAllActivityMethods(memberId), getActivityRegion(memberId));
     }
 }

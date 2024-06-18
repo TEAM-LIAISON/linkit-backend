@@ -7,6 +7,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class AttachUrlUpdateRequest {
+    @NotNull(message = "첨부 URL 제목을 입력해주세요")
+    private final String attachUrlName;
+
     @NotNull(message = "첨부 URL을 입력해주세요.")
     private final String attachUrl;
 }

@@ -117,9 +117,10 @@ public enum ExceptionCode {
 
 
     // 팀 소개서 관련 항목
-    NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다.");
-
-
+    NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),
+    NOT_FOUND_ACTIVITY_METHOD_BY_TEAM_PROFILE_ID(1009, "사용자의 팀 소개서 ID에 해당하는 활동 방식 정보가 존재하지 않습니다."),
+    NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID(1010, "사용자의 팀 소개서 ID에 해당하는 활동 지역 정보가 존재하지 않습니다."),
+    NOT_FOUND_TEAM_MINI_PROFILE_BY_TEAM_PROFILE_ID(1007, "사용자의 팀 소개서 ID에 해당하는 팀 소개서 미니 프로필 정보가 존재하지 않습니다.");
 
     private final int code;
     private final String message;

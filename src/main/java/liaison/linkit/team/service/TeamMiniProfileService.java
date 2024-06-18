@@ -2,6 +2,9 @@ package liaison.linkit.team.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
+import liaison.linkit.global.exception.ImageException;
+import liaison.linkit.image.domain.ImageFile;
+import liaison.linkit.image.domain.S3ImageEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.miniprofile.IndustrySector;
@@ -11,12 +14,15 @@ import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.miniprofile.IndustrySectorRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamScaleRepository;
+import liaison.linkit.team.dto.request.miniprofile.TeamMiniProfileCreateRequest;
 import liaison.linkit.team.dto.request.onBoarding.OnBoardingFieldTeamInformRequest;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileEarlyOnBoardingResponse;
+import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
@@ -39,6 +45,11 @@ public class TeamMiniProfileService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
     }
 
+    private TeamMiniProfile getTeamMiniProfile(final Long teamProfileId) {
+        return teamMiniProfileRepository.findByTeamProfileId(teamProfileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MINI_PROFILE_BY_TEAM_PROFILE_ID));
+    }
+
     // 팀 소개서 유효성 판단
     public void validateTeamMiniProfileByMember(final Long memberId) {
         if (!teamMiniProfileRepository.existsByTeamProfileId(getTeamProfile(memberId).getId())) {
@@ -46,9 +57,10 @@ public class TeamMiniProfileService {
         }
     }
 
-    public TeamMiniProfileEarlyOnBoardingResponse getTeamMiniProfileEarlyOnBoarding(final Long teamMiniProfileId) {
-        final TeamMiniProfile teamMiniProfile = teamMiniProfileRepository.findById(teamMiniProfileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MINI_PROFILE_ID));
+    public TeamMiniProfileEarlyOnBoardingResponse getTeamMiniProfileEarlyOnBoarding(final Long memberId) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        final TeamMiniProfile teamMiniProfile = teamMiniProfileRepository.findByTeamProfileId(teamProfile.getId())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MINI_PROFILE_BY_TEAM_PROFILE_ID));
         return TeamMiniProfileEarlyOnBoardingResponse.personalTeamMiniProfileOnBoarding(teamMiniProfile);
     }
 
@@ -86,6 +98,62 @@ public class TeamMiniProfileService {
 
         teamProfile.updateIsTeamMiniProfile(true);
     }
+
+    public void save(
+            final Long memberId,
+            final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
+            final MultipartFile teamMiniProfileImage
+    ) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+
+        final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
+
+        final TeamMiniProfile savedTeamMiniProfile = getTeamMiniProfile(teamProfile.getId());
+
+        savedTeamMiniProfile.onBoardingTeamMiniProfile(
+                teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                teamMiniProfileCreateRequest.getTeamUploadPeriod(),
+                teamMiniProfileCreateRequest.isTeamUploadDeadline(),
+                teamMiniProfileImageUrl,
+                teamMiniProfileCreateRequest.getTeamValue(),
+                teamMiniProfileCreateRequest.getTeamDetailInform()
+        );
+    }
+
+    public String saveTeamMiniProfileImage(
+            final MultipartFile teamMiniProfileImage
+    ) {
+        validateSizeofImage(teamMiniProfileImage);
+        final ImageFile imageFile = new ImageFile(teamMiniProfileImage);
+        return uploadTeamMiniProfileImage(imageFile);
+    }
+
+    private String uploadTeamMiniProfileImage(
+            final ImageFile teamMiniProfileImage
+    ) {
+        try {
+            return s3Uploader.uploadMiniProfileImage(teamMiniProfileImage);
+        } catch (final ImageException e) {
+            publisher.publishEvent(new S3ImageEvent(teamMiniProfileImage.getHashedName()));
+            throw e;
+        }
+    }
+
+
+    private void validateSizeofImage(
+            final MultipartFile teamMiniProfileImage
+    ) {
+        if (teamMiniProfileImage == null || teamMiniProfileImage.isEmpty()) {
+            throw new ImageException(EMPTY_IMAGE);
+        }
+    }
+
+    public TeamMiniProfileResponse getPersonalTeamMiniProfile(final Long memberId) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        final TeamMiniProfile teamMiniProfile = getTeamMiniProfile(teamProfile.getId());
+        return TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile);
+    }
+
 
 
 //    private final TeamProfileRepository teamProfileRepository;
