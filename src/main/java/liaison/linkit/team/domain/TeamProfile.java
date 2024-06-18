@@ -35,7 +35,7 @@ public class TeamProfile {
 
     // 팀 프로필 희망 팀빌딩 분야
     @Column(nullable = false)
-    private boolean isTeamTeamBuildingField;
+    private boolean isTeamProfileTeamBuildingField;
 
     // 팀원 모집 공고
     @Column(nullable = false)
@@ -76,7 +76,7 @@ public class TeamProfile {
         this.id = id;
         this.member = member;
         this.teamProfileCompletion = teamProfileCompletion;
-        this.isTeamTeamBuildingField = false;
+        this.isTeamProfileTeamBuildingField = false;
         this.isTeamMemberAnnouncement = false;
         this.isActivity = false;
         this.isActivityMethod = false;
@@ -96,7 +96,7 @@ public class TeamProfile {
 
 
     public void updateIsTeamProfileTeamBuildingField(final Boolean isTeamTeamBuildingField) {
-        this.isTeamTeamBuildingField = isTeamTeamBuildingField;
+        this.isTeamProfileTeamBuildingField = isTeamTeamBuildingField;
         // 프로그레스 처리 로직 추가 필요
     }
 
@@ -120,8 +120,8 @@ public class TeamProfile {
         this.isTeamMiniProfile = isTeamMiniProfile;
     }
 
-    public boolean getIsTeamTeamBuildingField() {
-        return isTeamTeamBuildingField;
+    public boolean getIsTeamProfileTeamBuildingField() {
+        return isTeamProfileTeamBuildingField;
     }
     public boolean getIsTeamMemberAnnouncement() {
         return isTeamMemberAnnouncement;

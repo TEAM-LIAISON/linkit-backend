@@ -9,19 +9,26 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class OnBoardingFirstResponse {
+public class OnBoardingFieldTeamInformResponse {
     private final List<String> teamBuildingFieldNames;
     private final String teamName;
     private final String sectorName;
     private final String sizeType;
 
-    public OnBoardingFirstResponse(
+    public OnBoardingFieldTeamInformResponse(
             final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse,
             final TeamMiniProfileEarlyOnBoardingResponse teamMiniProfileEarlyOnBoardingResponse
     ) {
-        this.teamBuildingFieldNames = teamProfileTeamBuildingFieldResponse.getTeamBuildingFieldNames();
+        this.teamBuildingFieldNames = teamProfileTeamBuildingFieldResponse.getTeamProfileTeamBuildingFieldNames();
         this.teamName = teamMiniProfileEarlyOnBoardingResponse.getTeamName();
         this.sectorName = teamMiniProfileEarlyOnBoardingResponse.getSectorName();
         this.sizeType = teamMiniProfileEarlyOnBoardingResponse.getSizeType();
+    }
+
+    public OnBoardingFieldTeamInformResponse() {
+        this.teamBuildingFieldNames = null;
+        this.teamName = null;
+        this.sectorName = null;
+        this.sizeType = null;
     }
 }

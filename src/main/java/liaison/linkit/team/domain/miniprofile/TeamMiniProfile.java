@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
@@ -42,20 +42,20 @@ public class TeamMiniProfile {
     private String teamName;
 
     // 제목을 입력해주세요 항목
-    @Column(name = "mini_profile_title")
-    private String miniProfileTitle;
+    @Column(name = "team_profile_title")
+    private String teamProfileTitle;
 
     // 공고 업로드 기간
     @Column(name = "team_upload_period")
-    private LocalDateTime teamUploadPeriod;
+    private LocalDate teamUploadPeriod;
 
     // 공고 업로드 기간 (마감있음 / 계속 업로드)
     @Column(name = "team_upload_deadline")
     private Boolean teamUploadDeadline;
 
     // 팀 로고 링크 (저장 URL)
-    @Column(name = "team_logo_image")
-    private String teamLogoImage;
+    @Column(name = "team_logo_image_url")
+    private String teamLogoImageUrl;
 
     // 팀 홍보 가치
     @Column(name = "team_value")
@@ -70,10 +70,10 @@ public class TeamMiniProfile {
             final IndustrySector industrySector,
             final TeamScale teamScale,
             final String teamName,
-            final String miniProfileTitle,
-            final LocalDateTime teamUploadPeriod,
+            final String teamProfileTitle,
+            final LocalDate teamUploadPeriod,
             final Boolean teamUploadDeadline,
-            final String teamLogoImage,
+            final String teamLogoImageUrl,
             final String teamValue,
             final String teamDetailInform
     ) {
@@ -83,12 +83,28 @@ public class TeamMiniProfile {
                 industrySector,
                 teamScale,
                 teamName,
-                miniProfileTitle,
+                teamProfileTitle,
                 teamUploadPeriod,
                 teamUploadDeadline,
-                teamLogoImage,
+                teamLogoImageUrl,
                 teamValue,
                 teamDetailInform
         );
+    }
+
+    public void onBoardingTeamMiniProfile(
+            final String teamProfileTitle,
+            final LocalDate teamUploadPeriod,
+            final boolean teamUploadDeadline,
+            final String teamLogoImageUrl,
+            final String teamValue,
+            final String teamDetailInform
+    ) {
+        this.teamProfileTitle = teamProfileTitle;
+        this.teamUploadPeriod = teamUploadPeriod;
+        this.teamUploadDeadline = teamUploadDeadline;
+        this.teamLogoImageUrl = teamLogoImageUrl;
+        this.teamValue = teamValue;
+        this.teamDetailInform = teamDetailInform;
     }
 }

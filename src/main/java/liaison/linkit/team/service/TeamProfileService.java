@@ -8,12 +8,12 @@ import liaison.linkit.team.dto.response.OnBoardingTeamProfileResponse;
 import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
-import liaison.linkit.team.dto.response.onBoarding.OnBoardingFirstResponse;
+import liaison.linkit.team.dto.response.onBoarding.OnBoardingFieldTeamInformResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static liaison.linkit.global.exception.ExceptionCode.*;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -35,21 +35,29 @@ public class TeamProfileService {
         }
     }
 
-
+//    public OnBoardingFieldTeamInformResponse getOnBoardingFieldTeamInformResponse(
+//            final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse,
+//            final TeamMiniProfileEarlyOnBoardingResponse teamMiniProfileEarlyOnBoardingResponse
+//    ) {
+//        return new OnBoardingFieldTeamInformResponse(
+//                teamProfileTeamBuildingFieldResponse.getTeamBuildingFieldNames(),
+//                teamMiniProfileEarlyOnBoardingResponse.getTeamName(),
+//                teamMiniProfileEarlyOnBoardingResponse.getSectorName()
+//        )
+//    }
 
     // 팀 소개서 온보딩 값 존재성 boolean 값들 전달
     public TeamProfileOnBoardingIsValueResponse getTeamProfileOnBoardingIsValue(final Long memberId) {
         return TeamProfileOnBoardingIsValueResponse.teamProfileOnBoardingIsValue(getTeamProfileByMember(memberId));
     }
 
-
     public OnBoardingTeamProfileResponse getOnBoardingTeamProfile(
-            final OnBoardingFirstResponse onBoardingFirstResponse,
+            final OnBoardingFieldTeamInformResponse onBoardingFieldTeamInformResponse,
             final ActivityResponse activityResponse,
             final TeamMiniProfileResponse teamMiniProfileResponse
     ) {
         return OnBoardingTeamProfileResponse.onBoardingTeamProfileItems(
-                onBoardingFirstResponse,
+                onBoardingFieldTeamInformResponse,
                 activityResponse,
                 teamMiniProfileResponse
         );

@@ -51,7 +51,6 @@ class ProfileControllerTest extends ControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
     @MockBean
     private ProfileService profileService;
     @MockBean
@@ -70,7 +69,6 @@ class ProfileControllerTest extends ControllerTest {
     private AwardsService awardsService;
     @MockBean
     private AttachService attachService;
-
     @MockBean
     private ProfileRegionService profileRegionService;
 

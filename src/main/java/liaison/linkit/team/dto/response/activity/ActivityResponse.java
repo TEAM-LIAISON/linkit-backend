@@ -20,4 +20,10 @@ public class ActivityResponse {
         this.cityName = activityRegionResponse.getCityName();
         this.divisionName = activityRegionResponse.getDivisionName();
     }
+
+    public ActivityResponse() {
+        this.activityTagName = null;
+        this.cityName = null;
+        this.divisionName = null;
+    }
 }

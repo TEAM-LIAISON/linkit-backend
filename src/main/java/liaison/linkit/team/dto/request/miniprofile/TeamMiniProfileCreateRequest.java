@@ -4,22 +4,25 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDate;
+
 @Getter
 @AllArgsConstructor
 public class TeamMiniProfileCreateRequest {
 
-    // 팀 규모 & 업종 분야 필요
-    @NotNull(message = "팀 이름을 입력해주세요.")
-    private final String teamName;
+    @NotNull(message = "팀 소개서 제목을 입력해주세요")
+    private final String teamProfileTitle;
 
-    @NotNull(message = "팀 한 줄 소개를 입력해주세요.")
-    private final String teamOneLineIntroduction;
+    @NotNull(message = "팀 소개서 업로드 기간을 설정해주세요")
+    // 프로필 업로드 기간
+    private final LocalDate teamUploadPeriod;
 
-    private final String teamLink;
+    @NotNull(message = "업로드 마감 여부를 선택해주세요")
+    private final boolean teamUploadDeadline;
 
-    // 분야 이름
-    private final String sectorName;
+    @NotNull(message = "팀을 홍보할 수 있는 가치를 써주세요")
+    private final String teamValue;
 
-    // 규모 타입
-    private final String sizeType;
+    @NotNull(message = "팀 세부 정보를 알려주세요")
+    private final String teamDetailInform;
 }

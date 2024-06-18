@@ -8,11 +8,11 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class TeamProfileTeamBuildingFieldResponse {
-    private final List<String> teamBuildingFieldNames;
+    private final List<String> teamProfileTeamBuildingFieldNames;
 
-    public static TeamProfileTeamBuildingFieldResponse of(final List<String> profileTeamBuildingFieldNames) {
+    public static TeamProfileTeamBuildingFieldResponse of(final List<String> teamProfileTeamBuildingFieldNames) {
         return new TeamProfileTeamBuildingFieldResponse(
-                profileTeamBuildingFieldNames
+                teamProfileTeamBuildingFieldNames
         );
     }
 }
