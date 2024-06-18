@@ -13,5 +13,6 @@ public interface TeamMiniProfileRepository extends JpaRepository<TeamMiniProfile
 
     Optional<TeamMiniProfile> findByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
+
     void deleteByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 }

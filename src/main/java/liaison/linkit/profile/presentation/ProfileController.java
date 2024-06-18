@@ -6,6 +6,9 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
+import liaison.linkit.profile.dto.response.Attach.AttachResponse;
+import liaison.linkit.profile.dto.response.IsValue.ProfileIsValueResponse;
+import liaison.linkit.profile.dto.response.IsValue.ProfileOnBoardingIsValueResponse;
 import liaison.linkit.profile.service.*;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import liaison.linkit.region.service.ProfileRegionService;
@@ -23,6 +26,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequestMapping("/profile")
 @Slf4j
 public class ProfileController {
+
     public final ProfileService profileService;
     public final MiniProfileService miniProfileService;
     public final CompletionService completionService;
@@ -34,66 +38,84 @@ public class ProfileController {
     public final AttachService attachService;
     public final ProfileRegionService profileRegionService;
 
-    // 온보딩 과정 GET 요청 조회 로직 (희망 팀빌딩 분야부터 미니 프로필까지 6개)
-    // 얘는 무조건 불러오기만 함. 상태 변경하지 않음.
-//    @GetMapping("/onBoarding")
-//    @MemberOnly
-//    public ResponseEntity<OnBoardingProfileResponse> getOnBoardingProfile(
-//            @Auth final Accessor accessor
-//    ) {
-//
-//        log.info("---온보딩 조회 요청이 들어왔습니다---");
-//        // 해당 사용자의 내 이력서 PK 조회
-//        // 일단 프로필이 제대로 생성되었어야 함.
-//        final Long profileId = profileService.validateProfileByMember(accessor.getMemberId());
-//        log.info("profileId={}", profileId);
-//
-//        // boolean 값 가져옴
-//        final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse
-//                = profileService.getProfileOnBoardingIsValue(profileId);
-//
-//        // 미니 프로필 응답
-//        final MiniProfileResponse miniProfileResponse
-//                = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
-//
-//        log.info("miniProfileResponse={}", miniProfileResponse);
-//
-//        // 1. 희망 팀빌딩 분야
-//        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
-//                = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
-//        log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
-//
-//        // 2. 희망하는 역할 및 기술
-//        final ProfileSkillResponse profileSkillResponse
-//                = getProfileSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileSkill());
-//        log.info("profileSkillResponse={}", profileSkillResponse);
-//
-//        // 3. 지역 및 위치 정보
-//        final ProfileRegionResponse profileRegionResponse
-//                = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
-//        log.info("profileRegionResponse={}", profileRegionResponse);
-//
-//        // 4. 학교 정보
-//        final List<EducationResponse> educationResponses
-//                = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
-//        log.info("educationResponses={}", educationResponses);
-//
-//        // 5. 이력 정보
-//        final List<AntecedentsResponse> antecedentsResponses
-//                = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
-//        log.info("antecedentsResponses={}", antecedentsResponses);
-//
-//        final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
-//                profileTeamBuildingFieldResponse,
-//                profileSkillResponse,
-//                profileRegionResponse,
-//                educationResponses,
-//                antecedentsResponses,
-//                miniProfileResponse
-//        );
-//
-//        return ResponseEntity.ok().body(onBoardingProfileResponse);
-//    }
+    @GetMapping
+    @MemberOnly
+    public ResponseEntity<?> getMyProfile(@Auth final Accessor accessor) {
+        try {
+            log.info("--- 내 이력서 조회 요청이 들어왔습니다 ---");
+            profileService.validateProfileByMember(accessor.getMemberId());
+
+            // 내 이력서에 있는 항목들의 존재 여부 파악
+            final ProfileIsValueResponse profileIsValueResponse
+                    = profileService.getProfileIsValue(accessor.getMemberId());
+
+            // 미니 프로필
+            final MiniProfileResponse miniProfileResponse
+                    = getMiniProfileResponse(accessor.getMemberId(), profileIsValueResponse.isMiniProfile());
+            log.info("miniProfileResponse={}", miniProfileResponse);
+
+            final CompletionResponse completionResponse
+                    = getCompletionResponse(accessor.getMemberId());
+            log.info("completionResponse={}", completionResponse);
+
+            // 자기소개
+            final ProfileIntroductionResponse profileIntroductionResponse
+                    = getProfileIntroduction(accessor.getMemberId(), profileIsValueResponse.isIntroduction());
+            log.info("profileIntroductionResponse={}", profileIntroductionResponse);
+
+            // 보유 기술
+            final ProfileSkillResponse profileSkillResponse
+                    = getProfileSkillResponse(accessor.getMemberId(), profileIsValueResponse.isProfileSkill());
+            log.info("profileSkillResponse={}", profileSkillResponse);
+
+            // 희망 팀빌딩 분야
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
+                    = getProfileTeamBuildingResponse(accessor.getMemberId(), profileIsValueResponse.isProfileTeamBuildingField());
+            log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
+
+            // 활동 지역 및 위치
+            final ProfileRegionResponse profileRegionResponse
+                    = getProfileRegionResponse(accessor.getMemberId(), profileIsValueResponse.isProfileRegion());
+            log.info("profileRegionResponse={}", profileRegionResponse);
+
+            // 이력
+            final List<AntecedentsResponse> antecedentsResponses
+                    = getAntecedentsResponses(accessor.getMemberId(), profileIsValueResponse.isAntecedents());
+            log.info("antecedentsResponses={}", antecedentsResponses);
+
+            // 학력
+            final List<EducationResponse> educationResponses
+                    = getEducationResponses(accessor.getMemberId(), profileIsValueResponse.isEducation());
+            log.info("educationResponses={}", educationResponses);
+
+            // 수상
+            final List<AwardsResponse> awardsResponses
+                    = getAwardsResponses(accessor.getMemberId(), profileIsValueResponse.isAwards());
+            log.info("awardsResponses={}", awardsResponses);
+
+            // 첨부
+            final AttachResponse attachResponse
+                    = getAttachResponses(accessor.getMemberId(), profileIsValueResponse.isAttach());
+
+            final ProfileResponse profileResponse = profileService.getProfile(
+                    miniProfileResponse,
+                    completionResponse,
+                    profileIntroductionResponse,
+                    profileSkillResponse,
+                    profileTeamBuildingFieldResponse,
+                    antecedentsResponses,
+                    educationResponses,
+                    awardsResponses,
+                    attachResponse
+            );
+            return ResponseEntity.ok().body(profileResponse);
+        } catch (Exception e) {
+            log.error("내 이력서 조회 과정에서 예외 발생: {}", e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("온보딩 정보를 불러오는 과정에서 문제가 발생했습니다.");
+        }
+    }
+
+
 
     // 온보딩 GET 요청 처리 메서드
     @GetMapping("/onBoarding")
@@ -108,7 +130,6 @@ public class ProfileController {
 
             final MiniProfileResponse miniProfileResponse
                     = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
-
             log.info("miniProfileResponse={}", miniProfileResponse);
 
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
@@ -243,8 +264,6 @@ public class ProfileController {
 //        return ResponseEntity.ok().body(profileResponse);
 //    }
 
-
-
     private MiniProfileResponse getMiniProfileResponse(
             final Long memberId,
             final boolean isMiniProfile
@@ -256,6 +275,24 @@ public class ProfileController {
             return new MiniProfileResponse();
         }
     }
+
+    private CompletionResponse getCompletionResponse(
+            final Long memberId
+    ) {
+        return completionService.getCompletion(memberId);
+    }
+
+    private ProfileIntroductionResponse getProfileIntroduction(
+            final Long memberId,
+            final boolean isIntroduction
+    ) {
+        if (isIntroduction) {
+            return profileService.getProfileIntroduction(memberId);
+        } else {
+            return new ProfileIntroductionResponse();
+        }
+    }
+
     private ProfileTeamBuildingFieldResponse getProfileTeamBuildingResponse(
             final Long memberId,
             final boolean isProfileTeamBuildingField
@@ -304,6 +341,18 @@ public class ProfileController {
         }
     }
 
+    private List<AwardsResponse> getAwardsResponses(
+            final Long memberId,
+            final boolean isAwards
+    ) {
+        if (isAwards) {
+            awardsService.validateAwardsByMember(memberId);
+            return awardsService.getAllAwards(memberId);
+        } else {
+            return null;
+        }
+    }
+
     private List<AntecedentsResponse> getAntecedentsResponses(
             final Long memberId,
             final boolean isAntecedents
@@ -315,4 +364,18 @@ public class ProfileController {
             return null;
         }
     }
+
+    private AttachResponse getAttachResponses(
+            final Long memberId,
+            final boolean isAttach
+    ) {
+        if (isAttach) {
+            return attachService.getAttachList(memberId);
+        } else {
+            return new AttachResponse();
+        }
+    }
+
+
+
 }

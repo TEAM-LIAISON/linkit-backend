@@ -16,6 +16,8 @@ import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRe
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.Attach.AttachResponse;
+import liaison.linkit.profile.dto.response.IsValue.ProfileIsValueResponse;
+import liaison.linkit.profile.dto.response.IsValue.ProfileOnBoardingIsValueResponse;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -70,56 +72,22 @@ public class ProfileService {
         }
     }
 
-    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
+    @Transactional(readOnly = true)
+    public ProfileOnBoardingIsValueResponse getProfileOnBoardingIsValue(final Long memberId) {
+        final Profile profile = getProfileByMember(memberId);
+        return ProfileOnBoardingIsValueResponse.profileOnBoardingIsValue(profile);
+    }
 
-    // 디폴트 항목 저장
-//    public void saveDefault(
-//            final Long memberId,
-//            final DefaultProfileCreateRequest defaultProfileCreateRequest)
-//    {
-//        final Profile profile = profileRepository.findByMemberId(memberId);
-//
-//        final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
-//                .findTeamBuildingFieldsByFieldNames(defaultProfileCreateRequest.getProfileTeamBuildingResponse().getTeamBuildingFieldNames());
-//        final List<Skill> skills = skillRepository.findSkillNamesBySkillNames(defaultProfileCreateRequest.getProfileSkillCreateRequest().getSkillNames());
-//
-//        final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
-//                .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
-//                .toList();
-//
-//        final List<ProfileSkill> profileSkills = skills.stream()
-//                .map(skill -> new ProfileSkill(null, profile, skill))
-//                .toList();
-//
-//        final List<Education> educations = defaultProfileCreateRequest
-//                .getEducationCreateRequest().stream()
-//                .map(request -> {
-//                    University university = universityRepository.findByUniversityName(request.getUniversityName());
-//                    Degree degree = degreeRepository.findByDegreeName(request.getDegreeName());
-//                    Major major = majorRepository.findByMajorName(request.getMajorName());
-//                    return request.toEntity(profile, university, degree, major);
-//                }).collect(Collectors.toList());
-//
-//
-//        final List<Antecedents> antecedents = defaultProfileCreateRequest
-//                .getAntecedentsCreateRequest().stream().map(request -> request.toEntity(profile)).toList();
-//
-//        profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
-//        profileSkillRepository.saveAll(profileSkills);
-//        educationRepository.saveAll(educations);
-//        antecedentsRepository.saveAll(antecedents);
-//    }
+    @Transactional(readOnly = true)
+    public ProfileIsValueResponse getProfileIsValue(final Long memberId) {
+        final Profile profile = getProfileByMember(memberId);
+        return ProfileIsValueResponse.profileIsValue(profile);
+    }
 
     @Transactional(readOnly = true)
     public ProfileIntroductionResponse getProfileIntroduction(final Long memberId) {
         final Profile profile = getProfileByMember(memberId);
         return ProfileIntroductionResponse.profileIntroduction(profile);
-    }
-
-    @Transactional(readOnly = true)
-    public ProfileOnBoardingIsValueResponse getProfileOnBoardingIsValue(final Long memberId) {
-        final Profile profile = getProfileByMember(memberId);
-        return ProfileOnBoardingIsValueResponse.profileOnBoardingIsValue(profile);
     }
 
     public void update(final Long memberId, final ProfileUpdateRequest updateRequest) {
@@ -196,4 +164,5 @@ public class ProfileService {
                 miniProfileResponse
         );
     }
+
 }

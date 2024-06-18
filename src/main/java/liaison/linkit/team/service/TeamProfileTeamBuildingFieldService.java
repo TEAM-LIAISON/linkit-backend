@@ -10,6 +10,7 @@ import liaison.linkit.team.domain.repository.teambuilding.TeamProfileTeamBuildin
 import liaison.linkit.team.domain.teambuilding.TeamProfileTeamBuildingField;
 import liaison.linkit.team.dto.response.TeamProfileTeamBuildingFieldResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFI
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class TeamProfileTeamBuildingFieldService {
     private final TeamProfileRepository teamProfileRepository;
     private final TeamProfileTeamBuildingFieldRepository teamProfileTeamBuildingFieldRepository;
@@ -46,9 +48,13 @@ public class TeamProfileTeamBuildingFieldService {
     ) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
+        log.info("팀 소개서 희망 팀빌딩 분야 실행 part1");
+
         if (teamProfileTeamBuildingFieldRepository.existsByTeamProfileId(teamProfile.getId())) {
             teamProfileTeamBuildingFieldRepository.deleteAllByTeamProfileId(teamProfile.getId());
         }
+
+        log.info("팀 소개서 희망 팀빌딩 분야 실행 part2 (삭제 완료)");
 
         final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
                 .findTeamBuildingFieldsByFieldNames(teamBuildingFieldNames);
@@ -62,6 +68,7 @@ public class TeamProfileTeamBuildingFieldService {
 
         // 프로그레스바 처리 비즈니스 로직
         teamProfile.updateIsTeamProfileTeamBuildingField(true);
+        log.info("팀 소개서 희망 팀빌딩 분야 실행 part3 (저장 완료)");
     }
 
     @Transactional(readOnly = true)

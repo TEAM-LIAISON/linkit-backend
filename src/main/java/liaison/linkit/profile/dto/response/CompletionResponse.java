@@ -24,6 +24,9 @@ public class CompletionResponse {
     // 희망 팀빌딩 분야 기입여부 -> Default
     private final boolean isProfileTeamBuildingField;
 
+    // 활동 지역 및 위치 기입여부
+    private final boolean isProfileRegion;
+
     // 이력 분야 기입여부
     private final boolean isAntecedents;
 
@@ -43,6 +46,7 @@ public class CompletionResponse {
                 profile.getIsIntroduction(),
                 profile.getIsProfileSkill(),
                 profile.getIsProfileTeamBuildingField(),
+                profile.getIsProfileRegion(),
                 profile.getIsAntecedents(),
                 profile.getIsEducation(),
                 profile.getIsAwards(),
