@@ -18,6 +18,6 @@ public interface TeamMiniProfileRepository extends JpaRepository<TeamMiniProfile
 
     @Transactional
     @Modifying
-    @Query("DELETE FROM TeamProfile tp WHERE tp.id = :teamProfileId")
+    @Query("DELETE FROM TeamMiniProfile teamMiniProfile WHERE teamMiniProfile.teamProfile.id = :teamProfileId")
     void deleteByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 }
