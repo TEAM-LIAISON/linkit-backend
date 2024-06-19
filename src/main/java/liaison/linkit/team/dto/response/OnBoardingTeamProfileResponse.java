@@ -21,8 +21,8 @@ public class OnBoardingTeamProfileResponse {
     ) {
         return new OnBoardingTeamProfileResponse(
                 onBoardingFieldTeamInformResponse,
-            activityResponse,
-            teamMiniProfileResponse
+                activityResponse,
+                teamMiniProfileResponse
         );
     }
 }
