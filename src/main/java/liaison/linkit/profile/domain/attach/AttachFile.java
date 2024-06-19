@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain.Attach;
+package liaison.linkit.profile.domain.attach;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
@@ -17,6 +17,7 @@ import static jakarta.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "attach_file")
 public class AttachFile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "attach_file_id")

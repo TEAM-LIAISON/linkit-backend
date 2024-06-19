@@ -4,17 +4,17 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.attach.AttachFileCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
-import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
-import liaison.linkit.profile.dto.response.Attach.AttachResponse;
-import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
+import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
+import liaison.linkit.profile.dto.response.attach.AttachResponse;
+import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import liaison.linkit.profile.service.AttachService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -75,9 +75,9 @@ public class AttachController {
     @MemberOnly
     public ResponseEntity<Void> createAttachFle(
             @Auth final Accessor accessor,
-            @RequestBody @Valid final AttachFileCreateRequest createRequest
+            @RequestPart MultipartFile attachFile
     ) {
-        attachService.saveFile(accessor.getMemberId(), createRequest);
+        attachService.saveFile(accessor.getMemberId(), attachFile);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

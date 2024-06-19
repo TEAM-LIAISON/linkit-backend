@@ -85,7 +85,7 @@ public class LoginService {
                 log.info("memberId={}", member.getId());
 
                 // 내 이력서는 자동으로 생성된다. -> 미니 프로필도 함께 생성되어야 한다.
-                Profile savedProfile = profileRepository.save(new Profile(member, 0,"자기소개를 입력해주세요"));
+                Profile savedProfile = profileRepository.save(new Profile(member, 0));
                 log.info("savedProfile.ID={}", savedProfile.getId());
 
                 TeamProfile savedTeamProfile = teamProfileRepository.save(new TeamProfile(member, 0));

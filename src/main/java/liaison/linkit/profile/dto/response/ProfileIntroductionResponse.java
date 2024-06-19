@@ -14,12 +14,6 @@ public class ProfileIntroductionResponse {
         this.introduction = null;
     }
 
-    public static ProfileIntroductionResponse of(final Profile profile) {
-        return new ProfileIntroductionResponse(
-                profile.getIntroduction()
-        );
-    }
-
     public static ProfileIntroductionResponse profileIntroduction(final Profile profile) {
         return new ProfileIntroductionResponse(
                 profile.getIntroduction()

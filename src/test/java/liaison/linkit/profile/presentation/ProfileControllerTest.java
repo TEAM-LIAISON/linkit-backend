@@ -9,11 +9,11 @@ import liaison.linkit.profile.dto.request.DefaultProfileCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
-import liaison.linkit.profile.dto.response.Attach.AttachFileResponse;
-import liaison.linkit.profile.dto.response.Attach.AttachResponse;
-import liaison.linkit.profile.dto.response.Attach.AttachUrlResponse;
-import liaison.linkit.profile.dto.response.IsValue.ProfileIsValueResponse;
-import liaison.linkit.profile.dto.response.IsValue.ProfileOnBoardingIsValueResponse;
+import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
+import liaison.linkit.profile.dto.response.attach.AttachResponse;
+import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
+import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
+import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;
 import liaison.linkit.profile.service.*;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import liaison.linkit.region.service.ProfileRegionService;
@@ -478,17 +478,20 @@ class ProfileControllerTest extends ControllerTest {
 
         // 10. 첨부
         final AttachUrlResponse firstAttachUrlResponse = new AttachUrlResponse(
+                1L,
                 "깃허브",
                 "https://github.com/TEAM-LIAISON"
         );
 
         final AttachUrlResponse secondAttachUrlResponse = new AttachUrlResponse(
+                2L,
                 "노션",
                 "https://www.notion.so/ko-kr"
         );
 
         final AttachFileResponse firstAttachFileResponse = new AttachFileResponse(
-            "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
+            1L,
+                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
         );
 
         final List<AttachUrlResponse> attachUrlResponseList = Arrays.asList(firstAttachUrlResponse, secondAttachUrlResponse);

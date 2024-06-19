@@ -26,12 +26,12 @@ public class TeamProfile {
     @OneToOne(mappedBy = "teamProfile")
     private TeamMiniProfile teamMiniProfile;
 
-    @OneToOne(mappedBy = "teamProfile")
-    private TeamIntroduction teamIntroduction;
-
     // 팀 프로필 완성도
     @Column(name = "team_profile_completion")
     private double teamProfileCompletion;
+
+    @Column(name = "team_introduction")
+    private String teamIntroduction;
 
     // 팀 프로필 희망 팀빌딩 분야
     @Column(nullable = false)
@@ -76,6 +76,7 @@ public class TeamProfile {
         this.id = id;
         this.member = member;
         this.teamProfileCompletion = teamProfileCompletion;
+        this.teamIntroduction = null;
         this.isTeamProfileTeamBuildingField = false;
         this.isTeamMemberAnnouncement = false;
         this.isActivity = false;

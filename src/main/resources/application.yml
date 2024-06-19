@@ -96,7 +96,8 @@ cloud:
       bucket: ${aws.s3.bucket.name}
       image-folder: ${aws.s3.image.folder.name}
       file-folder: ${aws.s3.file.folder.name}
-      cloud-front-domain: ${aws.s3.cloud-front-domain}
+      cloud-front-image-domain: ${aws.s3.cloudfront.image.domain}
+      cloud-front-file-domain: ${aws.s3.cloudfront.file.domain}
     stack:
       auto: false
 
