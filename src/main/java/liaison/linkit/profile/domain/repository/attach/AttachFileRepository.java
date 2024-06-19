@@ -1,6 +1,6 @@
 package liaison.linkit.profile.domain.repository.attach;
 
-import liaison.linkit.profile.domain.Attach.AttachFile;
+import liaison.linkit.profile.domain.attach.AttachFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

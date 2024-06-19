@@ -92,13 +92,12 @@ public class Profile {
     public Profile(
             final Long id,
             final Member member,
-            final double completion,
-            final String introduction
+            final double completion
     ) {
         this.id = id;
         this.member = member;
         this.completion = completion;
-        this.introduction = introduction;
+        this.introduction = null;
         this.isIntroduction = false;
         this.isProfileSkill = false;
         this.isProfileTeamBuildingField = false;
@@ -114,10 +113,9 @@ public class Profile {
 
     public Profile(
             final Member member,
-            final int completion,
-            final String introduction
+            final int completion
     ) {
-        this(null, member, completion, introduction);
+        this(null, member, completion);
     }
 
     // 보유기술, 희망 팀빌딩 분야, 위치 및 지역, 학력 59%

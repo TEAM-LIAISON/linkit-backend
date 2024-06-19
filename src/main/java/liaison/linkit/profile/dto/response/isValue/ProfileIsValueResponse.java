@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.response.IsValue;
+package liaison.linkit.profile.dto.response.isValue;
 
 import liaison.linkit.profile.domain.Profile;
 import lombok.Getter;

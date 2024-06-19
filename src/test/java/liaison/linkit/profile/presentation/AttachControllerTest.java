@@ -16,9 +16,15 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
+
+import java.io.FileInputStream;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,8 +40,9 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -211,41 +218,49 @@ public class AttachControllerTest extends ControllerTest {
                 ));
     }
 
-//    @DisplayName("첨부(웹 파일)를 생성할 수 있다.")
-//    @Test
-//    void createAttachFile() throws Exception {
-//        // given
-//        final AttachFileCreateRequest attachFileCreateRequest = new AttachFileCreateRequest(
-//                "https://github.com/TEAM-LIAISON"
-//        );
-//
-//        // when
-//        final ResultActions resultActions = performPostFileRequest(attachUrlCreateRequest);
-//
-//        // then
-//        resultActions.andExpect(status().isCreated())
-//                .andDo(
-//                        restDocs.document(
-//                                requestCookies(
-//                                        cookieWithName("refresh-token")
-//                                                .description("갱신 토큰")
-//                                ),
-//                                requestHeaders(
-//                                        headerWithName("Authorization")
-//                                                .description("access token")
-//                                                .attributes(field("constraint", "문자열(jwt)"))
-//                                ),
-//                                requestFields(
-//                                        fieldWithPath("attachUrlName")
-//                                                .type(JsonFieldType.STRING)
-//                                                .description("웹 링크 이름")
-//                                                .attributes(field("constraint", "문자열")),
-//                                        fieldWithPath("attachUrl")
-//                                                .type(JsonFieldType.STRING)
-//                                                .description("웹 링크")
-//                                                .attributes(field("constraint", "문자열"))
-//                                )
-//                        )
-//                );
-//    }
+    @DisplayName("첨부(웹 파일)를 생성할 수 있다.")
+    @Test
+    void createAttachFile() throws Exception {
+        // given
+        final MockMultipartFile attachFile = new MockMultipartFile(
+                "attachFile",
+                "poster.pdf",
+                "multipart/form-data",
+                new FileInputStream("./src/test/resources/static/files/poster.pdf")
+        );
+
+        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
+                RestDocumentationRequestBuilders.multipart("/attach/file", attachFile);
+        // when
+
+        final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/attach/file")
+                .file(attachFile)
+                .accept(APPLICATION_JSON)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .characterEncoding("UTF-8")
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
+        );
+
+        // then
+        resultActions.andExpect(status().isCreated())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                requestParts(
+                                        partWithName("attachFile")
+                                                .description("첨부 파일. 지원되는 형식은 .pdf, .docx 등이 있습니다.")
+                                )
+                        )
+                );
+
+    }
 }

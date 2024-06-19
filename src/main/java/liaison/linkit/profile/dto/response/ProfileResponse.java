@@ -1,6 +1,6 @@
 package liaison.linkit.profile.dto.response;
 
-import liaison.linkit.profile.dto.response.Attach.AttachResponse;
+import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

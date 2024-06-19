@@ -1,18 +1,20 @@
-package liaison.linkit.profile.dto.response.Attach;
+package liaison.linkit.profile.dto.response.attach;
 
-import liaison.linkit.profile.domain.Attach.AttachFile;
+import liaison.linkit.profile.domain.attach.AttachFile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
 public class AttachFileResponse {
+    private Long id;
     private String attachFile;
 
     public static AttachFileResponse personalAttachFile(
             final AttachFile attachFile
     ) {
         return new AttachFileResponse(
+                attachFile.getId(),
                 attachFile.getAttachFile()
         );
     }

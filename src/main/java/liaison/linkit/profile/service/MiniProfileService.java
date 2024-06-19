@@ -118,7 +118,7 @@ public class MiniProfileService {
     // 나중에 리팩토링 필요한 부분
 
 
-    public String saveImage(final MultipartFile miniProfileImage) {
+    private String saveImage(final MultipartFile miniProfileImage) {
         // 이미지 유효성 검증
         validateSizeOfImage(miniProfileImage);
         // 이미지 파일 객체 생성 (file, HashedName)
