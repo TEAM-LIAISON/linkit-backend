@@ -17,6 +17,7 @@ import liaison.linkit.team.dto.response.activity.ActivityMethodResponse;
 import liaison.linkit.team.dto.response.activity.ActivityRegionResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 // 활동 방식 및 활동 지역 다루는 서비스 계층
 public class ActivityService {
 
@@ -38,8 +40,6 @@ public class ActivityService {
 
     final ActivityRegionRepository activityRegionRepository;
     final RegionRepository regionRepository;
-
-
 
     private TeamProfile getTeamProfile(final Long memberId) {
         return teamProfileRepository.findByMemberId(memberId)
@@ -114,6 +114,7 @@ public class ActivityService {
     public ActivityMethodResponse getAllActivityMethods(
             final Long memberId
     ) {
+        log.info("getAllActivityMethods() 실행 여부");
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
         // 저장되어 있는 활동 방식 리포지토리에서 모든 활동 방식 조회
@@ -131,14 +132,17 @@ public class ActivityService {
 
     @Transactional(readOnly = true)
     public ActivityRegionResponse getActivityRegion(final Long memberId) {
+        log.info("getActivityRegion() 실행 여부");
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
-        ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(teamProfile.getId());
+        ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(teamProfile.getId())
+                .orElseThrow(()-> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
 
         return new ActivityRegionResponse(activityRegion.getRegion().getCityName(), activityRegion.getRegion().getDivisionName());
     }
 
     public ActivityResponse getActivity(final Long memberId) {
+        log.info("getActivity() 메서드 실행 여부");
         return new ActivityResponse(getAllActivityMethods(memberId), getActivityRegion(memberId));
     }
 }

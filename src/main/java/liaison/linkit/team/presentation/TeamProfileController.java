@@ -48,6 +48,7 @@ public class TeamProfileController {
                     = getOnBoardingFieldTeamInformResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isTeamProfileTeamBuildingField(), teamProfileOnBoardingIsValueResponse.isTeamMiniProfile());
             log.info("onBoardingFieldTeamInformResponse={}", onBoardingFieldTeamInformResponse);
 
+            log.info("활동 방식 및 지역 오류 확인 범위 시작 부분");
             final ActivityResponse activityResponse
                     = getActivityResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isActivity());
             log.info("activityResponse={}", activityResponse);
@@ -89,12 +90,12 @@ public class TeamProfileController {
             final Long memberId,
             final boolean isActivity
     ) {
+        log.info("getActivityResponse() 메서드 실행 여부");
         if (isActivity) {
-            activityService.validateActivityMethodByMember(memberId);
-            activityService.validateActivityRegionByMember(memberId);
-
+            log.info("isActivity={}", isActivity);
             return activityService.getActivity(memberId);
         } else {
+            log.info("isActivity={}", isActivity);
             return new ActivityResponse();
         }
     }

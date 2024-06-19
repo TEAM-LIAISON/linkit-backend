@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 public interface ActivityRegionRepository extends JpaRepository<ActivityRegion, Long> {
 
     boolean existsByTeamProfileId(final Long teamProfileId);
@@ -16,5 +18,5 @@ public interface ActivityRegionRepository extends JpaRepository<ActivityRegion, 
     @Query("DELETE FROM ActivityRegion activityRegion WHERE activityRegion.teamProfile.id = :teamProfileId")
     void deleteAllByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
-    ActivityRegion findByTeamProfileId(@Param("teamProfileId")final Long teamProfileId);
+    Optional<ActivityRegion> findByTeamProfileId(@Param("teamProfileId")final Long teamProfileId);
 }
