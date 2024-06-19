@@ -26,5 +26,4 @@ public class ImageController {
 //        final String imageName = miniProfileImageResponse.getImageName();
         return ResponseEntity.status(HttpStatus.CREATED).body(miniProfileImageResponse);
     }
-
 }

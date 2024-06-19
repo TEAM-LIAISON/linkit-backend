@@ -120,6 +120,7 @@ public enum ExceptionCode {
 
     NOT_FOUND_MINI_PROFILE_BY_MEMBER_ID(1006, "사용자의 ID에 해당하는 내 이력서용 미니 프로필 정보가 존재하지 않습니다."),
     NOT_FOUND_MINI_PROFILE_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 내 이력서용 미니 프로필 정보가 존재하지 않습니다."),
+    COMMIT_REPAIR(1000, "커밋 확인용"),
 
 
 
