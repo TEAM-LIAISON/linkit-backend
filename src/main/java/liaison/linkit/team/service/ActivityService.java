@@ -120,6 +120,8 @@ public class ActivityService {
         // 저장되어 있는 활동 방식 리포지토리에서 모든 활동 방식 조회
         List<ActivityMethod> activityMethods = activityMethodRepository.findAllByTeamProfileId(teamProfile.getId());
 
+        log.info("오류 찾기 part 1");
+
         List<String> activityTagNames = activityMethods.stream()
                 .map(activityMethod -> activityMethodTagRepository.findById(activityMethod.getActivityMethodTag().getId()))
                 .filter(Optional::isPresent)
@@ -127,6 +129,7 @@ public class ActivityService {
                 .map(ActivityMethodTag::getActivityTagName)
                 .toList();
 
+        log.info("오류 찾기 part 2");
         return ActivityMethodResponse.of(activityTagNames);
     }
 
