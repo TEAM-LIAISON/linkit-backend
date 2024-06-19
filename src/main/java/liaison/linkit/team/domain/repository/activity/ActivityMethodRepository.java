@@ -18,6 +18,6 @@ public interface ActivityMethodRepository extends JpaRepository<ActivityMethod, 
     @Query("DELETE FROM ActivityMethod activityMethod WHERE activityMethod.teamProfile.id = :teamProfileId")
     void deleteAllByTeamProfileId(@Param("teamProfileId")final Long teamProfileId);
 
-    @Query("SELECT ActivityMethod FROM ActivityMethod activityMethod WHERE activityMethod.teamProfile.id = :teamProfileId")
+    @Query("SELECT activityMethod FROM ActivityMethod activityMethod WHERE activityMethod.teamProfile.id = :teamProfileId")
     List<ActivityMethod> findAllByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 }
