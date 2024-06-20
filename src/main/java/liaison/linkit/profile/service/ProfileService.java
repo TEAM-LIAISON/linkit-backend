@@ -13,6 +13,7 @@ import liaison.linkit.profile.domain.repository.education.MajorRepository;
 import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
+import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
@@ -165,4 +166,11 @@ public class ProfileService {
         );
     }
 
+    public void saveIntroduction(
+            final Long memberId,
+            final IntroductionCreateRequest introductionCreateRequest
+    ) {
+        final Profile profile = getProfileByMember(memberId);
+        profile.updateIntroduction(introductionCreateRequest.getIntroduction());
+    }
 }

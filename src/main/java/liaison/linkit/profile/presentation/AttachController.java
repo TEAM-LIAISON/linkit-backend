@@ -6,9 +6,7 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
-import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
-import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import liaison.linkit.profile.service.AttachService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,15 +33,15 @@ public class AttachController {
     }
 
     // 외부 링크 1개 조회 요청
-    @GetMapping("/url")
-    @MemberOnly
-    public ResponseEntity<AttachUrlResponse> getAttachUrl(
-            @Auth final Accessor accessor
-    ) {
-        attachService.validateAttachUrlByMember(accessor.getMemberId());
-        final AttachUrlResponse attachUrlResponse = attachService.getAttachUrlDetail(accessor.getMemberId());
-        return ResponseEntity.ok().body(attachUrlResponse);
-    }
+//    @GetMapping("/url")
+//    @MemberOnly
+//    public ResponseEntity<AttachUrlResponse> getAttachUrl(
+//            @Auth final Accessor accessor
+//    ) {
+//        attachService.validateAttachUrlByMember(accessor.getMemberId());
+//        final AttachUrlResponse attachUrlResponse = attachService.getAttachUrlDetail(accessor.getMemberId());
+//        return ResponseEntity.ok().body(attachUrlResponse);
+//    }
 
     // 외부 링크 1개 수정 요청
     @PutMapping("/url/{attachUrlId}")
@@ -81,15 +79,26 @@ public class AttachController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/file")
+    @DeleteMapping("/file/{attachFileUrlId}")
     @MemberOnly
-    public ResponseEntity<AttachFileResponse> getAttachFile(
-            @Auth final Accessor accessor
+    public ResponseEntity<Void> deleteAttachFile(
+            @Auth final Accessor accessor,
+            @PathVariable final Long attachFileUrlId
     ) {
         attachService.validateAttachFileByMember(accessor.getMemberId());
-        final AttachFileResponse attachFileResponse = attachService.getAttachFileDetail(accessor.getMemberId());
-        return ResponseEntity.ok().body(attachFileResponse);
+        attachService.deleteFile(accessor.getMemberId(), attachFileUrlId);
+        return ResponseEntity.noContent().build();
     }
+
+//    @GetMapping("/file")
+//    @MemberOnly
+//    public ResponseEntity<AttachFileResponse> getAttachFile(
+//            @Auth final Accessor accessor
+//    ) {
+//        attachService.validateAttachFileByMember(accessor.getMemberId());
+//        final AttachFileResponse attachFileResponse = attachService.getAttachFileDetail(accessor.getMemberId());
+//        return ResponseEntity.ok().body(attachFileResponse);
+//    }
 
 //
 //    @PatchMapping("/file")
@@ -116,6 +125,7 @@ public class AttachController {
     public ResponseEntity<AttachResponse> getAttachList(
             @Auth final Accessor accessor
     ) {
+
         final AttachResponse attachResponse = attachService.getAttachList(accessor.getMemberId());
         return ResponseEntity.ok().body(attachResponse);
     }

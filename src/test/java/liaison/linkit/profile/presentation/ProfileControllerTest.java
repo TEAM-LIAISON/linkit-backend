@@ -6,7 +6,7 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.DefaultProfileCreateRequest;
-import liaison.linkit.profile.dto.request.ProfileCreateRequest;
+import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
@@ -25,6 +25,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
@@ -91,9 +92,16 @@ class ProfileControllerTest extends ControllerTest {
     }
 
     private void makeProfile() throws Exception {
-        final ProfileCreateRequest createRequest = new ProfileCreateRequest(
+        final IntroductionCreateRequest createRequest = new IntroductionCreateRequest(
                 "자기소개를 생성합니다."
         );
+    }
+
+    private void makeIntroduction() throws Exception{
+        final IntroductionCreateRequest introductionCreateRequest = new IntroductionCreateRequest(
+                "자기소개 정보를 생성합니다."
+        );
+        final ResultActions resultActions = performCreateRequest(introductionCreateRequest);
     }
 
     private ResultActions performGetOnBoardingProfileRequest() throws Exception {
@@ -115,14 +123,23 @@ class ProfileControllerTest extends ControllerTest {
     }
 
     private ResultActions performPostDefaultRequest(
-            DefaultProfileCreateRequest defaultProfileCreateRequest) throws Exception
-    {
+            DefaultProfileCreateRequest defaultProfileCreateRequest) throws Exception {
         return mockMvc.perform(
                 post("/profile/default")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(defaultProfileCreateRequest))
+        );
+    }
+
+    private ResultActions performCreateRequest(final IntroductionCreateRequest introductionCreateRequest) throws Exception {
+        return mockMvc.perform(
+                post("/profile/introduction")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(introductionCreateRequest))
         );
     }
 
@@ -146,7 +163,7 @@ class ProfileControllerTest extends ControllerTest {
 
     private ResultActions performDeleteRequest() throws Exception {
         return mockMvc.perform(
-                delete("/profile")
+                delete("/profile/introduction")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -192,14 +209,14 @@ class ProfileControllerTest extends ControllerTest {
         given(profileRegionService.getPersonalProfileRegion(1L)).willReturn(profileRegionResponse);
 
         // 3. 학교 정보
-         final EducationResponse educationResponse1 = new EducationResponse(
-                 1L,
-                 2022,
-                 2024,
-                 "홍익대학교",
-                 "컴퓨터공학과",
-                 "재학 중"
-         );
+        final EducationResponse educationResponse1 = new EducationResponse(
+                1L,
+                2022,
+                2024,
+                "홍익대학교",
+                "컴퓨터공학과",
+                "재학 중"
+        );
 
         final EducationResponse educationResponse2 = new EducationResponse(
                 2L,
@@ -217,7 +234,7 @@ class ProfileControllerTest extends ControllerTest {
 
         // 4. 이력 정보
         final AntecedentsResponse antecedentsResponse1 = new AntecedentsResponse(
-            1L,
+                1L,
                 "linkit",
                 "프로젝트 매니저",
                 2023,
@@ -245,7 +262,7 @@ class ProfileControllerTest extends ControllerTest {
         // 5. 미니 프로필 정보
         final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
                 "시니어 소프트웨어 개발자",
-                LocalDate.of(2024, 10,20),
+                LocalDate.of(2024, 10, 20),
                 true,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "혁신, 팀워크, 의지",
@@ -350,7 +367,7 @@ class ProfileControllerTest extends ControllerTest {
         // 1. 미니 프로필 (V)
         final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
                 "시니어 소프트웨어 개발자",
-                LocalDate.of(2024, 10,20),
+                LocalDate.of(2024, 10, 20),
                 true,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "혁신, 팀워크, 의지",
@@ -361,7 +378,7 @@ class ProfileControllerTest extends ControllerTest {
 
         // 2. 완성도 & 존재 여부 (V)
         final CompletionResponse completionResponse = new CompletionResponse(
-            100.0,
+                100.0,
                 true,
                 true,
                 true,
@@ -455,7 +472,7 @@ class ProfileControllerTest extends ControllerTest {
 
         // 9. 수상
         final AwardsResponse firstAwardsResponse = new AwardsResponse(
-            1L,
+                1L,
                 "홍익대학교 창업경진대회",
                 "대상",
                 "홍익대학교 창업교육센터",
@@ -490,7 +507,7 @@ class ProfileControllerTest extends ControllerTest {
         );
 
         final AttachFileResponse firstAttachFileResponse = new AttachFileResponse(
-            1L,
+                1L,
                 "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
         );
 
@@ -500,6 +517,8 @@ class ProfileControllerTest extends ControllerTest {
                 attachUrlResponseList,
                 attachFileResponseList
         );
+
+        given(attachService.getAttachList(1L)).willReturn(attachResponses);
 
         final ProfileResponse profileResponse = new ProfileResponse(
                 miniProfileResponse,
@@ -529,30 +548,118 @@ class ProfileControllerTest extends ControllerTest {
         final ResultActions resultActions = performGetProfileRequest();
 
         // then
-//        resultActions.andExpect(status().isOk())
-//                .andDo(
-//                        restDocs.document(
-//                                requestCookies(
-//                                        cookieWithName("refresh-token")
-//                                                .description("갱신 토큰")
-//                                ),
-//                                requestHeaders(
-//                                        headerWithName("Authorization")
-//                                                .description("access token")
-//                                                .attributes(field("constraint", "문자열(jwt)"))
-//                                ),
-//                                responseFields(
-//                                        subsectionWithPath("miniProfileResponse"),
-//                                        subsectionWithPath("completionResponse"),
-//                                        subsectionWithPath("miniProfileResponse"),
-//                                        subsectionWithPath("miniProfileResponse"),
-//
-//
-//                                )
-//                        )
-//                );
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                responseFields(
+                                        // miniProfileResponse
+                                        subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
+                                        fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING).description("프로필의 제목"),
+                                        fieldWithPath("miniProfileResponse.uploadPeriod").type(JsonFieldType.STRING).description("프로필 업로드 주기"),
+                                        fieldWithPath("miniProfileResponse.uploadDeadline").type(JsonFieldType.BOOLEAN).description("업로드 마감일 여부"),
+                                        fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
+                                        fieldWithPath("miniProfileResponse.myValue").type(JsonFieldType.STRING).description("사용자의 가치"),
+                                        fieldWithPath("miniProfileResponse.skillSets").type(JsonFieldType.STRING).description("사용자의 스킬 세트"),
+
+                                        // completionResponse
+                                        subsectionWithPath("completionResponse").description("프로필의 완성도 정보"),
+                                        fieldWithPath("completionResponse.completion").type(JsonFieldType.NUMBER).description("프로필 완성도 (백분율)"),
+                                        fieldWithPath("completionResponse.introduction").type(JsonFieldType.BOOLEAN).description("소개의 완성 여부"),
+                                        fieldWithPath("completionResponse.profileSkill").type(JsonFieldType.BOOLEAN).description("스킬 섹션의 완성 여부"),
+                                        fieldWithPath("completionResponse.profileTeamBuildingField").type(JsonFieldType.BOOLEAN).description("팀 빌딩 필드의 완성 여부"),
+                                        fieldWithPath("completionResponse.profileRegion").type(JsonFieldType.BOOLEAN).description("지역 정보의 완성 여부"),
+                                        fieldWithPath("completionResponse.antecedents").type(JsonFieldType.BOOLEAN).description("이력 사항의 완성 여부"),
+                                        fieldWithPath("completionResponse.education").type(JsonFieldType.BOOLEAN).description("교육 이력의 완성 여부"),
+                                        fieldWithPath("completionResponse.awards").type(JsonFieldType.BOOLEAN).description("수상 이력의 완성 여부"),
+                                        fieldWithPath("completionResponse.attach").type(JsonFieldType.BOOLEAN).description("첨부 파일의 유무"),
+
+                                        // profileIntroductionResponse
+                                        subsectionWithPath("profileIntroductionResponse").description("프로필 소개"),
+                                        fieldWithPath("profileIntroductionResponse.introduction").type(JsonFieldType.STRING).description("소개 내용"),
+
+                                        // profileSkillResponse
+                                        subsectionWithPath("profileSkillResponse").description("프로필 스킬 정보"),
+                                        fieldWithPath("profileSkillResponse.roleFields").type(JsonFieldType.ARRAY).description("역할 필드"),
+                                        fieldWithPath("profileSkillResponse.skillNames").type(JsonFieldType.ARRAY).description("스킬 명칭"),
+
+                                        // profileTeamBuildingFieldResponse
+                                        subsectionWithPath("profileTeamBuildingFieldResponse").description("팀 빌딩 필드 응답"),
+                                        fieldWithPath("profileTeamBuildingFieldResponse.teamBuildingFieldNames").type(JsonFieldType.ARRAY).description("팀 빌딩 필드 이름"),
+
+                                        // antecedentsResponse
+                                        subsectionWithPath("antecedentsResponse").description("과거 경력 정보"),
+                                        fieldWithPath("antecedentsResponse[].id").type(JsonFieldType.NUMBER).description("경력 ID"),
+                                        fieldWithPath("antecedentsResponse[].projectName").type(JsonFieldType.STRING).description("프로젝트 이름"),
+                                        fieldWithPath("antecedentsResponse[].projectRole").type(JsonFieldType.STRING).description("프로젝트 역할"),
+                                        fieldWithPath("antecedentsResponse[].startYear").type(JsonFieldType.NUMBER).description("시작 연도"),
+                                        fieldWithPath("antecedentsResponse[].startMonth").type(JsonFieldType.NUMBER).description("시작 월"),
+                                        fieldWithPath("antecedentsResponse[].endYear").type(JsonFieldType.NUMBER).description("종료 연도"),
+                                        fieldWithPath("antecedentsResponse[].endMonth").type(JsonFieldType.NUMBER).description("종료 월"),
+                                        fieldWithPath("antecedentsResponse[].retirement").type(JsonFieldType.BOOLEAN).description("퇴직 여부"),
+
+                                        // educationResponse
+                                        subsectionWithPath("educationResponse").description("교육 이력 정보"),
+                                        fieldWithPath("educationResponse[].id").type(JsonFieldType.NUMBER).description("교육 이력 ID"),
+                                        fieldWithPath("educationResponse[].admissionYear").type(JsonFieldType.NUMBER).description("입학 연도"),
+                                        fieldWithPath("educationResponse[].graduationYear").type(JsonFieldType.NUMBER).description("졸업 연도"),
+                                        fieldWithPath("educationResponse[].universityName").type(JsonFieldType.STRING).description("대학교 이름"),
+                                        fieldWithPath("educationResponse[].majorName").type(JsonFieldType.STRING).description("전공 이름"),
+                                        fieldWithPath("educationResponse[].degreeName").type(JsonFieldType.STRING).description("학위명"),
+
+                                        // awardsResponse
+                                        subsectionWithPath("awardsResponse").description("수상 이력 정보"),
+                                        fieldWithPath("awardsResponse[].id").type(JsonFieldType.NUMBER).description("수상 ID"),
+                                        fieldWithPath("awardsResponse[].awardsName").type(JsonFieldType.STRING).description("수상 이름"),
+                                        fieldWithPath("awardsResponse[].ranking").type(JsonFieldType.STRING).description("수상 순위"),
+                                        fieldWithPath("awardsResponse[].organizer").type(JsonFieldType.STRING).description("주최자"),
+                                        fieldWithPath("awardsResponse[].awardsYear").type(JsonFieldType.NUMBER).description("수상 연도"),
+                                        fieldWithPath("awardsResponse[].awardsMonth").type(JsonFieldType.NUMBER).description("수상 월"),
+                                        fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING).description("수상 내용"),
+
+                                        // attachResponse
+                                        subsectionWithPath("attachResponse").description("첨부 파일 정보"),
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL ID"),
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(JsonFieldType.STRING).description("첨부된 URL 이름"),
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrl").type(JsonFieldType.STRING).description("첨부된 URL"),
+                                        fieldWithPath("attachResponse.attachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 ID"),
+                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFile").type(JsonFieldType.STRING).description("첨부 파일 URL")
+                                )
+                        ));
     }
 
+    @DisplayName("프로필 자기소개 항목을 생성할 수 있다.")
+    @Test
+    void createProfileIntroduction() throws Exception {
+        // given
+        final IntroductionCreateRequest introductionCreateRequest = new IntroductionCreateRequest(
+                "프로필 자기소개 항목을 입력합니다."
+        );
+
+        // when
+        final ResultActions resultActions = performCreateRequest(introductionCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("introduction")
+                                                .type(JsonFieldType.STRING)
+                                                .description("자기소개")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                );
+    }
 //    @DisplayName("프로필 자기소개 항목을 조회할 수 있다.")
 //    @Test
 //    void getProfileIntroduction() throws Exception{
@@ -627,29 +734,29 @@ class ProfileControllerTest extends ControllerTest {
 //                );
 //    }
 //
-//    @DisplayName("프로필 자기소개 항목을 삭제할 수 있다.")
-//    @Test
-//    void deleteProfileIntroduction() throws Exception {
-//        // given
-//        makeProfile();
-//        doNothing().when(profileService).deleteIntroduction(anyLong());
-//
-//        // when
-//        final ResultActions resultActions = performDeleteRequest();
-//        // then
-//        resultActions.andExpect(status().isNoContent())
-//                .andDo(
-//                        restDocs.document(
-//                                requestCookies(
-//                                        cookieWithName("refresh-token")
-//                                                .description("갱신 토큰")
-//                                ),
-//                                requestHeaders(
-//                                        headerWithName("Authorization")
-//                                                .description("access token")
-//                                                .attributes(field("constraint", "문자열(jwt)"))
-//                                )
-//                        )
-//                );
-//    }
+    @DisplayName("프로필 자기소개 항목을 삭제할 수 있다.")
+    @Test
+    void deleteProfileIntroduction() throws Exception {
+        // given
+        makeIntroduction();
+        doNothing().when(profileService).deleteIntroduction(1L);
+
+        // when
+        final ResultActions resultActions = performDeleteRequest();
+        // then
+        resultActions.andExpect(status().isNoContent())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                )
+                        )
+                );
+    }
 }
