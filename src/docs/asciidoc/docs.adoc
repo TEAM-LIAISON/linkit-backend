@@ -229,8 +229,46 @@ include::{snippets}/member-controller-test/get-member-basic-inform/response-fiel
 
 
 == 3. 내 이력서
+=== 내 이력서 전체 조회
+=== [GET /profile]
+==== 요청
+include::{snippets}/profile-controller-test/get-profile/http-request.adoc[]
+==== 응답
+include::{snippets}/profile-controller-test/get-profile/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-profile/response-fields.adoc[]
+
+=== 내 이력서 - 자기소개 생성
+=== [POST /profile/introduction]
+==== 요청
+include::{snippets}/profile-controller-test/create-profile-introduction/http-request.adoc[]
+include::{snippets}/profile-controller-test/create-profile-introduction/request-fields.adoc[]
+
+=== 내 이력서 - 자기소개 삭제
+=== [DELETE /profile/introduction]
+==== 요청
+include::{snippets}/profile-controller-test/delete-profile-introduction/http-request.adoc[]
+
+=== 내 이력서 - 보유기술 생성 (온보딩 API 동일)
+=== [POST /profile_skill]
+
+=== 내 이력서 - 희망 팀빌딩 분야 생성 (온보딩 API 동일)
+=== [POST /profile_team_building_field]
+
+=== 내 이력서 - 활동 지역 및 위치 생성 (온보딩 API 동일)
+=== [POST /profile_region]
+
+=== 내 이력서 - 이력 생성 (온보딩 API 동일)
+=== [POST /antecedents]
+
+=== 내 이력서 - 학력 생성 (온보딩 API 동일)
+=== [POST /education]
+
+=== 내 이력서 - 수상 생성
+=== [POST /awards]
+include::{snippets}/awards-controller-test/create-awards/http-request.adoc[]
+
 === 내 이력서 - 첨부 URL 생성
-=== [POST /attach/url - 2024/06/17 추가]
+=== [POST /attach/url]
 ==== 요청
 include::{snippets}/attach-controller-test/create-attach-url/http-request.adoc[]
 include::{snippets}/attach-controller-test/create-attach-url/request-fields.adoc[]
@@ -251,6 +289,7 @@ include::{snippets}/attach-controller-test/delete-attach-url/path-parameters.ado
 === 내 이력서 - 첨부 File 생성
 === [POST /attach/file]
 ==== 요청
+include::{snippets}/attach-controller-test/create-attach-file/http-request.adoc[]
 include::{snippets}/attach-controller-test/create-attach-file/request-parts.adoc[]
 
 == 4. 팀 소개서

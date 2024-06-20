@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
@@ -38,6 +39,7 @@ public class ProfileController {
     public final AttachService attachService;
     public final ProfileRegionService profileRegionService;
 
+    // 내 이력서 전체 조회 GET 메서드
     @GetMapping
     @MemberOnly
     public ResponseEntity<?> getMyProfile(@Auth final Accessor accessor) {
@@ -97,6 +99,8 @@ public class ProfileController {
             final AttachResponse attachResponse
                     = getAttachResponses(accessor.getMemberId(), profileIsValueResponse.isAttach());
 
+            log.info("attachResponse={}", attachResponse);
+
             final ProfileResponse profileResponse = profileService.getProfile(
                     miniProfileResponse,
                     completionResponse,
@@ -115,9 +119,7 @@ public class ProfileController {
         }
     }
 
-
-
-    // 온보딩 GET 요청 처리 메서드
+    // 내 이력서 온보딩 전체 조회 GET 메서드
     @GetMapping("/onBoarding")
     @MemberOnly
     public ResponseEntity<?> getOnBoardingProfile(@Auth final Accessor accessor) {
@@ -168,17 +170,16 @@ public class ProfileController {
         }
     }
 
-
-//    // Default 나의 역량 생성 메서드
-//    @PostMapping("/default")
-//    @MemberOnly
-//    public ResponseEntity<Void> createDefaultProfile(
-//            @Auth final Accessor accessor,
-//            @RequestBody @Valid final DefaultProfileCreateRequest defaultProfileCreateRequest
-//    ) {
-//        profileService.saveDefault(accessor.getMemberId(), defaultProfileCreateRequest);
-//        return ResponseEntity.ok().build();
-//    }
+    @PostMapping("/introduction")
+    @MemberOnly
+    public ResponseEntity<Void> createProfileIntroduction(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid final IntroductionCreateRequest introductionCreateRequest
+    ) {
+        profileService.validateProfileByMember(accessor.getMemberId());
+        profileService.saveIntroduction(accessor.getMemberId(), introductionCreateRequest);
+        return ResponseEntity.ok().build();
+    }
 
     @GetMapping("/introduction")
     @MemberOnly

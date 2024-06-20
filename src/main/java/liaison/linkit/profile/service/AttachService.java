@@ -128,8 +128,7 @@ public class AttachService {
 
         attachUrlRepository.deleteById(attachUrl.getId());
 
-        if (!attachUrlRepository.existsByProfileId(profile.getId())) {
-            // attachUrl 하나라도 존재하지 않는 상황
+        if (!attachFileRepository.existsByProfileId(profile.getId()) && !attachUrlRepository.existsByProfileId(profile.getId())) {
             profile.cancelPerfectionSeven();
             profile.updateMemberProfileTypeByCompletion();
         }
@@ -140,7 +139,6 @@ public class AttachService {
             final MultipartFile attachFile
     ) {
         final Profile profile = getProfile(memberId);
-
         final String attachFileUrl = saveFileS3(attachFile);
 
         final AttachFile newAttachFile = AttachFile.of(
@@ -220,5 +218,17 @@ public class AttachService {
         final List<AttachFileResponse> attachFileResponses = attachFiles.stream().map(this::getAttachFileResponse).toList();
 
         return AttachResponse.getAttachResponse(attachUrlResponses, attachFileResponses);
+    }
+
+    public void deleteFile(
+            final Long memberId,
+            final Long attachFileUrlId
+    ) {
+        final Profile profile = getProfile(memberId);
+        attachFileRepository.deleteById(attachFileUrlId);
+        if (!attachFileRepository.existsByProfileId(profile.getId()) && !attachUrlRepository.existsByProfileId(profile.getId())) {
+            profile.cancelPerfectionSeven();
+            profile.updateMemberProfileTypeByCompletion();
+        }
     }
 }

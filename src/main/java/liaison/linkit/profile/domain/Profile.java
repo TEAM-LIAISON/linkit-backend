@@ -130,13 +130,22 @@ public class Profile {
     public void addPerfectionDefault() {this.completion += 11.8;}
     public void cancelPerfectionDefault() {this.completion -= 11.8;}
 
-    public void addPerfectionSeven() {this.completion += 7;}
-    public void cancelPerfectionSeven() {this.completion -= 7;}
+    public void addPerfectionSeven() {this.completion += 7.0;}
+    public void cancelPerfectionSeven() {this.completion -= 7.0;}
 
-    public void addPerfectionTwenty() { this.completion += 20; }
-    public void cancelPerfectionTwenty() {this.completion -= 20;}
+    public void addPerfectionTwenty() { this.completion += 20.0; }
+    public void cancelPerfectionTwenty() {this.completion -= 20.0;}
 
-    // Default 항목 3개 관리 (isSkill, isProfileTeamBuildingField, isEducation)
+    // 자기소개 업데이트
+    public void updateIntroduction(final String introduction) {
+        if (this.introduction != null) { // 수정으로 간주
+            this.introduction = introduction;
+        } else {    // null 인 경우
+            this.introduction = introduction;
+            addPerfectionTwenty();
+            updateMemberProfileTypeByCompletion();
+        }
+    }
 
     public void updateIsProfileTeamBuildingField(final Boolean isProfileTeamBuildingField) {
         this.isProfileTeamBuildingField = isProfileTeamBuildingField;

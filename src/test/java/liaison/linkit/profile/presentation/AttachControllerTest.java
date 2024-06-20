@@ -24,8 +24,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
-import java.io.FileInputStream;
-
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -41,7 +39,6 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.requestHe
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -226,7 +223,7 @@ public class AttachControllerTest extends ControllerTest {
                 "attachFile",
                 "poster.pdf",
                 "multipart/form-data",
-                new FileInputStream("./src/test/resources/static/files/poster.pdf")
+                "PDF file content".getBytes()
         );
 
         MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
@@ -246,21 +243,14 @@ public class AttachControllerTest extends ControllerTest {
         resultActions.andExpect(status().isCreated())
                 .andDo(
                         restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
                                 requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
+                                        headerWithName("Authorization").description("인증 토큰").attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 requestParts(
-                                        partWithName("attachFile")
-                                                .description("첨부 파일. 지원되는 형식은 .pdf, .docx 등이 있습니다.")
+                                        partWithName("attachFile").description("첨부 파일. 지원되는 형식은 .pdf, .docx 등이 있습니다.")
                                 )
                         )
                 );
-
     }
+
 }
