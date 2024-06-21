@@ -21,7 +21,6 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
-import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
@@ -46,6 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 public class TeamMiniProfileControllerTest extends ControllerTest {
+
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
 
@@ -60,7 +60,7 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-//        doNothing().when(miniProfileService).validateMiniProfileByMember(1L);
+        doNothing().when(teamMiniProfileService).validateTeamMiniProfileByMember(1L);
     }
 
     protected MockMultipartFile getMockMultipartFile() {
@@ -83,13 +83,12 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
                 "빠르게 성장하는 팀, 최단기간 투자 유치",
                 "#해커톤 #사무실 있음 #서울시"
         );
-//
-//        final MockMultipartFile miniProfileImage = getMockMultipartFile();
+
         final MockMultipartFile teamMiniProfileImage = new MockMultipartFile(
                 "teamMiniProfileImage",
                 "logo.png",
                 "multipart/form-data",
-                new FileInputStream("./src/test/resources/static/images/logo.png")
+                "./src/test/resources/static/images/logo.png".getBytes()
         );
 
         final MockMultipartFile createRequest = new MockMultipartFile(
