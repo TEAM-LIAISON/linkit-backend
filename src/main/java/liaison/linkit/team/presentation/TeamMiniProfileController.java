@@ -7,6 +7,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.team.dto.request.miniprofile.TeamMiniProfileCreateRequest;
 import liaison.linkit.team.service.TeamMiniProfileService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/team/mini-profile")
+@Slf4j
 public class TeamMiniProfileController {
 
     private final TeamMiniProfileService teamMiniProfileService;
@@ -29,6 +31,7 @@ public class TeamMiniProfileController {
             @RequestPart @Valid TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
             @RequestPart MultipartFile teamMiniProfileImage
     ) {
+        log.info("팀 미니 프로필 생성 메서드가 실행됩니다. part 1");
         teamMiniProfileService.save(accessor.getMemberId(), teamMiniProfileCreateRequest, teamMiniProfileImage);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

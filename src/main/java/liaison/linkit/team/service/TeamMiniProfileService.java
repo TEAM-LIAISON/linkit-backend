@@ -19,6 +19,7 @@ import liaison.linkit.team.dto.request.onBoarding.OnBoardingFieldTeamInformReque
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileEarlyOnBoardingResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class TeamMiniProfileService {
 
 
@@ -104,20 +106,43 @@ public class TeamMiniProfileService {
             final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
             final MultipartFile teamMiniProfileImage
     ) {
+        log.info("팀 미니 프로필 생성 메서드가 실행됩니다. part 2");
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
         final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
+        log.info("팀 미니 프로필 생성 메서드가 실행됩니다. part 3");
+        if (teamProfile.getIsTeamMiniProfile()) {
+            final TeamMiniProfile savedTeamMiniProfile = getTeamMiniProfile(teamProfile.getId());
 
-        final TeamMiniProfile savedTeamMiniProfile = getTeamMiniProfile(teamProfile.getId());
+            savedTeamMiniProfile.onBoardingTeamMiniProfile(
+                    teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                    teamMiniProfileCreateRequest.getTeamUploadPeriod(),
+                    teamMiniProfileCreateRequest.isTeamUploadDeadline(),
+                    teamMiniProfileImageUrl,
+                    teamMiniProfileCreateRequest.getTeamValue(),
+                    teamMiniProfileCreateRequest.getTeamDetailInform()
+            );
+        } else {
+            log.info("팀 미니 프로필 생성 메서드가 실행됩니다. part 4");
+            final TeamMiniProfile teamMiniProfile = TeamMiniProfile.of(
+                    teamProfile,
+                    null,
+                    null,
+                    null,
+                    teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                    teamMiniProfileCreateRequest.getTeamUploadPeriod(),
+                    teamMiniProfileCreateRequest.isTeamUploadDeadline(),
+                    teamMiniProfileImageUrl,
+                    teamMiniProfileCreateRequest.getTeamValue(),
+                    teamMiniProfileCreateRequest.getTeamDetailInform()
+            );
 
-        savedTeamMiniProfile.onBoardingTeamMiniProfile(
-                teamMiniProfileCreateRequest.getTeamProfileTitle(),
-                teamMiniProfileCreateRequest.getTeamUploadPeriod(),
-                teamMiniProfileCreateRequest.isTeamUploadDeadline(),
-                teamMiniProfileImageUrl,
-                teamMiniProfileCreateRequest.getTeamValue(),
-                teamMiniProfileCreateRequest.getTeamDetailInform()
-        );
+            teamMiniProfileRepository.save(teamMiniProfile);
+            teamProfile.updateIsTeamMiniProfile(true);
+
+        }
+
+
     }
 
     public String saveTeamMiniProfileImage(
