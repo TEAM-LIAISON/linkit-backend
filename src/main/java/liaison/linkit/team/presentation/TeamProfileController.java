@@ -134,5 +134,11 @@ public class TeamProfileController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+//    @PostMapping("/introduction")
+//    @MemberOnly
+//    public ResponseEntity<Void> createTeamIntroduction(
+//            @Auth final Accessor accessor,
+//            @RequestBody @Valid final Intro
+//    )
 
 }
