@@ -140,7 +140,7 @@ public class Profile {
     public void updateIntroduction(final String introduction) {
         if (this.introduction != null) { // 수정으로 간주
             this.introduction = introduction;
-        } else {    // null 인 경우
+        } else {                        // null 인 경우
             this.introduction = introduction;
             addPerfectionTwenty();
             updateMemberProfileTypeByCompletion();

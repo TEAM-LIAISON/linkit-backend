@@ -172,5 +172,6 @@ public class ProfileService {
     ) {
         final Profile profile = getProfileByMember(memberId);
         profile.updateIntroduction(introductionCreateRequest.getIntroduction());
+        profile.updateIsIntroduction(true);
     }
 }
