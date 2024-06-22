@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ActivityCreateRequest {
-
     // 실제 활동 방식 다중 선택 가능 관련
     @NotNull(message = "활동 방식을 1개 이상 선택해주세요")
     private List<String> activityTagNames;

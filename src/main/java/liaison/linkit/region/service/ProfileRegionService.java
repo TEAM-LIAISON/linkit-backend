@@ -51,18 +51,17 @@ public class ProfileRegionService {
             final ProfileRegionCreateRequest profileRegionCreateRequest
     ) {
         try {
-            final Profile profile = getProfile(memberId);
-            final ProfileRegion savedProfileRegion = getProfileRegion(profile.getId());
 
-            if (savedProfileRegion != null) {
-                profileRegionRepository.delete(savedProfileRegion);
+            final Profile profile = getProfile(memberId);
+
+            if (profileRegionRepository.existsByProfileId(profile.getId())) {
+                profileRegionRepository.deleteByProfileId(profile.getId());
                 profile.updateIsProfileRegion(false);
                 profile.updateMemberProfileTypeByCompletion();
             }
 
-            final Region region = regionRepository.findRegionByCityNameAndDivisionName(
-                    profileRegionCreateRequest.getCityName(),
-                    profileRegionCreateRequest.getDivisionName()
+            final Region region = regionRepository
+                    .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(), profileRegionCreateRequest.getDivisionName()
             );
 
             if (region == null) {
@@ -72,7 +71,9 @@ public class ProfileRegionService {
             }
 
             ProfileRegion newProfileRegion = new ProfileRegion(null, profile, region);
+
             profileRegionRepository.save(newProfileRegion);
+
             profile.updateIsProfileRegion(true);
             profile.updateMemberProfileTypeByCompletion();
         } catch (IllegalArgumentException e) {

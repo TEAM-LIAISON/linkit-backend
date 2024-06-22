@@ -18,5 +18,6 @@ public interface ActivityRegionRepository extends JpaRepository<ActivityRegion, 
     @Query("DELETE FROM ActivityRegion activityRegion WHERE activityRegion.teamProfile.id = :teamProfileId")
     void deleteAllByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
+    @Query("SELECT activityRegion FROM ActivityRegion activityRegion WHERE activityRegion.teamProfile.id = :teamProfileId")
     Optional<ActivityRegion> findByTeamProfileId(@Param("teamProfileId")final Long teamProfileId);
 }
