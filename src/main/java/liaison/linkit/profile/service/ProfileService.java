@@ -119,6 +119,7 @@ public class ProfileService {
 
     public ProfileResponse getProfile(
             final MiniProfileResponse miniProfileResponse,
+            final MemberNameResponse memberNameResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
             final ProfileSkillResponse profileSkillResponse,
@@ -130,6 +131,7 @@ public class ProfileService {
     ) {
         return ProfileResponse.profileItems(
                 miniProfileResponse,
+                memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 profileSkillResponse,
@@ -154,7 +156,9 @@ public class ProfileService {
             // 5. 이력 정보
             final List<AntecedentsResponse> antecedentsResponses,
             // 6. 미니 프로필 정보
-            final MiniProfileResponse miniProfileResponse
+            final MiniProfileResponse miniProfileResponse,
+
+            final MemberNameResponse memberNameResponse
     ) {
         return OnBoardingProfileResponse.onBoardingProfileItems(
                 profileTeamBuildingFieldResponse,
@@ -162,7 +166,8 @@ public class ProfileService {
                 profileRegionResponse,
                 educationResponses,
                 antecedentsResponses,
-                miniProfileResponse
+                miniProfileResponse,
+                memberNameResponse
         );
     }
 
