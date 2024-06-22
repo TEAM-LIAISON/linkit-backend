@@ -9,12 +9,14 @@ import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdate
 import liaison.linkit.profile.dto.response.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.ProfileTeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/profile_team_building_field")
+@Slf4j
 public class ProfileTeamBuildingFieldController {
 
     private final ProfileTeamBuildingFieldService profileTeamBuildingFieldService;
@@ -26,6 +28,7 @@ public class ProfileTeamBuildingFieldController {
             @Auth final Accessor accessor,
             @RequestBody @Valid ProfileTeamBuildingCreateRequest profileTeamBuildingCreateRequest
     ) {
+        log.info("memberId={}의 희망 팀빌딩 분야 생성 요청이 들어왔습니다.", accessor.getMemberId());
         profileTeamBuildingFieldService.save(accessor.getMemberId(), profileTeamBuildingCreateRequest);
         return ResponseEntity.ok().build();
     }

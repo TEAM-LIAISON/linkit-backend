@@ -9,6 +9,7 @@ import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.MiniProfileResponse;
 import liaison.linkit.profile.service.MiniProfileService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mini-profile")
+@Slf4j
 public class MiniProfileController {
 
     private final MiniProfileService miniProfileService;
@@ -40,6 +42,7 @@ public class MiniProfileController {
             @RequestPart @Valid MiniProfileCreateRequest miniProfileCreateRequest,
             @RequestPart MultipartFile miniProfileImage
     ){
+        log.info("memberId={}의 미니 프로필 생성 요청이 들어왔습니다.", accessor.getMemberId());
         miniProfileService.save(accessor.getMemberId(), miniProfileCreateRequest, miniProfileImage);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
