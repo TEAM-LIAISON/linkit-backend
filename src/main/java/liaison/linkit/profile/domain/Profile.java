@@ -200,9 +200,9 @@ public class Profile {
     public void updateIsAntecedents(final Boolean isAntecedents) {
         this.isAntecedents = isAntecedents;
         if (isAntecedents) {
-            addPerfectionSeven();
+            addPerfectionDefault();
         } else {
-            cancelPerfectionSeven();
+            cancelPerfectionDefault();
         }
     }
 

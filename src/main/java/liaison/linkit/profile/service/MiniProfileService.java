@@ -70,22 +70,36 @@ public class MiniProfileService {
         }
         log.info("미니 프로필 삭제 이후");
 
-        // 전달받은 multipartFile을 파일 경로에 맞게 전달하는 작업이 필요함 (save)
-        final String miniProfileImageUrl = saveImage(miniProfileImage);
-        log.info("이미지 저장 이후");
+        if (miniProfileImage != null) {
+            // 전달받은 multipartFile을 파일 경로에 맞게 전달하는 작업이 필요함 (save)
+            final String miniProfileImageUrl = saveImage(miniProfileImage);
+            log.info("이미지 저장 이후");
 
-        final MiniProfile newMiniProfile = MiniProfile.of(
-                profile,
-                miniProfileCreateRequest.getProfileTitle(),
-                miniProfileCreateRequest.getUploadPeriod(),
-                miniProfileCreateRequest.isUploadDeadline(),
-                miniProfileImageUrl,
-                miniProfileCreateRequest.getMyValue(),
-                miniProfileCreateRequest.getSkillSets()
-        );
+            final MiniProfile newMiniProfileByImage = MiniProfile.of(
+                    profile,
+                    miniProfileCreateRequest.getProfileTitle(),
+                    miniProfileCreateRequest.getUploadPeriod(),
+                    miniProfileCreateRequest.isUploadDeadline(),
+                    miniProfileImageUrl,
+                    miniProfileCreateRequest.getMyValue(),
+                    miniProfileCreateRequest.getSkillSets()
+            );
+            miniProfileRepository.save(newMiniProfileByImage);
+            profile.updateIsMiniProfile(true);
 
-        miniProfileRepository.save(newMiniProfile);
-        profile.updateIsMiniProfile(true);
+        } else {
+            final MiniProfile newMiniProfileNoImage = MiniProfile.of(
+                    profile,
+                    miniProfileCreateRequest.getProfileTitle(),
+                    miniProfileCreateRequest.getUploadPeriod(),
+                    miniProfileCreateRequest.isUploadDeadline(),
+                    null,
+                    miniProfileCreateRequest.getMyValue(),
+                    miniProfileCreateRequest.getSkillSets()
+            );
+            miniProfileRepository.save(newMiniProfileNoImage);
+            profile.updateIsMiniProfile(true);
+        }
     }
 
     // 내 이력서 미니 프로필 조회 메서드

@@ -29,7 +29,7 @@ public class TeamMiniProfileController {
     public ResponseEntity<Void> createTeamMiniProfile(
             @Auth final Accessor accessor,
             @RequestPart @Valid TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
-            @RequestPart MultipartFile teamMiniProfileImage
+            @RequestPart(required = false) MultipartFile teamMiniProfileImage
     ) {
         log.info("팀 미니 프로필 생성 메서드가 실행됩니다. part 1");
         teamMiniProfileService.save(accessor.getMemberId(), teamMiniProfileCreateRequest, teamMiniProfileImage);
