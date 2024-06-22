@@ -84,7 +84,6 @@ public class ProfileTeamBuildingFieldService {
         // 프로그레스바 처리 비즈니스 로직
         profile.updateIsProfileTeamBuildingField(true);
         profile.updateMemberProfileTypeByCompletion();
-        profileRepository.save(profile);
     }
 
 

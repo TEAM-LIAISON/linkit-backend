@@ -40,7 +40,7 @@ public class MiniProfileController {
     public ResponseEntity<Void> createMiniProfile(
             @Auth final Accessor accessor,
             @RequestPart @Valid MiniProfileCreateRequest miniProfileCreateRequest,
-            @RequestPart MultipartFile miniProfileImage
+            @RequestPart(required = false) MultipartFile miniProfileImage
     ){
         log.info("memberId={}의 미니 프로필 생성 요청이 들어왔습니다.", accessor.getMemberId());
         miniProfileService.save(accessor.getMemberId(), miniProfileCreateRequest, miniProfileImage);
@@ -63,10 +63,8 @@ public class MiniProfileController {
     @DeleteMapping
     @MemberOnly
     public ResponseEntity<Void> deleteMiniProfile(@Auth final Accessor accessor) {
-
         miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
         miniProfileService.delete(accessor.getMemberId());
-
         return ResponseEntity.noContent().build();
     }
 }

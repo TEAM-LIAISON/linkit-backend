@@ -51,7 +51,6 @@ public class ProfileRegionService {
             final ProfileRegionCreateRequest profileRegionCreateRequest
     ) {
         try {
-
             final Profile profile = getProfile(memberId);
 
             if (profileRegionRepository.existsByProfileId(profile.getId())) {
