@@ -29,6 +29,7 @@ public class EducationController {
             @Auth final Accessor accessor,
             @RequestBody @Valid EducationListCreateRequest educationListCreateRequest
     ) {
+        log.info("memberId={}의 학력 생성 요청이 들어왔습니다.", accessor.getMemberId());
         educationService.save(accessor.getMemberId(), educationListCreateRequest.getEducationList());
         return ResponseEntity.ok().build();
     }

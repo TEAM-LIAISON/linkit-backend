@@ -14,6 +14,7 @@ import liaison.linkit.profile.dto.request.miniProfile.MiniProfileCreateRequest;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.MiniProfileResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MiniProfileService {
 
     private final ProfileRepository profileRepository;
@@ -60,13 +62,17 @@ public class MiniProfileService {
         // 검증이 완료된 profile
         final Profile profile = getProfile(memberId);
 
+        log.info("미니 프로필 삭제 이전");
         if (miniProfileRepository.existsByProfileId(profile.getId())) {
-            final MiniProfile miniProfile = getMiniProfile(profile.getId());
-            miniProfileRepository.deleteById(miniProfile.getId());
+            log.info("미니 프로필 삭제 실행 이전");
+            miniProfileRepository.deleteByProfileId(profile.getId());
+            log.info("미니 프로필 삭제 실행 이후");
         }
+        log.info("미니 프로필 삭제 이후");
 
         // 전달받은 multipartFile을 파일 경로에 맞게 전달하는 작업이 필요함 (save)
         final String miniProfileImageUrl = saveImage(miniProfileImage);
+        log.info("이미지 저장 이후");
 
         final MiniProfile newMiniProfile = MiniProfile.of(
                 profile,
