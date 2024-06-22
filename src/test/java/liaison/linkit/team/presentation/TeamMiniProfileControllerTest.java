@@ -17,9 +17,7 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
@@ -98,8 +96,8 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
                 objectMapper.writeValueAsString(teamMiniProfileCreateRequest).getBytes(StandardCharsets.UTF_8)
         );
 
-        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
-                RestDocumentationRequestBuilders.multipart("/team/mini-profile", teamMiniProfileImage, createRequest);
+//        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
+//                RestDocumentationRequestBuilders.multipart("/team/mini-profile", teamMiniProfileImage, createRequest);
 
 
         // when

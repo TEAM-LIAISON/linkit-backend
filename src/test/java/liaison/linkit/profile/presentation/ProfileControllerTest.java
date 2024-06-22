@@ -378,7 +378,7 @@ class ProfileControllerTest extends ControllerTest {
 
         // 2. 완성도 & 존재 여부 (V)
         final CompletionResponse completionResponse = new CompletionResponse(
-                100.0,
+                "100.0",
                 true,
                 true,
                 true,
@@ -572,7 +572,7 @@ class ProfileControllerTest extends ControllerTest {
 
                                         // completionResponse
                                         subsectionWithPath("completionResponse").description("프로필의 완성도 정보"),
-                                        fieldWithPath("completionResponse.completion").type(JsonFieldType.NUMBER).description("프로필 완성도 (백분율)"),
+                                        fieldWithPath("completionResponse.completion").type(JsonFieldType.STRING).description("프로필 완성도 (백분율)"),
                                         fieldWithPath("completionResponse.introduction").type(JsonFieldType.BOOLEAN).description("소개의 완성 여부"),
                                         fieldWithPath("completionResponse.profileSkill").type(JsonFieldType.BOOLEAN).description("스킬 섹션의 완성 여부"),
                                         fieldWithPath("completionResponse.profileTeamBuildingField").type(JsonFieldType.BOOLEAN).description("팀 빌딩 필드의 완성 여부"),

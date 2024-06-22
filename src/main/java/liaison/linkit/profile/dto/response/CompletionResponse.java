@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CompletionResponse {
     // 프로필 완성도 % = completion
-    private final double completion;
+    private final String completion;
 
     // 상태도 던져줘야하나?
     // -> 아직 미확정
@@ -42,7 +42,7 @@ public class CompletionResponse {
 
     public static CompletionResponse profileCompletion(final Profile profile) {
         return new CompletionResponse(
-                profile.getCompletion(),
+                String.format("%.1f", profile.getCompletion()),
                 profile.getIsIntroduction(),
                 profile.getIsProfileSkill(),
                 profile.getIsProfileTeamBuildingField(),

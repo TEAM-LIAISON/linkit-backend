@@ -18,12 +18,9 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
@@ -184,13 +181,12 @@ class MiniProfileControllerTest extends ControllerTest {
                 "혁신, 팀워크, 의지",
                 "Java, Spring, AWS, Microservices, Docker"
         );
-//
-//        final MockMultipartFile miniProfileImage = getMockMultipartFile();
+
         final MockMultipartFile miniProfileImage = new MockMultipartFile(
                 "miniProfileImage",
                 "logo.png",
                 "multipart/form-data",
-                new FileInputStream("./src/test/resources/static/images/logo.png")
+                "./src/test/resources/static/images/logo.png".getBytes()
         );
 
         final MockMultipartFile createRequest = new MockMultipartFile(
@@ -200,9 +196,8 @@ class MiniProfileControllerTest extends ControllerTest {
                 objectMapper.writeValueAsString(miniProfileCreateRequest).getBytes(StandardCharsets.UTF_8)
         );
 
-        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
-                RestDocumentationRequestBuilders.multipart("/mini-profile", miniProfileImage, createRequest);
-
+//        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
+//                RestDocumentationRequestBuilders.multipart("/mini-profile", miniProfileImage, createRequest);
 
         // when
 
