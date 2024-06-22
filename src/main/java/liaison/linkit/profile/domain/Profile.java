@@ -195,11 +195,6 @@ public class Profile {
     // 자기소개 등록 또는 삭제에서만 호출
     public void updateIsIntroduction(final Boolean isIntroduction) {
         this.isIntroduction = isIntroduction;
-        if (isIntroduction) {
-            addPerfectionTwenty();
-        } else {
-            cancelPerfectionTwenty();
-        }
     }
 
     public void updateIsAntecedents(final Boolean isAntecedents) {
