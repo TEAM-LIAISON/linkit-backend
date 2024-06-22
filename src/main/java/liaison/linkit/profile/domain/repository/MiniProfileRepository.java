@@ -10,4 +10,6 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
     boolean existsByProfileId(final Long profileId);
 
     Optional<MiniProfile> findByProfileId(@Param("profileId") final Long profileId);
+
+    void deleteByProfileId(Long id);
 }

@@ -60,6 +60,11 @@ public class MiniProfileService {
         // 검증이 완료된 profile
         final Profile profile = getProfile(memberId);
 
+        if (miniProfileRepository.existsByProfileId(profile.getId())) {
+            final MiniProfile miniProfile = getMiniProfile(profile.getId());
+            miniProfileRepository.deleteById(miniProfile.getId());
+        }
+
         // 전달받은 multipartFile을 파일 경로에 맞게 전달하는 작업이 필요함 (save)
         final String miniProfileImageUrl = saveImage(miniProfileImage);
 

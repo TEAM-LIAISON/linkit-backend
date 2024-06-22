@@ -731,7 +731,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Fri, 28 Jun 2024 06:03:33 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 29 Jun 2024 05:46:12 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 139
 
@@ -1055,7 +1055,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1544
+Content-Length: 1607
 
 {
   "profileTeamBuildingFieldResponse" : {
@@ -1110,6 +1110,9 @@ Content-Length: 1544
     "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
     "myValue" : "혁신, 팀워크, 의지",
     "skillSets" : "Java, Spring, AWS, Microservices, Docker"
+  },
+  "memberNameResponse" : {
+    "memberName" : "권동민"
   }
 }</code></pre>
 </div>
@@ -1272,6 +1275,16 @@ Content-Length: 1544
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.skillSets</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">나의 스킬셋</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberNameResponse</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberNameResponse.memberName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원(기본 정보)에 해당하는 회원 이름</p></td>
 </tr>
 </tbody>
 </table>
@@ -2260,13 +2273,7 @@ Cookie: refresh-token=refreshToken
 Content-Disposition: form-data; name=miniProfileImage; filename=logo.png
 Content-Type: multipart/form-data
 
-�PNG
-
-   IHDR  �  �   ��ߊ   	pHYs     ��   sRGB ���   gAMA  ���a  'IDATx��;��Wb�����t�;����x%(Z"�ą-�H��Y�v�X�d	D�%i"{���6 �5I*��a+�liv*�{0��3��;�&lt;��~��@⡁����������[ ��=U ��	: t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��4嵗�.��?���-[6����������U������n`|V���ww1�`�m��gu��z�l�ZU�av�n��|����g/����Nae6oz�zg�������O�n���\��aL=D��=S�쏟��|�՜�~��A�&lt;?���������-Ap���}����&gt;���f���̿����y�/����0b.�k�/�x���W[6�.��������_������NL7�5C��a��\[�޵�����7���n�-W�����Mh�Q�Qu�&lt;����a-�wǺҪ}�#%荪��-�����\gI�	�OW/r\�����՝�0*�ި�gn}��\��$��խ�tBk�Q����h�0(�ި����-���@ A� �  : t  � @� ��@ A� �  x��
-m�������;�A��ᵗ�.{w�-���-�{�����r���r���r����"� KP_]|���^ȟY��k�w�~�~�*o�b��H8��H�7=U���'���ölZ]������Vs'�O��Ƽ�y���K�s5�uF@��`�1���ΰ	:�c�4�}�ΰ	:�#*�}��0	:��&gt;QgX�!Êy��3�p�aǼO�4A�gT1�uI���c�'���o\1�uAЁ�6���:+%����J��D��t`"u-�}��r	:0q��&gt;Qg9�(]�y���T�L�Vb�'�,�������:�%�@�Vc�'�,���Z�y���$��J�y���8�DJ�y���(��I�y���A��Ǽ�F�_ߟ.ӽ�t Ƥļo˦��W�l�JЁ��;י�3OЁ�Mj����XW@Ё�Mz̫m['���_:�,1��z.h��Ã���1b��+sw:045���;��Ag/�, ���l���|a'��( ���Ԡ�i1_��S�������xҷw�/+%���t�|��\�JЁ������j�|aW���Gg����U��=�aYK�b���7�\)�/�*�'��н�;�^ü����{F�$�&lt;��#я��;�&gt;��ՙ��=Sb� 1�q{O	�c�G�~w����ʙ7���燢lX�j��件��_��AbΓ:0r5ػ�?3���ĜŰ��ab�b	:@G�9K!� $�,��t�����!b�r	:@G�9+!�  欔����3�0FbΠ:���9�$� c ������3�0Bbΰ:���9�$� # �����3
-�0DbΨ:���9�$� C 挚���3�0@bθ:���9�$�  挛�������bNW:�2�9]"� � �t��,���E��bNW	:�"�9]&amp;� � �t��&lt;���Ax1���bNK`bNk`��Ί9Mt��|�?�3nh����������kZ#� �����-t�{�_�]f.�.�"A��̅Z%� ��\�S�U�p��9A�]���l{��£m�ZU�͛Vh��36�7���g/;������0#*cSg��G���g
-��m�2me�F	:cup�T���--��Z=�|{��-tƪ.+����C�&gt;W�}��;D�쵌ݡw�3���o&lt;kv&gt;Fu�~����1�2v[6�._|���G����1��;~��Υ�'i���N�Q���S�ΩO� ZO;|��OļC����w�-ЂU/����Bs���J�ٹ��&lt;��$�����m��k����c�.�ӥ����?�*3���{���:g�O#�J:0|���~��k������rt�D�N������Z��b��	^�F�^����/�Wz��m�ިz&gt;`�z�uU�l�F;yͲ;005�zK�K�U��M/� ��ɍm�}�����] ���K��%�{��l9y�F��?�V���qu�}/��	c�v{�Ĥ��|�ۆ���Rt���&amp;�	�w纲�w�]/p�7���Ѩw8��-ߌ�i_�=��^\3��[�9���åB{���������{{=�z�f.�)}~u��MԨ{�}6Ao��3uu�}��S����+��U���o�#����h�P�X��?����������j��;Po������������U��oL���&gt;s�{o�:q�GQ�t��F�����5����r�:t��3tu��^��9~����u�Ag$&lt;�vyZ��F��mc%���G_�.�;�zo���:#Qϥ��fI�-�� /A�m�0&gt;��YA��t`��Z��t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��32翽YX��k�I�sw
-�:�v�M���(�����J��^p�ֲV�;�:v��)瘜8�ci���n�u���_������[N���r�4:�m�k�t3����G��$��'����\v��q��|&gt;���Ҳ�&gt;�~��A[�&lt;r��.Ag�f.�.�=k��?��;�i�z���q�vn�G����M:Ag��_�U������?�.w�՛!����K�u�g;w[=����Ӗ�[����s���ݹ��3U6o��c�:�����O�v�Ԫ�wǺ�o�����]���M"A��m]S�lz�LOMր_o�+�bR�s�L�~7) 8L� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : t  � @� ��@ A� �  : �?��exQ�d    IEND�B`�
+./src/test/resources/static/images/logo.png
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=miniProfileCreateRequest
 Content-Type: application/json
@@ -3026,7 +3033,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 3158
+Content-Length: 3223
 
 {
   "miniProfileResponse" : {
@@ -3037,16 +3044,19 @@ Content-Length: 3158
     "myValue" : "혁신, 팀워크, 의지",
     "skillSets" : "Java, Spring, AWS, Microservices, Docker"
   },
+  "memberNameResponse" : {
+    "memberName" : "권동민"
+  },
   "completionResponse" : {
-    "completion" : 100.0,
+    "completion" : "100.0",
+    "awards" : true,
+    "attach" : true,
     "introduction" : true,
     "profileSkill" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "antecedents" : true,
-    "education" : true,
-    "awards" : true,
-    "attach" : true
+    "education" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -3177,13 +3187,23 @@ Content-Length: 3158
 <td class="tableblock halign-left valign-top"><p class="tableblock">사용자의 스킬 세트</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberNameResponse</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberNameResponse.memberName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원(기본 정보)에 해당하는 회원 이름</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>completionResponse</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필의 완성도 정보</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>completionResponse.completion</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 완성도 (백분율)</p></td>
 </tr>
 <tr>

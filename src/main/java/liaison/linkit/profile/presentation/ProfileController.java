@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
@@ -28,6 +29,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 public class ProfileController {
 
+    public final MemberService memberService;
     public final ProfileService profileService;
     public final MiniProfileService miniProfileService;
     public final CompletionService completionService;
@@ -55,6 +57,10 @@ public class ProfileController {
             final MiniProfileResponse miniProfileResponse
                     = getMiniProfileResponse(accessor.getMemberId(), profileIsValueResponse.isMiniProfile());
             log.info("miniProfileResponse={}", miniProfileResponse);
+
+            final MemberNameResponse memberNameResponse
+                    = getMemberNameResponse(accessor.getMemberId());
+            log.info("memberNameResponse={}", memberNameResponse);
 
             final CompletionResponse completionResponse
                     = getCompletionResponse(accessor.getMemberId());
@@ -103,6 +109,7 @@ public class ProfileController {
 
             final ProfileResponse profileResponse = profileService.getProfile(
                     miniProfileResponse,
+                    memberNameResponse,
                     completionResponse,
                     profileIntroductionResponse,
                     profileSkillResponse,
@@ -119,6 +126,8 @@ public class ProfileController {
         }
     }
 
+
+
     // 내 이력서 온보딩 전체 조회 GET 메서드
     @GetMapping("/onBoarding")
     @MemberOnly
@@ -133,6 +142,10 @@ public class ProfileController {
             final MiniProfileResponse miniProfileResponse
                     = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
             log.info("miniProfileResponse={}", miniProfileResponse);
+
+            final MemberNameResponse memberNameResponse
+                    = getMemberNameResponse(accessor.getMemberId());
+            log.info("memberNameResponse={}", memberNameResponse);
 
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
                     = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
@@ -160,7 +173,8 @@ public class ProfileController {
                     profileRegionResponse,
                     educationResponses,
                     antecedentsResponses,
-                    miniProfileResponse
+                    miniProfileResponse,
+                    memberNameResponse
             );
 
             return ResponseEntity.ok().body(onBoardingProfileResponse);
@@ -275,6 +289,12 @@ public class ProfileController {
         } else {
             return new MiniProfileResponse();
         }
+    }
+
+    private MemberNameResponse getMemberNameResponse(
+            final Long memberId
+    ) {
+        return memberService.getMemberName(memberId);
     }
 
     private CompletionResponse getCompletionResponse(

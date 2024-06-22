@@ -5,6 +5,7 @@ import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
+import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.DefaultProfileCreateRequest;
 import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
 import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
@@ -57,6 +58,8 @@ class ProfileControllerTest extends ControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+    @MockBean
+    private MemberService memberService;
     @MockBean
     private ProfileService profileService;
     @MockBean
@@ -271,6 +274,11 @@ class ProfileControllerTest extends ControllerTest {
 
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
 
+        final MemberNameResponse memberNameResponse = new MemberNameResponse(
+                "권동민"
+        );
+        given(memberService.getMemberName(1L)).willReturn(memberNameResponse);
+
         // 온보딩 응답
         final OnBoardingProfileResponse onBoardingProfileResponse = new OnBoardingProfileResponse(
                 profileTeamBuildingFieldResponse,
@@ -278,7 +286,8 @@ class ProfileControllerTest extends ControllerTest {
                 profileRegionResponse,
                 educationResponses,
                 antecedentsResponses,
-                miniProfileResponse
+                miniProfileResponse,
+                memberNameResponse
         );
 
         given(profileService.getOnBoardingProfile(
@@ -287,7 +296,8 @@ class ProfileControllerTest extends ControllerTest {
                 profileRegionResponse,
                 educationResponses,
                 antecedentsResponses,
-                miniProfileResponse))
+                miniProfileResponse,
+                memberNameResponse))
                 .willReturn(onBoardingProfileResponse);
 
         // when
@@ -340,8 +350,12 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("miniProfileResponse.uploadPeriod").description("프로필 업로드 기간").attributes(field("constraint", "LocalDate")),
                                         fieldWithPath("miniProfileResponse.uploadDeadline").description("마감 선택 여부"),
                                         fieldWithPath("miniProfileResponse.myValue").description("협업 시 중요한 나의 가치"),
-                                        fieldWithPath("miniProfileResponse.skillSets").description("나의 스킬셋")
-                                )
+                                        fieldWithPath("miniProfileResponse.skillSets").description("나의 스킬셋"),
+
+                                        // memberNameResponse
+                                        subsectionWithPath("memberNameResponse").description("회원 이름 정보"),
+                                        fieldWithPath("memberNameResponse.memberName").type(JsonFieldType.STRING).description("회원(기본 정보)에 해당하는 회원 이름")
+                                        )
                         )
                 );
     }
@@ -375,6 +389,11 @@ class ProfileControllerTest extends ControllerTest {
         );
 
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
+
+        final MemberNameResponse memberNameResponse = new MemberNameResponse(
+                "권동민"
+        );
+        given(memberService.getMemberName(1L)).willReturn(memberNameResponse);
 
         // 2. 완성도 & 존재 여부 (V)
         final CompletionResponse completionResponse = new CompletionResponse(
@@ -522,6 +541,7 @@ class ProfileControllerTest extends ControllerTest {
 
         final ProfileResponse profileResponse = new ProfileResponse(
                 miniProfileResponse,
+                memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 profileSkillResponse,
@@ -534,6 +554,7 @@ class ProfileControllerTest extends ControllerTest {
 
         given(profileService.getProfile(
                 miniProfileResponse,
+                memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 profileSkillResponse,
@@ -569,6 +590,10 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
                                         fieldWithPath("miniProfileResponse.myValue").type(JsonFieldType.STRING).description("사용자의 가치"),
                                         fieldWithPath("miniProfileResponse.skillSets").type(JsonFieldType.STRING).description("사용자의 스킬 세트"),
+
+                                        // memberNameResponse
+                                        subsectionWithPath("memberNameResponse").description("회원 이름 정보"),
+                                        fieldWithPath("memberNameResponse.memberName").type(JsonFieldType.STRING).description("회원(기본 정보)에 해당하는 회원 이름"),
 
                                         // completionResponse
                                         subsectionWithPath("completionResponse").description("프로필의 완성도 정보"),

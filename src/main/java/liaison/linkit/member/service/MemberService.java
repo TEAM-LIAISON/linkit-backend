@@ -11,6 +11,7 @@ import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformUpda
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
 import liaison.linkit.member.dto.response.MemberResponse;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.dto.response.MemberNameResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,7 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import static liaison.linkit.global.exception.ExceptionCode.*;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_MEMBER_ID;
 
 // 소셜로그인 이후 기본 정보 기입 플로우부터
 @Service
@@ -91,6 +93,12 @@ public class MemberService {
         return MemberResponse.getEmail(member);
     }
 
+    @Transactional(readOnly = true)
+    public MemberNameResponse getMemberName(final Long memberId) {
+        final MemberBasicInform memberBasicInform = getMemberBasicInform(memberId);
+        return MemberNameResponse.getMemberName(memberBasicInform);
+    }
+
     public void update(
             final Long memberId,
             final MemberBasicInformUpdateRequest memberBasicInformUpdateRequest
@@ -110,4 +118,6 @@ public class MemberService {
         // 새롭게 전달 받은 회원 기본 정보 저장
         memberBasicInformRepository.save(updateMemberBasicInform);
     }
+
+
 }
