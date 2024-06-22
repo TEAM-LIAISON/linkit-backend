@@ -138,11 +138,17 @@ public class Profile {
 
     // 자기소개 업데이트
     public void updateIntroduction(final String introduction) {
-        if (this.introduction != null) { // 수정으로 간주
-            this.introduction = introduction;
-        } else {                        // null 인 경우
-            this.introduction = introduction;
-            addPerfectionTwenty();
+        if (introduction != null) {           // 삭제 요청이 아닌 수정/생성인 경우
+            if (this.introduction != null) {  // 기존에 데이터가 있는 경우 (수정)
+                this.introduction = introduction;
+            } else {                          // 기존에 데이터가 없는 경우 (생성)
+                this.introduction = introduction;
+                addPerfectionTwenty();
+                updateMemberProfileTypeByCompletion();
+            }
+        } else {                              // 삭제 요청인 경우
+            this.introduction = null;
+            cancelPerfectionTwenty();
             updateMemberProfileTypeByCompletion();
         }
     }
