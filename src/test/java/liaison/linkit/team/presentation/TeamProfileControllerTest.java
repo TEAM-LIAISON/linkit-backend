@@ -291,7 +291,7 @@ public class TeamProfileControllerTest extends ControllerTest {
                                         fieldWithPath("teamIntroduction")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 소개")
-                                                .attributes(field("constraint", "문자열"))
+                                                .attributes(field("constraint", "문자열, 공란이면 삭제"))
                                 )
                         )
                 );
