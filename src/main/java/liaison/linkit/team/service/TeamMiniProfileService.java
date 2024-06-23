@@ -97,115 +97,49 @@ public class TeamMiniProfileService {
         );
 
         teamMiniProfileRepository.save(teamMiniProfile);
-
         teamProfile.updateIsTeamMiniProfile(true);
     }
 
-    public void save(
+    // 기존에 미니 프로필이 존재했던 경우 (온보딩 항목만 수정하는 경우)
+    public void updateTeamMiniProfile(
             final Long memberId,
             final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
             final MultipartFile teamMiniProfileImage
     ) {
-//        log.info("팀 미니 프로필 생성 메서드가 실행됩니다. part 2");
-//        final TeamProfile teamProfile = getTeamProfile(memberId);
-//        if (teamMiniProfileImage != null) {                                 // 미니 프로필 이미지 입력이 들어온 상황
-//            if (teamProfile.getIsTeamMiniProfile()) {                       // 기존에 미니 프로필이 존재했다면
-//                final TeamMiniProfile savedTeamMiniProfile = getTeamMiniProfile(teamProfile.getId());
-//                final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
-//
-//                // 업데이트 진행
-//                savedTeamMiniProfile.onBoardingTeamMiniProfile(
-//                        teamMiniProfileCreateRequest.getTeamProfileTitle(),
-//                        teamMiniProfileCreateRequest.getTeamUploadPeriod(),
-//                        teamMiniProfileCreateRequest.isTeamUploadDeadline(),
-//                        teamMiniProfileImageUrl,
-//                        teamMiniProfileCreateRequest.getTeamValue(),
-//                        teamMiniProfileCreateRequest.getTeamDetailInform()
-//                );
-//            } else {
-//                // 기존에 존재하지 않은 경우
-//                final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
-//                final TeamMiniProfile newTeamMiniProfileByImage = TeamMiniProfile.of(
-//                        teamProfile,
-//                        null,
-//                        null,
-//                        null,
-//                        teamMiniProfileCreateRequest.getTeamProfileTitle(),
-//                        teamMiniProfileCreateRequest.getTeamUploadPeriod(),
-//                        teamMiniProfileCreateRequest.isTeamUploadDeadline(),
-//                        teamMiniProfileImageUrl,
-//                        teamMiniProfileCreateRequest.getTeamValue(),
-//                        teamMiniProfileCreateRequest.getTeamDetailInform()
-//                );
-//                teamMiniProfileRepository.save(newTeamMiniProfileByImage);
-//                teamProfile.updateIsTeamMiniProfile(true);
-//            }
-//        } else {                                                            // 생성 요청은 들어왔는데 미니 프로필은 없는 경우
-//            if (teamProfile.getIsTeamMiniProfile()) {                       // 그런데 기존에 미니 프로필이 존재했던 경우
-//
-//            }
-//
-//        }
-//        if (teamMiniProfileImage != null) {
-//
-//            log.info("팀 미니 프로필 생성 메서드가 실행됩니다. part 3");
-//            if (teamProfile.getIsTeamMiniProfile()) {       // 기존에 존재하는 미니 이력서가 있었다면
-//                final TeamMiniProfile savedTeamMiniProfile = getTeamMiniProfile(teamProfile.getId());
-//
-//                savedTeamMiniProfile.onBoardingTeamMiniProfile(
-//                        teamMiniProfileCreateRequest.getTeamProfileTitle(),
-//                        teamMiniProfileCreateRequest.getTeamUploadPeriod(),
-//                        teamMiniProfileCreateRequest.isTeamUploadDeadline(),
-//                        teamMiniProfileImageUrl,
-//                        teamMiniProfileCreateRequest.getTeamValue(),
-//                        teamMiniProfileCreateRequest.getTeamDetailInform()
-//                );
-//            } else {
-//                log.info("팀 미니 프로필 생성 메서드가 실행됩니다. part 4");
-//                final TeamMiniProfile teamMiniProfile = TeamMiniProfile.of(
-//                        teamProfile,
-//                        null,
-//                        null,
-//                        null,
-//                        teamMiniProfileCreateRequest.getTeamProfileTitle(),
-//                        teamMiniProfileCreateRequest.getTeamUploadPeriod(),
-//                        teamMiniProfileCreateRequest.isTeamUploadDeadline(),
-//                        teamMiniProfileImageUrl,
-//                        teamMiniProfileCreateRequest.getTeamValue(),
-//                        teamMiniProfileCreateRequest.getTeamDetailInform()
-//                );
-//                teamMiniProfileRepository.save(teamMiniProfile);
-//                teamProfile.updateIsTeamMiniProfile(true);
-//            }
-//        } else {
-//            if (teamProfile.getIsTeamMiniProfile()) {
-//                final TeamMiniProfile savedTeamMiniProfile = getTeamMiniProfile(teamProfile.getId());
-//
-//                savedTeamMiniProfile.onBoardingTeamMiniProfile(
-//                        teamMiniProfileCreateRequest.getTeamProfileTitle(),
-//                        teamMiniProfileCreateRequest.getTeamUploadPeriod(),
-//                        teamMiniProfileCreateRequest.isTeamUploadDeadline(),
-//                        null,
-//                        teamMiniProfileCreateRequest.getTeamValue(),
-//                        teamMiniProfileCreateRequest.getTeamDetailInform()
-//                );
-//            } else {
-//                final TeamMiniProfile teamMiniProfile = TeamMiniProfile.of(
-//                        teamProfile,
-//                        null,
-//                        null,
-//                        null,
-//                        teamMiniProfileCreateRequest.getTeamProfileTitle(),
-//                        teamMiniProfileCreateRequest.getTeamUploadPeriod(),
-//                        teamMiniProfileCreateRequest.isTeamUploadDeadline(),
-//                        null,
-//                        teamMiniProfileCreateRequest.getTeamValue(),
-//                        teamMiniProfileCreateRequest.getTeamDetailInform()
-//                );
-//                teamMiniProfileRepository.save(teamMiniProfile);
-//                teamProfile.updateIsTeamMiniProfile(true);
-//            }
-//        }
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        final TeamMiniProfile teamMiniProfile = getTeamMiniProfile(teamProfile.getId());
+
+        // 이미지 수정 요청이 있는 것으로 간주할 수 있는 경우
+        if (teamMiniProfileImage != null) {
+            final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
+                teamMiniProfile.onBoardingTeamMiniProfile(
+                        teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                        teamMiniProfileCreateRequest.getTeamUploadPeriod(),
+                        teamMiniProfileCreateRequest.isTeamUploadDeadline(),
+                        teamMiniProfileImageUrl,
+                        teamMiniProfileCreateRequest.getTeamValue(),
+                        teamMiniProfileCreateRequest.getTeamDetailInform()
+                );
+        } else {                                                    // 기존 이미지 그대로 사용하는 것으로 간주
+            teamMiniProfile.onBoardingTeamMiniProfile(
+                    teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                    teamMiniProfileCreateRequest.getTeamUploadPeriod(),
+                    teamMiniProfileCreateRequest.isTeamUploadDeadline(),
+                    teamMiniProfile.getTeamLogoImageUrl(),
+                    teamMiniProfileCreateRequest.getTeamValue(),
+                    teamMiniProfileCreateRequest.getTeamDetailInform()
+            );
+        }
+    }
+
+    // 온보딩 안하고 미니 프로필 생성하려는 사람들 (아직 디자인 안나옴 06_23 기준)
+    public void saveNewTeamMiniProfile(
+            final Long memberId,
+            final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
+            final MultipartFile teamMiniProfileImage
+    ) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+
     }
 
     private String saveTeamMiniProfileImage(final MultipartFile teamMiniProfileImage) {
@@ -239,6 +173,12 @@ public class TeamMiniProfileService {
         final TeamMiniProfile teamMiniProfile = getTeamMiniProfile(teamProfile.getId());
         return TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile);
     }
+
+    public boolean getIsTeamMiniProfile(final Long memberId) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        return teamProfile.getIsTeamMiniProfile();
+    }
+
 
 
 
