@@ -59,22 +59,13 @@ public class MiniProfileService {
             final MiniProfileCreateRequest miniProfileCreateRequest,
             final MultipartFile miniProfileImage
     ) {
-        // 검증이 완료된 profile
         final Profile profile = getProfile(memberId);
-
-        log.info("미니 프로필 삭제 이전");
-        if (miniProfileRepository.existsByProfileId(profile.getId())) {
-            log.info("미니 프로필 삭제 실행 이전");
-            miniProfileRepository.deleteByProfileId(profile.getId());
-            log.info("미니 프로필 삭제 실행 이후");
-        }
-        log.info("미니 프로필 삭제 이후");
-
         if (miniProfileImage != null) {
             // 전달받은 multipartFile을 파일 경로에 맞게 전달하는 작업이 필요함 (save)
+            if (miniProfileRepository.existsByProfileId(profile.getId())) {
+                miniProfileRepository.deleteByProfileId(profile.getId());
+            }
             final String miniProfileImageUrl = saveImage(miniProfileImage);
-            log.info("이미지 저장 이후");
-
             final MiniProfile newMiniProfileByImage = MiniProfile.of(
                     profile,
                     miniProfileCreateRequest.getProfileTitle(),
@@ -86,19 +77,35 @@ public class MiniProfileService {
             );
             miniProfileRepository.save(newMiniProfileByImage);
             profile.updateIsMiniProfile(true);
-
         } else {
-            final MiniProfile newMiniProfileNoImage = MiniProfile.of(
-                    profile,
-                    miniProfileCreateRequest.getProfileTitle(),
-                    miniProfileCreateRequest.getUploadPeriod(),
-                    miniProfileCreateRequest.isUploadDeadline(),
-                    null,
-                    miniProfileCreateRequest.getMyValue(),
-                    miniProfileCreateRequest.getSkillSets()
-            );
-            miniProfileRepository.save(newMiniProfileNoImage);
-            profile.updateIsMiniProfile(true);
+            // 미니 프로필 이미지가 null인 경우
+            if (miniProfileRepository.existsByProfileId(profile.getId())) { // 생성 이력이 있는 경우
+                final MiniProfile miniProfile = getMiniProfile(profile.getId());
+                final MiniProfile newMiniProfileNoImage = MiniProfile.of(
+                        profile,
+                        miniProfileCreateRequest.getProfileTitle(),
+                        miniProfileCreateRequest.getUploadPeriod(),
+                        miniProfileCreateRequest.isUploadDeadline(),
+                        miniProfile.getMiniProfileImg(),
+                        miniProfileCreateRequest.getMyValue(),
+                        miniProfileCreateRequest.getSkillSets()
+                );
+                miniProfileRepository.deleteByProfileId(profile.getId());
+                miniProfileRepository.save(newMiniProfileNoImage);
+                profile.updateIsMiniProfile(true);
+            } else {                                                        // 신규 생성인 경우
+                final MiniProfile newMiniProfile = MiniProfile.of(
+                        profile,
+                        miniProfileCreateRequest.getProfileTitle(),
+                        miniProfileCreateRequest.getUploadPeriod(),
+                        miniProfileCreateRequest.isUploadDeadline(),
+                        null,
+                        miniProfileCreateRequest.getMyValue(),
+                        miniProfileCreateRequest.getSkillSets()
+                );
+                miniProfileRepository.save(newMiniProfile);
+                profile.updateIsMiniProfile(true);
+            }
         }
     }
 
@@ -134,14 +141,16 @@ public class MiniProfileService {
     }
 
 
-
-
-
-
-
+    private boolean getSavedImageUrl(final Profile profile) {
+            final MiniProfile miniProfile = getMiniProfile(profile.getId());
+            if (miniProfile.getMiniProfileImg() != null) {
+                return true;
+            } else {
+                return false;
+            }
+    }
 
     // 나중에 리팩토링 필요한 부분
-
 
     private String saveImage(final MultipartFile miniProfileImage) {
         // 이미지 유효성 검증

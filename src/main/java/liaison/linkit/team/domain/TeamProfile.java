@@ -2,9 +2,12 @@ package liaison.linkit.team.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Objects;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
@@ -145,9 +148,58 @@ public class TeamProfile {
     public boolean getIsHistory() {
         return isHistory;
     }
-    public boolean getIsTeamMiniProfile() {
-        return isTeamMiniProfile;
+    public boolean getIsTeamMiniProfile() {return isTeamMiniProfile;}
+
+    // 팀 소개 업데이트 메서드
+    public void updateTeamIntroduction(final String teamIntroduction) {
+        if (!Objects.equals(teamIntroduction, "")) {        // 하나라도 텍스트가 들어오는 경우
+            if (this.teamIntroduction != null) {
+                this.teamIntroduction = teamIntroduction;
+            } else {
+                this.teamIntroduction = teamIntroduction;
+                addPerfectionEleven();
+                updateTeamProfileTypeByCompletion();
+                updateIsTeamIntroduction(true);
+            }
+        } else {                                                // 삭제 요청으로 간주
+            this.teamIntroduction = null;
+            cancelPerfectionEleven();
+            updateTeamProfileTypeByCompletion();
+            updateIsTeamIntroduction(false);
+        }
     }
 
+    // 프로필 권한 관리 메서드
+    private void updateTeamProfileTypeByCompletion() {
+        final double presentTeamProfileCompletion = this.getTeamProfileCompletion();
+        final TeamProfileType teamProfileType = this.getMember().getTeamProfileType();
+
+        if (presentTeamProfileCompletion >= 0 && presentTeamProfileCompletion < 50) {
+            if (TeamProfileType.NO_PERMISSION.equals(teamProfileType)) {
+                return;
+            } else {
+                this.getMember().setTeamProfileType(TeamProfileType.NO_PERMISSION);
+            }
+        } else if (presentTeamProfileCompletion >= 50 && presentTeamProfileCompletion < 80) {
+            if (TeamProfileType.ALLOW_BROWSE.equals(teamProfileType)) {
+                return;
+            } else {
+                this.getMember().setTeamProfileType(TeamProfileType.ALLOW_BROWSE);
+            }
+        } else {
+            if (TeamProfileType.ALLOW_PROFILE_MATCHING.equals(teamProfileType)) {
+                return;
+            } else {
+                this.getMember().setTeamProfileType(TeamProfileType.ALLOW_PROFILE_MATCHING);
+            }
+        }
+    }
+
+    private void updateIsTeamIntroduction(final Boolean isTeamIntroduction) {
+        this.isTeamIntroduction = isTeamIntroduction;
+    }
+
+    private void addPerfectionEleven() {this.teamProfileCompletion += 11.0;}
+    private void cancelPerfectionEleven() {this.teamProfileCompletion -= 11.0;}
 
 }

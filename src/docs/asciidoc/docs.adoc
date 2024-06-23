@@ -293,3 +293,9 @@ include::{snippets}/attach-controller-test/create-attach-file/http-request.adoc[
 include::{snippets}/attach-controller-test/create-attach-file/request-parts.adoc[]
 
 == 4. 팀 소개서
+
+=== 팀 소개서 - 팀 소개 생성/수정/삭제
+=== [POST /team_profile/introduction]
+==== 요청
+include::{snippets}/team-profile-controller-test/create-team-profile-introduction/http-request.adoc[]
+include::{snippets}/team-profile-controller-test/create-team-profile-introduction/request-fields.adoc[]

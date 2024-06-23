@@ -113,4 +113,7 @@ public class Member {
         this.profileType = profileType;
     }
 
+    public void setTeamProfileType(final TeamProfileType teamProfileType) {
+        this.teamProfileType = teamProfileType;
+    }
 }

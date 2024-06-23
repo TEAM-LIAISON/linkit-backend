@@ -4,6 +4,7 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.dto.request.TeamIntroductionCreateRequest;
 import liaison.linkit.team.dto.response.OnBoardingTeamProfileResponse;
 import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
@@ -61,5 +62,14 @@ public class TeamProfileService {
                 activityResponse,
                 teamMiniProfileResponse
         );
+    }
+
+
+    public void saveTeamIntroduction(
+            final Long memberId,
+            final TeamIntroductionCreateRequest teamIntroductionCreateRequest
+    ) {
+        final TeamProfile teamProfile = getTeamProfileByMember(memberId);
+        teamProfile.updateTeamIntroduction(teamIntroductionCreateRequest.getTeamIntroduction());
     }
 }
