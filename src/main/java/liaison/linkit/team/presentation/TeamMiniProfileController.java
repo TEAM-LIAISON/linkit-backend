@@ -32,7 +32,13 @@ public class TeamMiniProfileController {
             @RequestPart(required = false) MultipartFile teamMiniProfileImage
     ) {
         log.info("팀 미니 프로필 생성 메서드가 실행됩니다. part 1");
-        teamMiniProfileService.save(accessor.getMemberId(), teamMiniProfileCreateRequest, teamMiniProfileImage);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        if (teamMiniProfileService.getIsTeamMiniProfile(accessor.getMemberId())) {          // 존재한다면
+            teamMiniProfileService.updateTeamMiniProfile(accessor.getMemberId(), teamMiniProfileCreateRequest, teamMiniProfileImage);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } else {                                                                            // 온보딩에서 생성하지 않은 사람
+            teamMiniProfileService.saveNewTeamMiniProfile(accessor.getMemberId(), teamMiniProfileCreateRequest, teamMiniProfileImage);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        }
+
     }
 }
