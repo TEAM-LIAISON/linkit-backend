@@ -5,6 +5,7 @@ import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
+import liaison.linkit.team.dto.request.TeamIntroductionCreateRequest;
 import liaison.linkit.team.dto.request.onBoarding.OnBoardingFieldTeamInformRequest;
 import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
 import liaison.linkit.team.dto.response.TeamProfileTeamBuildingFieldResponse;
@@ -94,6 +95,16 @@ public class TeamProfileControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(onBoardingFieldTeamInformRequest))
+        );
+    }
+
+    private ResultActions performPostTeamIntroductionRequest(final TeamIntroductionCreateRequest teamIntroductionCreateRequest) throws Exception {
+        return mockMvc.perform(
+                post("/team_profile/introduction")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(teamIntroductionCreateRequest))
         );
     }
 
@@ -259,5 +270,30 @@ public class TeamProfileControllerTest extends ControllerTest {
                         )
                 );
 
+    }
+
+    @DisplayName("팀 소개서 팀 소개 항목을 생성할 수 있다.")
+    @Test
+    void createTeamProfileIntroduction() throws Exception {
+        // given
+        final TeamIntroductionCreateRequest teamIntroductionCreateRequest = new TeamIntroductionCreateRequest(
+                "팀 소개 항목을 입력합니다."
+        );
+
+        // when
+        final ResultActions resultActions = performPostTeamIntroductionRequest(teamIntroductionCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("teamIntroduction")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 소개")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                );
     }
 }

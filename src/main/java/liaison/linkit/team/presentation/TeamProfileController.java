@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.team.dto.request.TeamIntroductionCreateRequest;
 import liaison.linkit.team.dto.request.onBoarding.OnBoardingFieldTeamInformRequest;
 import liaison.linkit.team.dto.response.OnBoardingTeamProfileResponse;
 import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
@@ -32,6 +33,22 @@ public class TeamProfileController {
     final TeamProfileTeamBuildingFieldService teamProfileTeamBuildingFieldService;
     final TeamMiniProfileService teamMiniProfileService;
     final ActivityService activityService;
+
+
+    // 팀 소개서 전체 조회
+//    @GetMapping
+//    @MemberOnly
+//    public ResponseEntity<?> getTeamProfile(@Auth final Accessor accessor) {
+//        try{
+//            log.info("--- 팀 이력서 조회 요청이 들어왔습니다. ---");
+//            teamProfileService.validateTeamProfileByMember(accessor.getMemberId());
+//
+//            // 팀 소개서에 있는 항목들의 존재 여부 파악
+//            final TeamProfileIsValueResponse teamProfileIsValueResponse
+//                    = teamProfileService.getTeamProfileIsValue(accessor.getMemberId());
+//        }
+//    }
+
 
     @GetMapping("/onBoarding")
     @MemberOnly
@@ -134,11 +151,15 @@ public class TeamProfileController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-//    @PostMapping("/introduction")
-//    @MemberOnly
-//    public ResponseEntity<Void> createTeamIntroduction(
-//            @Auth final Accessor accessor,
-//            @RequestBody @Valid final Intro
-//    )
+    @PostMapping("/introduction")
+    @MemberOnly
+    public ResponseEntity<Void> createTeamIntroduction(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid final TeamIntroductionCreateRequest teamIntroductionCreateRequest
+    ) {
+        teamProfileService.validateTeamProfileByMember(accessor.getMemberId());
+        teamProfileService.saveTeamIntroduction(accessor.getMemberId(), teamIntroductionCreateRequest);
+        return ResponseEntity.ok().build();
+    }
 
 }
