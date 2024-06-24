@@ -22,14 +22,14 @@
 //
 //    private final HistoryService historyService;
 //
-//    @GetMapping("/list")
-//    @MemberOnly
-//    public ResponseEntity<List<HistoryResponse>> getHistories(
-//            @Auth final Accessor accessor
-//    ) {
-//        final List<HistoryResponse> historyResponses = historyService.getAllHistories(accessor.getMemberId());
-//        return ResponseEntity.ok().body(historyResponses);
-//    }
+////    @GetMapping("/list")
+////    @MemberOnly
+////    public ResponseEntity<List<HistoryResponse>> getHistories(
+////            @Auth final Accessor accessor
+////    ) {
+////        final List<HistoryResponse> historyResponses = historyService.getAllHistories(accessor.getMemberId());
+////        return ResponseEntity.ok().body(historyResponses);
+////    }
 //
 //    @PostMapping
 //    @MemberOnly

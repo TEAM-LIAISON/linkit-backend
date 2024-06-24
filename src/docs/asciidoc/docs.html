@@ -736,7 +736,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 30 Jun 2024 06:12:22 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 30 Jun 2024 11:29:16 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 139
 
@@ -3054,14 +3054,14 @@ Content-Length: 3223
   },
   "completionResponse" : {
     "completion" : "100.0",
+    "awards" : true,
+    "attach" : true,
     "introduction" : true,
     "profileSkill" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "antecedents" : true,
-    "education" : true,
-    "awards" : true,
-    "attach" : true
+    "education" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -3556,14 +3556,21 @@ Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refresh-token=refreshToken
 
-{
+[ {
   "awardsName" : "홍익대학교 창업경진대회",
   "ranking" : "대상",
   "organizer" : "홍익대학교 창업교육센터",
   "awardsYear" : 2023,
   "awardsMonth" : 5,
   "awardsDescription" : "홍익대학교 창업경진대회에서 1등이라는 성과를 이뤄냈습니다."
-}</code></pre>
+}, {
+  "awardsName" : "성균관대학교 입주경진대회",
+  "ranking" : "최종선정",
+  "organizer" : "성균관대학교 캠퍼스타운",
+  "awardsYear" : 2024,
+  "awardsMonth" : 3,
+  "awardsDescription" : "성균관대학교 입주경진대회 성과를 이뤄냈습니다."
+} ]</code></pre>
 </div>
 </div>
 </div>
@@ -3582,10 +3589,13 @@ Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refresh-token=refreshToken
 
-{
+[ {
   "attachUrlName" : "깃허브",
   "attachUrl" : "https://github.com/TEAM-LIAISON"
-}</code></pre>
+}, {
+  "attachUrlName" : "노션",
+  "attachUrl" : "https://www.notion.no"
+} ]</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -3605,13 +3615,13 @@ Cookie: refresh-token=refreshToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attachUrlName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].attachUrlName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">웹 링크 이름</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">문자열</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>attachUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].attachUrl</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">웹 링크</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">문자열</p></td>
@@ -3818,7 +3828,7 @@ Cookie: refresh-token=refreshToken
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamIntroduction</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문자열</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">문자열, 공란이면 삭제</p></td>
 </tr>
 </tbody>
 </table>

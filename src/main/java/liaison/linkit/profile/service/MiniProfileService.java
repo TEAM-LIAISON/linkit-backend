@@ -63,6 +63,8 @@ public class MiniProfileService {
         if (miniProfileImage != null) {
             // 전달받은 multipartFile을 파일 경로에 맞게 전달하는 작업이 필요함 (save)
             if (miniProfileRepository.existsByProfileId(profile.getId())) {
+                final MiniProfile miniProfile = getMiniProfile(profile.getId());
+                s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
                 miniProfileRepository.deleteByProfileId(profile.getId());
             }
             final String miniProfileImageUrl = saveImage(miniProfileImage);

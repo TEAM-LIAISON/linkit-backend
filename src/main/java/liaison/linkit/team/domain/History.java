@@ -20,6 +20,7 @@ public class History {
     @Column(name = "history_id")
     private Long id;
 
+    // 일대다 관계
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "team_profile_id")
     private TeamProfile teamProfile;

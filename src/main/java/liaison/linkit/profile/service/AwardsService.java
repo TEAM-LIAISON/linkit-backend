@@ -55,9 +55,28 @@ public class AwardsService {
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     // 회원에 대해서 수상 항목을 저장하는 메서드
-    public void save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
+    public void saveAll(
+            final Long memberId,
+            final List<AwardsCreateRequest> awardsCreateRequests
+    ) {
         final Profile profile = getProfile(memberId);
 
+        // 기존 항목 전체 삭제
+        if (awardsRepository.existsByProfileId(profile.getId())) {
+            awardsRepository.deleteAllByProfileId(profile.getId());
+            profile.updateIsAwards(false);
+            profile.updateMemberProfileTypeByCompletion();
+        }
+
+        awardsCreateRequests.forEach(request -> {
+            saveAwards(profile, request);
+        });
+
+        profile.updateIsAwards(true);
+        profile.updateMemberProfileTypeByCompletion();
+    }
+
+    private void saveAwards(final Profile profile, final AwardsCreateRequest awardsCreateRequest) {
         final Awards newAwards = Awards.of(
                 profile,
                 awardsCreateRequest.getAwardsName(),
@@ -68,10 +87,6 @@ public class AwardsService {
                 awardsCreateRequest.getAwardsDescription()
         );
         awardsRepository.save(newAwards);
-        // 수상 이력이 등록되었음으로 변경
-        profile.updateIsAwards(true);
-        // 접근 권한 판단 함수 실행
-        profile.updateMemberProfileTypeByCompletion();
     }
 
     // 해당 회원의 모든 수상 항목을 조회하는 메서드 / 수정 이전 화면에서 필요
