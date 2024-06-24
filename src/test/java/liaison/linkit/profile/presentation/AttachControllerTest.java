@@ -24,6 +24,9 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -67,22 +70,29 @@ public class AttachControllerTest extends ControllerTest {
     }
 
     private void makeAttachUrl() throws Exception {
-        final AttachUrlCreateRequest attachUrlCreateRequest = new AttachUrlCreateRequest(
+        final AttachUrlCreateRequest attachUrlCreateRequest1 = new AttachUrlCreateRequest(
                 "깃허브",
                 "https://github.com/TEAM-LIAISON"
         );
 
-        doNothing().when(attachService).saveUrl(anyLong(), any(AttachUrlCreateRequest.class));
-        performPostUrlRequest(attachUrlCreateRequest);
+        final AttachUrlCreateRequest attachUrlCreateRequest2 = new AttachUrlCreateRequest(
+                "노션",
+                "https://www.notion.no"
+        );
+
+        final List<AttachUrlCreateRequest> attachUrlCreateRequestList = Arrays.asList(attachUrlCreateRequest1, attachUrlCreateRequest2);
+
+        doNothing().when(attachService).saveUrl(1L, attachUrlCreateRequestList);
+        performPostUrlRequest(attachUrlCreateRequestList);
     }
 
-    private ResultActions performPostUrlRequest(final AttachUrlCreateRequest attachUrlCreateRequest) throws Exception {
+    private ResultActions performPostUrlRequest(final List<AttachUrlCreateRequest> attachUrlCreateRequests) throws Exception {
         return mockMvc.perform(
                 post("/attach/url")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(attachUrlCreateRequest))
+                        .content(objectMapper.writeValueAsString(attachUrlCreateRequests))
         );
     }
 
@@ -124,13 +134,21 @@ public class AttachControllerTest extends ControllerTest {
     @Test
     void createAttachUrl() throws Exception {
         // given
-        final AttachUrlCreateRequest attachUrlCreateRequest = new AttachUrlCreateRequest(
+        final AttachUrlCreateRequest attachUrlCreateRequest1 = new AttachUrlCreateRequest(
                 "깃허브",
                 "https://github.com/TEAM-LIAISON"
         );
 
+        final AttachUrlCreateRequest attachUrlCreateRequest2 = new AttachUrlCreateRequest(
+                "노션",
+                "https://www.notion.no"
+        );
+
+        final List<AttachUrlCreateRequest> attachUrlCreateRequestList = Arrays.asList(attachUrlCreateRequest1, attachUrlCreateRequest2);
+
+//        doNothing().when(attachService).saveUrl(anyLong(), attachUrlCreateRequestList);
         // when
-        final ResultActions resultActions = performPostUrlRequest(attachUrlCreateRequest);
+        final ResultActions resultActions = performPostUrlRequest(attachUrlCreateRequestList);
 
         // then
         resultActions.andExpect(status().isCreated())
@@ -146,11 +164,11 @@ public class AttachControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 requestFields(
-                                        fieldWithPath("attachUrlName")
+                                        fieldWithPath("[].attachUrlName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("웹 링크 이름")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("attachUrl")
+                                        fieldWithPath("[].attachUrl")
                                                 .type(JsonFieldType.STRING)
                                                 .description("웹 링크")
                                                 .attributes(field("constraint", "문자열"))

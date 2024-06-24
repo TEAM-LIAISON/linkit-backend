@@ -28,15 +28,20 @@ public class AttachFile {
     private Profile profile;
 
     @Column(nullable = false)
+    private String attachFileName;
+
+    @Column(nullable = false)
     private String attachFile;
 
     public static AttachFile of(
             final Profile profile,
+            final String attachFileName,
             final String attachFile)
     {
         return new AttachFile(
                 null,
                 profile,
+                attachFileName,
                 attachFile
         );
     }

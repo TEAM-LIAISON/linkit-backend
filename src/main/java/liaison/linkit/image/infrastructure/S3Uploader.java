@@ -2,6 +2,7 @@ package liaison.linkit.image.infrastructure;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import liaison.linkit.global.exception.FileException;
 import liaison.linkit.global.exception.ImageException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
@@ -45,6 +47,34 @@ public class S3Uploader {
 
     public String uploadMiniProfileImage(final ImageFile miniProfileImageFile) {
         return uploadImage(miniProfileImageFile);
+    }
+
+    public void deleteImage(final String imageUrl) {
+        try {
+            URL url = new URL(imageUrl);
+            String path = url.getPath().substring(1);
+            log.info("Deleting image from S3: {}", path);
+            s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
+            log.info("Image deletion successful");
+        } catch (AmazonServiceException e) {
+            throw new ImageException(INVALID_IMAGE_PATH);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing URL", e);
+        }
+    }
+
+    public void deleteFile(final String fileUrl) {
+        try {
+            URL url = new URL(fileUrl);
+            String path = url.getPath().substring(1);
+            log.info("Deleting File from S3: {}", path);
+            s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
+            log.info("File deletion successful");
+        } catch (AmazonServiceException e) {
+            throw new ImageException(INVALID_FILE_PATH);
+        } catch (Exception e) {
+            throw new RuntimeException("Error processing URL", e);
+        }
     }
 
     private String uploadImage(final ImageFile imageFile) {
@@ -113,4 +143,6 @@ public class S3Uploader {
             throw new FileException(INVALID_FILE);
         }
     }
+
+
 }

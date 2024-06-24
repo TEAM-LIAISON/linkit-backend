@@ -224,10 +224,17 @@ public class Profile {
     // 첨부 항목 등록 또는 삭제에서만 호출
     public void updateIsAttachUrl(final Boolean isAttachUrl) {
         this.isAttachUrl = isAttachUrl;
+        updateIsAttach(isAttachUrl, this.isAttachFile);
     }
-
     public void updateIsAttachFile(final Boolean isAttachFile) {
         this.isAttachFile = isAttachFile;
+        updateIsAttach(this.isAttachUrl, isAttachFile);
+    }
+
+    private void updateIsAttach(final boolean isAttachUrl, final boolean isAttachFile) {
+        if (this.isAttach != (isAttachUrl || isAttachFile)) {
+            this.isAttach = !this.isAttachFile;
+        }
     }
 
     public void updateMemberProfileTypeByCompletion() {

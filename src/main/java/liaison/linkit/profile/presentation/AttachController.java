@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/attach")
@@ -26,9 +28,9 @@ public class AttachController {
     @MemberOnly
     public ResponseEntity<Void> createAttachUrl(
             @Auth final Accessor accessor,
-            @RequestBody @Valid AttachUrlCreateRequest attachUrlCreateRequest
+            @RequestBody @Valid List<AttachUrlCreateRequest> attachUrlCreateRequests
     ) {
-        attachService.saveUrl(accessor.getMemberId(), attachUrlCreateRequest);
+        attachService.saveUrl(accessor.getMemberId(), attachUrlCreateRequests);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

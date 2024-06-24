@@ -18,6 +18,7 @@ import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AttachService {
 
     private final ProfileRepository profileRepository;
@@ -91,17 +93,32 @@ public class AttachService {
 
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
-    public void saveUrl(final Long memberId, final AttachUrlCreateRequest attachUrlCreateRequest) {
+    public void saveUrl(
+            final Long memberId,
+            final List<AttachUrlCreateRequest> attachUrlCreateRequests
+    ) {
         final Profile profile = getProfile(memberId);
+        if (attachUrlRepository.existsByProfileId(profile.getId())) {
+            attachUrlRepository.deleteAllByProfileId(profile.getId());
+            profile.updateIsAttachUrl(false);
+            profile.updateMemberProfileTypeByCompletion();
+        }
+
+        attachUrlCreateRequests.forEach(request -> {
+            saveAttachUrl(profile, request);
+        });
+
+        profile.updateIsAttachUrl(true);
+        profile.updateMemberProfileTypeByCompletion();
+    }
+
+    private void saveAttachUrl(final Profile profile, final AttachUrlCreateRequest attachUrlCreateRequest) {
         final AttachUrl newAttachUrl = AttachUrl.of(
                 profile,
                 attachUrlCreateRequest.getAttachUrlName(),
                 attachUrlCreateRequest.getAttachUrl()
         );
-
         attachUrlRepository.save(newAttachUrl);
-        profile.updateIsAttachUrl(true);
-        profile.updateMemberProfileTypeByCompletion();
     }
 
     public AttachUrlResponse getAttachUrlDetail(final Long attachUrlId) {
@@ -141,8 +158,11 @@ public class AttachService {
         final Profile profile = getProfile(memberId);
         final String attachFileUrl = saveFileS3(attachFile);
 
+
+
         final AttachFile newAttachFile = AttachFile.of(
                 profile,
+                attachFile.getOriginalFilename(),
                 attachFileUrl
         );
 
@@ -212,10 +232,16 @@ public class AttachService {
         final Profile profile = getProfile(memberId);
 
         final List<AttachUrl> attachUrls = attachUrlRepository.findAllByProfileId(profile.getId());
+        log.info("attachUrls={}", attachUrls);
+
         final List<AttachFile> attachFiles = attachFileRepository.findAllByProfileId(profile.getId());
+        log.info("attachFiles={}", attachFiles);
 
         final List<AttachUrlResponse> attachUrlResponses = attachUrls.stream().map(this::getAttachUrlResponse).toList();
+        log.info("attachUrlResponses={}", attachUrlResponses);
+
         final List<AttachFileResponse> attachFileResponses = attachFiles.stream().map(this::getAttachFileResponse).toList();
+        log.info("attachFileResponses={}", attachFileResponses);
 
         return AttachResponse.getAttachResponse(attachUrlResponses, attachFileResponses);
     }

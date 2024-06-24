@@ -72,17 +72,18 @@ public class AntecedentsService {
         }
 
         // 저장 로직을 반복 실행하여 모든 경력 데이터 저장
-        List<Antecedents> savedAntecedents = antecedentsCreateRequests.stream().map(request -> {
-            return saveAntecedent(profile, request);
-        }).toList();
+
+        antecedentsCreateRequests.forEach(request -> {
+            saveAntecedent(profile, request);
+        });
 
         // 프로필 업데이트
         profile.updateIsAntecedents(true);
         profile.updateMemberProfileTypeByCompletion();
     }
 
-    private Antecedents saveAntecedent(Profile profile, AntecedentsCreateRequest request) {
-        Antecedents newAntecedents = Antecedents.of(
+    private void saveAntecedent(final Profile profile, final AntecedentsCreateRequest request) {
+        final Antecedents newAntecedents = Antecedents.of(
                 profile,
                 request.getProjectName(),
                 request.getProjectRole(),
@@ -92,8 +93,7 @@ public class AntecedentsService {
                 request.getEndMonth(),
                 request.isRetirement()
         );
-
-        return antecedentsRepository.save(newAntecedents);
+        antecedentsRepository.save(newAntecedents);
     }
 
     @Transactional(readOnly = true)
