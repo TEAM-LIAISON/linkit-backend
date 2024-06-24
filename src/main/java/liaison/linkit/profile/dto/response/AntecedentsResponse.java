@@ -15,6 +15,7 @@ public class AntecedentsResponse {
     private final int endYear;
     private final int endMonth;
     private final boolean retirement;
+    private final String antecedentsDescription;
 
     public static AntecedentsResponse of(final Antecedents antecedents){
         return new AntecedentsResponse(
@@ -25,7 +26,8 @@ public class AntecedentsResponse {
                 antecedents.getStartMonth(),
                 antecedents.getEndYear(),
                 antecedents.getEndMonth(),
-                antecedents.isRetirement()
+                antecedents.isRetirement(),
+                antecedents.getAntecedentsDescription()
         );
     }
 
@@ -38,7 +40,8 @@ public class AntecedentsResponse {
                 antecedents.getStartMonth(),
                 antecedents.getEndYear(),
                 antecedents.getEndMonth(),
-                antecedents.isRetirement()
+                antecedents.isRetirement(),
+                antecedents.getAntecedentsDescription()
         );
     }
 

@@ -244,7 +244,8 @@ class ProfileControllerTest extends ControllerTest {
                 3,
                 2024,
                 10,
-                false
+                false,
+                "경력 설명입니다."
         );
 
         final AntecedentsResponse antecedentsResponse2 = new AntecedentsResponse(
@@ -255,7 +256,8 @@ class ProfileControllerTest extends ControllerTest {
                 3,
                 2023,
                 6,
-                false
+                false,
+                "경력 설명입니다."
         );
 
         List<AntecedentsResponse> antecedentsResponses = Arrays.asList(antecedentsResponse1, antecedentsResponse2);
@@ -448,7 +450,8 @@ class ProfileControllerTest extends ControllerTest {
                 3,
                 2024,
                 10,
-                false
+                false,
+                "경력 설명입니다."
         );
 
         final AntecedentsResponse antecedentsResponse2 = new AntecedentsResponse(
@@ -459,7 +462,8 @@ class ProfileControllerTest extends ControllerTest {
                 3,
                 2023,
                 6,
-                false
+                false,
+                "경력 설명입니다."
         );
 
         List<AntecedentsResponse> antecedentsResponses = Arrays.asList(antecedentsResponse1, antecedentsResponse2);

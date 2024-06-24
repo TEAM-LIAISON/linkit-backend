@@ -15,7 +15,7 @@ public class AttachFileResponse {
     ) {
         return new AttachFileResponse(
                 attachFile.getId(),
-                attachFile.getAttachFile()
+                attachFile.getAttachFilePath()
         );
     }
 }

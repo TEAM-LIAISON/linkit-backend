@@ -91,7 +91,8 @@ public class AntecedentsService {
                 request.getStartMonth(),
                 request.getEndYear(),
                 request.getEndMonth(),
-                request.isRetirement()
+                request.isRetirement(),
+                request.getAntecedentsDescription()
         );
         antecedentsRepository.save(newAntecedents);
     }

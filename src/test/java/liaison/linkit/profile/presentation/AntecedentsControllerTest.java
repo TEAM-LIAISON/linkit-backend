@@ -73,7 +73,8 @@ public class AntecedentsControllerTest extends ControllerTest {
                 9,
                 2024,
                 5,
-                false
+                false,
+                "경력 설명입니다."
         );
     }
 
@@ -201,7 +202,8 @@ public class AntecedentsControllerTest extends ControllerTest {
                 3,
                 2023,
                 6,
-                false
+                false,
+                "경력 설명입니다."
         );
 
         final AntecedentsCreateRequest secondAntecedentsCreateRequest = new AntecedentsCreateRequest(
@@ -211,7 +213,8 @@ public class AntecedentsControllerTest extends ControllerTest {
                 2,
                 2025,
                 10,
-                false
+                false,
+                "경력 설명입니다."
         );
 
         final List<AntecedentsCreateRequest> antecedentsCreateRequestList = Arrays.asList(firstAntecedentsCreateRequest, secondAntecedentsCreateRequest);
@@ -261,7 +264,11 @@ public class AntecedentsControllerTest extends ControllerTest {
                                         fieldWithPath("[].retirement")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("퇴직 여부")
-                                                .attributes(field("constraint", "false => 재직 중"))
+                                                .attributes(field("constraint", "false => 재직 중")),
+                                        fieldWithPath("[].antecedentsDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("경력 설명")
+                                                .attributes(field("constraint", "문자열"))
                                 )
                         )
                 );
@@ -279,7 +286,8 @@ public class AntecedentsControllerTest extends ControllerTest {
                 3,
                 2024,
                 9,
-                false
+                false,
+                "경력 설명입니다."
         );
 
         final AntecedentsResponse response = new AntecedentsResponse(
@@ -290,7 +298,8 @@ public class AntecedentsControllerTest extends ControllerTest {
                 3,
                 2024,
                 9,
-                false
+                false,
+                "경력 설명입니다."
         );
 
 
@@ -344,7 +353,11 @@ public class AntecedentsControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
                                         fieldWithPath("retirement")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("퇴직 여부")
+                                                .description("퇴직 여부"),
+                                        fieldWithPath("antecedentsDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("경력 설명")
+                                                .attributes(field("constraint", "문자열"))
                                 ),
                                 responseFields(
                                         fieldWithPath("id")
@@ -370,7 +383,11 @@ public class AntecedentsControllerTest extends ControllerTest {
                                                 .description("종료 월"),
                                         fieldWithPath("retirement")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("퇴직 여부")
+                                                .description("퇴직 여부"),
+                                        fieldWithPath("antecedentsDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("경력 설명")
+                                                .attributes(field("constraint", "문자열"))
                                 )
                         )
                 );
