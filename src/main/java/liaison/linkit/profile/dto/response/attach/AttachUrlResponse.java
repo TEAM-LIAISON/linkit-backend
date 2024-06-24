@@ -15,7 +15,7 @@ public class AttachUrlResponse {
         return new AttachUrlResponse(
                 attachUrl.getId(),
                 attachUrl.getAttachUrlName(),
-                attachUrl.getAttachUrl()
+                attachUrl.getAttachUrlPath()
         );
     }
 }

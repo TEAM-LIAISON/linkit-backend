@@ -31,23 +31,22 @@ public class AttachFile {
     private String attachFileName;
 
     @Column(nullable = false)
-    private String attachFile;
+    private String attachFilePath;
 
     public static AttachFile of(
             final Profile profile,
             final String attachFileName,
-            final String attachFile)
-    {
+            final String attachFilePath
+    ) {
         return new AttachFile(
                 null,
                 profile,
                 attachFileName,
-                attachFile
+                attachFilePath
         );
     }
 
-
     public void update(final AttachFileUpdateRequest updateRequest) {
-        this.attachFile = updateRequest.getAttachFile();
+        this.attachFilePath = updateRequest.getAttachFilePath();
     }
 }

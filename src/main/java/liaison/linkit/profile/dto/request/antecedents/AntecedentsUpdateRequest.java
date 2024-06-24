@@ -27,4 +27,6 @@ public class AntecedentsUpdateRequest {
 
     @NotNull(message = "재직 여부를 선택해주세요")
     private final boolean retirement;
+
+    private final String antecedentsDescription;
 }

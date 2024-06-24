@@ -32,23 +32,23 @@ public class AttachUrl {
     private String attachUrlName;
 
     @Column(nullable = false)
-    private String attachUrl;
+    private String attachUrlPath;
 
     public static AttachUrl of(
             final Profile profile,
             final String attachUrlName,
-            final String attachUrl
+            final String attachUrlPath
     ) {
         return new AttachUrl(
                 null,
                 profile,
                 attachUrlName,
-                attachUrl
+                attachUrlPath
         );
     }
 
     public void update(final AttachUrlUpdateRequest updateRequest) {
         this.attachUrlName = updateRequest.getAttachUrlName();
-        this.attachUrl = updateRequest.getAttachUrl();
+        this.attachUrlPath = updateRequest.getAttachUrlPath();
     }
 }

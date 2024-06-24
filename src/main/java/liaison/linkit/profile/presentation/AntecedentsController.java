@@ -35,7 +35,6 @@ public class AntecedentsController {
         return ResponseEntity.ok().build();
     }
 
-
     @GetMapping("/list")
     @MemberOnly
     public ResponseEntity<List<AntecedentsResponse>> getAntecedentsList(@Auth final Accessor accessor) {

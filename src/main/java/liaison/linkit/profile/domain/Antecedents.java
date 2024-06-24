@@ -26,15 +26,15 @@ public class Antecedents {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    // 회사명
-    @Column(nullable = false)
-    private String projectName;
-
     // 포지션
     @Column(nullable = false)
     private String projectRole;
 
-    // 시작연도
+    // 회사/프로젝트명
+    @Column(nullable = false)
+    private String projectName;
+
+    // 시작 연도
     @Column(nullable = false)
     private int startYear;
 
@@ -42,14 +42,21 @@ public class Antecedents {
     @Column(nullable = false)
     private int startMonth;
 
+    // 종료 연도
     @Column(nullable = false)
     private int endYear;
 
+    // 종료 월
     @Column(nullable = false)
     private int endMonth;
 
+    // 진행 및 종료 여부
     @Column(nullable = false)
     private boolean retirement;
+
+    // 경력 설명
+    @Column
+    private String antecedentsDescription;
 
     public static Antecedents of(
             final Profile profile,
@@ -59,7 +66,8 @@ public class Antecedents {
             final int startMonth,
             final int endYear,
             final int endMonth,
-            final boolean retirement
+            final boolean retirement,
+            final String antecedentsDescription
     ) {
         return new Antecedents(
                 null,
@@ -70,7 +78,8 @@ public class Antecedents {
                 startMonth,
                 endYear,
                 endMonth,
-                retirement
+                retirement,
+                antecedentsDescription
         );
     }
 
@@ -82,5 +91,6 @@ public class Antecedents {
         this.endYear = antecedentsUpdateRequest.getEndYear();
         this.endMonth = antecedentsUpdateRequest.getEndMonth();
         this.retirement = antecedentsUpdateRequest.isRetirement();
+        this.antecedentsDescription = antecedentsUpdateRequest.getAntecedentsDescription();
     }
 }

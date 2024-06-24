@@ -202,7 +202,7 @@ public class AttachControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("웹 링크 이름")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("attachUrl")
+                                        fieldWithPath("attachUrlPath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("웹 링크")
                                                 .attributes(field("constraint", "문자열"))
