@@ -1,11 +1,12 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.region.domain;
 
 import jakarta.persistence.*;
-import liaison.linkit.region.domain.Region;
+import liaison.linkit.profile.domain.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -20,8 +21,8 @@ public class ProfileRegion {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @JoinColumn(name = "profile_id", unique = true)
     private Profile profile;
 
     @ManyToOne(fetch = LAZY)

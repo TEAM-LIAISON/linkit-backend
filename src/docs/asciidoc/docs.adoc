@@ -294,8 +294,17 @@ include::{snippets}/attach-controller-test/create-attach-file/request-parts.adoc
 
 == 4. 팀 소개서
 
+=== 팀 소개서 - 활동 방식, 활동 지역 및 위치 생성 (온보딩 API 동일)
+=== [POST /activity-method]
+
 === 팀 소개서 - 팀 소개 생성/수정/삭제
 === [POST /team_profile/introduction]
 ==== 요청
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/http-request.adoc[]
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/request-fields.adoc[]
+
+=== 팀 소개서 - 팀 첨부 링크 생성/수정
+=== [POST /team/attach/url]
+==== 요청
+include::{snippets}/team-attach-controller-test/create-team-attach-url/http-request.adoc[]
+include::{snippets}/team-attach-controller-test/create-team-attach-url/request-fields.adoc[]

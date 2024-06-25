@@ -60,12 +60,24 @@ public class TeamProfile {
     @Column(nullable = false)
     private boolean isTeamIntroduction;
 
+    // 팀원 소개 기입 여부
     @Column(nullable = false)
     private boolean isTeamMemberIntroduction;
 
-    //
+    // 연혁 기입 여부
     @Column(nullable = false)
     private boolean isHistory;
+
+    // 팀 첨부 기입 여부
+    @Column(nullable = false)
+    private boolean isTeamAttach;
+
+    // 팀 첨부 URL 기입 여부
+    @Column(nullable = false)
+    private boolean isTeamAttachUrl;
+
+    // 팀 첨부 파일 기입 여부
+    private boolean isTeamAttachFile;
 
     // 팀 미니 프로필 기입 여부
     @Column(nullable = false)
@@ -88,6 +100,9 @@ public class TeamProfile {
         this.isTeamIntroduction = false;
         this.isTeamMemberIntroduction = false;
         this.isHistory = false;
+        this.isTeamAttach = false;
+        this.isTeamAttachUrl = false;
+        this.isTeamAttachFile = false;
         this.isTeamMiniProfile = false;
     }
 
@@ -158,19 +173,19 @@ public class TeamProfile {
             } else {
                 this.teamIntroduction = teamIntroduction;
                 addPerfectionEleven();
-                updateTeamProfileTypeByCompletion();
+                updateMemberTeamProfileTypeByCompletion();
                 updateIsTeamIntroduction(true);
             }
         } else {                                                // 삭제 요청으로 간주
             this.teamIntroduction = null;
             cancelPerfectionEleven();
-            updateTeamProfileTypeByCompletion();
+            updateMemberTeamProfileTypeByCompletion();
             updateIsTeamIntroduction(false);
         }
     }
 
     // 프로필 권한 관리 메서드
-    private void updateTeamProfileTypeByCompletion() {
+    public void updateMemberTeamProfileTypeByCompletion() {
         final double presentTeamProfileCompletion = this.getTeamProfileCompletion();
         final TeamProfileType teamProfileType = this.getMember().getTeamProfileType();
 
@@ -195,11 +210,20 @@ public class TeamProfile {
         }
     }
 
-    private void updateIsTeamIntroduction(final Boolean isTeamIntroduction) {
+    public void updateIsTeamIntroduction(final Boolean isTeamIntroduction) {
         this.isTeamIntroduction = isTeamIntroduction;
+    }
+
+    public void updateIsTeamAttachUrl(final Boolean isTeamAttachUrl) {
+        this.isTeamAttachUrl = isTeamAttachUrl;
+    }
+
+    public void updateIsTeamAttachFile(final Boolean isTeamAttachFile) {
+        this.isTeamAttachFile = isTeamAttachFile;
     }
 
     private void addPerfectionEleven() {this.teamProfileCompletion += 11.0;}
     private void cancelPerfectionEleven() {this.teamProfileCompletion -= 11.0;}
+
 
 }

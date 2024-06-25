@@ -31,14 +31,8 @@ public class History {
     @Column(name = "start_year")
     private int startYear;
 
-    @Column(name = "start_month")
-    private int startMonth;
-
     @Column(name = "end_year")
     private int endYear;
-
-    @Column(name = "end_month")
-    private int endMonth;
 
     @Column(name = "history_introduction")
     private String historyIntroduction;
@@ -50,9 +44,7 @@ public class History {
             final TeamProfile teamProfile,
             final String historyOneLineIntroduction,
             final int startYear,
-            final int startMonth,
             final int endYear,
-            final int endMonth,
             final String historyIntroduction,
             final boolean inProgress
     ) {
@@ -61,9 +53,7 @@ public class History {
                 teamProfile,
                 historyOneLineIntroduction,
                 startYear,
-                startMonth,
                 endYear,
-                endMonth,
                 historyIntroduction,
                 inProgress
         );
@@ -72,9 +62,7 @@ public class History {
     public void update(final HistoryUpdateRequest historyUpdateRequest) {
         this.historyOneLineIntroduction = historyUpdateRequest.getHistoryOneLineIntroduction();
         this.startYear = historyUpdateRequest.getStartYear();
-        this.startMonth = historyUpdateRequest.getStartMonth();
         this.endYear = historyUpdateRequest.getEndYear();
-        this.endMonth = historyUpdateRequest.getEndMonth();
         this.historyIntroduction = historyUpdateRequest.getHistoryIntroduction();
         this.inProgress = historyUpdateRequest.isInProgress();
     }

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
@@ -19,7 +20,7 @@ import static jakarta.persistence.FetchType.LAZY;
 public class AttachUrl {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "attach_url_id")
     private Long id;
 

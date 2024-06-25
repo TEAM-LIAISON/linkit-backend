@@ -130,7 +130,7 @@ public class AttachControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("단일 첨부(웹 링크)를 생성할 수 있다.")
+    @DisplayName("첨부(웹 링크) 리스트를 생성할 수 있다.")
     @Test
     void createAttachUrl() throws Exception {
         // given
@@ -168,9 +168,9 @@ public class AttachControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("웹 링크 이름")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("[].attachUrl")
+                                        fieldWithPath("[].attachUrlPath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("웹 링크")
+                                                .description("웹 링크 경로")
                                                 .attributes(field("constraint", "문자열"))
                                 )
                         )
