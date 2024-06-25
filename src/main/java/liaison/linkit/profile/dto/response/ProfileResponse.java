@@ -1,6 +1,7 @@
 package liaison.linkit.profile.dto.response;
 
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
+import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +17,7 @@ public class ProfileResponse {
     private final ProfileIntroductionResponse profileIntroductionResponse;
     private final ProfileSkillResponse profileSkillResponse;
     private final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse;
+    private final ProfileRegionResponse profileRegionResponse;
     private final List<AntecedentsResponse> antecedentsResponse;
     private final List<EducationResponse> educationResponse;
     private final List<AwardsResponse> awardsResponse;
@@ -28,6 +30,7 @@ public class ProfileResponse {
             final ProfileIntroductionResponse profileIntroductionResponse,
             final ProfileSkillResponse profileSkillResponse,
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
+            final ProfileRegionResponse profileRegionResponse,
             final List<AntecedentsResponse> antecedentsResponses,
             final List<EducationResponse> educationResponses,
             final List<AwardsResponse> awardsResponses,
@@ -41,6 +44,7 @@ public class ProfileResponse {
                 profileIntroductionResponse,
                 profileSkillResponse,
                 profileTeamBuildingFieldResponse,
+                profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
                 awardsResponses,

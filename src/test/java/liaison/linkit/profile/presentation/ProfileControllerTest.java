@@ -550,6 +550,7 @@ class ProfileControllerTest extends ControllerTest {
                 profileIntroductionResponse,
                 profileSkillResponse,
                 profileTeamBuildingFieldResponse,
+                profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
                 awardsResponses,
@@ -563,6 +564,7 @@ class ProfileControllerTest extends ControllerTest {
                 profileIntroductionResponse,
                 profileSkillResponse,
                 profileTeamBuildingFieldResponse,
+                profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
                 awardsResponses,
@@ -623,6 +625,11 @@ class ProfileControllerTest extends ControllerTest {
                                         // profileTeamBuildingFieldResponse
                                         subsectionWithPath("profileTeamBuildingFieldResponse").description("팀 빌딩 필드 응답"),
                                         fieldWithPath("profileTeamBuildingFieldResponse.teamBuildingFieldNames").type(JsonFieldType.ARRAY).description("팀 빌딩 필드 이름"),
+
+                                        // profileRegionResponse
+                                        subsectionWithPath("profileRegionResponse").description("활동 지역 및 위치 응답"),
+                                        fieldWithPath("profileRegionResponse.cityName").type(JsonFieldType.STRING).description("시/도 이름"),
+                                        fieldWithPath("profileRegionResponse.divisionName").type(JsonFieldType.STRING).description("시/군/구 이름"),
 
                                         // antecedentsResponse
                                         subsectionWithPath("antecedentsResponse").description("과거 경력 정보"),
