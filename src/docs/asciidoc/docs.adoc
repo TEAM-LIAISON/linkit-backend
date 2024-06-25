@@ -293,9 +293,32 @@ include::{snippets}/attach-controller-test/create-attach-file/http-request.adoc[
 include::{snippets}/attach-controller-test/create-attach-file/request-parts.adoc[]
 
 == 4. 팀 소개서
+=== 팀 소개서 - 팀 희망 팀빌딩 분야 생성
+=== [POST /team_profile_team_building_field]
+include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/http-request.adoc[]
+include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/request-fields.adoc[]
+
+=== 팀 소개서 - 활동 방식, 활동 지역 및 위치 생성 (온보딩 API 동일)
+=== [POST /activity-method]
 
 === 팀 소개서 - 팀 소개 생성/수정/삭제
 === [POST /team_profile/introduction]
 ==== 요청
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/http-request.adoc[]
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/request-fields.adoc[]
+
+=== 팀 소개서 - 팀원 소개 생성
+=== [POST /team/team_member]
+include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/http-request.adoc[]
+include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/request-fields.adoc[]
+
+=== 팀 소개서 - 연혁 생성
+=== [POST /team/history]
+include::{snippets}/history-controller-test/create-history/http-request.adoc[]
+include::{snippets}/history-controller-test/create-history/request-fields.adoc[]
+
+=== 팀 소개서 - 팀 첨부 링크 생성/수정
+=== [POST /team/attach/url]
+==== 요청
+include::{snippets}/team-attach-controller-test/create-team-attach-url/http-request.adoc[]
+include::{snippets}/team-attach-controller-test/create-team-attach-url/request-fields.adoc[]

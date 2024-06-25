@@ -31,50 +31,38 @@ public class History {
     @Column(name = "start_year")
     private int startYear;
 
-    @Column(name = "start_month")
-    private int startMonth;
-
     @Column(name = "end_year")
     private int endYear;
 
-    @Column(name = "end_month")
-    private int endMonth;
+    @Column(name = "in_progress")
+    private boolean inProgress;
 
     @Column(name = "history_introduction")
     private String historyIntroduction;
-
-    @Column(name = "in_progress")
-    private boolean inProgress;
 
     public static History of(
             final TeamProfile teamProfile,
             final String historyOneLineIntroduction,
             final int startYear,
-            final int startMonth,
             final int endYear,
-            final int endMonth,
-            final String historyIntroduction,
-            final boolean inProgress
+            final boolean inProgress,
+            final String historyIntroduction
     ) {
         return new History(
                 null,
                 teamProfile,
                 historyOneLineIntroduction,
                 startYear,
-                startMonth,
                 endYear,
-                endMonth,
-                historyIntroduction,
-                inProgress
+                inProgress,
+                historyIntroduction
         );
     }
 
     public void update(final HistoryUpdateRequest historyUpdateRequest) {
         this.historyOneLineIntroduction = historyUpdateRequest.getHistoryOneLineIntroduction();
         this.startYear = historyUpdateRequest.getStartYear();
-        this.startMonth = historyUpdateRequest.getStartMonth();
         this.endYear = historyUpdateRequest.getEndYear();
-        this.endMonth = historyUpdateRequest.getEndMonth();
         this.historyIntroduction = historyUpdateRequest.getHistoryIntroduction();
         this.inProgress = historyUpdateRequest.isInProgress();
     }

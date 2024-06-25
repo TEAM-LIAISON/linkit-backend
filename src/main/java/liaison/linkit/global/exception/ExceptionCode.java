@@ -39,12 +39,14 @@ public enum ExceptionCode {
     INVALID_PROFILE_SKILL_WITH_MEMBER(1026, "요청한 ID에 해당하는 보유 기술 정보가 존재하지 않습니다."),
     INVALID_ATTACH_URL_WITH_PROFILE(1027, "요청한 ID에 해당하는 첨부 URL 정보가 존재하지 않습니다."),
     INVALID_ATTACH_FILE_WITH_PROFILE(1028, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
+    INVALID_TEAM_ATTACH_URL_WITH_PROFILE(1029, "요청한 ID에 해당하는 팀 첨부 URL 정보가 존재하지 않습니다."),
+    INVALID_TEAM_ATTACH_FILE_WITH_PROFILE(1030, "요청한 ID에 해당하는 팀 첨부 파일 정보가 존재하지 않습니다."),
     INVALID_HISTORY_WITH_TEAM_PROFILE(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
     INVALID_TEAM_MINI_PROFILE_WITH_MEMBER(1029, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
     INVALID_TEAM_PROFILE_TEAM_BUILDING_WITH_MEMBER(1030, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
     INVALID_PROFILE_REGION_WITH_MEMBER(1031, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
 
-
+    INVALID_TEAM_INTRODUCTION_WITH_TEAM_PROFILE(1032, "요청한 ID에 해당하는 팀원 소개 정보가 존재하지 않습니다."),
 
     // -----문단 구분-----
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
@@ -52,6 +54,7 @@ public enum ExceptionCode {
     NULL_ATTACH_FILE(5003, "업로드한 첨부 파일이 NULL입니다."),
     EMPTY_IMAGE(5003, "업로드 가능한 이미지 개수를 초과했습니다."),
     EMPTY_ATTACH_FILE(5004, "업로드 가능한 이미지 개수를 초과했습니다."),
+    EMPTY_TEAM_ATTACH_FILE(5004, "업로드 가능한 이미지 개수를 초과했습니다."),
     EXCEED_IMAGE_SIZE(5004, "업로드 가능한 이미지 개수를 초과했습니다."),
     INVALID_IMAGE_URL(5005, "요청한 이미지 URL의 형식이 잘못되었습니다."),
     INVALID_IMAGE_PATH(5101, "이미지를 저장할 경로가 올바르지 않습니다."),

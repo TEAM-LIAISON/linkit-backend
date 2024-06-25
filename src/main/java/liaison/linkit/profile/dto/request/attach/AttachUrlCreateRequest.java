@@ -12,5 +12,5 @@ public class AttachUrlCreateRequest {
     private final String attachUrlName;
 
     @NotNull(message = "첨부 URL을 입력해주세요.")
-    private final String attachUrl;
+    private final String attachUrlPath;
 }

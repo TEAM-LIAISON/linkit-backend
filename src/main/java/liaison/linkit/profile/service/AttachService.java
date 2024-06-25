@@ -116,7 +116,7 @@ public class AttachService {
         final AttachUrl newAttachUrl = AttachUrl.of(
                 profile,
                 attachUrlCreateRequest.getAttachUrlName(),
-                attachUrlCreateRequest.getAttachUrl()
+                attachUrlCreateRequest.getAttachUrlPath()
         );
         attachUrlRepository.save(newAttachUrl);
     }
@@ -157,9 +157,6 @@ public class AttachService {
     ) {
         final Profile profile = getProfile(memberId);
         final String attachFileUrl = saveFileS3(attachFile);
-
-
-
         final AttachFile newAttachFile = AttachFile.of(
                 profile,
                 attachFile.getOriginalFilename(),
@@ -171,7 +168,7 @@ public class AttachService {
         // 프로필 상태 관리 첨부용으로 추가 필요
     }
 
-    private String saveFileS3(MultipartFile attachFile) {
+    private String saveFileS3(final MultipartFile attachFile) {
         validateSizeofFile(attachFile);
         final PortfolioFile portfolioFile = new PortfolioFile(attachFile);
         return uploadPortfolioFile(portfolioFile);
