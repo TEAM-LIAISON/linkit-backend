@@ -114,6 +114,7 @@ public class ProfileController {
                     profileIntroductionResponse,
                     profileSkillResponse,
                     profileTeamBuildingFieldResponse,
+                    profileRegionResponse,
                     antecedentsResponses,
                     educationResponses,
                     awardsResponses,
