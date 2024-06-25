@@ -34,19 +34,19 @@ public class History {
     @Column(name = "end_year")
     private int endYear;
 
-    @Column(name = "history_introduction")
-    private String historyIntroduction;
-
     @Column(name = "in_progress")
     private boolean inProgress;
+
+    @Column(name = "history_introduction")
+    private String historyIntroduction;
 
     public static History of(
             final TeamProfile teamProfile,
             final String historyOneLineIntroduction,
             final int startYear,
             final int endYear,
-            final String historyIntroduction,
-            final boolean inProgress
+            final boolean inProgress,
+            final String historyIntroduction
     ) {
         return new History(
                 null,
@@ -54,8 +54,8 @@ public class History {
                 historyOneLineIntroduction,
                 startYear,
                 endYear,
-                historyIntroduction,
-                inProgress
+                inProgress,
+                historyIntroduction
         );
     }
 

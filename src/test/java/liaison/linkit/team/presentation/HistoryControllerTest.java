@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.team.dto.request.TeamProfileTeamBuildingFieldCreateRequest;
-import liaison.linkit.team.service.TeamProfileTeamBuildingFieldService;
+import liaison.linkit.team.dto.request.HistoryCreateRequest;
+import liaison.linkit.team.service.HistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,10 +36,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(TeamProfileTeamBuildingFieldController.class)
+@WebMvcTest(HistoryController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
-class TeamProfileTeamBuildingFieldControllerTest extends ControllerTest {
+public class HistoryControllerTest extends ControllerTest {
 
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
@@ -48,41 +48,52 @@ class TeamProfileTeamBuildingFieldControllerTest extends ControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private TeamProfileTeamBuildingFieldService teamProfileTeamBuildingFieldService;
+    private HistoryService historyService;
 
     @BeforeEach
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        doNothing().when(teamProfileTeamBuildingFieldService).validateTeamProfileTeamBuildingFieldByMember(anyLong());
+        doNothing().when(historyService).validateHistoryByMember(anyLong());
     }
 
-    private ResultActions performPostRequest(
-            final TeamProfileTeamBuildingFieldCreateRequest createRequest
-    ) throws Exception {
+    private ResultActions performPostHistory(final List<HistoryCreateRequest> historyCreateRequests) throws Exception {
         return mockMvc.perform(
-                post("/team_profile_team_building_field")
+                post("/team/history")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createRequest))
-        );
+                        .content(objectMapper.writeValueAsString(historyCreateRequests)));
     }
 
-    @DisplayName("팀의 희망 팀빌딩 분야 항목들을 생성할 수 있다.")
+    @DisplayName("연혁을 생성할 수 있다.")
     @Test
-    void createTeamProfileTeamBuildingField() throws Exception {
-
+    void createHistory() throws Exception {
         // given
-        List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
-        final TeamProfileTeamBuildingFieldCreateRequest createRequest = new TeamProfileTeamBuildingFieldCreateRequest(teamBuildingFieldNames);
+        final HistoryCreateRequest firstHistoryCreateRequest = new HistoryCreateRequest(
+                "Seed 투자 유치",
+                2023,
+                2024,
+                true,
+                "5,000만원 투자를 받았어요"
+        );
+
+        final HistoryCreateRequest secondHistoryCreateRequest = new HistoryCreateRequest(
+                "MVP 테스트",
+                2022,
+                2023,
+                false,
+                "사용자 5,000명을 모았어요"
+        );
+
+        final List<HistoryCreateRequest> historyCreateRequestList = Arrays.asList(firstHistoryCreateRequest, secondHistoryCreateRequest);
 
         // when
-        final ResultActions resultActions = performPostRequest(createRequest);
+        final ResultActions resultActions = performPostHistory(historyCreateRequestList);
 
         // then
-        resultActions.andExpect(status().isOk())
+        resultActions.andExpect(status().isCreated())
                 .andDo(
                         restDocs.document(
                                 requestCookies(
@@ -95,10 +106,26 @@ class TeamProfileTeamBuildingFieldControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 requestFields(
-                                        fieldWithPath("teamBuildingFieldNames")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("희망 팀빋딩 분야(7가지 항목)")
-                                                .attributes(field("constraint", "문자열의 배열"))
+                                        fieldWithPath("[].historyOneLineIntroduction")
+                                                .type(JsonFieldType.STRING)
+                                                .description("연혁 한 줄 소개")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("[].startYear")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("시작 연도")
+                                                .attributes(field("constraint", "숫자")),
+                                        fieldWithPath("[].endYear")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("종료 연도")
+                                                .attributes(field("constraint", "숫자")),
+                                        fieldWithPath("[].inProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("현재 진행 여부")
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("[].historyIntroduction")
+                                                .type(JsonFieldType.STRING)
+                                                .description("연혁 소개 텍스트")
+                                                .attributes(field("constraint", "문자열"))
                                 )
                         )
                 );

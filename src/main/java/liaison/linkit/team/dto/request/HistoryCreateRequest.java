@@ -13,17 +13,12 @@ public class HistoryCreateRequest {
     @NotNull(message = "시작 연도를 입력해주세요.")
     private final int startYear;
 
-    @NotNull(message = "시작 월을 입력해주세요.")
-    private final int startMonth;
-
     @NotNull(message = "종료 연도를 입력해주세요.")
     private final int endYear;
 
-    @NotNull(message = "종료 월을 입력해주세요.")
-    private final int endMonth;
+    @NotNull(message = "연혁 진행 여부를 선택해주세요")
+    private final boolean inProgress;
 
     @NotNull(message = "연혁 설명을 입력해주세요.")
     private final String historyIntroduction;
-
-    private final boolean inProgress;
 }

@@ -210,8 +210,18 @@ public class TeamProfile {
         }
     }
 
+    // 팀 소개 기입 여부
     public void updateIsTeamIntroduction(final Boolean isTeamIntroduction) {
         this.isTeamIntroduction = isTeamIntroduction;
+    }
+
+    // 팀원 소개 기입 여부
+    public void updateIsTeamMemberIntroduction(final Boolean isTeamMemberIntroduction) {
+        this.isTeamMemberIntroduction = isTeamMemberIntroduction;
+    }
+
+    public void updateIsHistory(final Boolean isHistory) {
+        this.isHistory = isHistory;
     }
 
     public void updateIsTeamAttachUrl(final Boolean isTeamAttachUrl) {
@@ -222,8 +232,10 @@ public class TeamProfile {
         this.isTeamAttachFile = isTeamAttachFile;
     }
 
+
     private void addPerfectionEleven() {this.teamProfileCompletion += 11.0;}
     private void cancelPerfectionEleven() {this.teamProfileCompletion -= 11.0;}
+
 
 
 }
