@@ -13,6 +13,9 @@ import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.attach.TeamAttachFileRepository;
 import liaison.linkit.team.domain.repository.attach.TeamAttachUrlRepository;
 import liaison.linkit.team.dto.request.attach.TeamAttachUrlCreateRequest;
+import liaison.linkit.team.dto.response.attach.TeamAttachFileResponse;
+import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
+import liaison.linkit.team.dto.response.attach.TeamAttachUrlResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -82,6 +85,7 @@ public class TeamAttachService {
         teamAttachUrlRepository.save(newTeamAttachUrl);
     }
 
+    // 파일 저장 메서드 실행부
     public void saveFile(
             final Long memberId,
             final MultipartFile teamAttachFile
@@ -99,12 +103,14 @@ public class TeamAttachService {
         teamProfile.updateIsTeamAttachFile(true);
     }
 
+    // S3에 파일 저장
     private String saveFileS3(final MultipartFile teamAttachFile) {
         validateSizeofFile(teamAttachFile);
         final PortfolioFile portfolioFile = new PortfolioFile(teamAttachFile);
         return uploadPortfolioFile(portfolioFile);
     }
 
+    // 포트폴리오 파일 업로드
     private String uploadPortfolioFile(final PortfolioFile portfolioFile) {
         try {
             return s3Uploader.uploadPortfolioFile(portfolioFile);
@@ -114,9 +120,37 @@ public class TeamAttachService {
         }
     }
 
+    // 파일 유효성 판단
     private void validateSizeofFile(final MultipartFile teamAttachFile) {
         if (teamAttachFile == null || teamAttachFile.isEmpty()) {
             throw new FileException(EMPTY_TEAM_ATTACH_FILE);
         }
+    }
+
+    public TeamAttachResponse getTeamAttachList(final Long memberId) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+
+        final List<TeamAttachUrl> teamAttachUrls = teamAttachUrlRepository.findAllByTeamProfileId(teamProfile.getId());
+        log.info("teamAttachUrls={}", teamAttachUrls);
+
+        final List<TeamAttachFile> teamAttachFiles = teamAttachFileRepository.findAllByTeamProfileId(teamProfile.getId());
+        log.info("teamAttachFiles={}", teamAttachFiles);
+
+        final List<TeamAttachUrlResponse> teamAttachUrlResponses = teamAttachUrls.stream().map(this::getTeamAttachUrlResponse).toList();
+        final List<TeamAttachFileResponse> teamAttachFileResponses = teamAttachFiles.stream().map(this::getTeamAttachFileResponse).toList();
+
+        return TeamAttachResponse.getTeamAttachResponse(teamAttachUrlResponses, teamAttachFileResponses);
+    }
+
+    private TeamAttachFileResponse getTeamAttachFileResponse(
+            final TeamAttachFile teamAttachFile
+    ) {
+        return TeamAttachFileResponse.getTeamAttachFile(teamAttachFile);
+    }
+
+    private TeamAttachUrlResponse getTeamAttachUrlResponse(
+            final TeamAttachUrl teamAttachUrl
+    ) {
+        return TeamAttachUrlResponse.getTeamAttachUrl(teamAttachUrl);
     }
 }

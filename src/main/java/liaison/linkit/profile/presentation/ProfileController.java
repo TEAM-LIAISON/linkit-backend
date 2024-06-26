@@ -58,6 +58,7 @@ public class ProfileController {
                     = getMiniProfileResponse(accessor.getMemberId(), profileIsValueResponse.isMiniProfile());
             log.info("miniProfileResponse={}", miniProfileResponse);
 
+            // 회원 이름
             final MemberNameResponse memberNameResponse
                     = getMemberNameResponse(accessor.getMemberId());
             log.info("memberNameResponse={}", memberNameResponse);
@@ -107,7 +108,7 @@ public class ProfileController {
 
             log.info("attachResponse={}", attachResponse);
 
-            final ProfileResponse profileResponse = profileService.getProfile(
+            final ProfileResponse profileResponse = profileService.getProfileResponse(
                     miniProfileResponse,
                     memberNameResponse,
                     completionResponse,
@@ -123,7 +124,7 @@ public class ProfileController {
             return ResponseEntity.ok().body(profileResponse);
         } catch (Exception e) {
             log.error("내 이력서 조회 과정에서 예외 발생: {}", e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("온보딩 정보를 불러오는 과정에서 문제가 발생했습니다.");
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("내 이력서 정보를 불러오는 과정에서 문제가 발생했습니다.");
         }
     }
 

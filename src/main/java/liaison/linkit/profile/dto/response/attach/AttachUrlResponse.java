@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 public class AttachUrlResponse {
     private final Long id;
     private final String attachUrlName;
-    private final String attachUrl;
+    private final String attachUrlPath;
 
     public static AttachUrlResponse personalAttachUrl(final AttachUrl attachUrl) {
         return new AttachUrlResponse(

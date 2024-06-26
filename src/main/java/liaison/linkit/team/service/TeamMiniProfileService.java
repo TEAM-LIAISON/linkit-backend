@@ -111,7 +111,11 @@ public class TeamMiniProfileService {
 
         // 이미지 수정 요청이 있는 것으로 간주할 수 있는 경우
         if (teamMiniProfileImage != null) {
+            // 기존에 S3 올라가 있던 이미지 삭제
+            s3Uploader.deleteImage(teamMiniProfile.getTeamLogoImageUrl());
+            // 새로운 이미지를 S3에 저장
             final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
+                // 객체 업데이트
                 teamMiniProfile.onBoardingTeamMiniProfile(
                         teamMiniProfileCreateRequest.getTeamProfileTitle(),
                         teamMiniProfileCreateRequest.getTeamUploadPeriod(),

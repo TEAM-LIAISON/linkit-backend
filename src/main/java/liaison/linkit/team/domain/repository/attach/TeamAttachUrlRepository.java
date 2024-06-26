@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface TeamAttachUrlRepository extends JpaRepository<TeamAttachUrl, Long> {
     boolean existsByTeamProfileId(final Long teamProfileId);
 
@@ -14,4 +16,8 @@ public interface TeamAttachUrlRepository extends JpaRepository<TeamAttachUrl, Lo
     @Transactional
     @Query("DELETE FROM TeamAttachUrl teamAttachUrl WHERE teamAttachUrl.teamProfile.id = :teamProfileId")
     void deleteAllByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
+
+    @Query("SELECT teamAttachUrl FROM TeamAttachUrl teamAttachUrl WHERE teamAttachUrl.teamProfile.id = :teamProfileId")
+    List<TeamAttachUrl> findAllByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
+
 }

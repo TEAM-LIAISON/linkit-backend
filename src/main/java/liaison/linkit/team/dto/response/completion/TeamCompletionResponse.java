@@ -1,4 +1,4 @@
-package liaison.linkit.team.dto.response;
+package liaison.linkit.team.dto.response.completion;
 
 import liaison.linkit.team.domain.TeamProfile;
 import lombok.Getter;
@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class TeamProfileIsValueResponse {
+public class TeamCompletionResponse {
 
-    // 4.1. 미니 프로필
-    private final boolean isTeamMiniProfile;
+    // 팀 소개서 완성도 % = teamCompletion
+    private final String teamCompletion;
 
     // 4.4. 팀 프로필 희망 팀빌딩 분야
     private final boolean isTeamProfileTeamBuildingField;
@@ -32,11 +32,9 @@ public class TeamProfileIsValueResponse {
     // 4.10. 첨부 (url, file) 둘 중 하나라도.
     private final boolean isTeamAttach;
 
-    public static TeamProfileIsValueResponse teamProfileIsValue(
-            final TeamProfile teamProfile
-    ) {
-        return new TeamProfileIsValueResponse(
-                teamProfile.getIsTeamMiniProfile(),
+    public static TeamCompletionResponse teamProfileCompletion(final TeamProfile teamProfile) {
+        return new TeamCompletionResponse(
+                String.format("%.1f", teamProfile.getTeamProfileCompletion()),
                 teamProfile.getIsTeamProfileTeamBuildingField(),
                 teamProfile.getIsTeamMemberAnnouncement(),
                 teamProfile.getIsActivity(),
@@ -46,4 +44,5 @@ public class TeamProfileIsValueResponse {
                 teamProfile.getIsTeamAttach()
         );
     }
+
 }

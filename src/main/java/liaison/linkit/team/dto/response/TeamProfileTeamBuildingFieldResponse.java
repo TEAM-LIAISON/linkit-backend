@@ -10,6 +10,10 @@ import java.util.List;
 public class TeamProfileTeamBuildingFieldResponse {
     private final List<String> teamProfileTeamBuildingFieldNames;
 
+    public TeamProfileTeamBuildingFieldResponse(){
+        this.teamProfileTeamBuildingFieldNames = null;
+    }
+
     public static TeamProfileTeamBuildingFieldResponse of(final List<String> teamProfileTeamBuildingFieldNames) {
         return new TeamProfileTeamBuildingFieldResponse(
                 teamProfileTeamBuildingFieldNames

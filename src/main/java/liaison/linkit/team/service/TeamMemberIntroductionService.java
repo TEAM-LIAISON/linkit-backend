@@ -7,6 +7,7 @@ import liaison.linkit.team.domain.memberIntroduction.TeamMemberIntroduction;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.memberIntroduction.TeamMemberIntroductionRepository;
 import liaison.linkit.team.dto.request.memberIntroduction.TeamMemberIntroductionCreateRequest;
+import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class TeamMemberIntroductionService {
         }
     }
 
+    // 팀원 소개 저장 메서드 실행부
     public void saveTeamMember(
             final Long memberId,
             final List<TeamMemberIntroductionCreateRequest> teamMemberIntroductionCreateRequests
@@ -58,6 +60,7 @@ public class TeamMemberIntroductionService {
         teamProfile.updateMemberTeamProfileTypeByCompletion();
     }
 
+    // 팀원 소개 저장 메서드
     private void saveTeamMemberIntroduction(
             final TeamProfile teamProfile,
             final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
@@ -70,5 +73,21 @@ public class TeamMemberIntroductionService {
         );
 
         teamMemberIntroductionRepository.save(newTeamMemberIntroduction);
+    }
+
+    // 팀원 소개 조회
+    @Transactional(readOnly = true)
+    public List<TeamMemberIntroductionResponse> getAllTeamMemberIntroduction(
+            final Long memberId
+    ) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        final List<TeamMemberIntroduction> teamMemberIntroductions = teamMemberIntroductionRepository.findAllByTeamProfileId(teamProfile.getId());
+        return teamMemberIntroductions.stream()
+                .map(this::getTeamMemberIntroductionResponse)
+                .toList();
+    }
+
+    private TeamMemberIntroductionResponse getTeamMemberIntroductionResponse(final TeamMemberIntroduction teamMemberIntroduction) {
+        return TeamMemberIntroductionResponse.of(teamMemberIntroduction);
     }
 }
