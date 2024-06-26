@@ -146,7 +146,7 @@ public class AttachService {
         attachUrlRepository.deleteById(attachUrl.getId());
 
         if (!attachFileRepository.existsByProfileId(profile.getId()) && !attachUrlRepository.existsByProfileId(profile.getId())) {
-            profile.cancelPerfectionSeven();
+            profile.cancelPerfectionTen();
             profile.updateMemberProfileTypeByCompletion();
         }
     }
@@ -250,7 +250,7 @@ public class AttachService {
         final Profile profile = getProfile(memberId);
         attachFileRepository.deleteById(attachFileUrlId);
         if (!attachFileRepository.existsByProfileId(profile.getId()) && !attachUrlRepository.existsByProfileId(profile.getId())) {
-            profile.cancelPerfectionSeven();
+            profile.cancelPerfectionTen();
             profile.updateMemberProfileTypeByCompletion();
         }
     }
