@@ -6,7 +6,6 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
-import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
@@ -205,17 +204,6 @@ public class ProfileController {
         profileService.validateProfileByMember(accessor.getMemberId());
         final ProfileIntroductionResponse profileIntroductionResponse = profileService.getProfileIntroduction(accessor.getMemberId());
         return ResponseEntity.ok().body(profileIntroductionResponse);
-    }
-
-    @PatchMapping("/introduction")
-    @MemberOnly
-    public ResponseEntity<Void> updateProfileIntroduction(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final ProfileUpdateRequest updateRequest
-    ) {
-        profileService.validateProfileByMember(accessor.getMemberId());
-        profileService.update(accessor.getMemberId(), updateRequest);
-        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/introduction")

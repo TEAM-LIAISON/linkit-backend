@@ -14,7 +14,6 @@ import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
-import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
@@ -89,21 +88,6 @@ public class ProfileService {
     public ProfileIntroductionResponse getProfileIntroduction(final Long memberId) {
         final Profile profile = getProfileByMember(memberId);
         return ProfileIntroductionResponse.profileIntroduction(profile);
-    }
-
-    public void update(final Long memberId, final ProfileUpdateRequest updateRequest) {
-        final Profile profile = getProfileByMember(memberId);
-        // 사용자가 입력한 정보로 업데이트한다.
-        profile.update(updateRequest);
-
-        // 저장되었으므로, 완성도 상태를 변경한다.
-        profile.updateIsIntroduction(true);
-
-        // 상태 판단 함수가 필요하다 -> +- 20에 따른 상태 판단 진행
-        profile.updateMemberProfileTypeByCompletion();
-
-        // DB에 저장한다.
-        profileRepository.save(profile);
     }
 
     public void deleteIntroduction(final Long memberId) {
