@@ -14,7 +14,7 @@ public class TeamProfileIntroductionResponse {
         this.teamIntroduction = null;
     }
 
-    public static TeamProfileIntroductionResponse teamProfileIntroductionResponse(final TeamProfile teamProfile) {
+    public static TeamProfileIntroductionResponse teamProfileIntroduction(final TeamProfile teamProfile) {
         return new TeamProfileIntroductionResponse(
                 teamProfile.getTeamIntroduction()
         );

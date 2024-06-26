@@ -117,7 +117,7 @@ public class ProfileService {
         profileRepository.save(profile);
     }
 
-    public ProfileResponse getProfile(
+    public ProfileResponse getProfileResponse(
             final MiniProfileResponse miniProfileResponse,
             final MemberNameResponse memberNameResponse,
             final CompletionResponse completionResponse,

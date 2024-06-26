@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(TeamAttachController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
-public class TeamAttachControllerTest extends ControllerTest {
+public class TeamAttachResponseControllerTest extends ControllerTest {
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
 

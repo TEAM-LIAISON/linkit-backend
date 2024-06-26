@@ -531,6 +531,7 @@ class ProfileControllerTest extends ControllerTest {
 
         final AttachFileResponse firstAttachFileResponse = new AttachFileResponse(
                 1L,
+                "A4+-=1.pdf",
                 "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
         );
 
@@ -557,7 +558,7 @@ class ProfileControllerTest extends ControllerTest {
                 attachResponses
         );
 
-        given(profileService.getProfile(
+        given(profileService.getProfileResponse(
                 miniProfileResponse,
                 memberNameResponse,
                 completionResponse,
@@ -665,9 +666,9 @@ class ProfileControllerTest extends ControllerTest {
                                         subsectionWithPath("attachResponse").description("첨부 파일 정보"),
                                         fieldWithPath("attachResponse.attachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL ID"),
                                         fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(JsonFieldType.STRING).description("첨부된 URL 이름"),
-                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrl").type(JsonFieldType.STRING).description("첨부된 URL"),
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(JsonFieldType.STRING).description("첨부된 URL"),
                                         fieldWithPath("attachResponse.attachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 ID"),
-                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFile").type(JsonFieldType.STRING).description("첨부 파일 URL")
+                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFilePath").type(JsonFieldType.STRING).description("첨부 파일 URL")
                                 )
                         ));
     }

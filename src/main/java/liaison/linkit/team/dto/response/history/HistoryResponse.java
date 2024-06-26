@@ -1,4 +1,4 @@
-package liaison.linkit.team.dto.response;
+package liaison.linkit.team.dto.response.history;
 
 import liaison.linkit.team.domain.History;
 import lombok.Getter;

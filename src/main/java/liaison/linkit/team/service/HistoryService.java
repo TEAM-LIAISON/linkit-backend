@@ -7,7 +7,7 @@ import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.repository.HistoryRepository;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import liaison.linkit.team.dto.request.HistoryCreateRequest;
-import liaison.linkit.team.dto.response.HistoryResponse;
+import liaison.linkit.team.dto.response.history.HistoryResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

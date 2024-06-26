@@ -163,7 +163,9 @@ public class TeamProfile {
     public boolean getIsHistory() {
         return isHistory;
     }
+    public boolean getIsTeamAttach() {return isTeamAttach;}
     public boolean getIsTeamMiniProfile() {return isTeamMiniProfile;}
+
 
     // 팀 소개 업데이트 메서드
     public void updateTeamIntroduction(final String teamIntroduction) {

@@ -47,7 +47,7 @@ public enum ExceptionCode {
     INVALID_PROFILE_REGION_WITH_MEMBER(1031, "요청한 ID에 해당하는 첨부 파일 정보가 존재하지 않습니다."),
 
     INVALID_TEAM_INTRODUCTION_WITH_TEAM_PROFILE(1032, "요청한 ID에 해당하는 팀원 소개 정보가 존재하지 않습니다."),
-
+    INVALID_TEAM_MEMBER_ANNOUNCEMENT_WITH_PROFILE(1033, "요청한 ID에 해당하는 팀원 공고 정보가 존재하지 않습니다."),
     // -----문단 구분-----
     EXCEED_IMAGE_CAPACITY(5001, "업로드 가능한 이미지 용량을 초과했습니다."),
     NULL_IMAGE(5002, "업로드한 이미지 파일이 NULL입니다."),
