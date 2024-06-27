@@ -6,7 +6,7 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.education.EducationListCreateRequest;
 import liaison.linkit.profile.dto.request.education.EducationUpdateRequest;
-import liaison.linkit.profile.dto.response.EducationResponse;
+import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.service.EducationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

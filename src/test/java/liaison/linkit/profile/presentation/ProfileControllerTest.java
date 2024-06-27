@@ -6,15 +6,20 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.member.service.MemberService;
-import liaison.linkit.profile.dto.request.DefaultProfileCreateRequest;
 import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
-import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
 import liaison.linkit.profile.dto.response.*;
+import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
+import liaison.linkit.profile.dto.response.awards.AwardsResponse;
+import liaison.linkit.profile.dto.response.completion.CompletionResponse;
+import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;
+import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import liaison.linkit.region.service.ProfileRegionService;
@@ -125,17 +130,6 @@ class ProfileControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performPostDefaultRequest(
-            DefaultProfileCreateRequest defaultProfileCreateRequest) throws Exception {
-        return mockMvc.perform(
-                post("/profile/default")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(defaultProfileCreateRequest))
-        );
-    }
-
     private ResultActions performCreateRequest(final IntroductionCreateRequest introductionCreateRequest) throws Exception {
         return mockMvc.perform(
                 post("/profile/introduction")
@@ -151,16 +145,6 @@ class ProfileControllerTest extends ControllerTest {
                 get("/profile/introduction")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
-        );
-    }
-
-    private ResultActions performPatchRequest(final ProfileUpdateRequest updateRequest) throws Exception {
-        return mockMvc.perform(
-                patch("/profile/introduction")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest))
         );
     }
 

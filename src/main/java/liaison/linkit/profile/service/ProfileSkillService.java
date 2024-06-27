@@ -9,7 +9,7 @@ import liaison.linkit.profile.domain.repository.SkillRepository;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.dto.request.skill.ProfileSkillCreateRequest;
-import liaison.linkit.profile.dto.response.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

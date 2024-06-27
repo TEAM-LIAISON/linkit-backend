@@ -7,7 +7,7 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
 import liaison.linkit.profile.dto.request.education.EducationListCreateRequest;
 import liaison.linkit.profile.dto.request.education.EducationUpdateRequest;
-import liaison.linkit.profile.dto.response.EducationResponse;
+import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.service.EducationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

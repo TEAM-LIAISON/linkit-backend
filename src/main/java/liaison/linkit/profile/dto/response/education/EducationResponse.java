@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.response;
+package liaison.linkit.profile.dto.response.education;
 
 import liaison.linkit.profile.domain.education.Education;
 import lombok.Getter;

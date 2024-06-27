@@ -10,7 +10,7 @@ import liaison.linkit.profile.domain.teambuilding.ProfileTeamBuildingField;
 import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdateRequest;
-import liaison.linkit.profile.dto.response.ProfileTeamBuildingFieldResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

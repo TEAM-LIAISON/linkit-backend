@@ -6,7 +6,7 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsUpdateRequest;
-import liaison.linkit.profile.dto.response.AntecedentsResponse;
+import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.service.AntecedentsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

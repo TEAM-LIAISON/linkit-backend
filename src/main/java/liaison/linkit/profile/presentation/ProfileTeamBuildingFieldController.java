@@ -6,7 +6,7 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdateRequest;
-import liaison.linkit.profile.dto.response.ProfileTeamBuildingFieldResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.ProfileTeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

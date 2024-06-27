@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.response;
+package liaison.linkit.profile.dto.response.completion;
 
 import liaison.linkit.profile.domain.Profile;
 import lombok.Getter;

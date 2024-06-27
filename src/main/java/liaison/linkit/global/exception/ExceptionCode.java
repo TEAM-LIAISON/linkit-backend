@@ -9,7 +9,7 @@ public enum ExceptionCode {
 
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
 
-    FAIL_TO_GENERATE_MEMBER(1001, "랜덤한 닉네임을 생성하는데 실패하였습니다."),
+    FAIL_TO_GENERATE_MEMBER(1001, "회원을 생성하는데 실패하였습니다."),
 
     NOT_FOUND_MEMBER_ID(1002, "요청한 ID에 해당하는 멤버(회원)가 존재하지 않습니다."),
     NOT_FOUND_MEMBER_ROLE_ID(1003, "요청한 ID에 해당하는 직무/역할이 존재하지 않습니다."),

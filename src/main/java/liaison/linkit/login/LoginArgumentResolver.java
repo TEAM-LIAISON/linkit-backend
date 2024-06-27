@@ -61,13 +61,8 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             final String accessToken = extractor.extractAccessToken(webRequest.getHeader(AUTHORIZATION));
             log.info("refreshToken={}", refreshToken);
             log.info("accessToken={}", accessToken);
-
-            log.info("터지는 여부 1");
             jwtProvider.validateTokens(new MemberTokens(refreshToken, accessToken));
-            log.info("터지는 여부 2");
-
             final Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
-            log.info("터지는 여부 3");
             return Accessor.member(memberId);
         } catch (final RefreshTokenException e) {
             log.info("asdf");

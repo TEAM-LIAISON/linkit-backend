@@ -5,7 +5,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.skill.ProfileSkillCreateRequest;
-import liaison.linkit.profile.dto.response.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
 import liaison.linkit.profile.service.ProfileSkillService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

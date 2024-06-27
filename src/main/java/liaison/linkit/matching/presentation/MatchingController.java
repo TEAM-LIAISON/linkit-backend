@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.matching.CheckProfileAccess;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +18,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/matching")
 @Slf4j
 public class MatchingController {
+
     public final MatchingService matchingService;
 
     @PostMapping("/profile/{profileId}")
     @MemberOnly
+    @CheckProfileAccess
     public ResponseEntity<Void> createProfileMatching(
             @Auth final Accessor accessor,
             @PathVariable final Long profileId,

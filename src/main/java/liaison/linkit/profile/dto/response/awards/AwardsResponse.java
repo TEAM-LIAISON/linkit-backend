@@ -1,6 +1,6 @@
-package liaison.linkit.profile.dto.response;
+package liaison.linkit.profile.dto.response.awards;
 
-import liaison.linkit.profile.domain.Awards;
+import liaison.linkit.profile.domain.awards.Awards;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

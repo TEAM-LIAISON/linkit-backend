@@ -14,7 +14,7 @@ import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
 import liaison.linkit.profile.dto.request.education.EducationUpdateRequest;
-import liaison.linkit.profile.dto.response.EducationResponse;
+import liaison.linkit.profile.dto.response.education.EducationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

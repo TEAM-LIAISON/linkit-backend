@@ -3,6 +3,8 @@ package liaison.linkit.profile.domain;
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.type.ProfileType;
+import liaison.linkit.profile.domain.awards.Awards;
+import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -162,7 +164,7 @@ public class Profile {
     }
 
     // 3.4. 자기소개 업데이트
-    public void updateIsIntroduction(final Boolean isIntroduction) {
+    public void updateIsIntroduction(final boolean isIntroduction) {
         this.isIntroduction = isIntroduction;
     }
 
@@ -197,7 +199,7 @@ public class Profile {
     }
 
     // 3.8. 이력 업데이트
-    public void updateIsAntecedents(final Boolean isAntecedents) {
+    public void updateIsAntecedents(final boolean isAntecedents) {
         this.isAntecedents = isAntecedents;
         if (isAntecedents) {
             addPerfectionDefault();
@@ -217,7 +219,7 @@ public class Profile {
     }
 
     // 3.10. 수상 업데이트
-    public void updateIsAwards(final Boolean isAwards) {
+    public void updateIsAwards(final boolean isAwards) {
         this.isAwards = isAwards;
         if (isAwards) {
             addPerfectionTen();
@@ -228,18 +230,24 @@ public class Profile {
 
     // 3.11. 첨부 업데이트
     private void updateIsAttach(final boolean isAttachUrl, final boolean isAttachFile) {
+        // attachUrl, attachFile 2개 중에 하나라도 참이면 isAttach는 참이다.
         if (this.isAttach != (isAttachUrl || isAttachFile)) {
-            this.isAttach = !this.isAttachFile;
+            this.isAttach = !this.isAttach;
+            if (this.isAttach) {
+                addPerfectionTen();
+            } else {
+                cancelPerfectionTen();
+            }
         }
     }
 
     // 3.11.1 첨부 링크 업데이트
-    public void updateIsAttachUrl(final Boolean isAttachUrl) {
+    public void updateIsAttachUrl(final boolean isAttachUrl) {
         this.isAttachUrl = isAttachUrl;
         updateIsAttach(isAttachUrl, this.isAttachFile);
     }
     // 3.11.2 첨부 파일 업데이트
-    public void updateIsAttachFile(final Boolean isAttachFile) {
+    public void updateIsAttachFile(final boolean isAttachFile) {
         this.isAttachFile = isAttachFile;
         updateIsAttach(this.isAttachUrl, isAttachFile);
     }
@@ -286,7 +294,9 @@ public class Profile {
     public boolean getIsProfileTeamBuildingField() {
         return isProfileTeamBuildingField;
     }
-    public boolean getIsProfileRegion() { return isProfileRegion; }
+    public boolean getIsProfileRegion() {
+        return isProfileRegion;
+    }
     public boolean getIsAntecedents() {
         return isAntecedents;
     }

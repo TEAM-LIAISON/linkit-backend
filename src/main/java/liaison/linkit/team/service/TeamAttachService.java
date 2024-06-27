@@ -101,6 +101,7 @@ public class TeamAttachService {
 
         teamAttachFileRepository.save(newAttachFile);
         teamProfile.updateIsTeamAttachFile(true);
+        teamProfile.updateMemberTeamProfileTypeByCompletion();
     }
 
     // S3에 파일 저장
