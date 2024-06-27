@@ -6,7 +6,7 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsUpdateRequest;
-import liaison.linkit.profile.dto.response.AntecedentsResponse;
+import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.service.AntecedentsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

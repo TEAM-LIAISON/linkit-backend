@@ -1,6 +1,6 @@
 package liaison.linkit.profile.domain.repository;
 
-import liaison.linkit.profile.domain.Awards;
+import liaison.linkit.profile.domain.awards.Awards;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

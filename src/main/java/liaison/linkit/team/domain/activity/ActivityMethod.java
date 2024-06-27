@@ -28,5 +28,4 @@ public class ActivityMethod {
     @JoinColumn(name = "activity_method_tag_id")
     private ActivityMethodTag activityMethodTag;
 
-
 }

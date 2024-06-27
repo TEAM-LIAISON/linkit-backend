@@ -29,60 +29,63 @@ public class TeamProfile {
     @OneToOne(mappedBy = "teamProfile")
     private TeamMiniProfile teamMiniProfile;
 
-    // 팀 프로필 완성도
+    // 4.3. 팀 프로필 완성도
     @Column(name = "team_profile_completion")
     private double teamProfileCompletion;
 
+    // 4.7. 팀 소개
     @Column(name = "team_introduction")
     private String teamIntroduction;
 
-    // 팀 프로필 희망 팀빌딩 분야
+    // 4.4. 희망 팀빌딩 분야 기입 여부
     @Column(nullable = false)
     private boolean isTeamProfileTeamBuildingField;
 
-    // 팀원 모집 공고
+    // 4.5. 팀원 공고 기입 여부
     @Column(nullable = false)
     private boolean isTeamMemberAnnouncement;
 
-    // ActivityMethod, ActivityRegion 2개 관리 boolean
+    // 4.6. 활동 방식 + 활동 지역 및 위치 기입 여부
     @Column(nullable = false)
     private boolean isActivity;
 
-    // 활동 방식
+    // 4.6.1. 활동 방식 기입 여부
     @Column(nullable = false)
     private boolean isActivityMethod;
 
-    // 활동 지역
+    // 4.6.2. 활동 지역 기입 여부
     @Column(nullable = false)
     private boolean isActivityRegion;
 
-    // 팀 소개
+    // 4.7. 팀 소개 기입 여부
     @Column(nullable = false)
     private boolean isTeamIntroduction;
 
-    // 팀원 소개 기입 여부
+    // 4.8. 팀원 소개 기입 여부
     @Column(nullable = false)
     private boolean isTeamMemberIntroduction;
 
-    // 연혁 기입 여부
+    // 4.9. 연혁 기입 여부
     @Column(nullable = false)
     private boolean isHistory;
 
-    // 팀 첨부 기입 여부
+    // 4.10. 팀 첨부 기입 여부
     @Column(nullable = false)
     private boolean isTeamAttach;
 
-    // 팀 첨부 URL 기입 여부
+    // 4.10.1 팀 첨부 링크(URL) 기입 여부
     @Column(nullable = false)
     private boolean isTeamAttachUrl;
 
-    // 팀 첨부 파일 기입 여부
+    // 4.10.2. 팀 첨부 파일(File) 기입 여부
+    @Column(nullable = false)
     private boolean isTeamAttachFile;
 
-    // 팀 미니 프로필 기입 여부
+    // 4.1. 팀 미니 프로필 기입 여부
     @Column(nullable = false)
     private boolean isTeamMiniProfile;
 
+    // 생성자
     public TeamProfile(
             final Long id,
             final Member member,
@@ -113,30 +116,110 @@ public class TeamProfile {
         this(null, member, teamProfileCompletion);
     }
 
+    // 기본 입력 항목 (희망 팀빌딩 분야 / 활동 방식 + 활동 지역 및 위치)
+    // 팀원 공고 15.0%
+    // 팀 소개 15.0%
+    // 팀원 소개 15.0%
+    // 연혁 2.5%
+    // 첨부 2.5%
 
-    public void updateIsTeamProfileTeamBuildingField(final Boolean isTeamTeamBuildingField) {
-        this.isTeamProfileTeamBuildingField = isTeamTeamBuildingField;
-        // 프로그레스 처리 로직 추가 필요
-    }
+    // 디폴트 항목 관리 메서드
+    public void addTeamPerfectionDefault() {this.teamProfileCompletion += 25.0;}
+    public void cancelTeamPerfectionDefault() {this.teamProfileCompletion -= 25.0;}
 
-    public void updateIsActivityMethod(final Boolean isActivityMethod) {
-        this.isActivityMethod = isActivityMethod;
-        if (this.isActivityMethod && this.isActivityRegion) {
-            this.isActivity = true;
-        }
-        // 프로그레스 처리 로직 추가 필요
-    }
+    public void addTeamPerfectionFifteen() {this.teamProfileCompletion += 15.0;}
+    public void cancelTeamPerfectionFifteen() {this.teamProfileCompletion -= 15.0;}
 
-    public void updateIsActivityRegion(final Boolean isActivityRegion) {
-        this.isActivityRegion = isActivityRegion;
-        // 2개 모두 참인 경우에 isActivity 참으로 변경
-        if (this.isActivityMethod && this.isActivityRegion) {
-            this.isActivity = true;
-        }
-    }
+    public void addTeamPerfectionTwoPointFive() {this.teamProfileCompletion += 2.5;}
+    public void cancelTeamPerfectionTwoPointFive() {this.teamProfileCompletion -= 2.5;}
 
-    public void updateIsTeamMiniProfile(final Boolean isTeamMiniProfile) {
+    // 4.1. 미니 프로필 업데이트
+    public void updateIsTeamMiniProfile(final boolean isTeamMiniProfile) {
         this.isTeamMiniProfile = isTeamMiniProfile;
+    }
+
+
+    // 4.4. 희망 팀빌딩 분야 업데이트
+    public void updateIsTeamProfileTeamBuildingField(final boolean isTeamTeamBuildingField) {
+        this.isTeamProfileTeamBuildingField = isTeamTeamBuildingField;
+        if (isTeamTeamBuildingField) {
+            addTeamPerfectionDefault();
+        } else {
+            cancelTeamPerfectionDefault();
+        }
+    }
+
+    // 4.5. 팀원 공고 업데이트
+    public void updateIsTeamMemberAnnouncement(final boolean isTeamMemberAnnouncement) {
+        this.isTeamMemberAnnouncement = isTeamMemberAnnouncement;
+        if (isTeamMemberAnnouncement) {
+            addTeamPerfectionFifteen();
+        } else {
+            cancelTeamPerfectionFifteen();
+        }
+    }
+
+    // 4.6. 활동 방식 + 활동 지역 및 위치 업데이트
+    public void updateIsActivity(final boolean isActivityMethod, final boolean isActivityRegion) {
+        if (this.isActivity != (isActivityMethod && isActivityRegion)) {
+            this.isActivity = !this.isActivity;
+            if (this.isActivity) {
+                addTeamPerfectionDefault();
+            } else {
+                cancelTeamPerfectionDefault();
+            }
+        }
+    }
+
+    // 4.6.1 활동 방식 업데이트
+    public void updateIsActivityMethod(final boolean isActivityMethod) {
+        this.isActivityMethod = isActivityMethod;
+        updateIsActivity(isActivityMethod, this.isActivityRegion);
+    }
+
+    // 4.6.2. 활동 지역 및 위치 업데이트
+    public void updateIsActivityRegion(final boolean isActivityRegion) {
+        this.isActivityRegion = isActivityRegion;
+        updateIsActivity(this.isActivityMethod, isActivityRegion);
+    }
+
+    // 4.7. 팀 소개 업데이트
+    public void updateIsTeamIntroduction(final boolean isTeamIntroduction) {
+        this.isTeamIntroduction = isTeamIntroduction;
+    }
+
+    // 4.8. 팀원 소개 업데이트
+    public void updateIsTeamMemberIntroduction(final boolean isTeamMemberIntroduction) {
+        this.isTeamMemberIntroduction = isTeamMemberIntroduction;
+    }
+
+    // 4.9. 연혁 업데이트
+    public void updateIsHistory(final boolean isHistory) {
+        this.isHistory = isHistory;
+    }
+
+    // 4.10. 팀 첨부 업데이트
+    private void updateIsTeamAttach(final boolean isTeamAttachUrl, final boolean isTeamAttachFile) {
+        if (this.isTeamAttach != (isTeamAttachUrl || isTeamAttachFile)) {
+            this.isTeamAttach = !this.isTeamAttach;
+            if (this.isTeamAttach) {
+                addTeamPerfectionTwoPointFive();
+            } else {
+                cancelTeamPerfectionTwoPointFive();
+            }
+        }
+    }
+
+    // 4.10.1. 팀 첨부 링크 업데이트
+    public void updateIsTeamAttachUrl(final boolean isTeamAttachUrl) {
+        this.isTeamAttachUrl = isTeamAttachUrl;
+        updateIsTeamAttach(isTeamAttachUrl, this.isTeamAttachFile);
+    }
+
+    // 4.10.2. 팀 첨부 파일 업데이트
+    public void updateIsTeamAttachFile(final boolean isTeamAttachFile) {
+        this.isTeamAttachFile = isTeamAttachFile;
+        updateIsTeamAttach(this.isTeamAttachUrl, isTeamAttachFile);
     }
 
     public boolean getIsTeamProfileTeamBuildingField() {
@@ -167,22 +250,23 @@ public class TeamProfile {
     public boolean getIsTeamMiniProfile() {return isTeamMiniProfile;}
 
 
-    // 팀 소개 업데이트 메서드
+    // 4.7. 팀 소개 텍스트 내용 업데이트
     public void updateTeamIntroduction(final String teamIntroduction) {
         if (!Objects.equals(teamIntroduction, "")) {        // 하나라도 텍스트가 들어오는 경우
             if (this.teamIntroduction != null) {
                 this.teamIntroduction = teamIntroduction;
             } else {
                 this.teamIntroduction = teamIntroduction;
-                addPerfectionEleven();
-                updateMemberTeamProfileTypeByCompletion();
                 updateIsTeamIntroduction(true);
+                addTeamPerfectionFifteen();
+                updateMemberTeamProfileTypeByCompletion();
             }
         } else {                                                // 삭제 요청으로 간주
             this.teamIntroduction = null;
-            cancelPerfectionEleven();
-            updateMemberTeamProfileTypeByCompletion();
             updateIsTeamIntroduction(false);
+            cancelTeamPerfectionFifteen();
+            updateMemberTeamProfileTypeByCompletion();
+
         }
     }
 
@@ -212,31 +296,10 @@ public class TeamProfile {
         }
     }
 
-    // 팀 소개 기입 여부
-    public void updateIsTeamIntroduction(final Boolean isTeamIntroduction) {
-        this.isTeamIntroduction = isTeamIntroduction;
-    }
-
-    // 팀원 소개 기입 여부
-    public void updateIsTeamMemberIntroduction(final Boolean isTeamMemberIntroduction) {
-        this.isTeamMemberIntroduction = isTeamMemberIntroduction;
-    }
-
-    public void updateIsHistory(final Boolean isHistory) {
-        this.isHistory = isHistory;
-    }
-
-    public void updateIsTeamAttachUrl(final Boolean isTeamAttachUrl) {
-        this.isTeamAttachUrl = isTeamAttachUrl;
-    }
-
-    public void updateIsTeamAttachFile(final Boolean isTeamAttachFile) {
-        this.isTeamAttachFile = isTeamAttachFile;
-    }
 
 
-    private void addPerfectionEleven() {this.teamProfileCompletion += 11.0;}
-    private void cancelPerfectionEleven() {this.teamProfileCompletion -= 11.0;}
+
+
 
 
 

@@ -2,13 +2,13 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.profile.domain.Antecedents;
+import liaison.linkit.profile.domain.antecedents.Antecedents;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.AntecedentsRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsUpdateRequest;
-import liaison.linkit.profile.dto.response.AntecedentsResponse;
+import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

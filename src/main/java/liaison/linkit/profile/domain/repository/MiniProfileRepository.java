@@ -1,6 +1,6 @@
 package liaison.linkit.profile.domain.repository;
 
-import liaison.linkit.profile.domain.MiniProfile;
+import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

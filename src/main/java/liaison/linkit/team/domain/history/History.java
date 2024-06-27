@@ -1,6 +1,7 @@
-package liaison.linkit.team.domain;
+package liaison.linkit.team.domain.history;
 
 import jakarta.persistence.*;
+import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.dto.request.HistoryUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

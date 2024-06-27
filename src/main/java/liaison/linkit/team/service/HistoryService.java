@@ -2,7 +2,7 @@ package liaison.linkit.team.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.team.domain.History;
+import liaison.linkit.team.domain.history.History;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.repository.HistoryRepository;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;

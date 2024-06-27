@@ -1,6 +1,6 @@
 package liaison.linkit.team.domain.repository;
 
-import liaison.linkit.team.domain.History;
+import liaison.linkit.team.domain.history.History;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

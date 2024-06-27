@@ -6,7 +6,7 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdateRequest;
-import liaison.linkit.profile.dto.response.ProfileTeamBuildingFieldResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.ProfileTeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

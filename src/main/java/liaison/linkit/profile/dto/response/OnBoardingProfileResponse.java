@@ -1,5 +1,10 @@
 package liaison.linkit.profile.dto.response;
 
+import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
+import liaison.linkit.profile.dto.response.education.EducationResponse;
+import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

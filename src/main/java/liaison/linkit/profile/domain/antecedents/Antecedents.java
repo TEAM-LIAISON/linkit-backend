@@ -1,6 +1,7 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.antecedents;
 
 import jakarta.persistence.*;
+import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

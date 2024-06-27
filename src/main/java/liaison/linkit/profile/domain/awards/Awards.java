@@ -1,7 +1,8 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.awards;
 
 import jakarta.persistence.*;
-import liaison.linkit.profile.dto.request.AwardsUpdateRequest;
+import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.dto.request.awards.AwardsUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

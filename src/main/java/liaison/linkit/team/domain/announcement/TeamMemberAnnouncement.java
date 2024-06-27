@@ -29,10 +29,6 @@ public class TeamMemberAnnouncement {
     @Column(name = "main_business")
     private String mainBusiness;
 
-    // 우대 사항
-    @Column(name = "preferential_treatment")
-    private String preferentialTreatment;
-
     // 지원 절차
     @Column(name = "application_process")
     private String applicationProcess;

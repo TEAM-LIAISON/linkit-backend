@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.response;
+package liaison.linkit.profile.dto.response.skill;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -2,12 +2,12 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.profile.domain.Awards;
+import liaison.linkit.profile.domain.awards.Awards;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.AwardsRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.dto.request.AwardsCreateRequest;
-import liaison.linkit.profile.dto.response.AwardsResponse;
+import liaison.linkit.profile.dto.request.awards.AwardsCreateRequest;
+import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

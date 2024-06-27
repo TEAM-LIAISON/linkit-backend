@@ -6,7 +6,7 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileCreateRequest;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
-import liaison.linkit.profile.dto.response.MiniProfileResponse;
+import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.service.MiniProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

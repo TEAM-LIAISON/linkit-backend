@@ -1,6 +1,6 @@
-package liaison.linkit.profile.dto.response;
+package liaison.linkit.profile.dto.response.antecedents;
 
-import liaison.linkit.profile.domain.Antecedents;
+import liaison.linkit.profile.domain.antecedents.Antecedents;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

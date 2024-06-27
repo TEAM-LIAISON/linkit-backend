@@ -1,6 +1,6 @@
 package liaison.linkit.profile.domain.repository;
 
-import liaison.linkit.profile.domain.Antecedents;
+import liaison.linkit.profile.domain.antecedents.Antecedents;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

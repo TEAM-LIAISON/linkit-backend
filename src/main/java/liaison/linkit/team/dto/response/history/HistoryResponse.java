@@ -1,6 +1,6 @@
 package liaison.linkit.team.dto.response.history;
 
-import liaison.linkit.team.domain.History;
+import liaison.linkit.team.domain.history.History;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

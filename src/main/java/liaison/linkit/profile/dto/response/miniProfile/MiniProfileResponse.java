@@ -1,6 +1,6 @@
-package liaison.linkit.profile.dto.response;
+package liaison.linkit.profile.dto.response.miniProfile;
 
-import liaison.linkit.profile.domain.MiniProfile;
+import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
