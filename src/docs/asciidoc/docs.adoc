@@ -7,7 +7,6 @@
 
 == 1.2 로그인
 === 1.2.1 간편로그인 [각 플랫폼 동일]
-=== [POST /login/:provider]
 ==== 요청
 include::{snippets}/login-controller-test/login/http-request.adoc[]
 include::{snippets}/login-controller-test/login/path-parameters.adoc[]
@@ -17,8 +16,6 @@ include::{snippets}/login-controller-test/login/http-response.adoc[]
 include::{snippets}/login-controller-test/login/response-fields.adoc[]
 
 === (access-token 만료 시) 토큰 재발급
-=== [POST /token]
-
 ==== 요청
 include::{snippets}/login-controller-test/extend-login/http-request.adoc[]
 요청 쿠키
@@ -30,7 +27,6 @@ include::{snippets}/login-controller-test/extend-login/response-fields.adoc[]
 
 == 1.4. 정보 기입
 === 1.4.1. 개인정보 기입 [초대코드 구현 X]
-=== [POST /members/basic-inform]
 ==== 요청
 include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
 include::{snippets}/member-controller-test/create-member-basic-inform/request-fields.adoc[]
@@ -44,7 +40,6 @@ include::{snippets}/member-controller-test/create-member-basic-inform/http-respo
 
 == 1.5. 내 이력서 온보딩 가이드 기입
 === 1.5.1. 개인/팀 나누기 (1/3) - 내 이력서 등록하기 버튼
-=== [GET /profile/onBoarding]
 ==== 요청
 include::{snippets}/profile-controller-test/get-on-boarding-profile/http-request.adoc[]
 요청 헤더
@@ -57,7 +52,6 @@ include::{snippets}/profile-controller-test/get-on-boarding-profile/http-respons
 include::{snippets}/profile-controller-test/get-on-boarding-profile/response-fields.adoc[]
 
 === 1.5.2. 내 이력서 - 희망 분야 생성
-=== [POST /profile_team_building_field]
 ==== 요청
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-fields.adoc[]
@@ -67,7 +61,6 @@ include::{snippets}/profile-team-building-field-controller-test/create-profile-t
 include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-cookies.adoc[]
 
 === 1.5.2. 내 이력서 - 활동 지역 생성
-=== [POST /profile_region]
 ==== 요청
 include::{snippets}/profile-region-controller-test/create-profile-region/http-request.adoc[]
 include::{snippets}/profile-region-controller-test/create-profile-region/request-fields.adoc[]
@@ -77,14 +70,12 @@ include::{snippets}/profile-region-controller-test/create-profile-region/request
 include::{snippets}/profile-region-controller-test/create-profile-region/request-cookies.adoc[]
 
 === 1.5.2. 내 이력서 - 역할 및 기술 생성
-===  [POST /profile_skill]
 ==== 요청
 include::{snippets}/profile-skill-controller-test/create-profile-skill/http-request.adoc[]
 include::{snippets}/profile-skill-controller-test/create-profile-skill/request-fields.adoc[]
 
 
 === 1.5.2. 내 이력서 - 학력 생성
-=== [POST /education]
 ==== 요청
 include::{snippets}/education-controller-test/create-education/http-request.adoc[]
 include::{snippets}/education-controller-test/create-education/request-fields.adoc[]
@@ -97,19 +88,16 @@ include::{snippets}/education-controller-test/create-education/request-cookies.a
 include::{snippets}/education-controller-test/create-education/response-body.adoc[]
 
 === 1.5.2. 내 이력서 - 학력 수정
-=== [PUT /education/{educationId}]
 ==== 요청
 include::{snippets}/education-controller-test/update-education/http-request.adoc[]
 include::{snippets}/education-controller-test/update-education/path-parameters.adoc[]
 include::{snippets}/education-controller-test/update-education/request-fields.adoc[]
 
 === 1.5.2. 내 이력서 - 학력 삭제
-=== [DELETE /education/{educationId}]
 include::{snippets}/education-controller-test/delete-education/http-request.adoc[]
 include::{snippets}/education-controller-test/delete-education/path-parameters.adoc[]
 
 === 1.5.2. 내 이력서 - 이력 생성
-=== [POST /antecedents]
 ==== 요청
 include::{snippets}/antecedents-controller-test/create-antecedents/http-request.adoc[]
 include::{snippets}/antecedents-controller-test/create-antecedents/request-fields.adoc[]
@@ -122,7 +110,6 @@ include::{snippets}/antecedents-controller-test/create-antecedents/request-cooki
 include::{snippets}/antecedents-controller-test/create-antecedents/response-body.adoc[]
 
 === 1.5.2. 내 이력서 - 이력 수정
-=== [PUT /antecedents/{antecedentsId}]
 ==== 요청
 include::{snippets}/antecedents-controller-test/update-antecedents/http-request.adoc[]
 include::{snippets}/antecedents-controller-test/update-antecedents/path-parameters.adoc[]
@@ -139,7 +126,6 @@ include::{snippets}/antecedents-controller-test/update-antecedents/response-fiel
 
 
 === 1.5.2. 내 이력서 - 이력 삭제
-=== [DELETE /antecedents/{antecedentsId}]
 include::{snippets}/antecedents-controller-test/delete-antecedents/http-request.adoc[]
 include::{snippets}/antecedents-controller-test/delete-antecedents/path-parameters.adoc[]
 요청 헤더
@@ -149,7 +135,6 @@ include::{snippets}/antecedents-controller-test/delete-antecedents/request-cooki
 
 
 === 1.5.3. 내 이력서 - 미니 프로필 생성
-=== [POST /mini-profile]
 ==== 요청
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-parts.adoc[]
@@ -157,7 +142,6 @@ include::{snippets}/mini-profile-controller-test/create-mini-profile/request-par
 
 == 1.5. 팀 소개서 온보딩 가이드 기입
 === 1.5.1. 개인/팀 나누기 (1/3) = 팀 소개서 등록하기 버튼
-=== [GET /team_profile/onBoarding]
 ==== 요청
 include::{snippets}/team-profile-controller-test/get-on-boarding-team-profile/http-request.adoc[]
 
@@ -166,19 +150,16 @@ include::{snippets}/team-profile-controller-test/get-on-boarding-team-profile/ht
 include::{snippets}/team-profile-controller-test/get-on-boarding-team-profile/response-fields.adoc[]
 
 === 1.5.3. 팀 소개서 - 팀빌딩 분야 및 팀 기본 정보 생성
-=== [POST /team_profile/field/basic-team]
 ==== 요청
 include::{snippets}/team-profile-controller-test/post-on-boarding-field-team-inform/http-request.adoc[]
 include::{snippets}/team-profile-controller-test/post-on-boarding-field-team-inform/request-fields.adoc[]
 
 === 1.5.3. 팀 소개서 - 활동방식 및 활동지역 생성
-=== [POST /activity-method]
 ==== 요청
 include::{snippets}/activity-controller-test/post-activity/http-request.adoc[]
 include::{snippets}/activity-controller-test/post-activity/request-fields.adoc[]
 
 === 1.5.3. 팀 소개서 - 팀 미니 프로필 생성
-=== [POST /team/mini-profile]
 ==== 요청
 include::{snippets}/team-mini-profile-controller-test/create-team-mini-profile/http-request.adoc[]
 include::{snippets}/team-mini-profile-controller-test/create-team-mini-profile/request-parts.adoc[]
@@ -186,8 +167,7 @@ include::{snippets}/team-mini-profile-controller-test/create-team-mini-profile/r
 
 == 회원가입 및 로그인 API
 
-=== 로그아웃 (DELETE /logout)
-
+=== 로그아웃
 ==== 요청
 include::{snippets}/login-controller-test/logout/http-request.adoc[]
 요청 헤더
@@ -198,8 +178,7 @@ include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
 ==== 응답
 include::{snippets}/login-controller-test/logout/http-response.adoc[]
 
-=== 회원 탈퇴 (DELETE /account)
-
+=== 회원 탈퇴
 ==== 요청
 include::{snippets}/login-controller-test/delete-account/http-request.adoc[]
 요청 헤더
@@ -212,8 +191,7 @@ include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 
 == 멤버 API
 
-=== 멤버 기본 정보 조회 (GET /members/basic-inform)
-
+=== 멤버 기본 정보 조회
 ==== 요청
 include::{snippets}/member-controller-test/get-member-basic-inform/http-request.adoc[]
 요청 헤더
@@ -225,12 +203,8 @@ include::{snippets}/member-controller-test/get-member-basic-inform/request-cooki
 include::{snippets}/member-controller-test/get-member-basic-inform/http-response.adoc[]
 include::{snippets}/member-controller-test/get-member-basic-inform/response-fields.adoc[]
 
-
-
-
 == 3. 내 이력서
 === 내 이력서 전체 조회
-=== [GET /profile]
 ==== 요청
 include::{snippets}/profile-controller-test/get-profile/http-request.adoc[]
 ==== 응답
@@ -238,63 +212,50 @@ include::{snippets}/profile-controller-test/get-profile/http-response.adoc[]
 include::{snippets}/profile-controller-test/get-profile/response-fields.adoc[]
 
 === 내 이력서 - 자기소개 생성
-=== [POST /profile/introduction]
 ==== 요청
 include::{snippets}/profile-controller-test/create-profile-introduction/http-request.adoc[]
 include::{snippets}/profile-controller-test/create-profile-introduction/request-fields.adoc[]
 
 === 내 이력서 - 자기소개 삭제
-=== [DELETE /profile/introduction]
 ==== 요청
 include::{snippets}/profile-controller-test/delete-profile-introduction/http-request.adoc[]
 
 === 내 이력서 - 보유기술 생성 (온보딩 API 동일)
-=== [POST /profile_skill]
 
 === 내 이력서 - 희망 팀빌딩 분야 생성 (온보딩 API 동일)
-=== [POST /profile_team_building_field]
 
 === 내 이력서 - 활동 지역 및 위치 생성 (온보딩 API 동일)
-=== [POST /profile_region]
 
 === 내 이력서 - 이력 생성 (온보딩 API 동일)
-=== [POST /antecedents]
 
 === 내 이력서 - 학력 생성 (온보딩 API 동일)
-=== [POST /education]
 
 === 내 이력서 - 수상 생성
-=== [POST /awards]
 include::{snippets}/awards-controller-test/create-awards/http-request.adoc[]
 
 === 내 이력서 - 첨부 URL 생성
-=== [POST /attach/url]
 ==== 요청
 include::{snippets}/attach-controller-test/create-attach-url/http-request.adoc[]
 include::{snippets}/attach-controller-test/create-attach-url/request-fields.adoc[]
 
 === 내 이력서 - 첨부 URL 수정
-=== [PUT /attach/url/:attachUrlId]
 ==== 요청
 include::{snippets}/attach-controller-test/update-attach-url/http-request.adoc[]
 include::{snippets}/attach-controller-test/update-attach-url/path-parameters.adoc[]
 include::{snippets}/attach-controller-test/update-attach-url/request-fields.adoc[]
 
 === 내 이력서 - 첨부 URL 삭제
-=== [DELETE /attach/url/:attachUrlId]
 ==== 요청
 include::{snippets}/attach-controller-test/delete-attach-url/http-request.adoc[]
 include::{snippets}/attach-controller-test/delete-attach-url/path-parameters.adoc[]
 
 === 내 이력서 - 첨부 File 생성
-=== [POST /attach/file]
 ==== 요청
 include::{snippets}/attach-controller-test/create-attach-file/http-request.adoc[]
 include::{snippets}/attach-controller-test/create-attach-file/request-parts.adoc[]
 
 == 4. 팀 소개서
 === 팀 소개서 전체 조회
-=== [GET /team_profile]
 ==== 요청
 include::{snippets}/team-profile-controller-test/get-team-profile/http-request.adoc[]
 ==== 응답
@@ -302,31 +263,25 @@ include::{snippets}/team-profile-controller-test/get-team-profile/http-response.
 include::{snippets}/team-profile-controller-test/get-team-profile/response-fields.adoc[]
 
 === 팀 소개서 - 팀 희망 팀빌딩 분야 생성
-=== [POST /team_profile_team_building_field]
 include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/http-request.adoc[]
 include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/request-fields.adoc[]
 
 === 팀 소개서 - 활동 방식, 활동 지역 및 위치 생성 (온보딩 API 동일)
-=== [POST /activity-method]
 
 === 팀 소개서 - 팀 소개 생성/수정/삭제
-=== [POST /team_profile/introduction]
 ==== 요청
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/http-request.adoc[]
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/request-fields.adoc[]
 
 === 팀 소개서 - 팀원 소개 생성
-=== [POST /team/team_member]
 include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/http-request.adoc[]
 include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/request-fields.adoc[]
 
 === 팀 소개서 - 연혁 생성
-=== [POST /team/history]
 include::{snippets}/history-controller-test/create-history/http-request.adoc[]
 include::{snippets}/history-controller-test/create-history/request-fields.adoc[]
 
 === 팀 소개서 - 팀 첨부 링크 생성/수정
-=== [POST /team/attach/url]
 ==== 요청
 include::{snippets}/team-attach-controller-test/create-team-attach-url/http-request.adoc[]
 include::{snippets}/team-attach-controller-test/create-team-attach-url/request-fields.adoc[]
