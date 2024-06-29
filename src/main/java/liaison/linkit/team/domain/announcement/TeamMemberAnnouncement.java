@@ -25,6 +25,8 @@ public class TeamMemberAnnouncement {
     @JoinColumn(name = "team_profile_id")
     private TeamProfile teamProfile;
 
+
+
     // 주요 업무
     @Column(name = "main_business")
     private String mainBusiness;

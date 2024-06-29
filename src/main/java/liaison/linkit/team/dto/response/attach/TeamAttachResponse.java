@@ -9,20 +9,20 @@ import java.util.List;
 @AllArgsConstructor
 public class TeamAttachResponse {
     private List<TeamAttachUrlResponse> teamAttachUrlResponseList;
-    private List<TeamAttachFileResponse> teamAttachFileResponseList;
+//    private List<TeamAttachFileResponse> teamAttachFileResponseList;
 
     public TeamAttachResponse() {
         this.teamAttachUrlResponseList = null;
-        this.teamAttachFileResponseList = null;
+//        this.teamAttachFileResponseList = null;
     }
 
     public static TeamAttachResponse getTeamAttachResponse(
-            final List<TeamAttachUrlResponse> teamAttachUrlResponses,
-            final List<TeamAttachFileResponse> teamAttachFileResponses
+            final List<TeamAttachUrlResponse> teamAttachUrlResponses
+//            final List<TeamAttachFileResponse> teamAttachFileResponses
     ) {
         return new TeamAttachResponse(
-                teamAttachUrlResponses,
-                teamAttachFileResponses
+                teamAttachUrlResponses
+//                teamAttachFileResponses
         );
     }
 }

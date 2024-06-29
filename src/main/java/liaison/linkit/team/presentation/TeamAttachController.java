@@ -9,8 +9,10 @@ import liaison.linkit.team.service.TeamAttachService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -33,13 +35,13 @@ public class TeamAttachController {
     }
 
     // 외부 링크 파일 1개(단일) 생성 요청
-    @PostMapping("/file")
-    @MemberOnly
-    public ResponseEntity<Void> createTeamAttachFile(
-            @Auth final Accessor accessor,
-            @RequestPart MultipartFile teamAttachFile
-    ) {
-        teamAttachService.saveFile(accessor.getMemberId(), teamAttachFile);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+//    @PostMapping("/file")
+//    @MemberOnly
+//    public ResponseEntity<Void> createTeamAttachFile(
+//            @Auth final Accessor accessor,
+//            @RequestPart MultipartFile teamAttachFile
+//    ) {
+//        teamAttachService.saveFile(accessor.getMemberId(), teamAttachFile);
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
 }

@@ -318,4 +318,10 @@ public class Profile {
 
     // 3.4. 자기소개 초기화 및 삭제 메서드
     public void deleteIntroduction() {this.introduction = null;}
+
+    public boolean getExistDefaultPrivateProfile() {
+        if (this.isProfileTeamBuildingField && this.isProfileRegion && this.isAntecedents && this.isEducation) {
+            return true;
+        } else return false;
+    }
 }

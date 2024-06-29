@@ -1,6 +1,6 @@
-package liaison.linkit.global.config.csv.major;
+package liaison.linkit.global.config.csv.jobRole;
 
-import liaison.linkit.profile.dto.csv.MajorCsvData;
+import liaison.linkit.profile.dto.csv.JobRoleCsvData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -16,32 +16,32 @@ import org.springframework.core.io.ClassPathResource;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class CsvMajorReader {
+public class CsvJobRoleReader {
 
-    @Value("${major.csv-path}")
-    private String majorCsv;
+    @Value("${jobRole.csv-path}")
+    private String jobRoleCsv;
 
-    @Bean(name = "majorCsvReader")
-    public FlatFileItemReader<MajorCsvData> csvMajorReader() {
+    @Bean(name = "jobRoleCsvReader")
+    public FlatFileItemReader<JobRoleCsvData> csvJobRoleReader() {
         // 파일 경로 지정 및 인코딩
-        FlatFileItemReader<MajorCsvData> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(new ClassPathResource(majorCsv));
+        FlatFileItemReader<JobRoleCsvData> flatFileItemReader = new FlatFileItemReader<>();
+        flatFileItemReader.setResource(new ClassPathResource(jobRoleCsv));
         flatFileItemReader.setEncoding("UTF-8");
 
         // 데이터 내부에 개행이 있으면 꼭! 추가해주세요
         flatFileItemReader.setRecordSeparatorPolicy(new DefaultRecordSeparatorPolicy());
 
         // 읽어온 파일을 한 줄씩 읽기
-        DefaultLineMapper<MajorCsvData> defaultLineMapper = new DefaultLineMapper<>();
+        DefaultLineMapper<JobRoleCsvData> defaultLineMapper = new DefaultLineMapper<>();
         // 따로 설정하지 않으면 기본값은 ","
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
 
-        delimitedLineTokenizer.setNames(MajorCsvData.getFieldNames().toArray(String[]::new));
+        delimitedLineTokenizer.setNames(JobRoleCsvData.getFieldNames().toArray(String[]::new));
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
         // 매칭할 class 타입 지정(필드 지정)
-        BeanWrapperFieldSetMapper<MajorCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        beanWrapperFieldSetMapper.setTargetType(MajorCsvData.class);
+        BeanWrapperFieldSetMapper<JobRoleCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        beanWrapperFieldSetMapper.setTargetType(JobRoleCsvData.class);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
         flatFileItemReader.setLineMapper(defaultLineMapper);

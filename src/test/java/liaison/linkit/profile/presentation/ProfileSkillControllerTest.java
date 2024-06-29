@@ -70,9 +70,8 @@ public class ProfileSkillControllerTest extends ControllerTest {
     @Test
     void createProfileSkill() throws Exception {
         // given
-        List<String> roleFields = Arrays.asList("SW 개발자", "SW 개발자");
         List<String> skillNames = Arrays.asList("Java", "React");
-        final ProfileSkillCreateRequest profileSkillCreateRequest = ProfileSkillCreateRequest.of(roleFields, skillNames);
+        final ProfileSkillCreateRequest profileSkillCreateRequest = ProfileSkillCreateRequest.of(skillNames);
 
         // when
         final ResultActions resultActions = performPostRequest(profileSkillCreateRequest);

@@ -82,43 +82,43 @@ class MatchingControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("내 이력서에 매칭 요청을 보낼 수 있다.")
-    @Test
-    void createProfileMatching() throws Exception {
-        // given
-        final MatchingCreateRequest matchingCreateRequest = new MatchingCreateRequest(
-                "개발자를 찾고 계신가요?"
-        );
-
-        // when
-        final ResultActions resultActions = performPostProfileMatchingRequest(1, matchingCreateRequest);
-
-        // then
-        resultActions.andExpect(status().isCreated())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                pathParameters(
-                                        parameterWithName("profileId")
-                                                .description("내 이력서 ID")
-                                ),
-                                requestFields(
-                                        fieldWithPath("requestMessage")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 메시지")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
+//    @DisplayName("내 이력서에 매칭 요청을 보낼 수 있다.")
+//    @Test
+//    void createProfileMatching() throws Exception {
+//        // given
+//        final MatchingCreateRequest matchingCreateRequest = new MatchingCreateRequest(
+//                "개발자를 찾고 계신가요?"
+//        );
+//
+//        // when
+//        final ResultActions resultActions = performPostProfileMatchingRequest(1, matchingCreateRequest);
+//
+//        // then
+//        resultActions.andExpect(status().isCreated())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                pathParameters(
+//                                        parameterWithName("profileId")
+//                                                .description("내 이력서 ID")
+//                                ),
+//                                requestFields(
+//                                        fieldWithPath("requestMessage")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("요청 메시지")
+//                                                .attributes(field("constraint", "문자열"))
+//                                )
+//                        )
+//                );
+//    }
 
     @DisplayName("내 이력서에 매칭 요청을 보낼 수 있다.")
     @Test

@@ -297,10 +297,9 @@ public class TeamProfile {
     }
 
 
-
-
-
-
-
-
+    public boolean getExistDefaultTeamProfile() {
+        if (this.isTeamProfileTeamBuildingField && this.isActivity) {
+            return true;
+        } else return false;
+    }
 }

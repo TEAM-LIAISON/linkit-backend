@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,39 +60,32 @@ public class ProfileSkillService {
 
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
-    public void save(final Long memberId, final ProfileSkillCreateRequest profileSkillCreateRequest) {
+    public void save(final Long memberId, final ProfileSkillCreateRequest createRequest) {
         final Profile profile = getProfile(memberId);
 
-        // 마찬가지로 존재하는 이력이 있는 항목이라면 삭제를 하고 저장한다.
+        // 이미 저장된 이력이 존재하는 프로필의 경우 먼저 삭제한다.
         if (profileSkillRepository.existsByProfileId(profile.getId())) {
             profileSkillRepository.deleteAllByProfileId(profile.getId());
             profile.updateIsProfileSkill(false);
             profile.updateMemberProfileTypeByCompletion();
         }
 
-        List<String> roleFields = profileSkillCreateRequest.getRoleFields();
-        List<String> skillNames = profileSkillCreateRequest.getSkillNames();
+        final List<Skill> skills = skillRepository
+                .findSkillNamesBySkillNames(createRequest.getSkillNames());
 
-        // Ensure that the lists have the same length to prevent index out of bounds exception
-        if (roleFields.size() != skillNames.size()) {
-            throw new IllegalArgumentException("The number of roles and skills must be the same.");
-        }
+        // Request DTO -> 각 문자열을 Skill 테이블에서 찾아서 가져옴
+        final List<ProfileSkill> profileSkills = skills.stream()
+                .map(skill -> new ProfileSkill(null, profile, skill))
+                .toList();
 
-        List<ProfileSkill> profileSkills = new ArrayList<>();
-        for (int i = 0; i < roleFields.size(); i++) {
-            String roleField = roleFields.get(i);
-            String skillName = skillNames.get(i);
-
-            Skill skill = skillRepository.findByRoleFieldAndSkillName(roleField, skillName);
-
-            ProfileSkill profileSkill = new ProfileSkill(null, profile, skill, roleField, skillName);
-            profileSkills.add(profileSkill);
-        }
-
+        // profileSkillRepository 모두 저장
         profileSkillRepository.saveAll(profileSkills);
+
+        // 프로그레스바 처리 비즈니스 로직
         profile.updateIsProfileSkill(true);
         profile.updateMemberProfileTypeByCompletion();
     }
+
 
     @Transactional(readOnly = true)
     public ProfileSkillResponse getAllProfileSkills(final Long memberId) {
@@ -104,11 +96,6 @@ public class ProfileSkillService {
 
         log.info("profileSkills={}", profileSkills);
 
-// 역할 필드와 기술 이름을 각각의 리스트로 생성
-        List<String> roleFields = profileSkills.stream()
-                .map(profileSkill -> profileSkill.getRoleField()) // 가정: ProfileSkill에 roleField라는 필드가 있다.
-                .collect(Collectors.toList());
-
         List<String> skillNames = profileSkills.stream()
                 .map(profileSkill -> {
                     Skill skill = skillRepository.findById(profileSkill.getSkill().getId())
@@ -116,7 +103,7 @@ public class ProfileSkillService {
                     return skill.getSkillName();
                 }).collect(Collectors.toList());
 
-        return ProfileSkillResponse.of(roleFields, skillNames);
+        return ProfileSkillResponse.of(skillNames);
     }
 
 

@@ -12,7 +12,7 @@ import liaison.linkit.team.dto.response.activity.ActivityMethodResponse;
 import liaison.linkit.team.dto.response.activity.ActivityRegionResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
-import liaison.linkit.team.dto.response.attach.TeamAttachFileResponse;
+//import liaison.linkit.team.dto.response.attach.TeamAttachFileResponse;
 import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
 import liaison.linkit.team.dto.response.attach.TeamAttachUrlResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
@@ -262,17 +262,17 @@ public class TeamProfileControllerTest extends ControllerTest {
                 "https://www.notion.so/ko-kr"
         );
 
-        final TeamAttachFileResponse firstAttachFileResponse = new TeamAttachFileResponse(
-                1L,
-                "A4+-=1.pdf",
-                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
-        );
+//        final TeamAttachFileResponse firstAttachFileResponse = new TeamAttachFileResponse(
+//                1L,
+//                "A4+-=1.pdf",
+//                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
+//        );
 
         final List<TeamAttachUrlResponse> teamAttachUrlResponseList = Arrays.asList(firstTeamAttachUrlResponse, secondTeamAttachUrlResponse);
-        final List<TeamAttachFileResponse> teamAttachFileResponseList = Arrays.asList(firstAttachFileResponse);
+//        final List<TeamAttachFileResponse> teamAttachFileResponseList = Arrays.asList(firstAttachFileResponse);
         final TeamAttachResponse teamAttachResponse = new TeamAttachResponse(
-                teamAttachUrlResponseList,
-                teamAttachFileResponseList
+                teamAttachUrlResponseList
+//                teamAttachFileResponseList
         );
         given(teamAttachService.getTeamAttachList(1L)).willReturn(teamAttachResponse);
 
@@ -377,10 +377,10 @@ public class TeamProfileControllerTest extends ControllerTest {
                                         subsectionWithPath("teamAttachResponse").type(JsonFieldType.OBJECT).description("팀 첨부 응답 객체"),
                                         fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL 객체 ID"),
                                         fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].teamAttachUrlName").type(JsonFieldType.STRING).description("팀 첨부 URL 이름"),
-                                        fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].teamAttachUrlPath").type(JsonFieldType.STRING).description("팀 첨부 URL 경로"),
-                                        fieldWithPath("teamAttachResponse.teamAttachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 객체 ID"),
-                                        fieldWithPath("teamAttachResponse.teamAttachFileResponseList[].teamAttachFileName").type(JsonFieldType.STRING).description("팀 첨부 파일 이름"),
-                                        fieldWithPath("teamAttachResponse.teamAttachFileResponseList[].teamAttachFilePath").type(JsonFieldType.STRING).description("팀 첨부 파일 경로")
+                                        fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].teamAttachUrlPath").type(JsonFieldType.STRING).description("팀 첨부 URL 경로")
+//                                        fieldWithPath("teamAttachResponse.teamAttachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 객체 ID"),
+//                                        fieldWithPath("teamAttachResponse.teamAttachFileResponseList[].teamAttachFileName").type(JsonFieldType.STRING).description("팀 첨부 파일 이름"),
+//                                        fieldWithPath("teamAttachResponse.teamAttachFileResponseList[].teamAttachFilePath").type(JsonFieldType.STRING).description("팀 첨부 파일 경로")
                                 )
                         )
                 );
