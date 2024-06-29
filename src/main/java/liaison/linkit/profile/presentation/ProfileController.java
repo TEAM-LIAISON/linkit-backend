@@ -6,14 +6,15 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
-import liaison.linkit.profile.dto.response.*;
+import liaison.linkit.profile.dto.response.MemberNameResponse;
+import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
+import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
-import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
@@ -135,63 +136,6 @@ public class ProfileController {
     }
 
 
-
-    // 내 이력서 온보딩 전체 조회 GET 메서드
-    @GetMapping("/onBoarding")
-    @MemberOnly
-    public ResponseEntity<?> getOnBoardingProfile(@Auth final Accessor accessor) {
-        try {
-            log.info("---온보딩 조회 요청이 들어왔습니다---");
-            profileService.validateProfileByMember(accessor.getMemberId());
-
-            final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse
-                    = profileService.getProfileOnBoardingIsValue(accessor.getMemberId());
-
-            final MiniProfileResponse miniProfileResponse
-                    = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
-            log.info("miniProfileResponse={}", miniProfileResponse);
-
-            final MemberNameResponse memberNameResponse
-                    = getMemberNameResponse(accessor.getMemberId());
-            log.info("memberNameResponse={}", memberNameResponse);
-
-            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
-                    = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
-            log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
-
-            final ProfileSkillResponse profileSkillResponse
-                    = getProfileSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileSkill());
-            log.info("profileSkillResponse={}", profileSkillResponse);
-
-            final ProfileRegionResponse profileRegionResponse
-                    = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
-            log.info("profileRegionResponse={}", profileRegionResponse);
-
-            final List<EducationResponse> educationResponses
-                    = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
-            log.info("educationResponses={}", educationResponses);
-
-            final List<AntecedentsResponse> antecedentsResponses
-                    = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
-            log.info("antecedentsResponses={}", antecedentsResponses);
-
-            final OnBoardingProfileResponse onBoardingProfileResponse = profileService.getOnBoardingProfile(
-                    profileTeamBuildingFieldResponse,
-                    profileSkillResponse,
-                    profileRegionResponse,
-                    educationResponses,
-                    antecedentsResponses,
-                    miniProfileResponse,
-                    memberNameResponse
-            );
-
-            return ResponseEntity.ok().body(onBoardingProfileResponse);
-        } catch (Exception e) {
-            log.error("온보딩 조회 과정에서 예외 발생: {}", e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("온보딩 정보를 불러오는 과정에서 문제가 발생했습니다.");
-        }
-    }
-
     @PostMapping("/introduction")
     @MemberOnly
     public ResponseEntity<Void> createProfileIntroduction(
@@ -223,58 +167,9 @@ public class ProfileController {
         return ResponseEntity.noContent().build();
     }
 
-//    // 마이페이지 컨트롤러
-//    @GetMapping
-//    @MemberOnly
-//    public ResponseEntity<ProfileResponse> getProfile(
-//            @Auth final Accessor accessor
-//    ) {
-//        // 내 이력서의 유효성 판단
-//        profileService.validateProfileByMember(accessor.getMemberId());
-//        // 내 이력서의 미니 프로필의 유효성 판단
-//        miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
-//
-//        // 1. 미니 프로필
-//        final MiniProfileResponse miniProfileResponse = miniProfileService.getPersonalMiniProfile(accessor.getMemberId());
-//
-//        // 2. 프로필 완성도
-//        final CompletionResponse completionResponse = completionService.getCompletion(accessor.getMemberId());
-//
-//        // 3. 자기소개
-//        final ProfileIntroductionResponse profileIntroductionResponse = profileService.getProfileIntroduction(accessor.getMemberId());
-//
-//        // 4. 보유기술
-//        final ProfileSkillResponse profileSkillResponse = profileSkillService.getAllProfileSkills(accessor.getMemberId());
-//
-//        // 5. 희망 팀빌딩 분야
-//        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = profileTeamBuildingFieldService.getAllProfileTeamBuildings(accessor.getMemberId());
-//
-//        // 6. 이력
-//        final List<AntecedentsResponse> antecedentsResponses = antecedentsService.getAllAntecedents(accessor.getMemberId());
-//
-//        // 7. 학력
-//        final List<EducationResponse> educationResponses = educationService.getAllEducations(accessor.getMemberId());
-//
-//        // 8. 수상
-//        final List<AwardsResponse> awardsResponses = awardsService.getAllAwards(accessor.getMemberId());
-//
-//        // 9. 첨부
-//        final AttachResponse attachResponse = attachService.getAttachList(accessor.getMemberId());
-//
-//        final ProfileResponse profileResponse = profileService.getProfile(
-//                miniProfileResponse,
-//                completionResponse,
-//                profileIntroductionResponse,
-//                profileSkillResponse,
-//                profileTeamBuildingFieldResponse,
-//                antecedentsResponses,
-//                educationResponses,
-//                awardsResponses,
-//                attachResponse
-//        );
-//
-//        return ResponseEntity.ok().body(profileResponse);
-//    }
+
+
+
 
     private MiniProfileResponse getMiniProfileResponse(
             final Long memberId,
@@ -393,7 +288,4 @@ public class ProfileController {
             return new AttachResponse();
         }
     }
-
-
-
 }
