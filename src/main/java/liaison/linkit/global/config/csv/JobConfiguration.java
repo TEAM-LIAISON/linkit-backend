@@ -6,6 +6,8 @@ import liaison.linkit.global.config.csv.degree.CsvDegreeReader;
 import liaison.linkit.global.config.csv.degree.CsvDegreeWriter;
 import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorReader;
 import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorWriter;
+import liaison.linkit.global.config.csv.jobRole.CsvJobRoleReader;
+import liaison.linkit.global.config.csv.jobRole.CsvJobRoleWriter;
 import liaison.linkit.global.config.csv.major.CsvMajorReader;
 import liaison.linkit.global.config.csv.major.CsvMajorWriter;
 import liaison.linkit.global.config.csv.memberRole.CsvMemberRoleReader;
@@ -65,6 +67,9 @@ public class JobConfiguration {
     private final CsvActivityMethodTagReader csvActivityMethodTagReader;
     private final CsvActivityMethodTagWriter csvActivityMethodTagWriter;
 
+    private final CsvJobRoleReader csvJobRoleReader;
+    private final CsvJobRoleWriter csvJobRoleWriter;
+
     private final CsvSkillReader csvSkillReader;
     private final CsvSkillWriter csvSkillWriter;
 
@@ -82,6 +87,7 @@ public class JobConfiguration {
                                  Step memberRoleDataLoadStep,
                                  Step industrySectorDataLoadStep,
                                  Step activityMethodTagDataLoadStep,
+                                 Step jobRoleDataLoadStep,
                                  Step skillDataLoadStep,
                                  Step degreeDataLoadStep) {
         return new JobBuilder("linkitInformationLoadJob", jobRepository)
@@ -93,6 +99,7 @@ public class JobConfiguration {
                 .next(memberRoleDataLoadStep)
                 .next(industrySectorDataLoadStep)
                 .next(activityMethodTagDataLoadStep)
+                .next(jobRoleDataLoadStep)
                 .next(skillDataLoadStep)
                 .next(degreeDataLoadStep)
                 .build();
@@ -197,6 +204,19 @@ public class JobConfiguration {
                 .<ActivityMethodTagCsvData, ActivityMethodTagCsvData>chunk(10, platformTransactionManager)
                 .reader(csvActivityMethodTagReader.csvActivityMethodTagReader())
                 .writer(csvActivityMethodTagWriter)
+                .allowStartIfComplete(true)
+                .build();
+    }
+
+    @Bean
+    public Step jobRoleDataLoadStep(
+            JobRepository jobRepository,
+            PlatformTransactionManager platformTransactionManager
+    ) {
+        return new StepBuilder("jobRoleDataLoadStep", jobRepository)
+                .<JobRoleCsvData, JobRoleCsvData>chunk(10, platformTransactionManager)
+                .reader(csvJobRoleReader.csvJobRoleReader())
+                .writer(csvJobRoleWriter)
                 .allowStartIfComplete(true)
                 .build();
     }

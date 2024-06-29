@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Configuration
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class CsvJobReaderWriter implements ItemWriter<JobRoleCsvData> {
+public class CsvJobRoleWriter implements ItemWriter<JobRoleCsvData> {
 
     private final JobRoleRepository jobRoleRepository;
 

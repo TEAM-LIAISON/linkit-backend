@@ -5,14 +5,12 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
-import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.service.AttachService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -46,18 +44,18 @@ public class AttachController {
 //    }
 
     // 외부 링크 1개 수정 요청
-    @PutMapping("/url/{attachUrlId}")
-    @MemberOnly
-    public ResponseEntity<Void> updateAttachUrl(
-            @Auth final Accessor accessor,
-            @PathVariable final Long attachUrlId,
-            @RequestBody @Valid final AttachUrlUpdateRequest updateRequest
-    ) {
-        // 유효성 검사 먼저
-        attachService.validateAttachUrlByMember(accessor.getMemberId());
-        attachService.updateUrl(attachUrlId, updateRequest);
-        return ResponseEntity.noContent().build();
-    }
+//    @PutMapping("/url/{attachUrlId}")
+//    @MemberOnly
+//    public ResponseEntity<Void> updateAttachUrl(
+//            @Auth final Accessor accessor,
+//            @PathVariable final Long attachUrlId,
+//            @RequestBody @Valid final AttachUrlUpdateRequest updateRequest
+//    ) {
+//        // 유효성 검사 먼저
+//        attachService.validateAttachUrlByMember(accessor.getMemberId());
+//        attachService.updateUrl(attachUrlId, updateRequest);
+//        return ResponseEntity.noContent().build();
+//    }
 
     // 외부 링크 1개 삭제 요청
     @DeleteMapping("/url/{attachUrlId}")
@@ -71,26 +69,26 @@ public class AttachController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/file")
-    @MemberOnly
-    public ResponseEntity<Void> createAttachFle(
-            @Auth final Accessor accessor,
-            @RequestPart MultipartFile attachFile
-    ) {
-        attachService.saveFile(accessor.getMemberId(), attachFile);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+//    @PostMapping("/file")
+//    @MemberOnly
+//    public ResponseEntity<Void> createAttachFle(
+//            @Auth final Accessor accessor,
+//            @RequestPart MultipartFile attachFile
+//    ) {
+//        attachService.saveFile(accessor.getMemberId(), attachFile);
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
 
-    @DeleteMapping("/file/{attachFileUrlId}")
-    @MemberOnly
-    public ResponseEntity<Void> deleteAttachFile(
-            @Auth final Accessor accessor,
-            @PathVariable final Long attachFileUrlId
-    ) {
-        attachService.validateAttachFileByMember(accessor.getMemberId());
-        attachService.deleteFile(accessor.getMemberId(), attachFileUrlId);
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/file/{attachFileUrlId}")
+//    @MemberOnly
+//    public ResponseEntity<Void> deleteAttachFile(
+//            @Auth final Accessor accessor,
+//            @PathVariable final Long attachFileUrlId
+//    ) {
+//        attachService.validateAttachFileByMember(accessor.getMemberId());
+//        attachService.deleteFile(accessor.getMemberId(), attachFileUrlId);
+//        return ResponseEntity.noContent().build();
+//    }
 
 //    @GetMapping("/file")
 //    @MemberOnly

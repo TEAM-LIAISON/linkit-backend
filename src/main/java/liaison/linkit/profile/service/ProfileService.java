@@ -5,7 +5,7 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.*;
-import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
+//import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
@@ -64,7 +64,7 @@ public class ProfileService {
     private final AttachUrlRepository attachUrlRepository;
     
     // 첨부 이미지(파일 경로) 정보 담당
-    private final AttachFileRepository attachFileRepository;
+//    private final AttachFileRepository attachFileRepository;
 
     // 프로필 (내 이력서) 1개 조회
     private Profile getProfileByMember(final Long memberId) {

@@ -86,7 +86,6 @@ public class ProfileSkillControllerTest extends ControllerTest {
                                         headerWithName("Authorization").description("access token").attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 requestFields(
-                                        fieldWithPath("roleFields[]").description("보유한 역할 목록").attributes(field("constraint", "문자열 배열")),
                                         fieldWithPath("skillNames[]").description("보유한 기술 이름 목록").attributes(field("constraint", "문자열 배열"))
                                 )
                         )

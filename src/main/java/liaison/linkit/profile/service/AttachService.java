@@ -7,14 +7,14 @@ import liaison.linkit.image.domain.PortfolioFile;
 import liaison.linkit.image.domain.S3PortfolioEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.attach.AttachFile;
+//import liaison.linkit.profile.domain.attach.AttachFile;
 import liaison.linkit.profile.domain.attach.AttachUrl;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
+//import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
-import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
+//import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class AttachService {
 
     private final ProfileRepository profileRepository;
     private final AttachUrlRepository attachUrlRepository;
-    private final AttachFileRepository attachFileRepository;
+//    private final AttachFileRepository attachFileRepository;
     private final S3Uploader s3Uploader;
     private final ApplicationEventPublisher publisher;
 
@@ -70,26 +70,26 @@ public class AttachService {
     }
 
     // 단일 첨부 File 조회
-    private AttachFile getAttachFile(final Long attachFileId) {
-        return attachFileRepository.findById(attachFileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_BY_ID));
-    }
-
+//    private AttachFile getAttachFile(final Long attachFileId) {
+//        return attachFileRepository.findById(attachFileId)
+//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_BY_ID));
+//    }
+//
     // 전체 첨부 File 조회
-    private List<AttachFile> getAttachFiles(final Long profileId) {
-        try {
-            return attachFileRepository.findAllByProfileId(profileId);
-        } catch (Exception e) {
-            throw new BadRequestException(NOT_FOUND_ATTACH_URLS_BY_PROFILE_ID);
-        }
-    }
+//    private List<AttachFile> getAttachFiles(final Long profileId) {
+//        try {
+//            return attachFileRepository.findAllByProfileId(profileId);
+//        } catch (Exception e) {
+//            throw new BadRequestException(NOT_FOUND_ATTACH_URLS_BY_PROFILE_ID);
+//        }
+//    }
 
     // 해당 회원이 1개라도 Attach File 보유하고 있는지
-    public void validateAttachFileByMember(final Long memberId) {
-        if (!attachFileRepository.existsByProfileId(getProfile(memberId).getId())) {
-            throw new AuthException(INVALID_ATTACH_FILE_WITH_PROFILE);
-        }
-    }
+//    public void validateAttachFileByMember(final Long memberId) {
+//        if (!attachFileRepository.existsByProfileId(getProfile(memberId).getId())) {
+//            throw new AuthException(INVALID_ATTACH_FILE_WITH_PROFILE);
+//        }
+//    }
 
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
@@ -145,28 +145,28 @@ public class AttachService {
 
         attachUrlRepository.deleteById(attachUrl.getId());
 
-        if (!attachFileRepository.existsByProfileId(profile.getId()) && !attachUrlRepository.existsByProfileId(profile.getId())) {
+        if (!attachUrlRepository.existsByProfileId(profile.getId())) {
             profile.cancelPerfectionTen();
             profile.updateMemberProfileTypeByCompletion();
         }
     }
 
-    public void saveFile(
-            final Long memberId,
-            final MultipartFile attachFile
-    ) {
-        final Profile profile = getProfile(memberId);
-        final String attachFileUrl = saveFileS3(attachFile);
-        final AttachFile newAttachFile = AttachFile.of(
-                profile,
-                attachFile.getOriginalFilename(),
-                attachFileUrl
-        );
-
-        attachFileRepository.save(newAttachFile);
-        profile.updateIsAttachFile(true);
-        // 프로필 상태 관리 첨부용으로 추가 필요
-    }
+//    public void saveFile(
+//            final Long memberId,
+//            final MultipartFile attachFile
+//    ) {
+//        final Profile profile = getProfile(memberId);
+//        final String attachFileUrl = saveFileS3(attachFile);
+//        final AttachFile newAttachFile = AttachFile.of(
+//                profile,
+//                attachFile.getOriginalFilename(),
+//                attachFileUrl
+//        );
+//
+//        attachFileRepository.save(newAttachFile);
+//        profile.updateIsAttachFile(true);
+//        // 프로필 상태 관리 첨부용으로 추가 필요
+//    }
 
     private String saveFileS3(final MultipartFile attachFile) {
         validateSizeofFile(attachFile);
@@ -190,15 +190,15 @@ public class AttachService {
     }
 
     // 조회 메서드
-    public AttachFileResponse getAttachFileDetail(final Long attachFileId) {
-        final AttachFile attachFile = attachFileRepository.findById(attachFileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_ID));
-        return getAttachFileResponse(attachFile);
-    }
+//    public AttachFileResponse getAttachFileDetail(final Long attachFileId) {
+//        final AttachFile attachFile = attachFileRepository.findById(attachFileId)
+//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ATTACH_FILE_ID));
+//        return getAttachFileResponse(attachFile);
+//    }
 
-    private AttachFileResponse getAttachFileResponse(final AttachFile attachFile) {
-        return AttachFileResponse.personalAttachFile(attachFile);
-    }
+//    private AttachFileResponse getAttachFileResponse(final AttachFile attachFile) {
+//        return AttachFileResponse.personalAttachFile(attachFile);
+//    }
 
 //    // 수정 메서드
 //    public void updateFile(final Long memberId, final AttachFileUpdateRequest updateRequest) {
@@ -231,27 +231,27 @@ public class AttachService {
         final List<AttachUrl> attachUrls = attachUrlRepository.findAllByProfileId(profile.getId());
         log.info("attachUrls={}", attachUrls);
 
-        final List<AttachFile> attachFiles = attachFileRepository.findAllByProfileId(profile.getId());
-        log.info("attachFiles={}", attachFiles);
+//        final List<AttachFile> attachFiles = attachFileRepository.findAllByProfileId(profile.getId());
+//        log.info("attachFiles={}", attachFiles);
 
         final List<AttachUrlResponse> attachUrlResponses = attachUrls.stream().map(this::getAttachUrlResponse).toList();
         log.info("attachUrlResponses={}", attachUrlResponses);
 
-        final List<AttachFileResponse> attachFileResponses = attachFiles.stream().map(this::getAttachFileResponse).toList();
-        log.info("attachFileResponses={}", attachFileResponses);
+//        final List<AttachFileResponse> attachFileResponses = attachFiles.stream().map(this::getAttachFileResponse).toList();
+//        log.info("attachFileResponses={}", attachFileResponses);
 
-        return AttachResponse.getAttachResponse(attachUrlResponses, attachFileResponses);
+        return AttachResponse.getAttachResponse(attachUrlResponses);
     }
 
-    public void deleteFile(
-            final Long memberId,
-            final Long attachFileUrlId
-    ) {
-        final Profile profile = getProfile(memberId);
-        attachFileRepository.deleteById(attachFileUrlId);
-        if (!attachFileRepository.existsByProfileId(profile.getId()) && !attachUrlRepository.existsByProfileId(profile.getId())) {
-            profile.cancelPerfectionTen();
-            profile.updateMemberProfileTypeByCompletion();
-        }
-    }
+//    public void deleteFile(
+//            final Long memberId,
+//            final Long attachFileUrlId
+//    ) {
+//        final Profile profile = getProfile(memberId);
+//        attachFileRepository.deleteById(attachFileUrlId);
+//        if (!attachFileRepository.existsByProfileId(profile.getId()) && !attachUrlRepository.existsByProfileId(profile.getId())) {
+//            profile.cancelPerfectionTen();
+//            profile.updateMemberProfileTypeByCompletion();
+//        }
+//    }
 }

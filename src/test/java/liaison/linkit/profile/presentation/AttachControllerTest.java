@@ -6,7 +6,6 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.attach.AttachFileCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
-import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
 import liaison.linkit.profile.service.AttachService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,13 +15,9 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,8 +36,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
-import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -66,7 +61,7 @@ public class AttachControllerTest extends ControllerTest {
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
         doNothing().when(attachService).validateAttachUrlByMember(anyLong());
-        doNothing().when(attachService).validateAttachFileByMember(anyLong());
+//        doNothing().when(attachService).validateAttachFileByMember(anyLong());
     }
 
     private void makeAttachUrl() throws Exception {
@@ -96,18 +91,18 @@ public class AttachControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performPutUrlRequest(
-            final int attachUrlId,
-            final AttachUrlUpdateRequest attachUrlUpdateRequest
-    ) throws Exception {
-        return mockMvc.perform(
-                RestDocumentationRequestBuilders.put("/attach/url/{attachUrlId}", attachUrlId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(attachUrlUpdateRequest))
-        );
-    }
+//    private ResultActions performPutUrlRequest(
+//            final int attachUrlId,
+//            final AttachUrlUpdateRequest attachUrlUpdateRequest
+//    ) throws Exception {
+//        return mockMvc.perform(
+//                RestDocumentationRequestBuilders.put("/attach/url/{attachUrlId}", attachUrlId)
+//                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+//                        .cookie(COOKIE)
+//                        .contentType(APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(attachUrlUpdateRequest))
+//        );
+//    }
 
     private ResultActions performDeleteUrlRequest(
             final int attachUrlId
@@ -177,39 +172,39 @@ public class AttachControllerTest extends ControllerTest {
                 );
     }
 
-    @DisplayName("단일 첨부(웹 링크)를 수정할 수 있다.")
-    @Test
-    void updateAttachUrl() throws Exception {
-        // given
-        final AttachUrlUpdateRequest attachUrlUpdateRequest = new AttachUrlUpdateRequest(
-                "웹페이지",
-                "https://knowhow.ceo/"
-        );
-
-        // when
-        final ResultActions resultActions = performPutUrlRequest(1, attachUrlUpdateRequest);
-
-        // then
-        resultActions.andExpect(status().isNoContent())
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("attachUrlId")
-                                                .description("첨부 URL ID")
-                                ),
-                                requestFields(
-                                        fieldWithPath("attachUrlName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("웹 링크 이름")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("attachUrlPath")
-                                                .type(JsonFieldType.STRING)
-                                                .description("웹 링크")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
+//    @DisplayName("단일 첨부(웹 링크)를 수정할 수 있다.")
+//    @Test
+//    void updateAttachUrl() throws Exception {
+//        // given
+//        final AttachUrlUpdateRequest attachUrlUpdateRequest = new AttachUrlUpdateRequest(
+//                "웹페이지",
+//                "https://knowhow.ceo/"
+//        );
+//
+//        // when
+//        final ResultActions resultActions = performPutUrlRequest(1, attachUrlUpdateRequest);
+//
+//        // then
+//        resultActions.andExpect(status().isNoContent())
+//                .andDo(
+//                        restDocs.document(
+//                                pathParameters(
+//                                        parameterWithName("attachUrlId")
+//                                                .description("첨부 URL ID")
+//                                ),
+//                                requestFields(
+//                                        fieldWithPath("attachUrlName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("웹 링크 이름")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("attachUrlPath")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("웹 링크")
+//                                                .attributes(field("constraint", "문자열"))
+//                                )
+//                        )
+//                );
+//    }
 
     @DisplayName("단일 첨부(웹 링크)를 삭제할 수 있다.")
     @Test
@@ -233,42 +228,42 @@ public class AttachControllerTest extends ControllerTest {
                 ));
     }
 
-    @DisplayName("첨부(웹 파일)를 생성할 수 있다.")
-    @Test
-    void createAttachFile() throws Exception {
-        // given
-        final MockMultipartFile attachFile = new MockMultipartFile(
-                "attachFile",
-                "poster.pdf",
-                "multipart/form-data",
-                "PDF file content".getBytes()
-        );
-
-        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
-                RestDocumentationRequestBuilders.multipart("/attach/file", attachFile);
-        // when
-
-        final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/attach/file")
-                .file(attachFile)
-                .accept(APPLICATION_JSON)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .characterEncoding("UTF-8")
-                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                .cookie(COOKIE)
-        );
-
-        // then
-        resultActions.andExpect(status().isCreated())
-                .andDo(
-                        restDocs.document(
-                                requestHeaders(
-                                        headerWithName("Authorization").description("인증 토큰").attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                requestParts(
-                                        partWithName("attachFile").description("첨부 파일. 지원되는 형식은 .pdf, .docx 등이 있습니다.")
-                                )
-                        )
-                );
-    }
+//    @DisplayName("첨부(웹 파일)를 생성할 수 있다.")
+//    @Test
+//    void createAttachFile() throws Exception {
+//        // given
+//        final MockMultipartFile attachFile = new MockMultipartFile(
+//                "attachFile",
+//                "poster.pdf",
+//                "multipart/form-data",
+//                "PDF file content".getBytes()
+//        );
+//
+//        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
+//                RestDocumentationRequestBuilders.multipart("/attach/file", attachFile);
+//        // when
+//
+//        final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/attach/file")
+//                .file(attachFile)
+//                .accept(APPLICATION_JSON)
+//                .contentType(MediaType.MULTIPART_FORM_DATA)
+//                .characterEncoding("UTF-8")
+//                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+//                .cookie(COOKIE)
+//        );
+//
+//        // then
+//        resultActions.andExpect(status().isCreated())
+//                .andDo(
+//                        restDocs.document(
+//                                requestHeaders(
+//                                        headerWithName("Authorization").description("인증 토큰").attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                requestParts(
+//                                        partWithName("attachFile").description("첨부 파일. 지원되는 형식은 .pdf, .docx 등이 있습니다.")
+//                                )
+//                        )
+//                );
+//    }
 
 }

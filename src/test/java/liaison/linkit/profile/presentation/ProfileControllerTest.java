@@ -9,7 +9,7 @@ import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
 import liaison.linkit.profile.dto.response.*;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
+//import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
@@ -180,9 +180,8 @@ class ProfileControllerTest extends ControllerTest {
                 .willReturn(profileTeamBuildingFieldResponse);
 
         // 2. 역할 및 기술
-        List<String> roleFields = Arrays.asList("SW 개발자", "SW 개발자");
         List<String> skillNames = Arrays.asList("Java", "React");
-        final ProfileSkillResponse profileSkillResponse = ProfileSkillResponse.of(roleFields, skillNames);
+        final ProfileSkillResponse profileSkillResponse = ProfileSkillResponse.of(skillNames);
 
         given(profileSkillService.getAllProfileSkills(1L)).willReturn(profileSkillResponse);
 
@@ -307,7 +306,7 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("profileTeamBuildingFieldResponse.teamBuildingFieldNames").description("희망 팀빌딩 분야 이름").attributes(field("constraint", "문자열(배열)")),
 
                                         subsectionWithPath("profileSkillResponse").description("보유 기술 및 역할 목록").attributes(field("constraint", "객체")),
-                                        fieldWithPath("profileSkillResponse.roleFields[]").description("보유한 역할").attributes(field("constraint", "문자열(배열)")),
+//                                        fieldWithPath("profileSkillResponse.roleFields[]").description("보유한 역할").attributes(field("constraint", "문자열(배열)")),
                                         fieldWithPath("profileSkillResponse.skillNames[]").description("보유한 기술 이름").attributes(field("constraint", "문자열(배열)")),
 
                                         subsectionWithPath("profileRegionResponse").description("지역 및 위치 항목").attributes(field("constraint", "객체")),
@@ -403,9 +402,8 @@ class ProfileControllerTest extends ControllerTest {
         given(profileService.getProfileIntroduction(1L)).willReturn(profileIntroductionResponse);
 
         // 4. 보유기술 (V)
-        List<String> roleFields = Arrays.asList("SW 개발자", "SW 개발자");
         List<String> skillNames = Arrays.asList("Java", "React");
-        final ProfileSkillResponse profileSkillResponse = ProfileSkillResponse.of(roleFields, skillNames);
+        final ProfileSkillResponse profileSkillResponse = ProfileSkillResponse.of(skillNames);
         given(profileSkillService.getAllProfileSkills(1L)).willReturn(profileSkillResponse);
 
         // 5. 희망 팀빌딩 분야 (V)
@@ -513,17 +511,17 @@ class ProfileControllerTest extends ControllerTest {
                 "https://www.notion.so/ko-kr"
         );
 
-        final AttachFileResponse firstAttachFileResponse = new AttachFileResponse(
-                1L,
-                "A4+-=1.pdf",
-                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
-        );
+//        final AttachFileResponse firstAttachFileResponse = new AttachFileResponse(
+//                1L,
+//                "A4+-=1.pdf",
+//                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
+//        );
 
         final List<AttachUrlResponse> attachUrlResponseList = Arrays.asList(firstAttachUrlResponse, secondAttachUrlResponse);
-        final List<AttachFileResponse> attachFileResponseList = Arrays.asList(firstAttachFileResponse);
+//        final List<AttachFileResponse> attachFileResponseList = Arrays.asList(firstAttachFileResponse);
         final AttachResponse attachResponses = new AttachResponse(
-                attachUrlResponseList,
-                attachFileResponseList
+                attachUrlResponseList
+//                attachFileResponseList
         );
 
         given(attachService.getAttachList(1L)).willReturn(attachResponses);
@@ -604,7 +602,7 @@ class ProfileControllerTest extends ControllerTest {
 
                                         // profileSkillResponse
                                         subsectionWithPath("profileSkillResponse").description("프로필 스킬 정보"),
-                                        fieldWithPath("profileSkillResponse.roleFields").type(JsonFieldType.ARRAY).description("역할 필드"),
+//                                        fieldWithPath("profileSkillResponse.roleFields").type(JsonFieldType.ARRAY).description("역할 필드"),
                                         fieldWithPath("profileSkillResponse.skillNames").type(JsonFieldType.ARRAY).description("스킬 명칭"),
 
                                         // profileTeamBuildingFieldResponse
@@ -650,9 +648,9 @@ class ProfileControllerTest extends ControllerTest {
                                         subsectionWithPath("attachResponse").description("첨부 파일 정보"),
                                         fieldWithPath("attachResponse.attachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL ID"),
                                         fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(JsonFieldType.STRING).description("첨부된 URL 이름"),
-                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(JsonFieldType.STRING).description("첨부된 URL"),
-                                        fieldWithPath("attachResponse.attachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 ID"),
-                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFilePath").type(JsonFieldType.STRING).description("첨부 파일 URL")
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(JsonFieldType.STRING).description("첨부된 URL")
+//                                        fieldWithPath("attachResponse.attachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 ID"),
+//                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFilePath").type(JsonFieldType.STRING).description("첨부 파일 URL")
                                 )
                         ));
     }

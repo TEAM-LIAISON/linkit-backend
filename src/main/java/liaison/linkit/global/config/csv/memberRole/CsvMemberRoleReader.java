@@ -20,7 +20,7 @@ public class CsvMemberRoleReader {
     @Value("${memberRole.csv-path}")
     private String memberRoleCsv;
 
-    @Bean(name = "memberRileCsvReader")
+    @Bean(name = "memberRoleCsvReader")
     public FlatFileItemReader<MemberRoleCsvData> csvMemberRoleReader() {
 
         FlatFileItemReader<MemberRoleCsvData> flatFileItemReader = new FlatFileItemReader<>();

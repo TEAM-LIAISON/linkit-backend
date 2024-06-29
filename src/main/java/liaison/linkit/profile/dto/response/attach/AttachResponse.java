@@ -10,20 +10,20 @@ import java.util.List;
 public class AttachResponse {
 
     private List<AttachUrlResponse> attachUrlResponseList;
-    private List<AttachFileResponse> attachFileResponseList;
+//    private List<AttachFileResponse> attachFileResponseList;
 
     public AttachResponse() {
         this.attachUrlResponseList = null;
-        this.attachFileResponseList = null;
+//        this.attachFileResponseList = null;
     }
 
     public static AttachResponse getAttachResponse(
-            final List<AttachUrlResponse> attachUrlResponses,
-            final List<AttachFileResponse> attachFileResponses)
+            final List<AttachUrlResponse> attachUrlResponses)
+//            final List<AttachFileResponse> attachFileResponses)
     {
         return new AttachResponse(
-                attachUrlResponses,
-                attachFileResponses
+                attachUrlResponses
+//                attachFileResponses
         );
     }
 }
