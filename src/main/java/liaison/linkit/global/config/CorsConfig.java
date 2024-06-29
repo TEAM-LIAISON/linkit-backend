@@ -13,7 +13,7 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "https://www.linkit.im", "https://linkit.im")
+                .allowedOrigins("http://localhost:3000", "https://www.linkit.im", "https://linkit.im", "https://dev-linkit.vercel.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowCredentials(true)
                 .exposedHeaders(HttpHeaders.LOCATION);

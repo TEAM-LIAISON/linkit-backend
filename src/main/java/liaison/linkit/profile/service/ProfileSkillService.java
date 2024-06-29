@@ -59,7 +59,6 @@ public class ProfileSkillService {
     }
 
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
-
     public void save(final Long memberId, final ProfileSkillCreateRequest createRequest) {
         final Profile profile = getProfile(memberId);
 
@@ -105,22 +104,4 @@ public class ProfileSkillService {
 
         return ProfileSkillResponse.of(skillNames);
     }
-
-
-//    public void updateSkill(final Long memberId, final ProfileSkillUpdateRequest updateRequest) {
-//        final Profile profile = profileRepository.findByMemberId(memberId);
-//        final Long profileSkillId = validateProfileSkillByMember(memberId);
-//        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(profile.getId());
-//
-//        final List<Skill> skills = skillRepository
-//                .findSkillNamesBySkillNames(updateRequest.getSkillNames());
-//
-//        profileSkillRepository.deleteAll(profileSkills);
-//
-//        final List<ProfileSkill> newProfileSkills = skills.stream()
-//                .map(skill -> new ProfileSkill(null, profile, skill))
-//                .toList();
-//
-//        profileSkillRepository.saveAll(newProfileSkills);
-//    }
 }

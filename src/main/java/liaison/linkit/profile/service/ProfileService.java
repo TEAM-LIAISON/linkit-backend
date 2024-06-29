@@ -5,7 +5,6 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.*;
-//import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
@@ -14,14 +13,15 @@ import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
-import liaison.linkit.profile.dto.response.*;
+import liaison.linkit.profile.dto.response.MemberNameResponse;
+import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
+import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
-import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
@@ -34,12 +34,10 @@ import java.util.List;
 
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
 
-
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ProfileService {
-
     // 프로필 리포지토리 -> 자기소개, 회원 정보 담당
     private final ProfileRepository profileRepository;
     // 미니 프로필 정보 담당
@@ -79,11 +77,7 @@ public class ProfileService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public ProfileOnBoardingIsValueResponse getProfileOnBoardingIsValue(final Long memberId) {
-        final Profile profile = getProfileByMember(memberId);
-        return ProfileOnBoardingIsValueResponse.profileOnBoardingIsValue(profile);
-    }
+
 
     @Transactional(readOnly = true)
     public ProfileIsValueResponse getProfileIsValue(final Long memberId) {
@@ -137,32 +131,7 @@ public class ProfileService {
     }
 
 
-    public OnBoardingProfileResponse getOnBoardingProfile(
-            // 1. 희망 팀빌딩 분야
-            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
-            // 2. 희망하는 역할
-            final ProfileSkillResponse profileSkillResponse,
-            // 3. 지역 및 위치 정보
-            final ProfileRegionResponse profileRegionResponse,
-            // 4. 학교 정보
-            final List<EducationResponse> educationResponses,
-            // 5. 이력 정보
-            final List<AntecedentsResponse> antecedentsResponses,
-            // 6. 미니 프로필 정보
-            final MiniProfileResponse miniProfileResponse,
 
-            final MemberNameResponse memberNameResponse
-    ) {
-        return OnBoardingProfileResponse.onBoardingProfileItems(
-                profileTeamBuildingFieldResponse,
-                profileSkillResponse,
-                profileRegionResponse,
-                educationResponses,
-                antecedentsResponses,
-                miniProfileResponse,
-                memberNameResponse
-        );
-    }
 
     public void saveIntroduction(
             final Long memberId,

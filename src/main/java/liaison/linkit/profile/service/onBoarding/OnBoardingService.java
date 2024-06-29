@@ -13,6 +13,15 @@ import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.skill.Skill;
+import liaison.linkit.profile.dto.response.MemberNameResponse;
+import liaison.linkit.profile.dto.response.OnBoardingProfileResponse;
+import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
+import liaison.linkit.profile.dto.response.education.EducationResponse;
+import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;
+import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
+import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,6 +43,8 @@ public class OnBoardingService {
     private final JobRoleRepository jobRoleRepository;
     private final ProfileJobRoleRepository profileJobRoleRepository;
 
+
+
     // 내 이력서 조회
     private Profile getProfileByMember(final Long memberId) {
         return profileRepository.findByMemberId(memberId)
@@ -47,6 +58,40 @@ public class OnBoardingService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public ProfileOnBoardingIsValueResponse getProfileOnBoardingIsValue(final Long memberId) {
+        final Profile profile = getProfileByMember(memberId);
+        return ProfileOnBoardingIsValueResponse.profileOnBoardingIsValue(profile);
+    }
+
+    public OnBoardingProfileResponse getOnBoardingProfile(
+            // 1. 희망 팀빌딩 분야
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
+            // 2. 희망하는 역할
+            final ProfileSkillResponse profileSkillResponse,
+            // 3. 지역 및 위치 정보
+            final ProfileRegionResponse profileRegionResponse,
+            // 4. 학교 정보
+            final List<EducationResponse> educationResponses,
+            // 5. 이력 정보
+            final List<AntecedentsResponse> antecedentsResponses,
+            // 6. 미니 프로필 정보
+            final MiniProfileResponse miniProfileResponse,
+
+            final MemberNameResponse memberNameResponse
+    ) {
+        return OnBoardingProfileResponse.onBoardingProfileItems(
+                profileTeamBuildingFieldResponse,
+                profileSkillResponse,
+                profileRegionResponse,
+                educationResponses,
+                antecedentsResponses,
+                miniProfileResponse,
+                memberNameResponse
+        );
+    }
+
+    // 1.5.4. 희망 직무/역할 저장 메서드
     public void savePersonalJobAndRole(
             final Long memberId,
             final List<String> jobRoleNames
@@ -70,6 +115,7 @@ public class OnBoardingService {
         log.info("OnBoardingService savePersonalJobAndRole 메서드가 종료됩니다.");
     }
 
+    // 1.5.3. 보유 기술 저장 메서드
     public void savePersonalSkill(
             final Long memberId,
             final List<String> skillNames
@@ -91,4 +137,14 @@ public class OnBoardingService {
         profile.updateIsProfileSkill(true);
         log.info("OnBoardingService savePersonalSkill 메서드가 종료됩니다.");
     }
+
+    // 해당 내 이력서 기준으로 상태 업데이트
+    public void updateMemberProfileType(
+            final Long memberId
+    ) {
+        final Profile profile = getProfileByMember(memberId);
+        profile.updateMemberProfileTypeByCompletion();
+    }
+
+
 }

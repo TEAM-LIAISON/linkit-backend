@@ -65,7 +65,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             final Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
             return Accessor.member(memberId);
         } catch (final RefreshTokenException e) {
-            log.info("asdf");
+            log.info("게스트로 처리됩니다.");
             return Accessor.guest();
         }
     }
