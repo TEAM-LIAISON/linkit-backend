@@ -77,6 +77,14 @@ public class Member {
     @Column(nullable = false)
     private boolean existOnBoardingProfile;
 
+    // 내 이력서 기본 항목 기입 여부
+    @Column(nullable = false)
+    private boolean existDefaultPrivateProfile;
+
+    // 팀 소개서 기본 항목 기입 여부
+    @Column(nullable = false)
+    private boolean existDefaultTeamProfile;
+
     public Member(
             final Long id,
             final String socialLoginId,
@@ -95,6 +103,8 @@ public class Member {
         this.memberBasicInform = memberBasicInform;
         this.existMemberBasicInform = false;
         this.existOnBoardingProfile = false;
+        this.existDefaultPrivateProfile = false;
+        this.existDefaultTeamProfile = false;
     }
 
     public Member(
@@ -116,4 +126,5 @@ public class Member {
     public void setTeamProfileType(final TeamProfileType teamProfileType) {
         this.teamProfileType = teamProfileType;
     }
+
 }

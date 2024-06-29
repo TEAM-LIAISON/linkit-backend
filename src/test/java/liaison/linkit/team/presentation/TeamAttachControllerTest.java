@@ -55,7 +55,7 @@ public class TeamAttachControllerTest extends ControllerTest {
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
         doNothing().when(teamAttachService).validateTeamAttachUrlByMember(anyLong());
-        doNothing().when(teamAttachService).validateTeamAttachFileByMember(anyLong());
+//        doNothing().when(teamAttachService).validateTeamAttachFileByMember(anyLong());
     }
 
     private ResultActions performPostTeamUrlRequest(final List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequests) throws Exception {

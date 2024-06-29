@@ -28,10 +28,4 @@ public class ProfileSkill {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "skill_id")
     private Skill skill;
-
-    @Column(nullable = false)
-    private String roleField;
-
-    @Column(nullable = false)
-    private String skillName;
 }

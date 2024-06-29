@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain.skill;
+package liaison.linkit.profile.domain.role;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,22 +15,21 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Skill {
-
+public class JobRole {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "skill_id")
+    @Column(name = "job_role_id")
     private Long id;
 
-    @Column(name = "skill_name")
-    private String skillName;
+    @Column(name = "job_role_name")
+    private String jobRoleName;
 
-    public static Skill of(
-            final String skillName
+    public static JobRole of(
+            final String jobRoleName
     ) {
-        return new Skill(
+        return new JobRole(
                 null,
-                skillName
+                jobRoleName
         );
     }
 }

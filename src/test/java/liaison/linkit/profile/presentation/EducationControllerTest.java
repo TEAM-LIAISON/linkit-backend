@@ -7,7 +7,6 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
 import liaison.linkit.profile.dto.request.education.EducationListCreateRequest;
 import liaison.linkit.profile.dto.request.education.EducationUpdateRequest;
-import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.service.EducationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -171,91 +170,91 @@ class EducationControllerTest extends ControllerTest {
 
     }
 
-    @DisplayName("학력 항목을 수정할 수 있다.")
-    @Test
-    void updateEducation() throws Exception {
-        // given
-        final EducationUpdateRequest educationUpdateRequest = new EducationUpdateRequest(
-                2022,
-                2025,
-                "서울대학교",
-                "예술학과",
-                "졸업"
-        );
-
-        final EducationResponse educationResponse = new EducationResponse(
-                1L,
-                2022,
-                2025,
-                "홍익대학교",
-                "컴퓨터공학과",
-                "졸업"
-        );
-
-        when(educationService.update(anyLong(), any(EducationUpdateRequest.class)))
-                .thenReturn(educationResponse);
-
-        // when
-        final ResultActions resultActions = performPutRequest(1, educationUpdateRequest);
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("educationId")
-                                                .description("학력 항목 ID")
-                                ),
-                                requestFields(
-                                        fieldWithPath("admissionYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("입학 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("graduationYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("졸업 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("universityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학교명")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("majorName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("전공명")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("degreeName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학위명")
-                                                .attributes(field("constraint", "문자열"))
-                                ),
-                                responseFields(
-                                        fieldWithPath("id")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("학력 ID"),
-                                        fieldWithPath("admissionYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("입학 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("graduationYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("졸업 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("universityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학교명")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("majorName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("전공명")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("degreeName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학위명")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
+//    @DisplayName("학력 항목을 수정할 수 있다.")
+//    @Test
+//    void updateEducation() throws Exception {
+//        // given
+//        final EducationUpdateRequest educationUpdateRequest = new EducationUpdateRequest(
+//                2022,
+//                2025,
+//                "서울대학교",
+//                "예술학과",
+//                "졸업"
+//        );
+//
+//        final EducationResponse educationResponse = new EducationResponse(
+//                1L,
+//                2022,
+//                2025,
+//                "홍익대학교",
+//                "컴퓨터공학과",
+//                "졸업"
+//        );
+//
+//        when(educationService.update(anyLong(), any(EducationUpdateRequest.class)))
+//                .thenReturn(educationResponse);
+//
+//        // when
+//        final ResultActions resultActions = performPutRequest(1, educationUpdateRequest);
+//
+//        // then
+//        resultActions.andExpect(status().isOk())
+//                .andDo(
+//                        restDocs.document(
+//                                pathParameters(
+//                                        parameterWithName("educationId")
+//                                                .description("학력 항목 ID")
+//                                ),
+//                                requestFields(
+//                                        fieldWithPath("admissionYear")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("입학 연도")
+//                                                .attributes(field("constraint", "4자리 숫자")),
+//                                        fieldWithPath("graduationYear")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("졸업 연도")
+//                                                .attributes(field("constraint", "4자리 숫자")),
+//                                        fieldWithPath("universityName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("학교명")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("majorName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("전공명")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("degreeName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("학위명")
+//                                                .attributes(field("constraint", "문자열"))
+//                                ),
+//                                responseFields(
+//                                        fieldWithPath("id")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("학력 ID"),
+//                                        fieldWithPath("admissionYear")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("입학 연도")
+//                                                .attributes(field("constraint", "4자리 숫자")),
+//                                        fieldWithPath("graduationYear")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("졸업 연도")
+//                                                .attributes(field("constraint", "4자리 숫자")),
+//                                        fieldWithPath("universityName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("학교명")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("majorName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("전공명")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("degreeName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("학위명")
+//                                                .attributes(field("constraint", "문자열"))
+//                                )
+//                        )
+//                );
+//    }
 
     @DisplayName("학력 항목을 삭제할 수 있다.")
     @Test

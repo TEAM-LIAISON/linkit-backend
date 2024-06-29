@@ -5,7 +5,6 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.education.EducationListCreateRequest;
-import liaison.linkit.profile.dto.request.education.EducationUpdateRequest;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.service.EducationService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +21,7 @@ import java.util.List;
 public class EducationController {
     private final EducationService educationService;
 
-    // 온보딩 학력 생성 요청
+    // 온보딩 학력 생성/수정 요청
     @PostMapping
     @MemberOnly
     public ResponseEntity<Void> createEducation(
@@ -54,17 +53,17 @@ public class EducationController {
 //    }
 
     // 학력 항목 1개 수정
-    @PutMapping("/{educationId}")
-    @MemberOnly
-    public ResponseEntity<EducationResponse> updateEducation(
-            @Auth final Accessor accessor,
-            @PathVariable final Long educationId,
-            @RequestBody @Valid final EducationUpdateRequest educationUpdateRequest
-    ){
-        educationService.validateEducationByMember(accessor.getMemberId());
-        EducationResponse educationResponse = educationService.update(educationId, educationUpdateRequest);
-        return ResponseEntity.ok().body(educationResponse);
-    }
+//    @PutMapping("/{educationId}")
+//    @MemberOnly
+//    public ResponseEntity<EducationResponse> updateEducation(
+//            @Auth final Accessor accessor,
+//            @PathVariable final Long educationId,
+//            @RequestBody @Valid final EducationUpdateRequest educationUpdateRequest
+//    ){
+//        educationService.validateEducationByMember(accessor.getMemberId());
+//        EducationResponse educationResponse = educationService.update(educationId, educationUpdateRequest);
+//        return ResponseEntity.ok().body(educationResponse);
+//    }
 
     // 학력 항목 1개 삭제
     @DeleteMapping("/{educationId}")

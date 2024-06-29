@@ -1,6 +1,6 @@
-package liaison.linkit.global.config.csv.memberRole;
+package liaison.linkit.global.config.csv.jobRole;
 
-import liaison.linkit.member.dto.csv.MemberRoleCsvData;
+import liaison.linkit.profile.dto.csv.JobRoleCsvData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -16,34 +16,36 @@ import org.springframework.core.io.ClassPathResource;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class CsvMemberRoleReader {
-    @Value("${memberRole.csv-path}")
-    private String memberRoleCsv;
+public class CsvJobRoleReader {
 
-    @Bean(name = "memberRoleCsvReader")
-    public FlatFileItemReader<MemberRoleCsvData> csvMemberRoleReader() {
+    @Value("${jobRole.csv-path}")
+    private String jobRoleCsv;
 
-        FlatFileItemReader<MemberRoleCsvData> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(new ClassPathResource(memberRoleCsv));
+    @Bean(name = "jobRoleCsvReader")
+    public FlatFileItemReader<JobRoleCsvData> csvJobRoleReader() {
+        // 파일 경로 지정 및 인코딩
+        FlatFileItemReader<JobRoleCsvData> flatFileItemReader = new FlatFileItemReader<>();
+        flatFileItemReader.setResource(new ClassPathResource(jobRoleCsv));
         flatFileItemReader.setEncoding("UTF-8");
 
         // 데이터 내부에 개행이 있으면 꼭! 추가해주세요
         flatFileItemReader.setRecordSeparatorPolicy(new DefaultRecordSeparatorPolicy());
 
         // 읽어온 파일을 한 줄씩 읽기
-        DefaultLineMapper<MemberRoleCsvData> defaultLineMapper = new DefaultLineMapper<>();
+        DefaultLineMapper<JobRoleCsvData> defaultLineMapper = new DefaultLineMapper<>();
         // 따로 설정하지 않으면 기본값은 ","
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
 
-        delimitedLineTokenizer.setNames(MemberRoleCsvData.getFieldNames().toArray(String[]::new));
+        delimitedLineTokenizer.setNames(JobRoleCsvData.getFieldNames().toArray(String[]::new));
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
         // 매칭할 class 타입 지정(필드 지정)
-        BeanWrapperFieldSetMapper<MemberRoleCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        beanWrapperFieldSetMapper.setTargetType(MemberRoleCsvData.class);
+        BeanWrapperFieldSetMapper<JobRoleCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        beanWrapperFieldSetMapper.setTargetType(JobRoleCsvData.class);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
         flatFileItemReader.setLineMapper(defaultLineMapper);
+
         return flatFileItemReader;
     }
 }

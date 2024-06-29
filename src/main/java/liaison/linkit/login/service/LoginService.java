@@ -1,6 +1,7 @@
 package liaison.linkit.login.service;
 
 import liaison.linkit.global.exception.AuthException;
+import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.login.domain.*;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.dto.MemberTokensAndOnBoardingStepInform;
@@ -9,7 +10,6 @@ import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.repository.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
@@ -32,13 +32,24 @@ public class LoginService {
 
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
-    private final MiniProfileRepository miniProfileRepository;
 
     private final TeamProfileRepository teamProfileRepository;
 
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
+
+    // 프로필 (내 이력서) 1개 조회
+    private Profile getProfileByMember(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    // 회원에 대한 팀 소개서 정보를 가져온다. (1개만 저장되어 있음)
+    private TeamProfile getTeamProfile(final Long memberId) {
+        return teamProfileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
+    }
 
     public MemberTokensAndOnBoardingStepInform login(final String providerName, final String code) {
         final OauthProvider provider = oauthProviders.mapping(providerName);
@@ -55,6 +66,16 @@ public class LoginService {
 
         // 멤버 테이블에서 내 이력서 또는 팀 소개서의 작성 여부를 조회해야함.
         final boolean existOnBoardingProfile = member.isExistOnBoardingProfile();
+
+        log.info("loginService login method memberId={}", member.getId());
+
+        final Profile profile = getProfileByMember(member.getId());
+        final TeamProfile teamProfile = getTeamProfile(member.getId());
+
+        final boolean existDefaultPrivateProfile = profile.getExistDefaultPrivateProfile();
+        log.info("existDefaultPrivateProfile={}", existDefaultPrivateProfile);
+        final boolean existDefaultTeamProfile = teamProfile.getExistDefaultTeamProfile();
+        log.info("existDefaultTeamProfile={}",existDefaultTeamProfile);
 
         final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
 

@@ -11,14 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 public class ProfileSkillCreateRequest {
 
-    private List<String> roleFields;
     private List<String> skillNames;
 
     public static ProfileSkillCreateRequest of(
-            final List<String> roleFields,
             final List<String> skillNames
     ) {
-        return new ProfileSkillCreateRequest(roleFields, skillNames);
+        return new ProfileSkillCreateRequest(skillNames);
     }
 
 }

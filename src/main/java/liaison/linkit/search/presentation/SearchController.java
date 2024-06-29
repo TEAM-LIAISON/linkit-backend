@@ -15,4 +15,8 @@ public class SearchController {
 
     public final SearchService searchService;
 
+    // 팀 찾기 구현부
+
+    // 팀원 찾기 구현부
+
 }

@@ -54,6 +54,9 @@ public class Profile {
 
     // 3.5. 역할 및 기술 기입 여부
     @Column(nullable = false)
+    private boolean isProfileJobRole;
+
+    @Column(nullable = false)
     private boolean isProfileSkill;
 
     // 3.6. 희망 팀빌딩 분야 기입 여부
@@ -168,14 +171,14 @@ public class Profile {
         this.isIntroduction = isIntroduction;
     }
 
-    // 3.5. 희망 역할 및 보유 기술 업데이트
+    // 3.5.1. 내 이력서 직무/역할
+    public void updateIsProfileJobRole(final boolean isProfileJobRole) {
+        this.isProfileJobRole = isProfileJobRole;
+    }
+
+    // 3.5.2. 내 이력서 보유 기술
     public void updateIsProfileSkill(final boolean isProfileSkill) {
         this.isProfileSkill = isProfileSkill;
-        if (isProfileSkill) {
-            addPerfectionDefault();
-        } else {
-            cancelPerfectionDefault();
-        }
     }
 
     // 3.6. 희망 팀빌딩 분야 업데이트
@@ -318,4 +321,12 @@ public class Profile {
 
     // 3.4. 자기소개 초기화 및 삭제 메서드
     public void deleteIntroduction() {this.introduction = null;}
+
+    public boolean getExistDefaultPrivateProfile() {
+        if (this.isProfileTeamBuildingField && this.isProfileRegion && this.isAntecedents && this.isEducation) {
+            return true;
+        } else return false;
+    }
+
+
 }

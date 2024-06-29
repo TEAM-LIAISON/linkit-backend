@@ -19,6 +19,7 @@ public class TeamProfileTeamBuildingField {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "team_profile_team_building_field_id")
     private Long id;
 
     // 팀 소개서 연관관계 매핑

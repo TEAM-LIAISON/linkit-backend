@@ -15,7 +15,6 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class ActivityMethod {
-
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -27,5 +26,4 @@ public class ActivityMethod {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "activity_method_tag_id")
     private ActivityMethodTag activityMethodTag;
-
 }

@@ -36,7 +36,6 @@ public class CsvMajorReader {
         // 따로 설정하지 않으면 기본값은 ","
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
 
-        // "name", "phoneNumber", "comment", "address" 필드 설정
         delimitedLineTokenizer.setNames(MajorCsvData.getFieldNames().toArray(String[]::new));
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 

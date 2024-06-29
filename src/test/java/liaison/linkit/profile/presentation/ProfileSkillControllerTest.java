@@ -70,9 +70,8 @@ public class ProfileSkillControllerTest extends ControllerTest {
     @Test
     void createProfileSkill() throws Exception {
         // given
-        List<String> roleFields = Arrays.asList("SW 개발자", "SW 개발자");
         List<String> skillNames = Arrays.asList("Java", "React");
-        final ProfileSkillCreateRequest profileSkillCreateRequest = ProfileSkillCreateRequest.of(roleFields, skillNames);
+        final ProfileSkillCreateRequest profileSkillCreateRequest = ProfileSkillCreateRequest.of(skillNames);
 
         // when
         final ResultActions resultActions = performPostRequest(profileSkillCreateRequest);
@@ -87,7 +86,6 @@ public class ProfileSkillControllerTest extends ControllerTest {
                                         headerWithName("Authorization").description("access token").attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 requestFields(
-                                        fieldWithPath("roleFields[]").description("보유한 역할 목록").attributes(field("constraint", "문자열 배열")),
                                         fieldWithPath("skillNames[]").description("보유한 기술 이름 목록").attributes(field("constraint", "문자열 배열"))
                                 )
                         )
