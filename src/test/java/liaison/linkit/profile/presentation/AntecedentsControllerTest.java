@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -22,8 +23,10 @@ import java.util.List;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -32,6 +35,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,6 +62,34 @@ public class AntecedentsControllerTest extends ControllerTest {
         doNothing().when(antecedentsService).validateAntecedentsByMember(1L);
     }
 
+    private void makeAntecedents() throws Exception {
+        final AntecedentsCreateRequest firstAntecedentsCreateRequest = new AntecedentsCreateRequest(
+                "오더이즈",
+                "프로젝트 매니저",
+                2023,
+                3,
+                2023,
+                6,
+                false,
+                "경력 설명입니다."
+        );
+
+        final AntecedentsCreateRequest secondAntecedentsCreateRequest = new AntecedentsCreateRequest(
+                "삼성",
+                "SW 개발자",
+                2024,
+                2,
+                2025,
+                10,
+                false,
+                "경력 설명입니다."
+        );
+        final List<AntecedentsCreateRequest> antecedentsCreateRequestList = Arrays.asList(firstAntecedentsCreateRequest, secondAntecedentsCreateRequest);
+
+        doNothing().when(antecedentsService).saveAll(1L, antecedentsCreateRequestList);
+        performPostRequest(antecedentsCreateRequestList);
+    }
+
     // 이력 항목 생성/수정 테스트
     private ResultActions performPostRequest(final List<AntecedentsCreateRequest> antecedentsCreateRequestList) throws Exception {
         return mockMvc.perform(
@@ -68,8 +101,18 @@ public class AntecedentsControllerTest extends ControllerTest {
         );
     }
 
+    // 경력 항목 삭제 테스트
+    private ResultActions performDeleteRequest(final int antecedentsId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/private/{antecedentsId}", antecedentsId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+        );
+    }
+
     // 1.5.7. 경력 생성 테스트
-    @DisplayName("이력 항목 리스트를 생성/수정할 수 있다.")
+    @DisplayName("1.5.7. 경력 항목 리스트를 생성/수정할 수 있다.")
     @Test
     void createAntecedents() throws Exception {
         // given
@@ -151,5 +194,27 @@ public class AntecedentsControllerTest extends ControllerTest {
                         )
                 );
 
+    }
+
+    @DisplayName("경력 항목을 삭제할 수 있다.")
+    @Test
+    void deleteAntecedents() throws Exception {
+        // given
+        makeAntecedents();
+        doNothing().when(antecedentsService).validateAntecedentsByMember(anyLong());
+
+        // when
+        final ResultActions resultActions = performDeleteRequest(1);
+
+        // then
+        verify(antecedentsService).delete(1L, 1L);
+
+        resultActions.andExpect(status().isNoContent())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("antecedentsId")
+                                        .description("경력 항목 ID")
+                        )
+                ));
     }
 }

@@ -60,17 +60,13 @@ include::{snippets}/on-boarding-controller-test/get-on-boarding-profile/response
 
 === 1.5.2. 내 이력서 희망 팀빌딩 분야 생성/수정
 ==== 요청
-include::{snippets}/on-boarding-controller-test/create-profile-team-building-field/http-request.adoc[]
-include::{snippets}/on-boarding-controller-test/create-profile-team-building-field/request-fields.adoc[]
+include::{snippets}/team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
+include::{snippets}/team-building-field-controller-test/create-profile-team-building-field/request-fields.adoc[]
 
 === 1.5.3. 내 이력서 활동 지역 및 위치 생성/수정
 ==== 요청
-include::{snippets}/profile-region-controller-test/create-profile-region/http-request.adoc[]
-include::{snippets}/profile-region-controller-test/create-profile-region/request-fields.adoc[]
-요청 헤더
-include::{snippets}/profile-region-controller-test/create-profile-region/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-region-controller-test/create-profile-region/request-cookies.adoc[]
+include::{snippets}/region-controller-test/create-profile-region/http-request.adoc[]
+include::{snippets}/region-controller-test/create-profile-region/request-fields.adoc[]
 
 === 1.5.4. 내 이력서 희망 역할 + 보유 기술 생성/수정
 ==== 요청
@@ -108,10 +104,6 @@ include::{snippets}/antecedents-controller-test/create-antecedents/response-body
 === 1.5.7. 내 이력서 경력 삭제
 include::{snippets}/antecedents-controller-test/delete-antecedents/http-request.adoc[]
 include::{snippets}/antecedents-controller-test/delete-antecedents/path-parameters.adoc[]
-요청 헤더
-include::{snippets}/antecedents-controller-test/delete-antecedents/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/antecedents-controller-test/delete-antecedents/request-cookies.adoc[]
 
 === 1.5.8. 내 이력서 미니 프로필 생성/수정
 ==== 요청
@@ -156,10 +148,6 @@ include::{snippets}/profile-controller-test/get-profile/response-fields.adoc[]
 ==== 요청
 include::{snippets}/profile-controller-test/create-profile-introduction/http-request.adoc[]
 include::{snippets}/profile-controller-test/create-profile-introduction/request-fields.adoc[]
-
-=== 3.4. 자기소개 삭제
-==== 요청
-include::{snippets}/profile-controller-test/delete-profile-introduction/http-request.adoc[]
 
 === 3.5.2 보유기술 생성/수정 (온보딩 API 동일)
 

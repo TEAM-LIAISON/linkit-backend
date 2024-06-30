@@ -135,7 +135,6 @@ public class AntecedentsService {
     }
 
     public void delete(final Long memberId, final Long antecedentsId) {
-        final Profile profile = getProfile(memberId);
 
         if (!antecedentsRepository.existsById(antecedentsId)) {
             throw new BadRequestException(NOT_FOUND_ANTECEDENTS_ID);
@@ -143,9 +142,5 @@ public class AntecedentsService {
 
         // 삭제
         antecedentsRepository.deleteById(antecedentsId);
-
-        // 완성도 로직
-        profile.updateIsAntecedents(false);
-        profile.updateMemberProfileTypeByCompletion();
     }
 }

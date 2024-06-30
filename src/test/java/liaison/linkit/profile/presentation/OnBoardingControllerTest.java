@@ -113,14 +113,6 @@ public class OnBoardingControllerTest extends ControllerTest {
         );
     }
 
-
-
-
-
-
-
-
-
     @DisplayName("1.5.4. 내 이력서 희망 역할 및 보유 기술을 생성할 수 있다.")
     @Test
     void createOnBoardingPersonalJobAndSkill() throws Exception {
@@ -149,7 +141,6 @@ public class OnBoardingControllerTest extends ControllerTest {
                         )
                 );
     }
-
 
     @DisplayName("내 이력서 온보딩 과정의 모든 정보를 조회할 수 있다.")
     @Test

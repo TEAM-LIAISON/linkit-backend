@@ -9,10 +9,7 @@ import liaison.linkit.profile.service.AntecedentsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,5 +32,16 @@ public class AntecedentsController {
         log.info("이력 생성 요청 발생");
         antecedentsService.saveAll(accessor.getMemberId(), antecedentsCreateRequests);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{antecedentsId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteAntecedents(
+            @Auth final Accessor accessor,
+            @PathVariable final Long antecedentsId
+    ) {
+        antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
+        antecedentsService.delete(accessor.getMemberId(), antecedentsId);
+        return ResponseEntity.noContent().build();
     }
 }

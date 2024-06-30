@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -25,6 +26,7 @@ import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -33,6 +35,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -56,6 +60,32 @@ public class EducationControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
         doNothing().when(educationService).validateEducationByMember(1L);
     }
+    private void makeEducation() throws Exception {
+        // given
+        final EducationCreateRequest firstEducationCreateRequest = new EducationCreateRequest(
+                2022,
+                2025,
+                "홍익대학교",
+                "컴퓨터공학과",
+                "졸업"
+        );
+
+        final EducationCreateRequest secondEducationCreateRequest = new EducationCreateRequest(
+                2022,
+                2025,
+                "연세대학교",
+                "경영학과",
+                "졸업"
+        );
+        final List<EducationCreateRequest> educationCreateRequests = Arrays.asList(firstEducationCreateRequest, secondEducationCreateRequest);
+
+        final EducationListCreateRequest educationListCreateRequest = new EducationListCreateRequest(
+                educationCreateRequests
+        );
+
+        doNothing().when(educationService).save(anyLong(), anyList());
+        performPostRequest(educationListCreateRequest);
+    }
 
     // 학력 항목 생성/수정 테스트
     private ResultActions performPostRequest(final EducationListCreateRequest educationListCreateRequest) throws Exception {
@@ -65,6 +95,16 @@ public class EducationControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(educationListCreateRequest))
+        );
+    }
+
+    // 경력 항목 삭제 테스트
+    private ResultActions performDeleteRequest(final int educationId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/private/{educationId}", educationId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
         );
     }
 
@@ -137,7 +177,28 @@ public class EducationControllerTest extends ControllerTest {
                                 )
                         )
                 );
+    }
 
+    @DisplayName("학력 항목 1개를 삭제할 수 있다.")
+    @Test
+    void deleteEducation() throws Exception {
+        // given
+        makeEducation();
+        doNothing().when(educationService).validateEducationByMember(anyLong());
+
+        // when
+        final ResultActions resultActions = performDeleteRequest(1);
+
+        // then
+        verify(educationService).delete(1L, 1L);
+
+        resultActions.andExpect(status().isNoContent())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("educationId")
+                                        .description("학력 항목 ID")
+                        )
+                ));
     }
 
 }

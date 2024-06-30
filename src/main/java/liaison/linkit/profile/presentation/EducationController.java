@@ -9,10 +9,7 @@ import liaison.linkit.profile.service.EducationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,5 +29,16 @@ public class EducationController {
         log.info("memberId={}의 학력 생성/수정 요청이 들어왔습니다.", accessor.getMemberId());
         educationService.save(accessor.getMemberId(), educationListCreateRequest.getEducationList());
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{educationId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteEducation(
+            @Auth final Accessor accessor,
+            @PathVariable final Long educationId
+    ) {
+        educationService.validateEducationByMember(accessor.getMemberId());
+        educationService.delete(accessor.getMemberId(), educationId);
+        return ResponseEntity.noContent().build();
     }
 }

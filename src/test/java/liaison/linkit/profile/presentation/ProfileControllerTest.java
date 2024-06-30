@@ -111,7 +111,6 @@ class ProfileControllerTest extends ControllerTest {
     }
 
 
-
     private ResultActions performGetProfileRequest() throws Exception {
         return mockMvc.perform(
                 get("/profile")
