@@ -1,12 +1,12 @@
 package liaison.linkit.profile.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.region.dto.request.ProfileRegionCreateRequest;
-import liaison.linkit.region.service.ProfileRegionService;
-import liaison.linkit.region.presentation.ProfileRegionController;
+import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
+import liaison.linkit.profile.service.TeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +17,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,84 +36,67 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ProfileRegionController.class)
+@WebMvcTest(TeamBuildingFieldController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
-public class ProfileRegionControllerTest extends ControllerTest {
-
+@Slf4j
+public class TeamBuildingFieldControllerTest extends ControllerTest {
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
 
     @Autowired
     private ObjectMapper objectMapper;
-
     @MockBean
-    private ProfileRegionService profileRegionService;
+    private TeamBuildingFieldService teamBuildingFieldService;
 
     @BeforeEach
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-//        given(profileService.validateProfileByMember(1L)).willReturn(1L);
+        doNothing().when(teamBuildingFieldService).validateProfileTeamBuildingFieldByMember(1L);
     }
 
-    private void makeProfileRegion() throws Exception {
-        final ProfileRegionCreateRequest profileRegionCreateRequest = new ProfileRegionCreateRequest(
-                "서울특별시",
-                "강남구"
-        );
-    }
-
-    private ResultActions performPostRequest(final ProfileRegionCreateRequest profileRegionCreateRequest) throws Exception {
+    // 희망 팀빌딩 분야 생성/수정 테스트
+    private ResultActions performPostTeamBuildingFieldRequest(final ProfileTeamBuildingCreateRequest createRequest) throws Exception {
         return mockMvc.perform(
-                post("/profile_region")
+                post("/private/team_building_field")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(profileRegionCreateRequest))
+                        .content(objectMapper.writeValueAsString(createRequest))
         );
     }
-
-    @DisplayName("내 이력서의 지역 정보를 생성할 수 있다.")
+    // 1.5.2. 희망 팀빌딩 분야 생성
+    @DisplayName("희망 팀빌딩 분야 항목들을 생성할 수 있다.")
     @Test
-    void createProfileRegion() throws Exception {
-
+    void createProfileTeamBuildingField() throws Exception {
         // given
-        final ProfileRegionCreateRequest profileRegionCreateRequest = new ProfileRegionCreateRequest(
-                "서울특별시",
-                "강남구"
-        );
+        List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
+        final ProfileTeamBuildingCreateRequest createRequest = new ProfileTeamBuildingCreateRequest(teamBuildingFieldNames);
 
         // when
-        final ResultActions resultActions = performPostRequest(profileRegionCreateRequest);
+        final ResultActions resultActions = performPostTeamBuildingFieldRequest(createRequest);
 
         // then
-        resultActions.andExpect(status().isCreated())
+        resultActions.andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
                                 requestCookies(
                                         cookieWithName("refresh-token")
                                                 .description("갱신 토큰")
                                 ),
-
                                 requestHeaders(
                                         headerWithName("Authorization")
                                                 .description("access token")
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
-
                                 requestFields(
-                                        fieldWithPath("cityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("시/구 이름")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("divisionName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("시/군/구 이름")
-                                                .attributes(field("constraint", "문자열"))
+                                        fieldWithPath("teamBuildingFieldNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("희망 팀빋딩 분야(7가지 항목)")
+                                                .attributes(field("constraint", "문자열의 배열"))
                                 )
-                        )
-                );
+                        ));
     }
 }

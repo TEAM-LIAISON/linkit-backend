@@ -53,23 +53,15 @@ include::{snippets}/member-controller-test/create-member-basic-inform/http-respo
 == 1.5. 내 이력서 온보딩 가이드 기입
 === 1.5.1 내 이력서 / 팀 소개서 구분 중 내 이력서 온보딩 항목 조회
 ==== 요청
-include::{snippets}/profile-controller-test/get-on-boarding-profile/http-request.adoc[]
-요청 헤더
-include::{snippets}/profile-controller-test/get-on-boarding-profile/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-controller-test/get-on-boarding-profile/request-cookies.adoc[]
+include::{snippets}/on-boarding-controller-test/get-on-boarding-profile/http-request.adoc[]
 ==== 응답
-include::{snippets}/profile-controller-test/get-on-boarding-profile/http-response.adoc[]
-include::{snippets}/profile-controller-test/get-on-boarding-profile/response-fields.adoc[]
+include::{snippets}/on-boarding-controller-test/get-on-boarding-profile/http-response.adoc[]
+include::{snippets}/on-boarding-controller-test/get-on-boarding-profile/response-fields.adoc[]
 
 === 1.5.2. 내 이력서 희망 팀빌딩 분야 생성/수정
 ==== 요청
-include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
-include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-fields.adoc[]
-요청 헤더
-include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-cookies.adoc[]
+include::{snippets}/on-boarding-controller-test/create-profile-team-building-field/http-request.adoc[]
+include::{snippets}/on-boarding-controller-test/create-profile-team-building-field/request-fields.adoc[]
 
 === 1.5.3. 내 이력서 활동 지역 및 위치 생성/수정
 ==== 요청
@@ -82,8 +74,8 @@ include::{snippets}/profile-region-controller-test/create-profile-region/request
 
 === 1.5.4. 내 이력서 희망 역할 + 보유 기술 생성/수정
 ==== 요청
-include::{snippets}/profile-skill-controller-test/create-profile-skill/http-request.adoc[]
-include::{snippets}/profile-skill-controller-test/create-profile-skill/request-fields.adoc[]
+include::{snippets}/on-boarding-controller-test/create-on-boarding-personal-job-and-skill/http-request.adoc[]
+include::{snippets}/on-boarding-controller-test/create-on-boarding-personal-job-and-skill/request-fields.adoc[]
 
 === 1.5.6. 내 이력서 학력 생성/수정
 ==== 요청
@@ -125,7 +117,7 @@ include::{snippets}/antecedents-controller-test/delete-antecedents/request-cooki
 ==== 요청
 include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
 include::{snippets}/mini-profile-controller-test/create-mini-profile/request-parts.adoc[]
-include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileCreateRequest-fields.adoc[]
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileRequest-fields.adoc[]
 
 == 1.5. 팀 소개서 온보딩 가이드 기입
 === 1.5.1. 내 이력서 / 팀 소개서 구분 중 팀 소개서 온보딩 항목 조회

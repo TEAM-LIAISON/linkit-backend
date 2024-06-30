@@ -6,7 +6,7 @@ import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import lombok.Getter;
@@ -22,7 +22,7 @@ public class ProfileResponse {
     private final MemberNameResponse memberNameResponse;
     private final CompletionResponse completionResponse;
     private final ProfileIntroductionResponse profileIntroductionResponse;
-    private final ProfileSkillResponse profileSkillResponse;
+    private final JobAndSkillResponse jobAndSkillResponse;
     private final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse;
     private final ProfileRegionResponse profileRegionResponse;
     private final List<AntecedentsResponse> antecedentsResponse;
@@ -35,7 +35,7 @@ public class ProfileResponse {
             final MemberNameResponse memberNameResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
-            final ProfileSkillResponse profileSkillResponse,
+            final JobAndSkillResponse jobAndSkillResponse,
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
             final ProfileRegionResponse profileRegionResponse,
             final List<AntecedentsResponse> antecedentsResponses,
@@ -49,7 +49,7 @@ public class ProfileResponse {
                 memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
-                profileSkillResponse,
+                jobAndSkillResponse,
                 profileTeamBuildingFieldResponse,
                 profileRegionResponse,
                 antecedentsResponses,

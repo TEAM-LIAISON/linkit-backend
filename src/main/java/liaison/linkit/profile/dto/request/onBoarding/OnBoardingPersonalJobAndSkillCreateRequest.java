@@ -1,4 +1,4 @@
-package liaison.linkit.profile.dto.request.onBoarding.personal;
+package liaison.linkit.profile.dto.request.onBoarding;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

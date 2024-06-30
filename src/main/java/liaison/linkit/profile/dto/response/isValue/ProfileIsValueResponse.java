@@ -12,7 +12,7 @@ public class ProfileIsValueResponse {
     private final boolean isIntroduction;
 
     // 기술 항목
-    private final boolean isProfileSkill;
+    private final boolean isJobAndSkill;
 
     // 희망 팀빌딩 분야 항목
     private final boolean isProfileTeamBuildingField;
@@ -38,13 +38,13 @@ public class ProfileIsValueResponse {
     public static ProfileIsValueResponse profileIsValue(final Profile profile) {
         return new ProfileIsValueResponse(
                 profile.getIsIntroduction(),
-                profile.getIsProfileSkill(),
+                profile.getIsJobAndSkill(),
                 profile.getIsProfileTeamBuildingField(),
                 profile.getIsProfileRegion(),
                 profile.getIsAntecedents(),
                 profile.getIsEducation(),
                 profile.getIsAwards(),
-                profile.getIsAttach(),
+                profile.getIsAttachUrl(),
                 profile.getIsMiniProfile()
         );
     }

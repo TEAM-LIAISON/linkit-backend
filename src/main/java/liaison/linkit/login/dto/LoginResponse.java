@@ -9,5 +9,5 @@ public class LoginResponse {
     private final String accessToken;
     private final String email;
     private final boolean existMemberBasicInform;
-    private final boolean existOnBoardingProfile;
+    private final boolean existDefaultProfile;
 }

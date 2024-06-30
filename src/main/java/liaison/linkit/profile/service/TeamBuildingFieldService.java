@@ -9,7 +9,6 @@ import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRe
 import liaison.linkit.profile.domain.teambuilding.ProfileTeamBuildingField;
 import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
-import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingUpdateRequest;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,7 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_TE
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class ProfileTeamBuildingFieldService {
+public class TeamBuildingFieldService {
 
     private final ProfileRepository profileRepository;
     private final ProfileTeamBuildingFieldRepository profileTeamBuildingFieldRepository;
@@ -36,16 +35,6 @@ public class ProfileTeamBuildingFieldService {
     private Profile getProfile(final Long memberId) {
         return profileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
-    }
-
-    // 희망 팀빌딩 분야 전체 조회
-    private List<ProfileTeamBuildingField> getProfileTeamBuildingFields(final Long memberId) {
-        try {
-            return profileTeamBuildingFieldRepository.findAllByProfileId(getProfile(memberId).getId());
-        } catch (Exception e) {
-            throw new BadRequestException(NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID);
-        }
-
     }
 
     // 유효성 검증
@@ -86,46 +75,24 @@ public class ProfileTeamBuildingFieldService {
         profile.updateMemberProfileTypeByCompletion();
     }
 
-
+    // 내 이력서에 선택한 희망 팀빌딩 분야 전체 조회
     @Transactional(readOnly = true)
-    public ProfileTeamBuildingFieldResponse getAllProfileTeamBuildings(final Long memberId) {
-        final Profile profile = getProfile(memberId);
+    public ProfileTeamBuildingFieldResponse getAllProfileTeamBuildingFields(final Long memberId) {
+        try {
+            final Profile profile = getProfile(memberId);
 
-        List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingFieldRepository.findAllByProfileId(profile.getId());
+            List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingFieldRepository.findAllByProfileId(profile.getId());
 
-        List<String> teamBuildingFieldNames = profileTeamBuildingFields.stream()
-                .map(profileTeamBuildingField -> teamBuildingFieldRepository.findById(profileTeamBuildingField.getTeamBuildingField().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(TeamBuildingField::getTeamBuildingFieldName)
-                .toList();
+            List<String> teamBuildingFieldNames = profileTeamBuildingFields.stream()
+                    .map(profileTeamBuildingField -> teamBuildingFieldRepository.findById(profileTeamBuildingField.getTeamBuildingField().getId()))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(TeamBuildingField::getTeamBuildingFieldName)
+                    .toList();
 
-        return ProfileTeamBuildingFieldResponse.of(teamBuildingFieldNames);
-    }
-
-    public ProfileTeamBuildingFieldResponse update(
-            final Long memberId,
-            final ProfileTeamBuildingUpdateRequest updateRequest
-    ) {
-        final Profile profile = getProfile(memberId);
-
-        profileTeamBuildingFieldRepository.deleteAllByProfileId(profile.getId());
-
-        final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
-                .findTeamBuildingFieldsByFieldNames(updateRequest.getTeamBuildingFieldNames());
-
-        // Request DTO -> 각 문자열을 TeamBuildingField 테이블에서 찾아서 가져옴
-        final List<ProfileTeamBuildingField> profileTeamBuildingFields = teamBuildingFields.stream()
-                .map(teamBuildingField -> new ProfileTeamBuildingField(null, profile, teamBuildingField))
-                .toList();
-
-        // profileTeamBuildingFieldRepository 모두 저장
-        profileTeamBuildingFieldRepository.saveAll(profileTeamBuildingFields);
-
-        List<String> teamBuildingFieldNames = teamBuildingFields.stream()
-                .map(TeamBuildingField::getTeamBuildingFieldName)
-                .toList();
-
-        return new ProfileTeamBuildingFieldResponse(teamBuildingFieldNames);
+            return ProfileTeamBuildingFieldResponse.of(teamBuildingFieldNames);
+        } catch (Exception e) {
+            throw new BadRequestException(NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID);
+        }
     }
 }

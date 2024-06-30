@@ -30,7 +30,6 @@ public class MatchingController {
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
         log.info("profileId={}", profileId);
-
         matchingService.createProfileMatching(accessor.getMemberId(), profileId, matchingCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

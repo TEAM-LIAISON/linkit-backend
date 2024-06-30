@@ -1,4 +1,4 @@
-package liaison.linkit.region.presentation;
+package liaison.linkit.profile.presentation;
 
 import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
@@ -17,13 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/profile_region")
+@RequestMapping("/private")
 @Slf4j
-public class ProfileRegionController {
+public class RegionController {
     private final ProfileRegionService profileRegionService;
 
-    // 프로필 지역 생성
-    @PostMapping
+    // 1.5.3. 활동 지역 및 위치 생성/수정
+    @PostMapping("/region")
     @MemberOnly
     public ResponseEntity<Void> createProfileRegion(
             @Auth final Accessor accessor,

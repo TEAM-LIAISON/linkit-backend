@@ -31,7 +31,6 @@ public class ProfileRegionService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
     }
 
-    // "내 이력서"에 1대 1로 매핑되어 있는 미니 프로필 조회 메서드
     private ProfileRegion getProfileRegion(final Long profileId) {
         return profileRegionRepository.findByProfileId(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_REGION_BY_PROFILE_ID));
@@ -44,12 +43,8 @@ public class ProfileRegionService {
         }
     }
 
-    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
-
-    public void save(
-            final Long memberId,
-            final ProfileRegionCreateRequest profileRegionCreateRequest
-    ) {
+    // 활동 지역 및 위치 생성/수정 메서드
+    public void save(final Long memberId, final ProfileRegionCreateRequest profileRegionCreateRequest) {
         try {
             final Profile profile = getProfile(memberId);
 
@@ -76,7 +71,6 @@ public class ProfileRegionService {
             profile.updateIsProfileRegion(true);
             profile.updateMemberProfileTypeByCompletion();
         } catch (IllegalArgumentException e) {
-            // Handle known exceptions here
             throw e;  // or return a custom response or error code
         } catch (Exception e) {
             // Handle unexpected exceptions
@@ -84,6 +78,7 @@ public class ProfileRegionService {
         }
     }
 
+    // 내 이력서에 매핑되어 있는 활동 지역 및 위치 조회
     @Transactional(readOnly = true)
     public ProfileRegionResponse getPersonalProfileRegion(final Long memberId) {
         final Profile profile = getProfile(memberId);

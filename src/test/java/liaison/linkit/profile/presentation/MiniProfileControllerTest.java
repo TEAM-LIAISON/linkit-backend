@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.dto.request.miniProfile.MiniProfileCreateRequest;
-import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
+import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
 import liaison.linkit.profile.service.MiniProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -71,110 +70,23 @@ class MiniProfileControllerTest extends ControllerTest {
         return new MockMultipartFile(name, path, contentType, path.getBytes(StandardCharsets.UTF_8));
     }
 
-//    private void makeMiniProfile() throws Exception {
-//        final MiniProfileCreateRequest miniProfileCreateRequest = new MiniProfileCreateRequest(
-//                "안녕하세요.",
-//                "Java / Spring Boot / MySQL",
-//                "홍익대학교 컴퓨터공학과",
-//                "리에종의 개발자입니다."
-//        );
-//    }
-
-    private ResultActions performGetRequest() throws Exception {
-        return mockMvc.perform(
-                get("/mini-profile")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(APPLICATION_JSON));
-    }
-
     private ResultActions performPostRequest(
-            final MiniProfileCreateRequest miniProfileCreateRequest,
+            final MiniProfileRequest miniProfileRequest,
             final MultipartFile miniProfileImage
     ) throws Exception {
-        return mockMvc.perform(post("/mini-profile")
+        return mockMvc.perform(post("/private/mini-profile")
                 .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                 .cookie(COOKIE)
                 .contentType(APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(miniProfileCreateRequest)));
+                .content(objectMapper.writeValueAsString(miniProfileRequest)));
     }
 
-    private ResultActions performPutUpdateRequest(
-            final MiniProfileUpdateRequest updateRequest
-    ) throws Exception {
-        return mockMvc.perform(
-                put("/mini-profile")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest))
-        );
-    }
-
-    private ResultActions performDeleteRequest() throws Exception {
-        return mockMvc.perform(delete("/mini-profile")
-                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                .cookie(COOKIE)
-        );
-    }
-
-//    @DisplayName("미니 프로필을 조회할 수 있다.")
-//    @Test
-//    void getMiniProfile() throws Exception {
-//        // given
-////        final MiniProfileResponse response = new MiniProfileResponse(
-////                "안녕하세요.",
-////                "Java / Spring Boot / MySQL",
-////                "홍익대학교 컴퓨터공학과",
-////                "리에종의 개발자입니다."
-////        );
-//
-//        given(miniProfileService.getMiniProfileDetail(1L))
-//                .willReturn(response);
-//
-//        // when
-//        final ResultActions resultActions = performGetRequest();
-//        // then
-//
-//        resultActions.andExpect(status().isOk())
-//                .andDo(
-//                        restDocs.document(
-//                                requestCookies(
-//                                        cookieWithName("refresh-token")
-//                                                .description("갱신 토큰")
-//                                ),
-//                                requestHeaders(
-//                                        headerWithName("Authorization")
-//                                                .description("access token")
-//                                                .attributes(field("constraint", "문자열(jwt)"))
-//                                ),
-//                                responseFields(
-//                                        fieldWithPath("oneLineIntroduction")
-//                                                .type(JsonFieldType.STRING)
-//                                                .description("한 줄 소개")
-//                                                .attributes(field("constraint", "문자열")),
-//                                        fieldWithPath("interests")
-//                                                .type(JsonFieldType.STRING)
-//                                                .description("관심 분야")
-//                                                .attributes(field("constraint", "문자열")),
-//                                        fieldWithPath("firstFreeText")
-//                                                .type(JsonFieldType.STRING)
-//                                                .description("자율 기입 첫 줄")
-//                                                .attributes(field("constraint", "문자열")),
-//                                        fieldWithPath("secondFreeText")
-//                                                .type(JsonFieldType.STRING)
-//                                                .description("자율 기입 둘째 줄")
-//                                                .attributes(field("constraint", "문자열"))
-//                                )
-//                        )
-//                );
-//    }
 
     @DisplayName("미니 프로필을 생성할 수 있다.")
     @Test
     void createMiniProfile() throws Exception {
         // given
-        final MiniProfileCreateRequest miniProfileCreateRequest = new MiniProfileCreateRequest(
+        final MiniProfileRequest miniProfileRequest = new MiniProfileRequest(
                 "시니어 소프트웨어 개발자",
                 LocalDate.of(2024, 10,20),
                 true,
@@ -190,23 +102,19 @@ class MiniProfileControllerTest extends ControllerTest {
         );
 
         final MockMultipartFile createRequest = new MockMultipartFile(
-                "miniProfileCreateRequest",
+                "miniProfileRequest",
                 null,
                 "application/json",
-                objectMapper.writeValueAsString(miniProfileCreateRequest).getBytes(StandardCharsets.UTF_8)
+                objectMapper.writeValueAsString(miniProfileRequest).getBytes(StandardCharsets.UTF_8)
         );
-
-//        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
-//                RestDocumentationRequestBuilders.multipart("/mini-profile", miniProfileImage, createRequest);
 
         // when
 
-        final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST,"/mini-profile")
+        final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST,"/private/mini-profile")
                 .file(miniProfileImage)
                 .file(createRequest)
                 .accept(APPLICATION_JSON)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-//                .content(objectMapper.writeValueAsString(miniProfileCreateRequest))
                 .characterEncoding("UTF-8")
                 .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                 .cookie(COOKIE));
@@ -224,11 +132,11 @@ class MiniProfileControllerTest extends ControllerTest {
                                         .attributes(field("constraint", "문자열(jwt)"))
                         ),
                         requestParts(
-                                partWithName("miniProfileCreateRequest").description("미니 프로필 생성 객체"),
+                                partWithName("miniProfileRequest").description("미니 프로필 생성 객체"),
                                 partWithName("miniProfileImage")
                                         .description("미니 프로필 이미지 파일. 지원되는 형식은 .png, .jpg 등이 있습니다.")
                         ),
-                        requestPartFields("miniProfileCreateRequest",
+                        requestPartFields("miniProfileRequest",
                                 fieldWithPath("profileTitle").description("프로필 제목"),
                                 fieldWithPath("uploadPeriod").description("프로필 업로드 기간").attributes(field("constraint", "LocalDate")),
                                 fieldWithPath("uploadDeadline").description("마감 선택 여부"),

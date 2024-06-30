@@ -1,4 +1,4 @@
-package liaison.linkit.profile.service.onBoarding;
+package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
@@ -14,12 +14,12 @@ import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.dto.response.MemberNameResponse;
-import liaison.linkit.profile.dto.response.OnBoardingProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
+import liaison.linkit.profile.dto.response.onBoarding.OnBoardingProfileResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
 
@@ -42,7 +43,6 @@ public class OnBoardingService {
     private final SkillRepository skillRepository;
     private final JobRoleRepository jobRoleRepository;
     private final ProfileJobRoleRepository profileJobRoleRepository;
-
 
 
     // 내 이력서 조회
@@ -67,10 +67,10 @@ public class OnBoardingService {
     public OnBoardingProfileResponse getOnBoardingProfile(
             // 1. 희망 팀빌딩 분야
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
-            // 2. 희망하는 역할
-            final ProfileSkillResponse profileSkillResponse,
-            // 3. 지역 및 위치 정보
+            // 2. 지역 및 위치 정보
             final ProfileRegionResponse profileRegionResponse,
+            // 3. 희망하는 역할 및 보유 기술
+            final JobAndSkillResponse jobAndSkillResponse,
             // 4. 학교 정보
             final List<EducationResponse> educationResponses,
             // 5. 이력 정보
@@ -82,8 +82,8 @@ public class OnBoardingService {
     ) {
         return OnBoardingProfileResponse.onBoardingProfileItems(
                 profileTeamBuildingFieldResponse,
-                profileSkillResponse,
                 profileRegionResponse,
+                jobAndSkillResponse,
                 educationResponses,
                 antecedentsResponses,
                 miniProfileResponse,
@@ -137,6 +137,31 @@ public class OnBoardingService {
         profile.updateIsProfileSkill(true);
         log.info("OnBoardingService savePersonalSkill 메서드가 종료됩니다.");
     }
+
+    // 1.5.3. 보유 역할 및 기술 응답 구현부
+    public JobAndSkillResponse getJobAndSkill(
+            final Long memberId
+    ) {
+        final Profile profile = getProfileByMember(memberId);
+        List<ProfileJobRole> profileJobRoles = profileJobRoleRepository.findAllByProfileId(profile.getId());
+        List<String> jobRoleNames = profileJobRoles.stream()
+                .map(profileJobRole -> jobRoleRepository.findById(profileJobRole.getJobRole().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(JobRole::getJobRoleName)
+                .toList();
+
+        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(profile.getId());
+        List<String> skillNames = profileSkills.stream()
+                .map(profileSkill -> skillRepository.findById(profileSkill.getSkill().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(Skill::getSkillName)
+                .toList();
+
+        return JobAndSkillResponse.of(jobRoleNames, skillNames);
+    }
+
 
     // 해당 내 이력서 기준으로 상태 업데이트
     public void updateMemberProfileType(

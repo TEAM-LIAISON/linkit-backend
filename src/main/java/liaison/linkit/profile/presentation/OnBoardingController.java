@@ -1,21 +1,21 @@
-package liaison.linkit.profile.presentation.onBoarding;
+package liaison.linkit.profile.presentation;
 
 import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.service.MemberService;
-import liaison.linkit.profile.dto.request.onBoarding.personal.OnBoardingPersonalJobAndSkillCreateRequest;
+import liaison.linkit.profile.dto.request.onBoarding.OnBoardingPersonalJobAndSkillCreateRequest;
 import liaison.linkit.profile.dto.response.MemberNameResponse;
-import liaison.linkit.profile.dto.response.OnBoardingProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
+import liaison.linkit.profile.dto.response.onBoarding.OnBoardingProfileResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.profile.service.onBoarding.OnBoardingService;
+import liaison.linkit.profile.service.OnBoardingService;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import liaison.linkit.region.service.ProfileRegionService;
 import lombok.RequiredArgsConstructor;
@@ -30,62 +30,52 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/onBoarding")
+@RequestMapping
 @Slf4j
 public class OnBoardingController {
 
     public final MemberService memberService;
-    public final ProfileService profileService;
     public final OnBoardingService onBoardingService;
     public final MiniProfileService miniProfileService;
-    public final ProfileTeamBuildingFieldService profileTeamBuildingFieldService;
+    public final TeamBuildingFieldService teamBuildingFieldService;
     public final ProfileRegionService profileRegionService;
-    public final ProfileSkillService profileSkillService;
     public final EducationService educationService;
     public final AntecedentsService antecedentsService;
 
-    @GetMapping("/private")
+    // 1.5.4 희망 역할 및 보유 기술 생성/수정
+    @PostMapping("/private/job/skill")
+    @MemberOnly
+    public ResponseEntity<Void> createOnBoardingPersonalJobAndSkill(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid final OnBoardingPersonalJobAndSkillCreateRequest createRequest
+    ) {
+        onBoardingService.savePersonalJobAndRole(accessor.getMemberId(), createRequest.getJobRoleNames());
+        onBoardingService.savePersonalSkill(accessor.getMemberId(), createRequest.getSkillNames());
+        onBoardingService.updateMemberProfileType(accessor.getMemberId());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 온보딩 항목 전체 조회
+    @GetMapping("/onBoarding/private")
     @MemberOnly
     public ResponseEntity<?> getOnBoardingProfile(@Auth final Accessor accessor) {
         log.info("내 이력서의 온보딩 정보 항목 조회 요청 발생");
         try {
             onBoardingService.validateProfileByMember(accessor.getMemberId());
 
-            final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse
-                    = onBoardingService.getProfileOnBoardingIsValue(accessor.getMemberId());
-
-            final MiniProfileResponse miniProfileResponse
-                    = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
-            log.info("miniProfileResponse={}", miniProfileResponse);
-
-            final MemberNameResponse memberNameResponse
-                    = getMemberNameResponse(accessor.getMemberId());
-            log.info("memberNameResponse={}", memberNameResponse);
-
-            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse
-                    = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
-            log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
-
-            final ProfileSkillResponse profileSkillResponse
-                    = getProfileSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileSkill());
-            log.info("profileSkillResponse={}", profileSkillResponse);
-
-            final ProfileRegionResponse profileRegionResponse
-                    = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
-            log.info("profileRegionResponse={}", profileRegionResponse);
-
-            final List<EducationResponse> educationResponses
-                    = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
-            log.info("educationResponses={}", educationResponses);
-
-            final List<AntecedentsResponse> antecedentsResponses
-                    = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
-            log.info("antecedentsResponses={}", antecedentsResponses);
+            final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse = onBoardingService.getProfileOnBoardingIsValue(accessor.getMemberId());
+            final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
+            final MemberNameResponse memberNameResponse = getMemberNameResponse(accessor.getMemberId());
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
+            final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
+            final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isJobAndSkill());
+            final List<EducationResponse> educationResponses = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
+            final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
 
             final OnBoardingProfileResponse onBoardingProfileResponse = onBoardingService.getOnBoardingProfile(
                     profileTeamBuildingFieldResponse,
-                    profileSkillResponse,
                     profileRegionResponse,
+                    jobAndSkillResponse,
                     educationResponses,
                     antecedentsResponses,
                     miniProfileResponse,
@@ -97,18 +87,6 @@ public class OnBoardingController {
             log.error("온보딩 조회 과정에서 예외 발생: {}", e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("온보딩 정보를 불러오는 과정에서 문제가 발생했습니다.");
         }
-    }
-
-    @PostMapping("/private/job/skill")
-    @MemberOnly
-    public ResponseEntity<Void> createOnBoardingPersonalJobAndSkill(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final OnBoardingPersonalJobAndSkillCreateRequest createRequest
-    ) {
-        onBoardingService.savePersonalJobAndRole(accessor.getMemberId(), createRequest.getJobRoleNames());
-        onBoardingService.savePersonalSkill(accessor.getMemberId(), createRequest.getSkillNames());
-        onBoardingService.updateMemberProfileType(accessor.getMemberId());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     private MiniProfileResponse getMiniProfileResponse(
@@ -135,23 +113,10 @@ public class OnBoardingController {
             final boolean isProfileTeamBuildingField
     ) {
         if (isProfileTeamBuildingField) {
-            profileTeamBuildingFieldService.validateProfileTeamBuildingFieldByMember(memberId);
-            return profileTeamBuildingFieldService.getAllProfileTeamBuildings(memberId);
+            teamBuildingFieldService.validateProfileTeamBuildingFieldByMember(memberId);
+            return teamBuildingFieldService.getAllProfileTeamBuildingFields(memberId);
         } else {
             return new ProfileTeamBuildingFieldResponse();
-        }
-    }
-
-    // 1.5.4. 보유 기술 조회
-    private ProfileSkillResponse getProfileSkillResponse(
-            final Long memberId,
-            final boolean isProfileSkill
-    ) {
-        if (isProfileSkill) {
-            profileSkillService.validateProfileSkillByMember(memberId);
-            return profileSkillService.getAllProfileSkills(memberId);
-        } else {
-            return null;
         }
     }
 
@@ -165,6 +130,19 @@ public class OnBoardingController {
             return profileRegionService.getPersonalProfileRegion(memberId);
         } else {
             return null;
+        }
+    }
+
+    // 1.5.4. 역할 및 보유 기술 조회
+    private JobAndSkillResponse getJobAndSkillResponse(
+            final Long memberId,
+            final boolean isJobAndSkill
+    ) {
+        if (isJobAndSkill) {
+            onBoardingService.validateProfileByMember(memberId);
+            return onBoardingService.getJobAndSkill(memberId);
+        } else {
+            return new JobAndSkillResponse();
         }
     }
 

@@ -2,7 +2,6 @@ package liaison.linkit.profile.domain.miniProfile;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -66,14 +65,5 @@ public class MiniProfile {
                 myValue,
                 skillSets
         );
-    }
-
-    public void update(final MiniProfileUpdateRequest miniProfileUpdateRequest) {
-        this.profileTitle = miniProfileUpdateRequest.getProfileTitle();
-        this.uploadPeriod = miniProfileUpdateRequest.getUploadPeriod();
-        this.uploadDeadline = miniProfileUpdateRequest.isUploadDeadline();
-        this.miniProfileImg = miniProfileUpdateRequest.getMiniProfileImg();
-        this.myValue = miniProfileUpdateRequest.getMyValue();
-        this.skillSets = miniProfileUpdateRequest.getSkillSets();
     }
 }

@@ -4,8 +4,8 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
-import liaison.linkit.profile.service.AntecedentsService;
+import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
+import liaison.linkit.profile.service.TeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -14,26 +14,22 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/private")
 @Slf4j
-public class AntecedentsController {
+public class TeamBuildingFieldController {
+    public final TeamBuildingFieldService teamBuildingFieldService;
 
-    public final AntecedentsService antecedentsService;
-
-    // 1.5.7. 경력 생성/수정
-    // 온보딩 이력 생성 요청
-    @PostMapping("/antecedents")
+    // 1.5.2. 희망 팀빌딩 분야 생성/수정
+    @PostMapping("/team_building_field")
     @MemberOnly
-    public ResponseEntity<Void> createAntecedents(
+    public ResponseEntity<Void> createProfileTeamBuilding(
             @Auth final Accessor accessor,
-            @RequestBody @Valid List<AntecedentsCreateRequest> antecedentsCreateRequests
-    ){
-        log.info("이력 생성 요청 발생");
-        antecedentsService.saveAll(accessor.getMemberId(), antecedentsCreateRequests);
+            @RequestBody @Valid ProfileTeamBuildingCreateRequest profileTeamBuildingCreateRequest
+    ) {
+        log.info("memberId={}의 희망 팀빌딩 분야 생성/수정 요청이 들어왔습니다.", accessor.getMemberId());
+        teamBuildingFieldService.save(accessor.getMemberId(), profileTeamBuildingCreateRequest);
         return ResponseEntity.ok().build();
     }
 }

@@ -704,15 +704,15 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 6 Jul 2024 11:20:42 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 7 Jul 2024 06:42:33 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
-Content-Length: 139
+Content-Length: 136
 
 {
   "accessToken" : "accessToken",
   "email" : "linkit@gmail.com",
   "existMemberBasicInform" : false,
-  "existOnBoardingProfile" : false
+  "existDefaultProfile" : false
 }</code></pre>
 </div>
 </div>
@@ -746,9 +746,9 @@ Content-Length: 139
 <td class="tableblock halign-left valign-top"><p class="tableblock">기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>existOnBoardingProfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>existDefaultProfile</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 온보딩은 완성)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 필수 항목 기입 완료)</p></td>
 </tr>
 </tbody>
 </table>
@@ -1024,57 +1024,12 @@ Vary: Access-Control-Request-Headers</code></pre>
 <h4 id="_요청_5"><a class="link" href="#_요청_5">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /profile/onBoarding HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /onBoarding/private HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refresh-token=refreshToken</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>요청 헤더</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Constraint</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">access token</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문자열(jwt)</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>요청 쿠키</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>refresh-token</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">갱신 토큰</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect3">
 <h4 id="_응답_5"><a class="link" href="#_응답_5">응답</a></h4>
@@ -1085,18 +1040,19 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1668
+Content-Length: 1721
 
 {
   "profileTeamBuildingFieldResponse" : {
     "teamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
   },
-  "profileSkillResponse" : {
-    "skillNames" : [ "Java", "React" ]
-  },
   "profileRegionResponse" : {
     "cityName" : "서울특별시",
     "divisionName" : "강남구"
+  },
+  "jobAndSkillResponse" : {
+    "jobRoleNames" : [ "공모전, 대회, 창업" ],
+    "skillNames" : [ "Notion, Figma" ]
   },
   "educationResponses" : [ {
     "id" : 1,
@@ -1173,14 +1129,19 @@ Content-Length: 1668
 <td class="tableblock halign-left valign-top"><p class="tableblock">희망 팀빌딩 분야 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileSkillResponse</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobAndSkillResponse</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보유 기술 및 역할 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">나의 직무/역할 및 보유 기술 정보</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileSkillResponse.skillNames[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobAndSkillResponse.jobRoleNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보유한 기술 이름</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무/역할 명칭</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobAndSkillResponse.skillNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보유 기술 명칭</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileRegionResponse</code></p></td>
@@ -1503,13 +1464,14 @@ Cookie: refresh-token=refreshToken
 <h4 id="_요청_8"><a class="link" href="#_요청_8">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /profile_skill HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /onBoarding/private/job/skill HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refresh-token=refreshToken
 
 {
-  "skillNames" : [ "Java", "React" ]
+  "jobRoleNames" : [ "공모전, 대회, 창업" ],
+  "skillNames" : [ "Notion, Figma" ]
 }</code></pre>
 </div>
 </div>
@@ -1530,10 +1492,16 @@ Cookie: refresh-token=refreshToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>skillNames[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">보유한 기술 이름 목록</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문자열 배열</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">희망 직무/역할</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">문자열의 배열</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>skillNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보유 기술</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">문자열의 배열</p></td>
 </tr>
 </tbody>
 </table>
@@ -1952,7 +1920,7 @@ Content-Type: multipart/form-data
 
 ./src/test/resources/static/images/logo.png
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Content-Disposition: form-data; name=miniProfileCreateRequest
+Content-Disposition: form-data; name=miniProfileRequest
 Content-Type: application/json
 
 {"profileTitle":"시니어 소프트웨어 개발자","uploadPeriod":"2024-10-20","uploadDeadline":true,"myValue":"혁신, 팀워크, 의지","skillSets":"Java, Spring, AWS, Microservices, Docker"}
@@ -1972,7 +1940,7 @@ Content-Type: application/json
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileCreateRequest</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileRequest</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">미니 프로필 생성 객체</p></td>
 </tr>
 <tr>
@@ -2428,7 +2396,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 3234
+Content-Length: 3287
 
 {
   "miniProfileResponse" : {
@@ -2444,8 +2412,8 @@ Content-Length: 3234
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "introduction" : true,
     "profileSkill" : true,
+    "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "antecedents" : true,
@@ -2456,8 +2424,9 @@ Content-Length: 3234
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
   },
-  "profileSkillResponse" : {
-    "skillNames" : [ "Java", "React" ]
+  "jobAndSkillResponse" : {
+    "jobRoleNames" : [ "공모전, 대회, 창업" ],
+    "skillNames" : [ "Notion, Figma" ]
   },
   "profileTeamBuildingFieldResponse" : {
     "teamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -2653,14 +2622,19 @@ Content-Length: 3234
 <td class="tableblock halign-left valign-top"><p class="tableblock">소개 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileSkillResponse</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobAndSkillResponse</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스킬 정보</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">나의 직무/역할 및 보유 기술 정보</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileSkillResponse.skillNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobAndSkillResponse.jobRoleNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">스킬 명칭</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무/역할 명칭</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobAndSkillResponse.skillNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">보유 기술 명칭</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileTeamBuildingFieldResponse</code></p></td>
@@ -3061,13 +3035,13 @@ Content-Length: 2437
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "teamProfileTeamBuildingField" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
     "activity" : true,
-    "history" : true
+    "history" : true,
+    "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -3763,7 +3737,7 @@ Content-Length: 102
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-06-29 20:23:55 +0900
+Last updated 2024-06-30 00:08:23 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

@@ -72,11 +72,6 @@ public class Member {
     @Column(nullable = false)
     private boolean existMemberBasicInform;
 
-    // 내 이력서 또는 팀 소개서 2개 중 하나라도 온보딩 작성이 완료된 경우
-    // false(Default) -> false면 어떠한 이력서도 작성되어 있지 않다.
-    @Column(nullable = false)
-    private boolean existOnBoardingProfile;
-
     // 내 이력서 기본 항목 기입 여부
     @Column(nullable = false)
     private boolean existDefaultPrivateProfile;
@@ -102,7 +97,6 @@ public class Member {
         this.modifiedAt = LocalDateTime.now();
         this.memberBasicInform = memberBasicInform;
         this.existMemberBasicInform = false;
-        this.existOnBoardingProfile = false;
         this.existDefaultPrivateProfile = false;
         this.existDefaultTeamProfile = false;
     }

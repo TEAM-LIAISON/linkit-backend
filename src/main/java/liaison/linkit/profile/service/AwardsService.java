@@ -55,10 +55,7 @@ public class AwardsService {
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     // 회원에 대해서 수상 항목을 저장하는 메서드
-    public void saveAll(
-            final Long memberId,
-            final List<AwardsCreateRequest> awardsCreateRequests
-    ) {
+    public void saveAll(final Long memberId, final List<AwardsCreateRequest> awardsCreateRequests) {
         final Profile profile = getProfile(memberId);
 
         // 기존 항목 전체 삭제
@@ -111,30 +108,4 @@ public class AwardsService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_AWARDS_ID));
         return AwardsResponse.personalAwards(awards);
     }
-
-//    public void update(final Long memberId, final AwardsUpdateRequest awardsUpdateRequest){
-//        final Profile profile = getProfile(memberId);
-//        final Awards = getAwards()
-//
-//        final Awards awards = awardsRepository.findById(awardsId)
-//                .orElseThrow(() ->  new BadRequestException(NOT_FOUND_AWARDS_ID));
-//
-//        awards.update(awardsUpdateRequest);
-//        awardsRepository.save(awards);
-//
-//        profile.updateMemberProfileTypeByCompletion();
-//    }
-
-//    public void delete(final Long memberId) {
-//        final Profile profile = profileRepository.findByMemberId(memberId);
-//        final Long awardsId = validateAwardsByMember(memberId);
-//
-//        if(!awardsRepository.existsById(awardsId)){
-//            throw new BadRequestException(NOT_FOUND_AWARDS_ID);
-//        }
-//        awardsRepository.deleteById(awardsId);
-//
-//        profile.updateIsAwards(false);
-//        profile.updateMemberProfileTypeByCompletion();
-//    }
 }

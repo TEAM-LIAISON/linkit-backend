@@ -6,12 +6,11 @@ import liaison.linkit.global.exception.ImageException;
 import liaison.linkit.image.domain.ImageFile;
 import liaison.linkit.image.domain.S3ImageEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
-import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.repository.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.dto.request.miniProfile.MiniProfileCreateRequest;
-import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
+import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +55,7 @@ public class MiniProfileService {
     // 미니 프로필 저장 메서드
     public void save(
             final Long memberId,
-            final MiniProfileCreateRequest miniProfileCreateRequest,
+            final MiniProfileRequest miniProfileRequest,
             final MultipartFile miniProfileImage
     ) {
         final Profile profile = getProfile(memberId);
@@ -70,12 +69,12 @@ public class MiniProfileService {
             final String miniProfileImageUrl = saveImage(miniProfileImage);
             final MiniProfile newMiniProfileByImage = MiniProfile.of(
                     profile,
-                    miniProfileCreateRequest.getProfileTitle(),
-                    miniProfileCreateRequest.getUploadPeriod(),
-                    miniProfileCreateRequest.isUploadDeadline(),
+                    miniProfileRequest.getProfileTitle(),
+                    miniProfileRequest.getUploadPeriod(),
+                    miniProfileRequest.isUploadDeadline(),
                     miniProfileImageUrl,
-                    miniProfileCreateRequest.getMyValue(),
-                    miniProfileCreateRequest.getSkillSets()
+                    miniProfileRequest.getMyValue(),
+                    miniProfileRequest.getSkillSets()
             );
             miniProfileRepository.save(newMiniProfileByImage);
             profile.updateIsMiniProfile(true);
@@ -85,12 +84,12 @@ public class MiniProfileService {
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
                 final MiniProfile newMiniProfileNoImage = MiniProfile.of(
                         profile,
-                        miniProfileCreateRequest.getProfileTitle(),
-                        miniProfileCreateRequest.getUploadPeriod(),
-                        miniProfileCreateRequest.isUploadDeadline(),
+                        miniProfileRequest.getProfileTitle(),
+                        miniProfileRequest.getUploadPeriod(),
+                        miniProfileRequest.isUploadDeadline(),
                         miniProfile.getMiniProfileImg(),
-                        miniProfileCreateRequest.getMyValue(),
-                        miniProfileCreateRequest.getSkillSets()
+                        miniProfileRequest.getMyValue(),
+                        miniProfileRequest.getSkillSets()
                 );
                 miniProfileRepository.deleteByProfileId(profile.getId());
                 miniProfileRepository.save(newMiniProfileNoImage);
@@ -98,12 +97,12 @@ public class MiniProfileService {
             } else {                                                        // 신규 생성인 경우
                 final MiniProfile newMiniProfile = MiniProfile.of(
                         profile,
-                        miniProfileCreateRequest.getProfileTitle(),
-                        miniProfileCreateRequest.getUploadPeriod(),
-                        miniProfileCreateRequest.isUploadDeadline(),
+                        miniProfileRequest.getProfileTitle(),
+                        miniProfileRequest.getUploadPeriod(),
+                        miniProfileRequest.isUploadDeadline(),
                         null,
-                        miniProfileCreateRequest.getMyValue(),
-                        miniProfileCreateRequest.getSkillSets()
+                        miniProfileRequest.getMyValue(),
+                        miniProfileRequest.getSkillSets()
                 );
                 miniProfileRepository.save(newMiniProfile);
                 profile.updateIsMiniProfile(true);
@@ -117,29 +116,6 @@ public class MiniProfileService {
         final Profile profile = getProfile(memberId);
         final MiniProfile miniProfile = getMiniProfile(profile.getId());
         return MiniProfileResponse.personalMiniProfile(miniProfile);
-    }
-
-    // 특정 미니 프로필에 대한 수정 요청이 들어온 상황
-    public void update(final Long memberId, final MiniProfileUpdateRequest miniProfileUpdateRequest) {
-        final Profile profile = getProfile(memberId);
-        final MiniProfile miniProfile = getMiniProfile(profile.getId());
-
-        miniProfile.update(miniProfileUpdateRequest);
-        miniProfileRepository.save(miniProfile);
-    }
-
-    // 미니 프로필 삭제
-    public void delete(final Long memberId){
-        final Profile profile = getProfile(memberId);
-        final MiniProfile miniProfile = getMiniProfile(profile.getId());
-
-        if(!miniProfileRepository.existsById(miniProfile.getId())){
-            // 삭제할 수 있는 미니 프로필이 존재하지 않음.
-            throw new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_MEMBER_ID);
-        }
-
-        miniProfileRepository.deleteById(miniProfile.getId());
-        profile.updateIsMiniProfile(false);
     }
 
 

@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(force = true)
-public class IntroductionCreateRequest {
+public class IntroductionRequest {
 
     @NotNull(message = "자기소개를 반드시 입력해주세요.")
     private final String introduction;
 
-    public IntroductionCreateRequest(final String introduction) {
+    public IntroductionRequest(final String introduction) {
         this.introduction = introduction;
     }
 }

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @AllArgsConstructor
-public class MiniProfileCreateRequest {
+public class MiniProfileRequest {
 
     @NotNull(message = "프로필 제목을 입력해주세요")
     // 나의 프로필 제목
