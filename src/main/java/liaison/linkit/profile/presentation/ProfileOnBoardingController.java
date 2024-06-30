@@ -15,7 +15,7 @@ import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.onBoarding.OnBoardingProfileResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.profile.service.OnBoardingService;
+import liaison.linkit.profile.service.ProfileOnBoardingService;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import liaison.linkit.region.service.ProfileRegionService;
 import lombok.RequiredArgsConstructor;
@@ -32,10 +32,10 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RequiredArgsConstructor
 @RequestMapping
 @Slf4j
-public class OnBoardingController {
+public class ProfileOnBoardingController {
 
     public final MemberService memberService;
-    public final OnBoardingService onBoardingService;
+    public final ProfileOnBoardingService profileOnBoardingService;
     public final MiniProfileService miniProfileService;
     public final TeamBuildingFieldService teamBuildingFieldService;
     public final ProfileRegionService profileRegionService;
@@ -49,9 +49,9 @@ public class OnBoardingController {
             @Auth final Accessor accessor,
             @RequestBody @Valid final OnBoardingPersonalJobAndSkillCreateRequest createRequest
     ) {
-        onBoardingService.savePersonalJobAndRole(accessor.getMemberId(), createRequest.getJobRoleNames());
-        onBoardingService.savePersonalSkill(accessor.getMemberId(), createRequest.getSkillNames());
-        onBoardingService.updateMemberProfileType(accessor.getMemberId());
+        profileOnBoardingService.savePersonalJobAndRole(accessor.getMemberId(), createRequest.getJobRoleNames());
+        profileOnBoardingService.savePersonalSkill(accessor.getMemberId(), createRequest.getSkillNames());
+        profileOnBoardingService.updateMemberProfileType(accessor.getMemberId());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -61,9 +61,9 @@ public class OnBoardingController {
     public ResponseEntity<?> getOnBoardingProfile(@Auth final Accessor accessor) {
         log.info("내 이력서의 온보딩 정보 항목 조회 요청 발생");
         try {
-            onBoardingService.validateProfileByMember(accessor.getMemberId());
+            profileOnBoardingService.validateProfileByMember(accessor.getMemberId());
 
-            final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse = onBoardingService.getProfileOnBoardingIsValue(accessor.getMemberId());
+            final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse = profileOnBoardingService.getProfileOnBoardingIsValue(accessor.getMemberId());
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
             final MemberNameResponse memberNameResponse = getMemberNameResponse(accessor.getMemberId());
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
@@ -72,7 +72,7 @@ public class OnBoardingController {
             final List<EducationResponse> educationResponses = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
             final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
 
-            final OnBoardingProfileResponse onBoardingProfileResponse = onBoardingService.getOnBoardingProfile(
+            final OnBoardingProfileResponse onBoardingProfileResponse = profileOnBoardingService.getOnBoardingProfile(
                     profileTeamBuildingFieldResponse,
                     profileRegionResponse,
                     jobAndSkillResponse,
@@ -139,8 +139,8 @@ public class OnBoardingController {
             final boolean isJobAndSkill
     ) {
         if (isJobAndSkill) {
-            onBoardingService.validateProfileByMember(memberId);
-            return onBoardingService.getJobAndSkill(memberId);
+            profileOnBoardingService.validateProfileByMember(memberId);
+            return profileOnBoardingService.getJobAndSkill(memberId);
         } else {
             return new JobAndSkillResponse();
         }

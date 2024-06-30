@@ -49,11 +49,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(OnBoardingController.class)
+@WebMvcTest(ProfileOnBoardingController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 @Slf4j
-public class OnBoardingControllerTest extends ControllerTest {
+public class ProfileOnBoardingControllerTest extends ControllerTest {
 
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
@@ -61,7 +61,7 @@ public class OnBoardingControllerTest extends ControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
-    private OnBoardingService onBoardingService;
+    private ProfileOnBoardingService profileOnBoardingService;
     @MockBean
     private ProfileService profileService;
     @MockBean
@@ -155,7 +155,7 @@ public class OnBoardingControllerTest extends ControllerTest {
                 true
         );
 
-        given(onBoardingService.getProfileOnBoardingIsValue(1L)).willReturn(profileOnBoardingIsValueResponse);
+        given(profileOnBoardingService.getProfileOnBoardingIsValue(1L)).willReturn(profileOnBoardingIsValueResponse);
         // 1. 희망 팀빌딩 분야
         List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
         final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = new ProfileTeamBuildingFieldResponse(
@@ -169,7 +169,7 @@ public class OnBoardingControllerTest extends ControllerTest {
         List<String> jobRoleNames = Arrays.asList("공모전, 대회, 창업");
         List<String> skillNames = Arrays.asList("Notion, Figma");
         final JobAndSkillResponse jobAndSkillResponse = new JobAndSkillResponse(jobRoleNames, skillNames);
-        given(onBoardingService.getJobAndSkill(1L)).willReturn(jobAndSkillResponse);
+        given(profileOnBoardingService.getJobAndSkill(1L)).willReturn(jobAndSkillResponse);
 
         // 3. 지역 및 위치 정보
         final ProfileRegionResponse profileRegionResponse = new ProfileRegionResponse(
@@ -260,7 +260,7 @@ public class OnBoardingControllerTest extends ControllerTest {
                 memberNameResponse
         );
 
-        given(onBoardingService.getOnBoardingProfile(
+        given(profileOnBoardingService.getOnBoardingProfile(
                 profileTeamBuildingFieldResponse,
                 profileRegionResponse,
                 jobAndSkillResponse,

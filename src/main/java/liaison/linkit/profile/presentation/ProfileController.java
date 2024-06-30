@@ -19,7 +19,7 @@ import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.profile.service.OnBoardingService;
+import liaison.linkit.profile.service.ProfileOnBoardingService;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import liaison.linkit.region.service.ProfileRegionService;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class ProfileController {
 
     public final MemberService memberService;
-    public final OnBoardingService onBoardingService;
+    public final ProfileOnBoardingService profileOnBoardingService;
     public final ProfileService profileService;
     public final MiniProfileService miniProfileService;
     public final CompletionService completionService;
@@ -167,8 +167,8 @@ public class ProfileController {
             final boolean isJobAndSkill
     ) {
         if (isJobAndSkill) {
-            onBoardingService.validateProfileByMember(memberId);
-            return onBoardingService.getJobAndSkill(memberId);
+            profileOnBoardingService.validateProfileByMember(memberId);
+            return profileOnBoardingService.getJobAndSkill(memberId);
         } else {
             return new JobAndSkillResponse();
         }

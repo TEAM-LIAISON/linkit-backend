@@ -21,7 +21,7 @@ import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.profile.service.OnBoardingService;
+import liaison.linkit.profile.service.ProfileOnBoardingService;
 import liaison.linkit.region.dto.response.ProfileRegionResponse;
 import liaison.linkit.region.service.ProfileRegionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -69,7 +69,7 @@ class ProfileControllerTest extends ControllerTest {
     @MockBean
     private ProfileService profileService;
     @MockBean
-    private OnBoardingService onBoardingService;
+    private ProfileOnBoardingService profileOnBoardingService;
     @MockBean
     private MiniProfileService miniProfileService;
     @MockBean
@@ -206,7 +206,7 @@ class ProfileControllerTest extends ControllerTest {
         List<String> jobRoleNames = Arrays.asList("공모전, 대회, 창업");
         List<String> skillNames = Arrays.asList("Notion, Figma");
         final JobAndSkillResponse jobAndSkillResponse = new JobAndSkillResponse(jobRoleNames, skillNames);
-        given(onBoardingService.getJobAndSkill(1L)).willReturn(jobAndSkillResponse);
+        given(profileOnBoardingService.getJobAndSkill(1L)).willReturn(jobAndSkillResponse);
 
         // 5. 희망 팀빌딩 분야 (V)
         List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");

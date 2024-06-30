@@ -36,7 +36,7 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class OnBoardingService {
+public class ProfileOnBoardingService {
 
     private final ProfileRepository profileRepository;
     private final ProfileSkillRepository profileSkillRepository;
