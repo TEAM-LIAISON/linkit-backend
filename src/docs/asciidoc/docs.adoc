@@ -53,10 +53,10 @@ include::{snippets}/member-controller-test/create-member-basic-inform/http-respo
 == 1.5. 내 이력서 온보딩 가이드 기입
 === 1.5.1 내 이력서 / 팀 소개서 구분 중 내 이력서 온보딩 항목 조회
 ==== 요청
-include::{snippets}/on-boarding-controller-test/get-on-boarding-profile/http-request.adoc[]
+include::{snippets}/profile-on-boarding-controller-test/get-on-boarding-profile/http-request.adoc[]
 ==== 응답
-include::{snippets}/on-boarding-controller-test/get-on-boarding-profile/http-response.adoc[]
-include::{snippets}/on-boarding-controller-test/get-on-boarding-profile/response-fields.adoc[]
+include::{snippets}/profile-on-boarding-controller-test/get-on-boarding-profile/http-response.adoc[]
+include::{snippets}/profile-on-boarding-controller-test/get-on-boarding-profile/response-fields.adoc[]
 
 === 1.5.2. 내 이력서 희망 팀빌딩 분야 생성/수정
 ==== 요청
@@ -70,8 +70,8 @@ include::{snippets}/region-controller-test/create-profile-region/request-fields.
 
 === 1.5.4. 내 이력서 희망 역할 + 보유 기술 생성/수정
 ==== 요청
-include::{snippets}/on-boarding-controller-test/create-on-boarding-personal-job-and-skill/http-request.adoc[]
-include::{snippets}/on-boarding-controller-test/create-on-boarding-personal-job-and-skill/request-fields.adoc[]
+include::{snippets}/profile-on-boarding-controller-test/create-on-boarding-personal-job-and-skill/http-request.adoc[]
+include::{snippets}/profile-on-boarding-controller-test/create-on-boarding-personal-job-and-skill/request-fields.adoc[]
 
 === 1.5.6. 내 이력서 학력 생성/수정
 ==== 요청
@@ -114,16 +114,16 @@ include::{snippets}/mini-profile-controller-test/create-mini-profile/request-par
 == 1.5. 팀 소개서 온보딩 가이드 기입
 === 1.5.1. 내 이력서 / 팀 소개서 구분 중 팀 소개서 온보딩 항목 조회
 ==== 요청
-include::{snippets}/team-profile-controller-test/get-on-boarding-team-profile/http-request.adoc[]
+include::{snippets}/team-on-boarding-controller-test/get-on-boarding-team-profile/http-request.adoc[]
 
 ==== 응답
-include::{snippets}/team-profile-controller-test/get-on-boarding-team-profile/http-response.adoc[]
-include::{snippets}/team-profile-controller-test/get-on-boarding-team-profile/response-fields.adoc[]
+include::{snippets}/team-on-boarding-controller-test/get-on-boarding-team-profile/http-response.adoc[]
+include::{snippets}/team-on-boarding-controller-test/get-on-boarding-team-profile/response-fields.adoc[]
 
 === 1.5.9. 팀 소개서 희망 팀빌딩 분야 및 팀 기본 정보 생성/수정
 ==== 요청
-include::{snippets}/team-profile-controller-test/post-on-boarding-field-team-inform/http-request.adoc[]
-include::{snippets}/team-profile-controller-test/post-on-boarding-field-team-inform/request-fields.adoc[]
+include::{snippets}/team-on-boarding-controller-test/post-on-boarding-field-team-inform/http-request.adoc[]
+include::{snippets}/team-on-boarding-controller-test/post-on-boarding-field-team-inform/request-fields.adoc[]
 
 === 1.5.10. 팀 소개서 활동방식 및 활동 지역 및 위치 생성/수정
 ==== 요청

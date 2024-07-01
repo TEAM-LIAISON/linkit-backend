@@ -703,7 +703,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 7 Jul 2024 12:36:08 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Mon, 8 Jul 2024 03:38:16 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -1039,7 +1039,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1721
+Content-Length: 1782
 
 {
   "profileTeamBuildingFieldResponse" : {
@@ -1095,7 +1095,7 @@ Content-Length: 1721
     "uploadDeadline" : true,
     "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
     "myValue" : "혁신, 팀워크, 의지",
-    "skillSets" : "Java, Spring, AWS, Microservices, Docker"
+    "myKeywordNames" : [ "2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년" ]
   },
   "memberNameResponse" : {
     "memberName" : "권동민"
@@ -1258,9 +1258,9 @@ Content-Length: 1721
 <td class="tableblock halign-left valign-top"><p class="tableblock">협업 시 중요한 나의 가치</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.skillSets</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">나의 스킬셋</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.myKeywordNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">나를 소개하는 키워드 목록</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberNameResponse</code></p></td>
@@ -1787,7 +1787,7 @@ Content-Type: multipart/form-data
 Content-Disposition: form-data; name=miniProfileRequest
 Content-Type: application/json
 
-{"profileTitle":"시니어 소프트웨어 개발자","uploadPeriod":"2024-10-20","uploadDeadline":true,"myValue":"혁신, 팀워크, 의지","skillSets":"Java, Spring, AWS, Microservices, Docker"}
+{"profileTitle":"시니어 소프트웨어 개발자","uploadPeriod":"2024-10-20","uploadDeadline":true,"myValue":"혁신, 팀워크, 의지","myKeywordNames":["2024 레드닷 수상","스타트업 경력","서울대 디자인","대기업 경력 3년"]}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -1848,9 +1848,9 @@ Content-Type: application/json
 <td class="tableblock halign-left valign-top"><p class="tableblock">협업 시 중요한 나의 가치</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>skillSets</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">나의 스킬셋</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myKeywordNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">나를 소개하는 키워드 목록</p></td>
 </tr>
 </tbody>
 </table>
@@ -1867,7 +1867,7 @@ Content-Type: application/json
 <h4 id="_요청_12"><a class="link" href="#_요청_12">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /team_profile/onBoarding HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /onBoarding/team HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refresh-token=refreshToken</code></pre>
@@ -1883,7 +1883,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 884
+Content-Length: 829
 
 {
   "onBoardingFieldTeamInformResponse" : {
@@ -1905,8 +1905,7 @@ Content-Length: 884
     "teamUploadPeriod" : "2024-10-20",
     "teamUploadDeadline" : true,
     "teamLogoImageUrl" : "https://image.linkit.im/images/linkit_logo.png",
-    "teamValue" : "빠르게 성장하는 팀, 최단기간 튜자 유치",
-    "teamDetailInform" : "#해커톤 #사무실 있음 #서울시"
+    "teamKeywordNames" : [ "재택 가능", "Pre-A", "사수 있음", "스톡 제공" ]
   }
 }</code></pre>
 </div>
@@ -2011,14 +2010,9 @@ Content-Length: 884
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 미니 프로필 이미지 경로</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMiniProfileResponse.teamValue</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 가치</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMiniProfileResponse.teamDetailInform</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 세부 정보</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMiniProfileResponse.teamKeywordNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개 항목</p></td>
 </tr>
 </tbody>
 </table>
@@ -2030,7 +2024,7 @@ Content-Length: 884
 <h4 id="_요청_13"><a class="link" href="#_요청_13">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /team_profile/field/basic-team HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /team/teamBuildingField/basicInform HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refresh-token=refreshToken
@@ -2164,7 +2158,7 @@ Content-Type: multipart/form-data
 Content-Disposition: form-data; name=teamMiniProfileCreateRequest
 Content-Type: application/json
 
-{"teamProfileTitle":"사이드 프로젝트 함께 할 개발자를 찾고 있어요","teamUploadPeriod":"2024-10-20","teamUploadDeadline":true,"teamValue":"빠르게 성장하는 팀, 최단기간 투자 유치","teamDetailInform":"#해커톤 #사무실 있음 #서울시"}
+{"teamProfileTitle":"사이드 프로젝트 함께 할 개발자를 찾고 있어요","teamUploadPeriod":"2024-10-20","teamUploadDeadline":true,"teamKeywordNames":["재택 가능","Pre-A","사수 있음","스톡 제공"]}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -2220,14 +2214,9 @@ Content-Type: application/json
 <td class="tableblock halign-left valign-top"><p class="tableblock">업로드 마감 선택 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamValue</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀을 홍보할 수 있는 가치</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamDetailInform</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 세부 정보</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamKeywordNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개 항목</p></td>
 </tr>
 </tbody>
 </table>
@@ -2260,7 +2249,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 3287
+Content-Length: 3348
 
 {
   "miniProfileResponse" : {
@@ -2269,21 +2258,21 @@ Content-Length: 3287
     "uploadDeadline" : true,
     "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
     "myValue" : "혁신, 팀워크, 의지",
-    "skillSets" : "Java, Spring, AWS, Microservices, Docker"
+    "myKeywordNames" : [ "2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년" ]
   },
   "memberNameResponse" : {
     "memberName" : "권동민"
   },
   "completionResponse" : {
     "completion" : "100.0",
+    "awards" : true,
+    "attach" : true,
+    "profileSkill" : true,
+    "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
-    "education" : true,
     "antecedents" : true,
-    "introduction" : true,
-    "profileSkill" : true,
-    "awards" : true,
-    "attach" : true
+    "education" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -2411,9 +2400,9 @@ Content-Length: 3287
 <td class="tableblock halign-left valign-top"><p class="tableblock">사용자의 가치</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.skillSets</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사용자의 스킬 세트</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.myKeywordNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">나를 소개하는 키워드 목록</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberNameResponse</code></p></td>
@@ -2870,7 +2859,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2437
+Content-Length: 2415
 
 {
   "teamMiniProfileResponse" : {
@@ -2881,17 +2870,16 @@ Content-Length: 2437
     "teamUploadPeriod" : "2024-10-09",
     "teamUploadDeadline" : false,
     "teamLogoImageUrl" : "https://image.linkit.im/images/linkit_logo.png",
-    "teamValue" : "팀의 홍보 가치입니다.",
-    "teamDetailInform" : "팀의 세부 정보입니다."
+    "teamKeywordNames" : [ "재택 가능", "Pre-A", "사수 있음", "스톡 제공" ]
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
+    "history" : true,
+    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
-    "activity" : true,
-    "history" : true,
     "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
@@ -3003,14 +2991,9 @@ Content-Length: 2437
 <td class="tableblock halign-left valign-top"><p class="tableblock">이미지 파일 소스 경로</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMiniProfileResponse.teamValue</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 가치</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMiniProfileResponse.teamDetailInform</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 세부 정보</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMiniProfileResponse.teamKeywordNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개 항목</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamCompletionResponse</code></p></td>
@@ -3235,7 +3218,7 @@ Cookie: refresh-token=refreshToken
 <h4 id="_요청_21"><a class="link" href="#_요청_21">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /team_profile/introduction HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /team/introduction HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refresh-token=refreshToken
@@ -3588,7 +3571,7 @@ Content-Length: 102
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-06-30 21:19:19 +0900
+Last updated 2024-07-01 11:17:05 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

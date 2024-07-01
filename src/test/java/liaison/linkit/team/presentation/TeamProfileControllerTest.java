@@ -132,8 +132,7 @@ public class TeamProfileControllerTest extends ControllerTest {
                 LocalDate.of(2024, 10, 9),
                 false,
                 "https://image.linkit.im/images/linkit_logo.png",
-                "팀의 홍보 가치입니다.",
-                "팀의 세부 정보입니다."
+                Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
         );
         given(teamMiniProfileService.getPersonalTeamMiniProfile(1L)).willReturn(teamMiniProfileResponse);
 
@@ -301,8 +300,7 @@ public class TeamProfileControllerTest extends ControllerTest {
                                         fieldWithPath("teamMiniProfileResponse.teamUploadPeriod").type(JsonFieldType.STRING).description("업로드 기간"),
                                         fieldWithPath("teamMiniProfileResponse.teamUploadDeadline").type(JsonFieldType.BOOLEAN).description("계속 업로드/마감 여부"),
                                         fieldWithPath("teamMiniProfileResponse.teamLogoImageUrl").type(JsonFieldType.STRING).description("이미지 파일 소스 경로"),
-                                        fieldWithPath("teamMiniProfileResponse.teamValue").type(JsonFieldType.STRING).description("팀 가치"),
-                                        fieldWithPath("teamMiniProfileResponse.teamDetailInform").type(JsonFieldType.STRING).description("팀 세부 정보"),
+                                        fieldWithPath("teamMiniProfileResponse.teamKeywordNames").type(JsonFieldType.ARRAY).description("팀 소개 항목").attributes(field("constraint", "문자열 배열")),
 
                                         // 4.3.
                                         subsectionWithPath("teamCompletionResponse").type(JsonFieldType.OBJECT).description("팀 소개서 완성도 응답 객체"),

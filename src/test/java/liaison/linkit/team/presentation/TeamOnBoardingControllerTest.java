@@ -154,8 +154,7 @@ class TeamOnBoardingControllerTest extends ControllerTest {
                 LocalDate.of(2024, 10, 20),
                 true,
                 "https://image.linkit.im/images/linkit_logo.png",
-                "빠르게 성장하는 팀, 최단기간 튜자 유치",
-                "#해커톤 #사무실 있음 #서울시"
+                Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
         );
 
         given(teamMiniProfileService.getPersonalTeamMiniProfile(1L)).willReturn(teamMiniProfileResponse);
@@ -196,8 +195,7 @@ class TeamOnBoardingControllerTest extends ControllerTest {
                                         fieldWithPath("teamMiniProfileResponse.teamUploadPeriod").description("팀 미니 프로필 공고 업로드 기간").attributes(field("constraint", "LocalDate")),
                                         fieldWithPath("teamMiniProfileResponse.teamUploadDeadline").description("공고 마감 선택 여부").attributes(field("constraint", "boolean")),
                                         fieldWithPath("teamMiniProfileResponse.teamLogoImageUrl").description("팀 미니 프로필 이미지 경로").attributes(field("constraint", "문자열")),
-                                        fieldWithPath("teamMiniProfileResponse.teamValue").description("팀 가치").attributes(field("constraint", "문자열")),
-                                        fieldWithPath("teamMiniProfileResponse.teamDetailInform").description("팀 세부 정보").attributes(field("constraint", "문자열"))
+                                        fieldWithPath("teamMiniProfileResponse.teamKeywordNames").description("팀 소개 항목").attributes(field("constraint", "문자열"))
                                 )
                         )
                 );

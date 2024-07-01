@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -20,9 +21,6 @@ public class TeamMiniProfileCreateRequest {
     @NotNull(message = "업로드 마감 여부를 선택해주세요")
     private final boolean teamUploadDeadline;
 
-    @NotNull(message = "팀을 홍보할 수 있는 가치를 써주세요")
-    private final String teamValue;
-
-    @NotNull(message = "팀 세부 정보를 알려주세요")
-    private final String teamDetailInform;
+    @NotNull(message = "팀을 소개하는 키워드를 알려주세요")
+    private final List<String> teamKeywordNames;
 }

@@ -1,10 +1,12 @@
 package liaison.linkit.team.dto.response.miniProfile;
 
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
+import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -17,8 +19,7 @@ public class TeamMiniProfileResponse {
     private final LocalDate teamUploadPeriod;
     private final Boolean teamUploadDeadline;
     private final String teamLogoImageUrl;
-    private final String teamValue;
-    private final String teamDetailInform;
+    private final List<String> teamKeywordNames;
 
     public TeamMiniProfileResponse() {
         this.sectorName = null;
@@ -28,11 +29,14 @@ public class TeamMiniProfileResponse {
         this.teamUploadPeriod = null;
         this.teamUploadDeadline = null;
         this.teamLogoImageUrl = null;
-        this.teamValue = null;
-        this.teamDetailInform = null;
+        this.teamKeywordNames = null;
     }
 
     public static TeamMiniProfileResponse personalTeamMiniProfile(final TeamMiniProfile teamMiniProfile) {
+        final List<String> keywordNames = teamMiniProfile.getTeamMiniProfileKeywordArrayList().stream()
+                .map(TeamMiniProfileKeyword::getTeamKeywordNames)
+                .toList();
+
         return new TeamMiniProfileResponse(
                 teamMiniProfile.getIndustrySector().getSectorName(),
                 teamMiniProfile.getTeamScale().getSizeType(),
@@ -41,19 +45,7 @@ public class TeamMiniProfileResponse {
                 teamMiniProfile.getTeamUploadPeriod(),
                 teamMiniProfile.getTeamUploadDeadline(),
                 teamMiniProfile.getTeamLogoImageUrl(),
-                teamMiniProfile.getTeamValue(),
-                teamMiniProfile.getTeamDetailInform()
+                keywordNames
         );
     }
-
-//    public static TeamMiniProfileResponse personalTeamMiniProfile(
-//            final TeamMiniProfile teamMiniProfile
-//    ) {
-//        return new TeamMiniProfileResponse(
-//                teamMiniProfile.getTeamName(),
-//                teamMiniProfile.getTeamOneLineIntroduction(),
-//                teamMiniProfile.getTeamLink()
-//        );
-//    }
-
 }

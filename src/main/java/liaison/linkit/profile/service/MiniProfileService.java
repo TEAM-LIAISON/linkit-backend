@@ -8,6 +8,7 @@ import liaison.linkit.image.domain.S3ImageEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
+import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import liaison.linkit.profile.domain.repository.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
@@ -18,6 +19,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
@@ -59,6 +63,10 @@ public class MiniProfileService {
             final MultipartFile miniProfileImage
     ) {
         final Profile profile = getProfile(memberId);
+        final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
+                .map(keyWordName -> new MiniProfileKeyword(null, null, keyWordName))
+                .collect(Collectors.toList());
+
         if (miniProfileImage != null) {
             // 전달받은 multipartFile을 파일 경로에 맞게 전달하는 작업이 필요함 (save)
             if (miniProfileRepository.existsByProfileId(profile.getId())) {
@@ -66,16 +74,18 @@ public class MiniProfileService {
                 s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
                 miniProfileRepository.deleteByProfileId(profile.getId());
             }
+
             final String miniProfileImageUrl = saveImage(miniProfileImage);
             final MiniProfile newMiniProfileByImage = MiniProfile.of(
                     profile,
+                    miniProfileKeywordList,
                     miniProfileRequest.getProfileTitle(),
                     miniProfileRequest.getUploadPeriod(),
                     miniProfileRequest.isUploadDeadline(),
                     miniProfileImageUrl,
-                    miniProfileRequest.getMyValue(),
-                    miniProfileRequest.getSkillSets()
+                    miniProfileRequest.getMyValue()
             );
+
             miniProfileRepository.save(newMiniProfileByImage);
             profile.updateIsMiniProfile(true);
         } else {
@@ -84,12 +94,12 @@ public class MiniProfileService {
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
                 final MiniProfile newMiniProfileNoImage = MiniProfile.of(
                         profile,
+                        miniProfileKeywordList,
                         miniProfileRequest.getProfileTitle(),
                         miniProfileRequest.getUploadPeriod(),
                         miniProfileRequest.isUploadDeadline(),
                         miniProfile.getMiniProfileImg(),
-                        miniProfileRequest.getMyValue(),
-                        miniProfileRequest.getSkillSets()
+                        miniProfileRequest.getMyValue()
                 );
                 miniProfileRepository.deleteByProfileId(profile.getId());
                 miniProfileRepository.save(newMiniProfileNoImage);
@@ -97,12 +107,12 @@ public class MiniProfileService {
             } else {                                                        // 신규 생성인 경우
                 final MiniProfile newMiniProfile = MiniProfile.of(
                         profile,
+                        miniProfileKeywordList,
                         miniProfileRequest.getProfileTitle(),
                         miniProfileRequest.getUploadPeriod(),
                         miniProfileRequest.isUploadDeadline(),
                         null,
-                        miniProfileRequest.getMyValue(),
-                        miniProfileRequest.getSkillSets()
+                        miniProfileRequest.getMyValue()
                 );
                 miniProfileRepository.save(newMiniProfile);
                 profile.updateIsMiniProfile(true);

@@ -7,8 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -26,6 +29,9 @@ public class MiniProfile {
     @JoinColumn(name = "profile_id", unique = true)
     private Profile profile;
 
+    @OneToMany(mappedBy = "miniProfile", cascade = REMOVE)
+    private List<MiniProfileKeyword> miniProfileKeywordList = new ArrayList<>();
+
     // 프로필 제목
     @Column(length = 40)
     private String profileTitle;
@@ -42,28 +48,24 @@ public class MiniProfile {
     // 나의 가치
     private String myValue;
 
-    // 나의 스킬셋
-    private String skillSets;
-
     public static MiniProfile of(
             final Profile profile,
+            final List<MiniProfileKeyword> miniProfileKeywordList,
             final String profileTitle,
             final LocalDate uploadPeriod,
             final boolean uploadDeadline,
             final String miniProfileImg,
-            final String myValue,
-            final String skillSets
-
+            final String myValue
     ) {
         return new MiniProfile(
                 null,
                 profile,
+                miniProfileKeywordList,
                 profileTitle,
                 uploadPeriod,
                 uploadDeadline,
                 miniProfileImg,
-                myValue,
-                skillSets
+                myValue
         );
     }
 }

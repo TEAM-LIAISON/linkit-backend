@@ -7,8 +7,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -26,6 +29,9 @@ public class TeamMiniProfile {
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "team_profile_id", unique = true)
     private TeamProfile teamProfile;
+
+    @OneToMany(mappedBy = "teamMiniProfile", cascade = REMOVE)
+    private List<TeamMiniProfileKeyword> teamMiniProfileKeywordArrayList = new ArrayList<>();
 
     // 팀 분야
     @ManyToOne(fetch = LAZY)
@@ -57,38 +63,29 @@ public class TeamMiniProfile {
     @Column(name = "team_logo_image_url")
     private String teamLogoImageUrl;
 
-    // 팀 홍보 가치
-    @Column(name = "team_value")
-    private String teamValue;
-
-    // 팀 세부 정보
-    @Column(name = "team_detail_inform")
-    private String teamDetailInform;
 
     public static TeamMiniProfile of(
             final TeamProfile teamProfile,
+            final List<TeamMiniProfileKeyword> teamMiniProfileKeywordArrayList,
             final IndustrySector industrySector,
             final TeamScale teamScale,
             final String teamName,
             final String teamProfileTitle,
             final LocalDate teamUploadPeriod,
             final Boolean teamUploadDeadline,
-            final String teamLogoImageUrl,
-            final String teamValue,
-            final String teamDetailInform
+            final String teamLogoImageUrl
     ) {
         return new TeamMiniProfile(
                 null,
                 teamProfile,
+                teamMiniProfileKeywordArrayList,
                 industrySector,
                 teamScale,
                 teamName,
                 teamProfileTitle,
                 teamUploadPeriod,
                 teamUploadDeadline,
-                teamLogoImageUrl,
-                teamValue,
-                teamDetailInform
+                teamLogoImageUrl
         );
     }
 
@@ -97,14 +94,12 @@ public class TeamMiniProfile {
             final LocalDate teamUploadPeriod,
             final boolean teamUploadDeadline,
             final String teamLogoImageUrl,
-            final String teamValue,
-            final String teamDetailInform
+            final List<TeamMiniProfileKeyword> teamMiniProfileKeywordArrayList
     ) {
         this.teamProfileTitle = teamProfileTitle;
         this.teamUploadPeriod = teamUploadPeriod;
         this.teamUploadDeadline = teamUploadDeadline;
         this.teamLogoImageUrl = teamLogoImageUrl;
-        this.teamValue = teamValue;
-        this.teamDetailInform = teamDetailInform;
+        this.teamMiniProfileKeywordArrayList = teamMiniProfileKeywordArrayList;
     }
 }

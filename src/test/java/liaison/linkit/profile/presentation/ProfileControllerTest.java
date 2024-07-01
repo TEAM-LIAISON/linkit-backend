@@ -171,7 +171,7 @@ class ProfileControllerTest extends ControllerTest {
                 true,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "혁신, 팀워크, 의지",
-                "Java, Spring, AWS, Microservices, Docker"
+                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년")
         );
 
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
@@ -380,7 +380,7 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("miniProfileResponse.uploadDeadline").type(JsonFieldType.BOOLEAN).description("업로드 마감일 여부"),
                                         fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
                                         fieldWithPath("miniProfileResponse.myValue").type(JsonFieldType.STRING).description("사용자의 가치"),
-                                        fieldWithPath("miniProfileResponse.skillSets").type(JsonFieldType.STRING).description("사용자의 스킬 세트"),
+                                        fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
 
                                         // memberNameResponse
                                         subsectionWithPath("memberNameResponse").description("회원 이름 정보"),

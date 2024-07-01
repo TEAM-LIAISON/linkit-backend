@@ -239,7 +239,7 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
                 true,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "혁신, 팀워크, 의지",
-                "Java, Spring, AWS, Microservices, Docker"
+                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년")
         );
 
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
@@ -321,7 +321,7 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
                                         fieldWithPath("miniProfileResponse.uploadPeriod").description("프로필 업로드 기간").attributes(field("constraint", "LocalDate")),
                                         fieldWithPath("miniProfileResponse.uploadDeadline").description("마감 선택 여부"),
                                         fieldWithPath("miniProfileResponse.myValue").description("협업 시 중요한 나의 가치"),
-                                        fieldWithPath("miniProfileResponse.skillSets").description("나의 스킬셋"),
+                                        fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
 
                                         // memberNameResponse
                                         subsectionWithPath("memberNameResponse").description("회원 이름 정보"),

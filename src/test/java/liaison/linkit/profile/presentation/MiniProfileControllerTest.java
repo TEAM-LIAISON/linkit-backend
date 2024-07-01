@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
@@ -91,7 +92,7 @@ class MiniProfileControllerTest extends ControllerTest {
                 LocalDate.of(2024, 10,20),
                 true,
                 "혁신, 팀워크, 의지",
-                "Java, Spring, AWS, Microservices, Docker"
+                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년")
         );
 
         final MockMultipartFile miniProfileImage = new MockMultipartFile(
@@ -141,7 +142,7 @@ class MiniProfileControllerTest extends ControllerTest {
                                 fieldWithPath("uploadPeriod").description("프로필 업로드 기간").attributes(field("constraint", "LocalDate")),
                                 fieldWithPath("uploadDeadline").description("마감 선택 여부"),
                                 fieldWithPath("myValue").description("협업 시 중요한 나의 가치"),
-                                fieldWithPath("skillSets").description("나의 스킬셋")
+                                fieldWithPath("myKeywordNames").description("나를 소개하는 키워드 목록").attributes(field("constraint", "문자열 배열"))
                         )
                 ));
     }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -26,7 +27,6 @@ public class MiniProfileRequest {
     // 협업 시 중요한 나의 가치
     private final String myValue;
 
-    @NotNull(message = "나의 스킬셋을 알려주세요")
-    // 나의 스킬셋
-    private final String skillSets;
+    @NotNull(message = "나를 소개하는 키워드를 알려주세요")
+    private final List<String> myKeywordNames;
 }
