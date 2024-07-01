@@ -1,6 +1,8 @@
 package liaison.linkit.team.domain.repository.miniprofile;
 
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +22,6 @@ public interface TeamMiniProfileRepository extends JpaRepository<TeamMiniProfile
     @Modifying
     @Query("DELETE FROM TeamMiniProfile teamMiniProfile WHERE teamMiniProfile.teamProfile.id = :teamProfileId")
     void deleteByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
+
+    Page<TeamMiniProfile> findAllByOrderByCreatedDateDesc(final Pageable pageable);
 }

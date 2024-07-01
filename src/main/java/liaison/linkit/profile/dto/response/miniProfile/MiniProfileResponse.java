@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
@@ -28,10 +29,11 @@ public class MiniProfileResponse {
         this.myKeywordNames = null;
     }
 
-    public static MiniProfileResponse of(final MiniProfile miniProfile) {
-        final List<String> keywordNames = miniProfile.getMiniProfileKeywordList().stream()
-                .map(MiniProfileKeyword::getMyKeywordNames)
-                .toList();
+    public static MiniProfileResponse personalMiniProfile(final MiniProfile miniProfile, final List<MiniProfileKeyword> miniProfileKeywords) {
+
+        List<String> myKeywordNames = miniProfileKeywords.stream()
+                .map(MiniProfileKeyword::getMyKeywordNames) // 올바른 메서드 참조 사용
+                .collect(Collectors.toList());
 
         return new MiniProfileResponse(
                 miniProfile.getProfileTitle(),
@@ -39,23 +41,7 @@ public class MiniProfileResponse {
                 miniProfile.isUploadDeadline(),
                 miniProfile.getMiniProfileImg(),
                 miniProfile.getMyValue(),
-                keywordNames
-        );
-    }
-
-    public static MiniProfileResponse personalMiniProfile(final MiniProfile miniProfile) {
-
-        final List<String> keywordNames = miniProfile.getMiniProfileKeywordList().stream()
-                .map(MiniProfileKeyword::getMyKeywordNames)
-                .toList();
-
-        return new MiniProfileResponse(
-                miniProfile.getProfileTitle(),
-                miniProfile.getUploadPeriod(),
-                miniProfile.isUploadDeadline(),
-                miniProfile.getMiniProfileImg(),
-                miniProfile.getMyValue(),
-                keywordNames
+                myKeywordNames
         );
     }
 

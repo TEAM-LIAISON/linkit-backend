@@ -7,11 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -19,7 +17,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MiniProfile {
+public class MiniProfile{
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "mini_profile_id")
@@ -29,8 +27,6 @@ public class MiniProfile {
     @JoinColumn(name = "profile_id", unique = true)
     private Profile profile;
 
-    @OneToMany(mappedBy = "miniProfile", cascade = REMOVE)
-    private List<MiniProfileKeyword> miniProfileKeywordList = new ArrayList<>();
 
     // 프로필 제목
     @Column(length = 40)
@@ -48,9 +44,18 @@ public class MiniProfile {
     // 나의 가치
     private String myValue;
 
+    // 생성 날짜
+    @Column(updatable = false)
+    private LocalDateTime createdDate;
+
+    // 엔티티가 처음 저장될 때 createdDate를 현재 시간으로 설정
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDateTime.now();
+    }
+
     public static MiniProfile of(
             final Profile profile,
-            final List<MiniProfileKeyword> miniProfileKeywordList,
             final String profileTitle,
             final LocalDate uploadPeriod,
             final boolean uploadDeadline,
@@ -60,12 +65,12 @@ public class MiniProfile {
         return new MiniProfile(
                 null,
                 profile,
-                miniProfileKeywordList,
                 profileTitle,
                 uploadPeriod,
                 uploadDeadline,
                 miniProfileImg,
-                myValue
+                myValue,
+                null
         );
     }
 }

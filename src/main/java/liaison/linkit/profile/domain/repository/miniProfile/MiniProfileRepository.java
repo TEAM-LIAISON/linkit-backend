@@ -1,6 +1,8 @@
-package liaison.linkit.profile.domain.repository;
+package liaison.linkit.profile.domain.repository.miniProfile;
 
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +20,6 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
     @Transactional // 메서드가 트랜잭션 내에서 실행되어야 함을 나타낸다.
     @Query("DELETE FROM MiniProfile miniProfile WHERE miniProfile.profile.id = :profileId")
     void deleteByProfileId(@Param("profileId") final Long profileId);
+
+    Page<MiniProfile> findAllByOrderByCreatedDateDesc(final Pageable pageable);
 }

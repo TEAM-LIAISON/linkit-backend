@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,6 +64,15 @@ public class TeamMiniProfile {
     @Column(name = "team_logo_image_url")
     private String teamLogoImageUrl;
 
+    // 생성 날짜
+    @Column(updatable = false)
+    private LocalDateTime createdDate;
+
+    // 엔티티가 처음 저장될 때 createdDate를 현재 시간으로 설정
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDateTime.now();
+    }
 
     public static TeamMiniProfile of(
             final TeamProfile teamProfile,
@@ -85,7 +95,8 @@ public class TeamMiniProfile {
                 teamProfileTitle,
                 teamUploadPeriod,
                 teamUploadDeadline,
-                teamLogoImageUrl
+                teamLogoImageUrl,
+                null
         );
     }
 
