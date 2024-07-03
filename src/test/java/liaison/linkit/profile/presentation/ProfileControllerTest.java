@@ -113,7 +113,7 @@ class ProfileControllerTest extends ControllerTest {
 
     private ResultActions performGetProfileRequest() throws Exception {
         return mockMvc.perform(
-                get("/profile")
+                get("/private/profile")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -122,7 +122,7 @@ class ProfileControllerTest extends ControllerTest {
 
     private ResultActions performCreateRequest(final IntroductionRequest introductionRequest) throws Exception {
         return mockMvc.perform(
-                post("/profile/introduction")
+                post("/private/introduction")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)

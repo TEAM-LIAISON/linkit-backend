@@ -47,7 +47,7 @@ public class TeamProfileController {
     final TeamAttachService teamAttachService;
 
     // 팀 소개서 전체 조회
-    @GetMapping("/team_profile")
+    @GetMapping("/team/profile")
     @MemberOnly
     public ResponseEntity<?> getTeamProfile(@Auth final Accessor accessor) {
         try {

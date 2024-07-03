@@ -94,7 +94,7 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
 
     private ResultActions performGetOnBoardingProfileRequest() throws Exception {
         return mockMvc.perform(
-                get("/onBoarding/private")
+                get("/private/onBoarding")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)

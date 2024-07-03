@@ -56,6 +56,11 @@ public class TeamAttachService {
         }
     }
 
+    private TeamAttachUrl getTeamAttachUrl(final Long teamAttachUrlId) {
+        return teamAttachUrlRepository.findById(teamAttachUrlId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_ATTACH_URL_ID));
+    }
+
     // 팀 첨부 URL 저장
     public void saveUrl(
             final Long memberId,
@@ -153,5 +158,18 @@ public class TeamAttachService {
             final TeamAttachUrl teamAttachUrl
     ) {
         return TeamAttachUrlResponse.getTeamAttachUrl(teamAttachUrl);
+    }
+
+    // 특정 팀 첨부 URL 삭제 By teamAttachUrlId
+    public void deleteTeamAttachUrl(Long memberId, Long teamAttachUrlId) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        final TeamAttachUrl teamAttachUrl = getTeamAttachUrl(teamAttachUrlId);
+
+        teamAttachUrlRepository.deleteById(teamAttachUrl.getId());
+
+        if (!teamAttachUrlRepository.existsByTeamProfileId(teamProfile.getId())) {
+            teamProfile.cancelTeamPerfectionTwoPointFive();
+            teamProfile.updateMemberTeamProfileTypeByCompletion();
+        }
     }
 }

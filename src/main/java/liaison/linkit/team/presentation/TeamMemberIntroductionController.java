@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/team/team_member")
+@RequestMapping("/team/members")
 public class TeamMemberIntroductionController {
 
     private final TeamMemberIntroductionService teamMemberIntroductionService;

@@ -24,7 +24,7 @@ public class TeamMemberAnnouncementController {
 
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
-    @PostMapping("/members/announcement")
+    @PostMapping("/members/announcements")
     @MemberOnly
     public ResponseEntity<Void> postTeamMemberAnnouncement(
             @Auth final Accessor accessor,

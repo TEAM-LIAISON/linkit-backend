@@ -33,7 +33,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/profile")
+@RequestMapping
 @Slf4j
 public class ProfileController {
 
@@ -51,7 +51,7 @@ public class ProfileController {
     public final ProfileRegionService profileRegionService;
 
     // 자기소개 생성/수정 메서드
-    @PostMapping("/introduction")
+    @PostMapping("/private/introduction")
     @MemberOnly
     public ResponseEntity<Void> createProfileIntroduction(
             @Auth final Accessor accessor,
@@ -63,7 +63,7 @@ public class ProfileController {
     }
 
     // 내 이력서 전체 조회 GET 메서드
-    @GetMapping
+    @GetMapping("/private/profile")
     @MemberOnly
     public ResponseEntity<?> getMyProfile(@Auth final Accessor accessor) {
         log.info("내 이력서의 전체 항목 조회 요청 발생");

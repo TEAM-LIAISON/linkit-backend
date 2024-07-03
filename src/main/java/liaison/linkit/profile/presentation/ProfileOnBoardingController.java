@@ -56,7 +56,7 @@ public class ProfileOnBoardingController {
     }
 
     // 온보딩 항목 전체 조회
-    @GetMapping("/onBoarding/private")
+    @GetMapping("/private/onBoarding")
     @MemberOnly
     public ResponseEntity<?> getOnBoardingProfile(@Auth final Accessor accessor) {
         log.info("내 이력서의 온보딩 정보 항목 조회 요청 발생");

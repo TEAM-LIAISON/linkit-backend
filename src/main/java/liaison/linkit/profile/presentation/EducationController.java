@@ -31,7 +31,7 @@ public class EducationController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{educationId}")
+    @DeleteMapping("/education/{educationId}")
     @MemberOnly
     public ResponseEntity<Void> deleteEducation(
             @Auth final Accessor accessor,

@@ -110,6 +110,8 @@ public class TeamMiniProfileService {
             final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
             final MultipartFile teamMiniProfileImage
     ) {
+        // 미니 프로필 내에 기본 정보를 입력한 사람과 입력하지 않은 사람으로 나뉜다.
+
         final TeamProfile teamProfile = getTeamProfile(memberId);
         final TeamMiniProfile teamMiniProfile = getTeamMiniProfile(teamProfile.getId());
 

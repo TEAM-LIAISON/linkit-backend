@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/team_profile_team_building_field")
+@RequestMapping("/team/team_building_field")
 public class TeamProfileTeamBuildingFieldController {
 
     private final TeamProfileTeamBuildingFieldService teamProfileTeamBuildingFieldService;

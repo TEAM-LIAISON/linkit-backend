@@ -18,12 +18,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/team/history")
+@RequestMapping
 public class HistoryController {
 
     private final HistoryService historyService;
 
-    @PostMapping
+    @PostMapping("/team/histories")
     @MemberOnly
     public ResponseEntity<Void> createHistory(
             @Auth final Accessor accessor,

@@ -108,4 +108,17 @@ public class AwardsService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_AWARDS_ID));
         return AwardsResponse.personalAwards(awards);
     }
+
+    public void deleteAwards(final Long memberId, final Long awardsId) {
+        final Profile profile = getProfile(memberId);
+        final Awards awards = getAwards(awardsId);
+
+        awardsRepository.deleteById(awards.getId());
+
+        if (!awardsRepository.existsByProfileId(profile.getId())) {
+            // 존재하지 않는 경우
+            profile.cancelPerfectionTen();
+            profile.updateMemberProfileTypeByCompletion();
+        }
+    }
 }

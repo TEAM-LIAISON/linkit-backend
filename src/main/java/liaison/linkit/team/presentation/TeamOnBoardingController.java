@@ -35,7 +35,7 @@ public class TeamOnBoardingController {
 
 
     // 팀 소개서 온보딩 과정에서 첫번째 항목
-    @PostMapping("/team/teamBuildingField/basicInform")
+    @PostMapping("/team/team_building_field/basic_inform")
     @MemberOnly
     public ResponseEntity<Void> createOnBoardingFirst(
             @Auth final Accessor accessor,
@@ -50,7 +50,7 @@ public class TeamOnBoardingController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @GetMapping("/onBoarding/team")
+    @GetMapping("/team/onBoarding")
     @MemberOnly
     public ResponseEntity<?> getOnBoardingTeamProfile(@Auth final Accessor accessor) {
         try {

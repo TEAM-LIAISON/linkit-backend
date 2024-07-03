@@ -16,13 +16,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/attach")
+@RequestMapping
 public class AttachController {
 
     private final AttachService attachService;
 
     // 외부 링크 1개 생성 요청
-    @PostMapping("/url")
+    @PostMapping("/private/attach/url")
     @MemberOnly
     public ResponseEntity<Void> createAttachUrl(
             @Auth final Accessor accessor,
@@ -33,7 +33,7 @@ public class AttachController {
     }
 
     // 외부 링크 1개 삭제 요청
-    @DeleteMapping("/url/{attachUrlId}")
+    @DeleteMapping("/private/attach/url/{attachUrlId}")
     @MemberOnly
     public ResponseEntity<Void> deleteAttachUrl(
             @Auth final Accessor accessor,
@@ -44,7 +44,7 @@ public class AttachController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/list")
+    @GetMapping("/private/attach/url/list")
     @MemberOnly
     public ResponseEntity<AttachResponse> getAttachList(
             @Auth final Accessor accessor

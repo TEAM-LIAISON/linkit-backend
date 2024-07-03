@@ -61,7 +61,6 @@ public class AttachControllerTest extends ControllerTest {
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
         doNothing().when(attachService).validateAttachUrlByMember(anyLong());
-//        doNothing().when(attachService).validateAttachFileByMember(anyLong());
     }
 
     private void makeAttachUrl() throws Exception {
@@ -83,7 +82,7 @@ public class AttachControllerTest extends ControllerTest {
 
     private ResultActions performPostUrlRequest(final List<AttachUrlCreateRequest> attachUrlCreateRequests) throws Exception {
         return mockMvc.perform(
-                post("/attach/url")
+                post("/private/attach/url")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -108,7 +107,7 @@ public class AttachControllerTest extends ControllerTest {
             final int attachUrlId
     ) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/attach/url/{attachUrlId}", attachUrlId)
+                RestDocumentationRequestBuilders.delete("/private/attach/url/{attachUrlId}", attachUrlId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
