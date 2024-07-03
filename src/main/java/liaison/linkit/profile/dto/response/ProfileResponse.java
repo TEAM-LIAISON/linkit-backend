@@ -8,7 +8,7 @@ import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.region.dto.response.ProfileRegionResponse;
+import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

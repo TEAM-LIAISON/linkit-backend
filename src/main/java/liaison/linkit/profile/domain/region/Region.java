@@ -1,4 +1,4 @@
-package liaison.linkit.region.domain;
+package liaison.linkit.profile.domain.region;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -1,11 +1,11 @@
-package liaison.linkit.profile.presentation;
+package liaison.linkit.team.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.dto.request.profileRegion.ProfileRegionCreateRequest;
-import liaison.linkit.profile.service.ProfileRegionService;
+import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
+import liaison.linkit.team.service.TeamMemberAnnouncementService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,8 +17,12 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -32,11 +36,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(RegionController.class)
+@WebMvcTest(TeamMemberAnnouncementController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
-public class RegionControllerTest extends ControllerTest {
-
+public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
 
@@ -44,45 +47,50 @@ public class RegionControllerTest extends ControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ProfileRegionService profileRegionService;
+    private TeamMemberAnnouncementService teamMemberAnnouncementService;
 
     @BeforeEach
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-//        given(profileService.validateProfileByMember(1L)).willReturn(1L);
+        doNothing().when(teamMemberAnnouncementService).validateTeamMemberAnnouncement(anyLong());
     }
 
-    private void makeProfileRegion() throws Exception {
-        final ProfileRegionCreateRequest profileRegionCreateRequest = new ProfileRegionCreateRequest(
-                "서울특별시",
-                "강남구"
-        );
-    }
-
-    private ResultActions performPostRequest(final ProfileRegionCreateRequest profileRegionCreateRequest) throws Exception {
+    // post request 구현부
+    private ResultActions performPostTeamMemberAnnouncementRequest(
+            final List<TeamMemberAnnouncementRequest> teamMemberAnnouncementRequestList
+    ) throws Exception {
         return mockMvc.perform(
-                post("/private/region")
+                post("/team/members/announcement")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(profileRegionCreateRequest))
+                        .content(objectMapper.writeValueAsString(teamMemberAnnouncementRequestList))
         );
     }
 
-    @DisplayName("내 이력서의 지역 정보를 생성할 수 있다.")
+    @DisplayName("팀원 공고를 생성/수정할 수 있다.")
     @Test
-    void createProfileRegion() throws Exception {
-
+    void createTeamMemberAnnouncementList() throws Exception {
         // given
-        final ProfileRegionCreateRequest profileRegionCreateRequest = new ProfileRegionCreateRequest(
-                "서울특별시",
-                "강남구"
+        final TeamMemberAnnouncementRequest firstTeamMemberAnnouncementRequest = new TeamMemberAnnouncementRequest(
+                Arrays.asList("개발·데이터", "디자인"),
+                "주요 업무입니다.",
+                Arrays.asList("서버 개발", "DevOps", "게임 디자인"),
+                "지원 절차입니다."
         );
 
+        final TeamMemberAnnouncementRequest secondTeamMemberAnnouncementRequest = new TeamMemberAnnouncementRequest(
+                Arrays.asList("기획·경영"),
+                "주요 업무입니다.",
+                Arrays.asList("사업 개발"),
+                "지원 절차입니다."
+        );
+
+        final List<TeamMemberAnnouncementRequest> teamMemberAnnouncementRequestList = Arrays.asList(firstTeamMemberAnnouncementRequest, secondTeamMemberAnnouncementRequest);
         // when
-        final ResultActions resultActions = performPostRequest(profileRegionCreateRequest);
+        final ResultActions resultActions = performPostTeamMemberAnnouncementRequest(teamMemberAnnouncementRequestList);
 
         // then
         resultActions.andExpect(status().isCreated())
@@ -92,22 +100,29 @@ public class RegionControllerTest extends ControllerTest {
                                         cookieWithName("refresh-token")
                                                 .description("갱신 토큰")
                                 ),
-
                                 requestHeaders(
                                         headerWithName("Authorization")
                                                 .description("access token")
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
-
                                 requestFields(
-                                        fieldWithPath("cityName")
+                                        fieldWithPath("[].jobRoleNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("직무/역할 (4가지 항목)")
+                                                .attributes(field("constraint", "문자열의 배열")),
+                                        fieldWithPath("[].mainBusiness")
                                                 .type(JsonFieldType.STRING)
-                                                .description("시/구 이름")
+                                                .description("주요 업무")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("divisionName")
+                                        fieldWithPath("[].skillNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("보유 역량")
+                                                .attributes(field("constraint", "문자열의 배열")),
+                                        fieldWithPath("[].applicationProcess")
                                                 .type(JsonFieldType.STRING)
-                                                .description("시/군/구 이름")
+                                                .description("지원 절차")
                                                 .attributes(field("constraint", "문자열"))
+
                                 )
                         )
                 );
