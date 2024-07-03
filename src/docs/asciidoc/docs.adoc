@@ -204,6 +204,24 @@ include::{snippets}/history-controller-test/create-history/request-fields.adoc[]
 include::{snippets}/team-attach-controller-test/create-team-attach-url/http-request.adoc[]
 include::{snippets}/team-attach-controller-test/create-team-attach-url/request-fields.adoc[]
 
+== 6. 팀원 찾기
+=== 6.1. 팀원 찾기 페이지
+==== 요청
+include::{snippets}/search-controller-test/get-private-mini-profile/http-request.adoc[]
+include::{snippets}/search-controller-test/get-private-mini-profile/query-parameters.adoc[]
+==== 응답
+include::{snippets}/search-controller-test/get-private-mini-profile/http-response.adoc[]
+include::{snippets}/search-controller-test/get-private-mini-profile/response-fields.adoc[]
+
+== 7. 팀 찾기
+=== 7.1. 팀 찾기 페이지
+==== 요청
+include::{snippets}/search-controller-test/get-team-mini-profile/http-request.adoc[]
+include::{snippets}/search-controller-test/get-team-mini-profile/query-parameters.adoc[]
+==== 응답
+include::{snippets}/search-controller-test/get-team-mini-profile/http-response.adoc[]
+include::{snippets}/search-controller-test/get-team-mini-profile/response-fields.adoc[]
+
 == 11. 설정
 === 회원 탈퇴
 ==== 요청

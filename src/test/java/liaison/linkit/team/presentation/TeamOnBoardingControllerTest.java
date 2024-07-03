@@ -147,6 +147,7 @@ class TeamOnBoardingControllerTest extends ControllerTest {
         given(activityService.getActivity(1L)).willReturn(activityResponse);
 
         final TeamMiniProfileResponse teamMiniProfileResponse = new TeamMiniProfileResponse(
+                1L,
                 "플랫폼",
                 "1-5인",
                 "리에종",

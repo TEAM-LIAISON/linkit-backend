@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MiniProfileResponse {
 
+    private final Long id;
     private final String profileTitle;
     private final LocalDate uploadPeriod;
     private final Boolean uploadDeadline;
@@ -21,6 +22,7 @@ public class MiniProfileResponse {
     private final List<String> myKeywordNames;
 
     public MiniProfileResponse() {
+        this.id = null;
         this.profileTitle = null;
         this.uploadPeriod = null;
         this.uploadDeadline = null;
@@ -36,6 +38,7 @@ public class MiniProfileResponse {
                 .collect(Collectors.toList());
 
         return new MiniProfileResponse(
+                miniProfile.getId(),
                 miniProfile.getProfileTitle(),
                 miniProfile.getUploadPeriod(),
                 miniProfile.isUploadDeadline(),

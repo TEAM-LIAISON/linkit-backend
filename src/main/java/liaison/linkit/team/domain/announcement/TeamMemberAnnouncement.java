@@ -17,23 +17,34 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 // 팀원 공고
 public class TeamMemberAnnouncement {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "team_member_announcement_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY, cascade = ALL)
     @JoinColumn(name = "team_profile_id")
     private TeamProfile teamProfile;
 
-
-
-    // 주요 업무
+    // 2. 주요 업무
     @Column(name = "main_business")
     private String mainBusiness;
 
-    // 지원 절차
+    // 4. 지원 절차
     @Column(name = "application_process")
     private String applicationProcess;
 
-
+    public static TeamMemberAnnouncement of(
+            final TeamProfile teamProfile,
+            final String mainBusiness,
+            final String applicationProcess
+    ) {
+        return new TeamMemberAnnouncement(
+                null,
+                teamProfile,
+                mainBusiness,
+                applicationProcess
+        );
+    }
 }

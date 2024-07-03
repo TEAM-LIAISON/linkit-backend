@@ -8,11 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -30,9 +27,6 @@ public class TeamMiniProfile {
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "team_profile_id", unique = true)
     private TeamProfile teamProfile;
-
-    @OneToMany(mappedBy = "teamMiniProfile", cascade = REMOVE)
-    private List<TeamMiniProfileKeyword> teamMiniProfileKeywordArrayList = new ArrayList<>();
 
     // 팀 분야
     @ManyToOne(fetch = LAZY)
@@ -76,7 +70,6 @@ public class TeamMiniProfile {
 
     public static TeamMiniProfile of(
             final TeamProfile teamProfile,
-            final List<TeamMiniProfileKeyword> teamMiniProfileKeywordArrayList,
             final IndustrySector industrySector,
             final TeamScale teamScale,
             final String teamName,
@@ -88,7 +81,6 @@ public class TeamMiniProfile {
         return new TeamMiniProfile(
                 null,
                 teamProfile,
-                teamMiniProfileKeywordArrayList,
                 industrySector,
                 teamScale,
                 teamName,
@@ -104,13 +96,11 @@ public class TeamMiniProfile {
             final String teamProfileTitle,
             final LocalDate teamUploadPeriod,
             final boolean teamUploadDeadline,
-            final String teamLogoImageUrl,
-            final List<TeamMiniProfileKeyword> teamMiniProfileKeywordArrayList
+            final String teamLogoImageUrl
     ) {
         this.teamProfileTitle = teamProfileTitle;
         this.teamUploadPeriod = teamUploadPeriod;
         this.teamUploadDeadline = teamUploadDeadline;
         this.teamLogoImageUrl = teamLogoImageUrl;
-        this.teamMiniProfileKeywordArrayList = teamMiniProfileKeywordArrayList;
     }
 }

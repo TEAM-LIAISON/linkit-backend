@@ -166,6 +166,7 @@ class ProfileControllerTest extends ControllerTest {
 
         // 1. 미니 프로필 (V)
         final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
+                1L,
                 "시니어 소프트웨어 개발자",
                 LocalDate.of(2024, 10, 20),
                 true,

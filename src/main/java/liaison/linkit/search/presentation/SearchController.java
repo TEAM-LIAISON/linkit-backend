@@ -38,6 +38,7 @@ public class SearchController {
             // 필터링 항목 4. 활동 지역 (시/군/구)
             @RequestParam(required = false) final String divisionName
     ) {
+        log.info("팀원 찾기 요청이 들어왔습니다.");
         final Page<MiniProfileResponse> privateMiniProfiles = searchService.findPrivateMiniProfile(
                 pageable,
                 teamBuildingFieldName,
@@ -46,17 +47,37 @@ public class SearchController {
                 cityName,
                 divisionName
         );
+        log.info("privateMiniProfiles={}",privateMiniProfiles);
         return ResponseEntity.ok(privateMiniProfiles);
     }
 
     // 팀 찾기 구현부
     @GetMapping("/search/team/profile")
     public ResponseEntity<Page<TeamMiniProfileResponse>> findTeamMiniProfile(
-            @PageableDefault(size = 10) final Pageable pageable
+            @PageableDefault(size = 10) final Pageable pageable,
+            // 필터링 항목 1. 팀빌딩 분야
+            @RequestParam(required = false) final String teamBuildingFieldName,
+            // 필터링 항목 2. 직무
+            @RequestParam(required = false) final String jobRoleName,
+            // 필터링 항목 3. 역할
+            @RequestParam(required = false) final String skillName,
+            // 필터링 항목 4. 활동 지역 (시/도)
+            @RequestParam(required = false) final String cityName,
+            // 필터링 항목 4. 활동 지역 (시/군/구)
+            @RequestParam(required = false) final String divisionName,
+            // 필터링 항목 5. 활동 방식
+            @RequestParam(required = false) final String activityTagName
     ) {
-        final Page<TeamMiniProfileResponse> teamMiniProfileResponses = searchService.findTeamMiniProfile(pageable);
+        log.info("팀 찾기 요청이 들어왔습니다.");
+        final Page<TeamMiniProfileResponse> teamMiniProfileResponses = searchService.findTeamMiniProfile(
+                pageable,
+                teamBuildingFieldName,
+                jobRoleName,
+                skillName,
+                cityName,
+                divisionName,
+                activityTagName
+        );
         return ResponseEntity.ok(teamMiniProfileResponses);
     }
-
-
 }

@@ -67,7 +67,6 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
         String name = "miniProfileImage";
         String contentType = "multipart/form-data";
         String path = "./src/test/resources/static/images/logo.png";
-
         return new MockMultipartFile(name, path, contentType, path.getBytes(StandardCharsets.UTF_8));
     }
 

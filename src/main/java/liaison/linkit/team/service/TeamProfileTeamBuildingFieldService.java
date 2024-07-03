@@ -75,7 +75,7 @@ public class TeamProfileTeamBuildingFieldService {
     public TeamProfileTeamBuildingFieldResponse getAllTeamProfileTeamBuildingFields(final Long memberId) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
-        List<TeamProfileTeamBuildingField> teamProfileTeamBuildingFields = teamProfileTeamBuildingFieldRepository.findAllByTeamProfileId(teamProfile.getId());
+        final List<TeamProfileTeamBuildingField> teamProfileTeamBuildingFields = teamProfileTeamBuildingFieldRepository.findAllByTeamProfileId(teamProfile.getId());
 
         List<String> teamBuildingFieldNames = teamProfileTeamBuildingFields.stream()
                 .map(teamProfileTeamBuildingField -> teamBuildingFieldRepository.findById(teamProfileTeamBuildingField.getTeamBuildingField().getId()))

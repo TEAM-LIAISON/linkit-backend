@@ -1,7 +1,7 @@
-package liaison.linkit.profile.domain.role;
+package liaison.linkit.team.domain.announcement;
 
 import jakarta.persistence.*;
-import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.skill.Skill;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,18 +14,17 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class ProfileJobRole {
-
+public class TeamMemberAnnouncementSkill {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "profile_job_role_id")
+    @Column(name = "team_member_announcement_skill_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
+    @JoinColumn(name = "team_member_announcement_id")
+    private TeamMemberAnnouncement teamMemberAnnouncement;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "job_role_id")
-    private JobRole jobRole;
+    @JoinColumn(name = "skill_id")
+    private Skill skill;
 }

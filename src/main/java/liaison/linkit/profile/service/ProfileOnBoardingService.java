@@ -127,7 +127,7 @@ public class ProfileOnBoardingService {
         }
 
         final List<Skill> skills = skillRepository
-                .findSkillNamesBySkillNames(skillNames);
+                .findSkillsBySkillNames(skillNames);
 
         final List<ProfileSkill> profileSkills = skills.stream()
                 .map(skill -> new ProfileSkill(null, profile, skill))

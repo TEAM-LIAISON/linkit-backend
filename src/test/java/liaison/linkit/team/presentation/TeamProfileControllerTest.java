@@ -125,6 +125,7 @@ public class TeamProfileControllerTest extends ControllerTest {
 
         // 4.1. 미니 프로필
         final TeamMiniProfileResponse teamMiniProfileResponse = new TeamMiniProfileResponse(
+                1L,
                 "SaaS",
                 "1-5인",
                 "리에종",
@@ -293,6 +294,7 @@ public class TeamProfileControllerTest extends ControllerTest {
                                 responseFields(
                                         // 4.1.
                                         subsectionWithPath("teamMiniProfileResponse").type(JsonFieldType.OBJECT).description("팀 미니 프로필 응답 객체"),
+
                                         fieldWithPath("teamMiniProfileResponse.sectorName").type(JsonFieldType.STRING).description("팀 미니 프로필 분야"),
                                         fieldWithPath("teamMiniProfileResponse.sizeType").type(JsonFieldType.STRING).description("팀 미니 프로필 규모"),
                                         fieldWithPath("teamMiniProfileResponse.teamName").type(JsonFieldType.STRING).description("팀 이름"),

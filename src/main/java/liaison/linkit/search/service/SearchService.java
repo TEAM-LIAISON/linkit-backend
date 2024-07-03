@@ -11,6 +11,7 @@ import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileKeywordR
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class SearchService {
 
     final MiniProfileRepository miniProfileRepository;
@@ -37,15 +39,45 @@ public class SearchService {
             final String jobRoleName,
             final String skillName,
             final String cityName,
-            final String divisionName
+            String divisionName
     ) {
-        Page<MiniProfile> miniProfiles = miniProfileRepository.findAllByOrderByCreatedDateDesc(pageable);
+
+        if ("전체".equals(divisionName)) {
+            divisionName = null;
+        }
+
+        Page<MiniProfile> miniProfiles = miniProfileRepository.findAllByOrderByCreatedDateDesc(
+                teamBuildingFieldName,
+                jobRoleName,
+                skillName,
+                cityName,
+                divisionName,
+                pageable
+        );
+
+        log.info("miniProfiles={}", miniProfiles);
         return miniProfiles.map(this::convertToMiniProfileResponse);
     }
 
     @Transactional(readOnly = true)
-    public Page<TeamMiniProfileResponse> findTeamMiniProfile(final Pageable pageable) {
-        Page<TeamMiniProfile> teamMiniProfiles = teamMiniProfileRepository.findAllByOrderByCreatedDateDesc(pageable);
+    public Page<TeamMiniProfileResponse> findTeamMiniProfile(
+            final Pageable pageable,
+            final String teamBuildingFieldName,
+            final String jobRoleName,
+            final String skillName,
+            final String cityName,
+            String divisionName,
+            final String activityTagName
+    ) {
+        Page<TeamMiniProfile> teamMiniProfiles = teamMiniProfileRepository.findAllByOrderByCreatedDateDesc(
+                teamBuildingFieldName,
+                jobRoleName,
+                skillName,
+                cityName,
+                divisionName,
+                activityTagName,
+                pageable
+        );
         return teamMiniProfiles.map(this::convertToTeamMiniProfileResponse);
     }
 
@@ -53,7 +85,9 @@ public class SearchService {
         List<String> teamKeywordNames = teamMiniProfileKeywordRepository.findAllByTeamMiniProfileId(teamMiniProfile.getId()).stream()
                 .map(TeamMiniProfileKeyword::getTeamKeywordNames)
                 .toList();
+
         return new TeamMiniProfileResponse(
+                teamMiniProfile.getId(),
                 teamMiniProfile.getIndustrySector().getSectorName(),
                 teamMiniProfile.getTeamScale().getSizeType(),
                 teamMiniProfile.getTeamName(),
@@ -70,6 +104,7 @@ public class SearchService {
                 .map(MiniProfileKeyword::getMyKeywordNames)
                 .collect(Collectors.toList());
         return new MiniProfileResponse(
+                miniProfile.getId(),
                 miniProfile.getProfileTitle(),
                 miniProfile.getUploadPeriod(),
                 miniProfile.isUploadDeadline(),
