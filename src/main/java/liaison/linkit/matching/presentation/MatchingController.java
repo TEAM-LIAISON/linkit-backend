@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.matching.CheckProfileAccess;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,13 @@ public class MatchingController {
 
     public final MatchingService matchingService;
 
+    // 매칭 요청을 보내기 전에 GET 메서드로 해당 사용자의 권한을 체킹?
+    // 아니면 요청이 발생했을 때 사용자의 권한을 조회하는 방법?
+
+    // 개인 이력서에 매칭 요청을 보내는 경우
     @PostMapping("/private/profile/{miniProfileId}")
     @MemberOnly
+    @CheckProfileAccess
     // 매칭 권한 검증 어노테이션 추가
     public ResponseEntity<Void> createPrivateProfileMatching(
             @Auth final Accessor accessor,
@@ -31,8 +37,13 @@ public class MatchingController {
         log.info("miniProfileId={}", miniProfileId);
 
         matchingService.createProfileMatching(accessor.getMemberId(), miniProfileId, matchingCreateRequest);
-
+        
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
+
+//    팀 소개서에 매칭 요청을 보내는 경우
+//    @PostMapping("/team/profile/{teamMiniProfileId}")
+//    @MemberOnly
+//    @CheckProfileAccess
+//    public 
 }

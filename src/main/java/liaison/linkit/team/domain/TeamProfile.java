@@ -12,6 +12,7 @@ import java.util.Objects;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
+import static liaison.linkit.member.domain.type.TeamProfileType.ALLOW_MATCHING;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
@@ -288,10 +289,10 @@ public class TeamProfile {
                 this.getMember().setTeamProfileType(TeamProfileType.ALLOW_BROWSE);
             }
         } else {
-            if (TeamProfileType.ALLOW_PROFILE_MATCHING.equals(teamProfileType)) {
+            if (ALLOW_MATCHING.equals(teamProfileType)) {
                 return;
             } else {
-                this.getMember().setTeamProfileType(TeamProfileType.ALLOW_PROFILE_MATCHING);
+                this.getMember().setTeamProfileType(ALLOW_MATCHING);
             }
         }
     }

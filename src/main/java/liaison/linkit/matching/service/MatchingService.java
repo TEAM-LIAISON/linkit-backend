@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_MEMBER_ID;
+import static liaison.linkit.matching.domain.type.MatchingStatus.REQUESTED;
 import static liaison.linkit.matching.domain.type.MatchingType.PROFILE;
 
 @Service
@@ -46,6 +47,7 @@ public class MatchingService {
                 miniProfileId,
                 PROFILE,
                 matchingCreateRequest.getRequestMessage(),
+                REQUESTED,
                 LocalDateTime.now()
         );
 
