@@ -58,8 +58,6 @@ public class ActivityService {
         }
     }
 
-
-
     // 활동 방식 저장
     public void saveActivityMethod(
             final Long memberId,

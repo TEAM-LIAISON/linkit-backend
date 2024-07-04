@@ -47,17 +47,21 @@ public class Member {
     @Column(nullable = false, length = 50)
     private String email;
 
+    // 계정 상태 관리 컬럼
     @Enumerated(value = STRING)
     private MemberState status;
 
+    // 멤버 타입 관리
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private MemberType memberType;
 
+    // 내 이력서 타입 (완성도 기반)
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private ProfileType profileType;
 
+    // 팀 소개서 타입 (완성도 기반)
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private TeamProfileType teamProfileType;

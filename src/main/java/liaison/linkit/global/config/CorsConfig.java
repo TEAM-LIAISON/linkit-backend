@@ -24,7 +24,7 @@ public class CorsConfig implements WebMvcConfigurer {
     private ProfileAccessInterceptor profileAccessInterceptor;
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+    public void addInterceptors(final InterceptorRegistry registry) {
         registry.addInterceptor(profileAccessInterceptor).addPathPatterns("/matching/**");
     }
 }

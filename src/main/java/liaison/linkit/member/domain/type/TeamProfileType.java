@@ -1,7 +1,12 @@
 package liaison.linkit.member.domain.type;
 
 public enum TeamProfileType {
+    // 허용하지 않음
     NO_PERMISSION,
+
+    // 열람 가능
     ALLOW_BROWSE,
-    ALLOW_PROFILE_MATCHING
+
+    // 매칭 요청 가능
+    ALLOW_MATCHING
 }

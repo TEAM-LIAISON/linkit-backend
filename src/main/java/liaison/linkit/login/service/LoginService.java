@@ -61,10 +61,13 @@ public class LoginService {
         // 멤버 테이블에서 기본 정보 입력 여부를 조회함
         final boolean existMemberBasicInform = member.isExistMemberBasicInform();
         log.info("loginService login method memberId={}", member.getId());
+
         final Profile profile = getProfileByMember(member.getId());
         final TeamProfile teamProfile = getTeamProfile(member.getId());
+
         final boolean existDefaultPrivateProfile = profile.getExistDefaultPrivateProfile();
         log.info("existDefaultPrivateProfile={}", existDefaultPrivateProfile);
+
         final boolean existDefaultTeamProfile = teamProfile.getExistDefaultTeamProfile();
         log.info("existDefaultTeamProfile={}",existDefaultTeamProfile);
 
