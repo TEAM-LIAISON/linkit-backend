@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -25,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -33,6 +35,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,13 +62,48 @@ public class HistoryControllerTest extends ControllerTest {
         doNothing().when(historyService).validateHistoryByMember(anyLong());
     }
 
+    private void makeHistories() throws Exception{
+        final HistoryCreateRequest firstHistoryCreateRequest = new HistoryCreateRequest(
+                "Seed 투자 유치",
+                2023,
+                2024,
+                true,
+                "5,000만원 투자를 받았어요"
+        );
+
+        final HistoryCreateRequest secondHistoryCreateRequest = new HistoryCreateRequest(
+                "MVP 테스트",
+                2022,
+                2023,
+                false,
+                "사용자 5,000명을 모았어요"
+        );
+
+        final List<HistoryCreateRequest> historyCreateRequestList = Arrays.asList(firstHistoryCreateRequest, secondHistoryCreateRequest);
+
+        doNothing().when(historyService).saveHistories(1L, historyCreateRequestList);
+
+        performPostHistory(historyCreateRequestList);
+    }
+
     private ResultActions performPostHistory(final List<HistoryCreateRequest> historyCreateRequests) throws Exception {
         return mockMvc.perform(
-                post("/team/history")
+                post("/team/histories")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(historyCreateRequests)));
+    }
+
+    private ResultActions performDeleteHistoryRequest(
+            final int historyId
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/team/history/{historyId}", historyId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+        );
     }
 
     @DisplayName("연혁을 생성할 수 있다.")
@@ -130,4 +169,29 @@ public class HistoryControllerTest extends ControllerTest {
                         )
                 );
     }
+
+    @DisplayName("연혁 1개를 삭제 할 수 있다.")
+    @Test
+    void deleteHistory() throws Exception {
+        // given
+        makeHistories();
+        doNothing().when(historyService).validateHistoryByMember(anyLong());
+
+        // when
+        final ResultActions resultActions = performDeleteHistoryRequest(1);
+
+        // then
+        verify(historyService).deleteHistory(1L, 1L);
+
+        resultActions.andExpect(status().isNoContent())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("historyId")
+                                        .description("연혁 ID")
+                        )
+                ));
+    }
+
+
+
 }

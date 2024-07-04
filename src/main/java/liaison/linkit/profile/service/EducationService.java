@@ -7,13 +7,12 @@ import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
 import liaison.linkit.profile.domain.education.Major;
 import liaison.linkit.profile.domain.education.University;
+import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
 import liaison.linkit.profile.domain.repository.education.MajorRepository;
 import liaison.linkit.profile.domain.repository.education.UniversityRepository;
-import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
-import liaison.linkit.profile.dto.request.education.EducationUpdateRequest;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,19 +42,9 @@ public class EducationService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
     }
 
-    // 어떤 학력 정보 1개만 조회할 때
     private Education getEducation(final Long educationId) {
         return educationRepository.findById(educationId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_EDUCATION_BY_ID));
-    }
-
-    // 내 이력서 하나에 대한 모든 학력 정보 리스트 조회
-    private List<Education> getEducations(final Long profileId) {
-        try {
-            return educationRepository.findAllByProfileId(profileId);
-        } catch (Exception e) {
-            throw new BadRequestException(NOT_FOUND_EDUCATIONS_BY_PROFILE_ID);
-        }
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_EDUCATION_ID));
     }
 
     // 멤버로부터 프로필 아이디를 조회해서 학력 정보 존재성을 판단
@@ -65,13 +54,12 @@ public class EducationService {
         }
     }
 
-    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
-
-    public void save(final Long memberId, final List<EducationCreateRequest> educationCreateRequests) {
-
+    public void save(
+            final Long memberId,
+            final List<EducationCreateRequest> educationCreateRequests
+    ) {
         final Profile profile = getProfile(memberId);
 
-        // 교육항목 존재 이력이 있다면, 우선 전체 삭제
         if (educationRepository.existsByProfileId(profile.getId())) {
             educationRepository.deleteAllByProfileId(profile.getId());
             profile.updateIsEducation(false);
@@ -115,19 +103,6 @@ public class EducationService {
         profile.updateMemberProfileTypeByCompletion();
     }
 
-
-    private EducationResponse getEducationResponse(final Education education) {
-        return EducationResponse.of(education);
-    }
-
-    @Transactional(readOnly = true)
-    public EducationResponse getEducationDetail(final Long educationId) {
-        final Education education = educationRepository.findById(educationId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_EDUCATION_ID));
-
-        return EducationResponse.personalEducation(education);
-    }
-
     @Transactional(readOnly = true)
     public List<EducationResponse> getAllEducations(final Long memberId) {
         final Profile profile = getProfile(memberId);
@@ -137,25 +112,23 @@ public class EducationService {
                 .toList();
     }
 
-    public EducationResponse update(final Long educationId, final EducationUpdateRequest educationUpdateRequest) {
-
-        final Education education = educationRepository.findById(educationId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_EDUCATION_ID));
-
-        final University university = universityRepository.findByUniversityName(educationUpdateRequest.getUniversityName());
-        final Degree degree = degreeRepository.findByDegreeName(educationUpdateRequest.getDegreeName());
-        final Major major = majorRepository.findByMajorName(educationUpdateRequest.getMajorName());
-
-        education.update(educationUpdateRequest, university, major, degree);
-        educationRepository.save(education);
-        return getEducationResponse(education);
+    private EducationResponse getEducationResponse(final Education education) {
+        return EducationResponse.of(education);
     }
 
     public void delete(final Long memberId, final Long educationId) {
-        if (!educationRepository.existsById(educationId)) {
-            throw new BadRequestException(NOT_FOUND_EDUCATION_ID);
+        log.info("삭제 메서드 실행");
+        final Profile profile = getProfile(memberId);
+        final Education education = getEducation(educationId);
+
+        educationRepository.deleteById(education.getId());
+        log.info("삭제 완료");
+        if (!educationRepository.existsByProfileId(profile.getId())) {
+            profile.cancelPerfectionDefault();
+            profile.updateMemberProfileTypeByCompletion();
         }
-        educationRepository.deleteById(educationId);
     }
+
+
 
 }

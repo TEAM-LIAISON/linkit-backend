@@ -2,12 +2,12 @@ package liaison.linkit.profile.domain.miniProfile;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
@@ -17,7 +17,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MiniProfile {
+public class MiniProfile{
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "mini_profile_id")
@@ -26,6 +26,7 @@ public class MiniProfile {
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "profile_id", unique = true)
     private Profile profile;
+
 
     // 프로필 제목
     @Column(length = 40)
@@ -43,8 +44,15 @@ public class MiniProfile {
     // 나의 가치
     private String myValue;
 
-    // 나의 스킬셋
-    private String skillSets;
+    // 생성 날짜
+    @Column(updatable = false)
+    private LocalDateTime createdDate;
+
+    // 엔티티가 처음 저장될 때 createdDate를 현재 시간으로 설정
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDateTime.now();
+    }
 
     public static MiniProfile of(
             final Profile profile,
@@ -52,9 +60,7 @@ public class MiniProfile {
             final LocalDate uploadPeriod,
             final boolean uploadDeadline,
             final String miniProfileImg,
-            final String myValue,
-            final String skillSets
-
+            final String myValue
     ) {
         return new MiniProfile(
                 null,
@@ -64,16 +70,7 @@ public class MiniProfile {
                 uploadDeadline,
                 miniProfileImg,
                 myValue,
-                skillSets
+                null
         );
-    }
-
-    public void update(final MiniProfileUpdateRequest miniProfileUpdateRequest) {
-        this.profileTitle = miniProfileUpdateRequest.getProfileTitle();
-        this.uploadPeriod = miniProfileUpdateRequest.getUploadPeriod();
-        this.uploadDeadline = miniProfileUpdateRequest.isUploadDeadline();
-        this.miniProfileImg = miniProfileUpdateRequest.getMiniProfileImg();
-        this.myValue = miniProfileUpdateRequest.getMyValue();
-        this.skillSets = miniProfileUpdateRequest.getSkillSets();
     }
 }

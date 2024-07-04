@@ -6,12 +6,13 @@ import liaison.linkit.global.exception.ImageException;
 import liaison.linkit.image.domain.ImageFile;
 import liaison.linkit.image.domain.S3ImageEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
-import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.repository.MiniProfileRepository;
+import liaison.linkit.profile.domain.miniProfile.MiniProfile;
+import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.dto.request.miniProfile.MiniProfileCreateRequest;
-import liaison.linkit.profile.dto.request.miniProfile.MiniProfileUpdateRequest;
+import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
+import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
+import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,8 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
@@ -30,6 +33,7 @@ public class MiniProfileService {
 
     private final ProfileRepository profileRepository;
     private final MiniProfileRepository miniProfileRepository;
+    private final MiniProfileKeywordRepository miniProfileKeywordRepository;
     private final S3Uploader s3Uploader;
     private final ApplicationEventPublisher publisher;
 
@@ -56,56 +60,80 @@ public class MiniProfileService {
     // 미니 프로필 저장 메서드
     public void save(
             final Long memberId,
-            final MiniProfileCreateRequest miniProfileCreateRequest,
+            final MiniProfileRequest miniProfileRequest,
             final MultipartFile miniProfileImage
     ) {
         final Profile profile = getProfile(memberId);
+
         if (miniProfileImage != null) {
-            // 전달받은 multipartFile을 파일 경로에 맞게 전달하는 작업이 필요함 (save)
+
             if (miniProfileRepository.existsByProfileId(profile.getId())) {
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
                 s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
                 miniProfileRepository.deleteByProfileId(profile.getId());
             }
+
             final String miniProfileImageUrl = saveImage(miniProfileImage);
+
             final MiniProfile newMiniProfileByImage = MiniProfile.of(
                     profile,
-                    miniProfileCreateRequest.getProfileTitle(),
-                    miniProfileCreateRequest.getUploadPeriod(),
-                    miniProfileCreateRequest.isUploadDeadline(),
+                    miniProfileRequest.getProfileTitle(),
+                    miniProfileRequest.getUploadPeriod(),
+                    miniProfileRequest.isUploadDeadline(),
                     miniProfileImageUrl,
-                    miniProfileCreateRequest.getMyValue(),
-                    miniProfileCreateRequest.getSkillSets()
+                    miniProfileRequest.getMyValue()
             );
-            miniProfileRepository.save(newMiniProfileByImage);
+
+            final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileByImage);
+            final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
+                    .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
+                    .toList();
+
+            miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
+
             profile.updateIsMiniProfile(true);
         } else {
             // 미니 프로필 이미지가 null인 경우
             if (miniProfileRepository.existsByProfileId(profile.getId())) { // 생성 이력이 있는 경우
+                // 기존 미니 프로필 조회
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
+
+                // 새로운 미니 프로필 이미지 객체 생성
                 final MiniProfile newMiniProfileNoImage = MiniProfile.of(
                         profile,
-                        miniProfileCreateRequest.getProfileTitle(),
-                        miniProfileCreateRequest.getUploadPeriod(),
-                        miniProfileCreateRequest.isUploadDeadline(),
+                        miniProfileRequest.getProfileTitle(),
+                        miniProfileRequest.getUploadPeriod(),
+                        miniProfileRequest.isUploadDeadline(),
                         miniProfile.getMiniProfileImg(),
-                        miniProfileCreateRequest.getMyValue(),
-                        miniProfileCreateRequest.getSkillSets()
+                        miniProfileRequest.getMyValue()
                 );
+
                 miniProfileRepository.deleteByProfileId(profile.getId());
-                miniProfileRepository.save(newMiniProfileNoImage);
+                miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
+
+                final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileNoImage);
+
+                final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
+                        .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
+                        .toList();
+                miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
+
                 profile.updateIsMiniProfile(true);
             } else {                                                        // 신규 생성인 경우
                 final MiniProfile newMiniProfile = MiniProfile.of(
                         profile,
-                        miniProfileCreateRequest.getProfileTitle(),
-                        miniProfileCreateRequest.getUploadPeriod(),
-                        miniProfileCreateRequest.isUploadDeadline(),
+                        miniProfileRequest.getProfileTitle(),
+                        miniProfileRequest.getUploadPeriod(),
+                        miniProfileRequest.isUploadDeadline(),
                         null,
-                        miniProfileCreateRequest.getMyValue(),
-                        miniProfileCreateRequest.getSkillSets()
+                        miniProfileRequest.getMyValue()
                 );
-                miniProfileRepository.save(newMiniProfile);
+                final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfile);
+                final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
+                        .map(keyWordName -> new MiniProfileKeyword(savedMiniProfile.getId(), null, keyWordName))
+                        .toList();
+
+                miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
                 profile.updateIsMiniProfile(true);
             }
         }
@@ -116,30 +144,12 @@ public class MiniProfileService {
     public MiniProfileResponse getPersonalMiniProfile(final Long memberId) {
         final Profile profile = getProfile(memberId);
         final MiniProfile miniProfile = getMiniProfile(profile.getId());
-        return MiniProfileResponse.personalMiniProfile(miniProfile);
+        final List<MiniProfileKeyword> miniProfileKeywordList = getMiniProfileKeywords(miniProfile.getId());
+        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList);
     }
 
-    // 특정 미니 프로필에 대한 수정 요청이 들어온 상황
-    public void update(final Long memberId, final MiniProfileUpdateRequest miniProfileUpdateRequest) {
-        final Profile profile = getProfile(memberId);
-        final MiniProfile miniProfile = getMiniProfile(profile.getId());
-
-        miniProfile.update(miniProfileUpdateRequest);
-        miniProfileRepository.save(miniProfile);
-    }
-
-    // 미니 프로필 삭제
-    public void delete(final Long memberId){
-        final Profile profile = getProfile(memberId);
-        final MiniProfile miniProfile = getMiniProfile(profile.getId());
-
-        if(!miniProfileRepository.existsById(miniProfile.getId())){
-            // 삭제할 수 있는 미니 프로필이 존재하지 않음.
-            throw new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_MEMBER_ID);
-        }
-
-        miniProfileRepository.deleteById(miniProfile.getId());
-        profile.updateIsMiniProfile(false);
+    private List<MiniProfileKeyword> getMiniProfileKeywords(final Long miniProfileId) {
+        return miniProfileKeywordRepository.findAllByMiniProfileId(miniProfileId);
     }
 
 

@@ -1,6 +1,6 @@
 package liaison.linkit.profile.domain.repository;
 
-import liaison.linkit.region.domain.ProfileRegion;
+import liaison.linkit.profile.domain.region.ProfileRegion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

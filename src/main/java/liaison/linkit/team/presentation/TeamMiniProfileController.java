@@ -18,13 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/team/mini-profile")
+@RequestMapping
 @Slf4j
 public class TeamMiniProfileController {
 
     private final TeamMiniProfileService teamMiniProfileService;
 
-    @PostMapping
+    @PostMapping("/team/mini-profile")
     @MemberOnly
     public ResponseEntity<Void> createTeamMiniProfile(
             @Auth final Accessor accessor,

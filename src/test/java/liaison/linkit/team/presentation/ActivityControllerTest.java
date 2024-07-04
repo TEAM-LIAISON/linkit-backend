@@ -59,7 +59,7 @@ public class ActivityControllerTest extends ControllerTest {
 
     private ResultActions performPostRequest(final ActivityCreateRequest activityCreateRequest) throws Exception {
         return mockMvc.perform(
-                post("/activity-method")
+                post("/team/activity")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)

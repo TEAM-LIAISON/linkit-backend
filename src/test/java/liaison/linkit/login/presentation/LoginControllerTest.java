@@ -101,9 +101,9 @@ public class LoginControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)")
                                                 .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("existOnBoardingProfile")
+                                        fieldWithPath("existDefaultProfile")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 온보딩은 완성)")
+                                                .description("이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 필수 항목 기입 완료)")
                                                 .attributes(field("constraint", "boolean 값"))
                                 )
                         ))

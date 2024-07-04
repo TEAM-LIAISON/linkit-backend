@@ -2,8 +2,8 @@ package liaison.linkit.team.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.region.domain.ActivityRegion;
-import liaison.linkit.region.domain.Region;
+import liaison.linkit.team.domain.activity.ActivityRegion;
+import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.activity.ActivityMethod;
 import liaison.linkit.team.domain.activity.ActivityMethodTag;

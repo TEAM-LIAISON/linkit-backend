@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
@@ -57,13 +58,15 @@ public class TeamMiniProfile {
     @Column(name = "team_logo_image_url")
     private String teamLogoImageUrl;
 
-    // 팀 홍보 가치
-    @Column(name = "team_value")
-    private String teamValue;
+    // 생성 날짜
+    @Column(updatable = false)
+    private LocalDateTime createdDate;
 
-    // 팀 세부 정보
-    @Column(name = "team_detail_inform")
-    private String teamDetailInform;
+    // 엔티티가 처음 저장될 때 createdDate를 현재 시간으로 설정
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDateTime.now();
+    }
 
     public static TeamMiniProfile of(
             final TeamProfile teamProfile,
@@ -73,9 +76,7 @@ public class TeamMiniProfile {
             final String teamProfileTitle,
             final LocalDate teamUploadPeriod,
             final Boolean teamUploadDeadline,
-            final String teamLogoImageUrl,
-            final String teamValue,
-            final String teamDetailInform
+            final String teamLogoImageUrl
     ) {
         return new TeamMiniProfile(
                 null,
@@ -87,8 +88,7 @@ public class TeamMiniProfile {
                 teamUploadPeriod,
                 teamUploadDeadline,
                 teamLogoImageUrl,
-                teamValue,
-                teamDetailInform
+                null
         );
     }
 
@@ -96,15 +96,11 @@ public class TeamMiniProfile {
             final String teamProfileTitle,
             final LocalDate teamUploadPeriod,
             final boolean teamUploadDeadline,
-            final String teamLogoImageUrl,
-            final String teamValue,
-            final String teamDetailInform
+            final String teamLogoImageUrl
     ) {
         this.teamProfileTitle = teamProfileTitle;
         this.teamUploadPeriod = teamUploadPeriod;
         this.teamUploadDeadline = teamUploadDeadline;
         this.teamLogoImageUrl = teamLogoImageUrl;
-        this.teamValue = teamValue;
-        this.teamDetailInform = teamDetailInform;
     }
 }

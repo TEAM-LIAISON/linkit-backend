@@ -6,7 +6,7 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.member.service.MemberService;
-import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
+import liaison.linkit.profile.dto.request.IntroductionRequest;
 import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
@@ -18,11 +18,12 @@ import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.region.dto.response.ProfileRegionResponse;
-import liaison.linkit.region.service.ProfileRegionService;
+import liaison.linkit.profile.service.ProfileOnBoardingService;
+import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
+import liaison.linkit.profile.service.ProfileRegionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,13 +69,15 @@ class ProfileControllerTest extends ControllerTest {
     @MockBean
     private ProfileService profileService;
     @MockBean
+    private ProfileOnBoardingService profileOnBoardingService;
+    @MockBean
     private MiniProfileService miniProfileService;
     @MockBean
     private CompletionService completionService;
     @MockBean
     private ProfileSkillService profileSkillService;
     @MockBean
-    private ProfileTeamBuildingFieldService profileTeamBuildingFieldService;
+    private TeamBuildingFieldService teamBuildingFieldService;
     @MockBean
     private AntecedentsService antecedentsService;
     @MockBean
@@ -101,30 +104,29 @@ class ProfileControllerTest extends ControllerTest {
 
 
     private void makeIntroduction() throws Exception{
-        final IntroductionCreateRequest introductionCreateRequest = new IntroductionCreateRequest(
+        final IntroductionRequest introductionRequest = new IntroductionRequest(
                 "자기소개 정보를 생성합니다."
         );
-        final ResultActions resultActions = performCreateRequest(introductionCreateRequest);
+        final ResultActions resultActions = performCreateRequest(introductionRequest);
     }
-
 
 
     private ResultActions performGetProfileRequest() throws Exception {
         return mockMvc.perform(
-                get("/profile")
+                get("/private/profile")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
         );
     }
 
-    private ResultActions performCreateRequest(final IntroductionCreateRequest introductionCreateRequest) throws Exception {
+    private ResultActions performCreateRequest(final IntroductionRequest introductionRequest) throws Exception {
         return mockMvc.perform(
-                post("/profile/introduction")
+                post("/private/introduction")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(introductionCreateRequest))
+                        .content(objectMapper.writeValueAsString(introductionRequest))
         );
     }
 
@@ -164,12 +166,13 @@ class ProfileControllerTest extends ControllerTest {
 
         // 1. 미니 프로필 (V)
         final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
+                1L,
                 "시니어 소프트웨어 개발자",
                 LocalDate.of(2024, 10, 20),
                 true,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "혁신, 팀워크, 의지",
-                "Java, Spring, AWS, Microservices, Docker"
+                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년")
         );
 
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
@@ -201,9 +204,10 @@ class ProfileControllerTest extends ControllerTest {
         given(profileService.getProfileIntroduction(1L)).willReturn(profileIntroductionResponse);
 
         // 4. 보유기술 (V)
-        List<String> skillNames = Arrays.asList("Java", "React");
-        final ProfileSkillResponse profileSkillResponse = ProfileSkillResponse.of(skillNames);
-        given(profileSkillService.getAllProfileSkills(1L)).willReturn(profileSkillResponse);
+        List<String> jobRoleNames = Arrays.asList("공모전, 대회, 창업");
+        List<String> skillNames = Arrays.asList("Notion, Figma");
+        final JobAndSkillResponse jobAndSkillResponse = new JobAndSkillResponse(jobRoleNames, skillNames);
+        given(profileOnBoardingService.getJobAndSkill(1L)).willReturn(jobAndSkillResponse);
 
         // 5. 희망 팀빌딩 분야 (V)
         List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
@@ -211,7 +215,7 @@ class ProfileControllerTest extends ControllerTest {
                 teamBuildingFieldNames
         );
 
-        given(profileTeamBuildingFieldService.getAllProfileTeamBuildings(1L))
+        given(teamBuildingFieldService.getAllProfileTeamBuildingFields(1L))
                 .willReturn(profileTeamBuildingFieldResponse);
 
         // 6. 활동 지역 및 위치 (V)
@@ -330,7 +334,7 @@ class ProfileControllerTest extends ControllerTest {
                 memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
-                profileSkillResponse,
+                jobAndSkillResponse,
                 profileTeamBuildingFieldResponse,
                 profileRegionResponse,
                 antecedentsResponses,
@@ -344,7 +348,7 @@ class ProfileControllerTest extends ControllerTest {
                 memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
-                profileSkillResponse,
+                jobAndSkillResponse,
                 profileTeamBuildingFieldResponse,
                 profileRegionResponse,
                 antecedentsResponses,
@@ -377,7 +381,7 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("miniProfileResponse.uploadDeadline").type(JsonFieldType.BOOLEAN).description("업로드 마감일 여부"),
                                         fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
                                         fieldWithPath("miniProfileResponse.myValue").type(JsonFieldType.STRING).description("사용자의 가치"),
-                                        fieldWithPath("miniProfileResponse.skillSets").type(JsonFieldType.STRING).description("사용자의 스킬 세트"),
+                                        fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
 
                                         // memberNameResponse
                                         subsectionWithPath("memberNameResponse").description("회원 이름 정보"),
@@ -399,10 +403,10 @@ class ProfileControllerTest extends ControllerTest {
                                         subsectionWithPath("profileIntroductionResponse").description("프로필 소개"),
                                         fieldWithPath("profileIntroductionResponse.introduction").type(JsonFieldType.STRING).description("소개 내용"),
 
-                                        // profileSkillResponse
-                                        subsectionWithPath("profileSkillResponse").description("프로필 스킬 정보"),
-//                                        fieldWithPath("profileSkillResponse.roleFields").type(JsonFieldType.ARRAY).description("역할 필드"),
-                                        fieldWithPath("profileSkillResponse.skillNames").type(JsonFieldType.ARRAY).description("스킬 명칭"),
+                                        // jobAndSkillResponse
+                                        subsectionWithPath("jobAndSkillResponse").description("나의 직무/역할 및 보유 기술 정보"),
+                                        fieldWithPath("jobAndSkillResponse.jobRoleNames").type(JsonFieldType.ARRAY).description("직무/역할 명칭"),
+                                        fieldWithPath("jobAndSkillResponse.skillNames").type(JsonFieldType.ARRAY).description("보유 기술 명칭"),
 
                                         // profileTeamBuildingFieldResponse
                                         subsectionWithPath("profileTeamBuildingFieldResponse").description("팀 빌딩 필드 응답"),
@@ -458,12 +462,12 @@ class ProfileControllerTest extends ControllerTest {
     @Test
     void createProfileIntroduction() throws Exception {
         // given
-        final IntroductionCreateRequest introductionCreateRequest = new IntroductionCreateRequest(
+        final IntroductionRequest introductionRequest = new IntroductionRequest(
                 "프로필 자기소개 항목을 입력합니다."
         );
 
         // when
-        final ResultActions resultActions = performCreateRequest(introductionCreateRequest);
+        final ResultActions resultActions = performCreateRequest(introductionRequest);
 
         // then
         resultActions.andExpect(status().isOk())
@@ -474,105 +478,6 @@ class ProfileControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("자기소개")
                                                 .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
-//    @DisplayName("프로필 자기소개 항목을 조회할 수 있다.")
-//    @Test
-//    void getProfileIntroduction() throws Exception{
-//        // given
-//        final ProfileIntroductionResponse response = new ProfileIntroductionResponse(
-//                "프로필 자기소개 항목입니다."
-//        );
-//
-//        given(profileService.getProfileIntroduction(1L))
-//                .willReturn(response);
-//
-//        // when
-//        final ResultActions resultActions = performGetRequest();
-//
-//        // then
-//        resultActions.andExpect(status().isOk())
-//                .andDo(
-//                        restDocs.document(
-//                                requestCookies(
-//                                        cookieWithName("refresh-token")
-//                                                .description("갱신 토큰")
-//                                ),
-//                                requestHeaders(
-//                                        headerWithName("Authorization")
-//                                                .description("access token")
-//                                                .attributes(field("constraint", "문자열(jwt)"))
-//                                ),
-//                                responseFields(
-//                                        fieldWithPath("introduction")
-//                                                .type(JsonFieldType.STRING)
-//                                                .description("자기 소개")
-//                                                .attributes(field("constraint", "문자열"))
-//                                )
-//                        )
-//                );
-//    }
-//
-//
-//    @DisplayName("프로필 자기소개 항목을 수정할 수 있다.")
-//    @Test
-//    void updateProfileIntroduction() throws Exception {
-//        // given
-//        final ProfileUpdateRequest updateRequest = new ProfileUpdateRequest(
-//                "자기소개를 수정하려고 합니다."
-//        );
-//
-//        doNothing().when(profileService).update(anyLong(), any(ProfileUpdateRequest.class));
-//
-//        // when
-//        final ResultActions resultActions = performPatchRequest(updateRequest);
-//
-//        // then
-//        resultActions.andExpect(status().isNoContent())
-//                .andDo(
-//                        restDocs.document(
-//                                requestCookies(
-//                                        cookieWithName("refresh-token")
-//                                                .description("갱신 토큰")
-//                                ),
-//                                requestHeaders(
-//                                        headerWithName("Authorization")
-//                                                .description("access token")
-//                                                .attributes(field("constraint", "문자열(jwt)"))
-//                                ),
-//                                requestFields(
-//                                        fieldWithPath("introduction")
-//                                                .type(JsonFieldType.STRING)
-//                                                .description("자기 소개")
-//                                                .attributes(field("constraint", "문자열"))
-//                                )
-//                        )
-//                );
-//    }
-//
-    @DisplayName("프로필 자기소개 항목을 삭제할 수 있다.")
-    @Test
-    void deleteProfileIntroduction() throws Exception {
-        // given
-        makeIntroduction();
-        doNothing().when(profileService).deleteIntroduction(1L);
-
-        // when
-        final ResultActions resultActions = performDeleteRequest();
-        // then
-        resultActions.andExpect(status().isNoContent())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
                                 )
                         )
                 );

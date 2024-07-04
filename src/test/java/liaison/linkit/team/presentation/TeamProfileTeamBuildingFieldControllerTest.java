@@ -62,7 +62,7 @@ class TeamProfileTeamBuildingFieldControllerTest extends ControllerTest {
             final TeamProfileTeamBuildingFieldCreateRequest createRequest
     ) throws Exception {
         return mockMvc.perform(
-                post("/team_profile_team_building_field")
+                post("/team/team_building_field")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)

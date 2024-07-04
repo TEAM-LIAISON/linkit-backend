@@ -10,13 +10,13 @@ public class ProfileOnBoardingIsValueResponse {
     // 희망 팀빌딩 분야 항목
     private final boolean isProfileTeamBuildingField;
 
-    // 기술 항목
-    private final boolean isProfileSkill;
-
     // 지역 및 위치 항목
     private final boolean isProfileRegion;
 
-    // 이력 항목
+    // 역할 및 보유 기술 항목
+    private final boolean isJobAndSkill;
+
+    // 경력 항목
     private final boolean isAntecedents;
 
     // 학력 항목

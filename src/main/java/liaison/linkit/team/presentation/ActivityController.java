@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/activity-method")
+@RequestMapping
 public class ActivityController {
 
     private final ActivityService activityService;
 
     // 활동 분야 및 지역 저장
     // 팀 소개서 온보딩 과정 2번째
-    @PostMapping
+    @PostMapping("/team/activity")
     @MemberOnly
     public ResponseEntity<Void> createActivity(
             @Auth final Accessor accessor,

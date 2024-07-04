@@ -9,9 +9,11 @@ import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.miniprofile.IndustrySector;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
+import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
 import liaison.linkit.team.domain.miniprofile.TeamScale;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.miniprofile.IndustrySectorRepository;
+import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileKeywordRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamScaleRepository;
 import liaison.linkit.team.dto.request.miniprofile.TeamMiniProfileCreateRequest;
@@ -25,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
@@ -35,6 +39,7 @@ public class TeamMiniProfileService {
 
 
     private final TeamMiniProfileRepository teamMiniProfileRepository;
+    private final TeamMiniProfileKeywordRepository teamMiniProfileKeywordRepository;
     private final TeamProfileRepository teamProfileRepository;
     private final IndustrySectorRepository industrySectorRepository;
     private final TeamScaleRepository teamScaleRepository;
@@ -76,6 +81,7 @@ public class TeamMiniProfileService {
             teamMiniProfileRepository.deleteByTeamProfileId(teamProfile.getId());
         }
 
+
         // IndustrySector 찾기
         final IndustrySector industrySector = industrySectorRepository.findBySectorName(onBoardingFieldTeamInformRequest.getSectorName());
 
@@ -88,8 +94,6 @@ public class TeamMiniProfileService {
                 industrySector,
                 teamScale,
                 onBoardingFieldTeamInformRequest.getTeamName(),
-                null,
-                null,
                 null,
                 null,
                 null,
@@ -106,11 +110,22 @@ public class TeamMiniProfileService {
             final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
             final MultipartFile teamMiniProfileImage
     ) {
+        // 미니 프로필 내에 기본 정보를 입력한 사람과 입력하지 않은 사람으로 나뉜다.
+
         final TeamProfile teamProfile = getTeamProfile(memberId);
         final TeamMiniProfile teamMiniProfile = getTeamMiniProfile(teamProfile.getId());
 
+        // 기존에 저장되어있던 keywordList 전체 삭제
+        teamMiniProfileKeywordRepository.deleteAllByTeamMiniProfileId(teamMiniProfile.getId());
+
+        final List<TeamMiniProfileKeyword> teamMiniProfileKeywordList = teamMiniProfileCreateRequest.getTeamKeywordNames().stream()
+                .map(keyWordName -> new TeamMiniProfileKeyword(null, teamMiniProfile, keyWordName))
+                .toList();
+
         // 이미지 수정 요청이 있는 것으로 간주할 수 있는 경우
         if (teamMiniProfileImage != null) {
+
+
             // 기존에 S3 올라가 있던 이미지 삭제
             s3Uploader.deleteImage(teamMiniProfile.getTeamLogoImageUrl());
             // 새로운 이미지를 S3에 저장
@@ -120,19 +135,20 @@ public class TeamMiniProfileService {
                         teamMiniProfileCreateRequest.getTeamProfileTitle(),
                         teamMiniProfileCreateRequest.getTeamUploadPeriod(),
                         teamMiniProfileCreateRequest.isTeamUploadDeadline(),
-                        teamMiniProfileImageUrl,
-                        teamMiniProfileCreateRequest.getTeamValue(),
-                        teamMiniProfileCreateRequest.getTeamDetailInform()
+                        teamMiniProfileImageUrl
                 );
+            // 새롭게 전달 받은 키워드 리스트 저장
+            teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
+
         } else {                                                    // 기존 이미지 그대로 사용하는 것으로 간주
+
             teamMiniProfile.onBoardingTeamMiniProfile(
                     teamMiniProfileCreateRequest.getTeamProfileTitle(),
                     teamMiniProfileCreateRequest.getTeamUploadPeriod(),
                     teamMiniProfileCreateRequest.isTeamUploadDeadline(),
-                    teamMiniProfile.getTeamLogoImageUrl(),
-                    teamMiniProfileCreateRequest.getTeamValue(),
-                    teamMiniProfileCreateRequest.getTeamDetailInform()
+                    teamMiniProfile.getTeamLogoImageUrl()
             );
+            teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
         }
     }
 
@@ -175,15 +191,14 @@ public class TeamMiniProfileService {
     public TeamMiniProfileResponse getPersonalTeamMiniProfile(final Long memberId) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
         final TeamMiniProfile teamMiniProfile = getTeamMiniProfile(teamProfile.getId());
-        return TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile);
+        final List<TeamMiniProfileKeyword> teamMiniProfileKeyword = teamMiniProfileKeywordRepository.findAllByTeamMiniProfileId(teamMiniProfile.getId());
+        return TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword);
     }
 
     public boolean getIsTeamMiniProfile(final Long memberId) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
         return teamProfile.getIsTeamMiniProfile();
     }
-
-
 
 
 //    private final TeamProfileRepository teamProfileRepository;

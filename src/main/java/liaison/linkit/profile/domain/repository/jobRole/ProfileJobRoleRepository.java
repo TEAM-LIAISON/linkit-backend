@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public interface ProfileJobRoleRepository extends JpaRepository<ProfileJobRole, Long> {
 
     boolean existsByProfileId(final Long profileId);
@@ -16,4 +18,10 @@ public interface ProfileJobRoleRepository extends JpaRepository<ProfileJobRole, 
     @Query("DELETE FROM ProfileJobRole profileJobRole WHERE profileJobRole.profile.id = :profileId")
     void deleteAllByProfileId(@Param("profileId") final Long profileId);
 
+    @Query("""
+           SELECT pjr
+           FROM ProfileJobRole pjr
+           WHERE pjr.profile.id = :profileId
+           """)
+    List<ProfileJobRole> findAllByProfileId(@Param("profileId") final Long profileId);
 }

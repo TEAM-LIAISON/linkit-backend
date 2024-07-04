@@ -5,7 +5,6 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.team.dto.request.TeamIntroductionCreateRequest;
-import liaison.linkit.team.dto.request.onBoarding.OnBoardingFieldTeamInformRequest;
 import liaison.linkit.team.dto.response.*;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
@@ -13,11 +12,9 @@ import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
-import liaison.linkit.team.dto.response.onBoarding.OnBoardingFieldTeamInformResponse;
 import liaison.linkit.team.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +24,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/team_profile")
+@RequestMapping
 @Slf4j
 public class TeamProfileController {
 
@@ -49,13 +46,10 @@ public class TeamProfileController {
     // 4.10.
     final TeamAttachService teamAttachService;
 
-
     // 팀 소개서 전체 조회
-    @GetMapping
+    @GetMapping("/team/profile")
     @MemberOnly
-    public ResponseEntity<?> getTeamProfile(
-            @Auth final Accessor accessor
-    ) {
+    public ResponseEntity<?> getTeamProfile(@Auth final Accessor accessor) {
         try {
             log.info("--- 팀 이력서 조회 요청이 들어왔습니다. ---");
             teamProfileService.validateTeamProfileByMember(accessor.getMemberId());
@@ -120,101 +114,10 @@ public class TeamProfileController {
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("팀 소개력서 정보를 불러오는 과정에서 문제가 발생했습니다.");
         }
-
     }
 
-
-
-    @GetMapping("/onBoarding")
-    @MemberOnly
-    public ResponseEntity<?> getOnBoardingTeamProfile(@Auth final Accessor accessor) {
-        try {
-            log.info("--- 팀 소개서 온보딩 조회 요청이 들어왔습니다 ---");
-            teamProfileService.validateTeamProfileByMember(accessor.getMemberId());
-
-            final TeamProfileOnBoardingIsValueResponse teamProfileOnBoardingIsValueResponse
-                    = teamProfileService.getTeamProfileOnBoardingIsValue(accessor.getMemberId());
-            log.info("teamProfileOnBoardingIsValueResponse={}", teamProfileOnBoardingIsValueResponse);
-
-            final OnBoardingFieldTeamInformResponse onBoardingFieldTeamInformResponse
-                    = getOnBoardingFieldTeamInformResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isTeamProfileTeamBuildingField(), teamProfileOnBoardingIsValueResponse.isTeamMiniProfile());
-            log.info("onBoardingFieldTeamInformResponse={}", onBoardingFieldTeamInformResponse);
-
-            log.info("활동 방식 및 지역 오류 확인 범위 시작 부분");
-            final ActivityResponse activityResponse
-                    = getActivityResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isActivity());
-            log.info("activityResponse={}", activityResponse);
-
-            final TeamMiniProfileResponse teamMiniProfileResponse
-                    = getTeamMiniProfileResponse(accessor.getMemberId(), teamProfileOnBoardingIsValueResponse.isTeamMiniProfile());
-            log.info("teamMiniProfileResponse={}", teamMiniProfileResponse);
-
-            final OnBoardingTeamProfileResponse onBoardingTeamProfileResponse = new OnBoardingTeamProfileResponse(
-                    onBoardingFieldTeamInformResponse,
-                    activityResponse,
-                    teamMiniProfileResponse
-            );
-
-            log.info("onBoardingTeamProfileResponse={}", onBoardingTeamProfileResponse);
-
-            return ResponseEntity.ok().body(onBoardingTeamProfileResponse);
-
-        } catch (Exception e) {
-            log.error("온보딩 조회 과정에서 예외 발생: {}", e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("온보딩 정보를 불러오는 과정에서 문제가 발생했습니다.");
-        }
-
-    }
-
-    private TeamMiniProfileResponse getTeamMiniProfileResponse(
-            final Long memberId,
-            final boolean isTeamMiniProfile
-    ) {
-        if (isTeamMiniProfile) {
-            teamMiniProfileService.validateTeamMiniProfileByMember(memberId);
-            return teamMiniProfileService.getPersonalTeamMiniProfile(memberId);
-        } else {
-            return new TeamMiniProfileResponse();
-        }
-    }
-
-
-
-    private OnBoardingFieldTeamInformResponse getOnBoardingFieldTeamInformResponse(
-            final Long memberId,
-            final boolean isTeamProfileTeamBuildingField,
-            final boolean isTeamMiniProfile
-    ) {
-        if (isTeamProfileTeamBuildingField && isTeamMiniProfile) {
-            teamProfileTeamBuildingFieldService.validateTeamProfileTeamBuildingFieldByMember(memberId);
-            teamMiniProfileService.validateTeamMiniProfileByMember(memberId);
-
-            return new OnBoardingFieldTeamInformResponse(
-                    teamProfileTeamBuildingFieldService.getAllTeamProfileTeamBuildingFields(memberId),
-                    teamMiniProfileService.getTeamMiniProfileEarlyOnBoarding(memberId)
-            );
-        } else {
-            return new OnBoardingFieldTeamInformResponse();
-        }
-    }
-
-    // 팀 소개서 온보딩 과정에서 첫번째 항목
-    @PostMapping("/field/basic-team")
-    @MemberOnly
-    public ResponseEntity<Void> createOnBoardingFirst(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest
-    ) {
-        // 일단 희망 팀빌딩 분야부터 처리
-        teamProfileTeamBuildingFieldService.saveTeamBuildingField(accessor.getMemberId(), onBoardingFieldTeamInformRequest.getTeamBuildingFieldNames());
-
-        // 미니 프로필에 있는 팀 제목, 규모, 분야 저장
-        teamMiniProfileService.saveOnBoarding(accessor.getMemberId(), onBoardingFieldTeamInformRequest);
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @PostMapping("/introduction")
+    // 팀 소개 생성/수정
+    @PostMapping("/team/introduction")
     @MemberOnly
     public ResponseEntity<Void> createTeamIntroduction(
             @Auth final Accessor accessor,
@@ -225,9 +128,6 @@ public class TeamProfileController {
         return ResponseEntity.ok().build();
     }
 
-
-
-    // --- 전체 조회 관련 메서드 ---
 
     // 4.3. 프로필 완성도
     private TeamCompletionResponse getTeamCompletionResponse(
@@ -256,7 +156,7 @@ public class TeamProfileController {
             final boolean isTeamMemberAnnouncement
     ) {
         if (isTeamMemberAnnouncement) {
-            return teamMemberAnnouncementService.getTeamMemberAnnouncement(memberId);
+            return teamMemberAnnouncementService.getTeamMemberAnnouncements(memberId);
         } else {
             return null;
         }
@@ -321,6 +221,18 @@ public class TeamProfileController {
             return teamAttachService.getTeamAttachList(memberId);
         } else {
             return new TeamAttachResponse();
+        }
+    }
+
+    private TeamMiniProfileResponse getTeamMiniProfileResponse(
+            final Long memberId,
+            final boolean isTeamMiniProfile
+    ) {
+        if (isTeamMiniProfile) {
+            teamMiniProfileService.validateTeamMiniProfileByMember(memberId);
+            return teamMiniProfileService.getPersonalTeamMiniProfile(memberId);
+        } else {
+            return new TeamMiniProfileResponse();
         }
     }
 }

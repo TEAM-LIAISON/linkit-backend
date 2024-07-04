@@ -15,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_TEAM_INTRODUCTION_WITH_TEAM_PROFILE;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +30,11 @@ public class TeamMemberIntroductionService {
     private TeamProfile getTeamProfile(final Long memberId) {
         return teamProfileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
+    }
+
+    private TeamMemberIntroduction getTeamMemberIntroduction(final Long teamMemberIntroductionId) {
+        return teamMemberIntroductionRepository.findById(teamMemberIntroductionId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_INTRODUCTION_ID));
     }
 
     public void validateTeamMemberIntroductionByMember(final Long memberId) {
@@ -89,5 +93,20 @@ public class TeamMemberIntroductionService {
 
     private TeamMemberIntroductionResponse getTeamMemberIntroductionResponse(final TeamMemberIntroduction teamMemberIntroduction) {
         return TeamMemberIntroductionResponse.of(teamMemberIntroduction);
+    }
+
+    public void deleteTeamMemberIntroduction(
+            final Long memberId,
+            final Long teamMemberIntroductionId
+    ) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        final TeamMemberIntroduction teamMemberIntroduction = getTeamMemberIntroduction(teamMemberIntroductionId);
+
+        teamMemberIntroductionRepository.deleteById(teamMemberIntroduction.getId());
+
+        if (!teamMemberIntroductionRepository.existsByTeamProfileId(teamProfile.getId())) {
+            teamProfile.cancelTeamPerfectionFifteen();
+            teamProfile.updateMemberTeamProfileTypeByCompletion();
+        }
     }
 }

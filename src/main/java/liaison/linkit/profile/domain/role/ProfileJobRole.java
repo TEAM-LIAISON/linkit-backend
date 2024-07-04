@@ -28,5 +28,4 @@ public class ProfileJobRole {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "job_role_id")
     private JobRole jobRole;
-
 }

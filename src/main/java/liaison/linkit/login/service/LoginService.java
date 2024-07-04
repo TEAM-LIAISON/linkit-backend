@@ -29,23 +29,20 @@ public class LoginService {
     private static final int MAX_TRY_COUNT = 5;
 
     private final RefreshTokenRepository refreshTokenRepository;
-
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
-
     private final TeamProfileRepository teamProfileRepository;
-
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
 
-    // 프로필 (내 이력서) 1개 조회
+    // 내 이력서 조회
     private Profile getProfileByMember(final Long memberId) {
         return profileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
     }
 
-    // 회원에 대한 팀 소개서 정보를 가져온다. (1개만 저장되어 있음)
+    // 팀 소개서 정보를 가져온다. (1개만 저장되어 있음)
     private TeamProfile getTeamProfile(final Long memberId) {
         return teamProfileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
@@ -63,20 +60,15 @@ public class LoginService {
 
         // 멤버 테이블에서 기본 정보 입력 여부를 조회함
         final boolean existMemberBasicInform = member.isExistMemberBasicInform();
-
-        // 멤버 테이블에서 내 이력서 또는 팀 소개서의 작성 여부를 조회해야함.
-        final boolean existOnBoardingProfile = member.isExistOnBoardingProfile();
-
         log.info("loginService login method memberId={}", member.getId());
-
         final Profile profile = getProfileByMember(member.getId());
         final TeamProfile teamProfile = getTeamProfile(member.getId());
-
         final boolean existDefaultPrivateProfile = profile.getExistDefaultPrivateProfile();
         log.info("existDefaultPrivateProfile={}", existDefaultPrivateProfile);
         final boolean existDefaultTeamProfile = teamProfile.getExistDefaultTeamProfile();
         log.info("existDefaultTeamProfile={}",existDefaultTeamProfile);
 
+        final boolean existDefaultProfile = (existDefaultPrivateProfile || existDefaultTeamProfile);
         final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
 
         // 리프레시 토큰 저장
@@ -88,7 +80,7 @@ public class LoginService {
                 memberTokens.getRefreshToken(),
                 oauthUserInfo.getEmail(),
                 existMemberBasicInform,
-                existOnBoardingProfile
+                existDefaultProfile
         );
     }
 
@@ -110,10 +102,7 @@ public class LoginService {
                 log.info("savedProfile.ID={}", savedProfile.getId());
 
                 TeamProfile savedTeamProfile = teamProfileRepository.save(new TeamProfile(member, 0));
-
                 log.info("savedTeamProfile.ID={}", savedTeamProfile.getId());
-//                final MiniProfile miniProfile = MiniProfile.of(savedProfile,null,null,true,null,null, null);
-//                miniProfileRepository.save(miniProfile);
 
                 return member;
             }

@@ -50,7 +50,7 @@ public class CompletionResponse {
                 profile.getIsAntecedents(),
                 profile.getIsEducation(),
                 profile.getIsAwards(),
-                profile.getIsAttach()
+                profile.getIsAttachUrl()
         );
     }
 

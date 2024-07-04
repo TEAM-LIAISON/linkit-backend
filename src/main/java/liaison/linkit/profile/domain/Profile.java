@@ -52,10 +52,15 @@ public class Profile {
     @Column(nullable = false)
     private boolean isIntroduction;
 
-    // 3.5. 역할 및 기술 기입 여부
+    // 3.5. 직무/역할 및 보유 기술 기입 여부
+    @Column(nullable = false)
+    private boolean isJobAndSkill;
+
+    // 3.5.1. 직무/역할 기입 여부
     @Column(nullable = false)
     private boolean isProfileJobRole;
 
+    // 3.5.2. 보유 기술 기입 여부
     @Column(nullable = false)
     private boolean isProfileSkill;
 
@@ -79,17 +84,17 @@ public class Profile {
     @Column(nullable = false)
     private boolean isAwards;
 
-    // 3.11. 첨부 기입 여부
-    @Column(nullable = false)
-    private boolean isAttach;
+//    // 3.11. 첨부 기입 여부
+//    @Column(nullable = false)
+//    private boolean isAttach;
 
     // 3.11. 첨부 링크(URL) 기입 여부
     @Column(nullable = false)
     private boolean isAttachUrl;
 
-    // 3.11. 첨부 파일(File) 기입 여부
-    @Column(nullable = false)
-    private boolean isAttachFile;
+//    // 3.11. 첨부 파일(File) 기입 여부
+//    @Column(nullable = false)
+//    private boolean isAttachFile;
 
     // 3.1. 미니 프로필 기입 여부
     @Column(nullable = false)
@@ -105,15 +110,17 @@ public class Profile {
         this.completion = completion;
         this.introduction = null;
         this.isIntroduction = false;
+        this.isJobAndSkill = false;
+        this.isProfileJobRole = false;
         this.isProfileSkill = false;
         this.isProfileTeamBuildingField = false;
         this.isProfileRegion = false;
         this.isAntecedents = false;
         this.isEducation = false;
         this.isAwards = false;
-        this.isAttach = false;
+//        this.isAttach = false;
         this.isAttachUrl = false;
-        this.isAttachFile = false;
+//        this.isAttachFile = false;
         this.isMiniProfile = false;
     }
 
@@ -179,6 +186,14 @@ public class Profile {
     // 3.5.2. 내 이력서 보유 기술
     public void updateIsProfileSkill(final boolean isProfileSkill) {
         this.isProfileSkill = isProfileSkill;
+        if (this.isJobAndSkill != (this.isProfileJobRole && isProfileSkill)) {
+            this.isJobAndSkill = !this.isJobAndSkill;
+            if(this.isJobAndSkill){
+                addPerfectionDefault();
+            } else {
+                cancelPerfectionDefault();
+            }
+        }
     }
 
     // 3.6. 희망 팀빌딩 분야 업데이트
@@ -232,28 +247,28 @@ public class Profile {
     }
 
     // 3.11. 첨부 업데이트
-    private void updateIsAttach(final boolean isAttachUrl, final boolean isAttachFile) {
-        // attachUrl, attachFile 2개 중에 하나라도 참이면 isAttach는 참이다.
-        if (this.isAttach != (isAttachUrl || isAttachFile)) {
-            this.isAttach = !this.isAttach;
-            if (this.isAttach) {
-                addPerfectionTen();
-            } else {
-                cancelPerfectionTen();
-            }
-        }
-    }
+//    private void updateIsAttach(final boolean isAttachUrl, final boolean isAttachFile) {
+//        // attachUrl, attachFile 2개 중에 하나라도 참이면 isAttach는 참이다.
+//        if (this.isAttach != (isAttachUrl || isAttachFile)) {
+//            this.isAttach = !this.isAttach;
+//            if (this.isAttach) {
+//                addPerfectionTen();
+//            } else {
+//                cancelPerfectionTen();
+//            }
+//        }
+//    }
 
     // 3.11.1 첨부 링크 업데이트
     public void updateIsAttachUrl(final boolean isAttachUrl) {
         this.isAttachUrl = isAttachUrl;
-        updateIsAttach(isAttachUrl, this.isAttachFile);
+
     }
     // 3.11.2 첨부 파일 업데이트
-    public void updateIsAttachFile(final boolean isAttachFile) {
-        this.isAttachFile = isAttachFile;
-        updateIsAttach(this.isAttachUrl, isAttachFile);
-    }
+//    public void updateIsAttachFile(final boolean isAttachFile) {
+//        this.isAttachFile = isAttachFile;
+//        updateIsAttach(this.isAttachUrl, isAttachFile);
+//    }
 
 
 
@@ -294,6 +309,10 @@ public class Profile {
     public boolean getIsProfileSkill() {
         return isProfileSkill;
     }
+
+    public boolean getIsJobAndSkill() {
+        return isJobAndSkill;
+    }
     public boolean getIsProfileTeamBuildingField() {
         return isProfileTeamBuildingField;
     }
@@ -309,15 +328,15 @@ public class Profile {
     public boolean getIsAwards() {
         return isAwards;
     }
-    public boolean getIsAttach() {
-        return isAttach;
-    }
+//    public boolean getIsAttach() {
+//        return isAttach;
+//    }
     public boolean getIsAttachUrl() {
         return isAttachUrl;
     }
-    public boolean getIsAttachFile() {
-        return isAttachFile;
-    }
+//    public boolean getIsAttachFile() {
+//        return isAttachFile;
+//    }
 
     // 3.4. 자기소개 초기화 및 삭제 메서드
     public void deleteIntroduction() {this.introduction = null;}

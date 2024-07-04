@@ -5,7 +5,6 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.awards.AwardsCreateRequest;
-import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.service.AwardsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,20 +16,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/awards")
+@RequestMapping
 @Slf4j
 public class AwardsController {
     private final AwardsService awardsService;
 
-    // 이력서 수상 항목 전체 조회
-    @GetMapping("/list")
-    @MemberOnly
-    public ResponseEntity<List<AwardsResponse>> getAwardsList(@Auth final Accessor accessor) {
-        final List<AwardsResponse> awardsResponses = awardsService.getAllAwards(accessor.getMemberId());
-        return ResponseEntity.ok().body(awardsResponses);
-    }
-
-    @PostMapping
+    @PostMapping("/private/awards")
     @MemberOnly
     public ResponseEntity<Void> createAwards(
             @Auth final Accessor accessor,
@@ -41,35 +32,14 @@ public class AwardsController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    // 이력서 수상 항목 1개 조회
-    @GetMapping
+    @DeleteMapping("/private/awards/{awardsId}")
     @MemberOnly
-    public ResponseEntity<AwardsResponse> getAwards(
-            @Auth final Accessor accessor
+    public ResponseEntity<Void> deleteAwards(
+            @Auth final Accessor accessor,
+            @PathVariable final Long awardsId
     ) {
         awardsService.validateAwardsByMember(accessor.getMemberId());
-        final AwardsResponse awardsResponse = awardsService.getAwardsDetail(accessor.getMemberId());
-
-        return ResponseEntity.ok().body(awardsResponse);
+        awardsService.deleteAwards(accessor.getMemberId(), awardsId);
+        return ResponseEntity.noContent().build();
     }
-
-//    // 이력서 수상 항목 1개 수정
-//    @PatchMapping
-//    @MemberOnly
-//    public ResponseEntity<Void> updateAwards(
-//            @Auth final Accessor accessor,
-//            @RequestBody @Valid final AwardsUpdateRequest awardsUpdateRequest
-//    ) {
-//        awardsService.update(accessor.getMemberId(), awardsUpdateRequest);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    // 이력서 수상 항목 1개 삭제
-//    @DeleteMapping
-//    @MemberOnly
-//    public ResponseEntity<Void> deleteAwards(@Auth final Accessor accessor){
-//        awardsService.delete(accessor.getMemberId());
-//        return ResponseEntity.noContent().build();
-//    }
-
 }

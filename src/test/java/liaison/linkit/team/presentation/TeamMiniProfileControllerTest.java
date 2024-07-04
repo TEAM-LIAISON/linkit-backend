@@ -17,10 +17,12 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,7 +67,6 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
         String name = "miniProfileImage";
         String contentType = "multipart/form-data";
         String path = "./src/test/resources/static/images/logo.png";
-
         return new MockMultipartFile(name, path, contentType, path.getBytes(StandardCharsets.UTF_8));
     }
 
@@ -78,8 +79,7 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
                 "사이드 프로젝트 함께 할 개발자를 찾고 있어요",
                 LocalDate.of(2024, 10,20),
                 true,
-                "빠르게 성장하는 팀, 최단기간 투자 유치",
-                "#해커톤 #사무실 있음 #서울시"
+                Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
         );
 
         final MockMultipartFile teamMiniProfileImage = new MockMultipartFile(
@@ -133,9 +133,9 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
                                 fieldWithPath("teamProfileTitle").description("팀 소개서 제목"),
                                 fieldWithPath("teamUploadPeriod").description("팀 소개서 업로드 기간").attributes(field("constraint", "LocalDate")),
                                 fieldWithPath("teamUploadDeadline").description("업로드 마감 선택 여부"),
-                                fieldWithPath("teamValue").description("팀을 홍보할 수 있는 가치"),
-                                fieldWithPath("teamDetailInform").description("팀 세부 정보")
+                                fieldWithPath("teamKeywordNames").type(JsonFieldType.ARRAY).description("팀 소개 항목").attributes(field("constraint", "문자열 배열"))
                         )
                 ));
+
     }
 }

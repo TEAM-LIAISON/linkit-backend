@@ -10,9 +10,10 @@ import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
 import liaison.linkit.profile.domain.repository.education.MajorRepository;
 import liaison.linkit.profile.domain.repository.education.UniversityRepository;
+import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
-import liaison.linkit.profile.dto.request.IntroductionCreateRequest;
+import liaison.linkit.profile.dto.request.IntroductionRequest;
 import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
@@ -23,9 +24,9 @@ import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.profile.dto.response.skill.ProfileSkillResponse;
+import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.region.dto.response.ProfileRegionResponse;
+import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -77,7 +78,14 @@ public class ProfileService {
         }
     }
 
-
+    // 생성/수정/삭제 포함
+    public void saveIntroduction(
+            final Long memberId,
+            final IntroductionRequest introductionRequest
+    ) {
+        final Profile profile = getProfileByMember(memberId);
+        profile.updateIntroduction(introductionRequest.getIntroduction());
+    }
 
     @Transactional(readOnly = true)
     public ProfileIsValueResponse getProfileIsValue(final Long memberId) {
@@ -91,23 +99,12 @@ public class ProfileService {
         return ProfileIntroductionResponse.profileIntroduction(profile);
     }
 
-    public void deleteIntroduction(final Long memberId) {
-        // 프로필 조회
-        final Profile profile = getProfileByMember(memberId);
-
-        profile.deleteIntroduction();
-        profile.updateIsIntroduction(false);
-        profile.updateMemberProfileTypeByCompletion();
-
-        profileRepository.save(profile);
-    }
-
     public ProfileResponse getProfileResponse(
             final MiniProfileResponse miniProfileResponse,
             final MemberNameResponse memberNameResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
-            final ProfileSkillResponse profileSkillResponse,
+            final JobAndSkillResponse jobAndSkillResponse,
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
             final ProfileRegionResponse profileRegionResponse,
             final List<AntecedentsResponse> antecedentsResponses,
@@ -120,7 +117,7 @@ public class ProfileService {
                 memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
-                profileSkillResponse,
+                jobAndSkillResponse,
                 profileTeamBuildingFieldResponse,
                 profileRegionResponse,
                 antecedentsResponses,
@@ -131,13 +128,4 @@ public class ProfileService {
     }
 
 
-
-
-    public void saveIntroduction(
-            final Long memberId,
-            final IntroductionCreateRequest introductionCreateRequest
-    ) {
-        final Profile profile = getProfileByMember(memberId);
-        profile.updateIntroduction(introductionCreateRequest.getIntroduction());
-    }
 }
