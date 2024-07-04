@@ -89,7 +89,7 @@ public class TeamProfileControllerTest extends ControllerTest {
 
     private ResultActions performGetTeamProfileRequest() throws Exception {
         return mockMvc.perform(
-                get("/team_profile")
+                get("/team/profile")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -170,7 +170,7 @@ public class TeamProfileControllerTest extends ControllerTest {
 
         final List<TeamMemberAnnouncementResponse> teamMemberAnnouncementResponseList = Arrays.asList(firstTeamMemberAnnouncementResponse, secondTeamMemberAnnouncementResponse);
 
-        given(teamMemberAnnouncementService.getTeamMemberAnnouncement(1L)).willReturn(teamMemberAnnouncementResponseList);
+        given(teamMemberAnnouncementService.getTeamMemberAnnouncements(1L)).willReturn(teamMemberAnnouncementResponseList);
 
         // 4.6. 활동 방식 + 활동 지역/위치
         final List<String> activityTagName = Arrays.asList("사무실 있음", "비대면 활동");

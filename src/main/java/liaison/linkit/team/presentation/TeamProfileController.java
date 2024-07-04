@@ -156,7 +156,7 @@ public class TeamProfileController {
             final boolean isTeamMemberAnnouncement
     ) {
         if (isTeamMemberAnnouncement) {
-            return teamMemberAnnouncementService.getTeamMemberAnnouncement(memberId);
+            return teamMemberAnnouncementService.getTeamMemberAnnouncements(memberId);
         } else {
             return null;
         }

@@ -42,6 +42,11 @@ public class EducationService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
     }
 
+    private Education getEducation(final Long educationId) {
+        return educationRepository.findById(educationId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_EDUCATION_ID));
+    }
+
     // 멤버로부터 프로필 아이디를 조회해서 학력 정보 존재성을 판단
     public void validateEducationByMember(final Long memberId) {
         if (!educationRepository.existsByProfileId(getProfile(memberId).getId())) {
@@ -49,7 +54,10 @@ public class EducationService {
         }
     }
 
-    public void save(final Long memberId, final List<EducationCreateRequest> educationCreateRequests) {
+    public void save(
+            final Long memberId,
+            final List<EducationCreateRequest> educationCreateRequests
+    ) {
         final Profile profile = getProfile(memberId);
 
         if (educationRepository.existsByProfileId(profile.getId())) {
@@ -109,10 +117,18 @@ public class EducationService {
     }
 
     public void delete(final Long memberId, final Long educationId) {
-        if (!educationRepository.existsById(educationId)) {
-            throw new BadRequestException(NOT_FOUND_EDUCATION_ID);
+        log.info("삭제 메서드 실행");
+        final Profile profile = getProfile(memberId);
+        final Education education = getEducation(educationId);
+
+        educationRepository.deleteById(education.getId());
+        log.info("삭제 완료");
+        if (!educationRepository.existsByProfileId(profile.getId())) {
+            profile.cancelPerfectionDefault();
+            profile.updateMemberProfileTypeByCompletion();
         }
-        educationRepository.deleteById(educationId);
     }
+
+
 
 }

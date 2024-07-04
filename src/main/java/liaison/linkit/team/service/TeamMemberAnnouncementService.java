@@ -22,8 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_TEAM_MEMBER_ANNOUNCEMENT_WITH_PROFILE;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +44,13 @@ public class TeamMemberAnnouncementService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
     }
 
+    private TeamMemberAnnouncement getTeamMemberAnnouncement(
+            final Long teamMemberAnnouncementId
+    ) {
+        return teamMemberAnnouncementRepository.findById(teamMemberAnnouncementId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID));
+    }
+
     public void validateTeamMemberAnnouncement(final Long memberId) {
         if (!teamMemberAnnouncementRepository.existsByTeamProfileId(getTeamProfile(memberId).getId())) {
             throw new AuthException(INVALID_TEAM_MEMBER_ANNOUNCEMENT_WITH_PROFILE);
@@ -52,7 +58,7 @@ public class TeamMemberAnnouncementService {
     }
 
     @Transactional(readOnly = true)
-    public List<TeamMemberAnnouncementResponse> getTeamMemberAnnouncement(final Long memberId) {
+    public List<TeamMemberAnnouncementResponse> getTeamMemberAnnouncements(final Long memberId) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementRepository.findAllByTeamProfileId(teamProfile.getId());
         return teamMemberAnnouncements.stream()
@@ -67,7 +73,7 @@ public class TeamMemberAnnouncementService {
     }
 
     // 팀원 공고 생성/수정
-    public void postAnnouncements(
+    public void saveAnnouncements(
             final Long memberId,
             final List<TeamMemberAnnouncementRequest> teamMemberAnnouncementRequestList
     ) {
@@ -143,4 +149,22 @@ public class TeamMemberAnnouncementService {
         );
         return teamMemberAnnouncementRepository.save(newTeamMemberAnnouncement);
     }
+
+
+    // 팀원 공고 1개 삭제 메서드
+    public void deleteTeamMemberAnnouncement(
+            final Long memberId,
+            final Long teamMemberAnnouncementId
+    ) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
+
+        teamMemberAnnouncementRepository.deleteById(teamMemberAnnouncement.getId());
+        if (!teamMemberAnnouncementRepository.existsByTeamProfileId(teamProfile.getId())) {
+            teamProfile.cancelTeamPerfectionFifteen();
+            teamProfile.updateMemberTeamProfileTypeByCompletion();
+        }
+    }
+
+
 }

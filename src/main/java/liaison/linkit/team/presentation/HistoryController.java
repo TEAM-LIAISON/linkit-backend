@@ -9,10 +9,7 @@ import liaison.linkit.team.service.HistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,6 +28,17 @@ public class HistoryController {
     ) {
         historyService.saveHistories(accessor.getMemberId(), historyCreateRequests);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/team/history/{historyId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteHistory(
+            @Auth final Accessor accessor,
+            @PathVariable final Long historyId
+    ) {
+        historyService.validateHistoryByMember(accessor.getMemberId());
+        historyService.deleteHistory(accessor.getMemberId(), historyId);
+        return ResponseEntity.noContent().build();
     }
 
 //    @GetMapping
@@ -53,12 +61,5 @@ public class HistoryController {
 //        return ResponseEntity.noContent().build();
 //    }
 //
-//    @DeleteMapping
-//    @MemberOnly
-//    public ResponseEntity<Void> deleteHistory(
-//            @Auth final Accessor accessor
-//    ) {
-//        historyService.delete(accessor.getMemberId());
-//        return ResponseEntity.noContent().build();
-//    }
+
 }

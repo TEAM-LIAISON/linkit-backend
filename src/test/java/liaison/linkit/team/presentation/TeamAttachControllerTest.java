@@ -93,7 +93,7 @@ public class TeamAttachControllerTest extends ControllerTest {
             final int teamAttachUrlId
     ) throws  Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/team/attach/url/{attachUrlId}", teamAttachUrlId)
+                RestDocumentationRequestBuilders.delete("/team/attach/url/{teamAttachUrlId}", teamAttachUrlId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -155,6 +155,7 @@ public class TeamAttachControllerTest extends ControllerTest {
 
         // when
         final ResultActions resultActions = performDeleteTeamAttachUrlRequest(1);
+
         // then
         verify(teamAttachService).deleteTeamAttachUrl(1L, 1L);
 

@@ -9,21 +9,18 @@ import liaison.linkit.team.service.TeamMemberIntroductionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/team/members")
+@RequestMapping
 public class TeamMemberIntroductionController {
 
     private final TeamMemberIntroductionService teamMemberIntroductionService;
 
-    @PostMapping
+    @PostMapping("/team/members")
     @MemberOnly
     public ResponseEntity<Void> createTeamMemberIntroduction(
             @Auth final Accessor accessor,
@@ -32,4 +29,16 @@ public class TeamMemberIntroductionController {
         teamMemberIntroductionService.saveTeamMember(accessor.getMemberId(), teamMemberIntroductionCreateRequests);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @DeleteMapping("/team/members/{teamMemberIntroductionId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteTeamMemberIntroduction(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMemberIntroductionId
+    ) {
+        teamMemberIntroductionService.validateTeamMemberIntroductionByMember(accessor.getMemberId());
+        teamMemberIntroductionService.deleteTeamMemberIntroduction(accessor.getMemberId(), teamMemberIntroductionId);
+        return ResponseEntity.noContent().build();
+    }
 }
+

@@ -69,7 +69,7 @@ class TeamOnBoardingControllerTest extends ControllerTest {
 
     private ResultActions performGetOnBoardingTeamProfileRequest() throws Exception {
         return mockMvc.perform(
-                get("/onBoarding/team")
+                get("/team/onBoarding")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -78,7 +78,7 @@ class TeamOnBoardingControllerTest extends ControllerTest {
 
     private ResultActions performPostRequest(final OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest) throws Exception {
         return mockMvc.perform(
-                post("/team/teamBuildingField/basicInform")
+                post("/team/team_building_field/basic_inform")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)

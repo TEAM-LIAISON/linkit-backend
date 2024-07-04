@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -25,6 +26,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -33,6 +35,8 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -57,16 +61,48 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         doNothing().when(teamMemberAnnouncementService).validateTeamMemberAnnouncement(anyLong());
     }
 
+    private void makeTeamMemberAnnouncement() throws Exception {
+        final TeamMemberAnnouncementRequest firstTeamMemberAnnouncementRequest = new TeamMemberAnnouncementRequest(
+                Arrays.asList("개발·데이터", "디자인"),
+                "주요 업무입니다.",
+                Arrays.asList("서버 개발", "DevOps", "게임 디자인"),
+                "지원 절차입니다."
+        );
+
+        final TeamMemberAnnouncementRequest secondTeamMemberAnnouncementRequest = new TeamMemberAnnouncementRequest(
+                Arrays.asList("기획·경영"),
+                "주요 업무입니다.",
+                Arrays.asList("사업 개발"),
+                "지원 절차입니다."
+        );
+
+        final List<TeamMemberAnnouncementRequest> teamMemberAnnouncementRequestList = Arrays.asList(firstTeamMemberAnnouncementRequest, secondTeamMemberAnnouncementRequest);
+
+        doNothing().when(teamMemberAnnouncementService).saveAnnouncements(1L, teamMemberAnnouncementRequestList);
+        performPostTeamMemberAnnouncementRequest(teamMemberAnnouncementRequestList);
+    }
+
     // post request 구현부
     private ResultActions performPostTeamMemberAnnouncementRequest(
             final List<TeamMemberAnnouncementRequest> teamMemberAnnouncementRequestList
     ) throws Exception {
         return mockMvc.perform(
-                post("/team/members/announcement")
+                post("/team/members/announcements")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(teamMemberAnnouncementRequestList))
+        );
+    }
+
+    private ResultActions performDeleteTeamAttachUrlRequest(
+            final int teamMemberAnnouncementId
+    )throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/team/members/announcements/{teamMemberAnnouncementId}", teamMemberAnnouncementId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
         );
     }
 
@@ -126,5 +162,27 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                 )
                         )
                 );
+    }
+
+    @DisplayName("팀원 공고 1개를 삭제할 수 있다.")
+    @Test
+    void deleteTeamMemberAnnouncement() throws Exception {
+        // given
+        makeTeamMemberAnnouncement();
+        doNothing().when(teamMemberAnnouncementService).validateTeamMemberAnnouncement(anyLong());
+
+        // when
+        final ResultActions resultActions = performDeleteTeamAttachUrlRequest(1);
+
+        // then
+        verify(teamMemberAnnouncementService).deleteTeamMemberAnnouncement(1L, 1L);
+
+        resultActions.andExpect(status().isNoContent())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("teamMemberAnnouncementId")
+                                        .description("팀원 공고 ID")
+                        )
+                ));
     }
 }

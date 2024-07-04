@@ -37,6 +37,7 @@ public class EducationController {
             @Auth final Accessor accessor,
             @PathVariable final Long educationId
     ) {
+        log.info("educationId={}에 대한 삭제 요청이 들어왔습니다.", educationId);
         educationService.validateEducationByMember(accessor.getMemberId());
         educationService.delete(accessor.getMemberId(), educationId);
         return ResponseEntity.noContent().build();

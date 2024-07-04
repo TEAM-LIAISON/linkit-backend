@@ -9,10 +9,7 @@ import liaison.linkit.team.service.TeamMemberAnnouncementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,7 +27,18 @@ public class TeamMemberAnnouncementController {
             @Auth final Accessor accessor,
             @RequestBody @Valid List<TeamMemberAnnouncementRequest> teamMemberAnnouncementRequestList
     ) {
-        teamMemberAnnouncementService.postAnnouncements(accessor.getMemberId(), teamMemberAnnouncementRequestList);
+        teamMemberAnnouncementService.saveAnnouncements(accessor.getMemberId(), teamMemberAnnouncementRequestList);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/members/announcements/{teamMemberAnnouncementId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteTeamMemberAnnouncement(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMemberAnnouncementId
+    ) {
+        teamMemberAnnouncementService.validateTeamMemberAnnouncement(accessor.getMemberId());
+        teamMemberAnnouncementService.deleteTeamMemberAnnouncement(accessor.getMemberId(), teamMemberAnnouncementId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -83,7 +83,7 @@ public class EducationControllerTest extends ControllerTest {
                 educationCreateRequests
         );
 
-        doNothing().when(educationService).save(anyLong(), anyList());
+        doNothing().when(educationService).save(1L, educationCreateRequests);
         performPostRequest(educationListCreateRequest);
     }
 
@@ -98,10 +98,12 @@ public class EducationControllerTest extends ControllerTest {
         );
     }
 
-    // 경력 항목 삭제 테스트
-    private ResultActions performDeleteRequest(final int educationId) throws Exception {
+    // 학력 항목 삭제 테스트
+    private ResultActions performDeleteRequest(
+            final int educationId
+    ) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/private/{educationId}", educationId)
+                RestDocumentationRequestBuilders.delete("/private/education/{educationId}", educationId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
