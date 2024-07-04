@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_MEMBER_ID;
 import static liaison.linkit.matching.domain.type.MatchingType.PROFILE;
-import static liaison.linkit.matching.domain.type.MatchingType.TEAM_PROFILE;
 
 @Service
 @RequiredArgsConstructor
@@ -34,17 +33,17 @@ public class MatchingService {
 
     public void createProfileMatching(
             final Long memberId,
-            final Long profileId,
+            final Long miniProfileId,
             final MatchingCreateRequest matchingCreateRequest
     ) {
         // 누구의 매칭 요청인가?
         final Member member = getMember(memberId);
-        log.info("memberId={}", memberId);
 
+        log.info("memberId={}", memberId);
         final Matching newMatching = new Matching(
                 null,
                 member,
-                profileId,
+                miniProfileId,
                 PROFILE,
                 matchingCreateRequest.getRequestMessage(),
                 LocalDateTime.now()
@@ -52,26 +51,6 @@ public class MatchingService {
 
         log.info("newMatching={}", newMatching.getReceiveMatchingId());
 
-        matchingRepository.save(newMatching);
-    }
-
-    public void createTeamProfileMatching(
-            final Long memberId,
-            final Long teamProfileId,
-            final MatchingCreateRequest matchingCreateRequest
-    ) {
-        // 누구의 매칭 요청인가?
-        final Member member = getMember(memberId);
-
-        final Matching newMatching = new Matching(
-                null,
-                member,
-                // 팀 소개서의 ID를 받음
-                teamProfileId,
-                TEAM_PROFILE,
-                matchingCreateRequest.getRequestMessage(),
-                LocalDateTime.now()
-        );
         matchingRepository.save(newMatching);
     }
 }

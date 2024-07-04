@@ -174,44 +174,51 @@ include::{snippets}/team-profile-controller-test/get-team-profile/http-request.a
 include::{snippets}/team-profile-controller-test/get-team-profile/http-response.adoc[]
 include::{snippets}/team-profile-controller-test/get-team-profile/response-fields.adoc[]
 
-=== 4.4. 팀 희망 팀빌딩 분야 생성
+=== 4.1. 팀 소개서 - 팀 미니 프로필 생성/수정 [온보딩 동일]
+
+=== 4.4. 팀 소개서 - 희망 팀빌딩 분야 생성/수정
 include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/http-request.adoc[]
 include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/request-fields.adoc[]
 
-=== 4.5. 팀원 공고 생성/수정
+=== 4.5. 팀 소개서 - 팀원 공고 생성/수정
 ==== 요청
 include::{snippets}/team-member-announcement-controller-test/create-team-member-announcement-list/http-request.adoc[]
 include::{snippets}/team-member-announcement-controller-test/create-team-member-announcement-list/request-fields.adoc[]
-=== 4.5. 팀원 공고 삭제
+
+=== 4.5. 팀 소개서 - 팀원 공고 삭제
 === 요청
 include::{snippets}/team-member-announcement-controller-test/delete-team-member-announcement/http-request.adoc[]
 include::{snippets}/team-member-announcement-controller-test/delete-team-member-announcement/path-parameters.adoc[]
 
-=== 4.6. 활동 방식, 활동 지역 및 위치 생성 (온보딩 API 동일)
+=== 4.6. 팀 소개서 - 활동 방식 및 활동 지역/위치 생성/수정 [온보딩 동일]
 
 === 4.7. 팀 소개서 - 팀 소개 생성/수정/삭제
 ==== 요청
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/http-request.adoc[]
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/request-fields.adoc[]
 
-=== 4.8. 팀원 소개 생성/수정
+=== 4.8. 팀 소개서 - 팀원 소개 생성/수정
 include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/http-request.adoc[]
 include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/request-fields.adoc[]
 
-=== 4.8. 팀원 소개 삭제
+=== 4.8. 팀 소개서 - 팀원 소개 삭제
 include::{snippets}/team-member-introduction-controller-test/delete-team-member-introduction/http-request.adoc[]
 include::{snippets}/team-member-introduction-controller-test/delete-team-member-introduction/path-parameters.adoc[]
 
-
-=== 4.9. 팀 연혁 생성/수정
+=== 4.9. 팀 소개서 - 팀 연혁 생성/수정
 include::{snippets}/history-controller-test/create-history/http-request.adoc[]
 include::{snippets}/history-controller-test/create-history/request-fields.adoc[]
-=== 4.9. 팀 연혁 삭제
+=== 4.9. 팀 소개서 - 팀 연혁 삭제
 
-=== 4.10. 팀 첨부 링크 생성/수정
+=== 4.10. 팀 소개서 - 팀 첨부 URL 생성/수정
 ==== 요청
 include::{snippets}/team-attach-controller-test/create-team-attach-url/http-request.adoc[]
 include::{snippets}/team-attach-controller-test/create-team-attach-url/request-fields.adoc[]
+
+=== 4.10. 팀 소개서 - 팀 첨부 URL 삭제
+==== 요청
+include::{snippets}/team-attach-controller-test/delete-team-attach-url/http-request.adoc[]
+include::{snippets}/team-attach-controller-test/delete-team-attach-url/path-parameters.adoc[]
 
 == 6. 팀원 찾기
 === 6.1. 팀원 찾기 페이지

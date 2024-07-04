@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.matching.CheckProfileAccess;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
@@ -21,28 +20,19 @@ public class MatchingController {
 
     public final MatchingService matchingService;
 
-    @PostMapping("/profile/{profileId}")
+    @PostMapping("/private/profile/{miniProfileId}")
     @MemberOnly
-    @CheckProfileAccess
-    public ResponseEntity<Void> createProfileMatching(
+    // 매칭 권한 검증 어노테이션 추가
+    public ResponseEntity<Void> createPrivateProfileMatching(
             @Auth final Accessor accessor,
-            @PathVariable final Long profileId,
+            @PathVariable final Long miniProfileId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
-        log.info("profileId={}", profileId);
-        matchingService.createProfileMatching(accessor.getMemberId(), profileId, matchingCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
+        log.info("miniProfileId={}", miniProfileId);
 
-    @PostMapping("/teamProfile/{teamProfileId}")
-    @MemberOnly
-    public ResponseEntity<Void> createTeamProfileMatching(
-            @Auth final Accessor accessor,
-            @PathVariable final Long teamProfileId,
-            @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
-    ) {
+        matchingService.createProfileMatching(accessor.getMemberId(), miniProfileId, matchingCreateRequest);
 
-        matchingService.createTeamProfileMatching(accessor.getMemberId(), teamProfileId, matchingCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+
     }
 }

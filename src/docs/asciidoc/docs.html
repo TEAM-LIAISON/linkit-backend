@@ -607,14 +607,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_4_팀_소개서">4. 팀 소개서</a>
 <ul class="sectlevel2">
 <li><a href="#_4_0_팀_소개서_전체_조회">4.0. 팀 소개서 - 전체 조회</a></li>
-<li><a href="#_4_4_팀_희망_팀빌딩_분야_생성">4.4. 팀 희망 팀빌딩 분야 생성</a></li>
-<li><a href="#_4_5_팀원_공고_생성수정">4.5. 팀원 공고 생성/수정</a></li>
-<li><a href="#_4_6_활동_방식_활동_지역_및_위치_생성_온보딩_api_동일">4.6. 활동 방식, 활동 지역 및 위치 생성 (온보딩 API 동일)</a></li>
+<li><a href="#_4_1_팀_소개서_팀_미니_프로필_생성수정_온보딩_동일">4.1. 팀 소개서 - 팀 미니 프로필 생성/수정 [온보딩 동일]</a></li>
+<li><a href="#_4_4_팀_소개서_희망_팀빌딩_분야_생성수정">4.4. 팀 소개서 - 희망 팀빌딩 분야 생성/수정</a></li>
+<li><a href="#_4_5_팀_소개서_팀원_공고_생성수정">4.5. 팀 소개서 - 팀원 공고 생성/수정</a></li>
+<li><a href="#_4_5_팀_소개서_팀원_공고_삭제">4.5. 팀 소개서 - 팀원 공고 삭제</a></li>
+<li><a href="#_요청_22">요청</a></li>
+<li><a href="#_4_6_팀_소개서_활동_방식_및_활동_지역위치_생성수정_온보딩_동일">4.6. 팀 소개서 - 활동 방식 및 활동 지역/위치 생성/수정 [온보딩 동일]</a></li>
 <li><a href="#_4_7_팀_소개서_팀_소개_생성수정삭제">4.7. 팀 소개서 - 팀 소개 생성/수정/삭제</a></li>
-<li><a href="#_4_8_팀원_소개_생성수정">4.8. 팀원 소개 생성/수정</a></li>
-<li><a href="#_4_9_팀_연혁_생성수정">4.9. 팀 연혁 생성/수정</a></li>
-<li><a href="#_4_9_팀_연혁_삭제">4.9. 팀 연혁 삭제</a></li>
-<li><a href="#_4_10_팀_첨부_링크_생성수정">4.10. 팀 첨부 링크 생성/수정</a></li>
+<li><a href="#_4_8_팀_소개서_팀원_소개_생성수정">4.8. 팀 소개서 - 팀원 소개 생성/수정</a></li>
+<li><a href="#_4_8_팀_소개서_팀원_소개_삭제">4.8. 팀 소개서 - 팀원 소개 삭제</a></li>
+<li><a href="#_4_9_팀_소개서_팀_연혁_생성수정">4.9. 팀 소개서 - 팀 연혁 생성/수정</a></li>
+<li><a href="#_4_9_팀_소개서_팀_연혁_삭제">4.9. 팀 소개서 - 팀 연혁 삭제</a></li>
+<li><a href="#_4_10_팀_소개서_팀_첨부_url_생성수정">4.10. 팀 소개서 - 팀 첨부 URL 생성/수정</a></li>
+<li><a href="#_4_10_팀_소개서_팀_첨부_url_삭제">4.10. 팀 소개서 - 팀 첨부 URL 삭제</a></li>
 </ul>
 </li>
 <li><a href="#_6_팀원_찾기">6. 팀원 찾기</a>
@@ -717,7 +722,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 11 Jul 2024 06:16:54 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 11 Jul 2024 07:01:10 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2957,13 +2962,13 @@ Content-Length: 2429
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "teamProfileTeamBuildingField" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
+    "history" : true,
     "activity" : true,
-    "history" : true
+    "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -3253,7 +3258,11 @@ Content-Length: 2429
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_4_팀_희망_팀빌딩_분야_생성"><a class="link" href="#_4_4_팀_희망_팀빌딩_분야_생성">4.4. 팀 희망 팀빌딩 분야 생성</a></h3>
+<h3 id="_4_1_팀_소개서_팀_미니_프로필_생성수정_온보딩_동일"><a class="link" href="#_4_1_팀_소개서_팀_미니_프로필_생성수정_온보딩_동일">4.1. 팀 소개서 - 팀 미니 프로필 생성/수정 [온보딩 동일]</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_4_4_팀_소개서_희망_팀빌딩_분야_생성수정"><a class="link" href="#_4_4_팀_소개서_희망_팀빌딩_분야_생성수정">4.4. 팀 소개서 - 희망 팀빌딩 분야 생성/수정</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /team/team_building_field HTTP/1.1
@@ -3292,7 +3301,7 @@ Cookie: refresh-token=refreshToken
 </table>
 </div>
 <div class="sect2">
-<h3 id="_4_5_팀원_공고_생성수정"><a class="link" href="#_4_5_팀원_공고_생성수정">4.5. 팀원 공고 생성/수정</a></h3>
+<h3 id="_4_5_팀_소개서_팀원_공고_생성수정"><a class="link" href="#_4_5_팀_소개서_팀원_공고_생성수정">4.5. 팀 소개서 - 팀원 공고 생성/수정</a></h3>
 <div class="sect3">
 <h4 id="_요청_21"><a class="link" href="#_요청_21">요청</a></h4>
 <div class="listingblock">
@@ -3360,13 +3369,47 @@ Cookie: refresh-token=refreshToken
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_6_활동_방식_활동_지역_및_위치_생성_온보딩_api_동일"><a class="link" href="#_4_6_활동_방식_활동_지역_및_위치_생성_온보딩_api_동일">4.6. 활동 방식, 활동 지역 및 위치 생성 (온보딩 API 동일)</a></h3>
+<h3 id="_4_5_팀_소개서_팀원_공고_삭제"><a class="link" href="#_4_5_팀_소개서_팀원_공고_삭제">4.5. 팀 소개서 - 팀원 공고 삭제</a></h3>
+
+</div>
+<div class="sect2">
+<h3 id="_요청_22"><a class="link" href="#_요청_22">요청</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /team/members/announcements/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. /team/members/announcements/{teamMemberAnnouncementId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_4_6_팀_소개서_활동_방식_및_활동_지역위치_생성수정_온보딩_동일"><a class="link" href="#_4_6_팀_소개서_활동_방식_및_활동_지역위치_생성수정_온보딩_동일">4.6. 팀 소개서 - 활동 방식 및 활동 지역/위치 생성/수정 [온보딩 동일]</a></h3>
 
 </div>
 <div class="sect2">
 <h3 id="_4_7_팀_소개서_팀_소개_생성수정삭제"><a class="link" href="#_4_7_팀_소개서_팀_소개_생성수정삭제">4.7. 팀 소개서 - 팀 소개 생성/수정/삭제</a></h3>
 <div class="sect3">
-<h4 id="_요청_22"><a class="link" href="#_요청_22">요청</a></h4>
+<h4 id="_요청_23"><a class="link" href="#_요청_23">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /team/introduction HTTP/1.1
@@ -3406,7 +3449,7 @@ Cookie: refresh-token=refreshToken
 </div>
 </div>
 <div class="sect2">
-<h3 id="_4_8_팀원_소개_생성수정"><a class="link" href="#_4_8_팀원_소개_생성수정">4.8. 팀원 소개 생성/수정</a></h3>
+<h3 id="_4_8_팀_소개서_팀원_소개_생성수정"><a class="link" href="#_4_8_팀_소개서_팀원_소개_생성수정">4.8. 팀 소개서 - 팀원 소개 생성/수정</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /team/members HTTP/1.1
@@ -3463,7 +3506,37 @@ Cookie: refresh-token=refreshToken
 </table>
 </div>
 <div class="sect2">
-<h3 id="_4_9_팀_연혁_생성수정"><a class="link" href="#_4_9_팀_연혁_생성수정">4.9. 팀 연혁 생성/수정</a></h3>
+<h3 id="_4_8_팀_소개서_팀원_소개_삭제"><a class="link" href="#_4_8_팀_소개서_팀원_소개_삭제">4.8. 팀 소개서 - 팀원 소개 삭제</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /team/members/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. /team/members/{teamMemberIntroductionId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberIntroductionId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀원 소개 ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_4_9_팀_소개서_팀_연혁_생성수정"><a class="link" href="#_4_9_팀_소개서_팀_연혁_생성수정">4.9. 팀 소개서 - 팀 연혁 생성/수정</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /team/histories HTTP/1.1
@@ -3536,13 +3609,13 @@ Cookie: refresh-token=refreshToken
 </table>
 </div>
 <div class="sect2">
-<h3 id="_4_9_팀_연혁_삭제"><a class="link" href="#_4_9_팀_연혁_삭제">4.9. 팀 연혁 삭제</a></h3>
+<h3 id="_4_9_팀_소개서_팀_연혁_삭제"><a class="link" href="#_4_9_팀_소개서_팀_연혁_삭제">4.9. 팀 소개서 - 팀 연혁 삭제</a></h3>
 
 </div>
 <div class="sect2">
-<h3 id="_4_10_팀_첨부_링크_생성수정"><a class="link" href="#_4_10_팀_첨부_링크_생성수정">4.10. 팀 첨부 링크 생성/수정</a></h3>
+<h3 id="_4_10_팀_소개서_팀_첨부_url_생성수정"><a class="link" href="#_4_10_팀_소개서_팀_첨부_url_생성수정">4.10. 팀 소개서 - 팀 첨부 URL 생성/수정</a></h3>
 <div class="sect3">
-<h4 id="_요청_23"><a class="link" href="#_요청_23">요청</a></h4>
+<h4 id="_요청_24"><a class="link" href="#_요청_24">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /team/attach/url HTTP/1.1
@@ -3591,6 +3664,39 @@ Cookie: refresh-token=refreshToken
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_4_10_팀_소개서_팀_첨부_url_삭제"><a class="link" href="#_4_10_팀_소개서_팀_첨부_url_삭제">4.10. 팀 소개서 - 팀 첨부 URL 삭제</a></h3>
+<div class="sect3">
+<h4 id="_요청_25"><a class="link" href="#_요청_25">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /team/attach/url/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 8. /team/attach/url/{teamAttachUrlId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamAttachUrlId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 첨부 URL ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -3599,7 +3705,7 @@ Cookie: refresh-token=refreshToken
 <div class="sect2">
 <h3 id="_6_1_팀원_찾기_페이지"><a class="link" href="#_6_1_팀원_찾기_페이지">6.1. 팀원 찾기 페이지</a></h3>
 <div class="sect3">
-<h4 id="_요청_24"><a class="link" href="#_요청_24">요청</a></h4>
+<h4 id="_요청_26"><a class="link" href="#_요청_26">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /search/private/profile?teamBuildingFieldName&amp;jobRoleName&amp;skillName&amp;cityName&amp;divisionName HTTP/1.1
@@ -3800,7 +3906,7 @@ Content-Length: 667
 <div class="sect2">
 <h3 id="_7_1_팀_찾기_페이지"><a class="link" href="#_7_1_팀_찾기_페이지">7.1. 팀 찾기 페이지</a></h3>
 <div class="sect3">
-<h4 id="_요청_25"><a class="link" href="#_요청_25">요청</a></h4>
+<h4 id="_요청_27"><a class="link" href="#_요청_27">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /search/team/profile?teamBuildingFieldName&amp;jobRoleName&amp;skillName&amp;cityName&amp;divisionName&amp;activityTagName HTTP/1.1
@@ -4017,7 +4123,7 @@ Content-Length: 682
 <div class="sect2">
 <h3 id="_회원_탈퇴"><a class="link" href="#_회원_탈퇴">회원 탈퇴</a></h3>
 <div class="sect3">
-<h4 id="_요청_26"><a class="link" href="#_요청_26">요청</a></h4>
+<h4 id="_요청_28"><a class="link" href="#_요청_28">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /account HTTP/1.1
@@ -4144,7 +4250,7 @@ Content-Length: 102
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-07-04 14:31:29 +0900
+Last updated 2024-07-04 16:09:14 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
