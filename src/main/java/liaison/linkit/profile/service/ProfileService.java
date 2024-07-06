@@ -4,7 +4,11 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.repository.*;
+import liaison.linkit.profile.domain.miniProfile.MiniProfile;
+import liaison.linkit.profile.domain.repository.AntecedentsRepository;
+import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.domain.repository.ProfileSkillRepository;
+import liaison.linkit.profile.domain.repository.SkillRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
@@ -25,15 +29,15 @@ import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
-import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -71,10 +75,22 @@ public class ProfileService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
     }
 
+    private MiniProfile getMiniProfileByMember(final Long profileId) {
+        return miniProfileRepository.findByProfileId(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_PROFILE_ID));
+    }
+
     // 멤버 아이디로 내 이력서 유효성을 검증하는 로직
     public void validateProfileByMember(final Long memberId) {
         if (!profileRepository.existsByMemberId(memberId)) {
             throw new AuthException(ExceptionCode.INVALID_PROFILE_WITH_MEMBER);
+        }
+    }
+
+    // 미니 프로필로 해당 내 이력서의 유효성 판단
+    public void validatePrivateProfileByMiniProfile(final Long miniProfileId) {
+        if (!miniProfileRepository.existsById(miniProfileId)) {
+            throw new AuthException(INVALID_MINI_PROFILE_WITH_MEMBER);
         }
     }
 
@@ -128,4 +144,11 @@ public class ProfileService {
     }
 
 
+
+
+    private Profile getProfileByMiniProfile(final Long miniProfileId) {
+        final MiniProfile miniProfile = miniProfileRepository.findById(miniProfileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_ID));
+        return miniProfile.getProfile();
+    }
 }

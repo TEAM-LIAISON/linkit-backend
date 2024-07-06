@@ -1,6 +1,6 @@
 package liaison.linkit.global.config;
 
-import liaison.linkit.matching.ProfileAccessInterceptor;
+import liaison.linkit.profile.browse.PrivateProfileBrowseAccessInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -21,10 +21,10 @@ public class CorsConfig implements WebMvcConfigurer {
     }
 
     @Autowired
-    private ProfileAccessInterceptor profileAccessInterceptor;
+    private PrivateProfileBrowseAccessInterceptor privateProfileBrowseAccessInterceptor;
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(profileAccessInterceptor).addPathPatterns("/matching/**");
+        registry.addInterceptor(privateProfileBrowseAccessInterceptor).addPathPatterns("/matching/**");
     }
 }

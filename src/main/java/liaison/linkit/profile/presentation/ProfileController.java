@@ -17,11 +17,9 @@ import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
+import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.profile.service.ProfileOnBoardingService;
-import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
-import liaison.linkit.profile.service.ProfileRegionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +60,7 @@ public class ProfileController {
         return ResponseEntity.ok().build();
     }
 
+
     // 내 이력서 전체 조회 GET 메서드
     @GetMapping("/private/profile")
     @MemberOnly
@@ -95,6 +94,7 @@ public class ProfileController {
                     awardsResponses,
                     attachResponse
             );
+
             return ResponseEntity.ok().body(profileResponse);
         } catch (Exception e) {
             log.error("내 이력서 조회 과정에서 예외 발생: {}", e.getMessage());
