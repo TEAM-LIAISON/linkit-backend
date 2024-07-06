@@ -1,6 +1,5 @@
 package liaison.linkit.profile.dto.response.browse;
 
-import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
@@ -34,7 +33,6 @@ public class BrowsePrivateProfileResponse {
     private final AttachResponse attachResponse;
 
     public static BrowsePrivateProfileResponse privateProfile(
-            final Profile profile,
             final MiniProfileResponse miniProfileResponse,
             final MemberNameResponse memberNameResponse,
             final CompletionResponse completionResponse,
@@ -48,7 +46,6 @@ public class BrowsePrivateProfileResponse {
             final AttachResponse attachResponse
     ) {
         return new BrowsePrivateProfileResponse(
-                profile
                 miniProfileResponse,
                 memberNameResponse,
                 completionResponse,

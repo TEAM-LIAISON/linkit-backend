@@ -87,12 +87,7 @@ public class ProfileService {
         }
     }
 
-    // 미니 프로필로 해당 내 이력서의 유효성 판단
-    public void validatePrivateProfileByMiniProfile(final Long miniProfileId) {
-        if (!miniProfileRepository.existsById(miniProfileId)) {
-            throw new AuthException(INVALID_MINI_PROFILE_WITH_MEMBER);
-        }
-    }
+
 
     // 생성/수정/삭제 포함
     public void saveIntroduction(

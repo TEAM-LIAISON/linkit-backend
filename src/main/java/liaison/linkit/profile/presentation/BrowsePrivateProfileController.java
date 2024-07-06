@@ -4,7 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
-import liaison.linkit.profile.service.ProfileService;
+import liaison.linkit.profile.service.BrowsePrivateProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +22,9 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class BrowsePrivateProfileController {
 
     public final MemberService memberService;
-    public final ProfileService profileService;
+    public final BrowsePrivateProfileService browsePrivateProfileService;
 
-    // 타겟 이력서 열람 메서드 (07.05 추가 예정)
+    // 타겟 이력서 열람 컨트롤러
     @GetMapping("/private/profile/{miniProfileId}")
     // 열람 애노테이션 추가
     public ResponseEntity<?> getPrivateProfile(
@@ -33,8 +33,11 @@ public class BrowsePrivateProfileController {
     ) {
         log.info("miniProfileId={}에 대한 내 이력서 열람 요청이 발생했습니다.", miniProfileId);
         try {
-            profileService.validatePrivateProfileByMiniProfile(miniProfileId);
-            final BrowsePrivateProfileResponse browsePrivateProfileResponse = profileService.getPrivateProfile(miniProfileId);
+            // 1. 열람하고자 하는 내 이력서의 유효성을 판단한다.
+            browsePrivateProfileService.validatePrivateProfileByMiniProfile(miniProfileId);
+
+            // 2. 열람하고자 하는 회원의 ID를 가져온다.
+            final Long browseTargetMemberId = browsePrivateProfileService.getTargetMemberIdByMiniProfileId(miniProfileId);
 
             return ResponseEntity.ok().body(browsePrivateProfileResponse);
         } catch (Exception e) {
