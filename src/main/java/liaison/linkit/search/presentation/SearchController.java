@@ -39,6 +39,7 @@ public class SearchController {
             @RequestParam(required = false) final String divisionName
     ) {
         log.info("팀원 찾기 요청이 들어왔습니다.");
+
         final Page<MiniProfileResponse> privateMiniProfiles = searchService.findPrivateMiniProfile(
                 pageable,
                 teamBuildingFieldName,

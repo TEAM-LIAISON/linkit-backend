@@ -6,6 +6,8 @@ import liaison.linkit.global.exception.ImageException;
 import liaison.linkit.image.domain.ImageFile;
 import liaison.linkit.image.domain.S3ImageEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
+import liaison.linkit.member.domain.MemberBasicInform;
+import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
@@ -13,6 +15,7 @@ import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
+import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 public class MiniProfileService {
 
     private final ProfileRepository profileRepository;
+    private final MemberBasicInformRepository memberBasicInformRepository;
     private final MiniProfileRepository miniProfileRepository;
     private final MiniProfileKeywordRepository miniProfileKeywordRepository;
     private final S3Uploader s3Uploader;
@@ -47,6 +51,12 @@ public class MiniProfileService {
     private MiniProfile getMiniProfile(final Long profileId) {
         return miniProfileRepository.findByProfileId(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_PROFILE_ID));
+    }
+
+    // 회원 기본 정보를 가져오는 메서드
+    private MemberBasicInform getMemberBasicInform(final Long memberId) {
+        return memberBasicInformRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID));
     }
 
     // 멤버 아이디로 미니 프로필의 유효성을 검증하는 로직
@@ -145,7 +155,8 @@ public class MiniProfileService {
         final Profile profile = getProfile(memberId);
         final MiniProfile miniProfile = getMiniProfile(profile.getId());
         final List<MiniProfileKeyword> miniProfileKeywordList = getMiniProfileKeywords(miniProfile.getId());
-        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList);
+        final MemberBasicInform memberBasicInform = getMemberBasicInform(memberId);
+        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList, MemberNameResponse.getMemberName(memberBasicInform));
     }
 
     private List<MiniProfileKeyword> getMiniProfileKeywords(final Long miniProfileId) {

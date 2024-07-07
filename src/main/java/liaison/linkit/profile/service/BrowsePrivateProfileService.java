@@ -16,12 +16,26 @@ import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
+import liaison.linkit.profile.dto.response.MemberNameResponse;
+import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
+import liaison.linkit.profile.dto.response.ProfileResponse;
+import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
+import liaison.linkit.profile.dto.response.attach.AttachResponse;
+import liaison.linkit.profile.dto.response.awards.AwardsResponse;
+import liaison.linkit.profile.dto.response.completion.CompletionResponse;
+import liaison.linkit.profile.dto.response.education.EducationResponse;
+import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
+import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
+import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_MINI_PROFILE_WITH_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MINI_PROFILE_BY_ID;
+import java.util.List;
+
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,13 +63,56 @@ public class BrowsePrivateProfileService {
         }
     }
 
+    // 미니 프로필 ID로 해당 내 이력서 ID 조회
+    public Long getTargetPrivateProfileIdByMiniProfileId(final Long miniProfileId) {
+        final Profile profile = getProfileByMiniProfileId(miniProfileId);
+        return profile.getId();
+    }
+
+    // 미니 프로필로 해당 내 이력서 조회
     private Profile getProfileByMiniProfileId(final Long miniProfileId) {
         final MiniProfile miniProfile = miniProfileRepository.findById(miniProfileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_ID));
         return miniProfile.getProfile();
     }
 
-    public Long getTargetMemberIdByMiniProfileId(final Long miniProfileId) {
+    // 프로필 (내 이력서) 1개 조회
+    private Profile getProfile(final Long browseTargetPrivateProfileId) {
+        return profileRepository.findById(browseTargetPrivateProfileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+    }
 
+    @Transactional(readOnly = true)
+    public ProfileIsValueResponse getProfileIsValue(final Long browseTargetPrivateProfileId) {
+        final Profile profile = getProfile(browseTargetPrivateProfileId);
+        return ProfileIsValueResponse.profileIsValue(profile);
+    }
+
+    public ProfileResponse getProfileResponse(
+            final MiniProfileResponse miniProfileResponse,
+            final MemberNameResponse memberNameResponse,
+            final CompletionResponse completionResponse,
+            final ProfileIntroductionResponse profileIntroductionResponse,
+            final JobAndSkillResponse jobAndSkillResponse,
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
+            final ProfileRegionResponse profileRegionResponse,
+            final List<AntecedentsResponse> antecedentsResponses,
+            final List<EducationResponse> educationResponses,
+            final List<AwardsResponse> awardsResponses,
+            final AttachResponse attachResponse
+    ) {
+        return ProfileResponse.profileItems(
+                miniProfileResponse,
+                memberNameResponse,
+                completionResponse,
+                profileIntroductionResponse,
+                jobAndSkillResponse,
+                profileTeamBuildingFieldResponse,
+                profileRegionResponse,
+                antecedentsResponses,
+                educationResponses,
+                awardsResponses,
+                attachResponse
+        );
     }
 }
