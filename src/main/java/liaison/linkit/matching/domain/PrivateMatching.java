@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import liaison.linkit.matching.domain.type.MatchingStatus;
 import liaison.linkit.matching.domain.type.MatchingType;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.profile.domain.Profile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -18,11 +19,10 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Matching {
-    // 매칭 아이디
+public class PrivateMatching {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "matching_id")
+    @Column(name = "private_matching_id")
     private Long id;
 
     // 발신자의 ID
@@ -31,9 +31,9 @@ public class Matching {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    // 내 이력서 ID, 팀 소개서 ID를 저장하자. 중복된 ID 값을 저장하는거로 하자
-    @Column(name = "receive_matching_id")
-    private Long receiveMatchingId;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     // 어떤 소개서에 요청 보낸 것인지 type 필요
     @Column(name = "matching_type")
@@ -52,21 +52,4 @@ public class Matching {
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
-    
-    public Matching(
-            final Long id,
-            final Member member,
-            final Long receiveMatchingId,
-            final MatchingType matchingType,
-            final String requestMessage,
-            final MatchingStatus matchingStatus,
-            final LocalDateTime createdAt
-    ) {
-        this.member = member;
-        this.receiveMatchingId = receiveMatchingId;
-        this.matchingType = matchingType;
-        this.requestMessage = requestMessage;
-        this.matchingStatus = matchingStatus;
-        this.createdAt = LocalDateTime.now();
-    }
 }
