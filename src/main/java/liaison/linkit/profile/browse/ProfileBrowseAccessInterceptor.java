@@ -32,8 +32,7 @@ public class ProfileBrowseAccessInterceptor implements HandlerInterceptor {
             final HttpServletResponse response,
             final Object handler
     ) throws Exception {
-        if (handler instanceof HandlerMethod) {
-            final HandlerMethod handlerMethod = (HandlerMethod) handler;
+        if (handler instanceof HandlerMethod handlerMethod) {
 
             // to_private 열람 요청
             final CheckBrowseToPrivateProfileAccess checkBrowseToPrivateProfileAccess =
@@ -58,7 +57,7 @@ public class ProfileBrowseAccessInterceptor implements HandlerInterceptor {
                 log.info("teamProfileType={}",teamProfileType);
 
                 // 접근 권한 판단 실행 여부
-                if (!isAccessJudge(checkBrowseToPrivateProfileAccess, profileType, teamProfileType)) {
+                if (!isAccessJudge(profileType, teamProfileType)) {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return false;
                 }
@@ -69,13 +68,11 @@ public class ProfileBrowseAccessInterceptor implements HandlerInterceptor {
 
     // 열람 권한 판단
     private boolean isAccessJudge(
-            final CheckBrowseToPrivateProfileAccess checkBrowseToPrivateProfileAccess,
             final ProfileType profileType,
             final TeamProfileType teamProfileType
     ) {
         // 열람 권한 판단
         if (ProfileType.NO_PERMISSION.equals(profileType) && TeamProfileType.NO_PERMISSION.equals(teamProfileType)) {
-            log.info("checkBrowseToPrivateProfileAccess={}",checkBrowseToPrivateProfileAccess);
             log.info("내 이력서에 대한 열람 권한이 거부됩니다.");
             return false;
         } else return true;
