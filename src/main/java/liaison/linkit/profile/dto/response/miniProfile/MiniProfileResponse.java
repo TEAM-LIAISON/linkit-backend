@@ -37,8 +37,8 @@ public class MiniProfileResponse {
     public static MiniProfileResponse personalMiniProfile(
             final MiniProfile miniProfile,
             final List<MiniProfileKeyword> miniProfileKeywords,
-            final MemberNameResponse memberNameResponse) {
-
+            final MemberNameResponse memberNameResponse
+    ) {
         List<String> myKeywordNames = miniProfileKeywords.stream()
                 .map(MiniProfileKeyword::getMyKeywordNames) // 올바른 메서드 참조 사용
                 .collect(Collectors.toList());

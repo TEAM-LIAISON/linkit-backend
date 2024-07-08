@@ -26,13 +26,13 @@ public class MatchingController {
     // 개인 이력서에 매칭 요청을 보내는 경우
     @PostMapping("/private/profile/{miniProfileId}")
     @MemberOnly
-    // 매칭 권한 별도 구현
+//    @CheckMatchingToPrivateProfileAccess
     public ResponseEntity<Void> createPrivateProfileMatching(
             @Auth final Accessor accessor,
             @PathVariable final Long miniProfileId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
-        log.info("miniProfileId={}", miniProfileId);
+        log.info("miniProfileId={}에게 매칭 요청이 발생했습니다.", miniProfileId);
         matchingService.createProfileMatching(accessor.getMemberId(), miniProfileId, matchingCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

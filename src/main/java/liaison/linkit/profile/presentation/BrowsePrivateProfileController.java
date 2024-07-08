@@ -1,8 +1,10 @@
 package liaison.linkit.profile.presentation;
 
 import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.service.MemberService;
+import liaison.linkit.profile.browse.CheckBrowseToPrivateProfileAccess;
 import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
@@ -51,10 +53,10 @@ public class BrowsePrivateProfileController {
 
     public final BrowsePrivateProfileService browsePrivateProfileService;
 
-
     // 타겟 이력서 열람 컨트롤러
-    @GetMapping("/private/profile/{miniProfileId}")
-    // 열람 애노테이션 추가
+    @GetMapping("/browse/private/profile/{miniProfileId}")
+    @MemberOnly
+    @CheckBrowseToPrivateProfileAccess
     public ResponseEntity<?> getPrivateProfile(
             @Auth final Accessor accessor,
             @PathVariable final Long miniProfileId

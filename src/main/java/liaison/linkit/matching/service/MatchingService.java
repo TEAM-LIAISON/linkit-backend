@@ -39,8 +39,8 @@ public class MatchingService {
     ) {
         // 누구의 매칭 요청인가?
         final Member member = getMember(memberId);
+        log.info("memberId={}가 매칭 요청을 보냅니다.", memberId);
 
-        log.info("memberId={}", memberId);
         final Matching newMatching = new Matching(
                 null,
                 member,
@@ -52,7 +52,6 @@ public class MatchingService {
         );
 
         log.info("newMatching={}", newMatching.getReceiveMatchingId());
-
         matchingRepository.save(newMatching);
     }
 }
