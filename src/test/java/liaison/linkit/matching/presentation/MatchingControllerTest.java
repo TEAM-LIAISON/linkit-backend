@@ -30,6 +30,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MatchingController.class)
@@ -67,6 +69,45 @@ class MatchingControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performTeamProfileMatchingToPrivate(
+            final int profileId,
+            final MatchingCreateRequest matchingCreateRequest
+    ) throws Exception{
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/team/profile/matching/private/{profileId}", profileId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(matchingCreateRequest))
+        );
+    }
+
+    private ResultActions performTeamProfileMatchingToTeam(
+            final int teamProfileId,
+            final MatchingCreateRequest matchingCreateRequest
+    ) throws Exception{
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/team/profile/matching/team/{teamProfileId}", teamProfileId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(matchingCreateRequest))
+        );
+    }
+
+    private ResultActions performPrivateProfileMatchingToTeam(
+            final int teamProfileId,
+            final MatchingCreateRequest matchingCreateRequest
+    ) throws Exception{
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/private/profile/matching/team/{teamProfileId}", teamProfileId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(matchingCreateRequest))
+        );
+    }
+
     @DisplayName("내 이력서로 내 이력서에 매칭 요청을 보낼 수 있다.")
     @Test
     void createPrivateProfileMatchingToPrivate() throws Exception {
@@ -83,6 +124,10 @@ class MatchingControllerTest extends ControllerTest {
 
         resultActions.andExpect(status().isCreated())
                 .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("profileId")
+                                        .description("내 이력서 ID")
+                        ),
                         requestFields(
                                 fieldWithPath("requestMessage")
                                         .type(JsonFieldType.STRING)
@@ -92,7 +137,90 @@ class MatchingControllerTest extends ControllerTest {
                 ));
     }
 
-//    @DisplayName("팀 소개서로 내 이력서에 매칭 요청을 보낼 수 있다.")
-//    @Test
-//    void
+    @DisplayName("팀 소개서로 내 이력서에 매칭 요청을 보낼 수 있다.")
+    @Test
+    void createTeamProfileMatchingToPrivate() throws Exception {
+        // given
+        final MatchingCreateRequest matchingCreateRequest = new MatchingCreateRequest(
+                "매칭 요청 메시지입니다."
+        );
+
+        // when
+        final ResultActions resultActions = performTeamProfileMatchingToPrivate(1, matchingCreateRequest);
+
+        // then
+        verify(matchingService).createTeamProfileMatchingToPrivate(eq(1L), eq(1L), any(MatchingCreateRequest.class));
+
+        resultActions.andExpect(status().isCreated())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("profileId")
+                                        .description("내 이력서 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("requestMessage")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 메시지입니다.")
+                                        .attributes(field("constraint", "문자열"))
+                        )
+                ));
+    }
+
+    @DisplayName("팀 소개서로 팀 소개서에 매칭 요청을 보낼 수 있다.")
+    @Test
+    void createTeamProfileMatchingToTeam() throws Exception {
+        // given
+        final MatchingCreateRequest matchingCreateRequest = new MatchingCreateRequest(
+                "매칭 요청 메시지입니다."
+        );
+
+        // when
+        final ResultActions resultActions = performTeamProfileMatchingToTeam(1, matchingCreateRequest);
+
+        // then
+        verify(matchingService).createTeamProfileMatchingToTeam(eq(1L), eq(1L), any(MatchingCreateRequest.class));
+
+        resultActions.andExpect(status().isCreated())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("teamProfileId")
+                                        .description("팀 소개서 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("requestMessage")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 메시지입니다.")
+                                        .attributes(field("constraint", "문자열"))
+                        )
+                ));
+    }
+
+    @DisplayName("내 이력서로 팀 소개서에 매칭 요청을 보낼 수 있다.")
+    @Test
+    void createPrivateProfileMatchingToTeam() throws Exception {
+        // given
+        final MatchingCreateRequest matchingCreateRequest = new MatchingCreateRequest(
+                "매칭 요청 메시지입니다."
+        );
+        // when
+        final ResultActions resultActions = performPrivateProfileMatchingToTeam(1, matchingCreateRequest);
+
+        // then
+        verify(matchingService).createPrivateProfileMatchingToTeam(eq(1L), eq(1L), any(MatchingCreateRequest.class));
+
+        resultActions.andExpect(status().isCreated())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("teamProfileId")
+                                        .description("팀 소개서 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("requestMessage")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 메시지입니다.")
+                                        .attributes(field("constraint", "문자열"))
+                        )
+                ));
+    }
+
 }
