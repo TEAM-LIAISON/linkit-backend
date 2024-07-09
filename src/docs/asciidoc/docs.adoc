@@ -241,8 +241,24 @@ include::{snippets}/search-controller-test/get-team-mini-profile/response-fields
 == 10. 매칭 관리
 === 10.1. 내 이력서로 내 이력서에 매칭 요청
 include::{snippets}/matching-controller-test/create-private-profile-matching-to-private/http-request.adoc[]
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-private/path-parameters.adoc[]
 include::{snippets}/matching-controller-test/create-private-profile-matching-to-private/request-fields.adoc[]
 
+=== 10.2. 팀 소개서로 내 이력서에 매칭 요청
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-private/http-request.adoc[]
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-private/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-private/request-fields.adoc[]
+
+=== 10.3. 팀 소개서로 팀 소개서에 매칭 요청
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-team/http-request.adoc[]
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-team/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-team/request-fields.adoc[]
+
+
+=== 10.4. 내 이력서로 팀 소개서에 매칭 요청
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-team/http-request.adoc[]
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-team/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-team/request-fields.adoc[]
 
 == 11. 설정
 === 회원 탈퇴
