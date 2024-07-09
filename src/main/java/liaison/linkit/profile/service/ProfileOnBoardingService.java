@@ -13,7 +13,6 @@ import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.skill.Skill;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;
@@ -76,9 +75,7 @@ public class ProfileOnBoardingService {
             // 5. 이력 정보
             final List<AntecedentsResponse> antecedentsResponses,
             // 6. 미니 프로필 정보
-            final MiniProfileResponse miniProfileResponse,
-
-            final MemberNameResponse memberNameResponse
+            final MiniProfileResponse miniProfileResponse
     ) {
         return OnBoardingProfileResponse.onBoardingProfileItems(
                 profileTeamBuildingFieldResponse,
@@ -86,8 +83,7 @@ public class ProfileOnBoardingService {
                 jobAndSkillResponse,
                 educationResponses,
                 antecedentsResponses,
-                miniProfileResponse,
-                memberNameResponse
+                miniProfileResponse
         );
     }
 

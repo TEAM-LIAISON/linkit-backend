@@ -6,7 +6,6 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.IntroductionRequest;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
@@ -17,11 +16,9 @@ import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
+import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.profile.service.ProfileOnBoardingService;
-import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
-import liaison.linkit.profile.service.ProfileRegionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +59,7 @@ public class ProfileController {
         return ResponseEntity.ok().build();
     }
 
+
     // 내 이력서 전체 조회 GET 메서드
     @GetMapping("/private/profile")
     @MemberOnly
@@ -71,7 +69,6 @@ public class ProfileController {
             profileService.validateProfileByMember(accessor.getMemberId());
             final ProfileIsValueResponse profileIsValueResponse = profileService.getProfileIsValue(accessor.getMemberId());
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileIsValueResponse.isMiniProfile());
-            final MemberNameResponse memberNameResponse = getMemberNameResponse(accessor.getMemberId());
             final CompletionResponse completionResponse = getCompletionResponse(accessor.getMemberId());
             final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(accessor.getMemberId(), profileIsValueResponse.isIntroduction());
             final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(accessor.getMemberId(), profileIsValueResponse.isJobAndSkill());
@@ -84,7 +81,6 @@ public class ProfileController {
 
             final ProfileResponse profileResponse = profileService.getProfileResponse(
                     miniProfileResponse,
-                    memberNameResponse,
                     completionResponse,
                     profileIntroductionResponse,
                     jobAndSkillResponse,
@@ -95,6 +91,7 @@ public class ProfileController {
                     awardsResponses,
                     attachResponse
             );
+
             return ResponseEntity.ok().body(profileResponse);
         } catch (Exception e) {
             log.error("내 이력서 조회 과정에서 예외 발생: {}", e.getMessage());
@@ -112,12 +109,6 @@ public class ProfileController {
         } else {
             return new MiniProfileResponse();
         }
-    }
-
-    private MemberNameResponse getMemberNameResponse(
-            final Long memberId
-    ) {
-        return memberService.getMemberName(memberId);
     }
 
     private CompletionResponse getCompletionResponse(

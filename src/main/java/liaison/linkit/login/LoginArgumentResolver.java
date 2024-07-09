@@ -31,11 +31,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final String REFRESH_TOKEN = "refresh-token";
-
     private final JwtProvider jwtProvider;
-
     private final BearerAuthorizationExtractor extractor;
-
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override

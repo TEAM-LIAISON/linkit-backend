@@ -35,6 +35,12 @@ class JwtProviderTest {
     @Value("${jwt.secret}")
     private String realSecretKey;
 
+//    @Autowired
+//    ProfileBrowseAccessInterceptor profileBrowseAccessInterceptor;
+//
+//    @Autowired
+//    MatchingAccessInterceptor matchingAccessInterceptor;
+
     @Autowired
     JwtProvider jwtProvider;
 

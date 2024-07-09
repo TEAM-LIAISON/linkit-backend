@@ -1,5 +1,10 @@
 package liaison.linkit.search.service;
 
+import liaison.linkit.global.exception.BadRequestException;
+import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.domain.MemberBasicInform;
+import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
+import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
@@ -20,16 +25,26 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static liaison.linkit.global.exception.ExceptionCode.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class SearchService {
 
-    final MiniProfileRepository miniProfileRepository;
-    final MiniProfileKeywordRepository miniProfileKeywordRepository;
-    final TeamMiniProfileRepository teamMiniProfileRepository;
-    final TeamMiniProfileKeywordRepository teamMiniProfileKeywordRepository;
+    private final MemberRepository memberRepository;
+    private final MiniProfileRepository miniProfileRepository;
+    private final MemberBasicInformRepository memberBasicInformRepository;
+    private final MiniProfileKeywordRepository miniProfileKeywordRepository;
+    private final TeamMiniProfileRepository teamMiniProfileRepository;
+    private final TeamMiniProfileKeywordRepository teamMiniProfileKeywordRepository;
+
+    // 회원 정보를 가져오는 메서드
+    private Member getMember(final Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BY_MEMBER_ID));
+    }
 
 
     @Transactional(readOnly = true)
@@ -46,7 +61,7 @@ public class SearchService {
             divisionName = null;
         }
 
-        Page<MiniProfile> miniProfiles = miniProfileRepository.findAllByOrderByCreatedDateDesc(
+        final Page<MiniProfile> miniProfiles = miniProfileRepository.findAllByOrderByCreatedDateDesc(
                 teamBuildingFieldName,
                 jobRoleName,
                 skillName,
@@ -100,9 +115,12 @@ public class SearchService {
     }
 
     private MiniProfileResponse convertToMiniProfileResponse(final MiniProfile miniProfile) {
+        final String memberName = getMemberNameByMiniProfile(miniProfile.getId());
+
         List<String> myKeywordNames = miniProfileKeywordRepository.findAllByMiniProfileId(miniProfile.getId()).stream()
                 .map(MiniProfileKeyword::getMyKeywordNames)
                 .collect(Collectors.toList());
+
         return new MiniProfileResponse(
                 miniProfile.getId(),
                 miniProfile.getProfileTitle(),
@@ -110,7 +128,30 @@ public class SearchService {
                 miniProfile.isUploadDeadline(),
                 miniProfile.getMiniProfileImg(),
                 miniProfile.getMyValue(),
-                myKeywordNames
+                myKeywordNames,
+                memberName
         );
+    }
+
+    @Transactional(readOnly = true)
+    public String getMemberNameByMiniProfile(final Long miniProfileId) {
+        final Long profileId = getProfileIdByMiniProfile(miniProfileId);
+        final Member member = getMember(profileId);
+        final MemberBasicInform memberBasicInform = getMemberBasicInform(member.getId());
+        return memberBasicInform.getMemberName();
+    }
+
+    private Long getProfileIdByMiniProfile(final Long miniProfileId) {
+        final MiniProfile miniProfile = miniProfileRepository.findById(miniProfileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_ID));
+        return miniProfile.getProfile().getId();
+    }
+
+    // 회원 기본 정보를 가져오는 메서드
+    private MemberBasicInform getMemberBasicInform(final Long memberId) {
+
+
+        return memberBasicInformRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID));
     }
 }

@@ -20,6 +20,7 @@ public class MiniProfileResponse {
     private final String miniProfileImg;
     private final String myValue;
     private final List<String> myKeywordNames;
+    private final String memberName;
 
     public MiniProfileResponse() {
         this.id = null;
@@ -29,10 +30,14 @@ public class MiniProfileResponse {
         this.miniProfileImg = null;
         this.myValue = null;
         this.myKeywordNames = null;
+        this.memberName = null;
     }
 
-    public static MiniProfileResponse personalMiniProfile(final MiniProfile miniProfile, final List<MiniProfileKeyword> miniProfileKeywords) {
-
+    public static MiniProfileResponse personalMiniProfile(
+            final MiniProfile miniProfile,
+            final List<MiniProfileKeyword> miniProfileKeywords,
+            final String memberName
+    ) {
         List<String> myKeywordNames = miniProfileKeywords.stream()
                 .map(MiniProfileKeyword::getMyKeywordNames) // 올바른 메서드 참조 사용
                 .collect(Collectors.toList());
@@ -44,7 +49,8 @@ public class MiniProfileResponse {
                 miniProfile.isUploadDeadline(),
                 miniProfile.getMiniProfileImg(),
                 miniProfile.getMyValue(),
-                myKeywordNames
+                myKeywordNames,
+                memberName
         );
     }
 

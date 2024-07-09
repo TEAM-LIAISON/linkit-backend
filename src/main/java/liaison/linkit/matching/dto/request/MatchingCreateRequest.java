@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MatchingCreateRequest {
 
+
     @NotNull(message = "매칭 요청과 함께 보낼 메시지를 작성해주세요")
     private String requestMessage;
 
