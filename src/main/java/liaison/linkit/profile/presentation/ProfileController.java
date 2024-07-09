@@ -6,7 +6,6 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.IntroductionRequest;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
@@ -70,7 +69,6 @@ public class ProfileController {
             profileService.validateProfileByMember(accessor.getMemberId());
             final ProfileIsValueResponse profileIsValueResponse = profileService.getProfileIsValue(accessor.getMemberId());
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileIsValueResponse.isMiniProfile());
-            final MemberNameResponse memberNameResponse = getMemberNameResponse(accessor.getMemberId());
             final CompletionResponse completionResponse = getCompletionResponse(accessor.getMemberId());
             final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(accessor.getMemberId(), profileIsValueResponse.isIntroduction());
             final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(accessor.getMemberId(), profileIsValueResponse.isJobAndSkill());
@@ -83,7 +81,6 @@ public class ProfileController {
 
             final ProfileResponse profileResponse = profileService.getProfileResponse(
                     miniProfileResponse,
-                    memberNameResponse,
                     completionResponse,
                     profileIntroductionResponse,
                     jobAndSkillResponse,
@@ -112,12 +109,6 @@ public class ProfileController {
         } else {
             return new MiniProfileResponse();
         }
-    }
-
-    private MemberNameResponse getMemberNameResponse(
-            final Long memberId
-    ) {
-        return memberService.getMemberName(memberId);
     }
 
     private CompletionResponse getCompletionResponse(

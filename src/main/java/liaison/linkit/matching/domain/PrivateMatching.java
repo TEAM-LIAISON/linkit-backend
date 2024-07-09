@@ -5,6 +5,7 @@ import liaison.linkit.matching.domain.type.MatchingStatus;
 import liaison.linkit.matching.domain.type.MatchingType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.Profile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,6 +20,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor
+// 내 이력서로 요청이 온 객체 저장
 public class PrivateMatching {
     @Id
     @GeneratedValue(strategy = IDENTITY)

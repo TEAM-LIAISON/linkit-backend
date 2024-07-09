@@ -18,7 +18,6 @@ import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepositor
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.dto.request.IntroductionRequest;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
@@ -112,7 +111,6 @@ public class ProfileService {
 
     public ProfileResponse getProfileResponse(
             final MiniProfileResponse miniProfileResponse,
-            final MemberNameResponse memberNameResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
             final JobAndSkillResponse jobAndSkillResponse,
@@ -125,7 +123,6 @@ public class ProfileService {
     ) {
         return ProfileResponse.profileItems(
                 miniProfileResponse,
-                memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 jobAndSkillResponse,

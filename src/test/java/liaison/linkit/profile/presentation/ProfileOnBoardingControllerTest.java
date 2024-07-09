@@ -7,7 +7,6 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.onBoarding.OnBoardingPersonalJobAndSkillCreateRequest;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;

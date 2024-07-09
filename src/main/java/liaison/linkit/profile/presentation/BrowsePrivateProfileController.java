@@ -5,7 +5,6 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.browse.CheckBrowseToPrivateProfileAccess;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
@@ -71,7 +70,6 @@ public class BrowsePrivateProfileController {
             final ProfileIsValueResponse profileIsValueResponse = browsePrivateProfileService.getProfileIsValue(browseTargetPrivateProfileId);
 
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(browseTargetPrivateProfileId, profileIsValueResponse.isMiniProfile());
-            final MemberNameResponse memberNameResponse = getMemberNameResponse(browseTargetPrivateProfileId);
             final CompletionResponse completionResponse = getCompletionResponse(browseTargetPrivateProfileId);
             final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(browseTargetPrivateProfileId, profileIsValueResponse.isIntroduction());
             final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(browseTargetPrivateProfileId, profileIsValueResponse.isJobAndSkill());
@@ -84,7 +82,6 @@ public class BrowsePrivateProfileController {
 
             final ProfileResponse profileResponse = browsePrivateProfileService.getProfileResponse(
                     miniProfileResponse,
-                    memberNameResponse,
                     completionResponse,
                     profileIntroductionResponse,
                     jobAndSkillResponse,
@@ -203,13 +200,6 @@ public class BrowsePrivateProfileController {
             final Long browseTargetPrivateProfileId
     ) {
         return completionService.getCompletion(browseTargetPrivateProfileId);
-    }
-
-    // 회원 이름
-    private MemberNameResponse getMemberNameResponse(
-            final Long browseTargetPrivateProfileId
-    ) {
-        return memberService.getMemberName(browseTargetPrivateProfileId);
     }
 
     // 회원 미니 프로필

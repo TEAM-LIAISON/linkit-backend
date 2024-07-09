@@ -19,7 +19,6 @@ import java.util.List;
 public class ProfileResponse {
 
     private final MiniProfileResponse miniProfileResponse;
-    private final MemberNameResponse memberNameResponse;
     private final CompletionResponse completionResponse;
     private final ProfileIntroductionResponse profileIntroductionResponse;
     private final JobAndSkillResponse jobAndSkillResponse;
@@ -32,7 +31,6 @@ public class ProfileResponse {
 
     public static ProfileResponse profileItems(
             final MiniProfileResponse miniProfileResponse,
-            final MemberNameResponse memberNameResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
             final JobAndSkillResponse jobAndSkillResponse,
@@ -46,7 +44,6 @@ public class ProfileResponse {
 
         return new ProfileResponse(
                 miniProfileResponse,
-                memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 jobAndSkillResponse,

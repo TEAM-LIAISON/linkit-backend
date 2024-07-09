@@ -1,6 +1,5 @@
 package liaison.linkit.profile.dto.response.browse;
 
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
@@ -21,7 +20,7 @@ import java.util.List;
 public class BrowsePrivateProfileResponse {
 
     private final MiniProfileResponse miniProfileResponse;
-    private final MemberNameResponse memberNameResponse;
+    private final String memberName;
     private final CompletionResponse completionResponse;
     private final ProfileIntroductionResponse profileIntroductionResponse;
     private final JobAndSkillResponse jobAndSkillResponse;
@@ -34,7 +33,7 @@ public class BrowsePrivateProfileResponse {
 
     public static BrowsePrivateProfileResponse privateProfile(
             final MiniProfileResponse miniProfileResponse,
-            final MemberNameResponse memberNameResponse,
+            final String memberName,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
             final JobAndSkillResponse jobAndSkillResponse,
@@ -47,7 +46,7 @@ public class BrowsePrivateProfileResponse {
     ) {
         return new BrowsePrivateProfileResponse(
                 miniProfileResponse,
-                memberNameResponse,
+                memberName,
                 completionResponse,
                 profileIntroductionResponse,
                 jobAndSkillResponse,

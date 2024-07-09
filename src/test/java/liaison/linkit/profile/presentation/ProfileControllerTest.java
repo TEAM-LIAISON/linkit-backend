@@ -7,7 +7,6 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.IntroductionRequest;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
@@ -331,7 +330,6 @@ class ProfileControllerTest extends ControllerTest {
 
         final ProfileResponse profileResponse = new ProfileResponse(
                 miniProfileResponse,
-                memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 jobAndSkillResponse,
@@ -345,7 +343,6 @@ class ProfileControllerTest extends ControllerTest {
 
         given(profileService.getProfileResponse(
                 miniProfileResponse,
-                memberNameResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 jobAndSkillResponse,

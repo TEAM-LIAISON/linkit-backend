@@ -15,7 +15,6 @@ import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -156,7 +155,7 @@ public class MiniProfileService {
         final MiniProfile miniProfile = getMiniProfile(profile.getId());
         final List<MiniProfileKeyword> miniProfileKeywordList = getMiniProfileKeywords(miniProfile.getId());
         final MemberBasicInform memberBasicInform = getMemberBasicInform(memberId);
-        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList, MemberNameResponse.getMemberName(memberBasicInform));
+        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName());
     }
 
     private List<MiniProfileKeyword> getMiniProfileKeywords(final Long miniProfileId) {

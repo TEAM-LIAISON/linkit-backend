@@ -58,7 +58,8 @@ public class MatchingAccessInterceptor implements HandlerInterceptor {
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                     return false;
                 }
-            } else if (checkMatchingToTeamProfileAccess != null) {
+            } // 팀 소개서에 매칭 요청이 발생한 경우
+            else if (checkMatchingToTeamProfileAccess != null) {
                 final Long memberId = getMemberId(request);
                 log.info("memberId={}", memberId);
 
@@ -77,6 +78,8 @@ public class MatchingAccessInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    // 매칭 권한 관리
+    // 둘 다 ALLOW BROWSE 경우 -> false 반환된다 / 그게 아니라면 true 반환된다 -> 매칭 요청이 가능함.
     private boolean matchingAccessJudge(
             final ProfileType profileType,
             final TeamProfileType teamProfileType
@@ -87,10 +90,11 @@ public class MatchingAccessInterceptor implements HandlerInterceptor {
             return false;
         } else if (ProfileType.ALLOW_BROWSE.equals(profileType) && TeamProfileType.NO_PERMISSION.equals(teamProfileType)) {
             return false;
-        } else if (ProfileType.ALLOW_BROWSE.equals(profileType) && TeamProfileType.ALLOW_BROWSE.equals(teamProfileType)) {
-            return false;
-        } else return true;
+        } else return !ProfileType.ALLOW_BROWSE.equals(profileType) || !TeamProfileType.ALLOW_BROWSE.equals(teamProfileType);
     }
+
+
+
 
     // 회원 ID 조회
     private Long getMemberId(HttpServletRequest request) {

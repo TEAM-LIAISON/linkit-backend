@@ -11,7 +11,6 @@ import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformUpda
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
 import liaison.linkit.member.dto.response.MemberResponse;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -91,12 +90,6 @@ public class MemberService {
     public MemberResponse getMemberEmail(final Long memberId) {
         final Member member = getMember(memberId);
         return MemberResponse.getEmail(member);
-    }
-
-    @Transactional(readOnly = true)
-    public MemberNameResponse getMemberName(final Long memberId) {
-        final MemberBasicInform memberBasicInform = getMemberBasicInform(memberId);
-        return MemberNameResponse.getMemberName(memberBasicInform);
     }
 
     public void update(

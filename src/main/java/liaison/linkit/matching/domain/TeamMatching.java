@@ -5,6 +5,7 @@ import liaison.linkit.matching.domain.type.MatchingStatus;
 import liaison.linkit.matching.domain.type.MatchingType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.TeamProfile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,6 +20,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor
 public class TeamMatching {
 
     @Id

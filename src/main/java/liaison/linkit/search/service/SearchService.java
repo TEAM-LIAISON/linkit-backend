@@ -9,7 +9,6 @@ import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
@@ -116,7 +115,7 @@ public class SearchService {
     }
 
     private MiniProfileResponse convertToMiniProfileResponse(final MiniProfile miniProfile) {
-        final MemberNameResponse memberNameResponse = getMemberNameByMiniProfile(miniProfile.getId());
+        final String memberName = getMemberNameByMiniProfile(miniProfile.getId());
 
         List<String> myKeywordNames = miniProfileKeywordRepository.findAllByMiniProfileId(miniProfile.getId()).stream()
                 .map(MiniProfileKeyword::getMyKeywordNames)
@@ -130,16 +129,16 @@ public class SearchService {
                 miniProfile.getMiniProfileImg(),
                 miniProfile.getMyValue(),
                 myKeywordNames,
-                memberNameResponse.getMemberName()
+                memberName
         );
     }
 
     @Transactional(readOnly = true)
-    public MemberNameResponse getMemberNameByMiniProfile(final Long miniProfileId) {
+    public String getMemberNameByMiniProfile(final Long miniProfileId) {
         final Long profileId = getProfileIdByMiniProfile(miniProfileId);
         final Member member = getMember(profileId);
         final MemberBasicInform memberBasicInform = getMemberBasicInform(member.getId());
-        return MemberNameResponse.getMemberName(memberBasicInform);
+        return memberBasicInform.getMemberName();
     }
 
     private Long getProfileIdByMiniProfile(final Long miniProfileId) {

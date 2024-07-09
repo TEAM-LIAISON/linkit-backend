@@ -1,6 +1,5 @@
 package liaison.linkit.profile.dto.response.onBoarding;
 
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
@@ -23,7 +22,6 @@ public class OnBoardingProfileResponse {
     private final List<EducationResponse> educationResponses;
     private final List<AntecedentsResponse> antecedentsResponses;
     private final MiniProfileResponse miniProfileResponse;
-    private final MemberNameResponse memberNameResponse;
 
     public static OnBoardingProfileResponse onBoardingProfileItems(
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
@@ -31,8 +29,7 @@ public class OnBoardingProfileResponse {
             final JobAndSkillResponse jobAndSkillResponse,
             final List<EducationResponse> educationResponses,
             final List<AntecedentsResponse> antecedentsResponses,
-            final MiniProfileResponse miniProfileResponse,
-            final MemberNameResponse memberNameResponse
+            final MiniProfileResponse miniProfileResponse
     ) {
         return new OnBoardingProfileResponse(
                 profileTeamBuildingFieldResponse,
@@ -40,8 +37,7 @@ public class OnBoardingProfileResponse {
                 jobAndSkillResponse,
                 educationResponses,
                 antecedentsResponses,
-                miniProfileResponse,
-                memberNameResponse
+                miniProfileResponse
         );
     }
 

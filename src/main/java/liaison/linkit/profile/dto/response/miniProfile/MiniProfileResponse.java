@@ -2,7 +2,6 @@ package liaison.linkit.profile.dto.response.miniProfile;
 
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -37,7 +36,7 @@ public class MiniProfileResponse {
     public static MiniProfileResponse personalMiniProfile(
             final MiniProfile miniProfile,
             final List<MiniProfileKeyword> miniProfileKeywords,
-            final MemberNameResponse memberNameResponse
+            final String memberName
     ) {
         List<String> myKeywordNames = miniProfileKeywords.stream()
                 .map(MiniProfileKeyword::getMyKeywordNames) // 올바른 메서드 참조 사용
@@ -51,7 +50,7 @@ public class MiniProfileResponse {
                 miniProfile.getMiniProfileImg(),
                 miniProfile.getMyValue(),
                 myKeywordNames,
-                memberNameResponse.getMemberName()
+                memberName
         );
     }
 

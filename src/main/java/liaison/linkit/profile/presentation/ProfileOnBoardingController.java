@@ -6,7 +6,6 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.onBoarding.OnBoardingPersonalJobAndSkillCreateRequest;
-import liaison.linkit.profile.dto.response.MemberNameResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueResponse;
@@ -65,7 +64,6 @@ public class ProfileOnBoardingController {
 
             final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse = profileOnBoardingService.getProfileOnBoardingIsValue(accessor.getMemberId());
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
-            final MemberNameResponse memberNameResponse = getMemberNameResponse(accessor.getMemberId());
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
             final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
             final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isJobAndSkill());
@@ -78,8 +76,7 @@ public class ProfileOnBoardingController {
                     jobAndSkillResponse,
                     educationResponses,
                     antecedentsResponses,
-                    miniProfileResponse,
-                    memberNameResponse
+                    miniProfileResponse
             );
 
             return ResponseEntity.ok().body(onBoardingProfileResponse);
@@ -99,12 +96,6 @@ public class ProfileOnBoardingController {
         } else {
             return new MiniProfileResponse();
         }
-    }
-
-    private MemberNameResponse getMemberNameResponse(
-            final Long memberId
-    ) {
-        return memberService.getMemberName(memberId);
     }
 
     // 1.5.2. 희망 팀빌딩 분야 조회
