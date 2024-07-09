@@ -163,7 +163,8 @@ public class SearchControllerTest extends ControllerTest {
                 true,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "혁신, 팀워크, 의지",
-                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년")
+                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
+                "권동민"
         );
 
         Page<MiniProfileResponse> page = new PageImpl<>(Collections.singletonList(miniProfileResponse));
@@ -198,6 +199,7 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].miniProfileImg").description("프로필 이미지 URL"),
                                         fieldWithPath("content[].myValue").description("개인 가치"),
                                         fieldWithPath("content[].myKeywordNames").description("키워드 목록"),
+                                        fieldWithPath("content[].memberName").description("회원 이름"),
                                         fieldWithPath("pageable").description("페이징 처리 객체"),
                                         fieldWithPath("sort.empty").description("정렬 규칙이 비어 있는지 여부"),
                                         fieldWithPath("sort.unsorted").description("정렬이 적용되지 않았는지 여부"),

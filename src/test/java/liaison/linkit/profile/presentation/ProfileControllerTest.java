@@ -171,15 +171,11 @@ class ProfileControllerTest extends ControllerTest {
                 true,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "혁신, 팀워크, 의지",
-                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년")
+                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
+                "권동민"
         );
 
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
-
-        final MemberNameResponse memberNameResponse = new MemberNameResponse(
-                "권동민"
-        );
-        given(memberService.getMemberName(1L)).willReturn(memberNameResponse);
 
         // 2. 완성도 & 존재 여부 (V)
         final CompletionResponse completionResponse = new CompletionResponse(
@@ -379,10 +375,7 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
                                         fieldWithPath("miniProfileResponse.myValue").type(JsonFieldType.STRING).description("사용자의 가치"),
                                         fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
-
-                                        // memberNameResponse
-                                        subsectionWithPath("memberNameResponse").description("회원 이름 정보"),
-                                        fieldWithPath("memberNameResponse.memberName").type(JsonFieldType.STRING).description("회원(기본 정보)에 해당하는 회원 이름"),
+                                        fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING).description("회원 이름"),
 
                                         // completionResponse
                                         subsectionWithPath("completionResponse").description("프로필의 완성도 정보"),

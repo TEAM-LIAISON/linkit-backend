@@ -26,6 +26,12 @@ public class ProfileBrowseAccessInterceptor implements HandlerInterceptor {
     private final BearerAuthorizationExtractor extractor;
     private final MemberRepository memberRepository;
 
+//    public ProfileBrowseAccessInterceptor() {
+//        this.jwtProvider = null;
+//        this.extractor = null;
+//        this.memberRepository = null;
+//    }
+
     @Override
     public boolean preHandle(
             final HttpServletRequest request,

@@ -7,6 +7,9 @@ import liaison.linkit.login.LoginArgumentResolver;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
+import liaison.linkit.matching.MatchingAccessInterceptor;
+import liaison.linkit.member.domain.repository.MemberRepository;
+import liaison.linkit.profile.browse.ProfileBrowseAccessInterceptor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,12 @@ public abstract class ControllerTest {
     @Autowired
     protected AdminLoginArgumentResolver adminLoginArgumentResolver;
 
+    @Autowired
+    ProfileBrowseAccessInterceptor profileBrowseAccessInterceptor;
+
+    @Autowired
+    MatchingAccessInterceptor matchingAccessInterceptor;
+
     @MockBean
     protected JwtProvider jwtProvider;
 
@@ -46,6 +55,9 @@ public abstract class ControllerTest {
 
     @MockBean
     protected AdminMemberRepository adminMemberRepository;
+
+    @MockBean
+    protected MemberRepository memberRepository;
 
     @MockBean
     BearerAuthorizationExtractor bearerExtractor;

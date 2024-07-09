@@ -238,6 +238,12 @@ include::{snippets}/search-controller-test/get-team-mini-profile/query-parameter
 include::{snippets}/search-controller-test/get-team-mini-profile/http-response.adoc[]
 include::{snippets}/search-controller-test/get-team-mini-profile/response-fields.adoc[]
 
+== 10. 매칭 관리
+=== 10.1. 내 이력서로 내 이력서에 매칭 요청
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-private/http-request.adoc[]
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-private/request-fields.adoc[]
+
+
 == 11. 설정
 === 회원 탈퇴
 ==== 요청
@@ -253,3 +259,4 @@ include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 ==== 응답
 include::{snippets}/member-controller-test/get-member-basic-inform/http-response.adoc[]
 include::{snippets}/member-controller-test/get-member-basic-inform/response-fields.adoc[]
+
