@@ -6,6 +6,9 @@ import liaison.linkit.matching.domain.TeamMatching;
 import liaison.linkit.matching.domain.repository.PrivateMatchingRepository;
 import liaison.linkit.matching.domain.repository.TeamMatchingRepository;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
+import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
+import liaison.linkit.matching.dto.response.toPrivateMatching.PrivateMatchingResponse;
+import liaison.linkit.matching.dto.response.toTeamMatching.TeamMatchingResponse;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
@@ -18,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 import static liaison.linkit.matching.domain.type.MatchingStatus.REQUESTED;
@@ -56,6 +60,11 @@ public class MatchingService {
     private Profile getProfile(final Long memberId) {
         return profileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    private TeamProfile getTeamProfile(final Long memberId) {
+        return teamProfileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
     }
 
     // 이미 애노테이션으로 매칭에 대한 권한을 체킹한 상태이다.
@@ -172,24 +181,27 @@ public class MatchingService {
         );
     }
 
+    public ReceivedMatchingResponse getReceivedMatching(
+            final Long memberId
+    ) {
+        // 해당 memberId 모든 매칭 요청을 조회해야 함.
 
+        List<PrivateMatchingResponse> privateMatchingResponses = null;
+        List<TeamMatchingResponse> teamMatchingResponses = null;
 
+        if (profileRepository.existsByMemberId(memberId)) {
+            final Profile profile = getProfile(memberId);
+            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByProfileId(profile.getId());
+            privateMatchingResponses = PrivateMatchingResponse.toPrivateMatchingResponse(privateMatchingList);
+        }
 
-//    public List<ReceivedMatchingResponse> getReceivedMatching(
-//            final Long memberId
-//    ) {
-//        // 해당 memberId가 received ID와 일치하는 매칭 객체를 찾아서 반환한다,
-//        // receive_matching_id가 미니 프로필 아이디와 동일하다
-//        final Profile profile = getProfile(memberId);
-//        final Matching matching = getMatchingByProfileId(profile.getId());
-//
-//
-//    }
+        if (teamProfileRepository.existsByMemberId(memberId)) {
+            final TeamProfile teamProfile = getTeamProfile(memberId);
+            final List<TeamMatching> teamMatchingList = teamMatchingRepository.findByTeamProfileId(teamProfile.getId());
+            teamMatchingResponses = TeamMatchingResponse.toTeamMatchingResponse(teamMatchingList);
+        }
 
-//    private Matching getMatchingByProfileId(
-//            final Long profileId
-//    ) {
-//        return matchingRepository.findByReceiveMatchingId(profileId)
-//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MATCHING_BY_PROFILE_ID));
-//    }
+        return new ReceivedMatchingResponse(privateMatchingResponses, teamMatchingResponses);
+    }
+
 }

@@ -7,6 +7,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.matching.CheckMatchingToPrivateProfileAccess;
 import liaison.linkit.matching.CheckMatchingToTeamProfileAccess;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
+import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -81,14 +82,14 @@ public class MatchingController {
     }
 
     // 내가 받은 매칭 조회
-//    @GetMapping("/received")
-//    @MemberOnly
-//    public ResponseEntity<List<ReceivedMatchingResponse>> getReceivedMatchingResponses(
-//            @Auth final Accessor accessor
-//    ) {
-//        final List<ReceivedMatchingResponse> receivedMatchingResponseList = matchingService.getReceivedMatching(accessor.getMemberId());
-//        return ResponseEntity.status(HttpStatus.OK).body(receivedMatchingResponseList);
-//    }
+    @GetMapping("/matching/received")
+    @MemberOnly
+    public ResponseEntity<ReceivedMatchingResponse> getReceivedMatchingResponses(
+            @Auth final Accessor accessor
+    ) {
+        final ReceivedMatchingResponse receivedMatchingResponse = matchingService.getReceivedMatching(accessor.getMemberId());
+        return ResponseEntity.status(HttpStatus.OK).body(receivedMatchingResponse);
+    }
 
     // 내가 보낸 매칭 조회
 //    @GetMapping("/request")

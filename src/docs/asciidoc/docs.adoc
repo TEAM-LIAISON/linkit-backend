@@ -260,6 +260,13 @@ include::{snippets}/matching-controller-test/create-private-profile-matching-to-
 include::{snippets}/matching-controller-test/create-private-profile-matching-to-team/path-parameters.adoc[]
 include::{snippets}/matching-controller-test/create-private-profile-matching-to-team/request-fields.adoc[]
 
+=== 10.5. 내가 받은 매칭 조회
+include::{snippets}/matching-controller-test/get-received-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching/response-fields.adoc[]
+
+
+
 == 11. 설정
 === 회원 탈퇴
 ==== 요청
