@@ -1,19 +1,26 @@
 package liaison.linkit.matching.dto.response;
 
+import liaison.linkit.matching.domain.PrivateMatching;
+import liaison.linkit.matching.dto.response.toPrivateMatching.PrivateMatchingResponse;
+import liaison.linkit.matching.dto.response.toTeamMatching.TeamMatchingResponse;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
+import java.util.List;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ReceivedMatchingResponse {
-    // 발신자 이름
-    private final String senderName;
+    // 내 이력서에 온 매칭 요청
+    private final List<PrivateMatchingResponse> privateMatchingResponseList;
+    // 팀 소개서에 온 매칭 요청
+    private final List<TeamMatchingResponse> teamMatchingResponseList;
 
-    // 매칭 요청 메시지
-    private final String requestMessage;
 
-    // 매칭 요청 발생 날짜
-    private final LocalDate requestOccurTime;
+    public ReceivedMatchingResponse() {
+        this.privateMatchingResponseList = null;
+        this.teamMatchingResponseList = null;
+    }
+
+
 }
