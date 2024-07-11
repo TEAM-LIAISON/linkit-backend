@@ -342,7 +342,7 @@ public class Profile {
     public void deleteIntroduction() {this.introduction = null;}
 
     public boolean getExistDefaultPrivateProfile() {
-        if (this.isProfileTeamBuildingField && this.isProfileRegion && this.isAntecedents && this.isEducation) {
+        if (this.isProfileTeamBuildingField && this.isProfileRegion) {
             return true;
         } else return false;
     }

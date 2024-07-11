@@ -99,8 +99,8 @@ public class MiniProfileService {
                     .toList();
 
             miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
-
             profile.updateIsMiniProfile(true);
+
         } else {
             // 미니 프로필 이미지가 null인 경우
             if (miniProfileRepository.existsByProfileId(profile.getId())) { // 생성 이력이 있는 경우
@@ -119,12 +119,11 @@ public class MiniProfileService {
                 miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
 
                 final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileNoImage);
-
                 final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
                         .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
                         .toList();
-                miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
 
+                miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
                 profile.updateIsMiniProfile(true);
             } else {                                                        // 신규 생성인 경우
                 final MiniProfile newMiniProfile = MiniProfile.of(
