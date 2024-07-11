@@ -13,10 +13,9 @@ import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueRespo
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.onBoarding.OnBoardingProfileResponse;
+import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
-import liaison.linkit.profile.service.ProfileRegionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,6 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -235,10 +233,8 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
         final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
                 1L,
                 "시니어 소프트웨어 개발자",
-                LocalDate.of(2024, 10, 20),
-                true,
                 "https://image.linkit.im/images/linkit_logo.png",
-                "혁신, 팀워크, 의지",
+                true,
                 Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
                 "권동민"
         );
@@ -311,11 +307,10 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
                                         fieldWithPath("antecedentsResponses[].retirement").description("재직 여부").attributes(field("constraint", "boolean")),
 
                                         subsectionWithPath("miniProfileResponse").description("미니 프로필(내 이력서) 항목").attributes(field("constraint", "객체 (배열)")),
-                                        fieldWithPath("miniProfileResponse.profileTitle").description("프로필 제목"),
-                                        fieldWithPath("miniProfileResponse.uploadPeriod").description("프로필 업로드 기간").attributes(field("constraint", "LocalDate")),
-                                        fieldWithPath("miniProfileResponse.uploadDeadline").description("마감 선택 여부"),
-                                        fieldWithPath("miniProfileResponse.myValue").description("협업 시 중요한 나의 가치"),
+                                        fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING).description("프로필의 제목"),
+                                        fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
                                         fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
+                                        fieldWithPath("miniProfileResponse.isActivate").type(JsonFieldType.BOOLEAN).description("미니 프로필 활성화 여부"),
                                         fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING).description("회원 이름")
                                 )
                         )

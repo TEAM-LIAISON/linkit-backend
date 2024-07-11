@@ -87,10 +87,8 @@ public class MiniProfileService {
             final MiniProfile newMiniProfileByImage = MiniProfile.of(
                     profile,
                     miniProfileRequest.getProfileTitle(),
-                    miniProfileRequest.getUploadPeriod(),
-                    miniProfileRequest.isUploadDeadline(),
                     miniProfileImageUrl,
-                    miniProfileRequest.getMyValue()
+                    miniProfileRequest.isActivate()
             );
 
             final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileByImage);
@@ -111,10 +109,8 @@ public class MiniProfileService {
                 final MiniProfile newMiniProfileNoImage = MiniProfile.of(
                         profile,
                         miniProfileRequest.getProfileTitle(),
-                        miniProfileRequest.getUploadPeriod(),
-                        miniProfileRequest.isUploadDeadline(),
                         miniProfile.getMiniProfileImg(),
-                        miniProfileRequest.getMyValue()
+                        miniProfileRequest.isActivate()
                 );
 
                 miniProfileRepository.deleteByProfileId(profile.getId());
@@ -132,10 +128,8 @@ public class MiniProfileService {
                 final MiniProfile newMiniProfile = MiniProfile.of(
                         profile,
                         miniProfileRequest.getProfileTitle(),
-                        miniProfileRequest.getUploadPeriod(),
-                        miniProfileRequest.isUploadDeadline(),
                         null,
-                        miniProfileRequest.getMyValue()
+                        miniProfileRequest.isActivate()
                 );
                 final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfile);
                 final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()

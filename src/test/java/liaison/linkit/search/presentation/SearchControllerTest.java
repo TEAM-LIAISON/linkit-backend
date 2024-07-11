@@ -159,10 +159,8 @@ public class SearchControllerTest extends ControllerTest {
         final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
                 1L,
                 "시니어 소프트웨어 개발자",
-                LocalDate.of(2024, 10, 20),
-                true,
                 "https://image.linkit.im/images/linkit_logo.png",
-                "혁신, 팀워크, 의지",
+                true,
                 Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
                 "권동민"
         );
@@ -194,10 +192,8 @@ public class SearchControllerTest extends ControllerTest {
                                 responseFields(
                                         fieldWithPath("content[].id").description("개인 미니 프로필 ID"),
                                         fieldWithPath("content[].profileTitle").description("프로필 제목"),
-                                        fieldWithPath("content[].uploadPeriod").description("업로드 기간"),
-                                        fieldWithPath("content[].uploadDeadline").description("업로드 마감일 여부"),
                                         fieldWithPath("content[].miniProfileImg").description("프로필 이미지 URL"),
-                                        fieldWithPath("content[].myValue").description("개인 가치"),
+                                        fieldWithPath("content[].isActivate").description("프로필 활성화 여부"),
                                         fieldWithPath("content[].myKeywordNames").description("키워드 목록"),
                                         fieldWithPath("content[].memberName").description("회원 이름"),
                                         fieldWithPath("pageable").description("페이징 처리 객체"),

@@ -3,7 +3,6 @@ package liaison.linkit.profile.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.browse.CheckBrowseToPrivateProfileAccess;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
@@ -52,7 +51,7 @@ public class BrowsePrivateProfileController {
     // 타겟 이력서 열람 컨트롤러
     @GetMapping("/browse/private/profile/{miniProfileId}")
     @MemberOnly
-    @CheckBrowseToPrivateProfileAccess
+//    @CheckBrowseToPrivateProfileAccess
     public ResponseEntity<?> getPrivateProfile(
             @Auth final Accessor accessor,
             @PathVariable final Long miniProfileId
@@ -103,7 +102,7 @@ public class BrowsePrivateProfileController {
 
             return ResponseEntity.ok().body(profileResponse);
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("내 이력서로를 조회하는 과정에서 문제가 발생했습니다.");
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("내 이력서를 조회하는 과정에서 문제가 발생했습니다.");
         }
     }
 
