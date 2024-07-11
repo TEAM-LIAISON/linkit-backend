@@ -5,7 +5,6 @@ import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,20 +14,16 @@ public class MiniProfileResponse {
 
     private final Long id;
     private final String profileTitle;
-    private final LocalDate uploadPeriod;
-    private final Boolean uploadDeadline;
     private final String miniProfileImg;
-    private final String myValue;
+    private final Boolean isActivate;
     private final List<String> myKeywordNames;
     private final String memberName;
 
     public MiniProfileResponse() {
         this.id = null;
         this.profileTitle = null;
-        this.uploadPeriod = null;
-        this.uploadDeadline = null;
         this.miniProfileImg = null;
-        this.myValue = null;
+        this.isActivate = null;
         this.myKeywordNames = null;
         this.memberName = null;
     }
@@ -45,10 +40,8 @@ public class MiniProfileResponse {
         return new MiniProfileResponse(
                 miniProfile.getId(),
                 miniProfile.getProfileTitle(),
-                miniProfile.getUploadPeriod(),
-                miniProfile.isUploadDeadline(),
                 miniProfile.getMiniProfileImg(),
-                miniProfile.getMyValue(),
+                miniProfile.isActivate(),
                 myKeywordNames,
                 memberName
         );

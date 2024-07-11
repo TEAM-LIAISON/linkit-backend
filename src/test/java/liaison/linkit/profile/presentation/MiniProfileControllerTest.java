@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.Arrays;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
@@ -38,7 +37,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartFields;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MiniProfileController.class)
@@ -89,10 +89,8 @@ class MiniProfileControllerTest extends ControllerTest {
         // given
         final MiniProfileRequest miniProfileRequest = new MiniProfileRequest(
                 "시니어 소프트웨어 개발자",
-                LocalDate.of(2024, 10,20),
-                true,
-                "혁신, 팀워크, 의지",
-                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년")
+                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
+                true
         );
 
         final MockMultipartFile miniProfileImage = new MockMultipartFile(
@@ -139,10 +137,8 @@ class MiniProfileControllerTest extends ControllerTest {
                         ),
                         requestPartFields("miniProfileRequest",
                                 fieldWithPath("profileTitle").description("프로필 제목"),
-                                fieldWithPath("uploadPeriod").description("프로필 업로드 기간").attributes(field("constraint", "LocalDate")),
-                                fieldWithPath("uploadDeadline").description("마감 선택 여부"),
-                                fieldWithPath("myValue").description("협업 시 중요한 나의 가치"),
-                                fieldWithPath("myKeywordNames").description("나를 소개하는 키워드 목록").attributes(field("constraint", "문자열 배열"))
+                                fieldWithPath("myKeywordNames").description("나를 소개하는 키워드 목록").attributes(field("constraint", "문자열 배열")),
+                                fieldWithPath("activate").description("프로필 활성화 여부")
                         )
                 ));
     }

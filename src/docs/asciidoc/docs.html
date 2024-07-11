@@ -733,7 +733,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 18 Jul 2024 09:05:12 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 18 Jul 2024 10:47:24 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -1079,7 +1079,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1765
+Content-Length: 1681
 
 {
   "profileTeamBuildingFieldResponse" : {
@@ -1132,10 +1132,8 @@ Content-Length: 1765
   "miniProfileResponse" : {
     "id" : 1,
     "profileTitle" : "시니어 소프트웨어 개발자",
-    "uploadPeriod" : "2024-10-20",
-    "uploadDeadline" : true,
     "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
-    "myValue" : "혁신, 팀워크, 의지",
+    "isActivate" : true,
     "myKeywordNames" : [ "2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년" ],
     "memberName" : "권동민"
   }
@@ -1279,27 +1277,22 @@ Content-Length: 1765
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.profileTitle</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 제목</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필의 제목</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.uploadPeriod</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.miniProfileImg</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 업로드 기간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.uploadDeadline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">마감 선택 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.myValue</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">협업 시 중요한 나의 가치</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미니 프로필 이미지 URL</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.myKeywordNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">나를 소개하는 키워드 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.isActivate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미니 프로필 활성화 여부</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.memberName</code></p></td>
@@ -1631,7 +1624,7 @@ Content-Type: multipart/form-data
 Content-Disposition: form-data; name=miniProfileRequest
 Content-Type: application/json
 
-{"profileTitle":"시니어 소프트웨어 개발자","uploadPeriod":"2024-10-20","uploadDeadline":true,"myValue":"혁신, 팀워크, 의지","myKeywordNames":["2024 레드닷 수상","스타트업 경력","서울대 디자인","대기업 경력 3년"]}
+{"profileTitle":"시니어 소프트웨어 개발자","myKeywordNames":["2024 레드닷 수상","스타트업 경력","서울대 디자인","대기업 경력 3년"],"activate":true}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -1677,24 +1670,14 @@ Content-Type: application/json
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 제목</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uploadPeriod</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 업로드 기간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>uploadDeadline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">마감 선택 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myValue</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">협업 시 중요한 나의 가치</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>myKeywordNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">나를 소개하는 키워드 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>activate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 활성화 여부</p></td>
 </tr>
 </tbody>
 </table>
@@ -2094,27 +2077,25 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 3331
+Content-Length: 3247
 
 {
   "miniProfileResponse" : {
     "id" : 1,
     "profileTitle" : "시니어 소프트웨어 개발자",
-    "uploadPeriod" : "2024-10-20",
-    "uploadDeadline" : true,
     "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
-    "myValue" : "혁신, 팀워크, 의지",
+    "isActivate" : true,
     "myKeywordNames" : [ "2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년" ],
     "memberName" : "권동민"
   },
   "completionResponse" : {
     "completion" : "100.0",
+    "profileSkill" : true,
     "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "antecedents" : true,
     "education" : true,
-    "profileSkill" : true,
     "awards" : true,
     "attach" : true
   },
@@ -2224,29 +2205,19 @@ Content-Length: 3331
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필의 제목</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.uploadPeriod</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 업로드 주기</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.uploadDeadline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">업로드 마감일 여부</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.miniProfileImg</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">미니 프로필 이미지 URL</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.myValue</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사용자의 가치</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.myKeywordNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">나를 소개하는 키워드 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.isActivate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">미니 프로필 활성화 여부</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse.memberName</code></p></td>
@@ -3799,16 +3770,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 699
+Content-Length: 615
 
 {
   "content" : [ {
     "id" : 1,
     "profileTitle" : "시니어 소프트웨어 개발자",
-    "uploadPeriod" : "2024-10-20",
-    "uploadDeadline" : true,
     "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
-    "myValue" : "혁신, 팀워크, 의지",
+    "isActivate" : true,
     "myKeywordNames" : [ "2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년" ],
     "memberName" : "권동민"
   } ],
@@ -3854,24 +3823,14 @@ Content-Length: 699
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 제목</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].uploadPeriod</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">업로드 기간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].uploadDeadline</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">업로드 마감일 여부</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].miniProfileImg</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이미지 URL</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].myValue</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">개인 가치</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].isActivate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 활성화 여부</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].myKeywordNames</code></p></td>

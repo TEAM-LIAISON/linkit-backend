@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.CascadeType.ALL;
@@ -27,22 +26,16 @@ public class MiniProfile{
     @JoinColumn(name = "profile_id", unique = true)
     private Profile profile;
 
-
     // 프로필 제목
     @Column(length = 40)
     private String profileTitle;
 
-    // 프로필 업로드 기간
-    private LocalDate uploadPeriod;
-
-    // 프로필 마감 여부
-    private boolean uploadDeadline;
-
     // 미니 프로필 이미지 경로
+    @Column(name = "mini_profile_img")
     private String miniProfileImg;
 
-    // 나의 가치
-    private String myValue;
+    @Column(name = "is_activate")
+    private boolean isActivate;
 
     // 생성 날짜
     @Column(updatable = false)
@@ -57,19 +50,15 @@ public class MiniProfile{
     public static MiniProfile of(
             final Profile profile,
             final String profileTitle,
-            final LocalDate uploadPeriod,
-            final boolean uploadDeadline,
             final String miniProfileImg,
-            final String myValue
+            final boolean isActivate
     ) {
         return new MiniProfile(
                 null,
                 profile,
                 profileTitle,
-                uploadPeriod,
-                uploadDeadline,
                 miniProfileImg,
-                myValue,
+                isActivate,
                 null
         );
     }

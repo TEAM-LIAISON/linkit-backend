@@ -124,10 +124,8 @@ public class SearchService {
         return new MiniProfileResponse(
                 miniProfile.getId(),
                 miniProfile.getProfileTitle(),
-                miniProfile.getUploadPeriod(),
-                miniProfile.isUploadDeadline(),
                 miniProfile.getMiniProfileImg(),
-                miniProfile.getMyValue(),
+                miniProfile.isActivate(),
                 myKeywordNames,
                 memberName
         );
