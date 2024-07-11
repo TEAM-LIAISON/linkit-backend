@@ -54,12 +54,12 @@ public class LoginController {
 
     // 토큰 재발행
     @PostMapping("/token")
-    public ResponseEntity<AccessTokenResponse> extendLogin(
+    public ResponseEntity<RenewTokenResponse> extendLogin(
             @CookieValue("refresh-token") final String refreshToken,
             @RequestHeader("Authorization") final String authorizationHeader
     ) {
-        final String renewalRefreshToken = loginService.renewalAccessToken(refreshToken, authorizationHeader);
-        return ResponseEntity.status(CREATED).body(new AccessTokenResponse(renewalRefreshToken));
+        final RenewTokenResponse renewTokenResponse = loginService.renewalAccessToken(refreshToken, authorizationHeader);
+        return ResponseEntity.status(CREATED).body(renewTokenResponse);
     }
 
     // 로그아웃

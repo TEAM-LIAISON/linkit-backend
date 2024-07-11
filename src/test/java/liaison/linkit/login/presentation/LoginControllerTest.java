@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.login.dto.AccessTokenResponse;
-import liaison.linkit.login.dto.LoginRequest;
-import liaison.linkit.login.dto.LoginResponse;
-import liaison.linkit.login.dto.MemberTokensAndOnBoardingStepInform;
+import liaison.linkit.login.dto.*;
 import liaison.linkit.login.service.LoginService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -128,8 +125,10 @@ public class LoginControllerTest extends ControllerTest {
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
         final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
 
+        final RenewTokenResponse renewTokenResponse = new RenewTokenResponse(RENEW_ACCESS_TOKEN, true, true);
+
         when(loginService.renewalAccessToken(REFRESH_TOKEN, ACCESS_TOKEN))
-                .thenReturn(RENEW_ACCESS_TOKEN);
+                .thenReturn(renewTokenResponse);
 
         // when
         final ResultActions resultActions = mockMvc.perform(post("/token")
@@ -153,7 +152,15 @@ public class LoginControllerTest extends ControllerTest {
                                 fieldWithPath("accessToken")
                                         .type(JsonFieldType.STRING)
                                         .description("access token")
-                                        .attributes(field("constraint", "문자열(jwt)"))
+                                        .attributes(field("constraint", "문자열(jwt)")),
+                                fieldWithPath("existMemberBasicInform")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("existDefaultProfile")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 필수 항목 기입 완료)")
+                                        .attributes(field("constraint", "boolean 값"))
                         )
                 ))
                 .andReturn();
