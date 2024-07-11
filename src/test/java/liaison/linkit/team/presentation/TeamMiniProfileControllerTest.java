@@ -21,7 +21,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.Arrays;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
@@ -77,9 +76,8 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
         // given
         final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest = new TeamMiniProfileCreateRequest(
                 "사이드 프로젝트 함께 할 개발자를 찾고 있어요",
-                LocalDate.of(2024, 10,20),
-                true,
-                Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
+                Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공"),
+                true
         );
 
         final MockMultipartFile teamMiniProfileImage = new MockMultipartFile(
@@ -131,8 +129,7 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
                         ),
                         requestPartFields("teamMiniProfileCreateRequest",
                                 fieldWithPath("teamProfileTitle").description("팀 소개서 제목"),
-                                fieldWithPath("teamUploadPeriod").description("팀 소개서 업로드 기간").attributes(field("constraint", "LocalDate")),
-                                fieldWithPath("teamUploadDeadline").description("업로드 마감 선택 여부"),
+                                fieldWithPath("teamActivate").description("팀 소개서 활성화 여부"),
                                 fieldWithPath("teamKeywordNames").type(JsonFieldType.ARRAY).description("팀 소개 항목").attributes(field("constraint", "문자열 배열"))
                         )
                 ));

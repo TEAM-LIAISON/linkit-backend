@@ -13,7 +13,10 @@ import liaison.linkit.team.dto.response.activity.ActivityRegionResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileEarlyOnBoardingResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
-import liaison.linkit.team.service.*;
+import liaison.linkit.team.service.ActivityService;
+import liaison.linkit.team.service.TeamMiniProfileService;
+import liaison.linkit.team.service.TeamOnBoardingService;
+import liaison.linkit.team.service.TeamProfileTeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,7 +28,6 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +42,6 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.requestCo
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -152,7 +153,6 @@ class TeamOnBoardingControllerTest extends ControllerTest {
                 "1-5인",
                 "리에종",
                 "사이드 프로젝트 함께 할 개발자를 찾고 있어요",
-                LocalDate.of(2024, 10, 20),
                 true,
                 "https://image.linkit.im/images/linkit_logo.png",
                 Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
@@ -192,9 +192,8 @@ class TeamOnBoardingControllerTest extends ControllerTest {
                                         fieldWithPath("teamMiniProfileResponse.sectorName").description("팀 분야").attributes(field("constraint", "문자열")),
                                         fieldWithPath("teamMiniProfileResponse.sizeType").description("팀 규모").attributes(field("constraint", "문자열")),
                                         fieldWithPath("teamMiniProfileResponse.teamName").description("팀명").attributes(field("constraint", "문자열")),
-                                        fieldWithPath("teamMiniProfileResponse.miniProfileTitle").description("미니 프로필 제목").attributes(field("constraint", "문자열")),
-                                        fieldWithPath("teamMiniProfileResponse.teamUploadPeriod").description("팀 미니 프로필 공고 업로드 기간").attributes(field("constraint", "LocalDate")),
-                                        fieldWithPath("teamMiniProfileResponse.teamUploadDeadline").description("공고 마감 선택 여부").attributes(field("constraint", "boolean")),
+                                        fieldWithPath("teamMiniProfileResponse.teamProfileTitle").description("미니 프로필 제목").attributes(field("constraint", "문자열")),
+                                        fieldWithPath("teamMiniProfileResponse.isTeamActivate").description("팀 소개서 활성화 여부").attributes(field("constraint", "Boolean")),
                                         fieldWithPath("teamMiniProfileResponse.teamLogoImageUrl").description("팀 미니 프로필 이미지 경로").attributes(field("constraint", "문자열")),
                                         fieldWithPath("teamMiniProfileResponse.teamKeywordNames").description("팀 소개 항목").attributes(field("constraint", "문자열"))
                                 )

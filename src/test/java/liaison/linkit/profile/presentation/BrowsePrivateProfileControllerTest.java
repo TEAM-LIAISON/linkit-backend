@@ -38,6 +38,7 @@
 //import static org.mockito.ArgumentMatchers.any;
 //import static org.mockito.BDDMockito.given;
 //import static org.mockito.Mockito.doNothing;
+//import static org.mockito.Mockito.when;
 //import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 //import static org.springframework.http.MediaType.APPLICATION_JSON;
 //import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -109,6 +110,9 @@
 //    @Test
 //    void getBrowsePrivateProfile() throws Exception {
 //        // given
+//
+//
+//
 //        final Long miniProfileId = 1L;
 //        given(browsePrivateProfileService.getTargetPrivateProfileIdByMiniProfileId(miniProfileId)).willReturn(1L);
 //        System.out.println("miniProfileId = " + miniProfileId);
@@ -313,7 +317,20 @@
 //                attachResponses
 //        )).willReturn(profileResponse);
 //
-//        System.out.println("profileResponse = " + profileResponse);
+//        when(browsePrivateProfileService.getProfileResponse(
+//                any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+//        )).thenReturn(ProfileResponse.profileItems(
+//                miniProfileResponse,
+//                completionResponse,
+//                profileIntroductionResponse,
+//                jobAndSkillResponse,
+//                profileTeamBuildingFieldResponse,
+//                profileRegionResponse,
+//                antecedentsResponses,
+//                educationResponses,
+//                awardsResponses,
+//                attachResponses
+//        ));
 //
 //        // when
 //        final ResultActions resultActions = performGetBrowseProfileRequest(1);

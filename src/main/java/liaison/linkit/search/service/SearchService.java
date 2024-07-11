@@ -107,8 +107,7 @@ public class SearchService {
                 teamMiniProfile.getTeamScale().getSizeType(),
                 teamMiniProfile.getTeamName(),
                 teamMiniProfile.getTeamProfileTitle(),
-                teamMiniProfile.getTeamUploadPeriod(),
-                teamMiniProfile.getTeamUploadDeadline(),
+                teamMiniProfile.getIsTeamActivate(),
                 teamMiniProfile.getTeamLogoImageUrl(),
                 teamKeywordNames
         );

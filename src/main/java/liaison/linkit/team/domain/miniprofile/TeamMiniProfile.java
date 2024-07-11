@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.CascadeType.ALL;
@@ -46,13 +45,8 @@ public class TeamMiniProfile {
     @Column(name = "team_profile_title")
     private String teamProfileTitle;
 
-    // 공고 업로드 기간
-    @Column(name = "team_upload_period")
-    private LocalDate teamUploadPeriod;
-
-    // 공고 업로드 기간 (마감있음 / 계속 업로드)
-    @Column(name = "team_upload_deadline")
-    private Boolean teamUploadDeadline;
+    @Column(name = "is_team_activate")
+    private Boolean isTeamActivate;
 
     // 팀 로고 링크 (저장 URL)
     @Column(name = "team_logo_image_url")
@@ -74,8 +68,7 @@ public class TeamMiniProfile {
             final TeamScale teamScale,
             final String teamName,
             final String teamProfileTitle,
-            final LocalDate teamUploadPeriod,
-            final Boolean teamUploadDeadline,
+            final Boolean isTeamActivate,
             final String teamLogoImageUrl
     ) {
         return new TeamMiniProfile(
@@ -85,8 +78,7 @@ public class TeamMiniProfile {
                 teamScale,
                 teamName,
                 teamProfileTitle,
-                teamUploadPeriod,
-                teamUploadDeadline,
+                isTeamActivate,
                 teamLogoImageUrl,
                 null
         );
@@ -94,13 +86,11 @@ public class TeamMiniProfile {
 
     public void onBoardingTeamMiniProfile(
             final String teamProfileTitle,
-            final LocalDate teamUploadPeriod,
-            final boolean teamUploadDeadline,
+            final boolean isTeamActivate,
             final String teamLogoImageUrl
     ) {
         this.teamProfileTitle = teamProfileTitle;
-        this.teamUploadPeriod = teamUploadPeriod;
-        this.teamUploadDeadline = teamUploadDeadline;
+        this.isTeamActivate = isTeamActivate;
         this.teamLogoImageUrl = teamLogoImageUrl;
     }
 }
