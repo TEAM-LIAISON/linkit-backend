@@ -136,7 +136,7 @@ public class TeamMiniProfileService {
                 // 객체 업데이트
                 teamMiniProfile.onBoardingTeamMiniProfile(
                         teamMiniProfileCreateRequest.getTeamProfileTitle(),
-                        teamMiniProfileCreateRequest.isTeamActivate(),
+                        teamMiniProfileCreateRequest.getIsTeamActivate(),
                         teamMiniProfileImageUrl
                 );
 
@@ -147,7 +147,7 @@ public class TeamMiniProfileService {
                 // 기존 이미지 그대로 사용하는 것으로 간주
                 teamMiniProfile.onBoardingTeamMiniProfile(
                         teamMiniProfileCreateRequest.getTeamProfileTitle(),
-                        teamMiniProfileCreateRequest.isTeamActivate(),
+                        teamMiniProfileCreateRequest.getIsTeamActivate(),
                         teamMiniProfile.getTeamLogoImageUrl()
                 );
                 // 기존에 저장되어있던 keywordList 전체 삭제
@@ -167,7 +167,7 @@ public class TeamMiniProfileService {
                 // 객체 업데이트
                 teamMiniProfile.onBoardingTeamMiniProfile(
                         teamMiniProfileCreateRequest.getTeamProfileTitle(),
-                        teamMiniProfileCreateRequest.isTeamActivate(),
+                        teamMiniProfileCreateRequest.getIsTeamActivate(),
                         teamMiniProfileImageUrl
                 );
 
@@ -177,7 +177,7 @@ public class TeamMiniProfileService {
                 // 기존 이미지 그대로 사용하는 것으로 간주
                 teamMiniProfile.onBoardingTeamMiniProfile(
                         teamMiniProfileCreateRequest.getTeamProfileTitle(),
-                        teamMiniProfileCreateRequest.isTeamActivate(),
+                        teamMiniProfileCreateRequest.getIsTeamActivate(),
                         teamMiniProfile.getTeamLogoImageUrl()
                 );
                 // 기존에 저장되어있던 keywordList 전체 삭제

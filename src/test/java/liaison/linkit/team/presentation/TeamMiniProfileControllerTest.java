@@ -129,7 +129,7 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
                         ),
                         requestPartFields("teamMiniProfileCreateRequest",
                                 fieldWithPath("teamProfileTitle").description("팀 소개서 제목"),
-                                fieldWithPath("teamActivate").description("팀 소개서 활성화 여부"),
+                                fieldWithPath("isTeamActivate").description("팀 소개서 활성화 여부"),
                                 fieldWithPath("teamKeywordNames").type(JsonFieldType.ARRAY).description("팀 소개 항목").attributes(field("constraint", "문자열 배열"))
                         )
                 ));

@@ -17,5 +17,5 @@ public class TeamMiniProfileCreateRequest {
     private final List<String> teamKeywordNames;
 
     @NotNull(message = "프로필 활성화 여부를 선택해주세요")
-    private final boolean isTeamActivate;
+    private final Boolean isTeamActivate;
 }
