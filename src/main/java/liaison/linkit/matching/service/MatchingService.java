@@ -7,8 +7,12 @@ import liaison.linkit.matching.domain.repository.PrivateMatchingRepository;
 import liaison.linkit.matching.domain.repository.TeamMatchingRepository;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
-import liaison.linkit.matching.dto.response.toPrivateMatching.PrivateMatchingResponse;
-import liaison.linkit.matching.dto.response.toTeamMatching.TeamMatchingResponse;
+import liaison.linkit.matching.dto.response.RequestMatchingResponse;
+import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
+import liaison.linkit.matching.dto.response.requestPrivateMatching.MyPrivateMatchingResponse;
+import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingResponse;
+import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
+import liaison.linkit.matching.dto.response.toTeamMatching.ToTeamMatchingResponse;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
@@ -184,24 +188,77 @@ public class MatchingService {
     public ReceivedMatchingResponse getReceivedMatching(
             final Long memberId
     ) {
-        // 해당 memberId 모든 매칭 요청을 조회해야 함.
+        // 해당 memberId에게 발생한 모든 매칭 요청을 조회해야 함.
 
-        List<PrivateMatchingResponse> privateMatchingResponses = null;
-        List<TeamMatchingResponse> teamMatchingResponses = null;
+        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = null;
+        List<ToTeamMatchingResponse> toTeamMatchingResponseList = null;
 
         if (profileRepository.existsByMemberId(memberId)) {
             final Profile profile = getProfile(memberId);
             final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByProfileId(profile.getId());
-            privateMatchingResponses = PrivateMatchingResponse.toPrivateMatchingResponse(privateMatchingList);
+            toPrivateMatchingResponseList = ToPrivateMatchingResponse.toPrivateMatchingResponse(privateMatchingList);
         }
 
         if (teamProfileRepository.existsByMemberId(memberId)) {
             final TeamProfile teamProfile = getTeamProfile(memberId);
             final List<TeamMatching> teamMatchingList = teamMatchingRepository.findByTeamProfileId(teamProfile.getId());
-            teamMatchingResponses = TeamMatchingResponse.toTeamMatchingResponse(teamMatchingList);
+            toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamMatchingList);
         }
 
-        return new ReceivedMatchingResponse(privateMatchingResponses, teamMatchingResponses);
+        return new ReceivedMatchingResponse(toPrivateMatchingResponseList, toTeamMatchingResponseList);
     }
 
+    public RequestMatchingResponse getMyRequestMatching(final Long memberId) {
+        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = null;
+        List<MyTeamMatchingResponse> myTeamMatchingResponseList = null;
+
+
+        if (profileRepository.existsByMemberId(memberId)) {
+            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByMemberId(memberId);
+            myPrivateMatchingResponseList = MyPrivateMatchingResponse.myPrivateMatchingResponseList(privateMatchingList);
+        }
+
+        if (teamProfileRepository.existsByMemberId(memberId)) {
+            final List<TeamMatching> teamMatchingList = teamMatchingRepository.findByMemberId(memberId);
+            myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamMatchingList);
+        }
+
+        return new RequestMatchingResponse(myPrivateMatchingResponseList, myTeamMatchingResponseList);
+    }
+
+    public SuccessMatchingResponse getMySuccessMatching(final Long memberId) {
+        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = null;
+        List<ToTeamMatchingResponse> toTeamMatchingResponseList = null;
+        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = null;
+        List<MyTeamMatchingResponse> myTeamMatchingResponseList = null;
+
+        if (profileRepository.existsByMemberId(memberId)) {
+
+            // 나의 내 이력서로 받은 매칭 요청 조회
+            final Profile profile = getProfile(memberId);
+            final List<PrivateMatching> privateReceivedMatchingList = privateMatchingRepository.findSuccessReceivedMatching(profile.getId());
+            toPrivateMatchingResponseList = ToPrivateMatchingResponse.toPrivateMatchingResponse(privateReceivedMatchingList);
+
+            // 내가 보낸 매칭 요청 조회
+            final List<PrivateMatching> privateRequestMatchingList = privateMatchingRepository.findSuccessRequestMatching(memberId);
+            myPrivateMatchingResponseList = MyPrivateMatchingResponse.myPrivateMatchingResponseList(privateRequestMatchingList);
+        }
+
+        if (teamProfileRepository.existsByMemberId(memberId)) {
+            // 나의 팀 소개서로 받은 매칭 요청 조회
+            final TeamProfile teamProfile = getTeamProfile(memberId);
+            final List<TeamMatching> teamReceivedMatchingList = teamMatchingRepository.findSuccessReceivedMatching(teamProfile.getId());
+            toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamReceivedMatchingList);
+
+            final List<TeamMatching> teamRequestMatchingList = teamMatchingRepository.findSuccessRequestMatching(memberId);
+            myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamRequestMatchingList);
+        }
+
+        return new SuccessMatchingResponse(
+                toPrivateMatchingResponseList,
+                toTeamMatchingResponseList,
+                myPrivateMatchingResponseList,
+                myTeamMatchingResponseList
+        );
+    }
 }

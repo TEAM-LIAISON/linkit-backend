@@ -1,4 +1,4 @@
-package liaison.linkit.matching.dto.response.toTeamMatching;
+package liaison.linkit.matching.dto.response.requestTeamMatching;
 
 import liaison.linkit.matching.domain.TeamMatching;
 import liaison.linkit.matching.domain.type.MatchingType;
@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
-public class TeamMatchingResponse {
-    // 발신자 이름
-    private final String senderName;
+public class MyTeamMatchingResponse {
+    // 수신자 이름
+    private final String receiverName;
     // 매칭 요청 메시지
     private final String requestMessage;
     // 매칭 요청 발생 날짜
@@ -21,10 +21,10 @@ public class TeamMatchingResponse {
     // 매칭 요청 타입
     private final MatchingType matchingType;
 
-    public static List<TeamMatchingResponse> toTeamMatchingResponse(final List<TeamMatching> teamMatchingList) {
+    public static List<MyTeamMatchingResponse> myTeamMatchingResponses(final List<TeamMatching> teamMatchingList) {
         return teamMatchingList.stream()
-                .map(teamMatching -> new TeamMatchingResponse(
-                        teamMatching.getMember().getMemberBasicInform().getMemberName(),
+                .map(teamMatching -> new MyTeamMatchingResponse(
+                        teamMatching.getTeamProfile().getMember().getMemberBasicInform().getMemberName(),
                         teamMatching.getRequestMessage(),
                         LocalDate.from(teamMatching.getCreatedAt()),
                         teamMatching.getMatchingType()

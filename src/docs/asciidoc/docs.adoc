@@ -265,6 +265,15 @@ include::{snippets}/matching-controller-test/get-received-matching/http-request.
 include::{snippets}/matching-controller-test/get-received-matching/http-response.adoc[]
 include::{snippets}/matching-controller-test/get-received-matching/response-fields.adoc[]
 
+=== 10.6. 내가 보낸 매칭
+include::{snippets}/matching-controller-test/get-my-request-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-my-request-matching/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-my-request-matching/response-fields.adoc[]
+
+=== 10.7. 성사된 매칭
+include::{snippets}/matching-controller-test/get-my-success-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-my-success-matching/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-my-success-matching/response-fields.adoc[]
 
 
 == 11. 설정
