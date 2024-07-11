@@ -5,6 +5,8 @@ import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
+import liaison.linkit.member.domain.type.ProfileType;
+import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.profile.browse.ProfileBrowseAccessInterceptor;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
@@ -29,23 +31,32 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
+import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BrowsePrivateProfileController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 @Slf4j
 public class BrowsePrivateProfileControllerTest extends ControllerTest {
+
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
 
@@ -86,6 +97,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         doNothing().when(profileService).validateProfileByMember(1L);
         doNothing().when(miniProfileService).validateMiniProfileByMember(1L);
         doNothing().when(browsePrivateProfileService).validatePrivateProfileByMiniProfile(1L);
+        given(profileBrowseAccessInterceptor.isAccessJudge(ProfileType.ALLOW_MATCHING, TeamProfileType.ALLOW_BROWSE)).willReturn(true);
 
     }
 
@@ -103,10 +115,10 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
     @DisplayName("다른 사용자의 내 이력서를 열람할 수 있다.")
     @Test
     void getBrowsePrivateProfile() throws Exception {
-
         // given
-
-        given(browsePrivateProfileService.getTargetPrivateProfileIdByMiniProfileId(1L)).willReturn(1L);
+        final Long miniProfileId = 1L;
+        given(browsePrivateProfileService.getTargetPrivateProfileIdByMiniProfileId(miniProfileId)).willReturn(1L);
+        System.out.println("miniProfileId = " + miniProfileId);
 
         final ProfileIsValueResponse profileIsValueResponse = new ProfileIsValueResponse(
                 true,
@@ -135,6 +147,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         );
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
 
+        System.out.println("miniProfileResponse = " + miniProfileResponse);
         // 2. 완성도 & 존재 여부 (V)
         final CompletionResponse completionResponse = new CompletionResponse(
                 "100.0",
@@ -148,20 +161,20 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                 true
         );
         given(completionService.getCompletion(1L)).willReturn(completionResponse);
-
+        System.out.println("completionResponse = " + completionResponse);
         // 3. 자기소개
         final ProfileIntroductionResponse profileIntroductionResponse = new ProfileIntroductionResponse(
                 "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
         );
 
         given(profileService.getProfileIntroduction(1L)).willReturn(profileIntroductionResponse);
-
+        System.out.println("profileIntroductionResponse = " + profileIntroductionResponse);
         // 4. 보유기술 (V)
         List<String> jobRoleNames = Arrays.asList("공모전, 대회, 창업");
         List<String> skillNames = Arrays.asList("Notion, Figma");
         final JobAndSkillResponse jobAndSkillResponse = new JobAndSkillResponse(jobRoleNames, skillNames);
         given(profileOnBoardingService.getJobAndSkill(1L)).willReturn(jobAndSkillResponse);
-
+        System.out.println("jobAndSkillResponse = " + jobAndSkillResponse);
         // 5. 희망 팀빌딩 분야 (V)
         List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
         final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = new ProfileTeamBuildingFieldResponse(
@@ -170,6 +183,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
 
         given(teamBuildingFieldService.getAllProfileTeamBuildingFields(1L))
                 .willReturn(profileTeamBuildingFieldResponse);
+        System.out.println("profileTeamBuildingFieldResponse = " + profileTeamBuildingFieldResponse);
 
         // 6. 활동 지역 및 위치 (V)
         final ProfileRegionResponse profileRegionResponse = new ProfileRegionResponse(
@@ -178,7 +192,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         );
 
         given(profileRegionService.getPersonalProfileRegion(1L)).willReturn(profileRegionResponse);
-
+        System.out.println("profileRegionResponse = " + profileRegionResponse);
         // 7. 이력 (V)
         final AntecedentsResponse antecedentsResponse1 = new AntecedentsResponse(
                 2L,
@@ -207,7 +221,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         List<AntecedentsResponse> antecedentsResponses = Arrays.asList(antecedentsResponse1, antecedentsResponse2);
 
         given(antecedentsService.getAllAntecedents(1L)).willReturn(antecedentsResponses);
-
+        System.out.println("antecedentsResponses = " + antecedentsResponses);
         // 8. 학력
         final EducationResponse educationResponse1 = new EducationResponse(
                 2L,
@@ -230,6 +244,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         List<EducationResponse> educationResponses = Arrays.asList(educationResponse1, educationResponse2);
         given(educationService.getAllEducations(1L))
                 .willReturn(educationResponses);
+        System.out.println("educationResponses = " + educationResponses);
 
         // 9. 수상
         final AwardsResponse firstAwardsResponse = new AwardsResponse(
@@ -253,6 +268,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         );
         final List<AwardsResponse> awardsResponses = Arrays.asList(firstAwardsResponse, secondAwardsResponse);
         given(awardsService.getAllAwards(1L)).willReturn(awardsResponses);
+        System.out.println("awardsResponses = " + awardsResponses);
 
         // 10. 첨부
         final AttachUrlResponse firstAttachUrlResponse = new AttachUrlResponse(
@@ -273,6 +289,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         );
 
         given(attachService.getAttachList(1L)).willReturn(attachResponses);
+        System.out.println("attachResponses = " + attachResponses);
 
         final ProfileResponse profileResponse = new ProfileResponse(
                 miniProfileResponse,
@@ -299,33 +316,34 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                 awardsResponses,
                 attachResponses
         )).willReturn(profileResponse);
+        System.out.println("profileResponse = " + profileResponse);
 
         // when
         final ResultActions resultActions = performGetBrowseProfileRequest(1);
 
         // then
-//        resultActions.andExpect(status().isOk())
-//                .andDo(
-//                        restDocs.document(
-//                                requestCookies(
-//                                        cookieWithName("refresh-token")
-//                                                .description("갱신 토큰")
-//                                ),
-//                                requestHeaders(
-//                                        headerWithName("Authorization")
-//                                                .description("access token")
-//                                                .attributes(field("constraint", "문자열(jwt)"))
-//                                ),
-//                                responseFields(
-//                                        // miniProfileResponse
-//                                        subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
-//                                        fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING).description("프로필의 제목"),
-//                                        fieldWithPath("miniProfileResponse.uploadPeriod").type(JsonFieldType.STRING).description("프로필 업로드 주기"),
-//                                        fieldWithPath("miniProfileResponse.uploadDeadline").type(JsonFieldType.BOOLEAN).description("업로드 마감일 여부"),
-//                                        fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
-//                                        fieldWithPath("miniProfileResponse.myValue").type(JsonFieldType.STRING).description("사용자의 가치"),
-//                                        fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
-//                                        fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING).description("회원 이름")
-//                                )));
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                responseFields(
+                                        // miniProfileResponse
+                                        subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
+                                        fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING).description("프로필의 제목"),
+                                        fieldWithPath("miniProfileResponse.uploadPeriod").type(JsonFieldType.STRING).description("프로필 업로드 주기"),
+                                        fieldWithPath("miniProfileResponse.uploadDeadline").type(JsonFieldType.BOOLEAN).description("업로드 마감일 여부"),
+                                        fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
+                                        fieldWithPath("miniProfileResponse.myValue").type(JsonFieldType.STRING).description("사용자의 가치"),
+                                        fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
+                                        fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING).description("회원 이름")
+                                )));
     }
 }

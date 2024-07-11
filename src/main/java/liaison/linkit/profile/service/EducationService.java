@@ -70,20 +70,14 @@ public class EducationService {
 
         // 반복문을 통해 들어온 순서대로 저장한다.
         for (EducationCreateRequest request : educationCreateRequests) {
-            final University university = universityRepository.findByUniversityName(request.getUniversityName());
-            if (university == null) {
-                throw new IllegalArgumentException("University not found: " + request.getUniversityName());
-            }
+            final University university = universityRepository.findByUniversityName(request.getUniversityName())
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_UNIVERSITY_NAME));
 
-            final Degree degree = degreeRepository.findByDegreeName(request.getDegreeName());
-            if (degree == null) {
-                throw new IllegalArgumentException("Degree not found: " + request.getDegreeName());
-            }
+            final Degree degree = degreeRepository.findByDegreeName(request.getDegreeName())
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
 
-            final Major major = majorRepository.findByMajorName(request.getMajorName());
-            if (major == null) {
-                throw new IllegalArgumentException("Major not found: " + request.getMajorName());
-            }
+            final Major major = majorRepository.findByMajorName(request.getMajorName())
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_MAJOR_NAME));
 
             final Education newEducation = Education.of(
                     profile,
@@ -137,20 +131,14 @@ public class EducationService {
     ) {
         final Profile profile = getProfile(memberId);
 
-        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName());
-        if (university == null) {
-            throw new IllegalArgumentException("University not found: " + educationCreateRequest.getUniversityName());
-        }
+        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_UNIVERSITY_NAME));
 
-        final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName());
-        if (degree == null) {
-            throw new IllegalArgumentException("Degree not found: " + educationCreateRequest.getDegreeName());
-        }
+        final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
 
-        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName());
-        if (major == null) {
-            throw new IllegalArgumentException("Major not found: " + educationCreateRequest.getMajorName());
-        }
+        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MAJOR_NAME));
 
         final Education newEducation = Education.of(
                 profile,
