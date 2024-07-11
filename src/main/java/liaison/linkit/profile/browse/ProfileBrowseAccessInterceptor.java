@@ -73,7 +73,7 @@ public class ProfileBrowseAccessInterceptor implements HandlerInterceptor {
     }
 
     // 열람 권한 판단
-    private boolean isAccessJudge(
+    public boolean isAccessJudge(
             final ProfileType profileType,
             final TeamProfileType teamProfileType
     ) {

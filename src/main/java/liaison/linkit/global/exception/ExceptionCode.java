@@ -125,7 +125,9 @@ public enum ExceptionCode {
     NOT_FOUND_MINI_PROFILE_BY_PROFILE_ID(1007, "사용자의 내 이력서 ID에 해당하는 내 이력서용 미니 프로필 정보가 존재하지 않습니다."),
     COMMIT_REPAIR(1000, "커밋 확인용"),
 
-
+    NOT_FOUND_UNIVERSITY_NAME(1009, "입력하신 대학 정보와 일치하는 대학명을 수 없습니다."),
+    NOT_FOUND_DEGREE_NAME(1010, "입력하신 재학 여부를 판단할 수 없습니다."),
+    NOT_FOUND_MAJOR_NAME(1011, "입력하신 전공 정보와 일치하는 전공명을 찾을 수 없습니다."),
 
     // 팀 소개서 관련 항목
     NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),
