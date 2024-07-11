@@ -149,4 +149,17 @@ public class AntecedentsService {
             profile.updateMemberProfileTypeByCompletion();
         }
     }
+
+    public void save(
+            final Long memberId,
+            final AntecedentsCreateRequest antecedentsCreateRequest
+    ) {
+        final Profile profile = getProfile(memberId);
+        // 저장 메서드
+        saveAntecedent(profile, antecedentsCreateRequest);
+        // 업데이트
+        profile.updateIsAntecedents(true);
+        profile.addPerfectionDefault();
+        profile.updateMemberProfileTypeByCompletion();
+    }
 }

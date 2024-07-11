@@ -34,6 +34,16 @@ public class AntecedentsController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/antecedent")
+    @MemberOnly
+    public ResponseEntity<Void> createAntecedent(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest
+    ) {
+        antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/antecedents/{antecedentsId}")
     @MemberOnly
     public ResponseEntity<Void> deleteAntecedents(

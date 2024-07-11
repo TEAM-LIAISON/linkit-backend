@@ -87,11 +87,11 @@ public class AntecedentsControllerTest extends ControllerTest {
         final List<AntecedentsCreateRequest> antecedentsCreateRequestList = Arrays.asList(firstAntecedentsCreateRequest, secondAntecedentsCreateRequest);
 
         doNothing().when(antecedentsService).saveAll(1L, antecedentsCreateRequestList);
-        performPostRequest(antecedentsCreateRequestList);
+        performPostRequests(antecedentsCreateRequestList);
     }
 
     // 이력 항목 생성/수정 테스트
-    private ResultActions performPostRequest(final List<AntecedentsCreateRequest> antecedentsCreateRequestList) throws Exception {
+    private ResultActions performPostRequests(final List<AntecedentsCreateRequest> antecedentsCreateRequestList) throws Exception {
         return mockMvc.perform(
                 post("/private/antecedents")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -101,10 +101,22 @@ public class AntecedentsControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performPostRequest(
+            final AntecedentsCreateRequest antecedentsCreateRequest
+    ) throws Exception {
+        return mockMvc.perform(
+                post("/private/antecedent")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(antecedentsCreateRequest))
+        );
+    }
+
     // 경력 항목 삭제 테스트
     private ResultActions performDeleteRequest(final int antecedentsId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/private/{antecedentsId}", antecedentsId)
+                RestDocumentationRequestBuilders.delete("/private/antecedents/{antecedentsId}", antecedentsId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -142,7 +154,7 @@ public class AntecedentsControllerTest extends ControllerTest {
 
         doNothing().when(antecedentsService).saveAll(1L, antecedentsCreateRequestList);
         // when
-        final ResultActions resultActions = performPostRequest(antecedentsCreateRequestList);
+        final ResultActions resultActions = performPostRequests(antecedentsCreateRequestList);
 
         // then
         resultActions.andExpect(status().isOk())
@@ -195,6 +207,68 @@ public class AntecedentsControllerTest extends ControllerTest {
                 );
 
     }
+
+    @DisplayName("경력 항목을 1개 생성할 수 있다.")
+    @Test
+    void createAntecedent() throws Exception {
+        // given
+        final AntecedentsCreateRequest antecedentsCreateRequest = new AntecedentsCreateRequest(
+                "오더이즈",
+                "프로젝트 매니저",
+                2023,
+                3,
+                2023,
+                6,
+                false,
+                "경력 설명입니다."
+        );
+
+        doNothing().when(antecedentsService).save(1L, antecedentsCreateRequest);
+
+        // when
+        final ResultActions resultActions = performPostRequest(antecedentsCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        requestFields(
+                                fieldWithPath("projectName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("기업명(프로젝트명)")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("projectRole")
+                                        .type(JsonFieldType.STRING)
+                                        .description("직무(역할)")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("startYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("시작 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("startMonth")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("시작 월")
+                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("endYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("종료 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("endMonth")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("종료 월")
+                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("retirement")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("퇴직 여부")
+                                        .attributes(field("constraint", "false => 재직 중")),
+                                fieldWithPath("antecedentsDescription")
+                                        .type(JsonFieldType.STRING)
+                                        .description("경력 설명")
+                                        .attributes(field("constraint", "문자열"))
+                        )
+                ));
+    }
+
+
 
     @DisplayName("경력 항목을 삭제할 수 있다.")
     @Test

@@ -54,7 +54,7 @@ public class EducationService {
         }
     }
 
-    public void save(
+    public void saveAll(
             final Long memberId,
             final List<EducationCreateRequest> educationCreateRequests
     ) {
@@ -130,6 +130,41 @@ public class EducationService {
         }
     }
 
+    // 단일 저장
+    public void save(
+            final Long memberId,
+            final EducationCreateRequest educationCreateRequest
+    ) {
+        final Profile profile = getProfile(memberId);
 
+        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName());
+        if (university == null) {
+            throw new IllegalArgumentException("University not found: " + educationCreateRequest.getUniversityName());
+        }
 
+        final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName());
+        if (degree == null) {
+            throw new IllegalArgumentException("Degree not found: " + educationCreateRequest.getDegreeName());
+        }
+
+        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName());
+        if (major == null) {
+            throw new IllegalArgumentException("Major not found: " + educationCreateRequest.getMajorName());
+        }
+
+        final Education newEducation = Education.of(
+                profile,
+                educationCreateRequest.getAdmissionYear(),
+                educationCreateRequest.getGraduationYear(),
+                university,
+                degree,
+                major
+        );
+
+        educationRepository.save(newEducation);
+
+        // 반복문 종료 후에 프로필의 상태를 업데이트한다.
+        profile.updateIsEducation(true);
+        profile.updateMemberProfileTypeByCompletion();
+    }
 }
