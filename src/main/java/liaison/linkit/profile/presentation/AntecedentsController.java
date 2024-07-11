@@ -34,7 +34,7 @@ public class AntecedentsController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{antecedentsId}")
+    @DeleteMapping("/antecedents/{antecedentsId}")
     @MemberOnly
     public ResponseEntity<Void> deleteAntecedents(
             @Auth final Accessor accessor,

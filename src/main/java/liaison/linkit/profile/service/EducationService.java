@@ -124,6 +124,7 @@ public class EducationService {
         educationRepository.deleteById(education.getId());
         log.info("삭제 완료");
         if (!educationRepository.existsByProfileId(profile.getId())) {
+            profile.updateIsEducation(false);
             profile.cancelPerfectionDefault();
             profile.updateMemberProfileTypeByCompletion();
         }

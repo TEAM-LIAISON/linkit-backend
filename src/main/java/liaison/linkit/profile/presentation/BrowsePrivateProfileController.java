@@ -3,7 +3,6 @@ package liaison.linkit.profile.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.browse.CheckBrowseToPrivateProfileAccess;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
@@ -36,20 +35,18 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 public class BrowsePrivateProfileController {
 
-    public final MemberService memberService;
     public final ProfileOnBoardingService profileOnBoardingService;
     public final ProfileService profileService;
 
     public final MiniProfileService miniProfileService;
     public final CompletionService completionService;
-    public final ProfileSkillService profileSkillService;
+
     public final TeamBuildingFieldService teamBuildingFieldService;
     public final AntecedentsService antecedentsService;
     public final EducationService educationService;
     public final AwardsService awardsService;
     public final AttachService attachService;
     public final ProfileRegionService profileRegionService;
-
     public final BrowsePrivateProfileService browsePrivateProfileService;
 
     // 타겟 이력서 열람 컨트롤러
@@ -67,18 +64,29 @@ public class BrowsePrivateProfileController {
 
             // 2. 열람하고자 하는 회원의 ID를 가져온다.
             final Long browseTargetPrivateProfileId = browsePrivateProfileService.getTargetPrivateProfileIdByMiniProfileId(miniProfileId);
+            log.info("browseTargetPrivateProfileId={}", browseTargetPrivateProfileId);
             final ProfileIsValueResponse profileIsValueResponse = browsePrivateProfileService.getProfileIsValue(browseTargetPrivateProfileId);
-
+            log.info("profileIsValueResponse={}", profileIsValueResponse);
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(browseTargetPrivateProfileId, profileIsValueResponse.isMiniProfile());
+            log.info("miniProfileResponse={}", miniProfileResponse);
             final CompletionResponse completionResponse = getCompletionResponse(browseTargetPrivateProfileId);
+            log.info("completionResponse={}", completionResponse);
             final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(browseTargetPrivateProfileId, profileIsValueResponse.isIntroduction());
+            log.info("profileIntroductionResponse={}", profileIntroductionResponse);
             final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(browseTargetPrivateProfileId, profileIsValueResponse.isJobAndSkill());
+            log.info("jobAndSkillResponse={}", jobAndSkillResponse);
             final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(accessor.getMemberId(), profileIsValueResponse.isProfileTeamBuildingField());
+            log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
             final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(browseTargetPrivateProfileId, profileIsValueResponse.isProfileRegion());
+            log.info("profileRegionResponse={}", profileRegionResponse);
             final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAntecedents());
+            log.info("antecedentsResponses={}", antecedentsResponses);
             final List<EducationResponse> educationResponses = getEducationResponses(browseTargetPrivateProfileId, profileIsValueResponse.isEducation());
+            log.info("educationResponses={}", educationResponses);
             final List<AwardsResponse> awardsResponses = getAwardsResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAwards());
+            log.info("awardsResponses={}", awardsResponses);
             final AttachResponse attachResponse = getAttachResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAttach());
+            log.info("attachResponse={}", attachResponse);
 
             final ProfileResponse profileResponse = browsePrivateProfileService.getProfileResponse(
                     miniProfileResponse,

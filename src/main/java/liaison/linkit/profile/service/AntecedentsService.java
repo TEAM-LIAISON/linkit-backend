@@ -2,14 +2,15 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.profile.domain.antecedents.Antecedents;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.antecedents.Antecedents;
 import liaison.linkit.profile.domain.repository.AntecedentsRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsUpdateRequest;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +21,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AntecedentsService {
 
     private final ProfileRepository profileRepository;
@@ -135,12 +137,16 @@ public class AntecedentsService {
     }
 
     public void delete(final Long memberId, final Long antecedentsId) {
+        final Profile profile = getProfile(memberId);
+        final Antecedents antecedents = getAntecedents(antecedentsId);
 
-        if (!antecedentsRepository.existsById(antecedentsId)) {
-            throw new BadRequestException(NOT_FOUND_ANTECEDENTS_ID);
+
+        antecedentsRepository.deleteById(antecedents.getId());
+        log.info("삭제 완료");
+        if (!antecedentsRepository.existsByProfileId(profile.getId())) {
+            profile.updateIsAntecedents(false);
+            profile.cancelPerfectionDefault();
+            profile.updateMemberProfileTypeByCompletion();
         }
-
-        // 삭제
-        antecedentsRepository.deleteById(antecedentsId);
     }
 }
