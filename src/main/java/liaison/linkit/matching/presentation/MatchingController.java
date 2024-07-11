@@ -8,6 +8,8 @@ import liaison.linkit.matching.CheckMatchingToPrivateProfileAccess;
 import liaison.linkit.matching.CheckMatchingToTeamProfileAccess;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
+import liaison.linkit.matching.dto.response.RequestMatchingResponse;
+import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -92,23 +94,25 @@ public class MatchingController {
     }
 
     // 내가 보낸 매칭 조회
-//    @GetMapping("/request")
-//    @MemberOnly
-//    public ResponseEntity<RequestMatchingResponse> getRequestMatchingResponses(
-//            @Auth final Accessor accessor
-//    ) {
-//        matchingService.getRequestMatching(accessor.getMemberId());
-//
-//    }
+    @GetMapping("/matching/request")
+    @MemberOnly
+    public ResponseEntity<RequestMatchingResponse> getRequestMatchingResponses(
+            @Auth final Accessor accessor
+    ) {
+        // accessor.getMemberId()가 보낸 모든 매칭 요청을 조회해야한다.
+        final RequestMatchingResponse requestMatchingResponse = matchingService.getMyRequestMatching(accessor.getMemberId());
+        return ResponseEntity.status(HttpStatus.OK).body(requestMatchingResponse);
+    }
 
     // 성사된 매칭 조회
-//    @GetMapping("/success")
-//    @MemberOnly
-//    public ResponseEntity<SuccessMatchingResponse> getSuccessMatchingResponses(
-//            @Auth final Accessor accessor
-//    ) {
-//        matchingService.getSuccessMatching(accessor.getMemberId());
-//
-//    }
+    @GetMapping("/matching/success")
+    @MemberOnly
+    public ResponseEntity<SuccessMatchingResponse> getSuccessMatchingResponses(
+            @Auth final Accessor accessor
+    ) {
+        // 내가 보낸 매칭 요청, 내가 받은 매칭 요청 중에서 성사된 모든 매칭을 조회해야한다.
+        final SuccessMatchingResponse successMatchingResponse = matchingService.getMySuccessMatching(accessor.getMemberId());
+        return ResponseEntity.status(HttpStatus.OK).body(successMatchingResponse);
+    }
 
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
-public class PrivateMatchingResponse {
+public class ToPrivateMatchingResponse {
 
     // 발신자 이름
     private final String senderName;
@@ -22,9 +22,9 @@ public class PrivateMatchingResponse {
     // 매칭 요청 타입
     private final MatchingType matchingType;
 
-    public static List<PrivateMatchingResponse> toPrivateMatchingResponse(final List<PrivateMatching> privateMatchingList) {
+    public static List<ToPrivateMatchingResponse> toPrivateMatchingResponse(final List<PrivateMatching> privateMatchingList) {
         return privateMatchingList.stream()
-                .map(privateMatching -> new PrivateMatchingResponse(
+                .map(privateMatching -> new ToPrivateMatchingResponse(
                         privateMatching.getMember().getMemberBasicInform().getMemberName(),
                         privateMatching.getRequestMessage(),
                         LocalDate.from(privateMatching.getCreatedAt()),
