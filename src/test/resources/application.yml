@@ -138,3 +138,8 @@ degree:
 
 jobRole:
   csv-path: ${jobRole.path}
+
+logging:
+  level:
+    root: debug
+

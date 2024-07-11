@@ -75,10 +75,11 @@ public class MiniProfileService {
         final Profile profile = getProfile(memberId);
 
         if (miniProfileImage != null) {
-
+            log.info("miniProfileImage가 null이 아닙니다.");
             if (miniProfileRepository.existsByProfileId(profile.getId())) {
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
                 s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
+                miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
                 miniProfileRepository.deleteByProfileId(profile.getId());
             }
 
@@ -92,6 +93,7 @@ public class MiniProfileService {
             );
 
             final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileByImage);
+
             final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
                     .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
                     .toList();

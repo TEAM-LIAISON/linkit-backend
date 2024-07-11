@@ -57,6 +57,7 @@ public class BrowsePrivateProfileController {
             @PathVariable final Long miniProfileId
     ) {
         log.info("miniProfileId={}에 대한 내 이력서 열람 요청이 발생했습니다.", miniProfileId);
+
         try {
             // 1. 열람하고자 하는 내 이력서의 유효성을 판단한다.
             browsePrivateProfileService.validatePrivateProfileByMiniProfile(miniProfileId);
