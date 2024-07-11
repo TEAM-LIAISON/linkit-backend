@@ -20,7 +20,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -28,7 +27,8 @@ import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -80,8 +80,7 @@ public class SearchControllerTest extends ControllerTest {
                 "1-5인",
                 "리에종",
                 "팀 소개서 제목입니다.",
-                LocalDate.of(2024, 10, 9),
-                false,
+                true,
                 "https://image.linkit.im/images/linkit_logo.png",
                 Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
         );
@@ -117,9 +116,8 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].sectorName").description("부문 이름"),
                                         fieldWithPath("content[].sizeType").description("팀 크기 유형"),
                                         fieldWithPath("content[].teamName").description("팀 이름"),
-                                        fieldWithPath("content[].miniProfileTitle").description("팀 소개서 제목"),
-                                        fieldWithPath("content[].teamUploadPeriod").description("업로드 기간"),
-                                        fieldWithPath("content[].teamUploadDeadline").description("업로드 마감일 여부"),
+                                        fieldWithPath("content[].teamProfileTitle").description("팀 소개서 제목"),
+                                        fieldWithPath("content[].isTeamActivate").description("팀 소개서 활성화 여부"),
                                         fieldWithPath("content[].teamLogoImageUrl").description("팀 로고 이미지 URL"),
                                         fieldWithPath("content[].teamKeywordNames").description("팀 키워드"),
                                         fieldWithPath("pageable").description("페이징 처리 객체"),

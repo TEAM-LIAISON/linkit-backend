@@ -26,7 +26,6 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -130,7 +129,6 @@ public class TeamProfileControllerTest extends ControllerTest {
                 "1-5인",
                 "리에종",
                 "팀 소개서 제목입니다.",
-                LocalDate.of(2024, 10, 9),
                 false,
                 "https://image.linkit.im/images/linkit_logo.png",
                 Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
@@ -298,9 +296,8 @@ public class TeamProfileControllerTest extends ControllerTest {
                                         fieldWithPath("teamMiniProfileResponse.sectorName").type(JsonFieldType.STRING).description("팀 미니 프로필 분야"),
                                         fieldWithPath("teamMiniProfileResponse.sizeType").type(JsonFieldType.STRING).description("팀 미니 프로필 규모"),
                                         fieldWithPath("teamMiniProfileResponse.teamName").type(JsonFieldType.STRING).description("팀 이름"),
-                                        fieldWithPath("teamMiniProfileResponse.miniProfileTitle").type(JsonFieldType.STRING).description("팀 미니 프로필 제목"),
-                                        fieldWithPath("teamMiniProfileResponse.teamUploadPeriod").type(JsonFieldType.STRING).description("업로드 기간"),
-                                        fieldWithPath("teamMiniProfileResponse.teamUploadDeadline").type(JsonFieldType.BOOLEAN).description("계속 업로드/마감 여부"),
+                                        fieldWithPath("teamMiniProfileResponse.teamProfileTitle").type(JsonFieldType.STRING).description("팀 미니 프로필 제목"),
+                                        fieldWithPath("teamMiniProfileResponse.isTeamActivate").type(JsonFieldType.BOOLEAN).description("팀 소개서 활성화 여부"),
                                         fieldWithPath("teamMiniProfileResponse.teamLogoImageUrl").type(JsonFieldType.STRING).description("이미지 파일 소스 경로"),
                                         fieldWithPath("teamMiniProfileResponse.teamKeywordNames").type(JsonFieldType.ARRAY).description("팀 소개 항목").attributes(field("constraint", "문자열 배열")),
 

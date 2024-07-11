@@ -5,7 +5,6 @@ import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -16,9 +15,8 @@ public class TeamMiniProfileResponse {
     private final String sectorName;
     private final String sizeType;
     private final String teamName;
-    private final String miniProfileTitle;
-    private final LocalDate teamUploadPeriod;
-    private final Boolean teamUploadDeadline;
+    private final String teamProfileTitle;
+    private final Boolean isTeamActivate;
     private final String teamLogoImageUrl;
     private final List<String> teamKeywordNames;
 
@@ -27,9 +25,8 @@ public class TeamMiniProfileResponse {
         this.sectorName = null;
         this.sizeType = null;
         this.teamName = null;
-        this.miniProfileTitle = null;
-        this.teamUploadPeriod = null;
-        this.teamUploadDeadline = null;
+        this.teamProfileTitle = null;
+        this.isTeamActivate = null;
         this.teamLogoImageUrl = null;
         this.teamKeywordNames = null;
     }
@@ -46,8 +43,7 @@ public class TeamMiniProfileResponse {
                 teamMiniProfile.getTeamScale().getSizeType(),
                 teamMiniProfile.getTeamName(),
                 teamMiniProfile.getTeamProfileTitle(),
-                teamMiniProfile.getTeamUploadPeriod(),
-                teamMiniProfile.getTeamUploadDeadline(),
+                teamMiniProfile.getIsTeamActivate(),
                 teamMiniProfile.getTeamLogoImageUrl(),
                 teamKeywordNames
         );
