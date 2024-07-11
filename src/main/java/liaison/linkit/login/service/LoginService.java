@@ -1,10 +1,12 @@
 package liaison.linkit.login.service;
 
+import jakarta.annotation.Nullable;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.login.domain.*;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.dto.MemberTokensAndOnBoardingStepInform;
+import liaison.linkit.login.dto.RenewTokenResponse;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.member.domain.Member;
@@ -35,6 +37,12 @@ public class LoginService {
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
+
+    // 회원 조회
+    private Member getMember(final Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BY_MEMBER_ID));
+    }
 
     // 내 이력서 조회
     private Profile getProfileByMember(final Long memberId) {
@@ -114,18 +122,54 @@ public class LoginService {
         throw new AuthException(FAIL_TO_GENERATE_MEMBER);
     }
 
-    public String renewalAccessToken(final String refreshTokenRequest, final String authorizationHeader) {
+    public RenewTokenResponse renewalAccessToken(
+            final String refreshTokenRequest, final String authorizationHeader
+    ) {
+        // 기존의 엑세스 토큰 추출
         final String accessToken = bearerExtractor.extractAccessToken(authorizationHeader);
+
+        // Refresh 유효, Access 유효 X
         if (jwtProvider.isValidRefreshAndInvalidAccess(refreshTokenRequest, accessToken)) {
-            final RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenRequest)
-                    .orElseThrow(() -> new AuthException(INVALID_REFRESH_TOKEN));
-            return jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString());
+            // Refresh -> 레디스에서 조회
+            return getRenewTokenResponse(refreshTokenRequest);
+            // Access 토큰 재생성
         }
+
+        // Refresh, Access 모두 유효
         if (jwtProvider.isValidRefreshAndValidAccess(refreshTokenRequest, accessToken)) {
-            return accessToken;
+            return getRenewTokenResponse(refreshTokenRequest);
         }
         throw new AuthException(FAIL_TO_VALIDATE_TOKEN);
     }
+
+    @Nullable
+    private RenewTokenResponse getRenewTokenResponse(String refreshTokenRequest) {
+        final RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenRequest)
+                .orElseThrow(() -> new AuthException(INVALID_REFRESH_TOKEN));
+
+        final Member member = getMember(refreshToken.getMemberId());
+
+        final boolean existMemberBasicInform = member.isExistMemberBasicInform();
+
+        log.info("loginService login method memberId={}", member.getId());
+        final Profile profile = getProfileByMember(member.getId());
+        final TeamProfile teamProfile = getTeamProfile(member.getId());
+
+        final boolean existDefaultPrivateProfile = profile.getExistDefaultPrivateProfile();
+        log.info("existDefaultPrivateProfile={}", existDefaultPrivateProfile);
+
+        final boolean existDefaultTeamProfile = teamProfile.getExistDefaultTeamProfile();
+        log.info("existDefaultTeamProfile={}",existDefaultTeamProfile);
+
+        final boolean existDefaultProfile = (existDefaultPrivateProfile || existDefaultTeamProfile);
+
+        if (existMemberBasicInform && existDefaultProfile) {
+            return new RenewTokenResponse(jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()), existMemberBasicInform, existDefaultProfile);
+        } else {
+            return new RenewTokenResponse(null, existMemberBasicInform, existDefaultProfile);
+        }
+    }
+
 
     public void removeRefreshToken(final String refreshToken) {
         refreshTokenRepository.deleteById(refreshToken);
