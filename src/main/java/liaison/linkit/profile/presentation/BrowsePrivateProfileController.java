@@ -51,12 +51,12 @@ public class BrowsePrivateProfileController {
     @MemberOnly
     public ResponseEntity<?> getBrowsePrivateProfile(
             @Auth final Accessor accessor,
-            @PathVariable(value = "miniProfileId") final Long miniProfileId
+            @PathVariable final Long miniProfileId
     ) {
         log.info("miniProfileId={}에 대한 내 이력서 열람 요청이 발생했습니다.", miniProfileId);
         try {
             // 1. 열람하고자 하는 내 이력서의 유효성을 판단한다.
-            log.info("유효성 검사 로직");
+            log.info("타겟 이력서 열람 유효성 검사 로직");
             browsePrivateProfileService.validatePrivateProfileByMiniProfile(miniProfileId);
 
             // 2. 열람하고자 하는 회원의 ID를 가져온다.
@@ -216,7 +216,8 @@ public class BrowsePrivateProfileController {
             miniProfileService.validateMiniProfileByMember(browseTargetPrivateProfileId);
             return miniProfileService.getPersonalMiniProfile(browseTargetPrivateProfileId);
         } else {
-            return new MiniProfileResponse();
+            final String memberName = miniProfileService.getMemberName(browseTargetPrivateProfileId);
+            return new MiniProfileResponse(memberName);
         }
     }
 }

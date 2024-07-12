@@ -20,11 +20,11 @@ public class TeamMiniProfileResponse {
     private final String teamLogoImageUrl;
     private final List<String> teamKeywordNames;
 
-    public TeamMiniProfileResponse() {
+    public TeamMiniProfileResponse(final String teamName) {
         this.id = null;
         this.sectorName = null;
         this.sizeType = null;
-        this.teamName = null;
+        this.teamName = teamName;
         this.teamProfileTitle = null;
         this.isTeamActivate = null;
         this.teamLogoImageUrl = null;

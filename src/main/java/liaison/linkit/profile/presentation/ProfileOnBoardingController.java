@@ -94,7 +94,8 @@ public class ProfileOnBoardingController {
             miniProfileService.validateMiniProfileByMember(memberId);
             return miniProfileService.getPersonalMiniProfile(memberId);
         } else {
-            return new MiniProfileResponse();
+            final String memberName = miniProfileService.getMemberName(memberId);
+            return new MiniProfileResponse(memberName);
         }
     }
 
