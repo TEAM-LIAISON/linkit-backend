@@ -34,7 +34,7 @@ public class AntecedentsService {
 
     // 어떤 이력 정보 1개만 조회할 때
     private Antecedents getAntecedents(final Long antecedentsId) {
-        return antecedentsRepository.findByProfileId(antecedentsId)
+        return antecedentsRepository.findById(antecedentsId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_BY_ID));
     }
 
