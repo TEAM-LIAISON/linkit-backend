@@ -8,8 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Objects;
-
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -255,20 +253,23 @@ public class TeamProfile {
 
     // 4.7. 팀 소개 텍스트 내용 업데이트
     public void updateTeamIntroduction(final String teamIntroduction) {
-        if (!Objects.equals(teamIntroduction, "")) {        // 하나라도 텍스트가 들어오는 경우
+        if (teamIntroduction != null && !teamIntroduction.isEmpty()) {  // 텍스트가 들어오는 경우
             log.info("teamIntroduction={}", teamIntroduction);
 
-            // 기존에 저장되어었던 경우
+            // 기존에 저장되어있었던 경우
             if (this.teamIntroduction != null) {
-                this.teamIntroduction = teamIntroduction;
-            }
-            else {
+                log.info("기존에 팀 소개가 저장되어 있지 않았습니다.");
                 this.teamIntroduction = teamIntroduction;
                 updateIsTeamIntroduction(true);
                 addTeamPerfectionFifteen();
                 updateMemberTeamProfileTypeByCompletion();
+            } else {
+                // 기존에 저장되었던 경우 (수정으로 간주)
+                log.info("기존에 팀 소개가 저장되어 있었습니다.");
+                this.teamIntroduction = teamIntroduction;
             }
-        } else {                                                // 삭제 요청으로 간주
+        } else {  // 삭제 요청으로 간주 (null이거나 empty인 경우)
+            log.info("팀 소개 삭제 요청이 발생합니다.");
             this.teamIntroduction = null;
             updateIsTeamIntroduction(false);
             cancelTeamPerfectionFifteen();

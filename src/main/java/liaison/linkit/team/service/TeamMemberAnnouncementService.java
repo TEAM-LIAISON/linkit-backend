@@ -82,8 +82,10 @@ public class TeamMemberAnnouncementService {
         saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
         saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
 
+        // 팀원 공고가 존재하지 않았던 경우
         if (!teamProfile.getIsTeamMemberAnnouncement()) {
-
+            teamProfile.updateIsTeamMemberAnnouncement(true);
+            teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }
 
@@ -100,7 +102,7 @@ public class TeamMemberAnnouncementService {
             teamMemberAnnouncementRepository.deleteAllByTeamProfileId(teamProfile.getId());
 
             // 팀 프로필 업데이트 필요
-            // 상태 업데이트 필용
+            // 상태 업데이트 필요
 
             // 순차적으로 1개씩 저장
             teamMemberAnnouncementRequestList.forEach(request -> {
