@@ -21,13 +21,24 @@ import java.util.List;
 public class AwardsController {
     private final AwardsService awardsService;
 
+    @PostMapping("/private/award")
+    @MemberOnly
+    public ResponseEntity<Void> createAward(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid AwardsCreateRequest awardsCreateRequest
+    ){
+        log.info("수상 항목 생성 요청 발생");
+        awardsService.save(accessor.getMemberId(), awardsCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
     @PostMapping("/private/awards")
     @MemberOnly
     public ResponseEntity<Void> createAwards(
             @Auth final Accessor accessor,
             @RequestBody @Valid List<AwardsCreateRequest> awardsCreateRequests
     ){
-        log.info("수상 항목 생성 요청 발생");
+        log.info("수상 항목 리스트 생성 요청 발생");
         awardsService.saveAll(accessor.getMemberId(), awardsCreateRequests);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

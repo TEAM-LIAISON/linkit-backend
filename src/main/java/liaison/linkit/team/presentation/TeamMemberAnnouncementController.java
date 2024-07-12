@@ -21,9 +21,19 @@ public class TeamMemberAnnouncementController {
 
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
-    @PostMapping("/members/announcements")
+    @PostMapping("/member/announcement")
     @MemberOnly
     public ResponseEntity<Void> postTeamMemberAnnouncement(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
+    ) {
+        teamMemberAnnouncementService.saveAnnouncement(accessor.getMemberId(), teamMemberAnnouncementRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/members/announcements")
+    @MemberOnly
+    public ResponseEntity<Void> postTeamMemberAnnouncements(
             @Auth final Accessor accessor,
             @RequestBody @Valid List<TeamMemberAnnouncementRequest> teamMemberAnnouncementRequestList
     ) {

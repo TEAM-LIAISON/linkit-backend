@@ -72,6 +72,21 @@ public class TeamMemberAnnouncementService {
         return TeamMemberAnnouncementResponse.of(teamMemberAnnouncement);
     }
 
+    public void saveAnnouncement(
+            final Long memberId,
+            final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
+    ) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+
+        final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, teamMemberAnnouncementRequest);
+        saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
+        saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
+
+        if (!teamProfile.getIsTeamMemberAnnouncement()) {
+
+        }
+    }
+
     // 팀원 공고 생성/수정
     public void saveAnnouncements(
             final Long memberId,
@@ -165,6 +180,7 @@ public class TeamMemberAnnouncementService {
             teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }
+
 
 
 }

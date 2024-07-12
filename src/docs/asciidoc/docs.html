@@ -733,7 +733,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 18 Jul 2024 12:41:37 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Fri, 19 Jul 2024 03:51:09 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -1980,7 +1980,7 @@ Content-Type: multipart/form-data
 Content-Disposition: form-data; name=teamMiniProfileCreateRequest
 Content-Type: application/json
 
-{"teamProfileTitle":"사이드 프로젝트 함께 할 개발자를 찾고 있어요","teamKeywordNames":["재택 가능","Pre-A","사수 있음","스톡 제공"],"teamActivate":true}
+{"teamProfileTitle":"사이드 프로젝트 함께 할 개발자를 찾고 있어요","teamKeywordNames":["재택 가능","Pre-A","사수 있음","스톡 제공"],"isTeamActivate":true}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -2026,7 +2026,7 @@ Content-Type: application/json
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 제목</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamActivate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isTeamActivate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 활성화 여부</p></td>
 </tr>
@@ -2079,14 +2079,14 @@ Content-Length: 3247
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "attach" : true,
-    "introduction" : true,
     "profileTeamBuildingField" : true,
-    "profileRegion" : true,
+    "introduction" : true,
     "antecedents" : true,
     "education" : true,
-    "profileSkill" : true
+    "awards" : true,
+    "attach" : true,
+    "profileSkill" : true,
+    "profileRegion" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -2964,13 +2964,13 @@ Content-Length: 2386
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "teamProfileTeamBuildingField" : true,
-    "history" : true,
     "activity" : true,
+    "history" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true
+    "teamAttach" : true,
+    "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]

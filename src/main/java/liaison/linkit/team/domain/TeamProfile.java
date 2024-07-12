@@ -6,6 +6,7 @@ import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
@@ -18,6 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@Slf4j
 public class TeamProfile {
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -254,9 +256,13 @@ public class TeamProfile {
     // 4.7. 팀 소개 텍스트 내용 업데이트
     public void updateTeamIntroduction(final String teamIntroduction) {
         if (!Objects.equals(teamIntroduction, "")) {        // 하나라도 텍스트가 들어오는 경우
+            log.info("teamIntroduction={}", teamIntroduction);
+
+            // 기존에 저장되어었던 경우
             if (this.teamIntroduction != null) {
                 this.teamIntroduction = teamIntroduction;
-            } else {
+            }
+            else {
                 this.teamIntroduction = teamIntroduction;
                 updateIsTeamIntroduction(true);
                 addTeamPerfectionFifteen();
@@ -267,7 +273,6 @@ public class TeamProfile {
             updateIsTeamIntroduction(false);
             cancelTeamPerfectionFifteen();
             updateMemberTeamProfileTypeByCompletion();
-
         }
     }
 
