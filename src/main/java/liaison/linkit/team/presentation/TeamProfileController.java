@@ -232,7 +232,8 @@ public class TeamProfileController {
             teamMiniProfileService.validateTeamMiniProfileByMember(memberId);
             return teamMiniProfileService.getPersonalTeamMiniProfile(memberId);
         } else {
-            return new TeamMiniProfileResponse();
+            final String teamName = teamMiniProfileService.getTeamName(memberId);
+            return new TeamMiniProfileResponse(teamName);
         }
     }
 }

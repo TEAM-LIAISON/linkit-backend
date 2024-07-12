@@ -19,13 +19,13 @@ public class MiniProfileResponse {
     private final List<String> myKeywordNames;
     private final String memberName;
 
-    public MiniProfileResponse() {
+    public MiniProfileResponse(final String memberName) {
         this.id = null;
         this.profileTitle = null;
         this.miniProfileImg = null;
         this.isActivate = null;
         this.myKeywordNames = null;
-        this.memberName = null;
+        this.memberName = memberName;
     }
 
     public static MiniProfileResponse personalMiniProfile(

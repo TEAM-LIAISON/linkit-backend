@@ -334,6 +334,12 @@ public class TeamMiniProfileService {
         return teamProfile.getIsTeamMiniProfile();
     }
 
+    public String getTeamName(final Long memberId) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        final TeamMiniProfile teamMiniProfile = getTeamMiniProfile(teamProfile.getId());
+        return teamMiniProfile.getTeamName();
+    }
+
 
 //    private final TeamProfileRepository teamProfileRepository;
 //    private final TeamMiniProfileRepository teamMiniProfileRepository;
