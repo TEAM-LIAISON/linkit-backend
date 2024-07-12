@@ -76,8 +76,18 @@ class TeamMemberIntroductionControllerTest extends ControllerTest {
 
         final List<TeamMemberIntroductionCreateRequest> teamMemberIntroductionCreateRequestList = Arrays.asList(firstTeamMemberIntroductionCreateRequest, secondTeamMemberIntroductionCreateRequest);
 
-        doNothing().when(teamMemberIntroductionService).saveTeamMember(1L, teamMemberIntroductionCreateRequestList);
+        doNothing().when(teamMemberIntroductionService).saveTeamMemberIntroductions(1L, teamMemberIntroductionCreateRequestList);
         performPostTeamMemberIntroductionRequest(teamMemberIntroductionCreateRequestList);
+    }
+
+    private ResultActions performPostTeamMemberIntroduction(final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest) throws Exception {
+        return mockMvc.perform(
+                post("/team/member")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(teamMemberIntroductionCreateRequest))
+        );
     }
 
     private ResultActions performPostTeamMemberIntroductionRequest(final List<TeamMemberIntroductionCreateRequest> teamMemberIntroductionCreateRequests) throws Exception {
@@ -101,9 +111,53 @@ class TeamMemberIntroductionControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("팀원 소개를 생성할 수 있다,")
+    @DisplayName("팀원 소개를 생성할 수 있다.")
     @Test
     void createTeamMemberIntroduction() throws Exception {
+        // given
+        final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest = new TeamMemberIntroductionCreateRequest(
+                "김서연",
+                "디자이너",
+                "레드닷 상 받았어요"
+        );
+
+        // when
+        final ResultActions resultActions = performPostTeamMemberIntroduction(teamMemberIntroductionCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isCreated())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                requestFields(
+                                        fieldWithPath("teamMemberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀원 이름")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("teamMemberRole")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀원 직무/역할")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("teamMemberIntroductionText")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀원 소개")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                );
+    }
+
+    @DisplayName("팀원 소개 리스트를 생성할 수 있다,")
+    @Test
+    void createTeamMemberIntroductions() throws Exception {
         // given
         final TeamMemberIntroductionCreateRequest firstTeamMemberIntroductionCreateRequest = new TeamMemberIntroductionCreateRequest(
                 "김서연",

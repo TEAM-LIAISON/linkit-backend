@@ -56,6 +56,19 @@ public class HistoryService {
         return HistoryResponse.of(history);
     }
 
+    public void saveHistory(
+            final Long memberId,
+            final HistoryCreateRequest historyCreateRequest
+    ) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        saveHistoryMethod(teamProfile, historyCreateRequest);
+        if (!teamProfile.getIsHistory()) {
+            teamProfile.updateIsHistory(true);
+            teamProfile.updateMemberTeamProfileTypeByCompletion();
+
+        }
+    }
+
     public void saveHistories(
             final Long memberId,
             final List<HistoryCreateRequest> historyCreateRequests
@@ -69,14 +82,14 @@ public class HistoryService {
         }
 
         historyCreateRequests.forEach(request -> {
-            saveHistory(teamProfile, request);
+            saveHistoryMethod(teamProfile, request);
         });
 
         teamProfile.updateIsHistory(true);
         teamProfile.updateMemberTeamProfileTypeByCompletion();
     }
 
-    private void saveHistory(
+    private void saveHistoryMethod(
             final TeamProfile teamProfile,
             final HistoryCreateRequest historyCreateRequest
     ) {

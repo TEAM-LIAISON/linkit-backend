@@ -20,11 +20,20 @@ public class HistoryController {
 
     private final HistoryService historyService;
 
-//    @PostMapping("/team/history")
+    @PostMapping("/team/history")
+    @MemberOnly
+    public ResponseEntity<Void> createHistory(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid HistoryCreateRequest historyCreateRequest
+    ) {
+        historyService.saveHistory(accessor.getMemberId(), historyCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
 
     @PostMapping("/team/histories")
     @MemberOnly
-    public ResponseEntity<Void> createHistory(
+    public ResponseEntity<Void> createHistories(
             @Auth final Accessor accessor,
             @RequestBody @Valid List<HistoryCreateRequest> historyCreateRequests
     ) {

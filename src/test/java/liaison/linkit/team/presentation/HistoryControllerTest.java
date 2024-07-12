@@ -83,10 +83,20 @@ public class HistoryControllerTest extends ControllerTest {
 
         doNothing().when(historyService).saveHistories(1L, historyCreateRequestList);
 
-        performPostHistory(historyCreateRequestList);
+        performPostHistories(historyCreateRequestList);
     }
 
-    private ResultActions performPostHistory(final List<HistoryCreateRequest> historyCreateRequests) throws Exception {
+    private ResultActions performPostHistory(final HistoryCreateRequest historyCreateRequest) throws Exception {
+        return mockMvc.perform(
+                post("/team/history")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(historyCreateRequest))
+        );
+    }
+
+    private ResultActions performPostHistories(final List<HistoryCreateRequest> historyCreateRequests) throws Exception {
         return mockMvc.perform(
                 post("/team/histories")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -106,9 +116,63 @@ public class HistoryControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("연혁을 생성할 수 있다.")
+    @DisplayName("단일 연혁을 생성할 수 있다.")
     @Test
-    void createHistory() throws Exception {
+    void createHistory() throws  Exception {
+        // given
+        final HistoryCreateRequest historyCreateRequest = new HistoryCreateRequest(
+                "Seed 투자 유치",
+                2023,
+                2024,
+                true,
+                "5,000만원 투자를 받았어요"
+        );
+
+        // when
+        final ResultActions resultActions = performPostHistory(historyCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isCreated())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                requestFields(
+                                        fieldWithPath("historyOneLineIntroduction")
+                                                .type(JsonFieldType.STRING)
+                                                .description("연혁 한 줄 소개")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("startYear")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("시작 연도")
+                                                .attributes(field("constraint", "숫자")),
+                                        fieldWithPath("endYear")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("종료 연도")
+                                                .attributes(field("constraint", "숫자")),
+                                        fieldWithPath("inProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("현재 진행 여부")
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("historyIntroduction")
+                                                .type(JsonFieldType.STRING)
+                                                .description("연혁 소개 텍스트")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                );
+    }
+
+    @DisplayName("연혁 리스트 생성할 수 있다.")
+    @Test
+    void createHistories() throws Exception {
         // given
         final HistoryCreateRequest firstHistoryCreateRequest = new HistoryCreateRequest(
                 "Seed 투자 유치",
@@ -129,7 +193,7 @@ public class HistoryControllerTest extends ControllerTest {
         final List<HistoryCreateRequest> historyCreateRequestList = Arrays.asList(firstHistoryCreateRequest, secondHistoryCreateRequest);
 
         // when
-        final ResultActions resultActions = performPostHistory(historyCreateRequestList);
+        final ResultActions resultActions = performPostHistories(historyCreateRequestList);
 
         // then
         resultActions.andExpect(status().isCreated())

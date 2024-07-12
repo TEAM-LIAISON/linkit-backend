@@ -43,8 +43,23 @@ public class TeamMemberIntroductionService {
         }
     }
 
+    public void saveTeamMemberIntroduction(
+            final Long memberId,
+            final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
+    ) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        // 저장 메서드 실행
+        saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
+
+        // 존재하지 않았던 경우
+        if (!teamProfile.getIsTeamMemberIntroduction()) {
+            teamProfile.updateIsTeamMemberIntroduction(true);
+            teamProfile.updateMemberTeamProfileTypeByCompletion();
+        }
+    }
+
     // 팀원 소개 저장 메서드 실행부
-    public void saveTeamMember(
+    public void saveTeamMemberIntroductions(
             final Long memberId,
             final List<TeamMemberIntroductionCreateRequest> teamMemberIntroductionCreateRequests
     ) {
@@ -57,7 +72,7 @@ public class TeamMemberIntroductionService {
         }
 
         teamMemberIntroductionCreateRequests.forEach(request -> {
-            saveTeamMemberIntroduction(teamProfile, request);
+            saveTeamMemberIntroductionMethod(teamProfile, request);
         });
 
         teamProfile.updateIsTeamMemberIntroduction(true);
@@ -65,7 +80,7 @@ public class TeamMemberIntroductionService {
     }
 
     // 팀원 소개 저장 메서드
-    private void saveTeamMemberIntroduction(
+    private void saveTeamMemberIntroductionMethod(
             final TeamProfile teamProfile,
             final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
     ) {
@@ -109,4 +124,6 @@ public class TeamMemberIntroductionService {
             teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }
+
+
 }
