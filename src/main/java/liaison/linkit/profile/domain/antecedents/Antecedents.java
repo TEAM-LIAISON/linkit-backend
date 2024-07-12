@@ -2,7 +2,7 @@ package liaison.linkit.profile.domain.antecedents;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.antecedents.AntecedentsUpdateRequest;
+import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -84,14 +84,14 @@ public class Antecedents {
         );
     }
 
-    public void update(final AntecedentsUpdateRequest antecedentsUpdateRequest) {
-        this.projectName = antecedentsUpdateRequest.getProjectName();
-        this.projectRole = antecedentsUpdateRequest.getProjectRole();
-        this.startYear = antecedentsUpdateRequest.getStartYear();
-        this.startMonth = antecedentsUpdateRequest.getStartMonth();
-        this.endYear = antecedentsUpdateRequest.getEndYear();
-        this.endMonth = antecedentsUpdateRequest.getEndMonth();
-        this.retirement = antecedentsUpdateRequest.isRetirement();
-        this.antecedentsDescription = antecedentsUpdateRequest.getAntecedentsDescription();
+    public void update(final AntecedentsCreateRequest antecedentsCreateRequest) {
+        this.projectName = antecedentsCreateRequest.getProjectName();
+        this.projectRole = antecedentsCreateRequest.getProjectRole();
+        this.startYear = antecedentsCreateRequest.getStartYear();
+        this.startMonth = antecedentsCreateRequest.getStartMonth();
+        this.endYear = antecedentsCreateRequest.getEndYear();
+        this.endMonth = antecedentsCreateRequest.getEndMonth();
+        this.retirement = antecedentsCreateRequest.isRetirement();
+        this.antecedentsDescription = antecedentsCreateRequest.getAntecedentsDescription();
     }
 }

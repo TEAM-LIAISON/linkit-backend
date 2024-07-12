@@ -2,7 +2,7 @@ package liaison.linkit.profile.domain.education;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.education.EducationUpdateRequest;
+import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -63,13 +63,13 @@ public class Education {
     }
 
     public void update(
-            final EducationUpdateRequest educationUpdateRequest,
+            final EducationCreateRequest educationCreateRequest,
             final University university,
             final Major major,
             final Degree degree
     ) {
-        this.admissionYear = educationUpdateRequest.getAdmissionYear();
-        this.graduationYear = educationUpdateRequest.getGraduationYear();
+        this.admissionYear = educationCreateRequest.getAdmissionYear();
+        this.graduationYear = educationCreateRequest.getGraduationYear();
         this.university = university;
         this.major = major;
         this.degree = degree;

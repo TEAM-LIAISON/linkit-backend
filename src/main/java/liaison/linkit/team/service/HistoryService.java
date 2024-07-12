@@ -119,7 +119,10 @@ public class HistoryService {
         }
     }
 
-
+    public void updateHistory(Long historyId, HistoryCreateRequest historyCreateRequest) {
+        final History history = getHistory(historyId);
+        history.update(historyCreateRequest);
+    }
 
 
 //    public void update(final Long memberId, final HistoryUpdateRequest historyUpdateRequest) {

@@ -82,9 +82,22 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         performPostTeamMemberAnnouncementRequest(teamMemberAnnouncementRequestList);
     }
 
+    private ResultActions performUpdateTeamMemberAnnouncement(
+            final int teamMemberAnnouncementId,
+            final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/team/member/announcement/{teamMemberAnnouncementId}", teamMemberAnnouncementId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(teamMemberAnnouncementRequest))
+        );
+    }
+
     private ResultActions performPostTeamMemberAnnouncement(
             final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
-    ) throws Exception{
+    ) throws Exception {
         return mockMvc.perform(
                 post("/team/member/announcement")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -118,7 +131,58 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("단일 팀원 공고를 생성/수정할 수 있다.")
+    @DisplayName("단일 팀원 공고를 수정할 수 있다.")
+    @Test
+    void updateTeamMemberAnnouncement() throws Exception {
+        // given
+        final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest = new TeamMemberAnnouncementRequest(
+                Arrays.asList("개발·데이터", "디자인"),
+                "주요 업무입니다.",
+                Arrays.asList("서버 개발", "DevOps", "게임 디자인"),
+                "지원 절차입니다."
+        );
+
+        // when
+        final ResultActions resultActions = performUpdateTeamMemberAnnouncement(1, teamMemberAnnouncementRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        requestCookies(
+                                cookieWithName("refresh-token")
+                                        .description("갱신 토큰")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization")
+                                        .description("access token")
+                                        .attributes(field("constraint", "문자열(jwt)"))
+                        ),
+                        pathParameters(
+                                parameterWithName("teamMemberAnnouncementId")
+                                        .description("팀원 공고 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("jobRoleNames")
+                                        .type(JsonFieldType.ARRAY)
+                                        .description("직무/역할 (4가지 항목)")
+                                        .attributes(field("constraint", "문자열의 배열")),
+                                fieldWithPath("mainBusiness")
+                                        .type(JsonFieldType.STRING)
+                                        .description("주요 업무")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("skillNames")
+                                        .type(JsonFieldType.ARRAY)
+                                        .description("보유 역량")
+                                        .attributes(field("constraint", "문자열의 배열")),
+                                fieldWithPath("applicationProcess")
+                                        .type(JsonFieldType.STRING)
+                                        .description("지원 절차")
+                                        .attributes(field("constraint", "문자열"))
+                        )
+                ));
+    }
+
+    @DisplayName("단일 팀원 공고를 생성할 수 있다.")
     @Test
     void createTeamMemberAnnouncement() throws Exception {
         // given

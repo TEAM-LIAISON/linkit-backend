@@ -155,4 +155,22 @@ public class EducationService {
         profile.updateIsEducation(true);
         profile.updateMemberProfileTypeByCompletion();
     }
+
+    public void update(
+            final Long educationId,
+            final EducationCreateRequest educationCreateRequest
+    ) {
+        final Education education = getEducation(educationId);
+
+        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_UNIVERSITY_NAME));
+
+        final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
+
+        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MAJOR_NAME));
+
+        education.update(educationCreateRequest, university, major, degree);
+    }
 }

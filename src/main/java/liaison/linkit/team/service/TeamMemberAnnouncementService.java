@@ -184,5 +184,28 @@ public class TeamMemberAnnouncementService {
     }
 
 
+    public void updateTeamMemberAnnouncement(
+            final Long teamMemberAnnouncementId,
+            final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
+    ) {
+        // 삭제 먼저 진행
+        teamMemberAnnouncementSkillRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+        teamMemberAnnouncementJobRoleRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+        teamMemberAnnouncementRepository.deleteById(teamMemberAnnouncementId);
 
+        final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
+        saveTeamMemberAnnouncementJobRole(teamMemberAnnouncement, teamMemberAnnouncementRequest);
+        saveTeamMemberAnnouncementSkill(teamMemberAnnouncement, teamMemberAnnouncementRequest);
+        teamMemberAnnouncement.update(teamMemberAnnouncementRequest);
+    }
+
+    private TeamMemberAnnouncementJobRole getTeamMemberAnnouncementJobRole(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementJobRoleRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE));
+    }
+
+    private TeamMemberAnnouncementSkill getTeamMemberAnnouncementSkill(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementSkillRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_SKILL));
+    }
 }

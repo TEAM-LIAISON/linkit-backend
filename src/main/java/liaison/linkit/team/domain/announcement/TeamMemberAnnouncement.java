@@ -2,6 +2,7 @@ package liaison.linkit.team.domain.announcement;
 
 import jakarta.persistence.*;
 import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -46,5 +47,12 @@ public class TeamMemberAnnouncement {
                 mainBusiness,
                 applicationProcess
         );
+    }
+
+    public void update(
+            final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
+    ) {
+        this.mainBusiness = teamMemberAnnouncementRequest.getMainBusiness();
+        this.applicationProcess = teamMemberAnnouncementRequest.getApplicationProcess();
     }
 }

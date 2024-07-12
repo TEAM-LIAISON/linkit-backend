@@ -90,7 +90,7 @@ public class AntecedentsControllerTest extends ControllerTest {
         performPostRequests(antecedentsCreateRequestList);
     }
 
-    // 이력 항목 생성/수정 테스트
+    // 이력 항목 생성 테스트
     private ResultActions performPostRequests(final List<AntecedentsCreateRequest> antecedentsCreateRequestList) throws Exception {
         return mockMvc.perform(
                 post("/private/antecedents")
@@ -98,6 +98,16 @@ public class AntecedentsControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(antecedentsCreateRequestList))
+        );
+    }
+
+    private ResultActions performUpdateRequest(final int antecedentsId, final AntecedentsCreateRequest antecedentsCreateRequest) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/private/antecedents/{antecedentsId}", antecedentsId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(antecedentsCreateRequest))
         );
     }
 
@@ -121,6 +131,68 @@ public class AntecedentsControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
         );
+    }
+
+    @DisplayName("1.5.7. 경력 항목을 수정할 수 있다.")
+    @Test
+    void updateAntecedent() throws Exception {
+        // given
+        final AntecedentsCreateRequest antecedentsCreateRequest = new AntecedentsCreateRequest(
+                "오더이즈",
+                "프로젝트 매니저",
+                2023,
+                3,
+                2023,
+                6,
+                false,
+                "경력 설명입니다."
+        );
+
+        // when
+        final ResultActions resultActions = performUpdateRequest(1, antecedentsCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("antecedentsId")
+                                        .description("경력 항목 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("projectName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("기업명(프로젝트명)")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("projectRole")
+                                        .type(JsonFieldType.STRING)
+                                        .description("직무(역할)")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("startYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("시작 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("startMonth")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("시작 월")
+                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("endYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("종료 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("endMonth")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("종료 월")
+                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("retirement")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("퇴직 여부")
+                                        .attributes(field("constraint", "false => 재직 중")),
+                                fieldWithPath("antecedentsDescription")
+                                        .type(JsonFieldType.STRING)
+                                        .description("경력 설명")
+                                        .attributes(field("constraint", "문자열"))
+                        )
+                ));
     }
 
     // 1.5.7. 경력 생성 테스트

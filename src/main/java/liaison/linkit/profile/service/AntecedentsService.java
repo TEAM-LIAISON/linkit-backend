@@ -7,7 +7,6 @@ import liaison.linkit.profile.domain.antecedents.Antecedents;
 import liaison.linkit.profile.domain.repository.AntecedentsRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
-import liaison.linkit.profile.dto.request.antecedents.AntecedentsUpdateRequest;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -119,28 +118,17 @@ public class AntecedentsService {
         return AntecedentsResponse.of(antecedents);
     }
 
-    public AntecedentsResponse update(final Long memberId, final Long antecedentsId, final AntecedentsUpdateRequest antecedentsUpdateRequest) {
-        final Profile profile = getProfile(memberId);
-
-        final Antecedents antecedents = antecedentsRepository.findById(antecedentsId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_ID));
-
-        // 입력 받은 요청을 토대로 객체 변환
-        antecedents.update(antecedentsUpdateRequest);
-        antecedentsRepository.save(antecedents);
-
-        // 완성도 로직
-        profile.updateMemberProfileTypeByCompletion();
-
-        // 객체 응답 반환 로직
-        return getAntecedentsResponse(antecedents);
+    // update 메서드
+    public void update(final Long antecedentsId, final AntecedentsCreateRequest antecedentsCreateRequest) {
+        final Antecedents antecedents = getAntecedents(antecedentsId);
+        // 해당 객체 업데이트
+        antecedents.update(antecedentsCreateRequest);
     }
 
+    // 삭제 메서드
     public void delete(final Long memberId, final Long antecedentsId) {
         final Profile profile = getProfile(memberId);
         final Antecedents antecedents = getAntecedents(antecedentsId);
-
-
         antecedentsRepository.deleteById(antecedents.getId());
         log.info("삭제 완료");
         if (!antecedentsRepository.existsByProfileId(profile.getId())) {

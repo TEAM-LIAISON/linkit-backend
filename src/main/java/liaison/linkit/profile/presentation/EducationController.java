@@ -44,6 +44,17 @@ public class EducationController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/education/{educationId}")
+    @MemberOnly
+    public ResponseEntity<Void> updateEducation(
+            @Auth final Accessor accessor,
+            @PathVariable final Long educationId,
+            @RequestBody @Valid EducationCreateRequest educationCreateRequest
+    ) {
+        log.info("memberId={}의 학력 수정 요청이 들어왔습니다.", accessor.getMemberId());
+        educationService.update(educationId, educationCreateRequest);
+        return ResponseEntity.ok().build();
+    }
 
     @DeleteMapping("/education/{educationId}")
     @MemberOnly

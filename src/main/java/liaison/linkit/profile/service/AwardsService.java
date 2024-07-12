@@ -67,6 +67,14 @@ public class AwardsService {
         }
     }
 
+    public void update(
+            final Long awardsId,
+            final AwardsCreateRequest awardsCreateRequest
+    ) {
+        final Awards awards = getAwards(awardsId);
+        awards.update(awardsCreateRequest);
+    }
+
     // 회원에 대해서 수상 항목 리스트를 저장하는 메서드
     public void saveAll(final Long memberId, final List<AwardsCreateRequest> awardsCreateRequests) {
         final Profile profile = getProfile(memberId);
@@ -134,6 +142,7 @@ public class AwardsService {
             profile.updateMemberProfileTypeByCompletion();
         }
     }
+
 
 
 }

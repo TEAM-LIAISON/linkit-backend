@@ -2,7 +2,7 @@ package liaison.linkit.profile.domain.awards;
 
 import jakarta.persistence.*;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.awards.AwardsUpdateRequest;
+import liaison.linkit.profile.dto.request.awards.AwardsCreateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -64,12 +64,12 @@ public class Awards {
         );
     }
 
-    public void update(final AwardsUpdateRequest awardsUpdateRequest) {
-        this.awardsName = awardsUpdateRequest.getAwardsName();
-        this.ranking = awardsUpdateRequest.getRanking();
-        this.organizer = awardsUpdateRequest.getOrganizer();
-        this.awardsYear = awardsUpdateRequest.getAwardsYear();
-        this.awardsMonth = awardsUpdateRequest.getAwardsMonth();
-        this.awardsDescription = awardsUpdateRequest.getAwardsDescription();
+    public void update(final AwardsCreateRequest awardsCreateRequest) {
+        this.awardsName = awardsCreateRequest.getAwardsName();
+        this.ranking = awardsCreateRequest.getRanking();
+        this.organizer = awardsCreateRequest.getOrganizer();
+        this.awardsYear = awardsCreateRequest.getAwardsYear();
+        this.awardsMonth = awardsCreateRequest.getAwardsMonth();
+        this.awardsDescription = awardsCreateRequest.getAwardsDescription();
     }
 }
