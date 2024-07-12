@@ -20,6 +20,8 @@ public class TeamMemberIntroductionController {
 
     private final TeamMemberIntroductionService teamMemberIntroductionService;
 
+//    @PostMapping("/team/member")
+
     @PostMapping("/team/members")
     @MemberOnly
     public ResponseEntity<Void> createTeamMemberIntroduction(

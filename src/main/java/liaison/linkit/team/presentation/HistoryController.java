@@ -20,6 +20,8 @@ public class HistoryController {
 
     private final HistoryService historyService;
 
+//    @PostMapping("/team/history")
+
     @PostMapping("/team/histories")
     @MemberOnly
     public ResponseEntity<Void> createHistory(

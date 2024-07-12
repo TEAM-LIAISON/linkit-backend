@@ -103,20 +103,117 @@ public class TeamMiniProfileService {
         teamProfile.updateIsTeamMiniProfile(true);
     }
 
-    // 기존에 미니 프로필이 존재했던 경우 (온보딩 항목만 수정하는 경우)
-    // 기존에 온보딩 기본 정보를 입력한 사람
+
+    // 기존에 온보딩 기본 정보 (팀 이름, 규모, 분야)를 입력해야 실행 가능함.
     public void updateTeamMiniProfile(
             final Long memberId,
             final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
             final MultipartFile teamMiniProfileImage
     ) {
         // 미니 프로필 내에 기본 정보를 입력한 사람과 입력하지 않은 사람으로 나뉜다.
-
         final TeamProfile teamProfile = getTeamProfile(memberId);
+
+        // 팀 미니 프로필이 존재하는지 판단
+        if (!getIsTeamMiniProfile(memberId)) {
+            throw new BadRequestException(NOT_FOUND_TEAM_MINI_PROFILE_BY_MEMBER_ID);
+        }
+
+        // 존재하는 경우 -> 2가지 존재
         final TeamMiniProfile teamMiniProfile = getTeamMiniProfile(teamProfile.getId());
 
+        // 1. 온보딩 기본 정보 입력한 사람 2. 다른 정보까지 입력했었던 사람
 
-        // 1차 분리 필요 -> 온보딩 기본 정보 입력한 사람과 이미지 업로드까지 완료한 사람
+        // 1. 해당
+        if (teamMiniProfile.getTeamName() != null && teamMiniProfile.getTeamProfileTitle() == null) {
+            // 업로드되었었던 이미지가 없었을 것
+            final List<TeamMiniProfileKeyword> teamMiniProfileKeywordList = teamMiniProfileCreateRequest.getTeamKeywordNames().stream()
+                    .map(keyWordName -> new TeamMiniProfileKeyword(null, teamMiniProfile, keyWordName))
+                    .toList();
+            if (teamMiniProfileImage != null) { // case 1.1.
+                final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
+
+                teamMiniProfile.onBoardingTeamMiniProfile(
+                        teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                        teamMiniProfileCreateRequest.getIsTeamActivate(),
+                        teamMiniProfileImageUrl
+                );
+
+                teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
+            } else {                            // case 1.2.
+                teamMiniProfile.onBoardingTeamMiniProfile(
+                        teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                        teamMiniProfileCreateRequest.getIsTeamActivate(),
+                        null
+                );
+                teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
+            }
+        } else {
+            // case 2.1. 다른 정보까지 입력했었는데, 이미지도 업로드했던 사람
+            if (teamMiniProfile.getTeamLogoImageUrl() != null) {
+                final List<TeamMiniProfileKeyword> teamMiniProfileKeywordList = teamMiniProfileCreateRequest.getTeamKeywordNames().stream()
+                        .map(keyWordName -> new TeamMiniProfileKeyword(null, teamMiniProfile, keyWordName))
+                        .toList();
+                // case 2.1.1.
+                if (teamMiniProfileImage != null) {
+                    // S3 이미지 삭제
+                    s3Uploader.deleteImage(teamMiniProfile.getTeamLogoImageUrl());
+
+                    // 새로운 이미지를 S3에 저장
+                    final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
+
+                    // 객체 업데이트
+                    teamMiniProfile.onBoardingTeamMiniProfile(
+                            teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                            teamMiniProfileCreateRequest.getIsTeamActivate(),
+                            teamMiniProfileImageUrl
+                    );
+
+                    // 새롭게 전달 받은 키워드 리스트 저장
+                    teamMiniProfileKeywordRepository.deleteAllByTeamMiniProfileId(teamMiniProfile.getId());
+                    teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
+                } else {    // case 2.1.2.
+                    // 기존 이미지 그대로 사용하는 것으로 간주
+                    teamMiniProfile.onBoardingTeamMiniProfile(
+                            teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                            teamMiniProfileCreateRequest.getIsTeamActivate(),
+                            teamMiniProfile.getTeamLogoImageUrl()
+                    );
+
+                    teamMiniProfileKeywordRepository.deleteAllByTeamMiniProfileId(teamMiniProfile.getId());
+                    teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
+                }
+            } else { // case 2.2 다른 정보까지 입력했었는데, 이미지는 업로드하지 않았던 사람
+                final List<TeamMiniProfileKeyword> teamMiniProfileKeywordList = teamMiniProfileCreateRequest.getTeamKeywordNames().stream()
+                        .map(keyWordName -> new TeamMiniProfileKeyword(null, teamMiniProfile, keyWordName))
+                        .toList();
+
+                // 이미지 요청이 이번에는 발생
+                // case 2.2.1.
+                if (teamMiniProfileImage != null) {
+                    // 새로운 이미지를 S3에 저장
+                    final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
+
+                    // 객체 업데이트
+                    teamMiniProfile.onBoardingTeamMiniProfile(
+                            teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                            teamMiniProfileCreateRequest.getIsTeamActivate(),
+                            teamMiniProfileImageUrl
+                    );
+
+                    teamMiniProfileKeywordRepository.deleteAllByTeamMiniProfileId(teamMiniProfile.getId());
+                    teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
+                } else { // case 2.2.2.
+                    // 객체 업데이트
+                    teamMiniProfile.onBoardingTeamMiniProfile(
+                            teamMiniProfileCreateRequest.getTeamProfileTitle(),
+                            teamMiniProfileCreateRequest.getIsTeamActivate(),
+                            null
+                    );
+                    teamMiniProfileKeywordRepository.deleteAllByTeamMiniProfileId(teamMiniProfile.getId());
+                    teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
+                }
+            }
+        }
 
         // 1. 팀 미니 프로필 이미지가 존재했던 경우
         if (teamMiniProfile.getTeamLogoImageUrl() != null) {
@@ -140,17 +237,18 @@ public class TeamMiniProfileService {
                         teamMiniProfileImageUrl
                 );
 
-
                 // 새롭게 전달 받은 키워드 리스트 저장
+                teamMiniProfileKeywordRepository.deleteAllByTeamMiniProfileId(teamMiniProfile.getId());
                 teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
             } else {
+
                 // 기존 이미지 그대로 사용하는 것으로 간주
                 teamMiniProfile.onBoardingTeamMiniProfile(
                         teamMiniProfileCreateRequest.getTeamProfileTitle(),
                         teamMiniProfileCreateRequest.getIsTeamActivate(),
                         teamMiniProfile.getTeamLogoImageUrl()
                 );
-                // 기존에 저장되어있던 keywordList 전체 삭제
+
                 teamMiniProfileKeywordRepository.deleteAllByTeamMiniProfileId(teamMiniProfile.getId());
                 teamMiniProfileKeywordRepository.saveAll(teamMiniProfileKeywordList);
             }
@@ -160,6 +258,7 @@ public class TeamMiniProfileService {
                     .map(keyWordName -> new TeamMiniProfileKeyword(null, teamMiniProfile, keyWordName))
                     .toList();
 
+            // 이미지가 새롭게 요청이 옴
             if (teamMiniProfileImage != null) {
                 // 새로운 이미지를 S3에 저장
                 final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);

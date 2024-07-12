@@ -36,10 +36,8 @@ public class BrowsePrivateProfileController {
 
     public final ProfileOnBoardingService profileOnBoardingService;
     public final ProfileService profileService;
-
     public final MiniProfileService miniProfileService;
     public final CompletionService completionService;
-
     public final TeamBuildingFieldService teamBuildingFieldService;
     public final AntecedentsService antecedentsService;
     public final EducationService educationService;
@@ -51,15 +49,14 @@ public class BrowsePrivateProfileController {
     // 타겟 이력서 열람 컨트롤러
     @GetMapping("/browse/private/profile/{miniProfileId}")
     @MemberOnly
-//    @CheckBrowseToPrivateProfileAccess
-    public ResponseEntity<?> getPrivateProfile(
+    public ResponseEntity<?> getBrowsePrivateProfile(
             @Auth final Accessor accessor,
-            @PathVariable final Long miniProfileId
+            @PathVariable(value = "miniProfileId") final Long miniProfileId
     ) {
         log.info("miniProfileId={}에 대한 내 이력서 열람 요청이 발생했습니다.", miniProfileId);
-
         try {
             // 1. 열람하고자 하는 내 이력서의 유효성을 판단한다.
+            log.info("유효성 검사 로직");
             browsePrivateProfileService.validatePrivateProfileByMiniProfile(miniProfileId);
 
             // 2. 열람하고자 하는 회원의 ID를 가져온다.

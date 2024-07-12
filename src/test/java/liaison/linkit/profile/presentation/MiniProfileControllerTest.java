@@ -108,7 +108,6 @@ class MiniProfileControllerTest extends ControllerTest {
         );
 
         // when
-
         final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST,"/private/mini-profile")
                 .file(miniProfileImage)
                 .file(createRequest)

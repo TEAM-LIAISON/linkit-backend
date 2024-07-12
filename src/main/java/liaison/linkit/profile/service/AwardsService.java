@@ -54,7 +54,20 @@ public class AwardsService {
 
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
-    // 회원에 대해서 수상 항목을 저장하는 메서드
+    public void save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
+        final Profile profile = getProfile(memberId);
+
+        // 실제 저장 메서드
+        saveAwards(profile, awardsCreateRequest);
+
+        // 기존에 수상 이력 존재 X
+        if (!profile.getIsAwards()) {
+            profile.updateIsAwards(true);
+            profile.updateMemberProfileTypeByCompletion();
+        }
+    }
+
+    // 회원에 대해서 수상 항목 리스트를 저장하는 메서드
     public void saveAll(final Long memberId, final List<AwardsCreateRequest> awardsCreateRequests) {
         final Profile profile = getProfile(memberId);
 
@@ -121,4 +134,6 @@ public class AwardsService {
             profile.updateMemberProfileTypeByCompletion();
         }
     }
+
+
 }
