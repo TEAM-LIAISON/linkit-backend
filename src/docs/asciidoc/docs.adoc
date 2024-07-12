@@ -145,7 +145,11 @@ include::{snippets}/education-controller-test/create-education/request-fields.ad
 include::{snippets}/education-controller-test/delete-education/http-request.adoc[]
 include::{snippets}/education-controller-test/delete-education/path-parameters.adoc[]
 
-=== 3.10. 내 이력서 - 수상 생성/수정
+=== 3.10. 내 이력서 - 단일 수상 생성
+include::{snippets}/awards-controller-test/create-award/http-request.adoc[]
+include::{snippets}/awards-controller-test/create-award/request-fields.adoc[]
+
+=== 3.10. 내 이력서 - 수상 리스트 생성/수정
 include::{snippets}/awards-controller-test/create-awards/http-request.adoc[]
 include::{snippets}/awards-controller-test/create-awards/request-fields.adoc[]
 
@@ -178,6 +182,10 @@ include::{snippets}/team-profile-team-building-field-controller-test/create-team
 include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/request-fields.adoc[]
 
 === 4.5. 팀 소개서 - 팀원 공고 생성/수정
+include::{snippets}/team-member-announcement-controller-test/create-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/create-team-member-announcement/request-fields.adoc[]
+
+=== 4.5. 팀 소개서 - 팀원 공고 리스트 생성/수정
 ==== 요청
 include::{snippets}/team-member-announcement-controller-test/create-team-member-announcement-list/http-request.adoc[]
 include::{snippets}/team-member-announcement-controller-test/create-team-member-announcement-list/request-fields.adoc[]
@@ -194,17 +202,25 @@ include::{snippets}/team-member-announcement-controller-test/delete-team-member-
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/http-request.adoc[]
 include::{snippets}/team-profile-controller-test/create-team-profile-introduction/request-fields.adoc[]
 
-=== 4.8. 팀 소개서 - 팀원 소개 생성/수정
+=== 4.8. 팀 소개서 - 단일 팀원 소개 생성/수정
 include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/http-request.adoc[]
 include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/request-fields.adoc[]
+
+=== 4.8. 팀 소개서 - 팀원 소개 리스트 생성/수정
+include::{snippets}/team-member-introduction-controller-test/create-team-member-introductions/http-request.adoc[]
+include::{snippets}/team-member-introduction-controller-test/create-team-member-introductions/request-fields.adoc[]
 
 === 4.8. 팀 소개서 - 팀원 소개 삭제
 include::{snippets}/team-member-introduction-controller-test/delete-team-member-introduction/http-request.adoc[]
 include::{snippets}/team-member-introduction-controller-test/delete-team-member-introduction/path-parameters.adoc[]
 
-=== 4.9. 팀 소개서 - 팀 연혁 생성/수정
+=== 4.9. 팀 소개서 - 팀 단일 연혁 생성/수정
 include::{snippets}/history-controller-test/create-history/http-request.adoc[]
 include::{snippets}/history-controller-test/create-history/request-fields.adoc[]
+
+=== 4.9. 팀 소개서 - 팀 연혁 리스트 생성/수정
+include::{snippets}/history-controller-test/create-histories/http-request.adoc[]
+include::{snippets}/history-controller-test/create-histories/request-fields.adoc[]
 === 4.9. 팀 소개서 - 팀 연혁 삭제
 
 === 4.10. 팀 소개서 - 팀 첨부 URL 생성/수정

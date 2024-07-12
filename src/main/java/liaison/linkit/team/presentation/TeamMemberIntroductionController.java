@@ -20,15 +20,23 @@ public class TeamMemberIntroductionController {
 
     private final TeamMemberIntroductionService teamMemberIntroductionService;
 
-//    @PostMapping("/team/member")
-
-    @PostMapping("/team/members")
+    @PostMapping("/team/member")
     @MemberOnly
     public ResponseEntity<Void> createTeamMemberIntroduction(
             @Auth final Accessor accessor,
+            @RequestBody @Valid TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
+    ) {
+        teamMemberIntroductionService.saveTeamMemberIntroduction(accessor.getMemberId(), teamMemberIntroductionCreateRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/team/members")
+    @MemberOnly
+    public ResponseEntity<Void> createTeamMemberIntroductions(
+            @Auth final Accessor accessor,
             @RequestBody @Valid List<TeamMemberIntroductionCreateRequest> teamMemberIntroductionCreateRequests
     ) {
-        teamMemberIntroductionService.saveTeamMember(accessor.getMemberId(), teamMemberIntroductionCreateRequests);
+        teamMemberIntroductionService.saveTeamMemberIntroductions(accessor.getMemberId(), teamMemberIntroductionCreateRequests);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

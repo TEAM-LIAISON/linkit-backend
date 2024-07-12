@@ -25,8 +25,7 @@ import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -87,6 +86,16 @@ class AwardsControllerTest extends ControllerTest {
         performPostAwardsRequest(awardsCreateRequestList);
     }
 
+    private ResultActions performPostAwardRequest(final AwardsCreateRequest awardsCreateRequest) throws Exception {
+        return mockMvc.perform(
+                post("/private/award")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(awardsCreateRequest))
+        );
+    }
+
     private ResultActions performPostAwardsRequest(final List<AwardsCreateRequest> createRequests) throws Exception {
         return mockMvc.perform(
                 post("/private/awards")
@@ -109,6 +118,65 @@ class AwardsControllerTest extends ControllerTest {
     }
 
     @DisplayName("단일 수상 항목을 생성할 수 있다.")
+    @Test
+    void createAward() throws Exception {
+        // given
+        final AwardsCreateRequest awardsCreateRequest = new AwardsCreateRequest(
+                "홍익대학교 창업경진대회",
+                "대상",
+                "홍익대학교 창업교육센터",
+                2023,
+                5,
+                "홍익대학교 창업경진대회에서 1등이라는 성과를 이뤄냈습니다."
+        );
+
+        // when
+        final ResultActions resultActions = performPostAwardRequest(awardsCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isCreated())
+                .andDo(restDocs.document(
+                        requestCookies(
+                                cookieWithName("refresh-token")
+                                        .description("갱신 토큰")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization")
+                                        .description("access token")
+                                        .attributes(field("constraint", "문자열(jwt)"))
+                        ),
+                        requestFields(
+                                fieldWithPath("awardsName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("수상 부문")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("ranking")
+                                        .type(JsonFieldType.STRING)
+                                        .description("수상명")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("organizer")
+                                        .type(JsonFieldType.STRING)
+                                        .description("주관 기관")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("awardsYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("수상 연도")
+                                        .attributes(field("constraint", "양의 정수이자 4자리 수")),
+                                fieldWithPath("awardsMonth")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("수상 월")
+                                        .attributes(field("constraint", "양의 정수이자 1부터 12까지의 숫자")),
+                                fieldWithPath("awardsDescription")
+                                        .type(JsonFieldType.STRING)
+                                        .description("수상 항목 설명")
+                                        .attributes(field("constraint", "문자열"))
+                        )
+                ));
+    }
+
+
+
+    @DisplayName("수상 항목 리스트를 생성할 수 있다.")
     @Test
     void createAwards() throws Exception {
         // given

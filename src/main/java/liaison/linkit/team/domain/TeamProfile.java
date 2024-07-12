@@ -255,7 +255,6 @@ public class TeamProfile {
     public void updateTeamIntroduction(final String teamIntroduction) {
         if (teamIntroduction != null && !teamIntroduction.isEmpty()) {  // 텍스트가 들어오는 경우
             log.info("teamIntroduction={}", teamIntroduction);
-
             // 기존에 저장되어있었던 경우
             if (this.teamIntroduction != null) {
                 log.info("기존에 팀 소개가 저장되어 있지 않았습니다.");
