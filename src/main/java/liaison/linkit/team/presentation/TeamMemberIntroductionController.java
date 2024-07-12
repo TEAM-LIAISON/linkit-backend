@@ -30,6 +30,18 @@ public class TeamMemberIntroductionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/team/member/{teamMemberIntroductionId}")
+    @MemberOnly
+    public ResponseEntity<Void> updateTeamMemberIntroduction(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMemberIntroductionId,
+            @RequestBody @Valid TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
+    ) {
+        teamMemberIntroductionService.validateTeamMemberIntroductionByMember(accessor.getMemberId());
+        teamMemberIntroductionService.updateTeamMemberIntroduction(teamMemberIntroductionId, teamMemberIntroductionCreateRequest);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/team/members")
     @MemberOnly
     public ResponseEntity<Void> createTeamMemberIntroductions(

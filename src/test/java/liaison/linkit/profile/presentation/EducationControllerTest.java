@@ -88,6 +88,16 @@ public class EducationControllerTest extends ControllerTest {
         performPostRequests(educationListCreateRequest);
     }
 
+    private ResultActions performUpdateRequest(final int educationId, final EducationCreateRequest educationCreateRequest) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/private/education/{educationId}", educationId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(educationCreateRequest))
+        );
+    }
+
     private ResultActions performPostRequest(final EducationCreateRequest educationCreateRequest) throws Exception {
         return mockMvc.perform(
                 post("/private/education")
@@ -119,6 +129,53 @@ public class EducationControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
         );
+    }
+
+    @DisplayName("학력 항목을 단일 수정할 수 있다.")
+    @Test
+    void updateEducation() throws Exception {
+        // given
+        final EducationCreateRequest educationCreateRequest = new EducationCreateRequest(
+                2022,
+                2025,
+                "홍익대학교",
+                "컴퓨터공학과",
+                "졸업"
+        );
+
+        // when
+        final ResultActions resultActions = performUpdateRequest(1, educationCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("educationId")
+                                        .description("학력 항목 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("admissionYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("입학 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("graduationYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("졸업 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("universityName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("학교명")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("majorName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("전공명")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("degreeName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("학위명")
+                                        .attributes(field("constraint", "문자열"))
+                        )
+                ));
     }
 
     // 1.5.6. 학력 생성 테스트

@@ -21,6 +21,7 @@ import java.util.List;
 public class AwardsController {
     private final AwardsService awardsService;
 
+    // 단일 수상 생성
     @PostMapping("/private/award")
     @MemberOnly
     public ResponseEntity<Void> createAward(
@@ -30,6 +31,19 @@ public class AwardsController {
         log.info("수상 항목 생성 요청 발생");
         awardsService.save(accessor.getMemberId(), awardsCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    // 단일 수상 수정
+    @PostMapping("/private/award/{awardsId}")
+    @MemberOnly
+    public ResponseEntity<Void> updateAward(
+            @Auth final Accessor accessor,
+            @PathVariable final Long awardsId,
+            @RequestBody @Valid AwardsCreateRequest awardsCreateRequest
+    ) {
+        log.info("memberId={}의 수상 수정 요청이 들어왔습니다.", accessor.getMemberId());
+        awardsService.update(awardsId, awardsCreateRequest);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/private/awards")

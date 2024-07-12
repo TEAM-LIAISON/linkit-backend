@@ -30,6 +30,17 @@ public class HistoryController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PostMapping("/team/history/{historyId}")
+    @MemberOnly
+    public ResponseEntity<Void> updateHistory(
+            @Auth final Accessor accessor,
+            @PathVariable final Long historyId,
+            @RequestBody @Valid HistoryCreateRequest historyCreateRequest
+    ) {
+        historyService.validateHistoryByMember(accessor.getMemberId());
+        historyService.updateHistory(historyId, historyCreateRequest);
+        return ResponseEntity.ok().build();
+    }
 
     @PostMapping("/team/histories")
     @MemberOnly

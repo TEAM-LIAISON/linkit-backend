@@ -126,4 +126,11 @@ public class TeamMemberIntroductionService {
     }
 
 
+    public void updateTeamMemberIntroduction(
+            final Long teamMemberIntroductionId,
+            final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
+    ) {
+        final TeamMemberIntroduction teamMemberIntroduction = getTeamMemberIntroduction(teamMemberIntroductionId);
+        teamMemberIntroduction.update(teamMemberIntroductionCreateRequest);
+    }
 }

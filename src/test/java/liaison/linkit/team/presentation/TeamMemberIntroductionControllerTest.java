@@ -80,6 +80,16 @@ class TeamMemberIntroductionControllerTest extends ControllerTest {
         performPostTeamMemberIntroductionRequest(teamMemberIntroductionCreateRequestList);
     }
 
+    private ResultActions performUpdateTeamMemberIntroduction(final int teamMemberIntroductionId, final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest) throws Exception{
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/team/member/{teamMemberIntroductionId}", teamMemberIntroductionId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(teamMemberIntroductionCreateRequest))
+        );
+    }
+
     private ResultActions performPostTeamMemberIntroduction(final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest) throws Exception {
         return mockMvc.perform(
                 post("/team/member")
@@ -109,6 +119,53 @@ class TeamMemberIntroductionControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
         );
+    }
+
+    @DisplayName("팀원 소개 단일 항목을 수정할 수 있다.")
+    @Test
+    void updateTeamMemberIntroduction() throws Exception {
+        // given
+        final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest = new TeamMemberIntroductionCreateRequest(
+                "김서연",
+                "디자이너",
+                "레드닷 상 받았어요"
+        );
+        // when
+        final ResultActions resultActions = performUpdateTeamMemberIntroduction(1, teamMemberIntroductionCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                pathParameters(
+                                        parameterWithName("teamMemberIntroductionId")
+                                                .description("팀원 소개 ID")
+                                ),
+                                requestFields(
+                                        fieldWithPath("teamMemberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀원 이름")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("teamMemberRole")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀원 직무/역할")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("teamMemberIntroductionText")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀원 소개")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                );
     }
 
     @DisplayName("팀원 소개를 생성할 수 있다.")

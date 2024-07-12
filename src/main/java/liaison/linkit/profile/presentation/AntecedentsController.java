@@ -21,7 +21,7 @@ public class AntecedentsController {
 
     public final AntecedentsService antecedentsService;
 
-    // 1.5.7. 경력 생성/수정
+    // 1.5.7. 경력 리스트 생성/수정
     // 온보딩 이력 생성 요청
     @PostMapping("/antecedents")
     @MemberOnly
@@ -34,6 +34,7 @@ public class AntecedentsController {
         return ResponseEntity.ok().build();
     }
 
+    // 1.5.7 단일 경력 생성
     @PostMapping("/antecedent")
     @MemberOnly
     public ResponseEntity<Void> createAntecedent(
@@ -41,6 +42,20 @@ public class AntecedentsController {
             @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest
     ) {
         antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+
+    // 1.5.7. 단일 경력 수정
+    @PostMapping("/antecedents/{antecedentsId}")
+    @MemberOnly
+    public ResponseEntity<Void> updateAntecedent(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest,
+            @PathVariable final Long antecedentsId
+    ) {
+        antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
+        antecedentsService.update(antecedentsId, antecedentsCreateRequest);
         return ResponseEntity.ok().build();
     }
 

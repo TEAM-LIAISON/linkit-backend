@@ -96,6 +96,17 @@ public class HistoryControllerTest extends ControllerTest {
         );
     }
 
+
+    private ResultActions performUpdateHistory(final int historyId, final HistoryCreateRequest historyCreateRequest) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/team/history/{historyId}", historyId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(historyCreateRequest))
+        );
+    }
+
     private ResultActions performPostHistories(final List<HistoryCreateRequest> historyCreateRequests) throws Exception {
         return mockMvc.perform(
                 post("/team/histories")
@@ -115,6 +126,65 @@ public class HistoryControllerTest extends ControllerTest {
                         .contentType(APPLICATION_JSON)
         );
     }
+
+    @DisplayName("단일 연혁을 수정할 수 있다.")
+    @Test
+    void updateHistory() throws Exception {
+        // given
+        final HistoryCreateRequest historyCreateRequest = new HistoryCreateRequest(
+                "Seed 투자 유치",
+                2023,
+                2024,
+                true,
+                "5,000만원 투자를 받았어요"
+        );
+
+        // when
+        final ResultActions resultActions = performUpdateHistory(1, historyCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                pathParameters(
+                                        parameterWithName("historyId")
+                                                .description("연혁 ID")
+                                ),
+                                requestFields(
+                                        fieldWithPath("historyOneLineIntroduction")
+                                                .type(JsonFieldType.STRING)
+                                                .description("연혁 한 줄 소개")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("startYear")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("시작 연도")
+                                                .attributes(field("constraint", "숫자")),
+                                        fieldWithPath("endYear")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("종료 연도")
+                                                .attributes(field("constraint", "숫자")),
+                                        fieldWithPath("inProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("현재 진행 여부")
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("historyIntroduction")
+                                                .type(JsonFieldType.STRING)
+                                                .description("연혁 소개 텍스트")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                );
+    }
+
 
     @DisplayName("단일 연혁을 생성할 수 있다.")
     @Test

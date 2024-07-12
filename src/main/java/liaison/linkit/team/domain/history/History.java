@@ -2,7 +2,7 @@ package liaison.linkit.team.domain.history;
 
 import jakarta.persistence.*;
 import liaison.linkit.team.domain.TeamProfile;
-import liaison.linkit.team.dto.request.HistoryUpdateRequest;
+import liaison.linkit.team.dto.request.HistoryCreateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,11 +60,11 @@ public class History {
         );
     }
 
-    public void update(final HistoryUpdateRequest historyUpdateRequest) {
-        this.historyOneLineIntroduction = historyUpdateRequest.getHistoryOneLineIntroduction();
-        this.startYear = historyUpdateRequest.getStartYear();
-        this.endYear = historyUpdateRequest.getEndYear();
-        this.historyIntroduction = historyUpdateRequest.getHistoryIntroduction();
-        this.inProgress = historyUpdateRequest.isInProgress();
+    public void update(final HistoryCreateRequest historyCreateRequest) {
+        this.historyOneLineIntroduction = historyCreateRequest.getHistoryOneLineIntroduction();
+        this.startYear = historyCreateRequest.getStartYear();
+        this.endYear = historyCreateRequest.getEndYear();
+        this.historyIntroduction = historyCreateRequest.getHistoryIntroduction();
+        this.inProgress = historyCreateRequest.isInProgress();
     }
 }
