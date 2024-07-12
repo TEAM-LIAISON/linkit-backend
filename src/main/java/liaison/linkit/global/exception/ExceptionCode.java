@@ -139,7 +139,8 @@ public enum ExceptionCode {
     NOT_FOUND_PROFILE_BY_ID(1008, "해당 팀원 공고 ID에 해당하는 팀원 공고 정보가 존재하지 않습니다."),
     NOT_FOUND_MATCHING_BY_PROFILE_ID(1010, "해당 내 이력서 ID에 해당하는 매칭 정보가 존재하지 않습니다."),
     NOT_FOUND_MINI_PROFILE_BY_ID(1008, "해당 팀원 공고 ID에 해당하는 팀원 공고 정보가 존재하지 않습니다."),
-    NOT_FOUND_TEAM_ATTACH_URL_ID(1008, "해당 팀 첨부 URL ID에 해당하는 팀 첨부 URL 정보가 존재하지 않습니다.");
+    NOT_FOUND_TEAM_ATTACH_URL_ID(1008, "해당 팀 첨부 URL ID에 해당하는 팀 첨부 URL 정보가 존재하지 않습니다."),
+    NOT_FOUND_TEAM_MINI_PROFILE_BY_MEMBER_ID(5000, "팀 소개서 온보딩에서 팀 이름, 규모, 분야를 먼저 선택해주세요");
 
     private final int code;
     private final String message;
