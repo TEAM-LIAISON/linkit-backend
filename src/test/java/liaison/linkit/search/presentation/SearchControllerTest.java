@@ -6,7 +6,9 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.search.dto.response.SearchTeamProfileResponse;
 import liaison.linkit.search.service.SearchService;
+import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,11 +22,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
-import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -32,8 +35,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,20 +62,54 @@ public class SearchControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
-    private ResultActions performGetTeamMiniProfileRequest() throws Exception {
-        return mockMvc.perform(get("/search/team/profile")
-                .queryParam("teamBuildingFieldName", (String) null)
-                .queryParam("jobRoleName", (String) null)
-                .queryParam("skillName", (String) null)
-                .queryParam("cityName", (String) null)
-                .queryParam("divisionName", (String) null)
-                .queryParam("activityTagName", (String) null)
-                .contentType(APPLICATION_JSON));
+    private ResultActions performGetTeamAnnouncementAndTeamMiniProfile() throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = get("/search/team/profile")
+                .contentType(APPLICATION_JSON);
+
+        // 쿼리 파라미터를 조건적으로 추가합니다.
+        // 각 파라미터 값이 null인 경우 해당 파라미터를 추가하지 않습니다.
+//        requestBuilder.queryParam("page", "0"); // 페이지네이션 설정 예시
+//        requestBuilder.queryParam("size", "10"); // 페이지네이션 설정 예시
+
+        // 필터링 파라미터가 null이 아니면 해당 파라미터를 추가합니다.
+        // 다음과 같은 방식으로 모든 필터링 파라미터를 처리합니다.
+        List<String> teamBuildingFieldNames = null; // 예를 들어, null로 설정
+        if (teamBuildingFieldNames != null) {
+            teamBuildingFieldNames.forEach(name -> requestBuilder.queryParam("teamBuildingFieldName", name));
+        }
+
+        String jobRoleName = null; // null로 예시 설정
+        if (jobRoleName != null) {
+            requestBuilder.queryParam("jobRoleName", jobRoleName);
+        }
+
+        String skillName = null; // null로 예시 설정
+        if (skillName != null) {
+            requestBuilder.queryParam("skillName", skillName);
+        }
+
+        String cityName = null; // null로 예시 설정
+        if (cityName != null) {
+            requestBuilder.queryParam("cityName", cityName);
+        }
+
+        String divisionName = null; // null로 예시 설정
+        if (divisionName != null) {
+            requestBuilder.queryParam("divisionName", divisionName);
+        }
+
+        List<String> activityTagNames = null; // null로 예시 설정
+        if (activityTagNames != null) {
+            activityTagNames.forEach(tag -> requestBuilder.queryParam("activityTagName", tag));
+        }
+
+        return mockMvc.perform(requestBuilder);
     }
+
 
     @Test
     @DisplayName("팀 찾기를 진행할 수 있다.")
-    void getTeamMiniProfile() throws Exception {
+    void getTeamAnnouncementAndTeamMiniProfile() throws Exception {
         // given
         final TeamMiniProfileResponse teamMiniProfileResponse = new TeamMiniProfileResponse(
                 1L,
@@ -86,8 +122,21 @@ public class SearchControllerTest extends ControllerTest {
                 Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
         );
 
-        Page<TeamMiniProfileResponse> page = new PageImpl<>(Collections.singletonList(teamMiniProfileResponse));
-        when(searchService.findTeamMiniProfile(
+        final TeamMemberAnnouncementResponse teamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
+                1L,
+                Arrays.asList("개발·데이터", "디자인"),
+                "주요 업무입니다.",
+                Arrays.asList("서버 개발", "DevOps", "게임 디자인"),
+                "지원 절차입니다."
+        );
+
+        final SearchTeamProfileResponse searchTeamProfileResponse = new SearchTeamProfileResponse(
+                teamMiniProfileResponse,
+                teamMemberAnnouncementResponse
+        );
+
+        Page<SearchTeamProfileResponse> page = new PageImpl<>(Collections.singletonList(searchTeamProfileResponse));
+        when(searchService.findTeamMemberAnnouncementsWithTeamMiniProfile(
                 any(),
                 eq(null),
                 eq(null),
@@ -98,33 +147,40 @@ public class SearchControllerTest extends ControllerTest {
         )).thenReturn(page);
 
         // when
-        final ResultActions resultActions = performGetTeamMiniProfileRequest();
+        final ResultActions resultActions = performGetTeamAnnouncementAndTeamMiniProfile();
 
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
                                 queryParameters(
-                                        parameterWithName("teamBuildingFieldName").description("희망 팀빌딩 분야 필터"),
-                                        parameterWithName("jobRoleName").description("희망 직무/역할 필터"),
-                                        parameterWithName("skillName").description("보유 역량 필터"),
-                                        parameterWithName("cityName").description("지역 (시/도) 필터"),
-                                        parameterWithName("divisionName").description("지역 (시/군/구) 필터").attributes(field("constraint", "전체인 경우 시/도 필터로 적용")),
-                                        parameterWithName("activityTagName").description("활동 방식 필터")
+//                                        parameterWithName("page").description("페이지 번호"),
+//                                        parameterWithName("size").description("페이지당 항목 수"),
+                                        parameterWithName("teamBuildingFieldName").description("희망 팀빌딩 분야 필터").optional(),
+                                        parameterWithName("jobRoleName").description("직무/역할 필터").optional(),
+                                        parameterWithName("skillName").description("보유 역량 필터").optional(),
+                                        parameterWithName("cityName").description("지역 (시/도) 필터").optional(),
+                                        parameterWithName("divisionName").description("지역 (시/군/구) 필터").optional(),
+                                        parameterWithName("activityTagName").description("활동 방식 필터").optional()
                                 ),
+
                                 responseFields(
-                                        fieldWithPath("content[].id").description("팀 미니 프로필 ID"),
-                                        fieldWithPath("content[].sectorName").description("부문 이름"),
-                                        fieldWithPath("content[].sizeType").description("팀 크기 유형"),
-                                        fieldWithPath("content[].teamName").description("팀 이름"),
-                                        fieldWithPath("content[].teamProfileTitle").description("팀 소개서 제목"),
-                                        fieldWithPath("content[].isTeamActivate").description("팀 소개서 활성화 여부"),
-                                        fieldWithPath("content[].teamLogoImageUrl").description("팀 로고 이미지 URL"),
-                                        fieldWithPath("content[].teamKeywordNames").description("팀 키워드"),
-                                        fieldWithPath("pageable").description("페이징 처리 객체"),
-                                        fieldWithPath("sort.empty").description("정렬 규칙이 비어 있는지 여부"),
-                                        fieldWithPath("sort.unsorted").description("정렬이 적용되지 않았는지 여부"),
-                                        fieldWithPath("sort.sorted").description("정렬이 적용되었는지 여부"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.id").description("팀 미니 프로필 ID"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.sectorName").description("부문 이름"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.sizeType").description("팀 크기 유형"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.teamName").description("팀 이름"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.teamProfileTitle").description("팀 소개서 제목"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.isTeamActivate").description("팀 소개서 활성화 여부"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.teamLogoImageUrl").description("팀 로고 이미지 URL"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.teamKeywordNames").description("팀 키워드").optional(),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.id").description("팀원 공고 ID"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.jobRoleNames").description("팀원 공고 직무 이름 목록"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.mainBusiness").description("주요 업무"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.skillNames").description("요구되는 기술 목록"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.applicationProcess").description("지원 절차"),
+                                        // 페이지와 관련된 필드 추가
+                                        subsectionWithPath("pageable").ignored(),
+                                        subsectionWithPath("sort").ignored(),
                                         fieldWithPath("last").description("마지막 페이지 여부"),
                                         fieldWithPath("totalPages").description("전체 페이지 수"),
                                         fieldWithPath("totalElements").description("전체 요소 수"),
@@ -138,16 +194,39 @@ public class SearchControllerTest extends ControllerTest {
                 );
     }
 
+
     // ----------------------------------- 팀원 찾기 테스트 코드 - 팀 찾기 테스트 구분 라인 ----------------------------------------
 
     private ResultActions performGetPrivateMiniProfileRequest() throws Exception {
-        return mockMvc.perform(get("/search/private/profile")
-                .queryParam("teamBuildingFieldName", (String) null)
-                .queryParam("jobRoleName", (String) null)
-                .queryParam("skillName",(String) null)
-                .queryParam("cityName", (String) null)
-                .queryParam("divisionName", (String) null)
-                .contentType(APPLICATION_JSON));
+         MockHttpServletRequestBuilder requestBuilder = get("/search/private/profile")
+                        .contentType(APPLICATION_JSON);
+
+        List<String> teamBuildingFieldNames = null; // 예를 들어, null로 설정
+        if (teamBuildingFieldNames != null) {
+            teamBuildingFieldNames.forEach(name -> requestBuilder.queryParam("teamBuildingFieldName", name));
+        }
+
+        String jobRoleName = null; // null로 예시 설정
+        if (jobRoleName != null) {
+            requestBuilder.queryParam("jobRoleName", jobRoleName);
+        }
+
+        String skillName = null; // null로 예시 설정
+        if (skillName != null) {
+            requestBuilder.queryParam("skillName", skillName);
+        }
+
+        String cityName = null; // null로 예시 설정
+        if (cityName != null) {
+            requestBuilder.queryParam("cityName", cityName);
+        }
+
+        String divisionName = null; // null로 예시 설정
+        if (divisionName != null) {
+            requestBuilder.queryParam("divisionName", divisionName);
+        }
+
+        return mockMvc.perform(requestBuilder);
     }
 
     @Test
@@ -183,11 +262,13 @@ public class SearchControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 queryParameters(
-                                        parameterWithName("teamBuildingFieldName").description("희망 팀빌딩 분야 필터"),
-                                        parameterWithName("jobRoleName").description("희망 직무/역할 필터"),
-                                        parameterWithName("skillName").description("보유 역량 필터"),
-                                        parameterWithName("cityName").description("지역 (시/도) 필터"),
-                                        parameterWithName("divisionName").description("지역 (시/군/구) 필터").attributes(field("constraint", "전체인 경우 시/도 필터로 적용"))
+//                                        parameterWithName("page").description("페이지 번호"),
+//                                        parameterWithName("size").description("페이지당 항목 수"),
+                                        parameterWithName("teamBuildingFieldName").description("희망 팀빌딩 분야 필터").optional(),
+                                        parameterWithName("jobRoleName").description("직무/역할 필터").optional(),
+                                        parameterWithName("skillName").description("보유 역량 필터").optional(),
+                                        parameterWithName("cityName").description("지역 (시/도) 필터").optional(),
+                                        parameterWithName("divisionName").description("지역 (시/군/구) 필터").optional()
                                 ),
                                 responseFields(
                                         fieldWithPath("content[].id").description("개인 미니 프로필 ID"),
@@ -213,6 +294,7 @@ public class SearchControllerTest extends ControllerTest {
                                 )
                         )
                 );
+
     }
 
 }

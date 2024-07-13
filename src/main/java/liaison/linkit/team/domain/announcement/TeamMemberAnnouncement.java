@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -36,6 +38,14 @@ public class TeamMemberAnnouncement {
     @Column(name = "application_process")
     private String applicationProcess;
 
+    @Column(updatable = false)
+    private LocalDateTime createdDate;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDateTime.now();
+    }
+
     public static TeamMemberAnnouncement of(
             final TeamProfile teamProfile,
             final String mainBusiness,
@@ -45,7 +55,8 @@ public class TeamMemberAnnouncement {
                 null,
                 teamProfile,
                 mainBusiness,
-                applicationProcess
+                applicationProcess,
+                null
         );
     }
 
