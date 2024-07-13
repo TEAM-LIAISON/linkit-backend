@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HistoryResponse {
 
+    private final Long id;
     private final String historyOneLineIntroduction;
     private final int startYear;
     private final int endYear;
@@ -16,6 +17,7 @@ public class HistoryResponse {
 
     public static HistoryResponse of(final History history) {
         return new HistoryResponse(
+                history.getId(),
                 history.getHistoryOneLineIntroduction(),
                 history.getStartYear(),
                 history.getEndYear(),

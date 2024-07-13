@@ -92,7 +92,7 @@ public enum ExceptionCode {
     // 수정 완료 코드
 
     // 1. antecedents 2. attach (URL/FILE) 3. awards
-
+    INVALID_TEAM_MINI_PROFILE(6004, "해당 팀 미니 프로필이 정보가 존재하지 않습니다."),
     NOT_FOUND_MEMBER_BY_MEMBER_ID(1004, "사용자의 ID에 해당하는 회원 정보가 존재하지 않습니다."),
     NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID(1004, "사용자의 ID에 해당하는 회원 기본 정보가 존재하지 않습니다."),
 
@@ -139,6 +139,7 @@ public enum ExceptionCode {
     NOT_FOUND_TEAM_MEMBER_INTRODUCTION_ID(1008, "해당 팀원 소개 ID에 해당하는 팀원 소개 정보가 존재하지 않습니다."),
     NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID(1008, "해당 팀원 공고 ID에 해당하는 팀원 공고 정보가 존재하지 않습니다."),
     NOT_FOUND_PROFILE_BY_ID(1008, "해당 팀원 공고 ID에 해당하는 팀원 공고 정보가 존재하지 않습니다."),
+    NOT_FOUND_TEAM_PROFILE_BY_ID(1008, "해당 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),
     NOT_FOUND_MATCHING_BY_PROFILE_ID(1010, "해당 내 이력서 ID에 해당하는 매칭 정보가 존재하지 않습니다."),
     NOT_FOUND_MINI_PROFILE_BY_ID(1008, "해당 팀원 공고 ID에 해당하는 팀원 공고 정보가 존재하지 않습니다."),
     NOT_FOUND_TEAM_ATTACH_URL_ID(1008, "해당 팀 첨부 URL ID에 해당하는 팀 첨부 URL 정보가 존재하지 않습니다."),

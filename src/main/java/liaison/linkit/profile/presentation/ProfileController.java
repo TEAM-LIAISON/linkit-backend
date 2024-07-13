@@ -108,7 +108,8 @@ public class ProfileController {
             return miniProfileService.getPersonalMiniProfile(memberId);
         } else {
             final String memberName = miniProfileService.getMemberName(memberId);
-            return new MiniProfileResponse(memberName);
+            final List<String> jobRoleNames = miniProfileService.getJobRoleNames(memberId);
+            return new MiniProfileResponse(memberName, jobRoleNames);
         }
     }
 
