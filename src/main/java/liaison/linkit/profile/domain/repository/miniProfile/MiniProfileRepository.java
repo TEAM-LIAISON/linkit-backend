@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> {
@@ -38,18 +39,18 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
            LEFT JOIN ProfileRegion pr ON p.id = pr.profile.id
            LEFT JOIN Region r ON pr.profile.id = r.id
            
-           WHERE (:teamBuildingFieldName IS NULL OR tbf.teamBuildingFieldName = :teamBuildingFieldName)
-           AND (:jobRoleName IS NULL OR jr.jobRoleName = :jobRoleName)
-           AND (:skillName IS NULL OR s.skillName = :skillName)
+           WHERE (:teamBuildingFieldNames IS NULL OR tbf.teamBuildingFieldName IN :teamBuildingFieldNames)
+           AND (:jobRoleNames IS NULL OR jr.jobRoleName = :jobRoleNames)
+           AND (:skillNames IS NULL OR s.skillName = :skillNames)
            AND (:cityName IS NULL OR r.cityName = :cityName)
            AND (:divisionName IS NULL OR r.divisionName = :divisionName)
            
            ORDER BY mp.createdDate DESC
            """)
     Page<MiniProfile> findAllByOrderByCreatedDateDesc(
-            @Param("teamBuildingFieldName") final String teamBuildingFieldName,
-            @Param("jobRoleName") final String jobRoleName,
-            @Param("skillName") final String skillName,
+            @Param("teamBuildingFieldNames") final List<String> teamBuildingFieldNames,
+            @Param("jobRoleNames") final List<String> jobRoleNames,
+            @Param("skillNames") final List<String> skillNames,
             @Param("cityName") final String cityName,
             @Param("divisionName") final String divisionName,
             final Pageable pageable

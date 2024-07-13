@@ -12,14 +12,13 @@ import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
-public class TeamMemberAnnouncementResponse {
+public class  TeamMemberAnnouncementResponse {
 
     private final Long id;
     private final List<String> jobRoleNames;
     private final String mainBusiness;
     private final List<String> skillNames;
     private final String applicationProcess;
-
 
     public static TeamMemberAnnouncementResponse of(
             final TeamMemberAnnouncement teamMemberAnnouncement,

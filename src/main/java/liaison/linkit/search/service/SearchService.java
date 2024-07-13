@@ -13,10 +13,18 @@ import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepositor
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.search.dto.response.SearchTeamProfileResponse;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementSkill;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
+import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementJobRoleRepository;
+import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
+import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementSkillRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileKeywordRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
+import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +51,9 @@ public class SearchService {
     private final ProfileJobRoleRepository profileJobRoleRepository;
     private final TeamMiniProfileRepository teamMiniProfileRepository;
     private final TeamMiniProfileKeywordRepository teamMiniProfileKeywordRepository;
-
+    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
+    private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
+    private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
 
     // 회원 정보를 가져오는 메서드
     private Member getMember(final Long memberId) {
@@ -55,9 +65,9 @@ public class SearchService {
     @Transactional(readOnly = true)
     public Page<MiniProfileResponse> findPrivateMiniProfile(
             final Pageable pageable,
-            final String teamBuildingFieldName,
-            final String jobRoleName,
-            final String skillName,
+            final List<String> teamBuildingFieldName,
+            final List<String> jobRoleName,
+            final List<String> skillName,
             final String cityName,
             String divisionName
     ) {
@@ -77,6 +87,57 @@ public class SearchService {
 
         log.info("miniProfiles={}", miniProfiles);
         return miniProfiles.map(this::convertToMiniProfileResponse);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<SearchTeamProfileResponse> findTeamMemberAnnouncementsWithTeamMiniProfile(
+            final Pageable pageable,
+            // 팀 소개서에 해당
+            final List<String> teamBuildingFieldName,
+            // 팀원 공고에 해당
+            final List<String> jobRoleName,
+            // 팀원 공고에 해당
+            final List<String> skillName,
+            // 팀 소개서에 해당
+            final String cityName,
+            // 팀 소개서에 해당
+            String divisionName,
+            // 팀 소개서에 해당
+            final List<String> activityTagName
+    ) {
+        // 해당 팀원 공고들을 찾는다.
+        // 해당 팀원 공고와 연결된 팀 미니 프로필을 같이 반환한다.
+
+        // 해당되는 모든 팀원 공고를 조회한다.
+        Page<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementRepository.findAllByOrderByCreatedDateDesc(
+                teamBuildingFieldName,
+                jobRoleName,
+                skillName,
+                cityName,
+                divisionName,
+                activityTagName,
+                pageable
+        );
+        return teamMemberAnnouncements.map(this::convertToSearchTeamProfileResponse);
+    }
+
+    private SearchTeamProfileResponse convertToSearchTeamProfileResponse(final TeamMemberAnnouncement teamMemberAnnouncement) {
+        // 각각의 개별 팀원 공고를 찾아냈다.
+        final TeamMiniProfile teamMiniProfile = getTeamMiniProfileByTeamProfileId(teamMemberAnnouncement.getTeamProfile().getId());
+        final List<TeamMiniProfileKeyword> teamMiniProfileKeyword = teamMiniProfileKeywordRepository.findAllByTeamMiniProfileId(teamMiniProfile.getId());
+
+        final List<TeamMemberAnnouncementJobRole> teamMemberAnnouncementJobRoleList = getTeamMemberAnnouncementJobRoles(teamMemberAnnouncement.getId());
+        final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
+
+        return new SearchTeamProfileResponse(
+                TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
+                TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamMemberAnnouncementJobRoleList, teamMemberAnnouncementSkillList)
+        );
+    }
+
+    private TeamMiniProfile getTeamMiniProfileByTeamProfileId(final Long teamProfileId) {
+        return teamMiniProfileRepository.findByTeamProfileId(teamProfileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MINI_PROFILE_BY_TEAM_PROFILE_ID));
     }
 
     @Transactional(readOnly = true)
@@ -170,4 +231,14 @@ public class SearchService {
         return memberBasicInformRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID));
     }
+
+
+    private List<TeamMemberAnnouncementJobRole> getTeamMemberAnnouncementJobRoles(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementJobRoleRepository.findAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+    }
+
+    private List<TeamMemberAnnouncementSkill> getTeamMemberAnnouncementSkills(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementSkillRepository.findAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+    }
+
 }
