@@ -236,7 +236,8 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
                 "https://image.linkit.im/images/linkit_logo.png",
                 true,
                 Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
-                "권동민"
+                "권동민",
+                Arrays.asList("개발·데이터")
         );
 
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
@@ -311,7 +312,8 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
                                         fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
                                         fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
                                         fieldWithPath("miniProfileResponse.isActivate").type(JsonFieldType.BOOLEAN).description("미니 프로필 활성화 여부"),
-                                        fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING).description("회원 이름")
+                                        fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING).description("회원 이름"),
+                                        fieldWithPath("miniProfileResponse.jobRoleNames").type(JsonFieldType.ARRAY).description("직무 및 역할")
                                 )
                         )
                 );

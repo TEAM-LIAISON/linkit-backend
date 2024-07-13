@@ -18,20 +18,23 @@ public class MiniProfileResponse {
     private final Boolean isActivate;
     private final List<String> myKeywordNames;
     private final String memberName;
+    private final List<String> jobRoleNames;
 
-    public MiniProfileResponse(final String memberName) {
+    public MiniProfileResponse(final String memberName, final List<String> jobRoleNames) {
         this.id = null;
         this.profileTitle = null;
         this.miniProfileImg = null;
         this.isActivate = null;
         this.myKeywordNames = null;
         this.memberName = memberName;
+        this.jobRoleNames = jobRoleNames;
     }
 
     public static MiniProfileResponse personalMiniProfile(
             final MiniProfile miniProfile,
             final List<MiniProfileKeyword> miniProfileKeywords,
-            final String memberName
+            final String memberName,
+            final List<String> jobRoleNames
     ) {
         List<String> myKeywordNames = miniProfileKeywords.stream()
                 .map(MiniProfileKeyword::getMyKeywordNames) // 올바른 메서드 참조 사용
@@ -43,7 +46,8 @@ public class MiniProfileResponse {
                 miniProfile.getMiniProfileImg(),
                 miniProfile.isActivate(),
                 myKeywordNames,
-                memberName
+                memberName,
+                jobRoleNames
         );
     }
 

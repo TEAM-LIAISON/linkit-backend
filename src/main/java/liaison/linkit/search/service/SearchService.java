@@ -7,8 +7,11 @@ import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
+import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
+import liaison.linkit.profile.domain.role.JobRole;
+import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
@@ -37,8 +40,10 @@ public class SearchService {
     private final MiniProfileRepository miniProfileRepository;
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final MiniProfileKeywordRepository miniProfileKeywordRepository;
+    private final ProfileJobRoleRepository profileJobRoleRepository;
     private final TeamMiniProfileRepository teamMiniProfileRepository;
     private final TeamMiniProfileKeywordRepository teamMiniProfileKeywordRepository;
+
 
     // 회원 정보를 가져오는 메서드
     private Member getMember(final Long memberId) {
@@ -120,14 +125,28 @@ public class SearchService {
                 .map(MiniProfileKeyword::getMyKeywordNames)
                 .collect(Collectors.toList());
 
+        final List<ProfileJobRole> profileJobRoleList = getProfileJobRoleList(miniProfile.getProfile().getId());
+        final List<JobRole> jobRoleList = profileJobRoleList.stream()
+                .map(ProfileJobRole::getJobRole)
+                .toList();
+
+        final List<String> jobRoleNames = jobRoleList.stream()
+                .map(JobRole::getJobRoleName)
+                .toList();
+
         return new MiniProfileResponse(
                 miniProfile.getId(),
                 miniProfile.getProfileTitle(),
                 miniProfile.getMiniProfileImg(),
                 miniProfile.isActivate(),
                 myKeywordNames,
-                memberName
+                memberName,
+                jobRoleNames
         );
+    }
+
+    private List<ProfileJobRole> getProfileJobRoleList(final Long profileId) {
+        return profileJobRoleRepository.findAllByProfileId(profileId);
     }
 
     @Transactional(readOnly = true)

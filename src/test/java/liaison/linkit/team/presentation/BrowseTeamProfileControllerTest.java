@@ -1,11 +1,10 @@
 package liaison.linkit.team.presentation;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.team.dto.request.TeamIntroductionCreateRequest;
 import liaison.linkit.team.dto.response.*;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
@@ -23,6 +22,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -33,24 +33,17 @@ import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
-import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
-@WebMvcTest(TeamProfileController.class)
+@WebMvcTest(BrowseTeamProfileController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
-@Slf4j
-public class TeamProfileControllerTest extends ControllerTest {
-
+public class BrowseTeamProfileControllerTest extends ControllerTest {
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
 
@@ -58,69 +51,54 @@ public class TeamProfileControllerTest extends ControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private TeamProfileService teamProfileService;
+    public BrowseTeamProfileService browseTeamProfileService;
     @MockBean
-    private TeamMiniProfileService teamMiniProfileService;
+    public TeamProfileService teamProfileService;
     @MockBean
-    private TeamCompletionService teamCompletionService;
+    public TeamMiniProfileService teamMiniProfileService;
     @MockBean
-    private TeamProfileTeamBuildingFieldService teamProfileTeamBuildingFieldService;
+    public TeamCompletionService teamCompletionService;
     @MockBean
-    private TeamMemberAnnouncementService teamMemberAnnouncementService;
+    public TeamProfileTeamBuildingFieldService teamProfileTeamBuildingFieldService;
     @MockBean
-    private ActivityService activityService;
+    public TeamMemberAnnouncementService teamMemberAnnouncementService;
     @MockBean
-    private TeamMemberIntroductionService teamMemberIntroductionService;
+    public ActivityService activityService;
     @MockBean
-    private HistoryService historyService;
+    public TeamMemberIntroductionService teamMemberIntroductionService;
     @MockBean
-    private TeamAttachService teamAttachService;
-
+    public HistoryService historyService;
+    @MockBean
+    public TeamAttachService teamAttachService;
 
     @BeforeEach
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        doNothing().when(teamProfileService).validateTeamProfileByMember(1L);
-        doNothing().when(teamMiniProfileService).validateTeamMiniProfileByMember(1L);
     }
 
-    private ResultActions performGetTeamProfileRequest() throws Exception {
+    private ResultActions performGetBrowseTeamProfile(
+            final int teamMiniProfileId
+    ) throws Exception {
         return mockMvc.perform(
-                get("/team/profile")
+                RestDocumentationRequestBuilders.get("/browse/team/profile/{teamMiniProfileId}", teamMiniProfileId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
-                        .contentType(APPLICATION_JSON)
         );
     }
 
-    private ResultActions performPostTeamIntroductionRequest(final TeamIntroductionCreateRequest teamIntroductionCreateRequest) throws Exception {
-        return mockMvc.perform(
-                post("/team/introduction")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(teamIntroductionCreateRequest))
-        );
-    }
-
-    @DisplayName("팀 소개서 전체 조회를 할 수 있다.")
+    @DisplayName("타인의 팀 소개서를 열람할 수 있다.")
     @Test
-    void getTeamProfile() throws Exception {
+    void getBrowseTeamProfile() throws Exception {
         // given
+        final int teamMiniProfileId = 1;
+        given(browseTeamProfileService.getTargetTeamProfileByTeamMiniProfileId(1L)).willReturn(1L);
 
         final TeamProfileIsValueResponse teamProfileIsValueResponse = new TeamProfileIsValueResponse(
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true
+                true, true, true, true, true, true, true, true
         );
-        given(teamProfileService.getTeamProfileIsValue(1L)).willReturn(teamProfileIsValueResponse);
+        given(browseTeamProfileService.getTeamProfileIsValue(1L)).willReturn(teamProfileIsValueResponse);
 
         // 4.1. 미니 프로필
         final TeamMiniProfileResponse teamMiniProfileResponse = new TeamMiniProfileResponse(
@@ -139,14 +117,7 @@ public class TeamProfileControllerTest extends ControllerTest {
 
         // 4.3. 프로필 완성도
         final TeamCompletionResponse teamCompletionResponse = new TeamCompletionResponse(
-                "100.0",
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true
+                "100.0", true, true, true, true, true, true, true
         );
         given(teamCompletionService.getTeamCompletion(1L)).willReturn(teamCompletionResponse);
 
@@ -174,6 +145,7 @@ public class TeamProfileControllerTest extends ControllerTest {
                 "지원 절차입니다. (두번째 팀원 공고)"
         );
 
+
         final List<TeamMemberAnnouncementResponse> teamMemberAnnouncementResponseList = Arrays.asList(firstTeamMemberAnnouncementResponse, secondTeamMemberAnnouncementResponse);
 
         given(teamMemberAnnouncementService.getTeamMemberAnnouncements(1L)).willReturn(teamMemberAnnouncementResponseList);
@@ -189,7 +161,7 @@ public class TeamProfileControllerTest extends ControllerTest {
 
         // 4.7. 팀 소개
         final TeamProfileIntroductionResponse teamProfileIntroductionResponse = new TeamProfileIntroductionResponse(
-               "팀 소개입니다."
+                "팀 소개입니다."
         );
         given(teamProfileService.getTeamIntroduction(1L)).willReturn(teamProfileIntroductionResponse);
 
@@ -245,21 +217,15 @@ public class TeamProfileControllerTest extends ControllerTest {
                 "https://www.notion.so/ko-kr"
         );
 
-//        final TeamAttachFileResponse firstAttachFileResponse = new TeamAttachFileResponse(
-//                1L,
-//                "A4+-=1.pdf",
-//                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
-//        );
-
         final List<TeamAttachUrlResponse> teamAttachUrlResponseList = Arrays.asList(firstTeamAttachUrlResponse, secondTeamAttachUrlResponse);
-//        final List<TeamAttachFileResponse> teamAttachFileResponseList = Arrays.asList(firstAttachFileResponse);
         final TeamAttachResponse teamAttachResponse = new TeamAttachResponse(
                 teamAttachUrlResponseList
-//                teamAttachFileResponseList
         );
         given(teamAttachService.getTeamAttachList(1L)).willReturn(teamAttachResponse);
 
-        final TeamProfileResponse teamProfileResponse = new TeamProfileResponse(
+        when(browseTeamProfileService.getTeamProfileResponse(
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
+        )).thenReturn(TeamProfileResponse.teamProfileItems(
                 teamMiniProfileResponse,
                 teamCompletionResponse,
                 teamProfileTeamBuildingFieldResponse,
@@ -269,35 +235,18 @@ public class TeamProfileControllerTest extends ControllerTest {
                 teamMemberIntroductionResponseList,
                 historyResponseList,
                 teamAttachResponse
-        );
-
-        given(teamProfileService.getTeamProfileResponse(
-                teamMiniProfileResponse,
-                teamCompletionResponse,
-                teamProfileTeamBuildingFieldResponse,
-                teamMemberAnnouncementResponseList,
-                activityResponse,
-                teamProfileIntroductionResponse,
-                teamMemberIntroductionResponseList,
-                historyResponseList,
-                teamAttachResponse
-        )).willReturn(teamProfileResponse);
+        ));
 
         // when
-        final ResultActions resultActions = performGetTeamProfileRequest();
+        final ResultActions resultActions = performGetBrowseTeamProfile(teamMiniProfileId);
 
         // then
         resultActions.andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
+                                pathParameters(
+                                        parameterWithName("teamMiniProfileId")
+                                                .description("팀 미니 프로필 ID")
                                 ),
                                 responseFields(
                                         // 4.1.
@@ -365,32 +314,6 @@ public class TeamProfileControllerTest extends ControllerTest {
                                         fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL 객체 ID"),
                                         fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].teamAttachUrlName").type(JsonFieldType.STRING).description("팀 첨부 URL 이름"),
                                         fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].teamAttachUrlPath").type(JsonFieldType.STRING).description("팀 첨부 URL 경로")
-                                )
-                        )
-                );
-
-    }
-
-    @DisplayName("팀 소개서 팀 소개 항목을 생성할 수 있다.")
-    @Test
-    void createTeamProfileIntroduction() throws Exception {
-        // given
-        final TeamIntroductionCreateRequest teamIntroductionCreateRequest = new TeamIntroductionCreateRequest(
-                "팀 소개 항목을 입력합니다."
-        );
-
-        // when
-        final ResultActions resultActions = performPostTeamIntroductionRequest(teamIntroductionCreateRequest);
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andDo(
-                        restDocs.document(
-                                requestFields(
-                                        fieldWithPath("teamIntroduction")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 소개")
-                                                .attributes(field("constraint", "문자열, 공란이면 삭제"))
                                 )
                         )
                 );

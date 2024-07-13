@@ -61,6 +61,7 @@ public class TeamMemberAnnouncementService {
     public List<TeamMemberAnnouncementResponse> getTeamMemberAnnouncements(final Long memberId) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementRepository.findAllByTeamProfileId(teamProfile.getId());
+
         return teamMemberAnnouncements.stream()
                 .map(this::getTeamMemberAnnouncementResponse)
                 .toList();
@@ -69,7 +70,9 @@ public class TeamMemberAnnouncementService {
     private TeamMemberAnnouncementResponse getTeamMemberAnnouncementResponse(
             final TeamMemberAnnouncement teamMemberAnnouncement
     ) {
-        return TeamMemberAnnouncementResponse.of(teamMemberAnnouncement);
+        final List<TeamMemberAnnouncementJobRole> teamMemberAnnouncementJobRoleList = getTeamMemberAnnouncementJobRoles(teamMemberAnnouncement.getId());
+        final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
+        return TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamMemberAnnouncementJobRoleList, teamMemberAnnouncementSkillList);
     }
 
     public void saveAnnouncement(
@@ -199,13 +202,11 @@ public class TeamMemberAnnouncementService {
         teamMemberAnnouncement.update(teamMemberAnnouncementRequest);
     }
 
-    private TeamMemberAnnouncementJobRole getTeamMemberAnnouncementJobRole(final Long teamMemberAnnouncementId) {
-        return teamMemberAnnouncementJobRoleRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE));
+    private List<TeamMemberAnnouncementJobRole> getTeamMemberAnnouncementJobRoles(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementJobRoleRepository.findAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
     }
 
-    private TeamMemberAnnouncementSkill getTeamMemberAnnouncementSkill(final Long teamMemberAnnouncementId) {
-        return teamMemberAnnouncementSkillRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_SKILL));
+    private List<TeamMemberAnnouncementSkill> getTeamMemberAnnouncementSkills(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementSkillRepository.findAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
     }
 }

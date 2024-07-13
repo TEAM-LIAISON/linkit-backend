@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Arrays;
@@ -160,7 +161,8 @@ public class SearchControllerTest extends ControllerTest {
                 "https://image.linkit.im/images/linkit_logo.png",
                 true,
                 Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
-                "권동민"
+                "권동민",
+                Arrays.asList("개발·데이터")
         );
 
         Page<MiniProfileResponse> page = new PageImpl<>(Collections.singletonList(miniProfileResponse));
@@ -194,6 +196,8 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].isActivate").description("프로필 활성화 여부"),
                                         fieldWithPath("content[].myKeywordNames").description("키워드 목록"),
                                         fieldWithPath("content[].memberName").description("회원 이름"),
+                                        fieldWithPath("content[].jobRoleNames").type(JsonFieldType.ARRAY).description("직무 및 역할 이름 배열"),
+
                                         fieldWithPath("pageable").description("페이징 처리 객체"),
                                         fieldWithPath("sort.empty").description("정렬 규칙이 비어 있는지 여부"),
                                         fieldWithPath("sort.unsorted").description("정렬이 적용되지 않았는지 여부"),

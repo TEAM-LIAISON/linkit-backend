@@ -268,6 +268,26 @@ include::{snippets}/search-controller-test/get-team-mini-profile/query-parameter
 include::{snippets}/search-controller-test/get-team-mini-profile/http-response.adoc[]
 include::{snippets}/search-controller-test/get-team-mini-profile/response-fields.adoc[]
 
+== 8. 이력서 열람
+=== 8.1. 내 이력서 열람
+==== 요청
+include::{snippets}/browse-private-profile-controller-test/get-browse-private-profile/http-request.adoc[]
+include::{snippets}/browse-private-profile-controller-test/get-browse-private-profile/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/browse-private-profile-controller-test/get-browse-private-profile/http-response.adoc[]
+include::{snippets}/browse-private-profile-controller-test/get-browse-private-profile/response-fields.adoc[]
+
+== 9. 소개서 열람
+=== 9.1. 팀 소개서 열람
+==== 요청
+include::{snippets}/browse-team-profile-controller-test/get-browse-team-profile/http-request.adoc[]
+include::{snippets}/browse-team-profile-controller-test/get-browse-team-profile/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/browse-team-profile-controller-test/get-browse-team-profile/http-response.adoc[]
+include::{snippets}/browse-team-profile-controller-test/get-browse-team-profile/response-fields.adoc[]
+
 == 10. 매칭 관리
 === 10.1. 내 이력서로 내 이력서에 매칭 요청
 include::{snippets}/matching-controller-test/create-private-profile-matching-to-private/http-request.adoc[]
