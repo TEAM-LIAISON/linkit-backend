@@ -749,7 +749,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 20 Jul 2024 10:26:23 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 20 Jul 2024 16:01:45 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2102,14 +2102,14 @@ Content-Length: 3293
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "attach" : true,
-    "education" : true,
+    "profileSkill" : true,
     "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "antecedents" : true,
-    "profileSkill" : true
+    "education" : true,
+    "awards" : true,
+    "attach" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -3292,13 +3292,13 @@ Content-Length: 2856
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "teamProfileTeamBuildingField" : true,
-    "activity" : true,
-    "history" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true
+    "teamAttach" : true,
+    "activity" : true,
+    "history" : true,
+    "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -4313,7 +4313,7 @@ Cookie: refresh-token=refreshToken</code></pre>
 <h4 id="_요청_25"><a class="link" href="#_요청_25">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /search/private/profile?teamBuildingFieldName&amp;jobRoleName&amp;skillName&amp;cityName&amp;divisionName HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /search/private/profile HTTP/1.1
 Content-Type: application/json;charset=UTF-8</code></pre>
 </div>
 </div>
@@ -4335,7 +4335,7 @@ Content-Type: application/json;charset=UTF-8</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">희망 직무/역할 필터</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무/역할 필터</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>skillName</code></p></td>
@@ -4514,7 +4514,7 @@ Content-Length: 661
 <h4 id="_요청_26"><a class="link" href="#_요청_26">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /search/team/profile?teamBuildingFieldName&amp;jobRoleName&amp;skillName&amp;cityName&amp;divisionName&amp;activityTagName HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /search/team/profile HTTP/1.1
 Content-Type: application/json;charset=UTF-8</code></pre>
 </div>
 </div>
@@ -4536,7 +4536,7 @@ Content-Type: application/json;charset=UTF-8</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">희망 직무/역할 필터</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무/역할 필터</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>skillName</code></p></td>
@@ -4566,18 +4566,27 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 638
+Content-Length: 996
 
 {
   "content" : [ {
-    "id" : 1,
-    "sectorName" : "SaaS",
-    "sizeType" : "1-5인",
-    "teamName" : "리에종",
-    "teamProfileTitle" : "팀 소개서 제목입니다.",
-    "isTeamActivate" : true,
-    "teamLogoImageUrl" : "https://image.linkit.im/images/linkit_logo.png",
-    "teamKeywordNames" : [ "재택 가능", "Pre-A", "사수 있음", "스톡 제공" ]
+    "teamMiniProfileResponse" : {
+      "id" : 1,
+      "sectorName" : "SaaS",
+      "sizeType" : "1-5인",
+      "teamName" : "리에종",
+      "teamProfileTitle" : "팀 소개서 제목입니다.",
+      "isTeamActivate" : true,
+      "teamLogoImageUrl" : "https://image.linkit.im/images/linkit_logo.png",
+      "teamKeywordNames" : [ "재택 가능", "Pre-A", "사수 있음", "스톡 제공" ]
+    },
+    "teamMemberAnnouncementResponse" : {
+      "id" : 1,
+      "jobRoleNames" : [ "개발·데이터", "디자인" ],
+      "mainBusiness" : "주요 업무입니다.",
+      "skillNames" : [ "서버 개발", "DevOps", "게임 디자인" ],
+      "applicationProcess" : "지원 절차입니다."
+    }
   } ],
   "pageable" : "INSTANCE",
   "last" : true,
@@ -4611,64 +4620,69 @@ Content-Length: 638
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMiniProfileResponse.id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 미니 프로필 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].sectorName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMiniProfileResponse.sectorName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">부문 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].sizeType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMiniProfileResponse.sizeType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 크기 유형</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMiniProfileResponse.teamName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamProfileTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMiniProfileResponse.teamProfileTitle</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 제목</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].isTeamActivate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMiniProfileResponse.isTeamActivate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 활성화 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamLogoImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMiniProfileResponse.teamLogoImageUrl</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 로고 이미지 URL</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamKeywordNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMiniProfileResponse.teamKeywordNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 키워드</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>pageable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.jobRoleNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 직무 이름 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.mainBusiness</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이징 처리 객체</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">주요 업무</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sort.empty</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 규칙이 비어 있는지 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.skillNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요구되는 기술 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sort.unsorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬이 적용되지 않았는지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sort.sorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬이 적용되었는지 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.applicationProcess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지원 절차</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>last</code></p></td>
@@ -4773,14 +4787,14 @@ Content-Length: 3292
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "attach" : true,
-    "education" : true,
+    "profileSkill" : true,
     "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "antecedents" : true,
-    "profileSkill" : true
+    "education" : true,
+    "awards" : true,
+    "attach" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다."
@@ -5216,13 +5230,13 @@ Content-Length: 2856
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "teamProfileTeamBuildingField" : true,
-    "activity" : true,
-    "history" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true
+    "teamAttach" : true,
+    "activity" : true,
+    "history" : true,
+    "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -6321,7 +6335,7 @@ Content-Length: 102
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-07-13 17:50:55 +0900
+Last updated 2024-07-14 00:53:27 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

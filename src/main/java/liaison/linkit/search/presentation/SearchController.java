@@ -54,6 +54,8 @@ public class SearchController {
         return ResponseEntity.ok(privateMiniProfiles);
     }
 
+
+    // 팀 찾기 컨트롤러
     @GetMapping("/search/team/profile")
     public ResponseEntity<Page<SearchTeamProfileResponse>> findSearchTeamProfile(
             @PageableDefault(size = 10) final Pageable pageable,

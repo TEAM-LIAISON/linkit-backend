@@ -262,11 +262,12 @@ include::{snippets}/search-controller-test/get-private-mini-profile/response-fie
 == 7. 팀 찾기
 === 7.1. 팀 찾기 페이지
 ==== 요청
-include::{snippets}/search-controller-test/get-team-mini-profile/http-request.adoc[]
-include::{snippets}/search-controller-test/get-team-mini-profile/query-parameters.adoc[]
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/http-request.adoc[]
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/query-parameters.adoc[]
+
 ==== 응답
-include::{snippets}/search-controller-test/get-team-mini-profile/http-response.adoc[]
-include::{snippets}/search-controller-test/get-team-mini-profile/response-fields.adoc[]
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/http-response.adoc[]
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/response-fields.adoc[]
 
 == 8. 이력서 열람
 === 8.1. 내 이력서 열람

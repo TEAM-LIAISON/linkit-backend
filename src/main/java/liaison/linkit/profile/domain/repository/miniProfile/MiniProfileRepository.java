@@ -40,8 +40,8 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
            LEFT JOIN Region r ON pr.profile.id = r.id
            
            WHERE (:teamBuildingFieldNames IS NULL OR tbf.teamBuildingFieldName IN :teamBuildingFieldNames)
-           AND (:jobRoleNames IS NULL OR jr.jobRoleName = :jobRoleNames)
-           AND (:skillNames IS NULL OR s.skillName = :skillNames)
+           AND (:jobRoleNames IS NULL OR jr.jobRoleName IN :jobRoleNames)
+           AND (:skillNames IS NULL OR s.skillName IN :skillNames)
            AND (:cityName IS NULL OR r.cityName = :cityName)
            AND (:divisionName IS NULL OR r.divisionName = :divisionName)
            
