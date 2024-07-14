@@ -49,8 +49,10 @@ public class SearchService {
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final MiniProfileKeywordRepository miniProfileKeywordRepository;
     private final ProfileJobRoleRepository profileJobRoleRepository;
+
     private final TeamMiniProfileRepository teamMiniProfileRepository;
     private final TeamMiniProfileKeywordRepository teamMiniProfileKeywordRepository;
+
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
