@@ -72,7 +72,8 @@ public class TeamMemberAnnouncementService {
     ) {
         final List<TeamMemberAnnouncementJobRole> teamMemberAnnouncementJobRoleList = getTeamMemberAnnouncementJobRoles(teamMemberAnnouncement.getId());
         final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
-        return TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamMemberAnnouncementJobRoleList, teamMemberAnnouncementSkillList);
+        final String teamName = teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamName();
+        return TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRoleList, teamMemberAnnouncementSkillList);
     }
 
     public void saveAnnouncement(
@@ -194,7 +195,6 @@ public class TeamMemberAnnouncementService {
         // 삭제 먼저 진행
         teamMemberAnnouncementSkillRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
         teamMemberAnnouncementJobRoleRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
-        teamMemberAnnouncementRepository.deleteById(teamMemberAnnouncementId);
 
         final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
         saveTeamMemberAnnouncementJobRole(teamMemberAnnouncement, teamMemberAnnouncementRequest);

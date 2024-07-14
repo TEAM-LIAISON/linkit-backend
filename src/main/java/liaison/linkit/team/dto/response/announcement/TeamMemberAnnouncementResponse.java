@@ -15,6 +15,7 @@ import java.util.List;
 public class  TeamMemberAnnouncementResponse {
 
     private final Long id;
+    private final String teamName;
     private final List<String> jobRoleNames;
     private final String mainBusiness;
     private final List<String> skillNames;
@@ -22,6 +23,7 @@ public class  TeamMemberAnnouncementResponse {
 
     public static TeamMemberAnnouncementResponse of(
             final TeamMemberAnnouncement teamMemberAnnouncement,
+            final String teamName,
             final List<TeamMemberAnnouncementJobRole> teamMemberAnnouncementJobRoleList,
             final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList
     ) {
@@ -44,6 +46,7 @@ public class  TeamMemberAnnouncementResponse {
 
         return new TeamMemberAnnouncementResponse(
                 teamMemberAnnouncement.getId(),
+                teamName,
                 jobRoleNames,
                 teamMemberAnnouncement.getMainBusiness(),
                 skillNames,
