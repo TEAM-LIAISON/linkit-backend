@@ -208,6 +208,7 @@ public class MatchingService {
         return new ReceivedMatchingResponse(toPrivateMatchingResponseList, toTeamMatchingResponseList);
     }
 
+    // 내가 매칭 요청 보낸 것을 조회하는 메서드
     public RequestMatchingResponse getMyRequestMatching(final Long memberId) {
         List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = null;
         List<MyTeamMatchingResponse> myTeamMatchingResponseList = null;

@@ -49,8 +49,10 @@ public class SearchService {
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final MiniProfileKeywordRepository miniProfileKeywordRepository;
     private final ProfileJobRoleRepository profileJobRoleRepository;
+
     private final TeamMiniProfileRepository teamMiniProfileRepository;
     private final TeamMiniProfileKeywordRepository teamMiniProfileKeywordRepository;
+
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
@@ -61,7 +63,7 @@ public class SearchService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BY_MEMBER_ID));
     }
 
-
+    // 개인 미니 프로필 (페이지) 조회
     @Transactional(readOnly = true)
     public Page<MiniProfileResponse> findPrivateMiniProfile(
             final Pageable pageable,
@@ -76,6 +78,7 @@ public class SearchService {
             divisionName = null;
         }
 
+        // 미니 프로필 이력서에서 페이지네이션으로 조회
         final Page<MiniProfile> miniProfiles = miniProfileRepository.findAllByOrderByCreatedDateDesc(
                 teamBuildingFieldName,
                 jobRoleName,
@@ -89,6 +92,7 @@ public class SearchService {
         return miniProfiles.map(this::convertToMiniProfileResponse);
     }
 
+    // 팀원 공고, 팀 미니 프로필 응답 (페이지) 조회
     @Transactional(readOnly = true)
     public Page<SearchTeamProfileResponse> findTeamMemberAnnouncementsWithTeamMiniProfile(
             final Pageable pageable,
@@ -128,10 +132,11 @@ public class SearchService {
 
         final List<TeamMemberAnnouncementJobRole> teamMemberAnnouncementJobRoleList = getTeamMemberAnnouncementJobRoles(teamMemberAnnouncement.getId());
         final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
+        final String teamName = teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamName();
 
         return new SearchTeamProfileResponse(
                 TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
-                TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamMemberAnnouncementJobRoleList, teamMemberAnnouncementSkillList)
+                TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRoleList, teamMemberAnnouncementSkillList)
         );
     }
 
@@ -179,6 +184,7 @@ public class SearchService {
         );
     }
 
+    // 미니 프로필 객체를 응답 DTO 변환
     private MiniProfileResponse convertToMiniProfileResponse(final MiniProfile miniProfile) {
         final String memberName = getMemberNameByMiniProfile(miniProfile.getId());
 
