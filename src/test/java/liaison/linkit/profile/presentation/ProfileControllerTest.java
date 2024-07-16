@@ -158,6 +158,13 @@ class ProfileControllerTest extends ControllerTest {
                 true
         );
 
+        final boolean isPrivateProfileResponse = (
+                profileIsValueResponse.isProfileTeamBuildingField() &&
+                        profileIsValueResponse.isProfileRegion() &&
+                        profileIsValueResponse.isMiniProfile() &&
+                        profileIsValueResponse.isJobAndSkill()
+        );
+
         given(profileService.getProfileIsValue(1L)).willReturn(profileIsValueResponse);
 
         // 1. 미니 프로필 (V)
@@ -321,6 +328,7 @@ class ProfileControllerTest extends ControllerTest {
         given(attachService.getAttachList(1L)).willReturn(attachResponses);
 
         final ProfileResponse profileResponse = new ProfileResponse(
+                isPrivateProfileResponse,
                 miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,
@@ -334,6 +342,7 @@ class ProfileControllerTest extends ControllerTest {
         );
 
         given(profileService.getProfileResponse(
+                isPrivateProfileResponse,
                 miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,
@@ -363,6 +372,7 @@ class ProfileControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 responseFields(
+                                        fieldWithPath("privateProfileResponse").type(JsonFieldType.BOOLEAN).description("내 이력서 필수 입력 항목 존재 여부"),
                                         // miniProfileResponse
                                         subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
                                         fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING).description("프로필의 제목"),

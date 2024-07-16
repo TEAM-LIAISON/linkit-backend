@@ -122,6 +122,10 @@ public class TeamProfileControllerTest extends ControllerTest {
         );
         given(teamProfileService.getTeamProfileIsValue(1L)).willReturn(teamProfileIsValueResponse);
 
+        // 팀 소개서 필수 항목 존재 여부
+        final boolean isTeamProfileEssential = (teamProfileIsValueResponse.isTeamMiniProfile() && teamProfileIsValueResponse.isActivity() && teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
+
+
         // 4.1. 미니 프로필
         final TeamMiniProfileResponse teamMiniProfileResponse = new TeamMiniProfileResponse(
                 1L,
@@ -262,6 +266,7 @@ public class TeamProfileControllerTest extends ControllerTest {
         given(teamAttachService.getTeamAttachList(1L)).willReturn(teamAttachResponse);
 
         final TeamProfileResponse teamProfileResponse = new TeamProfileResponse(
+                isTeamProfileEssential,
                 teamMiniProfileResponse,
                 teamCompletionResponse,
                 teamProfileTeamBuildingFieldResponse,
@@ -274,6 +279,7 @@ public class TeamProfileControllerTest extends ControllerTest {
         );
 
         given(teamProfileService.getTeamProfileResponse(
+                isTeamProfileEssential,
                 teamMiniProfileResponse,
                 teamCompletionResponse,
                 teamProfileTeamBuildingFieldResponse,
@@ -302,6 +308,8 @@ public class TeamProfileControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 responseFields(
+                                        fieldWithPath("teamProfileEssential").type(JsonFieldType.BOOLEAN).description("팀 소개서 기본 항목 존재 여부"),
+
                                         // 4.1.
                                         subsectionWithPath("teamMiniProfileResponse").type(JsonFieldType.OBJECT).description("팀 미니 프로필 응답 객체"),
 

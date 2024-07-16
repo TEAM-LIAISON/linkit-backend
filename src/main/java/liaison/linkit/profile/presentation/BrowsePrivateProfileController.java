@@ -66,6 +66,13 @@ public class BrowsePrivateProfileController {
             final ProfileIsValueResponse profileIsValueResponse = browsePrivateProfileService.getProfileIsValue(browseTargetPrivateProfileId);
             log.info("profileIsValueResponse={}", profileIsValueResponse);
 
+            final boolean isPrivateProfileResponse = (
+                    profileIsValueResponse.isProfileTeamBuildingField() &&
+                            profileIsValueResponse.isProfileRegion() &&
+                            profileIsValueResponse.isMiniProfile() &&
+                            profileIsValueResponse.isJobAndSkill()
+            );
+
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(browseTargetPrivateProfileId, profileIsValueResponse.isMiniProfile());
             log.info("miniProfileResponse={}", miniProfileResponse);
 
@@ -97,6 +104,7 @@ public class BrowsePrivateProfileController {
             log.info("attachResponse={}", attachResponse);
 
             final ProfileResponse profileResponse = browsePrivateProfileService.getProfileResponse(
+                    isPrivateProfileResponse,
                     miniProfileResponse,
                     completionResponse,
                     profileIntroductionResponse,
