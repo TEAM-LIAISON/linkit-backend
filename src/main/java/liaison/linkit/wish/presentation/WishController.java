@@ -45,6 +45,7 @@ public class WishController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    // 내가 찜한 목록 조회
     @GetMapping("/my/wish/list")
     @MemberOnly
     public ResponseEntity<Page<MyWishResponse>> getMyWishList(

@@ -134,6 +134,7 @@ public class SearchService {
         final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
         final String teamName = teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamName();
 
+
         return new SearchTeamProfileResponse(
                 TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
                 TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRoleList, teamMemberAnnouncementSkillList)

@@ -125,8 +125,8 @@ public class TeamProfile {
     // 첨부 2.5%
 
     // 디폴트 항목 관리 메서드
-    public void addTeamPerfectionDefault() {this.teamProfileCompletion += 25.0;}
-    public void cancelTeamPerfectionDefault() {this.teamProfileCompletion -= 25.0;}
+    public void addTeamPerfectionDefault25() {this.teamProfileCompletion += 25.0;}
+    public void cancelTeamPerfectionDefault25() {this.teamProfileCompletion -= 25.0;}
 
     public void addTeamPerfectionFifteen() {this.teamProfileCompletion += 15.0;}
     public void cancelTeamPerfectionFifteen() {this.teamProfileCompletion -= 15.0;}
@@ -144,9 +144,9 @@ public class TeamProfile {
     public void updateIsTeamProfileTeamBuildingField(final boolean isTeamTeamBuildingField) {
         this.isTeamProfileTeamBuildingField = isTeamTeamBuildingField;
         if (isTeamTeamBuildingField) {
-            addTeamPerfectionDefault();
+            addTeamPerfectionDefault25();
         } else {
-            cancelTeamPerfectionDefault();
+            cancelTeamPerfectionDefault25();
         }
     }
 
@@ -161,13 +161,15 @@ public class TeamProfile {
     }
 
     // 4.6. 활동 방식 + 활동 지역 및 위치 업데이트
+    // 2개 다 관리하는 메서드
     public void updateIsActivity(final boolean isActivityMethod, final boolean isActivityRegion) {
         if (this.isActivity != (isActivityMethod && isActivityRegion)) {
             this.isActivity = !this.isActivity;
             if (this.isActivity) {
-                addTeamPerfectionDefault();
+                // 디폴트
+                addTeamPerfectionDefault25();
             } else {
-                cancelTeamPerfectionDefault();
+                cancelTeamPerfectionDefault25();
             }
         }
     }

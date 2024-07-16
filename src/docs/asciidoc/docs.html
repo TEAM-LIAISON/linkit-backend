@@ -749,7 +749,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 20 Jul 2024 16:01:45 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 21 Jul 2024 11:37:20 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2102,14 +2102,14 @@ Content-Length: 3293
   },
   "completionResponse" : {
     "completion" : "100.0",
+    "awards" : true,
+    "attach" : true,
     "profileSkill" : true,
     "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "antecedents" : true,
-    "education" : true,
-    "awards" : true,
-    "attach" : true
+    "education" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -3277,7 +3277,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2856
+Content-Length: 2916
 
 {
   "teamMiniProfileResponse" : {
@@ -3292,25 +3292,27 @@ Content-Length: 2856
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
+    "teamProfileTeamBuildingField" : true,
+    "activity" : true,
+    "history" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true,
-    "activity" : true,
-    "history" : true,
-    "teamProfileTeamBuildingField" : true
+    "teamAttach" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
   },
   "teamMemberAnnouncementResponses" : [ {
     "id" : 1,
+    "teamName" : "리에종",
     "jobRoleNames" : [ "기획·경영", "개발·데이터" ],
     "mainBusiness" : "주요 업무입니다. (첫번째 팀원 공고)",
     "skillNames" : [ "서비스 기획", "데이터 엔지니어" ],
     "applicationProcess" : "지원 절차입니다. (첫번째 팀원 공고)"
   }, {
     "id" : 2,
+    "teamName" : "리에종",
     "jobRoleNames" : [ "디자인" ],
     "mainBusiness" : "주요 업무입니다. (두번째 팀원 공고)",
     "skillNames" : [ "웹 디자인", "앱 디자인" ],
@@ -3482,6 +3484,11 @@ Content-Length: 2856
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 응답 객체 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].jobRoleNames</code></p></td>
@@ -4566,7 +4573,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 996
+Content-Length: 1028
 
 {
   "content" : [ {
@@ -4582,6 +4589,7 @@ Content-Length: 996
     },
     "teamMemberAnnouncementResponse" : {
       "id" : 1,
+      "teamName" : "리에종",
       "jobRoleNames" : [ "개발·데이터", "디자인" ],
       "mainBusiness" : "주요 업무입니다.",
       "skillNames" : [ "서버 개발", "DevOps", "게임 디자인" ],
@@ -4663,6 +4671,11 @@ Content-Length: 996
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.jobRoleNames</code></p></td>
@@ -4787,14 +4800,14 @@ Content-Length: 3292
   },
   "completionResponse" : {
     "completion" : "100.0",
+    "awards" : true,
+    "attach" : true,
     "profileSkill" : true,
     "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "antecedents" : true,
-    "education" : true,
-    "awards" : true,
-    "attach" : true
+    "education" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다."
@@ -5215,7 +5228,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2856
+Content-Length: 2916
 
 {
   "teamMiniProfileResponse" : {
@@ -5230,25 +5243,27 @@ Content-Length: 2856
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
+    "teamProfileTeamBuildingField" : true,
+    "activity" : true,
+    "history" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true,
-    "activity" : true,
-    "history" : true,
-    "teamProfileTeamBuildingField" : true
+    "teamAttach" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
   },
   "teamMemberAnnouncementResponses" : [ {
     "id" : 1,
+    "teamName" : "리에종",
     "jobRoleNames" : [ "기획·경영", "개발·데이터" ],
     "mainBusiness" : "주요 업무입니다. (첫번째 팀원 공고)",
     "skillNames" : [ "서비스 기획", "데이터 엔지니어" ],
     "applicationProcess" : "지원 절차입니다. (첫번째 팀원 공고)"
   }, {
     "id" : 2,
+    "teamName" : "리에종",
     "jobRoleNames" : [ "디자인" ],
     "mainBusiness" : "주요 업무입니다. (두번째 팀원 공고)",
     "skillNames" : [ "웹 디자인", "앱 디자인" ],
@@ -5420,6 +5435,11 @@ Content-Length: 2856
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 응답 객체 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].jobRoleNames</code></p></td>

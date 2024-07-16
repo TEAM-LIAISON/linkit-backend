@@ -32,6 +32,7 @@ public class TeamWish {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    // 찜하기 한 타겟 팀 소개서 ID
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "team_profile_id")
     private TeamProfile teamProfile;
