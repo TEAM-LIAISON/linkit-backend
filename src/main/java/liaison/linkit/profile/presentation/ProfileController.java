@@ -68,6 +68,7 @@ public class ProfileController {
         try {
             profileService.validateProfileByMember(accessor.getMemberId());
             final ProfileIsValueResponse profileIsValueResponse = profileService.getProfileIsValue(accessor.getMemberId());
+            final boolean isPrivateProfileResponse = (profileIsValueResponse.isProfileTeamBuildingField() && profileIsValueResponse.isProfileRegion() && profileIsValueResponse.isMiniProfile() && profileIsValueResponse.isJobAndSkill());
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileIsValueResponse.isMiniProfile());
             final CompletionResponse completionResponse = getCompletionResponse(accessor.getMemberId());
             final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(accessor.getMemberId(), profileIsValueResponse.isIntroduction());
@@ -80,6 +81,7 @@ public class ProfileController {
             final AttachResponse attachResponse = getAttachResponses(accessor.getMemberId(), profileIsValueResponse.isAttach());
 
             final ProfileResponse profileResponse = profileService.getProfileResponse(
+                    isPrivateProfileResponse,
                     miniProfileResponse,
                     completionResponse,
                     profileIntroductionResponse,

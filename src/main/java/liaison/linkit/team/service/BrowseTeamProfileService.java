@@ -58,7 +58,8 @@ public class BrowseTeamProfileService {
     }
 
 
-    public TeamProfileResponse getTeamProfileResponse(
+    public TeamProfileResponse getBrowseTeamProfileResponse(
+            final boolean isTeamProfileEssential,
             final TeamMiniProfileResponse teamMiniProfileResponse,
             final TeamCompletionResponse teamCompletionResponse,
             final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse,
@@ -70,6 +71,7 @@ public class BrowseTeamProfileService {
             final TeamAttachResponse teamAttachResponse
     ) {
         return TeamProfileResponse.teamProfileItems(
+                isTeamProfileEssential,
                 teamMiniProfileResponse,
                 teamCompletionResponse,
                 teamProfileTeamBuildingFieldResponse,

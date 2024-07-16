@@ -67,6 +67,9 @@ public class BrowseTeamProfileController {
             // 팀 소개서에 있는 항목들의 존재 여부 파악
             final TeamProfileIsValueResponse teamProfileIsValueResponse = browseTeamProfileService.getTeamProfileIsValue(browseTargetTeamProfileId);
 
+            // 존재성을 통해 디폴트 값 존재 여부
+            final boolean isTeamProfileEssential = (teamProfileIsValueResponse.isTeamMiniProfile() && teamProfileIsValueResponse.isActivity() && teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
+
             // 4.1. 팀 미니 프로필
             final TeamMiniProfileResponse teamMiniProfileResponse = getTeamMiniProfileResponse(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamMiniProfile());
             log.info("teamMiniProfileResponse={}", teamMiniProfileResponse);
@@ -103,7 +106,8 @@ public class BrowseTeamProfileController {
             final TeamAttachResponse teamAttachResponse = getTeamAttach(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamAttach());
             log.info("teamAttachResponse={}", teamAttachResponse);
 
-            final TeamProfileResponse teamProfileResponse = browseTeamProfileService.getTeamProfileResponse(
+            final TeamProfileResponse teamProfileResponse = browseTeamProfileService.getBrowseTeamProfileResponse(
+                    isTeamProfileEssential,
                     teamMiniProfileResponse,
                     teamCompletionResponse,
                     teamProfileTeamBuildingFieldResponse,

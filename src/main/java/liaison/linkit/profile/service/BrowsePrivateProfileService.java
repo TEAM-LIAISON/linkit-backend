@@ -88,6 +88,7 @@ public class BrowsePrivateProfileService {
     }
 
     public ProfileResponse getProfileResponse(
+            final boolean isPrivateProfileResponse,
             final MiniProfileResponse miniProfileResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
@@ -100,6 +101,7 @@ public class BrowsePrivateProfileService {
             final AttachResponse attachResponse
     ) {
         return ProfileResponse.profileItems(
+                isPrivateProfileResponse,
                 miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,

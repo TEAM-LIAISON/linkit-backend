@@ -81,6 +81,7 @@ public class TeamProfileService {
     }
 
     public TeamProfileResponse getTeamProfileResponse(
+            final boolean isTeamProfileEssential,
             final TeamMiniProfileResponse teamMiniProfileResponse,
             final TeamCompletionResponse teamCompletionResponse,
             final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse,
@@ -92,6 +93,7 @@ public class TeamProfileService {
             final TeamAttachResponse teamAttachResponse
     ) {
         return TeamProfileResponse.teamProfileItems(
+                isTeamProfileEssential,
                 teamMiniProfileResponse,
                 teamCompletionResponse,
                 teamProfileTeamBuildingFieldResponse,
