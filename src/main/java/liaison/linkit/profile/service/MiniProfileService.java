@@ -77,9 +77,11 @@ public class MiniProfileService {
             final MultipartFile miniProfileImage
     ) {
         final Profile profile = getProfile(memberId);
-
+        // 미니 프로필 이미지가 같이 전송된 경우
         if (miniProfileImage != null) {
             log.info("miniProfileImage가 null이 아닙니다.");
+
+            // 미니 프로필이 기존에 존재했었다면
             if (miniProfileRepository.existsByProfileId(profile.getId())) {
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
                 s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
@@ -96,6 +98,7 @@ public class MiniProfileService {
                     miniProfileRequest.isActivate()
             );
 
+            // 미니 프로필 저장된 객체
             final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileByImage);
 
             final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
@@ -103,10 +106,12 @@ public class MiniProfileService {
                     .toList();
 
             miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
-            profile.updateIsMiniProfile(true);
 
-        } else {
-            // 미니 프로필 이미지가 null인 경우
+            profile.updateIsMiniProfile(true);
+        }
+        // 미니 프로필 이미지가 null인 경우
+        else {
+            // 미니 프로필 객체가 존재했었다면
             if (miniProfileRepository.existsByProfileId(profile.getId())) { // 생성 이력이 있는 경우
                 // 기존 미니 프로필 조회
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
@@ -129,16 +134,20 @@ public class MiniProfileService {
 
                 miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
                 profile.updateIsMiniProfile(true);
-            } else {                                                        // 신규 생성인 경우
+            }
+
+            // 미니 프로필 객체가 존재하지 않는다면 (새로운 객체)
+            else {                                                        // 신규 생성인 경우
                 final MiniProfile newMiniProfile = MiniProfile.of(
                         profile,
                         miniProfileRequest.getProfileTitle(),
                         null,
                         miniProfileRequest.isActivate()
                 );
+
                 final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfile);
                 final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
-                        .map(keyWordName -> new MiniProfileKeyword(savedMiniProfile.getId(), null, keyWordName))
+                        .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
                         .toList();
 
                 miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
