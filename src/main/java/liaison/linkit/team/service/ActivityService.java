@@ -63,6 +63,7 @@ public class ActivityService {
             final Long memberId,
             final ActivityCreateRequest activityCreateRequest
     ) {
+
         // 팀 프로필 가져오기
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
@@ -79,6 +80,7 @@ public class ActivityService {
                 .map(activityMethodTag -> new ActivityMethod(null, teamProfile, activityMethodTag))
                 .toList();
 
+        // 저장 로직
         activityMethodRepository.saveAll(activityMethods);
 
         teamProfile.updateIsActivityMethod(true);
