@@ -34,6 +34,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -106,6 +107,13 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         );
         given(browsePrivateProfileService.getProfileIsValue(1L)).willReturn(profileIsValueResponse);
 
+        final boolean isPrivateProfileResponse = (
+                profileIsValueResponse.isProfileTeamBuildingField() &&
+                        profileIsValueResponse.isProfileRegion() &&
+                        profileIsValueResponse.isMiniProfile() &&
+                        profileIsValueResponse.isJobAndSkill()
+        );
+
         final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
                 1L, "시니어 소프트웨어 개발자", "https://image.linkit.im/images/linkit_logo.png", true,
                 Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"), "권동민", Arrays.asList("개발·데이터")
@@ -170,8 +178,9 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         given(attachService.getAttachList(1L)).willReturn(attachResponse);
 
         when(browsePrivateProfileService.getProfileResponse(
-                any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+                anyBoolean(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(ProfileResponse.profileItems(
+                isPrivateProfileResponse,
                 miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,
@@ -194,6 +203,8 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                                         .description("미니 프로필 ID")
                         ),
                         responseFields(
+                                fieldWithPath("privateProfileResponse").type(JsonFieldType.BOOLEAN).description("내 이력서 필수 입력 항목 존재 여부"),
+
                                 // miniProfileResponse
                                 subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
                                 fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING).description("프로필의 제목"),

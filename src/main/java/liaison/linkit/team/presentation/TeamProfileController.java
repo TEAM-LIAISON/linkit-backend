@@ -55,8 +55,9 @@ public class TeamProfileController {
             teamProfileService.validateTeamProfileByMember(accessor.getMemberId());
 
             // 팀 소개서에 있는 항목들의 존재 여부 파악
-            final TeamProfileIsValueResponse teamProfileIsValueResponse
-                    = teamProfileService.getTeamProfileIsValue(accessor.getMemberId());
+            final TeamProfileIsValueResponse teamProfileIsValueResponse = teamProfileService.getTeamProfileIsValue(accessor.getMemberId());
+
+            final boolean isTeamProfileEssential = (teamProfileIsValueResponse.isTeamMiniProfile() && teamProfileIsValueResponse.isActivity() && teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
 
             // 4.1. 팀 미니 프로필
             final TeamMiniProfileResponse teamMiniProfileResponse
@@ -99,6 +100,7 @@ public class TeamProfileController {
             log.info("teamAttachResponse={}", teamAttachResponse);
 
             final TeamProfileResponse teamProfileResponse = teamProfileService.getTeamProfileResponse(
+                    isTeamProfileEssential,
                     teamMiniProfileResponse,
                     teamCompletionResponse,
                     teamProfileTeamBuildingFieldResponse,

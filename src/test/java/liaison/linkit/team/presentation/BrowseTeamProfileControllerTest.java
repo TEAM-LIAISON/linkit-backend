@@ -31,6 +31,7 @@ import java.util.List;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -99,6 +100,9 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
                 true, true, true, true, true, true, true, true
         );
         given(browseTeamProfileService.getTeamProfileIsValue(1L)).willReturn(teamProfileIsValueResponse);
+
+        // 팀 소개서 필수 항목 존재 여부
+        final boolean isTeamProfileEssential = (teamProfileIsValueResponse.isTeamMiniProfile() && teamProfileIsValueResponse.isActivity() && teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
 
         // 4.1. 미니 프로필
         final TeamMiniProfileResponse teamMiniProfileResponse = new TeamMiniProfileResponse(
@@ -225,9 +229,12 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
         );
         given(teamAttachService.getTeamAttachList(1L)).willReturn(teamAttachResponse);
 
-        when(browseTeamProfileService.getTeamProfileResponse(
-                any(), any(), any(), any(), any(), any(), any(), any(), any()
+
+
+        when(browseTeamProfileService.getBrowseTeamProfileResponse(
+                anyBoolean(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(TeamProfileResponse.teamProfileItems(
+                isTeamProfileEssential,
                 teamMiniProfileResponse,
                 teamCompletionResponse,
                 teamProfileTeamBuildingFieldResponse,
@@ -251,6 +258,7 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
                                                 .description("팀 미니 프로필 ID")
                                 ),
                                 responseFields(
+                                        fieldWithPath("teamProfileEssential").type(JsonFieldType.BOOLEAN).description("팀 소개서 기본 항목 존재 여부"),
                                         // 4.1.
                                         subsectionWithPath("teamMiniProfileResponse").type(JsonFieldType.OBJECT).description("팀 미니 프로필 응답 객체"),
 

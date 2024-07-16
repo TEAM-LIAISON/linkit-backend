@@ -14,6 +14,9 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class TeamProfileResponse {
+
+    private final boolean isTeamProfileEssential;
+
     // 4.1. 팀 미니 프로필 응답
     private final TeamMiniProfileResponse teamMiniProfileResponse;
     // 4.2.
@@ -43,6 +46,7 @@ public class TeamProfileResponse {
     private final TeamAttachResponse teamAttachResponse;
 
     public static TeamProfileResponse teamProfileItems(
+            final boolean isTeamProfileEssential,
             final TeamMiniProfileResponse teamMiniProfileResponse,
             final TeamCompletionResponse teamCompletionResponse,
             final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse,
@@ -54,6 +58,7 @@ public class TeamProfileResponse {
             final TeamAttachResponse teamAttachResponse
     ) {
         return new TeamProfileResponse(
+                isTeamProfileEssential,
                 teamMiniProfileResponse,
                 teamCompletionResponse,
                 teamProfileTeamBuildingFieldResponse,
