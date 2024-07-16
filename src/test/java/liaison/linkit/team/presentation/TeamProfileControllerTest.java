@@ -165,7 +165,7 @@ public class TeamProfileControllerTest extends ControllerTest {
         final TeamMemberAnnouncementResponse firstTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 1L,
                 "리에종",
-                Arrays.asList("기획·경영", "개발·데이터"),
+                "기획·경영",
                 "주요 업무입니다. (첫번째 팀원 공고)",
                 Arrays.asList("서비스 기획", "데이터 엔지니어"),
                 "지원 절차입니다. (첫번째 팀원 공고)"
@@ -174,7 +174,7 @@ public class TeamProfileControllerTest extends ControllerTest {
         final TeamMemberAnnouncementResponse secondTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 2L,
                 "리에종",
-                Arrays.asList("디자인"),
+                "디자인",
                 "주요 업무입니다. (두번째 팀원 공고)",
                 Arrays.asList("웹 디자인", "앱 디자인"),
                 "지원 절차입니다. (두번째 팀원 공고)"
@@ -340,7 +340,7 @@ public class TeamProfileControllerTest extends ControllerTest {
                                         subsectionWithPath("teamMemberAnnouncementResponses").type(JsonFieldType.ARRAY).description("팀원 공고 응답 객체"),
                                         fieldWithPath("teamMemberAnnouncementResponses[].id").type(JsonFieldType.NUMBER).description("팀원 공고 응답 객체 ID"),
                                         fieldWithPath("teamMemberAnnouncementResponses[].teamName").type(JsonFieldType.STRING).description("팀 이름"),
-                                        fieldWithPath("teamMemberAnnouncementResponses[].jobRoleNames").type(JsonFieldType.ARRAY).description("직무, 역할 이름 배열"),
+                                        fieldWithPath("teamMemberAnnouncementResponses[].jobRoleName").type(JsonFieldType.STRING).description("직무, 역할 이름"),
                                         fieldWithPath("teamMemberAnnouncementResponses[].mainBusiness").type(JsonFieldType.STRING).description("팀원 공고 주요 업무"),
                                         fieldWithPath("teamMemberAnnouncementResponses[].skillNames").type(JsonFieldType.ARRAY).description("보유 역량 이름 배열"),
                                         fieldWithPath("teamMemberAnnouncementResponses[].applicationProcess").type(JsonFieldType.STRING).description("지원 절차"),

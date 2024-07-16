@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProfileResponse {
 
-    private final boolean isPrivateProfileResponse;
+    private final boolean isPrivateProfileEssential;
     private final MiniProfileResponse miniProfileResponse;
     private final CompletionResponse completionResponse;
     private final ProfileIntroductionResponse profileIntroductionResponse;
@@ -31,7 +31,7 @@ public class ProfileResponse {
     private final AttachResponse attachResponse;
 
     public static ProfileResponse profileItems(
-            final boolean isPrivateProfileResponse,
+            final boolean isPrivateProfileEssential,
             final MiniProfileResponse miniProfileResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
@@ -45,7 +45,7 @@ public class ProfileResponse {
     ) {
 
         return new ProfileResponse(
-                isPrivateProfileResponse,
+                isPrivateProfileEssential,
                 miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,

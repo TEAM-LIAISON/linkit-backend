@@ -10,7 +10,7 @@ import java.util.List;
 public class TeamMemberAnnouncementRequest {
 
     // 1. 직무/역할
-    private final List<String> jobRoleNames;
+    private final String jobRoleName;
 
     // 2. 주요 업무
     private final String mainBusiness;
