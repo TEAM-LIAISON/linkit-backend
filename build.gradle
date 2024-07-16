@@ -30,15 +30,19 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.715'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.0'
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
     // p6spy 자리
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     testImplementation 'io.rest-assured:rest-assured:5.3.1'
+    // 테스트 코드에서 MockMvc를 통해 문서를 생성하는 데 필요하다. (MockMvc는 스프링 MVC 동작을 재현할 수 있다.)
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 
@@ -49,6 +53,8 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 
     annotationProcessor 'org.projectlombok:lombok'
+    // testImplementation 추가 필요
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation "org.junit.jupiter:junit-jupiter:5.8.1"
     testImplementation "org.testcontainers:testcontainers:1.17.6"
@@ -101,23 +107,6 @@ asciidoctor {
     configurations 'asciidoctorExt'
 }
 
-tasks.register('copyApiDocument', Copy) {
-    dependsOn asciidoctor
-    doFirst {
-        delete file("src/main/resources/static/docs")
-    }
-    from asciidoctor.outputDir
-    into file("src/main/resources/static/docs")
-}
-
-processResources.dependsOn('copySecret')
-
-tasks.register('copySecret', Copy) {
-    from './backend-submodule'
-    include 'application*.yml'
-    into './src/main/resources'
-}
-
-build {
-    dependsOn copyApiDocument
+jar {
+    enabled = false
 }

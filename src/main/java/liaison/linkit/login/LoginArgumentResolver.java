@@ -1,9 +1,5 @@
 package liaison.linkit.login;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_REQUEST;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import liaison.linkit.auth.Auth;
@@ -15,6 +11,7 @@ import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -24,16 +21,18 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import java.util.Arrays;
 
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_REQUEST;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 @RequiredArgsConstructor
 @Component
+@Slf4j
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final String REFRESH_TOKEN = "refresh-token";
-
     private final JwtProvider jwtProvider;
-
     private final BearerAuthorizationExtractor extractor;
-
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
@@ -58,15 +57,16 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             final String refreshToken = extractRefreshToken(request.getCookies());
             final String accessToken = extractor.extractAccessToken(webRequest.getHeader(AUTHORIZATION));
             jwtProvider.validateTokens(new MemberTokens(refreshToken, accessToken));
-
             final Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
             return Accessor.member(memberId);
         } catch (final RefreshTokenException e) {
+            log.info("게스트로 처리됩니다.");
             return Accessor.guest();
         }
     }
 
     private String extractRefreshToken(final Cookie... cookies) {
+        System.out.println("cookies = " + cookies);
         if (cookies == null) {
             throw new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN);
         }

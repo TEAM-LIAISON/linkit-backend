@@ -4,10 +4,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.login.dto.AccessTokenResponse;
-import liaison.linkit.login.dto.LoginRequest;
-import liaison.linkit.login.dto.LoginResponse;
-import liaison.linkit.login.dto.MemberTokensAndIsBasicInform;
+import liaison.linkit.login.dto.*;
 import liaison.linkit.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
@@ -32,32 +29,37 @@ public class LoginController {
             @RequestBody final LoginRequest loginRequest,
             final HttpServletResponse response
     ){
-        final MemberTokensAndIsBasicInform memberTokensAndIsBasicInform = loginService.login(provider, loginRequest.getCode());
-        final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokensAndIsBasicInform.getRefreshToken())
+        final MemberTokensAndOnBoardingStepInform memberTokensAndOnBoardingStepInform
+                = loginService.login(provider, loginRequest.getCode());
+
+        final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokensAndOnBoardingStepInform.getRefreshToken())
                 .maxAge(COOKIE_AGE_SECONDS)
-                .sameSite("None")
                 .secure(true)
-                .httpOnly(true)
+                .sameSite("None")
                 .path("/")
+                .httpOnly(true)
                 .build();
+
         response.addHeader(SET_COOKIE, cookie.toString());
 
         return ResponseEntity.status(CREATED).body(
                 new LoginResponse(
-                        memberTokensAndIsBasicInform.getAccessToken(),
-                        memberTokensAndIsBasicInform.getIsMemberBasicInform()
+                        memberTokensAndOnBoardingStepInform.getAccessToken(),
+                        memberTokensAndOnBoardingStepInform.getEmail(),
+                        memberTokensAndOnBoardingStepInform.isExistMemberBasicInform(),
+                        memberTokensAndOnBoardingStepInform.isExistDefaultProfile()
                 )
         );
     }
 
     // 토큰 재발행
     @PostMapping("/token")
-    public ResponseEntity<AccessTokenResponse> extendLogin(
+    public ResponseEntity<RenewTokenResponse> extendLogin(
             @CookieValue("refresh-token") final String refreshToken,
             @RequestHeader("Authorization") final String authorizationHeader
     ) {
-        final String renewalRefreshToken = loginService.renewalAccessToken(refreshToken, authorizationHeader);
-        return ResponseEntity.status(CREATED).body(new AccessTokenResponse(renewalRefreshToken));
+        final RenewTokenResponse renewTokenResponse = loginService.renewalAccessToken(refreshToken, authorizationHeader);
+        return ResponseEntity.status(CREATED).body(renewTokenResponse);
     }
 
     // 로그아웃

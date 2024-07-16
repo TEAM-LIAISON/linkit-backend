@@ -2,12 +2,18 @@ package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.domain.type.MemberProfileType;
-import liaison.linkit.profile.dto.request.ProfileUpdateRequest;
+import liaison.linkit.member.domain.type.ProfileType;
+import liaison.linkit.profile.domain.awards.Awards;
+import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -25,171 +31,320 @@ public class Profile {
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
-    // 전체 프로필 완성도 값 (%) 직결
-    @Column(nullable = false)
-    private int completion;
+    // 3.1. 미니 프로필
+    @OneToOne(mappedBy = "profile")
+    private MiniProfile miniProfile;
 
+    // 3.10. 수상
+    @OneToMany(mappedBy = "profile", cascade = REMOVE)
+    private List<Awards> awardsList = new ArrayList<>();
+
+    // 3.3. 프로필 완성도
+    // 전체 프로필 완성도 값 (%) - 소수점 가능 (double 자료형)
+    @Column(nullable = false)
+    private double completion;
+
+    // 3.4. 자기소개
     @Column(name = "introduction")
     private String introduction;
 
-    // 기입 완료 시 참으로 변환
+    // 3.4. 자기소개 기입 여부
     @Column(nullable = false)
     private boolean isIntroduction;
 
+    // 3.5. 직무/역할 및 보유 기술 기입 여부
+    @Column(nullable = false)
+    private boolean isJobAndSkill;
+
+    // 3.5.1. 직무/역할 기입 여부
+    @Column(nullable = false)
+    private boolean isProfileJobRole;
+
+    // 3.5.2. 보유 기술 기입 여부
     @Column(nullable = false)
     private boolean isProfileSkill;
 
+    // 3.6. 희망 팀빌딩 분야 기입 여부
     @Column(nullable = false)
     private boolean isProfileTeamBuildingField;
 
+    // 3.7. 활동 지역 및 위치 기입 여부
+    @Column(nullable = false)
+    private boolean isProfileRegion;
+
+    // 3.8. 이력 기입 여부
     @Column(nullable = false)
     private boolean isAntecedents;
 
+    // 3.9. 학력 기입 여부
     @Column(nullable = false)
     private boolean isEducation;
 
+    // 3.10. 수상 기입 여부
     @Column(nullable = false)
     private boolean isAwards;
 
-    @Column(nullable = false)
-    private boolean isAttach;
+//    // 3.11. 첨부 기입 여부
+//    @Column(nullable = false)
+//    private boolean isAttach;
 
-    // 생성자
+    // 3.11. 첨부 링크(URL) 기입 여부
+    @Column(nullable = false)
+    private boolean isAttachUrl;
+
+//    // 3.11. 첨부 파일(File) 기입 여부
+//    @Column(nullable = false)
+//    private boolean isAttachFile;
+
+    // 3.1. 미니 프로필 기입 여부
+    @Column(nullable = false)
+    private boolean isMiniProfile;
+
     public Profile(
             final Long id,
             final Member member,
-            final int completion,
-            final String introduction
+            final double completion
     ) {
         this.id = id;
         this.member = member;
         this.completion = completion;
-        this.introduction = introduction;
+        this.introduction = null;
         this.isIntroduction = false;
+        this.isJobAndSkill = false;
+        this.isProfileJobRole = false;
         this.isProfileSkill = false;
         this.isProfileTeamBuildingField = false;
+        this.isProfileRegion = false;
         this.isAntecedents = false;
         this.isEducation = false;
         this.isAwards = false;
-        this.isAttach = false;
+//        this.isAttach = false;
+        this.isAttachUrl = false;
+//        this.isAttachFile = false;
+        this.isMiniProfile = false;
     }
 
     public Profile(
             final Member member,
-            final int completion,
-            final String introduction
+            final int completion
     ) {
-        this(null, member, completion, introduction);
+        this(null, member, completion);
     }
 
-    public void update(final ProfileUpdateRequest updateRequest) {this.introduction = updateRequest.getIntroduction();}
-    public void deleteIntroduction() {this.introduction = null;}
-    public void addPerfectionSeven() {this.completion += 7;}
-    public void cancelPerfectionSeven() {this.completion -= 7;}
-    public void addPerfectionTwenty() { this.completion += 20; }
-    public void cancelPerfectionTwenty() {this.completion -= 20;}
+    // 기본 입력 항목 (희망 역할 및 기술 / 활동 지역 및 위치 / 희망 팀빌딩 분야 / 이력 / 학력 ) -> 각 10% 총합 50%
+    // 자기소개 30%
+    // 수상 10%
+    // 첨부 10%
 
-    // Default 항목 3개 관리 (isSkill, isProfileTeamBuildingField, isEducation)
+    // 디폴트 항목 관리 메서드
+    public void addPerfectionDefault() {this.completion += 10.0;}
+    public void cancelPerfectionDefault() {this.completion -= 10.0;}
 
-    public void updateIsProfileTeamBuildingField(final Boolean isProfileTeamBuildingField) {
-        this.isProfileTeamBuildingField = isProfileTeamBuildingField;
-        checkAndUpdateByDefault();
+    // 수상 및 첨부 관리 메서드
+    public void addPerfectionTen() {this.completion += 10.0;}
+    public void cancelPerfectionTen() {this.completion -= 10.0;}
+
+    // 자기소개 관리 메서드
+    public void addPerfectionThirty() { this.completion += 30.0; }
+    public void cancelPerfectionThirty() {this.completion -= 30.0;}
+
+    // 3.1. 미니 프로필 업데이트
+    public void updateIsMiniProfile(final Boolean isMiniProfile) {
+        this.isMiniProfile = isMiniProfile;
     }
 
-    public void updateIsEducation(final Boolean isEducation) {
-        this.isEducation = isEducation;
-        checkAndUpdateByDefault();
+    // 3.4. 자기소개 업데이트
+    // introduction ""인 경우 -> 삭제로 간주한다.
+    public void updateIntroduction(final String introduction) {
+        if (!Objects.equals(introduction, "")) {            // 삭제 요청이 아닌 수정/생성인 경우
+            if (this.introduction != null) {                    // 기존에 데이터가 있는 경우 (수정)
+                this.introduction = introduction;
+            } else {                                            // 기존에 데이터가 없는 경우 (생성)
+                this.introduction = introduction;
+                updateIsIntroduction(true);
+                addPerfectionThirty();
+                updateMemberProfileTypeByCompletion();
+            }
+        } else {                              // 삭제 요청인 경우
+            deleteIntroduction();
+            updateIsIntroduction(false);
+            cancelPerfectionThirty();
+            updateMemberProfileTypeByCompletion();
+        }
     }
 
+    // 3.4. 자기소개 업데이트
+    public void updateIsIntroduction(final boolean isIntroduction) {
+        this.isIntroduction = isIntroduction;
+    }
+
+    // 3.5.1. 내 이력서 직무/역할
+    public void updateIsProfileJobRole(final boolean isProfileJobRole) {
+        this.isProfileJobRole = isProfileJobRole;
+    }
+
+    // 3.5.2. 내 이력서 보유 기술
     public void updateIsProfileSkill(final boolean isProfileSkill) {
         this.isProfileSkill = isProfileSkill;
-        checkAndUpdateByDefault();
-    }
-
-    // 자기소개 등록 또는 삭제에서만 호출
-    public void updateIsIntroduction(final Boolean isIntroduction) {
-        this.isIntroduction = isIntroduction;
-        if (isIntroduction) {
-            addPerfectionTwenty();
-        } else {
-            cancelPerfectionTwenty();
+        if (this.isJobAndSkill != (this.isProfileJobRole && isProfileSkill)) {
+            this.isJobAndSkill = !this.isJobAndSkill;
+            if(this.isJobAndSkill){
+                addPerfectionDefault();
+            } else {
+                cancelPerfectionDefault();
+            }
         }
     }
 
+    // 3.6. 희망 팀빌딩 분야 업데이트
+    public void updateIsProfileTeamBuildingField(final boolean isProfileTeamBuildingField) {
+        this.isProfileTeamBuildingField = isProfileTeamBuildingField;
+        if (isProfileTeamBuildingField) {
+            addPerfectionDefault();
+        } else {
+            cancelPerfectionDefault();
+        }
+    }
 
+    // 3.7. 활동 지역 및 위치 업데이트
+    public void updateIsProfileRegion(final boolean isProfileRegion) {
+        this.isProfileRegion = isProfileRegion;
+        if (isProfileRegion) {
+            addPerfectionDefault();
+        } else {
+            cancelPerfectionDefault();
+        }
+    }
 
-    public void updateIsAntecedents(final Boolean isAntecedents) {
+    // 3.8. 이력 업데이트
+    public void updateIsAntecedents(final boolean isAntecedents) {
         this.isAntecedents = isAntecedents;
         if (isAntecedents) {
-            addPerfectionSeven();
+            addPerfectionDefault();
         } else {
-            cancelPerfectionSeven();
+            cancelPerfectionDefault();
         }
     }
 
-    // 수상 항목 등록 또는 삭제에서만 호출
-    public void updateIsAwards(final Boolean isAwards) {
+    // 3.9. 학력 업데이트
+    public void updateIsEducation(final boolean isEducation) {
+        this.isEducation = isEducation;
+        if (isEducation) {
+            addPerfectionDefault();
+        } else {
+            cancelPerfectionDefault();
+        }
+    }
+
+    // 3.10. 수상 업데이트
+    public void updateIsAwards(final boolean isAwards) {
         this.isAwards = isAwards;
         if (isAwards) {
-            addPerfectionSeven();
+            addPerfectionTen();
         } else {
-            cancelPerfectionSeven();
+            cancelPerfectionTen();
         }
     }
 
-    // 첨부 항목 등록 또는 삭제에서만 호출
-    public void updateIsAttach(final Boolean isAttach) {
-        this.isAttach = isAttach;
-        if (isAttach) {
-            addPerfectionSeven();
-        } else {
-            cancelPerfectionSeven();
-        }
-    }
+    // 3.11. 첨부 업데이트
+//    private void updateIsAttach(final boolean isAttachUrl, final boolean isAttachFile) {
+//        // attachUrl, attachFile 2개 중에 하나라도 참이면 isAttach는 참이다.
+//        if (this.isAttach != (isAttachUrl || isAttachFile)) {
+//            this.isAttach = !this.isAttach;
+//            if (this.isAttach) {
+//                addPerfectionTen();
+//            } else {
+//                cancelPerfectionTen();
+//            }
+//        }
+//    }
 
+    // 3.11.1 첨부 링크 업데이트
+    public void updateIsAttachUrl(final boolean isAttachUrl) {
+        this.isAttachUrl = isAttachUrl;
+
+    }
+    // 3.11.2 첨부 파일 업데이트
+//    public void updateIsAttachFile(final boolean isAttachFile) {
+//        this.isAttachFile = isAttachFile;
+//        updateIsAttach(this.isAttachUrl, isAttachFile);
+//    }
+
+
+
+
+
+    // 내 이력서의 완성도 % 기반으로 접근 권한 관리 메서드
     public void updateMemberProfileTypeByCompletion() {
-
-        // 완성도 값을 호출한다.
-        final int presentCompletion = this.getCompletion();
-
-        // 사용자의 권한 상태를 호출한다.
-        final MemberProfileType memberProfileType = this.getMember().getMemberProfileType();
+        final double presentCompletion = this.getCompletion();
+        final ProfileType profileType = this.getMember().getProfileType();
 
         if (presentCompletion >= 0 && presentCompletion < 50) {
-            if (MemberProfileType.NO_PERMISSION.equals(memberProfileType)) {
-                // 아무 조치를 하지 않는다.
+            if (ProfileType.NO_PERMISSION.equals(profileType)) {
                 return;
             } else {
-                // 같지 않으면 기존에 프로필 열람 및 매칭 요청 권한이 부여된 상태이다.
-                // false 전달하여 NO_PERMISSION 상태로 변경을 진행한다.
-                this.getMember().openAndClosePermission(false);
+                // 해당 상태를 변경해줘야함.
+                this.getMember().setProfileType(ProfileType.NO_PERMISSION);
             }
         } else if (presentCompletion >= 50 && presentCompletion < 80) {
-            if (MemberProfileType.PROFILE_OPEN_PERMISSION.equals(memberProfileType)) {
+            if (ProfileType.ALLOW_BROWSE.equals(profileType)) {
                 return;
             } else {
-                // true 전달하여 PROFILE_OPEN_PERMISSION 상태로 변경한다.
-                this.getMember().openAndClosePermission(true);
+                this.getMember().setProfileType(ProfileType.ALLOW_BROWSE);
             }
         } else {
-            if (MemberProfileType.MATCHING_PERMISSION.equals(memberProfileType)) {
+            if (ProfileType.ALLOW_MATCHING.equals(profileType)) {
                 return;
             } else {
-                this.getMember().changeAndOpenPermission(true);
+                this.getMember().setProfileType(ProfileType.ALLOW_MATCHING);
             }
         }
     }
 
-    // Default 항목에 대한 검사 진행
-    private void checkAndUpdateByDefault() {
-        if (this.isProfileSkill && this.isProfileTeamBuildingField && this.isEducation) {
-            // 전부 참인 경우
-            this.completion = 59;
-            this.getMember().openAndClosePermission(true);
-        } else {
-            this.completion = 0;
-            this.getMember().openAndClosePermission(false);
-        }
+    // 내 이력서의 각 항목들 기입 여부 조회 개별 메서드
+    public boolean getIsMiniProfile() { return isMiniProfile; }
+    public boolean getIsIntroduction() {
+        return isIntroduction;
+    }
+    public boolean getIsProfileSkill() {
+        return isProfileSkill;
+    }
+
+    public boolean getIsJobAndSkill() {
+        return isJobAndSkill;
+    }
+    public boolean getIsProfileTeamBuildingField() {
+        return isProfileTeamBuildingField;
+    }
+    public boolean getIsProfileRegion() {
+        return isProfileRegion;
+    }
+    public boolean getIsAntecedents() {
+        return isAntecedents;
+    }
+    public boolean getIsEducation() {
+        return isEducation;
+    }
+    public boolean getIsAwards() {
+        return isAwards;
+    }
+//    public boolean getIsAttach() {
+//        return isAttach;
+//    }
+    public boolean getIsAttachUrl() {
+        return isAttachUrl;
+    }
+//    public boolean getIsAttachFile() {
+//        return isAttachFile;
+//    }
+
+    // 3.4. 자기소개 초기화 및 삭제 메서드
+    public void deleteIntroduction() {this.introduction = null;}
+
+    public boolean getExistDefaultPrivateProfile() {
+        if (this.isProfileTeamBuildingField && this.isProfileRegion) {
+            return true;
+        } else return false;
     }
 
 

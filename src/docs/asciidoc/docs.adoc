@@ -1,59 +1,22 @@
-= LINKIT
+= Linkit
 :toc: left
 :source-highlighter: highlightjs
 :sectlinks:
 
-[[overview-http-status-codes]]
-=== HTTP status codes
+== 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
+== 링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im
 
-|===
-| 상태 코드 | 설명
-
-| `200 OK`
-| 성공
-
-| `201 Created`
-| 리소스 생성
-
-| `204 NO_CONTENT`
-| 성공 후 반환 값 없음
-
-| `400 Bad Request`
-| 잘못된 요청
-
-| `401 Unauthorized`
-| 비인증 상태
-
-| `403 Forbidden`
-| 권한 거부
-
-| `404 Not Found`
-| 존재하지 않는 요청 리소스
-
-| `500 Internal Server Error`
-| 서버 에러
-|===
-
-=== Exception codes
-[[exception-codes]]
-include::{snippets}/exception-code-controller-test/get-exception-codes/exception-response-fields.adoc[]
-
-== 회원가입 및 로그인 API
-
-=== 로그인 (POST /login/:provider)
-
+== 1. 회원관리
+=== 1.2.1. 간편로그인 [각 플랫폼 동일]
 ==== 요청
 include::{snippets}/login-controller-test/login/http-request.adoc[]
 include::{snippets}/login-controller-test/login/path-parameters.adoc[]
 include::{snippets}/login-controller-test/login/request-fields.adoc[]
-
 ==== 응답
 include::{snippets}/login-controller-test/login/http-response.adoc[]
-응답 쿠키
 include::{snippets}/login-controller-test/login/response-fields.adoc[]
 
-=== 토큰 재발급 (POST /token)
-
+=== 1.2.1. 토큰 재발급
 ==== 요청
 include::{snippets}/login-controller-test/extend-login/http-request.adoc[]
 요청 쿠키
@@ -63,8 +26,7 @@ include::{snippets}/login-controller-test/extend-login/request-cookies.adoc[]
 include::{snippets}/login-controller-test/extend-login/http-response.adoc[]
 include::{snippets}/login-controller-test/extend-login/response-fields.adoc[]
 
-=== 로그아웃 (DELETE /logout)
-
+=== 1.2.1. 로그아웃
 ==== 요청
 include::{snippets}/login-controller-test/logout/http-request.adoc[]
 요청 헤더
@@ -75,22 +37,8 @@ include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
 ==== 응답
 include::{snippets}/login-controller-test/logout/http-response.adoc[]
 
-=== 회원 탈퇴 (DELETE /account)
-
-==== 요청
-include::{snippets}/login-controller-test/delete-account/http-request.adoc[]
-요청 헤더
-include::{snippets}/login-controller-test/delete-account/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/login-controller-test/delete-account/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
-
-== 멤버 API
-
-=== 멤버 기본 정보 생성 (POST /members/basic-inform)
-
+== 1.4. 정보 기입
+=== 1.4.1. 개인정보 기입 [초대코드 구현 X]
 ==== 요청
 include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
 include::{snippets}/member-controller-test/create-member-basic-inform/request-fields.adoc[]
@@ -102,250 +50,296 @@ include::{snippets}/member-controller-test/create-member-basic-inform/request-co
 ==== 응답
 include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
 
-=== 멤버 기본 정보 조회 (GET /members/basic-inform)
-
+== 1.5.1.온보딩 - 내 이력서 - 전체 조회
 ==== 요청
-include::{snippets}/member-controller-test/get-member-basic-inform/http-request.adoc[]
+include::{snippets}/profile-on-boarding-controller-test/get-on-boarding-profile/http-request.adoc[]
+==== 응답
+include::{snippets}/profile-on-boarding-controller-test/get-on-boarding-profile/http-response.adoc[]
+include::{snippets}/profile-on-boarding-controller-test/get-on-boarding-profile/response-fields.adoc[]
+
+=== 1.5.2. 온보딩 - 내 이력서 - 희망 팀빌딩 분야 생성/수정
+==== 요청
+include::{snippets}/team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
+include::{snippets}/team-building-field-controller-test/create-profile-team-building-field/request-fields.adoc[]
+
+=== 1.5.3. 온보딩 - 내 이력서 - 활동 지역 및 위치 생성/수정
+==== 요청
+include::{snippets}/region-controller-test/create-profile-region/http-request.adoc[]
+include::{snippets}/region-controller-test/create-profile-region/request-fields.adoc[]
+
+=== 1.5.4. 온보딩 - 내 이력서 - 희망 역할, 보유 기술 생성/수정
+==== 요청
+include::{snippets}/profile-on-boarding-controller-test/create-on-boarding-personal-job-and-skill/http-request.adoc[]
+include::{snippets}/profile-on-boarding-controller-test/create-on-boarding-personal-job-and-skill/request-fields.adoc[]
+
+=== 1.5.5. 온보딩 - 내 이력서 - 학력 생성/수정
+==== 요청
+include::{snippets}/education-controller-test/create-education/http-request.adoc[]
+include::{snippets}/education-controller-test/create-education/request-fields.adoc[]
+
+=== 1.5.6. 온보딩 - 내 이력서 - 경력 생성
+==== 요청
+include::{snippets}/antecedents-controller-test/create-antecedent/http-request.adoc[]
+include::{snippets}/antecedents-controller-test/create-antecedent/request-fields.adoc[]
+
+=== 1.5.6. 온보딩 - 내 이력서 - 미니 프로필 생성/수정
+==== 요청
+include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-parts.adoc[]
+include::{snippets}/mini-profile-controller-test/create-mini-profile/request-part-miniProfileRequest-fields.adoc[]
+
+== 1.5. 팀 소개서 온보딩 가이드 기입
+=== 1.5.1. 내 이력서 / 팀 소개서 구분 중 팀 소개서 온보딩 항목 조회
+==== 요청
+include::{snippets}/team-on-boarding-controller-test/get-on-boarding-team-profile/http-request.adoc[]
+
+==== 응답
+include::{snippets}/team-on-boarding-controller-test/get-on-boarding-team-profile/http-response.adoc[]
+include::{snippets}/team-on-boarding-controller-test/get-on-boarding-team-profile/response-fields.adoc[]
+
+=== 1.5.9. 팀 소개서 희망 팀빌딩 분야 및 팀 기본 정보 생성/수정
+==== 요청
+include::{snippets}/team-on-boarding-controller-test/post-on-boarding-field-team-inform/http-request.adoc[]
+include::{snippets}/team-on-boarding-controller-test/post-on-boarding-field-team-inform/request-fields.adoc[]
+
+=== 1.5.10. 팀 소개서 활동방식 및 활동 지역 및 위치 생성/수정
+==== 요청
+include::{snippets}/activity-controller-test/post-activity/http-request.adoc[]
+include::{snippets}/activity-controller-test/post-activity/request-fields.adoc[]
+
+=== 1.5.11. 팀 소개서 팀 미니 프로필 생성/수정
+==== 요청
+include::{snippets}/team-mini-profile-controller-test/create-team-mini-profile/http-request.adoc[]
+include::{snippets}/team-mini-profile-controller-test/create-team-mini-profile/request-parts.adoc[]
+include::{snippets}/team-mini-profile-controller-test/create-team-mini-profile/request-part-teamMiniProfileCreateRequest-fields.adoc[]
+
+== 3. 내 이력서
+=== 3.0. 내 이력서 - 전체 조회
+==== 요청
+include::{snippets}/profile-controller-test/get-profile/http-request.adoc[]
+==== 응답
+include::{snippets}/profile-controller-test/get-profile/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-profile/response-fields.adoc[]
+
+=== 3.4. 내 이력서 - 자기소개 생성/수정
+==== 요청
+include::{snippets}/profile-controller-test/create-profile-introduction/http-request.adoc[]
+include::{snippets}/profile-controller-test/create-profile-introduction/request-fields.adoc[]
+
+=== 3.5. 내 이력서 - 희망 역할 및 보유 기술 생성/수정
+=== 3.6. 내 이력서 - 희망 팀빌딩 분야 생성/수정 (온보딩 API)
+=== 3.7. 내 이력서 - 활동 지역 및 위치 생성/수정 (온보딩 API 동일)
+
+=== 3.8. 내 이력서 - 경력 단일 생성
+include::{snippets}/antecedents-controller-test/create-antecedent/http-request.adoc[]
+include::{snippets}/antecedents-controller-test/create-antecedent/request-fields.adoc[]
+
+=== 3.8. 내 이력서 - 경력 단일 수정
+include::{snippets}/antecedents-controller-test/update-antecedent/http-request.adoc[]
+include::{snippets}/antecedents-controller-test/update-antecedent/request-fields.adoc[]
+include::{snippets}/antecedents-controller-test/update-antecedent/path-parameters.adoc[]
+
+=== 3.8. 내 이력서 - 경력 단일 삭제
+include::{snippets}/antecedents-controller-test/delete-antecedents/http-request.adoc[]
+include::{snippets}/antecedents-controller-test/delete-antecedents/path-parameters.adoc[]
+
+=== 3.9. 내 이력서 - 학력 생성
+include::{snippets}/education-controller-test/create-education/http-request.adoc[]
+include::{snippets}/education-controller-test/create-education/request-fields.adoc[]
+
+=== 3.9. 내 이력서 - 학력 수정
+include::{snippets}/antecedents-controller-test/update-antecedent/http-request.adoc[]
+include::{snippets}/antecedents-controller-test/update-antecedent/request-fields.adoc[]
+include::{snippets}/antecedents-controller-test/update-antecedent/path-parameters.adoc[]
+
+=== 3.9. 내 이력서 - 학력 삭제
+include::{snippets}/education-controller-test/delete-education/http-request.adoc[]
+include::{snippets}/education-controller-test/delete-education/path-parameters.adoc[]
+
+=== 3.10. 내 이력서 - 수상 단일 생성
+include::{snippets}/awards-controller-test/create-award/http-request.adoc[]
+include::{snippets}/awards-controller-test/create-award/request-fields.adoc[]
+
+=== 3.10. 내 이력서 - 수상 단일 수정
+include::{snippets}/awards-controller-test/update-award/http-request.adoc[]
+include::{snippets}/awards-controller-test/update-award/request-fields.adoc[]
+include::{snippets}/awards-controller-test/update-award/path-parameters.adoc[]
+
+=== 3.10. 내 이력서 - 수상 단일 삭제
+include::{snippets}/awards-controller-test/delete-awards/http-request.adoc[]
+include::{snippets}/awards-controller-test/delete-awards/path-parameters.adoc[]
+
+=== 3.11. 내 이력서 - 첨부 URL 생성/수정
+==== 요청
+include::{snippets}/attach-controller-test/create-attach-url/http-request.adoc[]
+include::{snippets}/attach-controller-test/create-attach-url/request-fields.adoc[]
+
+=== 3.11. 내 이력서 - 첨부 URL 삭제
+==== 요청
+include::{snippets}/attach-controller-test/delete-attach-url/http-request.adoc[]
+include::{snippets}/attach-controller-test/delete-attach-url/path-parameters.adoc[]
+
+== 4. 팀 소개서
+=== 4.0. 팀 소개서 - 전체 조회
+==== 요청
+include::{snippets}/team-profile-controller-test/get-team-profile/http-request.adoc[]
+==== 응답
+include::{snippets}/team-profile-controller-test/get-team-profile/http-response.adoc[]
+include::{snippets}/team-profile-controller-test/get-team-profile/response-fields.adoc[]
+
+=== 4.1. 팀 소개서 - 팀 미니 프로필 생성/수정 [온보딩 동일]
+
+=== 4.4. 팀 소개서 - 희망 팀빌딩 분야 생성/수정
+include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/http-request.adoc[]
+include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/request-fields.adoc[]
+
+=== 4.5. 팀 소개서 - 팀원 공고 단일 생성
+include::{snippets}/team-member-announcement-controller-test/create-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/create-team-member-announcement/request-fields.adoc[]
+
+=== 4.5. 팀 소개서 - 팀원 공고 단일 수정
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/request-fields.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/path-parameters.adoc[]
+
+=== 4.5. 팀 소개서 - 팀원 공고 단일 삭제
+=== 요청
+include::{snippets}/team-member-announcement-controller-test/delete-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/delete-team-member-announcement/path-parameters.adoc[]
+
+=== 4.6. 팀 소개서 - 활동 방식 및 활동 지역/위치 생성/수정 [온보딩 동일]
+
+=== 4.7. 팀 소개서 - 팀 소개 생성/수정/삭제
+==== 요청
+include::{snippets}/team-profile-controller-test/create-team-profile-introduction/http-request.adoc[]
+include::{snippets}/team-profile-controller-test/create-team-profile-introduction/request-fields.adoc[]
+
+=== 4.8. 팀 소개서 - 팀원 소개 단일 생성
+include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/http-request.adoc[]
+include::{snippets}/team-member-introduction-controller-test/create-team-member-introduction/request-fields.adoc[]
+
+=== 4.8. 팀 소개서 - 팀원 소개 단일 수정
+include::{snippets}/team-member-introduction-controller-test/update-team-member-introduction/http-request.adoc[]
+include::{snippets}/team-member-introduction-controller-test/update-team-member-introduction/request-fields.adoc[]
+include::{snippets}/team-member-introduction-controller-test/update-team-member-introduction/path-parameters.adoc[]
+
+=== 4.8. 팀 소개서 - 팀원 소개 단일 삭제
+include::{snippets}/team-member-introduction-controller-test/delete-team-member-introduction/http-request.adoc[]
+include::{snippets}/team-member-introduction-controller-test/delete-team-member-introduction/path-parameters.adoc[]
+
+=== 4.9. 팀 소개서 - 팀 연혁 단일 생성
+include::{snippets}/history-controller-test/create-history/http-request.adoc[]
+include::{snippets}/history-controller-test/create-history/request-fields.adoc[]
+
+=== 4.9. 팀 소개서 - 팀 연혁 단일 수정
+include::{snippets}/history-controller-test/update-history/http-request.adoc[]
+include::{snippets}/history-controller-test/update-history/request-fields.adoc[]
+include::{snippets}/history-controller-test/update-history/path-parameters.adoc[]
+
+=== 4.9. 팀 소개서 - 팀 연혁 단일 삭제
+include::{snippets}/history-controller-test/delete-history/http-request.adoc[]
+include::{snippets}/history-controller-test/delete-history/path-parameters.adoc[]
+
+=== 4.10. 팀 소개서 - 팀 첨부 URL 생성/수정
+==== 요청
+include::{snippets}/team-attach-controller-test/create-team-attach-url/http-request.adoc[]
+include::{snippets}/team-attach-controller-test/create-team-attach-url/request-fields.adoc[]
+
+=== 4.10. 팀 소개서 - 팀 첨부 URL 삭제
+==== 요청
+include::{snippets}/team-attach-controller-test/delete-team-attach-url/http-request.adoc[]
+include::{snippets}/team-attach-controller-test/delete-team-attach-url/path-parameters.adoc[]
+
+== 6. 팀원 찾기
+=== 6.1. 팀원 찾기 페이지
+==== 요청
+include::{snippets}/search-controller-test/get-private-mini-profile/http-request.adoc[]
+include::{snippets}/search-controller-test/get-private-mini-profile/query-parameters.adoc[]
+==== 응답
+include::{snippets}/search-controller-test/get-private-mini-profile/http-response.adoc[]
+include::{snippets}/search-controller-test/get-private-mini-profile/response-fields.adoc[]
+
+== 7. 팀 찾기
+=== 7.1. 팀 찾기 페이지
+==== 요청
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/http-request.adoc[]
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/query-parameters.adoc[]
+
+==== 응답
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/http-response.adoc[]
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/response-fields.adoc[]
+
+== 8. 이력서 열람
+=== 8.1. 내 이력서 열람
+==== 요청
+include::{snippets}/browse-private-profile-controller-test/get-browse-private-profile/http-request.adoc[]
+include::{snippets}/browse-private-profile-controller-test/get-browse-private-profile/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/browse-private-profile-controller-test/get-browse-private-profile/http-response.adoc[]
+include::{snippets}/browse-private-profile-controller-test/get-browse-private-profile/response-fields.adoc[]
+
+== 9. 소개서 열람
+=== 9.1. 팀 소개서 열람
+==== 요청
+include::{snippets}/browse-team-profile-controller-test/get-browse-team-profile/http-request.adoc[]
+include::{snippets}/browse-team-profile-controller-test/get-browse-team-profile/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/browse-team-profile-controller-test/get-browse-team-profile/http-response.adoc[]
+include::{snippets}/browse-team-profile-controller-test/get-browse-team-profile/response-fields.adoc[]
+
+== 10. 매칭 관리
+=== 10.1. 내 이력서로 내 이력서에 매칭 요청
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-private/http-request.adoc[]
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-private/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-private/request-fields.adoc[]
+
+=== 10.2. 팀 소개서로 내 이력서에 매칭 요청
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-private/http-request.adoc[]
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-private/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-private/request-fields.adoc[]
+
+=== 10.3. 팀 소개서로 팀 소개서에 매칭 요청
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-team/http-request.adoc[]
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-team/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/create-team-profile-matching-to-team/request-fields.adoc[]
+
+
+=== 10.4. 내 이력서로 팀 소개서에 매칭 요청
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-team/http-request.adoc[]
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-team/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/create-private-profile-matching-to-team/request-fields.adoc[]
+
+=== 10.5. 내가 받은 매칭 조회
+include::{snippets}/matching-controller-test/get-received-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching/response-fields.adoc[]
+
+=== 10.6. 내가 보낸 매칭
+include::{snippets}/matching-controller-test/get-my-request-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-my-request-matching/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-my-request-matching/response-fields.adoc[]
+
+=== 10.7. 성사된 매칭
+include::{snippets}/matching-controller-test/get-my-success-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-my-success-matching/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-my-success-matching/response-fields.adoc[]
+
+
+== 11. 설정
+=== 회원 탈퇴
+==== 요청
+include::{snippets}/login-controller-test/delete-account/http-request.adoc[]
 요청 헤더
-include::{snippets}/member-controller-test/get-member-basic-inform/request-headers.adoc[]
+include::{snippets}/login-controller-test/delete-account/request-headers.adoc[]
 요청 쿠키
-include::{snippets}/member-controller-test/get-member-basic-inform/request-cookies.adoc[]
+include::{snippets}/login-controller-test/delete-account/request-cookies.adoc[]
+
+==== 응답
+include::{snippets}/login-controller-test/delete-account/http-response.adoc[]
 
 ==== 응답
 include::{snippets}/member-controller-test/get-member-basic-inform/http-response.adoc[]
 include::{snippets}/member-controller-test/get-member-basic-inform/response-fields.adoc[]
 
-=== 멤버 이메일 정보 조회 (GET /members/email)
-
-==== 요청
-include::{snippets}/member-controller-test/get-member-email/http-request.adoc[]
-요청 헤더
-include::{snippets}/member-controller-test/get-member-email/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/member-controller-test/get-member-email/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/member-controller-test/get-member-email/http-response.adoc[]
-include::{snippets}/member-controller-test/get-member-email/response-fields.adoc[]
-
-== 미니 프로필 API
-
-=== 미니 프로필 조회 (GET /mini-profile)
-
-==== 요청
-include::{snippets}/mini-profile-controller-test/get-mini-profile/http-request.adoc[]
-요청 헤더
-include::{snippets}/mini-profile-controller-test/get-mini-profile/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/mini-profile-controller-test/get-mini-profile/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/mini-profile-controller-test/get-mini-profile/http-response.adoc[]
-include::{snippets}/mini-profile-controller-test/get-mini-profile/response-fields.adoc[]
-
-=== 미니 프로필 생성 (POST /mini-profile)
-
-==== 요청
-include::{snippets}/mini-profile-controller-test/create-mini-profile/http-request.adoc[]
-include::{snippets}/mini-profile-controller-test/create-mini-profile/request-fields.adoc[]
-요청 헤더
-include::{snippets}/mini-profile-controller-test/create-mini-profile/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/mini-profile-controller-test/create-mini-profile/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/mini-profile-controller-test/create-mini-profile/http-response.adoc[]
-
-=== 미니 프로필 수정 (PUT /mini-profile)
-
-==== 요청
-include::{snippets}/mini-profile-controller-test/update-mini-profile/http-request.adoc[]
-요청 헤더
-include::{snippets}/mini-profile-controller-test/update-mini-profile/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/mini-profile-controller-test/update-mini-profile/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/mini-profile-controller-test/update-mini-profile/http-response.adoc[]
-
-=== 미니 프로필 삭제 (DELETE /mini-profile)
-
-==== 요청
-include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-request.adoc[]
-요청 헤더
-include::{snippets}/mini-profile-controller-test/delete-mini-profile/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/mini-profile-controller-test/delete-mini-profile/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/mini-profile-controller-test/delete-mini-profile/http-response.adoc[]
-
-== 프로필 API
-
-=== 프로필 자기소개 항목 조회 (GET /profile)
-
-==== 요청
-include::{snippets}/profile-controller-test/get-profile-introduction/http-request.adoc[]
-요청 헤더
-include::{snippets}/profile-controller-test/get-profile-introduction/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-controller-test/get-profile-introduction/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/profile-controller-test/get-profile-introduction/http-response.adoc[]
-include::{snippets}/profile-controller-test/get-profile-introduction/response-fields.adoc[]
-
-=== 프로필 자기소개 항목 수정 (PATCH /profile)
-
-==== 요청
-include::{snippets}/profile-controller-test/update-profile-introduction/http-request.adoc[]
-include::{snippets}/profile-controller-test/update-profile-introduction/request-fields.adoc[]
-요청 헤더
-include::{snippets}/profile-controller-test/update-profile-introduction/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-controller-test/update-profile-introduction/request-cookies.adoc[]
-
-=== 프로필 자기소개 항목 삭제 (DELETE /profile)
-
-==== 요청
-include::{snippets}/profile-controller-test/delete-profile-introduction/http-request.adoc[]
-요청 헤더
-include::{snippets}/profile-controller-test/delete-profile-introduction/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-controller-test/delete-profile-introduction/request-cookies.adoc[]
-
-== 보유 기술 항목 API
-
-== 희망 팀빌딩 분야 항목 API
-
-=== 희망 팀빌딩 분야 항목 조회 (GET /profile_team_building_field)
-
-==== 요청
-include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/http-request.adoc[]
-요청 헤더
-include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/http-response.adoc[]
-include::{snippets}/profile-team-building-field-controller-test/get-profile-team-building-fields/response-fields.adoc[]
-
-=== 희망 팀빌딩 분야 항목 생성 (POST /profile_team_building_field)
-
-==== 요청
-include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-request.adoc[]
-include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-fields.adoc[]
-요청 헤더
-include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/profile-team-building-field-controller-test/create-profile-team-building-field/http-response.adoc[]
-
-== 이력 항목 API
-
-=== 단일 이력 항목 조회 (GET /antecedents)
-
-==== 요청
-include::{snippets}/antecedents-controller-test/get-antecedents/http-request.adoc[]
-요청 헤더
-include::{snippets}/antecedents-controller-test/get-antecedents/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/antecedents-controller-test/get-antecedents/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/antecedents-controller-test/get-antecedents/http-response.adoc[]
-include::{snippets}/antecedents-controller-test/get-antecedents/response-fields.adoc[]
-
-=== 단일 이력 항목 생성 (POST /antecedents)
-
-==== 요청
-include::{snippets}/antecedents-controller-test/create-antecedents/http-request.adoc[]
-include::{snippets}/antecedents-controller-test/create-antecedents/request-fields.adoc[]
-요청 헤더
-include::{snippets}/antecedents-controller-test/create-antecedents/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/antecedents-controller-test/create-antecedents/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/antecedents-controller-test/create-antecedents/http-response.adoc[]
-
-=== 단일 이력 항목 수정 (PUT /antecedents)
-
-==== 요청
-include::{snippets}/antecedents-controller-test/update-antecedents/http-request.adoc[]
-include::{snippets}/antecedents-controller-test/update-antecedents/request-fields.adoc[]
-요청 헤더
-include::{snippets}/antecedents-controller-test/update-antecedents/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/antecedents-controller-test/update-antecedents/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/antecedents-controller-test/update-antecedents/http-response.adoc[]
-
-=== 단일 이력 항목 삭제 (DELETE /antecedents)
-
-==== 요청
-include::{snippets}/antecedents-controller-test/delete-antecedents/http-request.adoc[]
-요청 헤더
-include::{snippets}/antecedents-controller-test/delete-antecedents/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/antecedents-controller-test/delete-antecedents/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/antecedents-controller-test/delete-antecedents/http-response.adoc[]
-
-== 학력 항목 API
-
-== 수상 항목 API
-
-=== 단일 수상 항목 조회 (GET /awards)
-
-==== 요청
-include::{snippets}/awards-controller-test/get-awards/http-request.adoc[]
-요청 헤더
-include::{snippets}/awards-controller-test/get-awards/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/awards-controller-test/get-awards/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/awards-controller-test/get-awards/http-response.adoc[]
-include::{snippets}/awards-controller-test/get-awards/response-fields.adoc[]
-
-=== 단일 수상 항목 생성 (POST /awards)
-
-==== 요청
-include::{snippets}/awards-controller-test/create-awards/http-request.adoc[]
-include::{snippets}/awards-controller-test/create-awards/request-fields.adoc[]
-요청 헤더
-include::{snippets}/awards-controller-test/create-awards/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/awards-controller-test/create-awards/request-cookies.adoc[]
-
-=== 단일 수상 항목 수정 (PUT /awards)
-
-==== 요청
-include::{snippets}/awards-controller-test/update-awards/http-request.adoc[]
-include::{snippets}/awards-controller-test/update-awards/request-fields.adoc[]
-요청 헤더
-include::{snippets}/awards-controller-test/update-awards/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/awards-controller-test/update-awards/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/awards-controller-test/update-awards/http-response.adoc[]
-
-=== 단일 수상 항목 삭제 (DELETE /awards)
-==== 요청
-include::{snippets}/awards-controller-test/delete-awards/http-request.adoc[]
-요청 헤더
-include::{snippets}/awards-controller-test/delete-awards/request-headers.adoc[]
-요청 쿠키
-include::{snippets}/awards-controller-test/delete-awards/request-cookies.adoc[]
-
-==== 응답
-include::{snippets}/awards-controller-test/delete-awards/http-response.adoc[]
-
-== 첨부 API

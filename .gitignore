@@ -43,4 +43,7 @@ out/
 src/main/resources/static/docs/
 
 ### application.yml ###
-src/main/resources/*.yml
+#src/main/resources/*.yml
+
+### .gitmessage.txt ###
+.gitmessage.txt

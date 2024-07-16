@@ -4,58 +4,36 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.request.MiniProfileCreateRequest;
-import liaison.linkit.profile.dto.request.MiniProfileUpdateRequest;
-import liaison.linkit.profile.dto.response.MiniProfileResponse;
+import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
 import liaison.linkit.profile.service.MiniProfileService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/mini-profile")
+@RequestMapping("/private")
+@Slf4j
 public class MiniProfileController {
+
     private final MiniProfileService miniProfileService;
 
-    // 해당 회원이 가지고 있는 미니 프로필 정보를 가져옴
-    @GetMapping
+    // 미니 프로필 생성/수정 요청
+    @PostMapping("/mini-profile")
     @MemberOnly
-    public ResponseEntity<MiniProfileResponse> getMiniProfile(@Auth final Accessor accessor) {
-        Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
-        final MiniProfileResponse miniProfileResponse = miniProfileService.getMiniProfileDetail(miniProfileId);
-        return ResponseEntity.ok().body(miniProfileResponse);
-    }
-
-    // 미니 프로필 생성 요청
-    @PostMapping
-    @MemberOnly
-    public ResponseEntity<MiniProfileResponse> createMiniProfile(
+    public ResponseEntity<Void> createMiniProfile(
             @Auth final Accessor accessor,
-            @RequestBody @Valid MiniProfileCreateRequest miniProfileCreateRequest
+            @RequestPart @Valid MiniProfileRequest miniProfileRequest,
+            @RequestPart(required = false) MultipartFile miniProfileImage
     ){
-        final MiniProfileResponse miniProfileResponse = miniProfileService.save(accessor.getMemberId(), miniProfileCreateRequest);
-        return ResponseEntity.ok().body(miniProfileResponse);
-    }
-
-    // 미니 프로필 항목 수정
-    @PutMapping
-    @MemberOnly
-    public ResponseEntity<Void> updateMiniProfile(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid final MiniProfileUpdateRequest miniProfileUpdateRequest
-    ){
-        Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
-        miniProfileService.update(miniProfileId, miniProfileUpdateRequest);
-        return ResponseEntity.noContent().build();
-    }
-
-    // 미니 프로필 항목 삭제
-    @DeleteMapping
-    @MemberOnly
-    public ResponseEntity<Void> deleteMiniProfile(@Auth final Accessor accessor) {
-        Long miniProfileId = miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
-        miniProfileService.delete(miniProfileId);
-        return ResponseEntity.noContent().build();
+        log.info("memberId={}의 미니 프로필 생성/수정 요청이 들어왔습니다.", accessor.getMemberId());
+        miniProfileService.save(accessor.getMemberId(), miniProfileRequest, miniProfileImage);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

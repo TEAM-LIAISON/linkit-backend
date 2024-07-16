@@ -22,5 +22,14 @@ public class Major {
     private Long id;
 
     @Column(nullable = false, length = 50)
-    private String majorType;
+    private String majorName;
+
+    public static Major of(
+            final String majorName
+    ) {
+        return new Major(
+                null,
+                majorName
+        );
+    }
 }

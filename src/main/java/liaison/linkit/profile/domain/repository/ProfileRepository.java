@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     @Query("""
@@ -12,7 +14,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
            FROM Profile profile
            WHERE profile.member.id = :memberId
            """)
-    Profile findByMemberId(@Param("memberId") final Long memberId);
+    Optional<Profile> findByMemberId(@Param("memberId") final Long memberId);
 
-    boolean existsByMemberId(Long memberId);
+    boolean existsByMemberId(final Long memberId);
 }

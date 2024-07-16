@@ -2,43 +2,99 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.profile.domain.Awards;
+import liaison.linkit.profile.domain.awards.Awards;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.AwardsRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.dto.request.AwardsCreateRequest;
-import liaison.linkit.profile.dto.request.AwardsUpdateRequest;
-import liaison.linkit.profile.dto.response.AwardsResponse;
+import liaison.linkit.profile.dto.request.awards.AwardsCreateRequest;
+import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_AWARDS_WITH_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_AWARDS_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class AwardsService {
 
-    private final AwardsRepository awardsRepository;
     private final ProfileRepository profileRepository;
+    private final AwardsRepository awardsRepository;
 
-    public Long validateAwardsByMember(Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if(!awardsRepository.existsByProfileId(profileId)){
-            throw new AuthException(INVALID_AWARDS_WITH_MEMBER);
-        } else {
-            return awardsRepository.findByProfileId(profileId).getId();
+    // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
+    private Profile getProfile(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    // 어떤 보유 기술 및 역할 1개만 조회할 때
+    private Awards getAwards(final Long awardsId) {
+        return awardsRepository.findById(awardsId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_AWARDS_BY_ID));
+    }
+
+    // 해당 내 이력서로부터 모든 보유 기술들을 조회하려고 할 때
+    private List<Awards> getAwardsList(final Long profileId) {
+        try {
+            return awardsRepository.findAllByProfileId(profileId);
+        } catch (Exception e) {
+            throw new BadRequestException(NOT_FOUND_AWARDS_LIST_BY_PROFILE_ID);
         }
     }
 
-    // 회원에 대해서 수상 항목을 저장하는 메서드
-    public void save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
+    // 멤버로부터 프로필 아이디를 조회해서 존재성을 판단
+    public void validateAwardsByMember(final Long memberId) {
+        if (!awardsRepository.existsByProfileId(getProfile(memberId).getId())) {
+            throw new AuthException(NOT_FOUND_AWARDS_LIST_BY_PROFILE_ID);
+        }
+    }
 
+    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
+
+    public void save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
+        final Profile profile = getProfile(memberId);
+
+        // 실제 저장 메서드
+        saveAwards(profile, awardsCreateRequest);
+
+        // 기존에 수상 이력 존재 X
+        if (!profile.getIsAwards()) {
+            profile.updateIsAwards(true);
+            profile.updateMemberProfileTypeByCompletion();
+        }
+    }
+
+    public void update(
+            final Long awardsId,
+            final AwardsCreateRequest awardsCreateRequest
+    ) {
+        final Awards awards = getAwards(awardsId);
+        awards.update(awardsCreateRequest);
+    }
+
+    // 회원에 대해서 수상 항목 리스트를 저장하는 메서드
+    public void saveAll(final Long memberId, final List<AwardsCreateRequest> awardsCreateRequests) {
+        final Profile profile = getProfile(memberId);
+
+        // 기존 항목 전체 삭제
+        if (awardsRepository.existsByProfileId(profile.getId())) {
+            awardsRepository.deleteAllByProfileId(profile.getId());
+            profile.updateIsAwards(false);
+            profile.updateMemberProfileTypeByCompletion();
+        }
+
+        awardsCreateRequests.forEach(request -> {
+            saveAwards(profile, request);
+        });
+
+        profile.updateIsAwards(true);
+        profile.updateMemberProfileTypeByCompletion();
+    }
+
+    private void saveAwards(final Profile profile, final AwardsCreateRequest awardsCreateRequest) {
         final Awards newAwards = Awards.of(
                 profile,
                 awardsCreateRequest.getAwardsName(),
@@ -49,17 +105,13 @@ public class AwardsService {
                 awardsCreateRequest.getAwardsDescription()
         );
         awardsRepository.save(newAwards);
-        // 수상 이력이 등록되었음으로 변경
-        profile.updateIsAwards(true);
-        // 접근 권한 판단 함수 실행
-        profile.updateMemberProfileTypeByCompletion();
     }
 
     // 해당 회원의 모든 수상 항목을 조회하는 메서드 / 수정 이전 화면에서 필요
     @Transactional(readOnly = true)
     public List<AwardsResponse> getAllAwards(final Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        final List<Awards> awards = awardsRepository.findAllByProfileId(profileId);
+        final Profile profile = getProfile(memberId);
+        final List<Awards> awards = awardsRepository.findAllByProfileId(profile.getId());
         return awards.stream()
                 .map(this::getAwardsResponse)
                 .toList();
@@ -78,29 +130,19 @@ public class AwardsService {
         return AwardsResponse.personalAwards(awards);
     }
 
-    public void update(final Long memberId, final AwardsUpdateRequest awardsUpdateRequest){
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long awardsId = validateAwardsByMember(memberId);
+    public void deleteAwards(final Long memberId, final Long awardsId) {
+        final Profile profile = getProfile(memberId);
+        final Awards awards = getAwards(awardsId);
 
-        final Awards awards = awardsRepository.findById(awardsId)
-                .orElseThrow(() ->  new BadRequestException(NOT_FOUND_AWARDS_ID));
+        awardsRepository.deleteById(awards.getId());
 
-        awards.update(awardsUpdateRequest);
-        awardsRepository.save(awards);
-
-        profile.updateMemberProfileTypeByCompletion();
-    }
-
-    public void delete(final Long memberId) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long awardsId = validateAwardsByMember(memberId);
-
-        if(!awardsRepository.existsById(awardsId)){
-            throw new BadRequestException(NOT_FOUND_AWARDS_ID);
+        if (!awardsRepository.existsByProfileId(profile.getId())) {
+            // 존재하지 않는 경우
+            profile.cancelPerfectionTen();
+            profile.updateMemberProfileTypeByCompletion();
         }
-        awardsRepository.deleteById(awardsId);
-
-        profile.updateIsAwards(false);
-        profile.updateMemberProfileTypeByCompletion();
     }
+
+
+
 }

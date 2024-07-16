@@ -1,26 +1,23 @@
 package liaison.linkit.login.infrastructure.oauthprovider;
 
-import static java.lang.Boolean.TRUE;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_AUTHORIZATION_CODE;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
-
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.login.domain.OauthAccessToken;
 import liaison.linkit.login.domain.OauthProvider;
 import liaison.linkit.login.domain.OauthUserInfo;
 import liaison.linkit.login.infrastructure.oauthUserInfo.KakaoUserInfo;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import static java.lang.Boolean.TRUE;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_AUTHORIZATION_CODE;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
 
 @Component
 public class KakaoOauthProvider implements OauthProvider {
@@ -57,6 +54,7 @@ public class KakaoOauthProvider implements OauthProvider {
         final String accessToken = requestAccessToken(code);
         final HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
+
         final HttpEntity<MultiValueMap<String, String>> userInfoRequestEntity = new HttpEntity<>(headers);
 
         final Map<String, Boolean> queryParam = new HashMap<>();

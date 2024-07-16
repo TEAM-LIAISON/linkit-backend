@@ -27,8 +27,8 @@ import static liaison.linkit.admin.domain.type.AdminType.MASTER;
 import static liaison.linkit.global.exception.ExceptionCode.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@RequiredArgsConstructor
 @Component
+@RequiredArgsConstructor
 public class AdminLoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final String REFRESH_TOKEN = "refresh-token";

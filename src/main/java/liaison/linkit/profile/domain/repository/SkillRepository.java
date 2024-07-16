@@ -14,5 +14,10 @@ public interface SkillRepository extends JpaRepository<Skill, Long> {
            FROM Skill s
            WHERE s.skillName in :skillNames
             """)
-    List<Skill> findSkillNamesBySkillNames(@Param("skillNames") List<String> skillNames);
+    List<Skill> findSkillsBySkillNames(@Param("skillNames") List<String> skillNames);
+
+//    @Query("SELECT s FROM Skill s WHERE s.skillName = :skillName")
+//    Skill findBySkillName(
+//            @Param("skillName") final String skillName
+//    );
 }

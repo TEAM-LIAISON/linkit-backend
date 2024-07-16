@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.dto.request.AntecedentsCreateRequest;
-import liaison.linkit.profile.dto.request.AntecedentsUpdateRequest;
-import liaison.linkit.profile.dto.response.AntecedentsResponse;
+import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
 import liaison.linkit.profile.service.AntecedentsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,22 +14,30 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AntecedentsController.class)
@@ -53,10 +59,84 @@ public class AntecedentsControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        given(antecedentsService.validateAntecedentsByMember(1L)).willReturn(1L);
+        doNothing().when(antecedentsService).validateAntecedentsByMember(1L);
     }
 
     private void makeAntecedents() throws Exception {
+        final AntecedentsCreateRequest firstAntecedentsCreateRequest = new AntecedentsCreateRequest(
+                "오더이즈",
+                "프로젝트 매니저",
+                2023,
+                3,
+                2023,
+                6,
+                false,
+                "경력 설명입니다."
+        );
+
+        final AntecedentsCreateRequest secondAntecedentsCreateRequest = new AntecedentsCreateRequest(
+                "삼성",
+                "SW 개발자",
+                2024,
+                2,
+                2025,
+                10,
+                false,
+                "경력 설명입니다."
+        );
+        final List<AntecedentsCreateRequest> antecedentsCreateRequestList = Arrays.asList(firstAntecedentsCreateRequest, secondAntecedentsCreateRequest);
+
+        doNothing().when(antecedentsService).saveAll(1L, antecedentsCreateRequestList);
+        performPostRequests(antecedentsCreateRequestList);
+    }
+
+    // 이력 항목 생성 테스트
+    private ResultActions performPostRequests(final List<AntecedentsCreateRequest> antecedentsCreateRequestList) throws Exception {
+        return mockMvc.perform(
+                post("/private/antecedents")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(antecedentsCreateRequestList))
+        );
+    }
+
+    private ResultActions performUpdateRequest(final int antecedentsId, final AntecedentsCreateRequest antecedentsCreateRequest) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/private/antecedents/{antecedentsId}", antecedentsId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(antecedentsCreateRequest))
+        );
+    }
+
+    private ResultActions performPostRequest(
+            final AntecedentsCreateRequest antecedentsCreateRequest
+    ) throws Exception {
+        return mockMvc.perform(
+                post("/private/antecedent")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(antecedentsCreateRequest))
+        );
+    }
+
+    // 경력 항목 삭제 테스트
+    private ResultActions performDeleteRequest(final int antecedentsId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/private/antecedents/{antecedentsId}", antecedentsId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+        );
+    }
+
+    @DisplayName("1.5.7. 경력 항목을 수정할 수 있다.")
+    @Test
+    void updateAntecedent() throws Exception {
+        // given
         final AntecedentsCreateRequest antecedentsCreateRequest = new AntecedentsCreateRequest(
                 "오더이즈",
                 "프로젝트 매니저",
@@ -64,70 +144,89 @@ public class AntecedentsControllerTest extends ControllerTest {
                 3,
                 2023,
                 6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                false,
+                "경력 설명입니다."
         );
+
+        // when
+        final ResultActions resultActions = performUpdateRequest(1, antecedentsCreateRequest);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("antecedentsId")
+                                        .description("경력 항목 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("projectName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("기업명(프로젝트명)")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("projectRole")
+                                        .type(JsonFieldType.STRING)
+                                        .description("직무(역할)")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("startYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("시작 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("startMonth")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("시작 월")
+                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("endYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("종료 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("endMonth")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("종료 월")
+                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("retirement")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("퇴직 여부")
+                                        .attributes(field("constraint", "false => 재직 중")),
+                                fieldWithPath("antecedentsDescription")
+                                        .type(JsonFieldType.STRING)
+                                        .description("경력 설명")
+                                        .attributes(field("constraint", "문자열"))
+                        )
+                ));
     }
 
-    // 단일 이력 항목 조회 테스트
-    private ResultActions performGetRequest() throws Exception {
-        return mockMvc.perform(
-                get("/antecedents")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-        );
-    }
-
-    // 단일 이력 항목 등록 테스트
-    private ResultActions performPostRequest(final AntecedentsCreateRequest createRequest) throws Exception {
-        return mockMvc.perform(
-                post("/antecedents")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createRequest))
-        );
-    }
-
-    // 단일 이력 항목 수정 테스트
-    private ResultActions performPutUpdateRequest(final AntecedentsUpdateRequest updateRequest) throws Exception {
-        return mockMvc.perform(
-                put("/antecedents")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateRequest))
-        );
-    }
-
-    // 단일 이력 항목 삭제 테스트
-    private ResultActions performDeleteRequest() throws Exception {
-        return mockMvc.perform(
-                delete("/antecedents")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-        );
-    }
-
-    @DisplayName("이력 항목을 조회할 수 있다.")
+    // 1.5.7. 경력 생성 테스트
+    @DisplayName("1.5.7. 경력 항목 리스트를 생성/수정할 수 있다.")
     @Test
-    void getAntecedents() throws Exception {
+    void createAntecedents() throws Exception {
         // given
-        final AntecedentsResponse response = new AntecedentsResponse(
-                1L,
+        final AntecedentsCreateRequest firstAntecedentsCreateRequest = new AntecedentsCreateRequest(
                 "오더이즈",
                 "프로젝트 매니저",
                 2023,
                 3,
                 2023,
                 6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                false,
+                "경력 설명입니다."
         );
 
-        given(antecedentsService.getAntecedentsDetail(1L))
-                .willReturn(response);
+        final AntecedentsCreateRequest secondAntecedentsCreateRequest = new AntecedentsCreateRequest(
+                "삼성",
+                "SW 개발자",
+                2024,
+                2,
+                2025,
+                10,
+                false,
+                "경력 설명입니다."
+        );
 
+        final List<AntecedentsCreateRequest> antecedentsCreateRequestList = Arrays.asList(firstAntecedentsCreateRequest, secondAntecedentsCreateRequest);
+
+        doNothing().when(antecedentsService).saveAll(1L, antecedentsCreateRequestList);
         // when
-        final ResultActions resultActions = performGetRequest();
+        final ResultActions resultActions = performPostRequests(antecedentsCreateRequestList);
 
         // then
         resultActions.andExpect(status().isOk())
@@ -142,47 +241,48 @@ public class AntecedentsControllerTest extends ControllerTest {
                                                 .description("access token")
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
-                                responseFields(
-                                        fieldWithPath("id")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("이력 항목 ID")
-                                                .attributes(field("constraint", "양의 정수")),
-                                        fieldWithPath("projectName")
+                                requestFields(
+                                        fieldWithPath("[].projectName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("기업명(프로젝트명)")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("projectRole")
+                                        fieldWithPath("[].projectRole")
                                                 .type(JsonFieldType.STRING)
                                                 .description("직무(역할)")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("startYear")
+                                        fieldWithPath("[].startYear")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("시작 연도")
                                                 .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("startMonth")
+                                        fieldWithPath("[].startMonth")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("시작 월")
                                                 .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("endYear")
+                                        fieldWithPath("[].endYear")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("종료 연도")
                                                 .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("endMonth")
+                                        fieldWithPath("[].endMonth")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("종료 월")
                                                 .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("antecedentsDescription")
+                                        fieldWithPath("[].retirement")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("퇴직 여부")
+                                                .attributes(field("constraint", "false => 재직 중")),
+                                        fieldWithPath("[].antecedentsDescription")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
+                                                .description("경력 설명")
                                                 .attributes(field("constraint", "문자열"))
                                 )
                         )
                 );
+
     }
 
-    @DisplayName("단일 이력 항목을 생성할 수 있다.")
+    @DisplayName("경력 항목을 1개 생성할 수 있다.")
     @Test
-    void createAntecedents() throws Exception {
+    void createAntecedent() throws Exception {
         // given
         final AntecedentsCreateRequest antecedentsCreateRequest = new AntecedentsCreateRequest(
                 "오더이즈",
@@ -191,149 +291,76 @@ public class AntecedentsControllerTest extends ControllerTest {
                 3,
                 2023,
                 6,
-                "QR 코드 활용 키오스크 주문 플랫폼"
+                false,
+                "경력 설명입니다."
         );
+
+        doNothing().when(antecedentsService).save(1L, antecedentsCreateRequest);
 
         // when
         final ResultActions resultActions = performPostRequest(antecedentsCreateRequest);
 
         // then
-        resultActions.andExpect(status().isCreated())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                requestFields(
-                                        fieldWithPath("projectName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("기업명(프로젝트명)")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("projectRole")
-                                                .type(JsonFieldType.STRING)
-                                                .description("직무(역할)")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("startYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("시작 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("startMonth")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("시작 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("endYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("종료 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("endMonth")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("종료 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("antecedentsDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
-                                                .attributes(field("constraint", "문자열"))
-                                )
+        resultActions.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        requestFields(
+                                fieldWithPath("projectName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("기업명(프로젝트명)")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("projectRole")
+                                        .type(JsonFieldType.STRING)
+                                        .description("직무(역할)")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("startYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("시작 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("startMonth")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("시작 월")
+                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("endYear")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("종료 연도")
+                                        .attributes(field("constraint", "4자리 숫자")),
+                                fieldWithPath("endMonth")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("종료 월")
+                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("retirement")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("퇴직 여부")
+                                        .attributes(field("constraint", "false => 재직 중")),
+                                fieldWithPath("antecedentsDescription")
+                                        .type(JsonFieldType.STRING)
+                                        .description("경력 설명")
+                                        .attributes(field("constraint", "문자열"))
                         )
-                );
+                ));
     }
 
-    @DisplayName("단일 이력 항목을 수정할 수 있다.")
-    @Test
-    void updateAntecedents() throws Exception {
-        // given
-        final AntecedentsUpdateRequest updateRequest = new AntecedentsUpdateRequest(
-                "피드미",
-                "개발자",
-                2023,
-                8,
-                2024,
-                1,
-                "개인 맞춤형 뉴스 큐레이션 플랫폼"
-        );
 
-        doNothing().when(antecedentsService).update(anyLong(), any(AntecedentsUpdateRequest.class));
 
-        // when
-        final ResultActions resultActions = performPutUpdateRequest(updateRequest);
-
-        // then
-        resultActions.andExpect(status().isNoContent())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                requestFields(
-                                        fieldWithPath("projectName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("기업명(프로젝트명)")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("projectRole")
-                                                .type(JsonFieldType.STRING)
-                                                .description("직무(역할)")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("startYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("시작 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("startMonth")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("시작 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("endYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("종료 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("endMonth")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("종료 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("antecedentsDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
-
-    @DisplayName("단일 이력 항목을 삭제할 수 있다.")
+    @DisplayName("경력 항목을 삭제할 수 있다.")
     @Test
     void deleteAntecedents() throws Exception {
         // given
         makeAntecedents();
-        doNothing().when(antecedentsService).delete(anyLong());
+        doNothing().when(antecedentsService).validateAntecedentsByMember(anyLong());
 
         // when
-        final ResultActions resultActions = performDeleteRequest();
+        final ResultActions resultActions = performDeleteRequest(1);
 
         // then
+        verify(antecedentsService).delete(1L, 1L);
+
         resultActions.andExpect(status().isNoContent())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                )
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("antecedentsId")
+                                        .description("경력 항목 ID")
                         )
-                );
+                ));
     }
 }

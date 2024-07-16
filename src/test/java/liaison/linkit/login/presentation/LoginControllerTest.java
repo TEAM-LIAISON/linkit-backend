@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.login.dto.AccessTokenResponse;
-import liaison.linkit.login.dto.LoginRequest;
-import liaison.linkit.login.dto.LoginResponse;
-import liaison.linkit.login.dto.MemberTokensAndIsBasicInform;
+import liaison.linkit.login.dto.*;
 import liaison.linkit.login.service.LoginService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,6 +46,7 @@ public class LoginControllerTest extends ControllerTest {
     private final static String REFRESH_TOKEN = "refreshToken";
     private final static String ACCESS_TOKEN = "accessToken";
     private final static String RENEW_ACCESS_TOKEN = "I'mNewAccessToken!";
+    private final static String EMAIL = "linkit@gmail.com";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -62,10 +60,11 @@ public class LoginControllerTest extends ControllerTest {
         // given
         final LoginRequest loginRequest = new LoginRequest("code");
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, ACCESS_TOKEN);
-        final MemberTokensAndIsBasicInform memberTokensAndIsBasicInform = new MemberTokensAndIsBasicInform(ACCESS_TOKEN, REFRESH_TOKEN, false);
+        final MemberTokensAndOnBoardingStepInform memberTokensAndOnBoardingStepInform
+                = new MemberTokensAndOnBoardingStepInform(ACCESS_TOKEN, REFRESH_TOKEN, EMAIL, false, false);
 
         when(loginService.login(anyString(), anyString()))
-                .thenReturn(memberTokensAndIsBasicInform);
+                .thenReturn(memberTokensAndOnBoardingStepInform);
 
         final ResultActions resultActions = mockMvc.perform(post("/login/{provider}", GOOGLE_PROVIDER)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -78,7 +77,7 @@ public class LoginControllerTest extends ControllerTest {
                         restDocs.document(
                                 pathParameters(
                                         parameterWithName("provider")
-                                                .description("로그인 유형")
+                                                .description("로그인 유형 (플랫폼 영어 이름)")
                                 ),
                                 requestFields(
                                         fieldWithPath("code")
@@ -91,15 +90,23 @@ public class LoginControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("access token")
                                                 .attributes(field("constraint", "문자열(jwt)")),
-                                        fieldWithPath("memberBasicInform")
+                                        fieldWithPath("email")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소셜 로그인 이메일")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("existMemberBasicInform")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("기본 정보 기입 여부")
+                                                .description("기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("existDefaultProfile")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 필수 항목 기입 완료)")
                                                 .attributes(field("constraint", "boolean 값"))
                                 )
                         ))
                 .andReturn();
 
-        final LoginResponse expected = new LoginResponse(memberTokens.getAccessToken(), false);
+        final LoginResponse expected = new LoginResponse(memberTokens.getAccessToken(), EMAIL, false, false);
         final LoginResponse actual = objectMapper.readValue(
                 mvcResult.getResponse().getContentAsString(),
                 LoginResponse.class
@@ -109,6 +116,8 @@ public class LoginControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
+
+
     @DisplayName("accessToken 재발급을 통해 로그인을 인정할 수 있다.")
     @Test
     void extendLogin() throws Exception {
@@ -116,8 +125,10 @@ public class LoginControllerTest extends ControllerTest {
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
         final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
 
+        final RenewTokenResponse renewTokenResponse = new RenewTokenResponse(RENEW_ACCESS_TOKEN, true, true);
+
         when(loginService.renewalAccessToken(REFRESH_TOKEN, ACCESS_TOKEN))
-                .thenReturn(RENEW_ACCESS_TOKEN);
+                .thenReturn(renewTokenResponse);
 
         // when
         final ResultActions resultActions = mockMvc.perform(post("/token")
@@ -141,7 +152,15 @@ public class LoginControllerTest extends ControllerTest {
                                 fieldWithPath("accessToken")
                                         .type(JsonFieldType.STRING)
                                         .description("access token")
-                                        .attributes(field("constraint", "문자열(jwt)"))
+                                        .attributes(field("constraint", "문자열(jwt)")),
+                                fieldWithPath("existMemberBasicInform")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("existDefaultProfile")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 필수 항목 기입 완료)")
+                                        .attributes(field("constraint", "boolean 값"))
                         )
                 ))
                 .andReturn();

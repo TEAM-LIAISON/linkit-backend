@@ -2,61 +2,104 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.profile.domain.Antecedents;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.antecedents.Antecedents;
 import liaison.linkit.profile.domain.repository.AntecedentsRepository;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.dto.request.AntecedentsCreateRequest;
-import liaison.linkit.profile.dto.request.AntecedentsUpdateRequest;
-import liaison.linkit.profile.dto.response.AntecedentsResponse;
+import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
+import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_ANTECEDENTS_WITH_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_ANTECEDENTS_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class AntecedentsService {
 
-    private final AntecedentsRepository antecedentsRepository;
     private final ProfileRepository profileRepository;
+    private final AntecedentsRepository antecedentsRepository;
 
-    public Long validateAntecedentsByMember(final Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if (!antecedentsRepository.existsByProfileId(profileId)) {
-            throw new AuthException(INVALID_ANTECEDENTS_WITH_MEMBER);
-        } else {
-            return antecedentsRepository.findByProfileId(profileId).getId();
+    // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
+    private Profile getProfile(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    // 어떤 이력 정보 1개만 조회할 때
+    private Antecedents getAntecedents(final Long antecedentsId) {
+        return antecedentsRepository.findById(antecedentsId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_BY_ID));
+    }
+
+    // 내 이력서 하나에 대한 모든 이력 정보 리스트 조회
+    private List<Antecedents> getAntecedentsList(final Long profileId) {
+        try {
+            return antecedentsRepository.findAllByProfileId(profileId);
+        } catch (Exception e) {
+            throw new BadRequestException(NOT_FOUND_ANTECEDENTS_BY_PROFILE_ID);
         }
     }
 
-    public void save(final Long memberId, final AntecedentsCreateRequest antecedentsCreateRequest){
-        final Profile profile = profileRepository.findByMemberId(memberId);
+    // 멤버 아이디로부터 이력 항목 유효성 판단
+    public void validateAntecedentsByMember(final Long memberId) {
+        if (!antecedentsRepository.existsByProfileId(getProfile(memberId).getId())) {
+            throw new AuthException(NOT_FOUND_ANTECEDENTS_BY_PROFILE_ID);
+        }
+    }
 
-        final Antecedents newAntecedents = Antecedents.of(
-                profile,
-                antecedentsCreateRequest.getProjectName(),
-                antecedentsCreateRequest.getProjectRole(),
-                antecedentsCreateRequest.getStartYear(),
-                antecedentsCreateRequest.getStartMonth(),
-                antecedentsCreateRequest.getEndYear(),
-                antecedentsCreateRequest.getEndMonth(),
-                antecedentsCreateRequest.getAntecedentsDescription()
-        );
+    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
-        antecedentsRepository.save(newAntecedents);
+    @Transactional
+    public void saveAll(
+            final Long memberId,
+            final List<AntecedentsCreateRequest> antecedentsCreateRequests
+    ) {
+        // 리스트 형태로 이력 생성 요청이 들어옴
+        // 기존에 저장되어 있던 모든 이력을 삭제하고 다시 생성해줘야 함.
+        final Profile profile = getProfile(memberId);
 
+        // 기존에 존재하던 해당 프로필의 모든 이력 항목을 삭제한다.
+        if (antecedentsRepository.existsByProfileId(profile.getId())) {
+            antecedentsRepository.deleteAllByProfileId(profile.getId());
+            profile.updateIsAntecedents(false);
+            profile.updateMemberProfileTypeByCompletion();
+        }
+
+        // 저장 로직을 반복 실행하여 모든 경력 데이터 저장
+
+        antecedentsCreateRequests.forEach(request -> {
+            saveAntecedent(profile, request);
+        });
+
+        // 프로필 업데이트
         profile.updateIsAntecedents(true);
         profile.updateMemberProfileTypeByCompletion();
     }
 
+    private void saveAntecedent(final Profile profile, final AntecedentsCreateRequest request) {
+        final Antecedents newAntecedents = Antecedents.of(
+                profile,
+                request.getProjectName(),
+                request.getProjectRole(),
+                request.getStartYear(),
+                request.getStartMonth(),
+                request.getEndYear(),
+                request.getEndMonth(),
+                request.isRetirement(),
+                request.getAntecedentsDescription()
+        );
+        antecedentsRepository.save(newAntecedents);
+    }
+
     @Transactional(readOnly = true)
-    public AntecedentsResponse getAntecedentsDetail(final Long antecedentsId) {
+    public AntecedentsResponse getPersonalAntecedents(final Long antecedentsId) {
         final Antecedents antecedents = antecedentsRepository.findById(antecedentsId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_ID));
         return AntecedentsResponse.personalAntecedents(antecedents);
@@ -64,8 +107,8 @@ public class AntecedentsService {
 
     @Transactional(readOnly = true)
     public List<AntecedentsResponse> getAllAntecedents(Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        final List<Antecedents> antecedents = antecedentsRepository.findAllByProfileId(profileId);
+        final Profile profile = getProfile(memberId);
+        final List<Antecedents> antecedents = antecedentsRepository.findAllByProfileId(profile.getId());
         return antecedents.stream()
                 .map(this::getAntecedentsResponse)
                 .toList();
@@ -75,32 +118,36 @@ public class AntecedentsService {
         return AntecedentsResponse.of(antecedents);
     }
 
-    public void update(final Long memberId, final AntecedentsUpdateRequest antecedentsUpdateRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long antecedentsId = validateAntecedentsByMember(memberId);
-
-        final Antecedents antecedents = antecedentsRepository.findById(antecedentsId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ANTECEDENTS_ID));
-
-        // 입력에 대한 제약은 프론트에서 처리해준다.
-        // 들어오는 값은 Not null
-        antecedents.update(antecedentsUpdateRequest);
-        antecedentsRepository.save(antecedents);
-
-        profile.updateMemberProfileTypeByCompletion();
+    // update 메서드
+    public void update(final Long antecedentsId, final AntecedentsCreateRequest antecedentsCreateRequest) {
+        final Antecedents antecedents = getAntecedents(antecedentsId);
+        // 해당 객체 업데이트
+        antecedents.update(antecedentsCreateRequest);
     }
 
-    public void delete(final Long memberId) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-        final Long antecedentsId = validateAntecedentsByMember(memberId);
-
-        if (!antecedentsRepository.existsById(antecedentsId)) {
-            throw new BadRequestException(NOT_FOUND_ANTECEDENTS_ID);
+    // 삭제 메서드
+    public void delete(final Long memberId, final Long antecedentsId) {
+        final Profile profile = getProfile(memberId);
+        final Antecedents antecedents = getAntecedents(antecedentsId);
+        antecedentsRepository.deleteById(antecedents.getId());
+        log.info("삭제 완료");
+        if (!antecedentsRepository.existsByProfileId(profile.getId())) {
+            profile.updateIsAntecedents(false);
+            profile.cancelPerfectionDefault();
+            profile.updateMemberProfileTypeByCompletion();
         }
+    }
 
-        antecedentsRepository.deleteById(antecedentsId);
-
-        profile.updateIsAntecedents(false);
+    public void save(
+            final Long memberId,
+            final AntecedentsCreateRequest antecedentsCreateRequest
+    ) {
+        final Profile profile = getProfile(memberId);
+        // 저장 메서드
+        saveAntecedent(profile, antecedentsCreateRequest);
+        // 업데이트
+        profile.updateIsAntecedents(true);
+        profile.addPerfectionDefault();
         profile.updateMemberProfileTypeByCompletion();
     }
 }

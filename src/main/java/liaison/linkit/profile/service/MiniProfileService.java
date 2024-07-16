@@ -2,74 +2,226 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.profile.domain.MiniProfile;
+import liaison.linkit.global.exception.ImageException;
+import liaison.linkit.image.domain.ImageFile;
+import liaison.linkit.image.domain.S3ImageEvent;
+import liaison.linkit.image.infrastructure.S3Uploader;
+import liaison.linkit.member.domain.MemberBasicInform;
+import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.repository.MiniProfileRepository;
+import liaison.linkit.profile.domain.miniProfile.MiniProfile;
+import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.dto.request.MiniProfileCreateRequest;
-import liaison.linkit.profile.dto.request.MiniProfileUpdateRequest;
-import liaison.linkit.profile.dto.response.MiniProfileResponse;
+import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
+import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
+import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
+import liaison.linkit.profile.domain.role.JobRole;
+import liaison.linkit.profile.domain.role.ProfileJobRole;
+import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
+import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_MINI_PROFILE_WITH_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MINI_PROFILE_ID;
+import java.util.List;
+
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MiniProfileService {
 
-    private final MiniProfileRepository miniProfileRepository;
     private final ProfileRepository profileRepository;
+    private final MemberBasicInformRepository memberBasicInformRepository;
+    private final MiniProfileRepository miniProfileRepository;
+    private final MiniProfileKeywordRepository miniProfileKeywordRepository;
+    private final ProfileJobRoleRepository profileJobRoleRepository;
+    private final S3Uploader s3Uploader;
+    private final ApplicationEventPublisher publisher;
 
-    public Long validateMiniProfileByMember(Long memberId) {
-        Long profileId = profileRepository.findByMemberId(memberId).getId();
-        if (!miniProfileRepository.existsByProfileId(profileId)) {
-            throw new AuthException(INVALID_MINI_PROFILE_WITH_MEMBER);
+    // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
+    private Profile getProfile(final Long memberId) {
+        return profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+    }
+
+    // "내 이력서"에 1대 1로 매핑되어 있는 미니 프로필 조회 메서드
+    private MiniProfile getMiniProfile(final Long profileId) {
+        return miniProfileRepository.findByProfileId(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_PROFILE_ID));
+    }
+
+    // 회원 기본 정보를 가져오는 메서드
+    private MemberBasicInform getMemberBasicInform(final Long memberId) {
+        return memberBasicInformRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID));
+    }
+
+    // 멤버 아이디로 미니 프로필의 유효성을 검증하는 로직
+    public void validateMiniProfileByMember(final Long memberId) {
+        if (!miniProfileRepository.existsByProfileId(getProfile(memberId).getId())) {
+            throw new AuthException(NOT_FOUND_MINI_PROFILE_BY_MEMBER_ID);
+        }
+    }
+    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
+
+    // 미니 프로필 저장 메서드
+    public void save(
+            final Long memberId,
+            final MiniProfileRequest miniProfileRequest,
+            final MultipartFile miniProfileImage
+    ) {
+        final Profile profile = getProfile(memberId);
+
+        if (miniProfileImage != null) {
+            log.info("miniProfileImage가 null이 아닙니다.");
+            if (miniProfileRepository.existsByProfileId(profile.getId())) {
+                final MiniProfile miniProfile = getMiniProfile(profile.getId());
+                s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
+                miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
+                miniProfileRepository.deleteByProfileId(profile.getId());
+            }
+
+            final String miniProfileImageUrl = saveImage(miniProfileImage);
+
+            final MiniProfile newMiniProfileByImage = MiniProfile.of(
+                    profile,
+                    miniProfileRequest.getProfileTitle(),
+                    miniProfileImageUrl,
+                    miniProfileRequest.isActivate()
+            );
+
+            final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileByImage);
+
+            final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
+                    .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
+                    .toList();
+
+            miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
+            profile.updateIsMiniProfile(true);
+
         } else {
-            return miniProfileRepository.findByProfileId(profileId).getId();
+            // 미니 프로필 이미지가 null인 경우
+            if (miniProfileRepository.existsByProfileId(profile.getId())) { // 생성 이력이 있는 경우
+                // 기존 미니 프로필 조회
+                final MiniProfile miniProfile = getMiniProfile(profile.getId());
+
+                // 새로운 미니 프로필 이미지 객체 생성
+                final MiniProfile newMiniProfileNoImage = MiniProfile.of(
+                        profile,
+                        miniProfileRequest.getProfileTitle(),
+                        miniProfile.getMiniProfileImg(),
+                        miniProfileRequest.isActivate()
+                );
+
+                miniProfileRepository.deleteByProfileId(profile.getId());
+                miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
+
+                final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileNoImage);
+                final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
+                        .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
+                        .toList();
+
+                miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
+                profile.updateIsMiniProfile(true);
+            } else {                                                        // 신규 생성인 경우
+                final MiniProfile newMiniProfile = MiniProfile.of(
+                        profile,
+                        miniProfileRequest.getProfileTitle(),
+                        null,
+                        miniProfileRequest.isActivate()
+                );
+                final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfile);
+                final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
+                        .map(keyWordName -> new MiniProfileKeyword(savedMiniProfile.getId(), null, keyWordName))
+                        .toList();
+
+                miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
+                profile.updateIsMiniProfile(true);
+            }
         }
     }
 
-    public MiniProfileResponse save(final Long memberId, final MiniProfileCreateRequest miniProfileCreateRequest) {
-        final Profile profile = profileRepository.findByMemberId(memberId);
-
-        final MiniProfile newMiniProfile = MiniProfile.of(
-                profile,
-                miniProfileCreateRequest.getOneLineIntroduction(),
-                miniProfileCreateRequest.getInterests(),
-                miniProfileCreateRequest.getFirstFreeText(),
-                miniProfileCreateRequest.getSecondFreeText()
-        );
-        final MiniProfile miniProfile = miniProfileRepository.save(newMiniProfile);
-        return getMiniProfileResponse(miniProfile);
-    }
-
-    private MiniProfileResponse getMiniProfileResponse(final MiniProfile miniProfile) {
-        return MiniProfileResponse.of(miniProfile);
-    }
-
+    // 내 이력서 미니 프로필 조회 메서드
     @Transactional(readOnly = true)
-    public MiniProfileResponse getMiniProfileDetail(final Long miniProfileId) {
-        final MiniProfile miniProfile = miniProfileRepository.findById(miniProfileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_ID));
-        return MiniProfileResponse.personalMiniProfile(miniProfile);
+    public MiniProfileResponse getPersonalMiniProfile(final Long memberId) {
+        final Profile profile = getProfile(memberId);
+
+        // 미니 프로필 관련
+        final MiniProfile miniProfile = getMiniProfile(profile.getId());
+        final List<MiniProfileKeyword> miniProfileKeywordList = getMiniProfileKeywords(miniProfile.getId());
+        // 이름 관련
+        final MemberBasicInform memberBasicInform = getMemberBasicInform(memberId);
+        // 직무, 역할 관련
+        final List<String> jobRoleNames = getJobRoleNames(memberId);
+
+        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName(), jobRoleNames);
     }
 
-    public void update(final Long miniProfileId, final MiniProfileUpdateRequest miniProfileUpdateRequest) {
-        final MiniProfile miniProfile = miniProfileRepository.findById(miniProfileId)
-                .orElseThrow(()-> new BadRequestException(NOT_FOUND_MINI_PROFILE_ID));
-
-        miniProfile.update(miniProfileUpdateRequest);
-        miniProfileRepository.save(miniProfile);
+    private List<ProfileJobRole> getProfileJobRoleList(final Long profileId) {
+        return profileJobRoleRepository.findAllByProfileId(profileId);
     }
 
-    public void delete(final Long miniProfileId){
-        if(!miniProfileRepository.existsById(miniProfileId)){
-            throw new BadRequestException(NOT_FOUND_MINI_PROFILE_ID);
+    private List<MiniProfileKeyword> getMiniProfileKeywords(final Long miniProfileId) {
+        return miniProfileKeywordRepository.findAllByMiniProfileId(miniProfileId);
+    }
+
+
+    private boolean getSavedImageUrl(final Profile profile) {
+            final MiniProfile miniProfile = getMiniProfile(profile.getId());
+            if (miniProfile.getMiniProfileImg() != null) {
+                return true;
+            } else {
+                return false;
+            }
+    }
+
+    // 나중에 리팩토링 필요한 부분
+
+    private String saveImage(final MultipartFile miniProfileImage) {
+        // 이미지 유효성 검증
+        validateSizeOfImage(miniProfileImage);
+        // 이미지 파일 객체 생성 (file, HashedName)
+        final ImageFile imageFile = new ImageFile(miniProfileImage);
+        // 파일 이름을 반환한다? No! -> 파일 경로를 반환해야함.
+        return uploadMiniProfileImage(imageFile);
+    }
+
+    private String uploadMiniProfileImage(final ImageFile miniProfileImageFile) {
+        try {
+            return s3Uploader.uploadMiniProfileImage(miniProfileImageFile);
+        } catch (final ImageException e) {
+            publisher.publishEvent(new S3ImageEvent(miniProfileImageFile.getHashedName()));
+            throw e;
         }
-        miniProfileRepository.deleteById(miniProfileId);
+    }
+
+    private void validateSizeOfImage(final MultipartFile image) {
+        if (image == null || image.isEmpty()) {
+            throw new ImageException(EMPTY_IMAGE);
+        }
+    }
+
+    public String getMemberName(final Long memberId) {
+        final MemberBasicInform memberBasicInform = getMemberBasicInform(memberId);
+        return memberBasicInform.getMemberName();
+    }
+
+    public List<String> getJobRoleNames(final Long memberId) {
+        final Profile profile = getProfile(memberId);
+        final List<ProfileJobRole> profileJobRoleList = getProfileJobRoleList(profile.getId());
+
+        List<JobRole> jobRoleList = profileJobRoleList.stream()
+                .map(ProfileJobRole::getJobRole)
+                .toList();
+
+        return jobRoleList.stream()
+                .map(JobRole::getJobRoleName)
+                .toList();
     }
 }

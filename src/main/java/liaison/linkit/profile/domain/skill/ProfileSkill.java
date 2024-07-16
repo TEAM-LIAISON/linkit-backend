@@ -24,6 +24,7 @@ public class ProfileSkill {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
+    // 역할 및 기술 저장된 skill
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "skill_id")
     private Skill skill;
