@@ -749,7 +749,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Tue, 23 Jul 2024 02:44:16 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Tue, 23 Jul 2024 15:48:46 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2088,7 +2088,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 3293
+Content-Length: 3328
 
 {
   "miniProfileResponse" : {
@@ -2104,12 +2104,12 @@ Content-Length: 3293
     "completion" : "100.0",
     "awards" : true,
     "attach" : true,
-    "profileSkill" : true,
-    "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
+    "introduction" : true,
     "antecedents" : true,
-    "education" : true
+    "education" : true,
+    "profileSkill" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -2188,7 +2188,8 @@ Content-Length: 3293
       "attachUrlName" : "노션",
       "attachUrlPath" : "https://www.notion.so/ko-kr"
     } ]
-  }
+  },
+  "privateProfileResponse" : true
 }</code></pre>
 </div>
 </div>
@@ -2206,6 +2207,11 @@ Content-Length: 3293
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privateProfileResponse</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서 필수 입력 항목 존재 여부</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
@@ -3277,7 +3283,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2916
+Content-Length: 2949
 
 {
   "teamMiniProfileResponse" : {
@@ -3362,7 +3368,8 @@ Content-Length: 2916
       "teamAttachUrlName" : "노션",
       "teamAttachUrlPath" : "https://www.notion.so/ko-kr"
     } ]
-  }
+  },
+  "teamProfileEssential" : true
 }</code></pre>
 </div>
 </div>
@@ -3380,6 +3387,11 @@ Content-Length: 2916
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamProfileEssential</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 기본 항목 존재 여부</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMiniProfileResponse</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
@@ -4389,8 +4401,8 @@ Content-Length: 661
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "sorted" : false,
-    "unsorted" : true
+    "unsorted" : true,
+    "sorted" : false
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4605,8 +4617,8 @@ Content-Length: 1028
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "sorted" : false,
-    "unsorted" : true
+    "unsorted" : true,
+    "sorted" : false
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4786,7 +4798,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 3292
+Content-Length: 3327
 
 {
   "miniProfileResponse" : {
@@ -4802,12 +4814,12 @@ Content-Length: 3292
     "completion" : "100.0",
     "awards" : true,
     "attach" : true,
-    "profileSkill" : true,
-    "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
+    "introduction" : true,
     "antecedents" : true,
-    "education" : true
+    "education" : true,
+    "profileSkill" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다."
@@ -4886,7 +4898,8 @@ Content-Length: 3292
       "attachUrlName" : "노션",
       "attachUrlPath" : "https://www.notion.so/ko-kr"
     } ]
-  }
+  },
+  "privateProfileResponse" : true
 }</code></pre>
 </div>
 </div>
@@ -4904,6 +4917,11 @@ Content-Length: 3292
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privateProfileResponse</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서 필수 입력 항목 존재 여부</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>miniProfileResponse</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
@@ -5228,7 +5246,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2916
+Content-Length: 2949
 
 {
   "teamMiniProfileResponse" : {
@@ -5313,7 +5331,8 @@ Content-Length: 2916
       "teamAttachUrlName" : "노션",
       "teamAttachUrlPath" : "https://www.notion.so/ko-kr"
     } ]
-  }
+  },
+  "teamProfileEssential" : true
 }</code></pre>
 </div>
 </div>
@@ -5331,6 +5350,11 @@ Content-Length: 2916
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamProfileEssential</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 기본 항목 존재 여부</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMiniProfileResponse</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
