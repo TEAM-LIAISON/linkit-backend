@@ -125,9 +125,9 @@ public class SearchControllerTest extends ControllerTest {
         final TeamMemberAnnouncementResponse teamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 1L,
                 "리에종",
-                Arrays.asList("개발·데이터", "디자인"),
+                "개발·데이터",
                 "주요 업무입니다.",
-                Arrays.asList("서버 개발", "DevOps", "게임 디자인"),
+                Arrays.asList("서버 개발", "DevOps"),
                 "지원 절차입니다."
         );
 
@@ -176,7 +176,7 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].teamMiniProfileResponse.teamKeywordNames").description("팀 키워드").optional(),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.id").description("팀원 공고 ID"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.teamName").description("팀 이름"),
-                                        fieldWithPath("content[].teamMemberAnnouncementResponse.jobRoleNames").description("팀원 공고 직무 이름 목록"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.jobRoleName").description("팀원 공고 직무 이름"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.mainBusiness").description("주요 업무"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.skillNames").description("요구되는 기술 목록"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.applicationProcess").description("지원 절차"),

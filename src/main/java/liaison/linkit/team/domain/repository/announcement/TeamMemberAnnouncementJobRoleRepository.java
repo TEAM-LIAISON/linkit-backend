@@ -7,12 +7,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface TeamMemberAnnouncementJobRoleRepository extends JpaRepository<TeamMemberAnnouncementJobRole, Long> {
 
     @Query("SELECT teamMemberAnnouncementJobRole FROM TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole WHERE teamMemberAnnouncementJobRole.teamMemberAnnouncement.id = :teamMemberAnnouncementId")
-    List<TeamMemberAnnouncementJobRole> findAllByTeamMemberAnnouncementId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
+    Optional<TeamMemberAnnouncementJobRole> findByTeamMemberAnnouncementId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
 
     @Modifying
     @Transactional

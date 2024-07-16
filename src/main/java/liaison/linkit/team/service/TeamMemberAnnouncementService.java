@@ -70,10 +70,10 @@ public class TeamMemberAnnouncementService {
     private TeamMemberAnnouncementResponse getTeamMemberAnnouncementResponse(
             final TeamMemberAnnouncement teamMemberAnnouncement
     ) {
-        final List<TeamMemberAnnouncementJobRole> teamMemberAnnouncementJobRoleList = getTeamMemberAnnouncementJobRoles(teamMemberAnnouncement.getId());
+        final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole = getTeamMemberAnnouncementJobRole(teamMemberAnnouncement.getId());
         final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
         final String teamName = teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamName();
-        return TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRoleList, teamMemberAnnouncementSkillList);
+        return TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList);
     }
 
     public void saveAnnouncement(
@@ -81,8 +81,9 @@ public class TeamMemberAnnouncementService {
             final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
     ) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
-
+        // 메인 객체 우선 저장
         final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, teamMemberAnnouncementRequest);
+
         saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
         saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
 
@@ -146,15 +147,13 @@ public class TeamMemberAnnouncementService {
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final TeamMemberAnnouncementRequest request
     ) {
+        // 단일 직무/역할 조회
+        final JobRole jobRole = jobRoleRepository.findJobRoleByJobRoleName(request.getJobRoleName());
 
-        final List<JobRole> jobRoles = jobRoleRepository
-                .findJobRoleByJobRoleNames(request.getJobRoleNames());
+        final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole =
+                new TeamMemberAnnouncementJobRole(null, teamMemberAnnouncement, jobRole);
 
-        final List<TeamMemberAnnouncementJobRole> teamMemberAnnouncementJobRoles = jobRoles.stream()
-                .map(jobRole -> new TeamMemberAnnouncementJobRole(null, teamMemberAnnouncement, jobRole))
-                .toList();
-
-        teamMemberAnnouncementJobRoleRepository.saveAll(teamMemberAnnouncementJobRoles);
+        teamMemberAnnouncementJobRoleRepository.save(teamMemberAnnouncementJobRole);
     }
 
     // 팀원 공고 메인 객체 저장 메서드
@@ -202,8 +201,9 @@ public class TeamMemberAnnouncementService {
         teamMemberAnnouncement.update(teamMemberAnnouncementRequest);
     }
 
-    private List<TeamMemberAnnouncementJobRole> getTeamMemberAnnouncementJobRoles(final Long teamMemberAnnouncementId) {
-        return teamMemberAnnouncementJobRoleRepository.findAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+    private TeamMemberAnnouncementJobRole getTeamMemberAnnouncementJobRole(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementJobRoleRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE));
     }
 
     private List<TeamMemberAnnouncementSkill> getTeamMemberAnnouncementSkills(final Long teamMemberAnnouncementId) {

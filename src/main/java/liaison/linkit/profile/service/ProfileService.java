@@ -110,7 +110,7 @@ public class ProfileService {
     }
 
     public ProfileResponse getProfileResponse(
-            final boolean isPrivateProfileResponse,
+            final boolean isPrivateProfileEssential,
             final MiniProfileResponse miniProfileResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
@@ -123,7 +123,7 @@ public class ProfileService {
             final AttachResponse attachResponse
     ) {
         return ProfileResponse.profileItems(
-                isPrivateProfileResponse,
+                isPrivateProfileEssential,
                 miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,

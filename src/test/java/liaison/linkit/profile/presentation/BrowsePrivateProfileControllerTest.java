@@ -107,7 +107,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         );
         given(browsePrivateProfileService.getProfileIsValue(1L)).willReturn(profileIsValueResponse);
 
-        final boolean isPrivateProfileResponse = (
+        final boolean isPrivateProfileEssential = (
                 profileIsValueResponse.isProfileTeamBuildingField() &&
                         profileIsValueResponse.isProfileRegion() &&
                         profileIsValueResponse.isMiniProfile() &&
@@ -180,7 +180,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         when(browsePrivateProfileService.getProfileResponse(
                 anyBoolean(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(ProfileResponse.profileItems(
-                isPrivateProfileResponse,
+                isPrivateProfileEssential,
                 miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,
@@ -203,7 +203,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                                         .description("미니 프로필 ID")
                         ),
                         responseFields(
-                                fieldWithPath("privateProfileResponse").type(JsonFieldType.BOOLEAN).description("내 이력서 필수 입력 항목 존재 여부"),
+                                fieldWithPath("privateProfileEssential").type(JsonFieldType.BOOLEAN).description("내 이력서 필수 입력 항목 존재 여부"),
 
                                 // miniProfileResponse
                                 subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
