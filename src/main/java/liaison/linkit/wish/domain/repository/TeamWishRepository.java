@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
 
@@ -18,4 +19,8 @@ public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
     @Transactional
     @Query("DELETE FROM TeamWish tw WHERE tw.member.id = :memberId AND tw.teamMemberAnnouncement.id = :teamMemberAnnouncementId")
     void deleteByMemberIdAndTeamMemberAnnouncementId(@Param("memberId") final Long memberId, @Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
+
+    @Query("SELECT tw FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = : teamMemberAnnouncementId")
+    Optional<TeamWish> findByTeamMemberAnnouncementId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
+
 }

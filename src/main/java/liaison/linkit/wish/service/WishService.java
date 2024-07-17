@@ -15,7 +15,6 @@ import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepositor
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementSkill;
@@ -65,6 +64,7 @@ public class WishService {
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
 
+    // 내 이력서 찜하기 최대 개수 판단 메서드
     public void validateMemberMaxPrivateWish(final Long memberId) {
         final Member member = getMember(memberId);
         final int memberPrivateWishCount = member.getPrivateWishCount();
@@ -73,6 +73,7 @@ public class WishService {
         }
     }
 
+    // 팀 소개서 찜하기 최대 개수 판단 메서드
     public void validateMemberMaxTeamWish(final Long memberId) {
         final Member member = getMember(memberId);
         final int memberTeamWishCount = member.getTeamWishCount();
@@ -100,15 +101,6 @@ public class WishService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_ID));
 
         return miniProfile.getProfile();
-    }
-
-    private TeamProfile getTeamProfileByTeamMiniProfileId(
-            final Long teamMiniProfileId
-    ) {
-        final TeamMiniProfile teamMiniProfile = teamMiniProfileRepository.findById(teamMiniProfileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MINI_PROFILE_ID));
-
-        return teamMiniProfile.getTeamProfile();
     }
 
     public void createWishToPrivateProfile(
@@ -170,12 +162,20 @@ public class WishService {
         member.addTeamWishCount();
     }
 
-    public void cancelWishToTeamProfile(final Long memberId, final Long teamMemberAnnouncementId) {
+    public void cancelWishToTeamProfile(
+            final Long memberId,
+            final Long teamMemberAnnouncementId
+    ) {
         final Member member = getMember(memberId);
-        final TeamWish teamWish = teamWishRepository.findById(teamMemberAnnouncementId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_WISH_BY_ID));
 
-        teamWishRepository.deleteByMemberIdAndTeamMemberAnnouncementId(memberId, teamWish.getTeamMemberAnnouncement().getId());
+        // 삭제하고자 하는 팀 찜하기 객체 조회
+        final TeamWish teamWish = teamWishRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_WISH_BY_TEAM_MEMBER_ANNOUNCEMENT_ID));
+
+        // 바로 삭제
+        teamWishRepository.delete(teamWish);
+
+        // 삭제 이후 -1
         member.subTeamWishCount();
     }
 

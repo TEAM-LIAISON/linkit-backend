@@ -45,6 +45,7 @@ public class WishController {
     ) {
         log.info("teamMemberAnnouncementId={} 을 memberId={}가 찜하는 요청이 발생했습니다.", teamMemberAnnouncementId, accessor.getMemberId());
         wishService.validateMemberMaxTeamWish(accessor.getMemberId());
+
         // 최대 개수를 넘지 않았다면 아래가 실행된다.
         wishService.createWishToTeamProfile(accessor.getMemberId(), teamMemberAnnouncementId);
         return ResponseEntity.status(HttpStatus.CREATED).build();

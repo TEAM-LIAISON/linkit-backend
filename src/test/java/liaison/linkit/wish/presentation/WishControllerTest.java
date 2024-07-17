@@ -56,10 +56,10 @@ public class WishControllerTest extends ControllerTest {
 
     // 팀 소개서 찜하기 메서드
     private ResultActions performCreateWishToTeamProfile(
-            final int teamMiniProfileId
+            final int teamMemberAnnouncementId
     ) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/wish/team/profile/{teamMiniProfileId}", teamMiniProfileId)
+                RestDocumentationRequestBuilders.post("/wish/team/profile/{teamMemberAnnouncementId}", teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -78,10 +78,10 @@ public class WishControllerTest extends ControllerTest {
 
     // 팀 소개서 찜하기 취소 메서드
     private ResultActions performDeleteWishToTeamProfile(
-            final int teamMiniProfileId
+            final int teamMemberAnnouncementId
     ) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/wish/team/profile/{teamMiniProfileId}", teamMiniProfileId)
+                RestDocumentationRequestBuilders.delete("/wish/team/profile/{teamMemberAnnouncementId}", teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );

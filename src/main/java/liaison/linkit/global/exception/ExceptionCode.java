@@ -147,6 +147,7 @@ public enum ExceptionCode {
     NOT_FOUND_MINI_PROFILE_BY_ID(1008, "해당 팀원 공고 ID에 해당하는 팀원 공고 정보가 존재하지 않습니다."),
     NOT_FOUND_TEAM_ATTACH_URL_ID(1008, "해당 팀 첨부 URL ID에 해당하는 팀 첨부 URL 정보가 존재하지 않습니다."),
     NOT_FOUND_TEAM_MINI_PROFILE_BY_MEMBER_ID(5000, "팀 소개서 온보딩에서 팀 이름, 규모, 분야를 먼저 선택해주세요"),
+    NOT_FOUND_TEAM_WISH_BY_TEAM_MEMBER_ANNOUNCEMENT_ID(5001, "팀 공고 찜하기를 팀원 공고 ID로 찾을 수 없습니다."),
     NOT_FOUND_TEAM_WISH_BY_ID(5001, "팀 소개서 온보딩에서 팀 이름, 규모, 분야를 먼저 선택해주세요");
     private final int code;
     private final String message;
