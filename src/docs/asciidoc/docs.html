@@ -759,7 +759,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Wed, 24 Jul 2024 16:36:12 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Wed, 24 Jul 2024 17:18:26 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2112,14 +2112,14 @@ Content-Length: 3329
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
+    "awards" : true,
+    "attach" : true,
+    "profileSkill" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
-    "profileSkill" : true,
-    "awards" : true,
-    "attach" : true
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -3309,12 +3309,12 @@ Content-Length: 2918
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
     "teamProfileTeamBuildingField" : true,
+    "history" : true,
+    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true,
-    "activity" : true,
-    "history" : true
+    "teamAttach" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -4411,8 +4411,8 @@ Content-Length: 661
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4627,8 +4627,8 @@ Content-Length: 990
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4822,14 +4822,14 @@ Content-Length: 3328
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
+    "awards" : true,
+    "attach" : true,
+    "profileSkill" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
-    "profileSkill" : true,
-    "awards" : true,
-    "attach" : true
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다."
@@ -5272,12 +5272,12 @@ Content-Length: 2918
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
     "teamProfileTeamBuildingField" : true,
+    "history" : true,
+    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true,
-    "activity" : true,
-    "history" : true
+    "teamAttach" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -5951,32 +5951,33 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 933
+Content-Length: 942
 
-{
-  "myPrivateMatchingResponseList" : [ {
-    "receiverName" : "주서영",
-    "requestMessage" : "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2024-07-10",
-    "matchingType" : "PROFILE"
-  }, {
-    "receiverName" : "주은강",
-    "requestMessage" : "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2024-08-10",
-    "matchingType" : "PROFILE"
-  } ],
-  "myTeamMatchingResponseList" : [ {
-    "receiverName" : "링컬쳐",
-    "requestMessage" : "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2024-07-10",
-    "matchingType" : "TEAM_PROFILE"
-  }, {
-    "receiverName" : "하이브",
-    "requestMessage" : "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2023-10-10",
-    "matchingType" : "TEAM_PROFILE"
-  } ]
-}</code></pre>
+[ {
+  "receiverName" : "주서영",
+  "requestMessage" : "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2024-07-10",
+  "matchingType" : "PROFILE",
+  "requestTeamProfile" : false
+}, {
+  "receiverName" : "주은강",
+  "requestMessage" : "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2024-08-10",
+  "matchingType" : "PROFILE",
+  "requestTeamProfile" : false
+}, {
+  "receiverName" : "링컬쳐",
+  "requestMessage" : "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2024-07-10",
+  "matchingType" : "TEAM_PROFILE",
+  "requestTeamProfile" : true
+}, {
+  "receiverName" : "하이브",
+  "requestMessage" : "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2023-10-10",
+  "matchingType" : "TEAM_PROFILE",
+  "requestTeamProfile" : true
+} ]</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -5994,54 +5995,29 @@ Content-Length: 933
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내가 내 이력서로 매칭 요청 보낸 리스트</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList[].receiverName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].receiverName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList[].requestMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].requestMessage</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList[].requestOccurTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].requestOccurTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 발생 날짜</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList[].matchingType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].matchingType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 타입</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내가 팀 소개서로 매칭 요청 보낸 리스트</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList[].receiverName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList[].requestMessage</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList[].requestOccurTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 발생 날짜</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList[].matchingType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 타입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].requestTeamProfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력/소개서 발신 여부</p></td>
 </tr>
 </tbody>
 </table>
@@ -6063,58 +6039,41 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1831
+Content-Length: 1311
 
-{
-  "toPrivateMatchingResponseList" : [ {
-    "senderName" : "김동혁",
-    "requestMessage" : "매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2024-07-10",
-    "matchingType" : "PROFILE",
-    "receivedTeamProfile" : false
-  }, {
-    "senderName" : "권동민",
-    "requestMessage" : "매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2024-07-10",
-    "matchingType" : "PROFILE",
-    "receivedTeamProfile" : false
-  } ],
-  "toTeamMatchingResponseList" : [ {
-    "senderName" : "링킷",
-    "requestMessage" : "매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2023-12-10",
-    "matchingType" : "TEAM_PROFILE",
-    "receivedTeamProfile" : true
-  }, {
-    "senderName" : "링컬쳐",
-    "requestMessage" : "매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2022-10-10",
-    "matchingType" : "TEAM_PROFILE",
-    "receivedTeamProfile" : true
-  } ],
-  "myPrivateMatchingResponseList" : [ {
-    "receiverName" : "주서영",
-    "requestMessage" : "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2024-07-10",
-    "matchingType" : "PROFILE"
-  }, {
-    "receiverName" : "주은강",
-    "requestMessage" : "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2024-08-10",
-    "matchingType" : "PROFILE"
-  } ],
-  "myTeamMatchingResponseList" : [ {
-    "receiverName" : "링컬쳐",
-    "requestMessage" : "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2024-07-10",
-    "matchingType" : "TEAM_PROFILE"
-  }, {
-    "receiverName" : "하이브",
-    "requestMessage" : "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
-    "requestOccurTime" : "2023-10-10",
-    "matchingType" : "TEAM_PROFILE"
-  } ]
-}</code></pre>
+[ {
+  "successMatchingMemberName" : "김동혁",
+  "requestMessage" : "매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2024-07-10"
+}, {
+  "successMatchingMemberName" : "권동민",
+  "requestMessage" : "매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2024-07-10"
+}, {
+  "successMatchingMemberName" : "링킷",
+  "requestMessage" : "매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2023-12-10"
+}, {
+  "successMatchingMemberName" : "링컬쳐",
+  "requestMessage" : "매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2022-10-10"
+}, {
+  "successMatchingMemberName" : "주서영",
+  "requestMessage" : "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2024-07-10"
+}, {
+  "successMatchingMemberName" : "주은강",
+  "requestMessage" : "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2024-08-10"
+}, {
+  "successMatchingMemberName" : "링컬쳐",
+  "requestMessage" : "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2024-07-10"
+}, {
+  "successMatchingMemberName" : "하이브",
+  "requestMessage" : "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
+  "requestOccurTime" : "2023-10-10"
+} ]</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -6132,104 +6091,24 @@ Content-Length: 1831
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toPrivateMatchingResponseList</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서로 매칭 요청 온 응답 리스트</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">모든 성사 매칭 배열</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toPrivateMatchingResponseList[].senderName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].successMatchingMemberName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 성사자 이름/팀명</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toPrivateMatchingResponseList[].requestMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].requestMessage</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toPrivateMatchingResponseList[].requestOccurTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].requestOccurTime</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 발생 날짜</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toPrivateMatchingResponseList[].matchingType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 타입</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toTeamMatchingResponseList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서로 매칭 요청 온 응답 리스트</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toTeamMatchingResponseList[].senderName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toTeamMatchingResponseList[].requestMessage</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toTeamMatchingResponseList[].requestOccurTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 발생 날짜</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toTeamMatchingResponseList[].matchingType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 타입</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내가 내 이력서로 매칭 요청 보낸 리스트</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList[].receiverName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList[].requestMessage</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList[].requestOccurTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 발생 날짜</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myPrivateMatchingResponseList[].matchingType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 타입</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내가 팀 소개서로 매칭 요청 보낸 리스트</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList[].receiverName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList[].requestMessage</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList[].requestOccurTime</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 발생 날짜</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>myTeamMatchingResponseList[].matchingType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 타입</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 발생 시간</p></td>
 </tr>
 </tbody>
 </table>

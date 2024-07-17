@@ -20,6 +20,8 @@ public class MyPrivateMatchingResponse {
     private final LocalDate requestOccurTime;
     // 매칭 요청 타입
     private final MatchingType matchingType;
+    // 어떤 이력/소개서에 매칭 요청을 보냈는지
+    private final boolean isRequestTeamProfile;
 
     public static List<MyPrivateMatchingResponse> myPrivateMatchingResponseList(
             final List<PrivateMatching> privateMatchingList
@@ -29,7 +31,8 @@ public class MyPrivateMatchingResponse {
                         privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
                         privateMatching.getRequestMessage(),
                         LocalDate.from(privateMatching.getCreatedAt()),
-                        privateMatching.getMatchingType()
+                        privateMatching.getMatchingType(),
+                        false
                 )).collect(Collectors.toList());
     }
 }

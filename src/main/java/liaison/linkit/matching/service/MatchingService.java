@@ -210,9 +210,9 @@ public class MatchingService {
     }
 
     // 내가 매칭 요청 보낸 것을 조회하는 메서드
-    public RequestMatchingResponse getMyRequestMatching(final Long memberId) {
-        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = null;
-        List<MyTeamMatchingResponse> myTeamMatchingResponseList = null;
+    public List<RequestMatchingResponse> getMyRequestMatching(final Long memberId) {
+        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Collections.emptyList();
+        List<MyTeamMatchingResponse> myTeamMatchingResponseList = Collections.emptyList();
 
 
         if (profileRepository.existsByMemberId(memberId)) {
@@ -225,14 +225,14 @@ public class MatchingService {
             myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamMatchingList);
         }
 
-        return new RequestMatchingResponse(myPrivateMatchingResponseList, myTeamMatchingResponseList);
+        return RequestMatchingResponse.requestMatchingResponseList(myPrivateMatchingResponseList, myTeamMatchingResponseList);
     }
 
-    public SuccessMatchingResponse getMySuccessMatching(final Long memberId) {
-        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = null;
-        List<ToTeamMatchingResponse> toTeamMatchingResponseList = null;
-        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = null;
-        List<MyTeamMatchingResponse> myTeamMatchingResponseList = null;
+    public List<SuccessMatchingResponse> getMySuccessMatching(final Long memberId) {
+        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
+        List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
+        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Collections.emptyList();
+        List<MyTeamMatchingResponse> myTeamMatchingResponseList = Collections.emptyList();
 
         if (profileRepository.existsByMemberId(memberId)) {
 
@@ -256,7 +256,7 @@ public class MatchingService {
             myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamRequestMatchingList);
         }
 
-        return new SuccessMatchingResponse(
+        return SuccessMatchingResponse.successMatchingResponseList(
                 toPrivateMatchingResponseList,
                 toTeamMatchingResponseList,
                 myPrivateMatchingResponseList,
