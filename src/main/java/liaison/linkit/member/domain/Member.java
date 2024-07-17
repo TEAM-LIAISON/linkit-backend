@@ -84,6 +84,13 @@ public class Member {
     @Column(nullable = false)
     private boolean existDefaultTeamProfile;
 
+    @Column(nullable = false)
+    private int privateWishCount;
+
+    @Column(nullable = false)
+    private int teamWishCount;
+
+
     public Member(
             final Long id,
             final String socialLoginId,
@@ -103,6 +110,8 @@ public class Member {
         this.existMemberBasicInform = false;
         this.existDefaultPrivateProfile = false;
         this.existDefaultTeamProfile = false;
+        this.privateWishCount = 0;
+        this.teamWishCount = 0;
     }
 
     public Member(
@@ -125,4 +134,19 @@ public class Member {
         this.teamProfileType = teamProfileType;
     }
 
+    public void addPrivateWishCount() {
+        this.privateWishCount += 1;
+    }
+
+    public void addTeamWishCount() {
+        this.teamWishCount += 1;
+    }
+
+    public void subPrivateWishCount() {
+        this.privateWishCount -= 1;
+    }
+
+    public void subTeamWishCount() {
+        this.teamWishCount -= 1;
+    }
 }

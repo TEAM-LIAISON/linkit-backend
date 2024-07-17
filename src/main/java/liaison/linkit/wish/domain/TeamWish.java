@@ -2,7 +2,7 @@ package liaison.linkit.wish.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.wish.domain.type.WishType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,10 +32,10 @@ public class TeamWish {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    // 찜하기 한 타겟 팀 소개서 ID
+    // 찜하기 한 타겟 팀원 공고 ID
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_profile_id")
-    private TeamProfile teamProfile;
+    @JoinColumn(name = "team_member_announcement_id")
+    private TeamMemberAnnouncement teamMemberAnnouncement;
 
     @Column(name = "wish_type")
     @Enumerated(value = STRING)

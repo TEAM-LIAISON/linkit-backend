@@ -749,7 +749,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Tue, 23 Jul 2024 20:19:36 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Tue, 23 Jul 2024 20:44:53 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2103,11 +2103,11 @@ Content-Length: 3329
   "completionResponse" : {
     "completion" : "100.0",
     "profileSkill" : true,
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true,
     "awards" : true,
     "attach" : true
   },
@@ -3283,7 +3283,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2949
+Content-Length: 2918
 
 {
   "teamMiniProfileResponse" : {
@@ -3302,8 +3302,8 @@ Content-Length: 2949
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
-    "activity" : true,
     "history" : true,
+    "activity" : true,
     "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
@@ -3312,14 +3312,14 @@ Content-Length: 2949
   "teamMemberAnnouncementResponses" : [ {
     "id" : 1,
     "teamName" : "리에종",
-    "jobRoleNames" : [ "기획·경영", "개발·데이터" ],
+    "jobRoleName" : "기획·경영",
     "mainBusiness" : "주요 업무입니다. (첫번째 팀원 공고)",
     "skillNames" : [ "서비스 기획", "데이터 엔지니어" ],
     "applicationProcess" : "지원 절차입니다. (첫번째 팀원 공고)"
   }, {
     "id" : 2,
     "teamName" : "리에종",
-    "jobRoleNames" : [ "디자인" ],
+    "jobRoleName" : "디자인",
     "mainBusiness" : "주요 업무입니다. (두번째 팀원 공고)",
     "skillNames" : [ "웹 디자인", "앱 디자인" ],
     "applicationProcess" : "지원 절차입니다. (두번째 팀원 공고)"
@@ -3503,9 +3503,9 @@ Content-Length: 2949
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].jobRoleNames</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">직무, 역할 이름 배열</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].jobRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무, 역할 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].mainBusiness</code></p></td>
@@ -3689,9 +3689,9 @@ Authorization: accessToken
 Cookie: refresh-token=refreshToken
 
 {
-  "jobRoleNames" : [ "개발·데이터", "디자인" ],
+  "jobRoleName" : "개발·데이터",
   "mainBusiness" : "주요 업무입니다.",
-  "skillNames" : [ "서버 개발", "DevOps", "게임 디자인" ],
+  "skillNames" : [ "서버 개발", "DevOps" ],
   "applicationProcess" : "지원 절차입니다."
 }</code></pre>
 </div>
@@ -3713,10 +3713,10 @@ Cookie: refresh-token=refreshToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleNames</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무/역할 (4가지 항목)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문자열의 배열</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">문자열</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainBusiness</code></p></td>
@@ -3749,7 +3749,7 @@ Authorization: accessToken
 Cookie: refresh-token=refreshToken
 
 {
-  "jobRoleNames" : [ "개발·데이터", "디자인" ],
+  "jobRoleName" : "개발·데이터",
   "mainBusiness" : "주요 업무입니다.",
   "skillNames" : [ "서버 개발", "DevOps", "게임 디자인" ],
   "applicationProcess" : "지원 절차입니다."
@@ -3773,10 +3773,10 @@ Cookie: refresh-token=refreshToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleNames</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무/역할 (4가지 항목)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">문자열의 배열</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">문자열</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mainBusiness</code></p></td>
@@ -4401,8 +4401,8 @@ Content-Length: 661
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4585,7 +4585,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1028
+Content-Length: 990
 
 {
   "content" : [ {
@@ -4602,9 +4602,9 @@ Content-Length: 1028
     "teamMemberAnnouncementResponse" : {
       "id" : 1,
       "teamName" : "리에종",
-      "jobRoleNames" : [ "개발·데이터", "디자인" ],
+      "jobRoleName" : "개발·데이터",
       "mainBusiness" : "주요 업무입니다.",
-      "skillNames" : [ "서버 개발", "DevOps", "게임 디자인" ],
+      "skillNames" : [ "서버 개발", "DevOps" ],
       "applicationProcess" : "지원 절차입니다."
     }
   } ],
@@ -4617,8 +4617,8 @@ Content-Length: 1028
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4690,9 +4690,9 @@ Content-Length: 1028
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.jobRoleNames</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 직무 이름 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.jobRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 직무 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.mainBusiness</code></p></td>
@@ -4813,11 +4813,11 @@ Content-Length: 3328
   "completionResponse" : {
     "completion" : "100.0",
     "profileSkill" : true,
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true,
     "awards" : true,
     "attach" : true
   },
@@ -5246,7 +5246,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2949
+Content-Length: 2918
 
 {
   "teamMiniProfileResponse" : {
@@ -5265,8 +5265,8 @@ Content-Length: 2949
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
-    "activity" : true,
     "history" : true,
+    "activity" : true,
     "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
@@ -5275,14 +5275,14 @@ Content-Length: 2949
   "teamMemberAnnouncementResponses" : [ {
     "id" : 1,
     "teamName" : "리에종",
-    "jobRoleNames" : [ "기획·경영", "개발·데이터" ],
+    "jobRoleName" : "기획·경영",
     "mainBusiness" : "주요 업무입니다. (첫번째 팀원 공고)",
     "skillNames" : [ "서비스 기획", "데이터 엔지니어" ],
     "applicationProcess" : "지원 절차입니다. (첫번째 팀원 공고)"
   }, {
     "id" : 2,
     "teamName" : "리에종",
-    "jobRoleNames" : [ "디자인" ],
+    "jobRoleName" : "디자인",
     "mainBusiness" : "주요 업무입니다. (두번째 팀원 공고)",
     "skillNames" : [ "웹 디자인", "앱 디자인" ],
     "applicationProcess" : "지원 절차입니다. (두번째 팀원 공고)"
@@ -5466,9 +5466,9 @@ Content-Length: 2949
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].jobRoleNames</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">직무, 역할 이름 배열</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].jobRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">직무, 역할 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementResponses[].mainBusiness</code></p></td>
