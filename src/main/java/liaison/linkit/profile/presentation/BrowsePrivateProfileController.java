@@ -66,7 +66,7 @@ public class BrowsePrivateProfileController {
             final ProfileIsValueResponse profileIsValueResponse = browsePrivateProfileService.getProfileIsValue(browseTargetPrivateProfileId);
             log.info("profileIsValueResponse={}", profileIsValueResponse);
 
-            final boolean isPrivateProfileResponse = (
+            final boolean isPrivateProfileEssential = (
                     profileIsValueResponse.isProfileTeamBuildingField() &&
                             profileIsValueResponse.isProfileRegion() &&
                             profileIsValueResponse.isMiniProfile() &&
@@ -104,7 +104,7 @@ public class BrowsePrivateProfileController {
             log.info("attachResponse={}", attachResponse);
 
             final ProfileResponse profileResponse = browsePrivateProfileService.getProfileResponse(
-                    isPrivateProfileResponse,
+                    isPrivateProfileEssential,
                     miniProfileResponse,
                     completionResponse,
                     profileIntroductionResponse,

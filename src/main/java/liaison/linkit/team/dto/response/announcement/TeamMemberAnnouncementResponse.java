@@ -16,7 +16,7 @@ public class  TeamMemberAnnouncementResponse {
 
     private final Long id;
     private final String teamName;
-    private final List<String> jobRoleNames;
+    private final String jobRoleName;
     private final String mainBusiness;
     private final List<String> skillNames;
     private final String applicationProcess;
@@ -24,30 +24,26 @@ public class  TeamMemberAnnouncementResponse {
     public static TeamMemberAnnouncementResponse of(
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final String teamName,
-            final List<TeamMemberAnnouncementJobRole> teamMemberAnnouncementJobRoleList,
+            final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole,
             final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList
     ) {
 
-        List<JobRole> jobRoleList = teamMemberAnnouncementJobRoleList.stream()
-                .map(TeamMemberAnnouncementJobRole::getJobRole)
-                .toList();
+        final JobRole jobRole = teamMemberAnnouncementJobRole.getJobRole();
 
-        List<String> jobRoleNames = jobRoleList.stream()
-                .map(JobRole::getJobRoleName)
-                .toList();
+        final String jobRoleName = jobRole.getJobRoleName();
 
-        List<Skill> skillList = teamMemberAnnouncementSkillList.stream()
+        final List<Skill> skillList = teamMemberAnnouncementSkillList.stream()
                 .map(TeamMemberAnnouncementSkill::getSkill)
                 .toList();
 
-        List<String> skillNames = skillList.stream()
+        final List<String> skillNames = skillList.stream()
                 .map(Skill::getSkillName)
                 .toList();
 
         return new TeamMemberAnnouncementResponse(
                 teamMemberAnnouncement.getId(),
                 teamName,
-                jobRoleNames,
+                jobRoleName,
                 teamMemberAnnouncement.getMainBusiness(),
                 skillNames,
                 teamMemberAnnouncement.getApplicationProcess()

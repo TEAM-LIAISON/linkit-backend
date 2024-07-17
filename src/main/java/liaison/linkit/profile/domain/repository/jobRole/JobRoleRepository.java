@@ -14,4 +14,11 @@ public interface JobRoleRepository extends JpaRepository<JobRole, Long> {
            WHERE jr.jobRoleName in :jobRoleNames
            """)
     List<JobRole> findJobRoleByJobRoleNames(@Param("jobRoleNames") final List<String> jobRoleNames);
+
+    @Query("""
+           SELECT jr
+           FROM JobRole jr
+           WHERE jr.jobRoleName = :jobRoleName
+           """)
+    JobRole findJobRoleByJobRoleName(@Param("jobRoleName") final String jobRoleName);
 }
