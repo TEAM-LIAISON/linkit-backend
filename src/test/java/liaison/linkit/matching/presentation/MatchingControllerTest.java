@@ -321,7 +321,7 @@ class MatchingControllerTest extends ControllerTest {
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(##
+                .andDo(
                         restDocs.document(
                                 requestCookies(
                                         cookieWithName("refresh-token").description("갱신 토큰")
@@ -337,7 +337,7 @@ class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("[].receivedTeamProfile").type(JsonFieldType.BOOLEAN).description("이력/소개서 수신 여부")
                                 )
                         )
-                ##);
+                );
     }
 
 
@@ -349,14 +349,16 @@ class MatchingControllerTest extends ControllerTest {
                 "주서영",
                 "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
-                MatchingType.PROFILE
+                MatchingType.PROFILE,
+                false
         );
 
         final MyPrivateMatchingResponse secondMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
                 "주은강",
                 "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 8, 10),
-                MatchingType.PROFILE
+                MatchingType.PROFILE,
+                false
         );
 
         final List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Arrays.asList(firstMyPrivateMatchingResponse, secondMyPrivateMatchingResponse);
@@ -365,24 +367,26 @@ class MatchingControllerTest extends ControllerTest {
                 "링컬쳐",
                 "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
-                MatchingType.TEAM_PROFILE
+                MatchingType.TEAM_PROFILE,
+                true
         );
 
         final MyTeamMatchingResponse secondMyTeamMatchingResponse = new MyTeamMatchingResponse(
                 "하이브",
                 "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 10, 10),
-                MatchingType.TEAM_PROFILE
+                MatchingType.TEAM_PROFILE,
+                true
         );
 
         final List<MyTeamMatchingResponse> myTeamMatchingResponseList = Arrays.asList(firstMyTeamMatchingResponse, secondMyTeamMatchingResponse);
 
-        final RequestMatchingResponse requestMatchingResponse = new RequestMatchingResponse(
+        final List<RequestMatchingResponse> requestMatchingResponseList = RequestMatchingResponse.requestMatchingResponseList(
                 myPrivateMatchingResponseList,
                 myTeamMatchingResponseList
         );
 
-        given(matchingService.getMyRequestMatching(1L)).willReturn(requestMatchingResponse);
+        given(matchingService.getMyRequestMatching(1L)).willReturn(requestMatchingResponseList);
 
         // when
         final ResultActions resultActions = performGetMyRequestMatching();
@@ -401,17 +405,11 @@ class MatchingControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 responseFields(
-                                        subsectionWithPath("myPrivateMatchingResponseList").description("내가 내 이력서로 매칭 요청 보낸 리스트"),
-                                        fieldWithPath("myPrivateMatchingResponseList[].receiverName").description("발신자 이름"),
-                                        fieldWithPath("myPrivateMatchingResponseList[].requestMessage").description("매칭 요청 메시지"),
-                                        fieldWithPath("myPrivateMatchingResponseList[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
-                                        fieldWithPath("myPrivateMatchingResponseList[].matchingType").description("매칭 요청 타입"),
-
-                                        subsectionWithPath("myTeamMatchingResponseList").description("내가 팀 소개서로 매칭 요청 보낸 리스트"),
-                                        fieldWithPath("myTeamMatchingResponseList[].receiverName").description("발신자 이름"),
-                                        fieldWithPath("myTeamMatchingResponseList[].requestMessage").description("매칭 요청 메시지"),
-                                        fieldWithPath("myTeamMatchingResponseList[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
-                                        fieldWithPath("myTeamMatchingResponseList[].matchingType").description("매칭 요청 타입")
+                                        fieldWithPath("[].receiverName").description("발신자 이름"),
+                                        fieldWithPath("[].requestMessage").description("매칭 요청 메시지"),
+                                        fieldWithPath("[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
+                                        fieldWithPath("[].matchingType").description("매칭 요청 타입"),
+                                        fieldWithPath("[].requestTeamProfile").type(JsonFieldType.BOOLEAN).description("이력/소개서 발신 여부")
                                 )
                         )
                 );
@@ -461,14 +459,16 @@ class MatchingControllerTest extends ControllerTest {
                 "주서영",
                 "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
-                MatchingType.PROFILE
+                MatchingType.PROFILE,
+                false
         );
 
         final MyPrivateMatchingResponse secondMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
                 "주은강",
                 "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 8, 10),
-                MatchingType.PROFILE
+                MatchingType.PROFILE,
+                false
         );
 
         final List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Arrays.asList(firstMyPrivateMatchingResponse, secondMyPrivateMatchingResponse);
@@ -477,74 +477,48 @@ class MatchingControllerTest extends ControllerTest {
                 "링컬쳐",
                 "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
-                MatchingType.TEAM_PROFILE
+                MatchingType.TEAM_PROFILE,
+                true
         );
 
         final MyTeamMatchingResponse secondMyTeamMatchingResponse = new MyTeamMatchingResponse(
                 "하이브",
                 "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 10, 10),
-                MatchingType.TEAM_PROFILE
+                MatchingType.TEAM_PROFILE,
+                true
         );
 
         final List<MyTeamMatchingResponse> myTeamMatchingResponseList = Arrays.asList(firstMyTeamMatchingResponse, secondMyTeamMatchingResponse);
 
-        final SuccessMatchingResponse successMatchingResponse = new SuccessMatchingResponse(
+        final List<SuccessMatchingResponse> successMatchingResponses = SuccessMatchingResponse.successMatchingResponseList(
                 toPrivateMatchingResponseList,
                 toTeamMatchingResponseList,
                 myPrivateMatchingResponseList,
                 myTeamMatchingResponseList
         );
 
-        given(matchingService.getMySuccessMatching(1L)).willReturn(successMatchingResponse);
+        given(matchingService.getMySuccessMatching(1L)).willReturn(successMatchingResponses);
 
         // when
         final ResultActions resultActions = performGetMySuccessMatching();
 
         // then
         resultActions.andExpect(status().isOk())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                responseFields(
-                                        subsectionWithPath("toPrivateMatchingResponseList").description("내 이력서로 매칭 요청 온 응답 리스트"),
-                                        fieldWithPath("toPrivateMatchingResponseList[].senderName").description("발신자 이름"),
-                                        fieldWithPath("toPrivateMatchingResponseList[].requestMessage").description("매칭 요청 메시지"),
-                                        fieldWithPath("toPrivateMatchingResponseList[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
-                                        fieldWithPath("toPrivateMatchingResponseList[].matchingType").description("매칭 요청 타입"),
-//                                        fieldWithPath("toPrivateMatchingResponseList[].isReceivedTeamProfile").type(JsonFieldType.BOOLEAN).description("이력/소개서 수신 여부"),
-
-                                        subsectionWithPath("toTeamMatchingResponseList").description("팀 소개서로 매칭 요청 온 응답 리스트"),
-                                        fieldWithPath("toTeamMatchingResponseList[].senderName").description("발신자 이름"),
-                                        fieldWithPath("toTeamMatchingResponseList[].requestMessage").description("매칭 요청 메시지"),
-                                        fieldWithPath("toTeamMatchingResponseList[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
-                                        fieldWithPath("toTeamMatchingResponseList[].matchingType").description("매칭 요청 타입"),
-//                                        fieldWithPath("toTeamMatchingResponseList[].isReceivedTeamProfile").type(JsonFieldType.BOOLEAN).description("이력/소개서 수신 여부"),
-
-                                        subsectionWithPath("myPrivateMatchingResponseList").description("내가 내 이력서로 매칭 요청 보낸 리스트"),
-                                        fieldWithPath("myPrivateMatchingResponseList[].receiverName").description("발신자 이름"),
-                                        fieldWithPath("myPrivateMatchingResponseList[].requestMessage").description("매칭 요청 메시지"),
-                                        fieldWithPath("myPrivateMatchingResponseList[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
-                                        fieldWithPath("myPrivateMatchingResponseList[].matchingType").description("매칭 요청 타입"),
-
-                                        subsectionWithPath("myTeamMatchingResponseList").description("내가 팀 소개서로 매칭 요청 보낸 리스트"),
-                                        fieldWithPath("myTeamMatchingResponseList[].receiverName").description("발신자 이름"),
-                                        fieldWithPath("myTeamMatchingResponseList[].requestMessage").description("매칭 요청 메시지"),
-                                        fieldWithPath("myTeamMatchingResponseList[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
-                                        fieldWithPath("myTeamMatchingResponseList[].matchingType").description("매칭 요청 타입")
-
-                                )
+                .andDo(restDocs.document(
+                        requestHeaders(
+                                headerWithName("Authorization").description("Access token for security.")
+                        ),
+                        responseFields(
+                                subsectionWithPath("[]").description("모든 성사 매칭 배열")
+                        ).andWithPrefix("[].",
+                                fieldWithPath("successMatchingMemberName").description("매칭 성사자 이름/팀명"),
+                                fieldWithPath("requestMessage").description("매칭 요청 메시지"),
+                                fieldWithPath("requestOccurTime").description("매칭 요청 발생 시간")
                         )
-                );
+                ));
     }
+
 
 
 }

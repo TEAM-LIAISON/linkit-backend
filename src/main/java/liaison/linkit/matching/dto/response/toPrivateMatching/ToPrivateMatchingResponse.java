@@ -34,5 +34,4 @@ public class ToPrivateMatchingResponse {
                         false
                 )).collect(Collectors.toList());
     }
-
 }
