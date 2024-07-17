@@ -88,8 +88,10 @@ spring:
       mode: never
 
   batch:
+    job:
+      enabled: true
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
 
   servlet:
     multipart:
@@ -97,7 +99,7 @@ spring:
       file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
       max-file-size: 5MB # 한개 파일의 최대 사이즈 (default: 1MB)
       max-request-size: 10MB # 한개 요청의 최대 사이즈 (default: 10MB)
-      
+
 cloud:
   aws:
     credentials:
