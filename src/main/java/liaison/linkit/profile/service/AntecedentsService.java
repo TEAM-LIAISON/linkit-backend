@@ -147,7 +147,6 @@ public class AntecedentsService {
         saveAntecedent(profile, antecedentsCreateRequest);
         // 업데이트
         profile.updateIsAntecedents(true);
-        profile.addPerfectionDefault();
         profile.updateMemberProfileTypeByCompletion();
     }
 }
