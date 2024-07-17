@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
@@ -86,11 +88,11 @@ public class MatchingController {
     // 내가 받은 매칭 조회
     @GetMapping("/matching/received")
     @MemberOnly
-    public ResponseEntity<ReceivedMatchingResponse> getReceivedMatchingResponses(
+    public ResponseEntity<List<ReceivedMatchingResponse>> getReceivedMatchingResponses(
             @Auth final Accessor accessor
     ) {
-        final ReceivedMatchingResponse receivedMatchingResponse = matchingService.getReceivedMatching(accessor.getMemberId());
-        return ResponseEntity.status(HttpStatus.OK).body(receivedMatchingResponse);
+        final List<ReceivedMatchingResponse> receivedMatchingResponseList = matchingService.getReceivedMatching(accessor.getMemberId());
+        return ResponseEntity.status(HttpStatus.OK).body(receivedMatchingResponseList);
     }
 
     // 내가 보낸 매칭 조회

@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
@@ -185,13 +186,13 @@ public class MatchingService {
         );
     }
 
-    public ReceivedMatchingResponse getReceivedMatching(
+    public List<ReceivedMatchingResponse> getReceivedMatching(
             final Long memberId
     ) {
         // 해당 memberId에게 발생한 모든 매칭 요청을 조회해야 함.
 
-        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = null;
-        List<ToTeamMatchingResponse> toTeamMatchingResponseList = null;
+        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
+        List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
 
         if (profileRepository.existsByMemberId(memberId)) {
             final Profile profile = getProfile(memberId);
@@ -205,7 +206,7 @@ public class MatchingService {
             toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamMatchingList);
         }
 
-        return new ReceivedMatchingResponse(toPrivateMatchingResponseList, toTeamMatchingResponseList);
+        return ReceivedMatchingResponse.toReceivedMatchingResponse(toPrivateMatchingResponseList, toTeamMatchingResponseList);
     }
 
     // 내가 매칭 요청 보낸 것을 조회하는 메서드
