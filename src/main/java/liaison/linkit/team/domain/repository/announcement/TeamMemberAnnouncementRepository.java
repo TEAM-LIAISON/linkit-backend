@@ -27,7 +27,6 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
           SELECT DISTINCT tma FROM TeamMemberAnnouncement tma
           JOIN tma.teamProfile tp
             
-            
          LEFT JOIN TeamProfileTeamBuildingField tptbf ON tp.id = tptbf.teamProfile.id
          LEFT JOIN TeamBuildingField tbf ON tptbf.teamBuildingField.id = tbf.id
          
@@ -43,12 +42,15 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
          LEFT JOIN ActivityMethod am ON tp.id = am.teamProfile.id
          LEFT JOIN ActivityMethodTag amt ON am.activityMethodTag.id = amt.id
          
+         LEFT JOIN TeamMiniProfile tmp ON tp.id = tmp.teamProfile.id
+         
          WHERE (:teamBuildingFieldNames IS NULL OR tbf.teamBuildingFieldName IN :teamBuildingFieldNames)
          AND (:jobRoleNames IS NULL OR jr.jobRoleName IN :jobRoleNames)
          AND (:skillNames IS NULL OR s.skillName IN :skillNames)
          AND (:cityName IS NULL OR r.cityName = :cityName)
          AND (:divisionName IS NULL OR r.divisionName = :divisionName)
          AND (:activityTagNames IS NULL OR amt.activityTagName IN :activityTagNames)
+         AND (tmp.isTeamActivate = true )
          """)
     Page<TeamMemberAnnouncement> findAllByOrderByCreatedDateDesc(
             @Param("teamBuildingFieldNames") final List<String> teamBuildingFieldNames,

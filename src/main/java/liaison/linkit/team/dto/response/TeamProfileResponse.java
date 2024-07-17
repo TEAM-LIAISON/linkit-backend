@@ -45,6 +45,25 @@ public class TeamProfileResponse {
     // 4.10. 첨부
     private final TeamAttachResponse teamAttachResponse;
 
+    public TeamProfileResponse() {
+        this.isTeamProfileEssential = false;
+        this.teamMiniProfileResponse = null;
+        this.teamCompletionResponse = null;
+        this.teamProfileTeamBuildingFieldResponse = null;
+        this.teamMemberAnnouncementResponses = null;
+        this.activityResponse = null;
+        this.teamProfileIntroductionResponse = null;
+        this.teamMemberIntroductionResponses = null;
+        this.historyResponses = null;
+        this.teamAttachResponse = null;
+    }
+
+//    public TeamProfileResponse() {
+//        this.isTeamProfileEssential = false;
+//        this.teamMiniProfileResponse = null;
+//
+//    }
+
     public static TeamProfileResponse teamProfileItems(
             final boolean isTeamProfileEssential,
             final TeamMiniProfileResponse teamMiniProfileResponse,

@@ -44,6 +44,7 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
            AND (:skillNames IS NULL OR s.skillName IN :skillNames)
            AND (:cityName IS NULL OR r.cityName = :cityName)
            AND (:divisionName IS NULL OR r.divisionName = :divisionName)
+           AND (mp.isActivate = true)
            
            ORDER BY mp.createdDate DESC
            """)
