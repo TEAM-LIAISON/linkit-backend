@@ -89,7 +89,6 @@ public class MiniProfileService {
                     s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
                 }
 
-
                 log.info("miniProfileImage != null case : 기존 미니프로필 이미지 삭제 완료");
                 miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
                 log.info("miniProfileImage != null case : 기존 미니프로필 키워드 삭제 완료");
@@ -103,7 +102,7 @@ public class MiniProfileService {
                     profile,
                     miniProfileRequest.getProfileTitle(),
                     miniProfileImageUrl,
-                    miniProfileRequest.isActivate()
+                    miniProfileRequest.getIsActivate()
             );
 
             // 미니 프로필 저장된 객체
@@ -131,7 +130,7 @@ public class MiniProfileService {
                         profile,
                         miniProfileRequest.getProfileTitle(),
                         miniProfile.getMiniProfileImg(),
-                        miniProfileRequest.isActivate()
+                        miniProfileRequest.getIsActivate()
                 );
                 miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
                 miniProfileRepository.deleteByProfileId(profile.getId());
@@ -151,7 +150,7 @@ public class MiniProfileService {
                         profile,
                         miniProfileRequest.getProfileTitle(),
                         null,
-                        miniProfileRequest.isActivate()
+                        miniProfileRequest.getIsActivate()
                 );
 
                 final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfile);
