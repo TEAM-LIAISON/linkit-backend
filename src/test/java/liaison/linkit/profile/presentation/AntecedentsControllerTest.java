@@ -66,10 +66,8 @@ public class AntecedentsControllerTest extends ControllerTest {
         final AntecedentsCreateRequest firstAntecedentsCreateRequest = new AntecedentsCreateRequest(
                 "오더이즈",
                 "프로젝트 매니저",
-                2023,
-                3,
-                2023,
-                6,
+                "2023.03",
+                "2023.06",
                 false,
                 "경력 설명입니다."
         );
@@ -77,10 +75,8 @@ public class AntecedentsControllerTest extends ControllerTest {
         final AntecedentsCreateRequest secondAntecedentsCreateRequest = new AntecedentsCreateRequest(
                 "삼성",
                 "SW 개발자",
-                2024,
-                2,
-                2025,
-                10,
+                "2024.02",
+                "2025.10",
                 false,
                 "경력 설명입니다."
         );
@@ -140,10 +136,8 @@ public class AntecedentsControllerTest extends ControllerTest {
         final AntecedentsCreateRequest antecedentsCreateRequest = new AntecedentsCreateRequest(
                 "오더이즈",
                 "프로젝트 매니저",
-                2023,
-                3,
-                2023,
-                6,
+                "2023.03",
+                "2023.06",
                 false,
                 "경력 설명입니다."
         );
@@ -167,22 +161,14 @@ public class AntecedentsControllerTest extends ControllerTest {
                                         .type(JsonFieldType.STRING)
                                         .description("직무(역할)")
                                         .attributes(field("constraint", "문자열")),
-                                fieldWithPath("startYear")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("시작 연도")
-                                        .attributes(field("constraint", "4자리 숫자")),
-                                fieldWithPath("startMonth")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("시작 월")
-                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                fieldWithPath("endYear")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("종료 연도")
-                                        .attributes(field("constraint", "4자리 숫자")),
-                                fieldWithPath("endMonth")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("종료 월")
-                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("startDate")
+                                        .type(JsonFieldType.STRING)
+                                        .description("시작 연도.월")
+                                        .attributes(field("constraint", "4자리 숫자.2자리 숫자")),
+                                fieldWithPath("endDate")
+                                        .type(JsonFieldType.STRING)
+                                        .description("종료 연도.월")
+                                        .attributes(field("constraint", "4자리 숫자.2자리 숫자")),
                                 fieldWithPath("retirement")
                                         .type(JsonFieldType.BOOLEAN)
                                         .description("퇴직 여부")
@@ -203,10 +189,8 @@ public class AntecedentsControllerTest extends ControllerTest {
         final AntecedentsCreateRequest firstAntecedentsCreateRequest = new AntecedentsCreateRequest(
                 "오더이즈",
                 "프로젝트 매니저",
-                2023,
-                3,
-                2023,
-                6,
+                "2023.03",
+                "2023.06",
                 false,
                 "경력 설명입니다."
         );
@@ -214,10 +198,8 @@ public class AntecedentsControllerTest extends ControllerTest {
         final AntecedentsCreateRequest secondAntecedentsCreateRequest = new AntecedentsCreateRequest(
                 "삼성",
                 "SW 개발자",
-                2024,
-                2,
-                2025,
-                10,
+                "2024.02",
+                "2025.10",
                 false,
                 "경력 설명입니다."
         );
@@ -250,22 +232,14 @@ public class AntecedentsControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("직무(역할)")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("[].startYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("시작 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("[].startMonth")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("시작 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                        fieldWithPath("[].endYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("종료 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("[].endMonth")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("종료 월")
-                                                .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                        fieldWithPath("[].startDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("시작 연도.월")
+                                                .attributes(field("constraint", "4자리 숫자.2자리 숫자")),
+                                        fieldWithPath("[].endDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("종료 연도.월")
+                                                .attributes(field("constraint", "4자리 숫자.2자리 숫자")),
                                         fieldWithPath("[].retirement")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("퇴직 여부")
@@ -287,10 +261,8 @@ public class AntecedentsControllerTest extends ControllerTest {
         final AntecedentsCreateRequest antecedentsCreateRequest = new AntecedentsCreateRequest(
                 "오더이즈",
                 "프로젝트 매니저",
-                2023,
-                3,
-                2023,
-                6,
+                "2023.03",
+                "2023.06",
                 false,
                 "경력 설명입니다."
         );
@@ -312,22 +284,14 @@ public class AntecedentsControllerTest extends ControllerTest {
                                         .type(JsonFieldType.STRING)
                                         .description("직무(역할)")
                                         .attributes(field("constraint", "문자열")),
-                                fieldWithPath("startYear")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("시작 연도")
-                                        .attributes(field("constraint", "4자리 숫자")),
-                                fieldWithPath("startMonth")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("시작 월")
-                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
-                                fieldWithPath("endYear")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("종료 연도")
-                                        .attributes(field("constraint", "4자리 숫자")),
-                                fieldWithPath("endMonth")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("종료 월")
-                                        .attributes(field("constraint", "1부터 12까지의 숫자 중에서 선택")),
+                                fieldWithPath("startDate")
+                                        .type(JsonFieldType.STRING)
+                                        .description("시작 연도.월")
+                                        .attributes(field("constraint", "4자리 숫자.2자리 숫자")),
+                                fieldWithPath("endDate")
+                                        .type(JsonFieldType.STRING)
+                                        .description("종료 연도.월")
+                                        .attributes(field("constraint", "4자리 숫자.2자리 숫자")),
                                 fieldWithPath("retirement")
                                         .type(JsonFieldType.BOOLEAN)
                                         .description("퇴직 여부")

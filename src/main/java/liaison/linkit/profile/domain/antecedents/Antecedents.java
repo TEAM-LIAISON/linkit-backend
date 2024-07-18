@@ -35,21 +35,13 @@ public class Antecedents {
     @Column(nullable = false)
     private String projectName;
 
-    // 시작 연도
+    // 시작 날짜
     @Column(nullable = false)
-    private int startYear;
+    private String startDate;
 
-    // 시작월
+    // 종료 날짜
     @Column(nullable = false)
-    private int startMonth;
-
-    // 종료 연도
-    @Column(nullable = false)
-    private int endYear;
-
-    // 종료 월
-    @Column(nullable = false)
-    private int endMonth;
+    private String endDate;
 
     // 진행 및 종료 여부
     @Column(nullable = false)
@@ -63,10 +55,8 @@ public class Antecedents {
             final Profile profile,
             final String projectName,
             final String projectRole,
-            final int startYear,
-            final int startMonth,
-            final int endYear,
-            final int endMonth,
+            final String startDate,
+            final String endDate,
             final boolean retirement,
             final String antecedentsDescription
     ) {
@@ -75,10 +65,8 @@ public class Antecedents {
                 profile,
                 projectName,
                 projectRole,
-                startYear,
-                startMonth,
-                endYear,
-                endMonth,
+                startDate,
+                endDate,
                 retirement,
                 antecedentsDescription
         );
@@ -87,10 +75,8 @@ public class Antecedents {
     public void update(final AntecedentsCreateRequest antecedentsCreateRequest) {
         this.projectName = antecedentsCreateRequest.getProjectName();
         this.projectRole = antecedentsCreateRequest.getProjectRole();
-        this.startYear = antecedentsCreateRequest.getStartYear();
-        this.startMonth = antecedentsCreateRequest.getStartMonth();
-        this.endYear = antecedentsCreateRequest.getEndYear();
-        this.endMonth = antecedentsCreateRequest.getEndMonth();
+        this.startDate = antecedentsCreateRequest.getStartDate();
+        this.endDate = antecedentsCreateRequest.getEndDate();
         this.retirement = antecedentsCreateRequest.isRetirement();
         this.antecedentsDescription = antecedentsCreateRequest.getAntecedentsDescription();
     }
