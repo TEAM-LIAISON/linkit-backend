@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public class ToTeamMatchingResponse {
+    // 팀 소개서에 온 매칭 요청 PK ID
+    private final Long teamMatchingId;
     // 발신자 이름
     private final String senderName;
     // 매칭 요청 메시지
@@ -26,6 +28,7 @@ public class ToTeamMatchingResponse {
     public static List<ToTeamMatchingResponse> toTeamMatchingResponse(final List<TeamMatching> teamMatchingList) {
         return teamMatchingList.stream()
                 .map(teamMatching -> new ToTeamMatchingResponse(
+                        teamMatching.getId(),
                         teamMatching.getMember().getMemberBasicInform().getMemberName(),
                         teamMatching.getRequestMessage(),
                         LocalDate.from(teamMatching.getCreatedAt()),

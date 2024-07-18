@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ToPrivateMatchingResponse {
 
+    // 내 이력서에 온 매칭 요청 PK ID
+    private final Long privateMatchingId;
     // 발신자 이름
     private final String senderName;
     // 매칭 요청 메시지
@@ -27,6 +29,7 @@ public class ToPrivateMatchingResponse {
     public static List<ToPrivateMatchingResponse> toPrivateMatchingResponse(final List<PrivateMatching> privateMatchingList) {
         return privateMatchingList.stream()
                 .map(privateMatching -> new ToPrivateMatchingResponse(
+                        privateMatching.getId(),
                         privateMatching.getMember().getMemberBasicInform().getMemberName(),
                         privateMatching.getRequestMessage(),
                         LocalDate.from(privateMatching.getCreatedAt()),
