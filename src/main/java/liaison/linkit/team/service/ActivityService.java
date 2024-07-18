@@ -70,12 +70,14 @@ public class ActivityService {
         // 삭제 처리 먼저 진행
         if (activityMethodRepository.existsByTeamProfileId(teamProfile.getId())) {
             activityMethodRepository.deleteAllByTeamProfileId(teamProfile.getId());
+            teamProfile.updateIsActivityMethod(false);
         }
 
         // 활동 방식 태그 이름 구현 로직
         final List<ActivityMethodTag> activityMethodTags = activityMethodTagRepository
                 .findActivityMethodTagByActivityTagNames(activityCreateRequest.getActivityTagNames());
 
+        // 활동 방식
         final List<ActivityMethod> activityMethods = activityMethodTags.stream()
                 .map(activityMethodTag -> new ActivityMethod(null, teamProfile, activityMethodTag))
                 .toList();
@@ -83,6 +85,7 @@ public class ActivityService {
         // 저장 로직
         activityMethodRepository.saveAll(activityMethods);
 
+        // 팀 소개서 활동 방식 true 변환
         teamProfile.updateIsActivityMethod(true);
     }
 
@@ -91,20 +94,23 @@ public class ActivityService {
             final Long memberId,
             final ActivityCreateRequest activityCreateRequest
     ) {
+        // 팀 소개서 객체 조회
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
         // 삭제 처리 먼저 진행
         if (activityRegionRepository.existsByTeamProfileId(teamProfile.getId())) {
             activityRegionRepository.deleteAllByTeamProfileId(teamProfile.getId());
+            teamProfile.updateIsActivityRegion(false);
         }
 
         // 지역 정보 구현 로직
-        final Region region = regionRepository
-                .findRegionByCityNameAndDivisionName(activityCreateRequest.getCityName(), activityCreateRequest.getDivisionName());
+        final Region region = regionRepository.findRegionByCityNameAndDivisionName(activityCreateRequest.getCityName(), activityCreateRequest.getDivisionName());
 
         ActivityRegion activityRegion = new ActivityRegion(null, teamProfile, region);
 
+        // 활동 지역 저장
         activityRegionRepository.save(activityRegion);
+
 
         teamProfile.updateIsActivityRegion(true);
     }
