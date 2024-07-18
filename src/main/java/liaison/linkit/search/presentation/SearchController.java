@@ -6,6 +6,7 @@ import liaison.linkit.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class SearchController {
     // 팀원 찾기 구현부
     @GetMapping("/search/private/profile")
     public ResponseEntity<Page<MiniProfileResponse>> findPrivateMiniProfile(
-            @PageableDefault(size = 10) final Pageable pageable,
+            @PageableDefault(size = 10) Pageable pageable,
             // 필터링 항목 1. 팀빌딩 분야
             @RequestParam(required = false) final List<String> teamBuildingFieldName,
             // 필터링 항목 2. 희망 역할
@@ -38,10 +39,11 @@ public class SearchController {
             // 필터링 항목 4. 활동 지역 (시/도)
             @RequestParam(required = false) final String cityName,
             // 필터링 항목 4. 활동 지역 (시/군/구)
-            @RequestParam(required = false) final String divisionName
+            @RequestParam(required = false) final String divisionName,
+            @RequestParam(required = false, defaultValue = "18") final int size
     ) {
         log.info("팀원 찾기 요청이 들어왔습니다.");
-
+        pageable = PageRequest.of(pageable.getPageNumber(), size, pageable.getSort()); // 새로운 Pageable 객체 생성
         final Page<MiniProfileResponse> privateMiniProfiles = searchService.findPrivateMiniProfile(
                 pageable,
                 teamBuildingFieldName,
