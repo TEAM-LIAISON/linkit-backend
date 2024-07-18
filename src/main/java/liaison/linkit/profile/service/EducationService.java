@@ -131,6 +131,39 @@ public class EducationService {
     ) {
         final Profile profile = getProfile(memberId);
 
+        // 기존에 학력 정보가 존재했던 경우
+        if (profile.getIsEducation()) {
+            makeNewEducation(educationCreateRequest, profile);
+        } else {
+            // 기존에 존재하지 않았던 경우
+            makeNewEducation(educationCreateRequest, profile);
+            profile.updateIsEducation(true);
+            profile.updateMemberProfileTypeByCompletion();
+        }
+    }
+
+    public void update(
+            final Long educationId,
+            final EducationCreateRequest educationCreateRequest
+    ) {
+        final Education education = getEducation(educationId);
+
+        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_UNIVERSITY_NAME));
+
+        final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
+
+        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MAJOR_NAME));
+
+        education.update(educationCreateRequest, university, major, degree);
+    }
+
+    private void makeNewEducation(
+            final EducationCreateRequest educationCreateRequest,
+            final Profile profile
+    ) {
         final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_UNIVERSITY_NAME));
 
@@ -150,27 +183,5 @@ public class EducationService {
         );
 
         educationRepository.save(newEducation);
-
-        // 반복문 종료 후에 프로필의 상태를 업데이트한다.
-        profile.updateIsEducation(true);
-        profile.updateMemberProfileTypeByCompletion();
-    }
-
-    public void update(
-            final Long educationId,
-            final EducationCreateRequest educationCreateRequest
-    ) {
-        final Education education = getEducation(educationId);
-
-        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName())
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_UNIVERSITY_NAME));
-
-        final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName())
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
-
-        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName())
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MAJOR_NAME));
-
-        education.update(educationCreateRequest, university, major, degree);
     }
 }
