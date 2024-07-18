@@ -202,6 +202,8 @@ public class WishService {
         final Member member = getMember(memberId);
         // 팀 찜 목록 객체 조회
         final List<TeamWish> teamWishList = teamWishRepository.findAllByMemberId(member.getId());
+        log.info("teamWishList={}", teamWishList);
+
         return teamWishList.stream().map(this::convertToWishTeamProfileResponse).toList();
     }
 

@@ -86,7 +86,7 @@ public class ProfileController {
             final AttachResponse attachResponse = getAttachResponses(accessor.getMemberId(), profileIsValueResponse.isAttach());
 
             final ProfileResponse profileResponse = profileService.getProfileResponse(
-                    isPrivateProfileEssential,
+                    isPrivateProfilegiEssential,
                     miniProfileResponse,
                     completionResponse,
                     profileIntroductionResponse,
