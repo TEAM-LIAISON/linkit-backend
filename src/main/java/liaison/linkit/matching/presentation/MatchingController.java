@@ -10,7 +10,6 @@ import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
 import liaison.linkit.matching.dto.response.RequestMatchingResponse;
 import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
-import liaison.linkit.matching.dto.response.messageResponse.MatchingMessageResponse;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -118,12 +117,12 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(successMatchingResponseList);
     }
 
-    @GetMapping("/matching/received/{profileId}")
-    @MemberOnly
-    public ResponseEntity<MatchingMessageResponse> getMatchingMessageResponse(
-            @Auth final Accessor accessor,
-            @PathVariable final Long profileId
-    ) {
-
-    }
+//    @GetMapping("/matching/received/{profileId}")
+//    @MemberOnly
+//    public ResponseEntity<MatchingMessageResponse> getMatchingMessageResponse(
+//            @Auth final Accessor accessor,
+//            @PathVariable final Long profileId
+//    ) {
+//
+//    }
 }
