@@ -137,7 +137,7 @@ class MiniProfileControllerTest extends ControllerTest {
                         requestPartFields("miniProfileRequest",
                                 fieldWithPath("profileTitle").description("프로필 제목"),
                                 fieldWithPath("myKeywordNames").description("나를 소개하는 키워드 목록").attributes(field("constraint", "문자열 배열")),
-                                fieldWithPath("activate").description("프로필 활성화 여부")
+                                fieldWithPath("isActivate").description("프로필 활성화 여부")
                         )
                 ));
     }

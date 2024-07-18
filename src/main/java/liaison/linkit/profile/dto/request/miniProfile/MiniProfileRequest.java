@@ -18,5 +18,5 @@ public class MiniProfileRequest {
     private final List<String> myKeywordNames;
 
     @NotNull(message = "프로필 활성화 여부를 선택해주세요")
-    private final boolean isActivate;
+    private final Boolean isActivate;
 }
