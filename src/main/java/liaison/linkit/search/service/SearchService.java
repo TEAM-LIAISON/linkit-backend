@@ -74,6 +74,12 @@ public class SearchService {
             final String cityName,
             String divisionName
     ) {
+        log.info("pageable={}", pageable);
+        log.info("teamBuildingFieldName={}", teamBuildingFieldName);
+        log.info("jobRoleName={}", jobRoleName);
+        log.info("skillName={}", skillName);
+        log.info("cityName={}", cityName);
+        log.info("divisionName={}", divisionName);
 
         if ("전체".equals(divisionName)) {
             divisionName = null;
@@ -89,7 +95,7 @@ public class SearchService {
                 pageable
         );
 
-        log.info("miniProfiles={}", miniProfiles);
+        log.info("miniProfiles.getSize()={}", miniProfiles.getSize());
         return miniProfiles.map(this::convertToMiniProfileResponse);
     }
 
