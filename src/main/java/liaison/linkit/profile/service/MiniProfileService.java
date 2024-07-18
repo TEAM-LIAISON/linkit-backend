@@ -84,7 +84,12 @@ public class MiniProfileService {
             // 미니 프로필이 기존에 존재했었다면
             if (miniProfileRepository.existsByProfileId(profile.getId())) {
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
-                s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
+
+                if (miniProfile.getMiniProfileImg() != null) {
+                    s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
+                }
+
+
                 log.info("miniProfileImage != null case : 기존 미니프로필 이미지 삭제 완료");
                 miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
                 log.info("miniProfileImage != null case : 기존 미니프로필 키워드 삭제 완료");
@@ -112,7 +117,8 @@ public class MiniProfileService {
 
             profile.updateIsMiniProfile(true);
         }
-        // 미니 프로필 이미지가 null인 경우
+        // 요청 객체의 미니 프로필 이미지가 null인 경우
+        // 기존 이미지 유지로 간주
         else {
             log.info("요청 객체의 miniProfileImage가 null입니다.");
             // 미니 프로필 객체가 존재했었다면

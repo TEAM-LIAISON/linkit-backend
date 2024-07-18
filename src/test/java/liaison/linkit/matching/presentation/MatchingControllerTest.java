@@ -274,6 +274,7 @@ class MatchingControllerTest extends ControllerTest {
     void getReceivedMatching() throws Exception {
         // given
         final ToPrivateMatchingResponse firstToPrivateMatchingResponse = new ToPrivateMatchingResponse(
+                1L,
                 "김동혁",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -282,6 +283,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final ToPrivateMatchingResponse secondToPrivateMatchingResponse = new ToPrivateMatchingResponse(
+                2L,
                 "권동민",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -292,6 +294,7 @@ class MatchingControllerTest extends ControllerTest {
         final List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Arrays.asList(firstToPrivateMatchingResponse, secondToPrivateMatchingResponse);
 
         final ToTeamMatchingResponse firstToTeamMatchingResponse = new ToTeamMatchingResponse(
+                1L,
                 "링킷",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 12 ,10),
@@ -300,6 +303,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final ToTeamMatchingResponse secondToTeamMatchingResponse = new ToTeamMatchingResponse(
+                2L,
                 "링컬쳐",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2022, 10 ,10),
@@ -330,6 +334,7 @@ class MatchingControllerTest extends ControllerTest {
                                         headerWithName("Authorization").description("access token").attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 responseFields(
+                                        fieldWithPath("[].receivedMatchingId").type(JsonFieldType.NUMBER).description("내 이력서/팀 소개서에 매칭 PK ID"),
                                         fieldWithPath("[].senderName").type(JsonFieldType.STRING).description("발신자 이름"),
                                         fieldWithPath("[].requestMessage").type(JsonFieldType.STRING).description("매칭 요청 메시지"),
                                         fieldWithPath("[].requestOccurTime").type(JsonFieldType.STRING).description("매칭 요청 발생 날짜"),
@@ -346,6 +351,7 @@ class MatchingControllerTest extends ControllerTest {
     void getMyRequestMatching() throws Exception {
         // given
         final MyPrivateMatchingResponse firstMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
+                1L,
                 "주서영",
                 "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -354,6 +360,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final MyPrivateMatchingResponse secondMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
+                2L,
                 "주은강",
                 "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 8, 10),
@@ -364,6 +371,7 @@ class MatchingControllerTest extends ControllerTest {
         final List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Arrays.asList(firstMyPrivateMatchingResponse, secondMyPrivateMatchingResponse);
 
         final MyTeamMatchingResponse firstMyTeamMatchingResponse = new MyTeamMatchingResponse(
+                1L,
                 "링컬쳐",
                 "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -372,6 +380,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final MyTeamMatchingResponse secondMyTeamMatchingResponse = new MyTeamMatchingResponse(
+                2L,
                 "하이브",
                 "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 10, 10),
@@ -405,6 +414,7 @@ class MatchingControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 responseFields(
+                                        fieldWithPath("[].requestMatchingId").description("매칭 요청 보낸 항목 PK ID"),
                                         fieldWithPath("[].receiverName").description("발신자 이름"),
                                         fieldWithPath("[].requestMessage").description("매칭 요청 메시지"),
                                         fieldWithPath("[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
@@ -420,6 +430,7 @@ class MatchingControllerTest extends ControllerTest {
     void getMySuccessMatching() throws Exception {
         // given
         final ToPrivateMatchingResponse firstToPrivateMatchingResponse = new ToPrivateMatchingResponse(
+                1L,
                 "김동혁",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -428,6 +439,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final ToPrivateMatchingResponse secondToPrivateMatchingResponse = new ToPrivateMatchingResponse(
+                2L,
                 "권동민",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -438,6 +450,7 @@ class MatchingControllerTest extends ControllerTest {
         final List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Arrays.asList(firstToPrivateMatchingResponse, secondToPrivateMatchingResponse);
 
         final ToTeamMatchingResponse firstToTeamMatchingResponse = new ToTeamMatchingResponse(
+                1L,
                 "링킷",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 12 ,10),
@@ -446,6 +459,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final ToTeamMatchingResponse secondToTeamMatchingResponse = new ToTeamMatchingResponse(
+                2L,
                 "링컬쳐",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2022, 10 ,10),
@@ -456,6 +470,7 @@ class MatchingControllerTest extends ControllerTest {
         final List<ToTeamMatchingResponse> toTeamMatchingResponseList = Arrays.asList(firstToTeamMatchingResponse, secondToTeamMatchingResponse);
 
         final MyPrivateMatchingResponse firstMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
+                1L,
                 "주서영",
                 "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -464,6 +479,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final MyPrivateMatchingResponse secondMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
+                2L,
                 "주은강",
                 "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 8, 10),
@@ -474,6 +490,7 @@ class MatchingControllerTest extends ControllerTest {
         final List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Arrays.asList(firstMyPrivateMatchingResponse, secondMyPrivateMatchingResponse);
 
         final MyTeamMatchingResponse firstMyTeamMatchingResponse = new MyTeamMatchingResponse(
+                1L,
                 "링컬쳐",
                 "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -482,6 +499,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final MyTeamMatchingResponse secondMyTeamMatchingResponse = new MyTeamMatchingResponse(
+                2L,
                 "하이브",
                 "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 10, 10),

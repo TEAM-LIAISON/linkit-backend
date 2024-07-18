@@ -59,7 +59,6 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
     // 팀 소개서가 팀 소개서에 매칭 요청을 보내는 경우
     @PostMapping("/team/profile/matching/team/{teamProfileId}")
     @MemberOnly
@@ -73,6 +72,7 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    // 내 이력서가 팀 소개서에 매칭 요청을 보내는 경우
     @PostMapping("/private/profile/matching/team/{teamProfileId}")
     @MemberOnly
     @CheckMatchingToTeamProfileAccess

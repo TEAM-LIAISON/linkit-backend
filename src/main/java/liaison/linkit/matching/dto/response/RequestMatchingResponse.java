@@ -15,6 +15,8 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public class RequestMatchingResponse {
 
+    // 내 이력서 또는 팀 소개서에 매칭 요청 온 PK ID
+    private final Long requestMatchingId;
     // 수신자 이름
     private final String receiverName;
     // 매칭 요청 메시지
@@ -33,12 +35,14 @@ public class RequestMatchingResponse {
         // 스트림 API를 사용하여 두 리스트의 요소를 하나의 스트림으로 결합
         return Stream.concat(
                 myPrivateMatchingResponseList.stream().map(mpm -> new RequestMatchingResponse(
+                        mpm.getPrivateMatchingId(),
                         mpm.getReceiverName(),
                         mpm.getRequestMessage(),
                         mpm.getRequestOccurTime(),
                         mpm.getMatchingType(),
                         mpm.isRequestTeamProfile())),
                 myTeamMatchingResponseList.stream().map(mtm -> new RequestMatchingResponse(
+                        mtm.getTeamMatchingId(),
                         mtm.getReceiverName(),
                         mtm.getRequestMessage(),
                         mtm.getRequestOccurTime(),

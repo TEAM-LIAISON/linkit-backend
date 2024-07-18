@@ -759,7 +759,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Wed, 24 Jul 2024 17:18:26 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 25 Jul 2024 05:39:31 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2112,14 +2112,14 @@ Content-Length: 3329
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "attach" : true,
-    "profileSkill" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
     "profileTeamBuildingField" : true,
-    "profileRegion" : true
+    "profileRegion" : true,
+    "profileSkill" : true,
+    "awards" : true,
+    "attach" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -3309,12 +3309,12 @@ Content-Length: 2918
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
     "teamProfileTeamBuildingField" : true,
-    "history" : true,
-    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true
+    "teamAttach" : true,
+    "history" : true,
+    "activity" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -4411,8 +4411,8 @@ Content-Length: 661
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "sorted" : false,
-    "unsorted" : true
+    "unsorted" : true,
+    "sorted" : false
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4627,8 +4627,8 @@ Content-Length: 990
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "sorted" : false,
-    "unsorted" : true
+    "unsorted" : true,
+    "sorted" : false
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4822,14 +4822,14 @@ Content-Length: 3328
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "attach" : true,
-    "profileSkill" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
     "profileTeamBuildingField" : true,
-    "profileRegion" : true
+    "profileRegion" : true,
+    "profileSkill" : true,
+    "awards" : true,
+    "attach" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다."
@@ -5272,12 +5272,12 @@ Content-Length: 2918
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
     "teamProfileTeamBuildingField" : true,
-    "history" : true,
-    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true
+    "teamAttach" : true,
+    "history" : true,
+    "activity" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -5863,27 +5863,31 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 775
+Content-Length: 887
 
 [ {
+  "receivedMatchingId" : 1,
   "senderName" : "김동혁",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
   "matchingType" : "PROFILE",
   "receivedTeamProfile" : false
 }, {
+  "receivedMatchingId" : 2,
   "senderName" : "권동민",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
   "matchingType" : "PROFILE",
   "receivedTeamProfile" : false
 }, {
+  "receivedMatchingId" : 1,
   "senderName" : "링킷",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2023-12-10",
   "matchingType" : "TEAM_PROFILE",
   "receivedTeamProfile" : true
 }, {
+  "receivedMatchingId" : 2,
   "senderName" : "링컬쳐",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2022-10-10",
@@ -5906,6 +5910,11 @@ Content-Length: 775
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].receivedMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서/팀 소개서에 매칭 PK ID</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].senderName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
@@ -5951,27 +5960,31 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 942
+Content-Length: 1050
 
 [ {
+  "requestMatchingId" : 1,
   "receiverName" : "주서영",
   "requestMessage" : "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
   "matchingType" : "PROFILE",
   "requestTeamProfile" : false
 }, {
+  "requestMatchingId" : 2,
   "receiverName" : "주은강",
   "requestMessage" : "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-08-10",
   "matchingType" : "PROFILE",
   "requestTeamProfile" : false
 }, {
+  "requestMatchingId" : 1,
   "receiverName" : "링컬쳐",
   "requestMessage" : "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
   "matchingType" : "TEAM_PROFILE",
   "requestTeamProfile" : true
 }, {
+  "requestMatchingId" : 2,
   "receiverName" : "하이브",
   "requestMessage" : "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2023-10-10",
@@ -5994,6 +6007,11 @@ Content-Length: 942
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].requestMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 보낸 항목 PK ID</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].receiverName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
