@@ -263,4 +263,11 @@ public class MatchingService {
                 myTeamMatchingResponseList
         );
     }
+
+//    public MatchingMessageResponse getMatchingMessageResponse(
+//            final Long memberId,
+//            final Long profileId
+//    ) {
+//        // privateMatching -> 내 이력서 매칭 요청
+//    }
 }

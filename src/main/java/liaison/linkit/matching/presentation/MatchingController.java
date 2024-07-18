@@ -123,6 +123,7 @@ public class MatchingController {
 //            @Auth final Accessor accessor,
 //            @PathVariable final Long profileId
 //    ) {
-//
+//        final MatchingMessageResponse matchingMessageResponse = matchingService.getMatchingMessageResponse(accessor.getMemberId(), profileId);
+//        return ResponseEntity.status(HttpStatus.OK).body(matchingMessageResponse);
 //    }
 }
