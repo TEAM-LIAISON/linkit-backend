@@ -88,10 +88,8 @@ public class AntecedentsService {
                 profile,
                 request.getProjectName(),
                 request.getProjectRole(),
-                request.getStartYear(),
-                request.getStartMonth(),
-                request.getEndYear(),
-                request.getEndMonth(),
+                request.getStartDate(),
+                request.getEndDate(),
                 request.isRetirement(),
                 request.getAntecedentsDescription()
         );

@@ -205,10 +205,8 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
                 1L,
                 "linkit",
                 "프로젝트 매니저",
-                2023,
-                3,
-                2024,
-                10,
+                "2023.03",
+                "2024.10",
                 false,
                 "경력 설명입니다."
         );
@@ -217,10 +215,8 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
                 2L,
                 "오더이즈",
                 "프로젝트 매니저",
-                2023,
-                3,
-                2023,
-                6,
+                "2023.03",
+                "2023.06",
                 false,
                 "경력 설명입니다."
         );
@@ -301,10 +297,8 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
                                         subsectionWithPath("antecedentsResponses").description("이력 항목").attributes(field("constraint", "객체(배열)")),
                                         fieldWithPath("antecedentsResponses[].projectName").description("회사 이름").attributes(field("constraint", "문자열")),
                                         fieldWithPath("antecedentsResponses[].projectRole").description("포지션").attributes(field("constraint", "문자열")),
-                                        fieldWithPath("antecedentsResponses[].startYear").description("프로젝트 시작 기간").attributes(field("constraint", "양의 정수")),
-                                        fieldWithPath("antecedentsResponses[].startMonth").description("프로젝트 시작 월").attributes(field("constraint", "양의 정수")),
-                                        fieldWithPath("antecedentsResponses[].endYear").description("프로젝트 종료 기간").attributes(field("constraint", "양의 정수")),
-                                        fieldWithPath("antecedentsResponses[].endMonth").description("프로젝트 종료 월").attributes(field("constraint", "양의 정수")),
+                                        fieldWithPath("antecedentsResponses[].startDate").type(JsonFieldType.STRING).description("시작 연도/월"),
+                                        fieldWithPath("antecedentsResponses[].endDate").type(JsonFieldType.STRING).description("종료 연도/월"),
                                         fieldWithPath("antecedentsResponses[].retirement").description("재직 여부").attributes(field("constraint", "boolean")),
 
                                         subsectionWithPath("miniProfileResponse").description("미니 프로필(내 이력서) 항목").attributes(field("constraint", "객체 (배열)")),

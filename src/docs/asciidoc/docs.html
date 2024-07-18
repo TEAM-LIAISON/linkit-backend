@@ -759,7 +759,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 25 Jul 2024 08:34:57 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 25 Jul 2024 12:13:28 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -1105,7 +1105,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1727
+Content-Length: 1662
 
 {
   "profileTeamBuildingFieldResponse" : {
@@ -1138,20 +1138,16 @@ Content-Length: 1727
     "id" : 1,
     "projectName" : "linkit",
     "projectRole" : "프로젝트 매니저",
-    "startYear" : 2023,
-    "startMonth" : 3,
-    "endYear" : 2024,
-    "endMonth" : 10,
+    "startDate" : "2023.03",
+    "endDate" : "2024.10",
     "retirement" : false,
     "antecedentsDescription" : "경력 설명입니다."
   }, {
     "id" : 2,
     "projectName" : "오더이즈",
     "projectRole" : "프로젝트 매니저",
-    "startYear" : 2023,
-    "startMonth" : 3,
-    "endYear" : 2023,
-    "endMonth" : 6,
+    "startDate" : "2023.03",
+    "endDate" : "2023.06",
     "retirement" : false,
     "antecedentsDescription" : "경력 설명입니다."
   } ],
@@ -1272,24 +1268,14 @@ Content-Length: 1727
 <td class="tableblock halign-left valign-top"><p class="tableblock">포지션</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponses[].startYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 시작 기간</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponses[].startDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도/월</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponses[].startMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 시작 월</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponses[].endYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 종료 기간</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponses[].endMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 종료 월</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponses[].endDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도/월</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponses[].retirement</code></p></td>
@@ -1558,10 +1544,8 @@ Cookie: refresh-token=refreshToken
 {
   "projectName" : "오더이즈",
   "projectRole" : "프로젝트 매니저",
-  "startYear" : 2023,
-  "startMonth" : 3,
-  "endYear" : 2023,
-  "endMonth" : 6,
+  "startDate" : "2023.03",
+  "endDate" : "2023.06",
   "retirement" : false,
   "antecedentsDescription" : "경력 설명입니다."
 }</code></pre>
@@ -1596,28 +1580,16 @@ Cookie: refresh-token=refreshToken
 <td class="tableblock halign-left valign-top"><p class="tableblock">문자열</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도.월</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자.2자리 숫자</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 월</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1부터 12까지의 숫자 중에서 선택</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 월</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1부터 12까지의 숫자 중에서 선택</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도.월</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자.2자리 숫자</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>retirement</code></p></td>
@@ -2098,7 +2070,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 3329
+Content-Length: 3264
 
 {
   "miniProfileResponse" : {
@@ -2112,14 +2084,14 @@ Content-Length: 3329
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "attach" : true,
-    "introduction" : true,
-    "antecedents" : true,
+    "profileSkill" : true,
     "education" : true,
+    "antecedents" : true,
+    "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
-    "profileSkill" : true
+    "awards" : true,
+    "attach" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -2139,20 +2111,16 @@ Content-Length: 3329
     "id" : 1,
     "projectName" : "linkit",
     "projectRole" : "프로젝트 매니저",
-    "startYear" : 2023,
-    "startMonth" : 3,
-    "endYear" : 2024,
-    "endMonth" : 10,
+    "startDate" : "2023.03",
+    "endDate" : "2024.10",
     "retirement" : false,
     "antecedentsDescription" : "경력 설명입니다."
   }, {
     "id" : 2,
     "projectName" : "오더이즈",
     "projectRole" : "프로젝트 매니저",
-    "startYear" : 2023,
-    "startMonth" : 3,
-    "endYear" : 2023,
-    "endMonth" : 6,
+    "startDate" : "2023.03",
+    "endDate" : "2023.06",
     "retirement" : false,
     "antecedentsDescription" : "경력 설명입니다."
   } ],
@@ -2378,24 +2346,14 @@ Content-Length: 3329
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 역할</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].startYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].startDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도/월</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].startMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 월</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].endYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].endMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 월</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].endDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도/월</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].retirement</code></p></td>
@@ -2567,10 +2525,8 @@ Cookie: refresh-token=refreshToken
 {
   "projectName" : "오더이즈",
   "projectRole" : "프로젝트 매니저",
-  "startYear" : 2023,
-  "startMonth" : 3,
-  "endYear" : 2023,
-  "endMonth" : 6,
+  "startDate" : "2023.03",
+  "endDate" : "2023.06",
   "retirement" : false,
   "antecedentsDescription" : "경력 설명입니다."
 }</code></pre>
@@ -2605,28 +2561,16 @@ Cookie: refresh-token=refreshToken
 <td class="tableblock halign-left valign-top"><p class="tableblock">문자열</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도.월</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자.2자리 숫자</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 월</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1부터 12까지의 숫자 중에서 선택</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 월</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1부터 12까지의 숫자 중에서 선택</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도.월</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자.2자리 숫자</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>retirement</code></p></td>
@@ -2655,10 +2599,8 @@ Cookie: refresh-token=refreshToken
 {
   "projectName" : "오더이즈",
   "projectRole" : "프로젝트 매니저",
-  "startYear" : 2023,
-  "startMonth" : 3,
-  "endYear" : 2023,
-  "endMonth" : 6,
+  "startDate" : "2023.03",
+  "endDate" : "2023.06",
   "retirement" : false,
   "antecedentsDescription" : "경력 설명입니다."
 }</code></pre>
@@ -2693,28 +2635,16 @@ Cookie: refresh-token=refreshToken
 <td class="tableblock halign-left valign-top"><p class="tableblock">문자열</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도.월</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자.2자리 숫자</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>startMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 월</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1부터 12까지의 숫자 중에서 선택</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 월</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1부터 12까지의 숫자 중에서 선택</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>endDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도.월</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4자리 숫자.2자리 숫자</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>retirement</code></p></td>
@@ -3287,13 +3217,13 @@ Content-Length: 2918
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "teamProfileTeamBuildingField" : true,
-    "activity" : true,
-    "history" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true
+    "teamAttach" : true,
+    "history" : true,
+    "activity" : true,
+    "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -4390,8 +4320,8 @@ Content-Length: 661
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4606,8 +4536,8 @@ Content-Length: 990
   "number" : 0,
   "sort" : {
     "empty" : true,
-    "unsorted" : true,
-    "sorted" : false
+    "sorted" : false,
+    "unsorted" : true
   },
   "numberOfElements" : 1,
   "empty" : false
@@ -4787,7 +4717,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 3328
+Content-Length: 3263
 
 {
   "miniProfileResponse" : {
@@ -4801,14 +4731,14 @@ Content-Length: 3328
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "attach" : true,
-    "introduction" : true,
-    "antecedents" : true,
+    "profileSkill" : true,
     "education" : true,
+    "antecedents" : true,
+    "introduction" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
-    "profileSkill" : true
+    "awards" : true,
+    "attach" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다."
@@ -4828,20 +4758,16 @@ Content-Length: 3328
     "id" : 2,
     "projectName" : "linkit",
     "projectRole" : "프로젝트 매니저",
-    "startYear" : 2023,
-    "startMonth" : 3,
-    "endYear" : 2024,
-    "endMonth" : 10,
+    "startDate" : "2023.03",
+    "endDate" : "2024.10",
     "retirement" : false,
     "antecedentsDescription" : "경력 설명입니다."
   }, {
     "id" : 3,
     "projectName" : "오더이즈",
     "projectRole" : "프로젝트 매니저",
-    "startYear" : 2023,
-    "startMonth" : 3,
-    "endYear" : 2023,
-    "endMonth" : 6,
+    "startDate" : "2023.03",
+    "endDate" : "2023.06",
     "retirement" : false,
     "antecedentsDescription" : "경력 설명입니다."
   } ],
@@ -5067,24 +4993,14 @@ Content-Length: 3328
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 역할</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].startYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].startDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">시작 연도/월</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].startMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시작 월</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].endYear</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].endMonth</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">종료 월</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].endDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">종료 연도/월</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>antecedentsResponse[].retirement</code></p></td>
@@ -5250,13 +5166,13 @@ Content-Length: 2918
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "teamProfileTeamBuildingField" : true,
-    "activity" : true,
-    "history" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true
+    "teamAttach" : true,
+    "history" : true,
+    "activity" : true,
+    "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]

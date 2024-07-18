@@ -143,10 +143,10 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         given(profileRegionService.getPersonalProfileRegion(1L)).willReturn(profileRegionResponse);
 
         final AntecedentsResponse antecedentsResponse1 = new AntecedentsResponse(
-                2L, "linkit", "프로젝트 매니저", 2023, 3, 2024, 10, false, "경력 설명입니다."
+                2L, "linkit", "프로젝트 매니저", "2023.03", "2024.10", false, "경력 설명입니다."
         );
         final AntecedentsResponse antecedentsResponse2 = new AntecedentsResponse(
-                3L, "오더이즈", "프로젝트 매니저", 2023, 3, 2023, 6, false, "경력 설명입니다."
+                3L, "오더이즈", "프로젝트 매니저", "2023.03", "2023.06", false, "경력 설명입니다."
         );
         List<AntecedentsResponse> antecedentsResponses = Arrays.asList(antecedentsResponse1, antecedentsResponse2);
         given(antecedentsService.getAllAntecedents(1L)).willReturn(antecedentsResponses);
@@ -249,10 +249,8 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                                 fieldWithPath("antecedentsResponse[].id").type(JsonFieldType.NUMBER).description("경력 ID"),
                                 fieldWithPath("antecedentsResponse[].projectName").type(JsonFieldType.STRING).description("프로젝트 이름"),
                                 fieldWithPath("antecedentsResponse[].projectRole").type(JsonFieldType.STRING).description("프로젝트 역할"),
-                                fieldWithPath("antecedentsResponse[].startYear").type(JsonFieldType.NUMBER).description("시작 연도"),
-                                fieldWithPath("antecedentsResponse[].startMonth").type(JsonFieldType.NUMBER).description("시작 월"),
-                                fieldWithPath("antecedentsResponse[].endYear").type(JsonFieldType.NUMBER).description("종료 연도"),
-                                fieldWithPath("antecedentsResponse[].endMonth").type(JsonFieldType.NUMBER).description("종료 월"),
+                                fieldWithPath("antecedentsResponse[].startDate").type(JsonFieldType.STRING).description("시작 연도/월"),
+                                fieldWithPath("antecedentsResponse[].endDate").type(JsonFieldType.STRING).description("종료 연도/월"),
                                 fieldWithPath("antecedentsResponse[].retirement").type(JsonFieldType.BOOLEAN).description("퇴직 여부"),
 
                                 // educationResponse
