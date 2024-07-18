@@ -5,6 +5,7 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
 import liaison.linkit.member.domain.repository.MemberRepository;
+import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
@@ -219,16 +220,18 @@ public class SearchService {
 
     @Transactional(readOnly = true)
     public String getMemberNameByMiniProfile(final Long miniProfileId) {
-        final Long profileId = getProfileIdByMiniProfile(miniProfileId);
-        final Member member = getMember(profileId);
+        final Profile profile = getProfileIdByMiniProfile(miniProfileId);
+        // 오류 터짐
+
+        final Member member = profile.getMember();
         final MemberBasicInform memberBasicInform = getMemberBasicInform(member.getId());
         return memberBasicInform.getMemberName();
     }
 
-    private Long getProfileIdByMiniProfile(final Long miniProfileId) {
+    private Profile getProfileIdByMiniProfile(final Long miniProfileId) {
         final MiniProfile miniProfile = miniProfileRepository.findById(miniProfileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_ID));
-        return miniProfile.getProfile().getId();
+        return miniProfile.getProfile();
     }
 
     // 회원 기본 정보를 가져오는 메서드
