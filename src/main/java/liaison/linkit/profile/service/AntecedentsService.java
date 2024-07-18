@@ -143,10 +143,12 @@ public class AntecedentsService {
             final AntecedentsCreateRequest antecedentsCreateRequest
     ) {
         final Profile profile = getProfile(memberId);
-        // 저장 메서드
-        saveAntecedent(profile, antecedentsCreateRequest);
-        // 업데이트
-        profile.updateIsAntecedents(true);
-        profile.updateMemberProfileTypeByCompletion();
+        if (profile.getIsAntecedents()) {
+            saveAntecedent(profile, antecedentsCreateRequest);
+        } else {
+            saveAntecedent(profile, antecedentsCreateRequest);
+            profile.updateIsAntecedents(true);
+            profile.updateMemberProfileTypeByCompletion();
+        }
     }
 }
