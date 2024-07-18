@@ -21,7 +21,7 @@ public class ActivityController {
 
     private final ActivityService activityService;
 
-    // 활동 분야 및 지역 저장
+    // 활동 분야 및 지역 저장/수정
     // 팀 소개서 온보딩 과정 2번째
     @PostMapping("/team/activity")
     @MemberOnly
@@ -31,7 +31,6 @@ public class ActivityController {
     ) {
         // 활동 방식은 활동 방식 테이블에 저장
         activityService.saveActivityMethod(accessor.getMemberId(), activityCreateRequest);
-
         // 활동 지역은 활동 지역 테이블에 저장
         activityService.saveActivityRegion(accessor.getMemberId(), activityCreateRequest);
 

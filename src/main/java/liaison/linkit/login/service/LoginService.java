@@ -116,6 +116,8 @@ public class LoginService {
                 log.info("savedTeamProfile.ID={}", savedTeamProfile.getId());
 
                 return member;
+            } else if(memberRepository.existsByEmail(email)){
+                throw new AuthException(DUPLICATED_EMAIL);
             }
             tryCount += 1;
         }

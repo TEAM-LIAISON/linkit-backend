@@ -20,7 +20,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
-public class PrivateWish {
+public class
+PrivateWish {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "private_wish_id")

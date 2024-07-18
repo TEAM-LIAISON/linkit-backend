@@ -75,7 +75,7 @@ public class WishController {
         wishService.cancelWishToTeamProfile(accessor.getMemberId(), teamMemberAnnouncementId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
+    
     // 내 이력서 찜한 목록 조회
     @GetMapping("/wish/private/profile/list")
     @MemberOnly

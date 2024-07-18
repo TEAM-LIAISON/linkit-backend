@@ -163,12 +163,15 @@ public class TeamProfile {
     // 4.6. 활동 방식 + 활동 지역 및 위치 업데이트
     // 2개 다 관리하는 메서드
     public void updateIsActivity(final boolean isActivityMethod, final boolean isActivityRegion) {
+        // 기존에 활동 형태 값과 수정 사항에 따른 값과 달라진다면 내부 메서드 실행
         if (this.isActivity != (isActivityMethod && isActivityRegion)) {
+            // true -> false or false -> true
             this.isActivity = !this.isActivity;
             if (this.isActivity) {
-                // 디폴트
+                // true로 변했다면
                 addTeamPerfectionDefault25();
             } else {
+                // false로 변했다면
                 cancelTeamPerfectionDefault25();
             }
         }
