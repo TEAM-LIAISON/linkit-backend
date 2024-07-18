@@ -16,7 +16,7 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 
   datasource:
     url: ${database.url}
@@ -85,11 +85,11 @@ spring:
 
   sql:
     init:
-      mode: never
+      mode: always
 
   batch:
     job:
-      enabled: false
+      enabled: true
     jdbc:
       initialize-schema: never
 
