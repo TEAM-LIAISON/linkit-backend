@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public class MyPrivateMatchingResponse {
+
+    // 내 이력서에 보낸 매칭 요청 PK ID
+    private final Long privateMatchingId;
     // 수신자 이름
     private final String receiverName;
     // 매칭 요청 메시지
@@ -20,16 +23,20 @@ public class MyPrivateMatchingResponse {
     private final LocalDate requestOccurTime;
     // 매칭 요청 타입
     private final MatchingType matchingType;
+    // 어떤 이력/소개서에 매칭 요청을 보냈는지
+    private final boolean isRequestTeamProfile;
 
     public static List<MyPrivateMatchingResponse> myPrivateMatchingResponseList(
             final List<PrivateMatching> privateMatchingList
     ) {
         return privateMatchingList.stream()
                 .map(privateMatching -> new MyPrivateMatchingResponse(
+                        privateMatching.getId(),
                         privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
                         privateMatching.getRequestMessage(),
                         LocalDate.from(privateMatching.getCreatedAt()),
-                        privateMatching.getMatchingType()
+                        privateMatching.getMatchingType(),
+                        false
                 )).collect(Collectors.toList());
     }
 }

@@ -69,6 +69,11 @@ public class ProfileController {
             profileService.validateProfileByMember(accessor.getMemberId());
             final ProfileIsValueResponse profileIsValueResponse = profileService.getProfileIsValue(accessor.getMemberId());
             final boolean isPrivateProfileEssential = (profileIsValueResponse.isProfileTeamBuildingField() && profileIsValueResponse.isProfileRegion() && profileIsValueResponse.isMiniProfile() && profileIsValueResponse.isJobAndSkill());
+
+            if (!isPrivateProfileEssential) {
+                return ResponseEntity.ok().body(new ProfileResponse());
+            }
+
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileIsValueResponse.isMiniProfile());
             final CompletionResponse completionResponse = getCompletionResponse(accessor.getMemberId());
             final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(accessor.getMemberId(), profileIsValueResponse.isIntroduction());

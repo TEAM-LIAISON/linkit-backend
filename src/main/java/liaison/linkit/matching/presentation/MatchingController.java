@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
@@ -57,7 +59,6 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
     // 팀 소개서가 팀 소개서에 매칭 요청을 보내는 경우
     @PostMapping("/team/profile/matching/team/{teamProfileId}")
     @MemberOnly
@@ -71,6 +72,7 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    // 내 이력서가 팀 소개서에 매칭 요청을 보내는 경우
     @PostMapping("/private/profile/matching/team/{teamProfileId}")
     @MemberOnly
     @CheckMatchingToTeamProfileAccess
@@ -86,33 +88,42 @@ public class MatchingController {
     // 내가 받은 매칭 조회
     @GetMapping("/matching/received")
     @MemberOnly
-    public ResponseEntity<ReceivedMatchingResponse> getReceivedMatchingResponses(
+    public ResponseEntity<List<ReceivedMatchingResponse>> getReceivedMatchingResponses(
             @Auth final Accessor accessor
     ) {
-        final ReceivedMatchingResponse receivedMatchingResponse = matchingService.getReceivedMatching(accessor.getMemberId());
-        return ResponseEntity.status(HttpStatus.OK).body(receivedMatchingResponse);
+        final List<ReceivedMatchingResponse> receivedMatchingResponseList = matchingService.getReceivedMatching(accessor.getMemberId());
+        return ResponseEntity.status(HttpStatus.OK).body(receivedMatchingResponseList);
     }
 
     // 내가 보낸 매칭 조회
     @GetMapping("/matching/request")
     @MemberOnly
-    public ResponseEntity<RequestMatchingResponse> getRequestMatchingResponses(
+    public ResponseEntity<List<RequestMatchingResponse>> getRequestMatchingResponses(
             @Auth final Accessor accessor
     ) {
         // accessor.getMemberId()가 보낸 모든 매칭 요청을 조회해야한다.
-        final RequestMatchingResponse requestMatchingResponse = matchingService.getMyRequestMatching(accessor.getMemberId());
-        return ResponseEntity.status(HttpStatus.OK).body(requestMatchingResponse);
+        final List<RequestMatchingResponse> requestMatchingResponseList = matchingService.getMyRequestMatching(accessor.getMemberId());
+        return ResponseEntity.status(HttpStatus.OK).body(requestMatchingResponseList);
     }
 
     // 성사된 매칭 조회
     @GetMapping("/matching/success")
     @MemberOnly
-    public ResponseEntity<SuccessMatchingResponse> getSuccessMatchingResponses(
+    public ResponseEntity<List<SuccessMatchingResponse>> getSuccessMatchingResponses(
             @Auth final Accessor accessor
     ) {
         // 내가 보낸 매칭 요청, 내가 받은 매칭 요청 중에서 성사된 모든 매칭을 조회해야한다.
-        final SuccessMatchingResponse successMatchingResponse = matchingService.getMySuccessMatching(accessor.getMemberId());
-        return ResponseEntity.status(HttpStatus.OK).body(successMatchingResponse);
+        final List<SuccessMatchingResponse> successMatchingResponseList = matchingService.getMySuccessMatching(accessor.getMemberId());
+        return ResponseEntity.status(HttpStatus.OK).body(successMatchingResponseList);
     }
 
+//    @GetMapping("/matching/received/{profileId}")
+//    @MemberOnly
+//    public ResponseEntity<MatchingMessageResponse> getMatchingMessageResponse(
+//            @Auth final Accessor accessor,
+//            @PathVariable final Long profileId
+//    ) {
+//        final MatchingMessageResponse matchingMessageResponse = matchingService.getMatchingMessageResponse(accessor.getMemberId(), profileId);
+//        return ResponseEntity.status(HttpStatus.OK).body(matchingMessageResponse);
+//    }
 }

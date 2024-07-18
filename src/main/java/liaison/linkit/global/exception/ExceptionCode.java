@@ -10,6 +10,7 @@ public enum ExceptionCode {
     INVALID_REQUEST(1000, "올바르지 않은 요청입니다."),
 
     FAIL_TO_GENERATE_MEMBER(1001, "회원을 생성하는데 실패하였습니다."),
+    DUPLICATED_EMAIL(1000, "이미 사용중인 이메일입니다. 다른 계정을 사용해주세요"),
 
     NOT_FOUND_MEMBER_ID(1002, "요청한 ID에 해당하는 멤버(회원)가 존재하지 않습니다."),
     NOT_FOUND_MEMBER_ROLE_ID(1003, "요청한 ID에 해당하는 직무/역할이 존재하지 않습니다."),
@@ -129,6 +130,9 @@ public enum ExceptionCode {
     NOT_FOUND_DEGREE_NAME(1010, "입력하신 재학 여부를 판단할 수 없습니다."),
     NOT_FOUND_MAJOR_NAME(1011, "입력하신 전공 정보와 일치하는 전공명을 찾을 수 없습니다."),
 
+    CANNOT_CREATE_PRIVATE_WISH_BECAUSE_OF_MAX_COUNT(8000, "내 이력서 찜하기 최대 개수에 도달했습니다. 더 이상 저장할 수 없어요."),
+    CANNOT_CREATE_TEAM_WISH_BECAUSE_OF_MAX_COUNT(8001, "팀 소개서 찜하기 최대 개수에 도달했습니다. 더 이상 저장할 수 없어요."),
+
     // 팀 소개서 관련 항목
     NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),
     NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),
@@ -143,8 +147,9 @@ public enum ExceptionCode {
     NOT_FOUND_MATCHING_BY_PROFILE_ID(1010, "해당 내 이력서 ID에 해당하는 매칭 정보가 존재하지 않습니다."),
     NOT_FOUND_MINI_PROFILE_BY_ID(1008, "해당 팀원 공고 ID에 해당하는 팀원 공고 정보가 존재하지 않습니다."),
     NOT_FOUND_TEAM_ATTACH_URL_ID(1008, "해당 팀 첨부 URL ID에 해당하는 팀 첨부 URL 정보가 존재하지 않습니다."),
-    NOT_FOUND_TEAM_MINI_PROFILE_BY_MEMBER_ID(5000, "팀 소개서 온보딩에서 팀 이름, 규모, 분야를 먼저 선택해주세요");
-
+    NOT_FOUND_TEAM_MINI_PROFILE_BY_MEMBER_ID(5000, "팀 소개서 온보딩에서 팀 이름, 규모, 분야를 먼저 선택해주세요"),
+    NOT_FOUND_TEAM_WISH_BY_TEAM_MEMBER_ANNOUNCEMENT_ID(5001, "팀 공고 찜하기를 팀원 공고 ID로 찾을 수 없습니다."),
+    NOT_FOUND_TEAM_WISH_BY_ID(5001, "팀 소개서 온보딩에서 팀 이름, 규모, 분야를 먼저 선택해주세요");
     private final int code;
     private final String message;
 }

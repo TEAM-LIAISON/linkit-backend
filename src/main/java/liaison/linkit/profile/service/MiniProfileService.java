@@ -79,14 +79,21 @@ public class MiniProfileService {
         final Profile profile = getProfile(memberId);
         // 미니 프로필 이미지가 같이 전송된 경우
         if (miniProfileImage != null) {
-            log.info("miniProfileImage가 null이 아닙니다.");
+            log.info("요청 객체의 miniProfileImage가 null이 아닙니다.");
 
             // 미니 프로필이 기존에 존재했었다면
             if (miniProfileRepository.existsByProfileId(profile.getId())) {
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
-                s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
+
+                if (miniProfile.getMiniProfileImg() != null) {
+                    s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
+                }
+
+                log.info("miniProfileImage != null case : 기존 미니프로필 이미지 삭제 완료");
                 miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
+                log.info("miniProfileImage != null case : 기존 미니프로필 키워드 삭제 완료");
                 miniProfileRepository.deleteByProfileId(profile.getId());
+                log.info("miniProfileImage != null case : 기존 미니프로필 객체 삭제 완료");
             }
 
             final String miniProfileImageUrl = saveImage(miniProfileImage);
@@ -95,7 +102,7 @@ public class MiniProfileService {
                     profile,
                     miniProfileRequest.getProfileTitle(),
                     miniProfileImageUrl,
-                    miniProfileRequest.isActivate()
+                    miniProfileRequest.getIsActivate()
             );
 
             // 미니 프로필 저장된 객체
@@ -109,8 +116,10 @@ public class MiniProfileService {
 
             profile.updateIsMiniProfile(true);
         }
-        // 미니 프로필 이미지가 null인 경우
+        // 요청 객체의 미니 프로필 이미지가 null인 경우
+        // 기존 이미지 유지로 간주
         else {
+            log.info("요청 객체의 miniProfileImage가 null입니다.");
             // 미니 프로필 객체가 존재했었다면
             if (miniProfileRepository.existsByProfileId(profile.getId())) { // 생성 이력이 있는 경우
                 // 기존 미니 프로필 조회
@@ -121,11 +130,10 @@ public class MiniProfileService {
                         profile,
                         miniProfileRequest.getProfileTitle(),
                         miniProfile.getMiniProfileImg(),
-                        miniProfileRequest.isActivate()
+                        miniProfileRequest.getIsActivate()
                 );
-
-                miniProfileRepository.deleteByProfileId(profile.getId());
                 miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
+                miniProfileRepository.deleteByProfileId(profile.getId());
 
                 final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileNoImage);
                 final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
@@ -142,7 +150,7 @@ public class MiniProfileService {
                         profile,
                         miniProfileRequest.getProfileTitle(),
                         null,
-                        miniProfileRequest.isActivate()
+                        miniProfileRequest.getIsActivate()
                 );
 
                 final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfile);

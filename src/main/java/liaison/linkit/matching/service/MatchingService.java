@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
@@ -185,13 +186,13 @@ public class MatchingService {
         );
     }
 
-    public ReceivedMatchingResponse getReceivedMatching(
+    public List<ReceivedMatchingResponse> getReceivedMatching(
             final Long memberId
     ) {
         // 해당 memberId에게 발생한 모든 매칭 요청을 조회해야 함.
 
-        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = null;
-        List<ToTeamMatchingResponse> toTeamMatchingResponseList = null;
+        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
+        List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
 
         if (profileRepository.existsByMemberId(memberId)) {
             final Profile profile = getProfile(memberId);
@@ -205,13 +206,13 @@ public class MatchingService {
             toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamMatchingList);
         }
 
-        return new ReceivedMatchingResponse(toPrivateMatchingResponseList, toTeamMatchingResponseList);
+        return ReceivedMatchingResponse.toReceivedMatchingResponse(toPrivateMatchingResponseList, toTeamMatchingResponseList);
     }
 
     // 내가 매칭 요청 보낸 것을 조회하는 메서드
-    public RequestMatchingResponse getMyRequestMatching(final Long memberId) {
-        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = null;
-        List<MyTeamMatchingResponse> myTeamMatchingResponseList = null;
+    public List<RequestMatchingResponse> getMyRequestMatching(final Long memberId) {
+        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Collections.emptyList();
+        List<MyTeamMatchingResponse> myTeamMatchingResponseList = Collections.emptyList();
 
 
         if (profileRepository.existsByMemberId(memberId)) {
@@ -224,14 +225,14 @@ public class MatchingService {
             myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamMatchingList);
         }
 
-        return new RequestMatchingResponse(myPrivateMatchingResponseList, myTeamMatchingResponseList);
+        return RequestMatchingResponse.requestMatchingResponseList(myPrivateMatchingResponseList, myTeamMatchingResponseList);
     }
 
-    public SuccessMatchingResponse getMySuccessMatching(final Long memberId) {
-        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = null;
-        List<ToTeamMatchingResponse> toTeamMatchingResponseList = null;
-        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = null;
-        List<MyTeamMatchingResponse> myTeamMatchingResponseList = null;
+    public List<SuccessMatchingResponse> getMySuccessMatching(final Long memberId) {
+        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
+        List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
+        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Collections.emptyList();
+        List<MyTeamMatchingResponse> myTeamMatchingResponseList = Collections.emptyList();
 
         if (profileRepository.existsByMemberId(memberId)) {
 
@@ -255,11 +256,18 @@ public class MatchingService {
             myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamRequestMatchingList);
         }
 
-        return new SuccessMatchingResponse(
+        return SuccessMatchingResponse.successMatchingResponseList(
                 toPrivateMatchingResponseList,
                 toTeamMatchingResponseList,
                 myPrivateMatchingResponseList,
                 myTeamMatchingResponseList
         );
     }
+
+//    public MatchingMessageResponse getMatchingMessageResponse(
+//            final Long memberId,
+//            final Long profileId
+//    ) {
+//        // privateMatching -> 내 이력서 매칭 요청
+//    }
 }

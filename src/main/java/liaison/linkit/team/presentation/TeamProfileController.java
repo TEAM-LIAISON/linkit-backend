@@ -53,51 +53,67 @@ public class TeamProfileController {
         try {
             log.info("--- 팀 이력서 조회 요청이 들어왔습니다. ---");
             teamProfileService.validateTeamProfileByMember(accessor.getMemberId());
+            log.info("--- 팀 이력서가 유효합니다. ---");
 
             // 팀 소개서에 있는 항목들의 존재 여부 파악
             final TeamProfileIsValueResponse teamProfileIsValueResponse = teamProfileService.getTeamProfileIsValue(accessor.getMemberId());
+            log.info("teamProfileIsValueResponse={}", teamProfileIsValueResponse);
 
             final boolean isTeamProfileEssential = (teamProfileIsValueResponse.isTeamMiniProfile() && teamProfileIsValueResponse.isActivity() && teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
+
+            log.info("isTeamProfileEssential={}", isTeamProfileEssential);
+
+            // 팀 소개서의 필수 구성요소가 충족되지 않았을 경우 응답 처리
+            if (!isTeamProfileEssential) {
+                // 필수 구성요소가 없는 경우 경고 메시지와 함께 반환
+                return ResponseEntity.ok().body(new TeamProfileResponse());
+            }
 
             // 4.1. 팀 미니 프로필
             final TeamMiniProfileResponse teamMiniProfileResponse
                     = getTeamMiniProfileResponse(accessor.getMemberId(), teamProfileIsValueResponse.isTeamMiniProfile());
             log.info("teamMiniProfileResponse={}", teamMiniProfileResponse);
 
-            // 4.2. 매칭 추천
-
             // 4.3. 프로필 완성도
             final TeamCompletionResponse teamCompletionResponse
                     = getTeamCompletionResponse(accessor.getMemberId());
+            log.info("teamCompletionResponse={}", teamCompletionResponse);
 
             // 4.4. 희망 팀빌딩 분야
             final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse
                     = getTeamProfileTeamBuildingFieldResponse(accessor.getMemberId(), teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
+            log.info("teamProfileTeamBuildingFieldResponse={}", teamProfileTeamBuildingFieldResponse);
 
             // 4.5. 팀원 공고
             final List<TeamMemberAnnouncementResponse> teamMemberAnnouncementResponse
                     = getTeamMemberAnnouncement(accessor.getMemberId(), teamProfileIsValueResponse.isTeamMemberAnnouncement());
+            log.info("teamMemberAnnouncementResponse={}", teamMemberAnnouncementResponse);
 
             // 4.6. 활동 방식 + 활동 지역/위치
             final ActivityResponse activityResponse
                     = getActivityResponse(accessor.getMemberId(), teamProfileIsValueResponse.isActivity());
+            log.info("activityResponse={}", activityResponse);
 
             // 4.7. 팀 소개
             final TeamProfileIntroductionResponse teamProfileIntroductionResponse
                     = getTeamProfileIntroduction(accessor.getMemberId(), teamProfileIsValueResponse.isTeamIntroduction());
+            log.info("teamProfileIntroductionResponse={}", teamProfileIntroductionResponse);
 
             // 4.8. 팀원 소개
             final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponse
                     = getTeamMemberIntroduction(accessor.getMemberId(), teamProfileIsValueResponse.isTeamMemberIntroduction());
+            log.info("teamMemberIntroductionResponse={}", teamMemberIntroductionResponse);
 
             // 4.9. 연혁
             final List<HistoryResponse> historyResponse
                     = getHistory(accessor.getMemberId(), teamProfileIsValueResponse.isHistory());
+            log.info("historyResponse={}", historyResponse);
 
             // 4.10. 첨부
             final TeamAttachResponse teamAttachResponse
                     = getTeamAttach(accessor.getMemberId(), teamProfileIsValueResponse.isTeamAttach());
             log.info("teamAttachResponse={}", teamAttachResponse);
+
 
             final TeamProfileResponse teamProfileResponse = teamProfileService.getTeamProfileResponse(
                     isTeamProfileEssential,
@@ -114,7 +130,7 @@ public class TeamProfileController {
 
             return ResponseEntity.ok().body(teamProfileResponse);
         } catch (Exception e) {
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("팀 소개력서 정보를 불러오는 과정에서 문제가 발생했습니다.");
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("팀 소개서 정보를 불러오는 과정에서 문제가 발생했습니다.");
         }
     }
 

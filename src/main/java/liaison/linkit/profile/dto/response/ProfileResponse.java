@@ -30,6 +30,20 @@ public class ProfileResponse {
     private final List<AwardsResponse> awardsResponse;
     private final AttachResponse attachResponse;
 
+    public ProfileResponse() {
+        this.isPrivateProfileEssential = false;
+        this.miniProfileResponse = null;
+        this.completionResponse = null;
+        this.profileIntroductionResponse = null;
+        this.jobAndSkillResponse = null;
+        this.profileTeamBuildingFieldResponse = null;
+        this.profileRegionResponse = null;
+        this.antecedentsResponse = null;
+        this.educationResponse = null;
+        this.awardsResponse = null;
+        this.attachResponse = null;
+    }
+
     public static ProfileResponse profileItems(
             final boolean isPrivateProfileEssential,
             final MiniProfileResponse miniProfileResponse,

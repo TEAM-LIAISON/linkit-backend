@@ -165,10 +165,8 @@ public class BrowseTeamProfileController {
     ) {
         log.info("getActivityResponse() 메서드 실행 여부");
         if (isActivity) {
-            log.info("isActivity={}", isActivity);
             return activityService.getActivity(memberId);
         } else {
-            log.info("isActivity={}", isActivity);
             return new ActivityResponse();
         }
     }
