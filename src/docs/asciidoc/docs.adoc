@@ -148,9 +148,10 @@ include::{snippets}/education-controller-test/create-education/http-request.adoc
 include::{snippets}/education-controller-test/create-education/request-fields.adoc[]
 
 === 3.9. 내 이력서 - 학력 수정
-include::{snippets}/antecedents-controller-test/update-antecedent/http-request.adoc[]
-include::{snippets}/antecedents-controller-test/update-antecedent/request-fields.adoc[]
-include::{snippets}/antecedents-controller-test/update-antecedent/path-parameters.adoc[]
+
+include::{snippets}/education-controller-test/update-education/http-request.adoc[]
+include::{snippets}/education-controller-test/update-education/path-parameters.adoc[]
+include::{snippets}/education-controller-test/update-education/request-fields.adoc[]
 
 === 3.9. 내 이력서 - 학력 삭제
 include::{snippets}/education-controller-test/delete-education/http-request.adoc[]
