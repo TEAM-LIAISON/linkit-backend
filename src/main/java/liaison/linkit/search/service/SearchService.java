@@ -86,7 +86,7 @@ public class SearchService {
         }
 
         // 미니 프로필 이력서에서 페이지네이션으로 조회
-        final Page<MiniProfile> miniProfiles = miniProfileRepository.findAllByOrderByCreatedDateDesc(
+        final Page<MiniProfile> miniProfiles = miniProfileRepository.findAll(
                 teamBuildingFieldName,
                 jobRoleName,
                 skillName,

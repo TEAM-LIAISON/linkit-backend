@@ -46,9 +46,8 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
            AND (:divisionName IS NULL OR r.divisionName = :divisionName)
            AND (mp.isActivate = true)
            
-           ORDER BY mp.createdDate DESC
            """)
-    Page<MiniProfile> findAllByOrderByCreatedDateDesc(
+    Page<MiniProfile> findAll(
             @Param("teamBuildingFieldNames") final List<String> teamBuildingFieldNames,
             @Param("jobRoleNames") final List<String> jobRoleNames,
             @Param("skillNames") final List<String> skillNames,
