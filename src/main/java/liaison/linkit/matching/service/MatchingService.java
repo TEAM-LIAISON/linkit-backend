@@ -19,7 +19,9 @@ import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,8 @@ public class MatchingService {
     private final PrivateMatchingRepository privateMatchingRepository;
     private final TeamProfileRepository teamProfileRepository;
     private final TeamMatchingRepository teamMatchingRepository;
+    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
+
 
     // 회원 정보를 가져오는 메서드
     private Member getMember(final Long memberId) {
@@ -140,18 +144,23 @@ public class MatchingService {
     // 팀 소개서가 팀 소개서에 요청을 보낸 경우
     public void createTeamProfileMatchingToTeam(
             final Long memberId,
-            final Long teamProfileId,
+            final Long teamMemberAnnouncementId,
             final MatchingCreateRequest matchingCreateRequest
     ) {
+        // 멤버 객체 조회
         final Member member = getMember(memberId);
-        final TeamProfile teamProfile = getTeamProfileById(teamProfileId);
+
+        // 팀원 공고 객체 조회
+        final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
+
+        // 해당 팀원 공고 객체에 대한 팀 매칭 객체 생성
         final TeamMatching newTeamMatching = new TeamMatching(
                 null,
                 // 요청 보낸 회원
                 member,
-                // 내 이력서의 프로필 아이디를 저장한다.
-                teamProfile,
-                // 내 이력서로 요청을 보냈음을 저장
+                // 팀 소개서를 저장한다.
+                teamMemberAnnouncement,
+                // 팀 소개서로 요청을 보냈음을 저장
                 TEAM_PROFILE,
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
@@ -159,6 +168,13 @@ public class MatchingService {
                 REQUESTED,
                 LocalDateTime.now()
         );
+
+        teamMatchingRepository.save(newTeamMatching);
+    }
+
+    private TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementRepository.findById(teamMemberAnnouncementId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID));
     }
 
 
@@ -166,17 +182,21 @@ public class MatchingService {
     // 내 이력서가 팀 소개서에 요청을 보낸 경우
     public void createPrivateProfileMatchingToTeam(
             final Long memberId,
-            final Long teamProfileId,
+            final Long teamMemberAnnouncementId,
             final MatchingCreateRequest matchingCreateRequest
     ) {
+        // 매칭 요청 주체 객체 조회
         final Member member = getMember(memberId);
-        final TeamProfile teamProfile = getTeamProfileById(teamProfileId);
+
+        // 팀원 공고 객체 조회
+        final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
+
         final TeamMatching newTeamMatching = new TeamMatching(
                 null,
                 // 요청 보낸 회원
                 member,
-                // 내 이력서의 프로필 아이디를 저장한다.
-                teamProfile,
+                // 팀 소개서를 저장한다.
+                teamMemberAnnouncement,
                 // 내 이력서로 요청을 보냈음을 저장
                 PROFILE,
                 // 요청 메시지를 저장한다
@@ -185,13 +205,14 @@ public class MatchingService {
                 REQUESTED,
                 LocalDateTime.now()
         );
+
+        teamMatchingRepository.save(newTeamMatching);
     }
 
     public List<ReceivedMatchingResponse> getReceivedMatching(
             final Long memberId
     ) {
         // 해당 memberId에게 발생한 모든 매칭 요청을 조회해야 함.
-
         List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
         List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
 
@@ -202,11 +223,13 @@ public class MatchingService {
         }
 
         if (teamProfileRepository.existsByMemberId(memberId)) {
+            // 내가 등록한 나의 팀 소개서 중 팀원 공고들이 필요함
             final TeamProfile teamProfile = getTeamProfile(memberId);
-            final List<TeamMatching> teamMatchingList = teamMatchingRepository.findByTeamProfileId(teamProfile.getId());
+            final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileId(teamProfile.getId());
+            final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream().map(TeamMemberAnnouncement::getId).toList();
+            final List<TeamMatching> teamMatchingList = teamMatchingRepository.findAllByTeamMemberAnnouncementIds(teamMemberAnnouncementIds);
             toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamMatchingList);
         }
-
         return ReceivedMatchingResponse.toReceivedMatchingResponse(toPrivateMatchingResponseList, toTeamMatchingResponseList);
     }
 
@@ -236,7 +259,6 @@ public class MatchingService {
         List<MyTeamMatchingResponse> myTeamMatchingResponseList = Collections.emptyList();
 
         if (profileRepository.existsByMemberId(memberId)) {
-
             // 나의 내 이력서로 받은 매칭 요청 조회
             final Profile profile = getProfile(memberId);
             final List<PrivateMatching> privateReceivedMatchingList = privateMatchingRepository.findSuccessReceivedMatching(profile.getId());
@@ -250,9 +272,12 @@ public class MatchingService {
         if (teamProfileRepository.existsByMemberId(memberId)) {
             // 나의 팀 소개서로 받은 매칭 요청 조회
             final TeamProfile teamProfile = getTeamProfile(memberId);
-            final List<TeamMatching> teamReceivedMatchingList = teamMatchingRepository.findSuccessReceivedMatching(teamProfile.getId());
+            final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileId(teamProfile.getId());
+            final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream().map(TeamMemberAnnouncement::getId).toList();
+            final List<TeamMatching> teamReceivedMatchingList = teamMatchingRepository.findSuccessReceivedMatching(teamMemberAnnouncementIds);
             toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamReceivedMatchingList);
 
+            // 내가 팀 소개서로 보낸 매칭 요청 조회
             final List<TeamMatching> teamRequestMatchingList = teamMatchingRepository.findSuccessRequestMatching(memberId);
             myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamRequestMatchingList);
         }

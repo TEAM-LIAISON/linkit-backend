@@ -25,6 +25,10 @@ spring:
     password: ${database.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+
   data:
     redis:
       host: ${redis.host}
@@ -95,7 +99,7 @@ spring:
     job:
       enabled: true
     jdbc:
-      initialize-schema: never
+      initialize-schema: always
 
   servlet:
     multipart:

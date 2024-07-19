@@ -61,28 +61,28 @@ public class MatchingController {
     }
 
     // 팀 소개서가 팀 소개서에 매칭 요청을 보내는 경우
-    @PostMapping("/team/profile/matching/team/{teamProfileId}")
+    @PostMapping("/team/profile/matching/team/{teamMemberAnnouncementId}")
     @MemberOnly
     @CheckMatchingToTeamProfileAccess
     public ResponseEntity<Void> createTeamProfileMatchingToTeam(
             @Auth final Accessor accessor,
-            @PathVariable final Long teamProfileId,
+            @PathVariable final Long teamMemberAnnouncementId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
-        matchingService.createTeamProfileMatchingToTeam(accessor.getMemberId(), teamProfileId, matchingCreateRequest);
+        matchingService.createTeamProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     // 내 이력서가 팀 소개서에 매칭 요청을 보내는 경우
-    @PostMapping("/private/profile/matching/team/{teamProfileId}")
+    @PostMapping("/private/profile/matching/team/{teamMemberAnnouncementId}")
     @MemberOnly
     @CheckMatchingToTeamProfileAccess
     public ResponseEntity<Void> createPrivateProfileMatchingToTeam(
             @Auth final Accessor accessor,
-            @PathVariable final Long teamProfileId,
+            @PathVariable final Long teamMemberAnnouncementId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
-        matchingService.createPrivateProfileMatchingToTeam(accessor.getMemberId(), teamProfileId, matchingCreateRequest);
+        matchingService.createPrivateProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
