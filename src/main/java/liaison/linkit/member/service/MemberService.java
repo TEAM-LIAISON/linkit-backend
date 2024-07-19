@@ -56,8 +56,10 @@ public class MemberService {
     public void save(
             final Long memberId, final MemberBasicInformCreateRequest memberBasicInformCreateRequest
     ) throws ResponseStatusException {
+
         final Member member = getMember(memberId);
-        // dto -> rorcp
+
+        // dto -> 객체
         final MemberBasicInform newBasicMemberBasicInform = new MemberBasicInform(
                 memberBasicInformCreateRequest.getMemberName(),
                 memberBasicInformCreateRequest.getContact(),

@@ -20,6 +20,7 @@ public class ProfileTeamBuildingField {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "profile_team_building_field_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
