@@ -5,11 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.team.dto.response.*;
+import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
+import liaison.linkit.team.dto.response.TeamProfileIntroductionResponse;
+import liaison.linkit.team.dto.response.TeamProfileIsValueResponse;
+import liaison.linkit.team.dto.response.TeamProfileTeamBuildingFieldResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
 import liaison.linkit.team.dto.response.attach.TeamAttachUrlResponse;
+import liaison.linkit.team.dto.response.browse.BrowseTeamProfileResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
@@ -31,7 +35,6 @@ import java.util.List;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
@@ -232,9 +235,9 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
 
 
         when(browseTeamProfileService.getBrowseTeamProfileResponse(
-                anyBoolean(), any(), any(), any(), any(), any(), any(), any(), any(), any()
-        )).thenReturn(TeamProfileResponse.teamProfileItems(
-                isTeamProfileEssential,
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+        )).thenReturn(BrowseTeamProfileResponse.teamProfile(
+                1L,
                 teamMiniProfileResponse,
                 teamCompletionResponse,
                 teamProfileTeamBuildingFieldResponse,
@@ -258,7 +261,7 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
                                                 .description("팀 미니 프로필 ID")
                                 ),
                                 responseFields(
-                                        fieldWithPath("teamProfileEssential").type(JsonFieldType.BOOLEAN).description("팀 소개서 기본 항목 존재 여부"),
+                                        fieldWithPath("teamProfileId").type(JsonFieldType.NUMBER).description("타깃 열람 팀 소개서 PK ID"),
                                         // 4.1.
                                         subsectionWithPath("teamMiniProfileResponse").type(JsonFieldType.OBJECT).description("팀 미니 프로필 응답 객체"),
 

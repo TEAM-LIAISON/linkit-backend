@@ -17,10 +17,10 @@ import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepositor
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
-import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
+import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
@@ -87,8 +87,8 @@ public class BrowsePrivateProfileService {
         return ProfileIsValueResponse.profileIsValue(profile);
     }
 
-    public ProfileResponse getProfileResponse(
-            final boolean isPrivateProfileEssential,
+    public BrowsePrivateProfileResponse getProfileResponse(
+            final Long profileId,
             final MiniProfileResponse miniProfileResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
@@ -100,8 +100,8 @@ public class BrowsePrivateProfileService {
             final List<AwardsResponse> awardsResponses,
             final AttachResponse attachResponse
     ) {
-        return ProfileResponse.profileItems(
-                isPrivateProfileEssential,
+        return BrowsePrivateProfileResponse.privateProfile(
+                profileId,
                 miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,

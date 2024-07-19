@@ -53,5 +53,7 @@ public class MemberController {
         memberService.update(accessor.getMemberId(), memberBasicInformUpdateRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
 }
 

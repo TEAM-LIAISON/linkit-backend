@@ -14,6 +14,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static liaison.linkit.member.domain.MemberState.ACTIVE;
@@ -32,13 +33,13 @@ public class Member {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", cascade = ALL, orphanRemoval = true)
     private MemberBasicInform memberBasicInform;
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", cascade = ALL, orphanRemoval = true)
     private Profile profile;
 
-    @OneToOne(mappedBy = "member")
+    @OneToOne(mappedBy = "member", cascade = ALL, orphanRemoval = true)
     private TeamProfile teamProfile;
 
     @Column(nullable = false, length = 100)

@@ -19,6 +19,7 @@ import java.util.List;
 public class ProfileResponse {
 
     private final boolean isPrivateProfileEssential;
+
     private final MiniProfileResponse miniProfileResponse;
     private final CompletionResponse completionResponse;
     private final ProfileIntroductionResponse profileIntroductionResponse;

@@ -32,7 +32,7 @@ public class Profile {
     private Member member;
 
     // 3.1. 미니 프로필
-    @OneToOne(mappedBy = "profile")
+    @OneToOne(mappedBy = "profile", cascade = ALL)
     private MiniProfile miniProfile;
 
     // 3.10. 수상

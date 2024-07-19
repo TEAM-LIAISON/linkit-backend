@@ -5,11 +5,11 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
-import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
+import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
@@ -34,13 +34,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -178,9 +176,9 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         given(attachService.getAttachList(1L)).willReturn(attachResponse);
 
         when(browsePrivateProfileService.getProfileResponse(
-                anyBoolean(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
-        )).thenReturn(ProfileResponse.profileItems(
-                isPrivateProfileEssential,
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+        )).thenReturn(BrowsePrivateProfileResponse.privateProfile(
+                1L,
                 miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,
@@ -203,7 +201,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                                         .description("미니 프로필 ID")
                         ),
                         responseFields(
-                                fieldWithPath("privateProfileEssential").type(JsonFieldType.BOOLEAN).description("내 이력서 필수 입력 항목 존재 여부"),
+                                fieldWithPath("profileId").type(JsonFieldType.NUMBER).description("타깃 열람 프로필 ID"),
 
                                 // miniProfileResponse
                                 subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
