@@ -125,6 +125,9 @@ class MemberControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("연락처")
                                                 .attributes(field("constraint", "010-xxxx-xxxx 형태")),
+                                        fieldWithPath("email")
+                                                .type(JsonFieldType.STRING)
+                                                .description("이메일"),
                                         fieldWithPath("marketingAgree")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("마케팅 수신 동의 여부")
