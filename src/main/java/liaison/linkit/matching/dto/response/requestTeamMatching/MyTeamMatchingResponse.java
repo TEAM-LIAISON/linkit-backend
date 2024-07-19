@@ -30,7 +30,7 @@ public class MyTeamMatchingResponse {
         return teamMatchingList.stream()
                 .map(teamMatching -> new MyTeamMatchingResponse(
                         teamMatching.getId(),
-                        teamMatching.getTeamProfile().getMember().getMemberBasicInform().getMemberName(),
+                        teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
                         teamMatching.getRequestMessage(),
                         LocalDate.from(teamMatching.getCreatedAt()),
                         teamMatching.getMatchingType(),
