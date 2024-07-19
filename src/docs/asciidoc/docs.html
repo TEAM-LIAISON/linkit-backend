@@ -761,7 +761,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Fri, 26 Jul 2024 03:03:44 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Fri, 26 Jul 2024 14:45:21 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -1103,12 +1103,13 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 102
+Content-Length: 135
 
 {
   "id" : 1,
   "memberName" : "권동민",
   "contact" : "010-3661-4067",
+  "email" : "kwondm7@naver.com",
   "marketingAgree" : true
 }</code></pre>
 </div>
@@ -1141,6 +1142,11 @@ Content-Length: 102
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>contact</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">연락처</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>marketingAgree</code></p></td>
@@ -2155,14 +2161,14 @@ Content-Length: 3264
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "attach" : true,
-    "profileSkill" : true,
-    "antecedents" : true,
-    "education" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
-    "introduction" : true
+    "introduction" : true,
+    "antecedents" : true,
+    "education" : true,
+    "profileSkill" : true,
+    "awards" : true,
+    "attach" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
@@ -3288,13 +3294,13 @@ Content-Length: 2918
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "history" : true,
-    "activity" : true,
+    "teamProfileTeamBuildingField" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
-    "teamProfileTeamBuildingField" : true
+    "activity" : true,
+    "history" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -4384,8 +4390,8 @@ Content-Length: 661
   } ],
   "pageable" : "INSTANCE",
   "last" : true,
-  "totalElements" : 1,
   "totalPages" : 1,
+  "totalElements" : 1,
   "first" : true,
   "size" : 1,
   "number" : 0,
@@ -4600,8 +4606,8 @@ Content-Length: 990
   } ],
   "pageable" : "INSTANCE",
   "last" : true,
-  "totalElements" : 1,
   "totalPages" : 1,
+  "totalElements" : 1,
   "first" : true,
   "size" : 1,
   "number" : 0,
@@ -4803,14 +4809,14 @@ Content-Length: 3246
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "attach" : true,
-    "profileSkill" : true,
-    "antecedents" : true,
-    "education" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
-    "introduction" : true
+    "introduction" : true,
+    "antecedents" : true,
+    "education" : true,
+    "profileSkill" : true,
+    "awards" : true,
+    "attach" : true
   },
   "profileIntroductionResponse" : {
     "introduction" : "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다."
@@ -5238,13 +5244,13 @@ Content-Length: 2908
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "history" : true,
-    "activity" : true,
+    "teamProfileTeamBuildingField" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
-    "teamProfileTeamBuildingField" : true
+    "activity" : true,
+    "history" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -5711,7 +5717,7 @@ Cookie: refresh-token=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. /team/profile/matching/team/{teamProfileId}</caption>
+<caption class="title">Table 20. /team/profile/matching/team/{teamMemberAnnouncementId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5724,8 +5730,8 @@ Cookie: refresh-token=refreshToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamProfileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 ID</p></td>
 </tr>
 </tbody>
 </table>
@@ -5769,7 +5775,7 @@ Cookie: refresh-token=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. /private/profile/matching/team/{teamProfileId}</caption>
+<caption class="title">Table 21. /private/profile/matching/team/{teamMemberAnnouncementId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5782,8 +5788,8 @@ Cookie: refresh-token=refreshToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamProfileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMemberAnnouncementId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 ID</p></td>
 </tr>
 </tbody>
 </table>
@@ -6618,12 +6624,13 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 102
+Content-Length: 135
 
 {
   "id" : 1,
   "memberName" : "권동민",
   "contact" : "010-3661-4067",
+  "email" : "kwondm7@naver.com",
   "marketingAgree" : true
 }</code></pre>
 </div>
@@ -6656,6 +6663,11 @@ Content-Length: 102
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>contact</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">연락처</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>marketingAgree</code></p></td>
