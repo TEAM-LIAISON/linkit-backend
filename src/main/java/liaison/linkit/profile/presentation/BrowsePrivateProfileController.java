@@ -4,10 +4,10 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
-import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
+import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
@@ -66,13 +66,6 @@ public class BrowsePrivateProfileController {
             final ProfileIsValueResponse profileIsValueResponse = browsePrivateProfileService.getProfileIsValue(browseTargetPrivateProfileId);
             log.info("profileIsValueResponse={}", profileIsValueResponse);
 
-            final boolean isPrivateProfileEssential = (
-                    profileIsValueResponse.isProfileTeamBuildingField() &&
-                            profileIsValueResponse.isProfileRegion() &&
-                            profileIsValueResponse.isMiniProfile() &&
-                            profileIsValueResponse.isJobAndSkill()
-            );
-
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(browseTargetPrivateProfileId, profileIsValueResponse.isMiniProfile());
             log.info("miniProfileResponse={}", miniProfileResponse);
 
@@ -103,8 +96,8 @@ public class BrowsePrivateProfileController {
             final AttachResponse attachResponse = getAttachResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAttach());
             log.info("attachResponse={}", attachResponse);
 
-            final ProfileResponse profileResponse = browsePrivateProfileService.getProfileResponse(
-                    isPrivateProfileEssential,
+            final BrowsePrivateProfileResponse browsePrivateProfileResponse = browsePrivateProfileService.getProfileResponse(
+                    browseTargetPrivateProfileId,
                     miniProfileResponse,
                     completionResponse,
                     profileIntroductionResponse,
@@ -117,7 +110,7 @@ public class BrowsePrivateProfileController {
                     attachResponse
             );
 
-            return ResponseEntity.ok().body(profileResponse);
+            return ResponseEntity.ok().body(browsePrivateProfileResponse);
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("내 이력서를 조회하는 과정에서 문제가 발생했습니다.");
         }

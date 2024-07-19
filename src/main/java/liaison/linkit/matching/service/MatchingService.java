@@ -9,6 +9,7 @@ import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
 import liaison.linkit.matching.dto.response.RequestMatchingResponse;
 import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
+import liaison.linkit.matching.dto.response.existence.ExistenceProfileResponse;
 import liaison.linkit.matching.dto.response.requestPrivateMatching.MyPrivateMatchingResponse;
 import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingResponse;
 import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
@@ -262,6 +263,38 @@ public class MatchingService {
                 myPrivateMatchingResponseList,
                 myTeamMatchingResponseList
         );
+    }
+
+    // 나의 멤버 아이디
+    public ExistenceProfileResponse getExistenceProfile(final Long memberId) {
+        final Profile profile = getProfile(memberId);
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+
+        // 내 이력서, 팀 소개서 모두로 매칭 요청을 보낼 수 있는 상태
+        if (profile.getCompletion() >= 80 && teamProfile.getTeamProfileCompletion() >= 80) {
+            return new ExistenceProfileResponse(
+                    true,
+                    true
+            );
+        }
+        else if (profile.getCompletion() >= 80 && teamProfile.getTeamProfileCompletion() < 80) {
+            return new ExistenceProfileResponse(
+                    true,
+                    false
+            );
+        }
+        else if (profile.getCompletion() < 80 && teamProfile.getTeamProfileCompletion() >= 80) {
+            return new ExistenceProfileResponse(
+                    false,
+                    true
+            );
+        }
+        else {
+            return new ExistenceProfileResponse(
+                    false,
+                    false
+            );
+        }
     }
 
 //    public MatchingMessageResponse getMatchingMessageResponse(
