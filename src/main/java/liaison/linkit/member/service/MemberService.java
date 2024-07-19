@@ -13,8 +13,6 @@ import liaison.linkit.member.dto.response.MemberResponse;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -55,8 +53,13 @@ public class MemberService {
     }
 
     // 회원 기본 정보 저장 메서드
-    public void save(final Long memberId, final MemberBasicInformCreateRequest memberBasicInformCreateRequest) throws ResponseStatusException {
+    public void save(
+            final Long memberId, final MemberBasicInformCreateRequest memberBasicInformCreateRequest
+    ) throws ResponseStatusException {
+
         final Member member = getMember(memberId);
+
+        // dto -> 객체
         final MemberBasicInform newBasicMemberBasicInform = new MemberBasicInform(
                 memberBasicInformCreateRequest.getMemberName(),
                 memberBasicInformCreateRequest.getContact(),
@@ -66,15 +69,15 @@ public class MemberService {
 
         member.changeIsMemberBasicInform(true);
 
-        try {
+        // 기본 정보 입력 사용자로부터 재요청
+        if (memberBasicInformRepository.existsByMemberId(memberId)) {
+            final MemberBasicInform savedMemberBasicInform = memberBasicInformRepository.findByMemberId(memberId)
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID));
+
+            // 객체 update
+            savedMemberBasicInform.update(newBasicMemberBasicInform);
+        } else {
             memberBasicInformRepository.save(newBasicMemberBasicInform);
-        } catch (DataIntegrityViolationException e) {
-            if (e.getMessage().contains("Duplicate entry")) {
-                String duplicateKey = e.getMessage().split("'")[1]; // 오류 메시지 구조에 따라 다를 수 있음
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "DUPLICATE_ENTRY: 중복된 데이터가 존재합니다. 키 값: " + duplicateKey);
-            } else {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "데이터 저장 중 오류가 발생했습니다.");
-            }
         }
     }
 

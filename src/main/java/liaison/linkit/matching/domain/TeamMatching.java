@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import liaison.linkit.matching.domain.type.MatchingStatus;
 import liaison.linkit.matching.domain.type.MatchingType;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,8 +35,8 @@ public class TeamMatching {
     private Member member;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_profile_id")
-    private TeamProfile teamProfile;
+    @JoinColumn(name = "team_member_announcement_id")
+    private TeamMemberAnnouncement teamMemberAnnouncement;
 
     // 어떤 소개서에 요청 보낸 것인지 type 필요
     @Column(name = "matching_type")

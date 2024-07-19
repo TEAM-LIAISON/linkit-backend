@@ -17,6 +17,7 @@ import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncement
 import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class TeamMemberAnnouncementService {
 
     private final TeamProfileRepository teamProfileRepository;
@@ -76,6 +78,7 @@ public class TeamMemberAnnouncementService {
         return TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList);
     }
 
+    // 팀원 공고 저장 메서드
     public void saveAnnouncement(
             final Long memberId,
             final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
@@ -148,10 +151,15 @@ public class TeamMemberAnnouncementService {
             final TeamMemberAnnouncementRequest request
     ) {
         // 단일 직무/역할 조회
-        final JobRole jobRole = jobRoleRepository.findJobRoleByJobRoleName(request.getJobRoleName());
+        final JobRole jobRole = jobRoleRepository.findJobRoleByJobRoleName(request.getJobRoleName())
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE));
+
+        log.info("jobRole.getJobRoleName={}", jobRole.getJobRoleName());
 
         final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole =
                 new TeamMemberAnnouncementJobRole(null, teamMemberAnnouncement, jobRole);
+
+
 
         teamMemberAnnouncementJobRoleRepository.save(teamMemberAnnouncementJobRole);
     }

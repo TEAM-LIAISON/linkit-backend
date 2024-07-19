@@ -103,11 +103,11 @@ class MatchingControllerTest extends ControllerTest {
 
     // 팀 소개서에서 팀 소개서로 매칭 요청
     private ResultActions performTeamProfileMatchingToTeam(
-            final int teamProfileId,
+            final int teamMemberAnnouncementId,
             final MatchingCreateRequest matchingCreateRequest
     ) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/team/profile/matching/team/{teamProfileId}", teamProfileId)
+                RestDocumentationRequestBuilders.post("/team/profile/matching/team/{teamMemberAnnouncementId}", teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -117,11 +117,11 @@ class MatchingControllerTest extends ControllerTest {
 
     // 내 이력서에서 팀 소개서로 매칭 요청
     private ResultActions performPrivateProfileMatchingToTeam(
-            final int teamProfileId,
+            final int teamMemberAnnouncementId,
             final MatchingCreateRequest matchingCreateRequest
     ) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/private/profile/matching/team/{teamProfileId}", teamProfileId)
+                RestDocumentationRequestBuilders.post("/private/profile/matching/team/{teamMemberAnnouncementId}", teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -240,8 +240,8 @@ class MatchingControllerTest extends ControllerTest {
         resultActions.andExpect(status().isCreated())
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("teamProfileId")
-                                        .description("팀 소개서 ID")
+                                parameterWithName("teamMemberAnnouncementId")
+                                        .description("팀원 공고 ID")
                         ),
                         requestFields(
                                 fieldWithPath("requestMessage")
@@ -268,8 +268,8 @@ class MatchingControllerTest extends ControllerTest {
         resultActions.andExpect(status().isCreated())
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("teamProfileId")
-                                        .description("팀 소개서 ID")
+                                parameterWithName("teamMemberAnnouncementId")
+                                        .description("팀원 공고 ID")
                         ),
                         requestFields(
                                 fieldWithPath("requestMessage")

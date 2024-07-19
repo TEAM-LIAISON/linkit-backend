@@ -15,7 +15,7 @@ spring:
         default_batch_fetch_size: 100
         format_sql: true
         use_sql_comments: true
-        show_sql: true
+        show_sql: false
     hibernate:
       ddl-auto: create
 
@@ -24,6 +24,10 @@ spring:
     username: ${database.username}
     password: ${database.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
 
   data:
     redis:

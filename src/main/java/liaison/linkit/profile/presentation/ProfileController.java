@@ -67,14 +67,21 @@ public class ProfileController {
         log.info("내 이력서의 전체 항목 조회 요청 발생");
         try {
             profileService.validateProfileByMember(accessor.getMemberId());
+
             final ProfileIsValueResponse profileIsValueResponse = profileService.getProfileIsValue(accessor.getMemberId());
+            log.info("profileIsValueResponse={}", profileIsValueResponse);
+
             final boolean isPrivateProfileEssential = (profileIsValueResponse.isProfileTeamBuildingField() && profileIsValueResponse.isProfileRegion() && profileIsValueResponse.isMiniProfile() && profileIsValueResponse.isJobAndSkill());
+            log.info("isPrivateProfileEssential={}", isPrivateProfileEssential);
 
             if (!isPrivateProfileEssential) {
+                log.info("필수 내 이력서 항목이 존재하지 않습니다.");
                 return ResponseEntity.ok().body(new ProfileResponse());
             }
 
             final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileIsValueResponse.isMiniProfile());
+            log.info("miniProfileResponse={}", miniProfileResponse);
+
             final CompletionResponse completionResponse = getCompletionResponse(accessor.getMemberId());
             final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(accessor.getMemberId(), profileIsValueResponse.isIntroduction());
             final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(accessor.getMemberId(), profileIsValueResponse.isJobAndSkill());

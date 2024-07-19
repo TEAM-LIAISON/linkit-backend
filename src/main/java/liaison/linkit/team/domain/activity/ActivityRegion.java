@@ -20,6 +20,7 @@ public class ActivityRegion {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "activity_region_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
