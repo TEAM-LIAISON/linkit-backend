@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface JobRoleRepository extends JpaRepository<JobRole, Long> {
     @Query("""
@@ -20,5 +21,5 @@ public interface JobRoleRepository extends JpaRepository<JobRole, Long> {
            FROM JobRole jr
            WHERE jr.jobRoleName = :jobRoleName
            """)
-    JobRole findJobRoleByJobRoleName(@Param("jobRoleName") final String jobRoleName);
+    Optional<JobRole> findJobRoleByJobRoleName(@Param("jobRoleName") final String jobRoleName);
 }
