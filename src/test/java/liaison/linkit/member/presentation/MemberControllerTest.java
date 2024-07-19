@@ -91,6 +91,7 @@ class MemberControllerTest extends ControllerTest {
                 1L,
                 "권동민",
                 "010-3661-4067",
+                "kwondm7@naver.com",
                 true
         );
 
