@@ -17,6 +17,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class ActivityMethod {
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "activity_method_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
