@@ -58,4 +58,10 @@ public class MemberBasicInform {
             final Member member) {
         this(null, memberName, contact, marketingAgree, member);
     }
+
+    public void update(final MemberBasicInform memberBasicInform) {
+        this.memberName = memberBasicInform.getMemberName();
+        this.contact = memberBasicInform.getContact();
+        this.marketingAgree = memberBasicInform.isMarketingAgree();
+    }
 }
