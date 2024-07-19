@@ -40,6 +40,7 @@ public class SearchController {
             @RequestParam(required = false) final String cityName,
             // 필터링 항목 4. 활동 지역 (시/군/구)
             @RequestParam(required = false) final String divisionName,
+
             @RequestParam(required = false, defaultValue = "72") final int size
     ) {
         log.info("팀원 찾기 요청이 들어왔습니다.");

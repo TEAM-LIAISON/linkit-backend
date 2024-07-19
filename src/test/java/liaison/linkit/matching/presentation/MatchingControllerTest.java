@@ -11,6 +11,7 @@ import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
 import liaison.linkit.matching.dto.response.RequestMatchingResponse;
 import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
+import liaison.linkit.matching.dto.response.existence.ExistenceProfileResponse;
 import liaison.linkit.matching.dto.response.requestPrivateMatching.MyPrivateMatchingResponse;
 import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingResponse;
 import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
@@ -85,11 +86,12 @@ class MatchingControllerTest extends ControllerTest {
                         .content(objectMapper.writeValueAsString(matchingCreateRequest))
         );
     }
+
     // 팀 소개서에서 내 이력서로 매칭 요청
     private ResultActions performTeamProfileMatchingToPrivate(
             final int profileId,
             final MatchingCreateRequest matchingCreateRequest
-    ) throws Exception{
+    ) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/team/profile/matching/private/{profileId}", profileId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -103,7 +105,7 @@ class MatchingControllerTest extends ControllerTest {
     private ResultActions performTeamProfileMatchingToTeam(
             final int teamProfileId,
             final MatchingCreateRequest matchingCreateRequest
-    ) throws Exception{
+    ) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/team/profile/matching/team/{teamProfileId}", teamProfileId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -117,7 +119,7 @@ class MatchingControllerTest extends ControllerTest {
     private ResultActions performPrivateProfileMatchingToTeam(
             final int teamProfileId,
             final MatchingCreateRequest matchingCreateRequest
-    ) throws Exception{
+    ) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/private/profile/matching/team/{teamProfileId}", teamProfileId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -127,7 +129,7 @@ class MatchingControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performGetReceivedMatching () throws Exception {
+    private ResultActions performGetReceivedMatching() throws Exception {
         return mockMvc.perform(
                 get("/matching/received")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -148,6 +150,15 @@ class MatchingControllerTest extends ControllerTest {
     private ResultActions performGetMySuccessMatching() throws Exception {
         return mockMvc.perform(
                 get("/matching/success")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+        );
+    }
+
+    private ResultActions performGetExistenceProfile() throws Exception {
+        return mockMvc.perform(
+                get("/existence/profile")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
@@ -297,7 +308,7 @@ class MatchingControllerTest extends ControllerTest {
                 1L,
                 "링킷",
                 "매칭 요청 메시지입니다.",
-                LocalDate.of(2023, 12 ,10),
+                LocalDate.of(2023, 12, 10),
                 MatchingType.TEAM_PROFILE,
                 true // 팀 소개서 수신 여부
         );
@@ -306,7 +317,7 @@ class MatchingControllerTest extends ControllerTest {
                 2L,
                 "링컬쳐",
                 "매칭 요청 메시지입니다.",
-                LocalDate.of(2022, 10 ,10),
+                LocalDate.of(2022, 10, 10),
                 MatchingType.TEAM_PROFILE,
                 true // 팀 소개서 수신 여부
         );
@@ -453,7 +464,7 @@ class MatchingControllerTest extends ControllerTest {
                 1L,
                 "링킷",
                 "매칭 요청 메시지입니다.",
-                LocalDate.of(2023, 12 ,10),
+                LocalDate.of(2023, 12, 10),
                 MatchingType.TEAM_PROFILE,
                 true
         );
@@ -462,7 +473,7 @@ class MatchingControllerTest extends ControllerTest {
                 2L,
                 "링컬쳐",
                 "매칭 요청 메시지입니다.",
-                LocalDate.of(2022, 10 ,10),
+                LocalDate.of(2022, 10, 10),
                 MatchingType.TEAM_PROFILE,
                 true
         );
@@ -537,6 +548,22 @@ class MatchingControllerTest extends ControllerTest {
                 ));
     }
 
+    @DisplayName("내가 매칭 요청을 보낼 내 이력서의 true/false 값을 판단할 수 있다.")
+    @Test
+    void getExistenceProfile() throws Exception {
+        // given
+        final ExistenceProfileResponse existenceProfileResponse = new ExistenceProfileResponse(true, true);
+        given(matchingService.getExistenceProfile(1L)).willReturn(existenceProfileResponse);
+        // when
+        final ResultActions resultActions = performGetExistenceProfile();
 
-
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        responseFields(
+                                fieldWithPath("isPrivateProfileMatchingAllow").type(JsonFieldType.BOOLEAN).description("내 이력서로 매칭 요청 가능 여부 true -> 80% 이상"),
+                                fieldWithPath("isTeamProfileMatchingAllow").type(JsonFieldType.BOOLEAN).description("팀 소개서로 매칭 요청 가능 여부 true -> 80% 이상")
+                        )
+                ));
+    }
 }

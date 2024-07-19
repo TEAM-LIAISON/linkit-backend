@@ -10,6 +10,7 @@ import liaison.linkit.team.dto.response.*;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
+import liaison.linkit.team.dto.response.browse.BrowseTeamProfileResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
@@ -58,8 +59,8 @@ public class BrowseTeamProfileService {
     }
 
 
-    public TeamProfileResponse getBrowseTeamProfileResponse(
-            final boolean isTeamProfileEssential,
+    public BrowseTeamProfileResponse getBrowseTeamProfileResponse(
+            final Long profileId,
             final TeamMiniProfileResponse teamMiniProfileResponse,
             final TeamCompletionResponse teamCompletionResponse,
             final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse,
@@ -70,8 +71,8 @@ public class BrowseTeamProfileService {
             final List<HistoryResponse> historyResponse,
             final TeamAttachResponse teamAttachResponse
     ) {
-        return TeamProfileResponse.teamProfileItems(
-                isTeamProfileEssential,
+        return BrowseTeamProfileResponse.teamProfile(
+                profileId,
                 teamMiniProfileResponse,
                 teamCompletionResponse,
                 teamProfileTeamBuildingFieldResponse,

@@ -38,7 +38,7 @@ include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
 include::{snippets}/login-controller-test/logout/http-response.adoc[]
 
 == 1.4. 정보 기입
-=== 1.4.1. 개인정보 기입 [초대코드 구현 X]
+=== 1.4.1. 개인정보 기입 (기본 정보)
 ==== 요청
 include::{snippets}/member-controller-test/create-member-basic-inform/http-request.adoc[]
 include::{snippets}/member-controller-test/create-member-basic-inform/request-fields.adoc[]
@@ -49,6 +49,14 @@ include::{snippets}/member-controller-test/create-member-basic-inform/request-co
 
 ==== 응답
 include::{snippets}/member-controller-test/create-member-basic-inform/http-response.adoc[]
+
+=== 1.4.2. 개인정보 조회 (기본 정보)
+==== 요청
+include::{snippets}/member-controller-test/get-member-basic-inform/http-request.adoc[]
+
+==== 응답
+include::{snippets}/member-controller-test/get-member-basic-inform/http-response.adoc[]
+include::{snippets}/member-controller-test/get-member-basic-inform/response-fields.adoc[]
 
 == 1.5.1.온보딩 - 내 이력서 - 전체 조회
 ==== 요청
@@ -327,6 +335,13 @@ include::{snippets}/matching-controller-test/get-my-success-matching/http-reques
 include::{snippets}/matching-controller-test/get-my-success-matching/http-response.adoc[]
 include::{snippets}/matching-controller-test/get-my-success-matching/response-fields.adoc[]
 
+=== 10.8. 매칭 보낼 프로필 선택 true/false
+==== 요청
+include::{snippets}/matching-controller-test/get-existence-profile/http-request.adoc[]
+
+==== 응답
+include::{snippets}/matching-controller-test/get-existence-profile/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-existence-profile/response-fields.adoc[]
 
 == 11. 찜하기
 === 11.1. 내 이력서 (미니 프로필 ID) 찜하기 생성

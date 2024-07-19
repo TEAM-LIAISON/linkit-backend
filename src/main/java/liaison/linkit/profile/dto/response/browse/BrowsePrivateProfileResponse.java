@@ -19,8 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BrowsePrivateProfileResponse {
 
+    private final Long profileId;
     private final MiniProfileResponse miniProfileResponse;
-    private final String memberName;
     private final CompletionResponse completionResponse;
     private final ProfileIntroductionResponse profileIntroductionResponse;
     private final JobAndSkillResponse jobAndSkillResponse;
@@ -32,8 +32,8 @@ public class BrowsePrivateProfileResponse {
     private final AttachResponse attachResponse;
 
     public static BrowsePrivateProfileResponse privateProfile(
+            final Long profileId,
             final MiniProfileResponse miniProfileResponse,
-            final String memberName,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
             final JobAndSkillResponse jobAndSkillResponse,
@@ -45,8 +45,8 @@ public class BrowsePrivateProfileResponse {
             final AttachResponse attachResponse
     ) {
         return new BrowsePrivateProfileResponse(
+                profileId,
                 miniProfileResponse,
-                memberName,
                 completionResponse,
                 profileIntroductionResponse,
                 jobAndSkillResponse,

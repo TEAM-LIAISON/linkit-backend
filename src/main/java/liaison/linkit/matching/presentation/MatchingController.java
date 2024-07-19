@@ -10,6 +10,7 @@ import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
 import liaison.linkit.matching.dto.response.RequestMatchingResponse;
 import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
+import liaison.linkit.matching.dto.response.existence.ExistenceProfileResponse;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -115,6 +116,16 @@ public class MatchingController {
         // 내가 보낸 매칭 요청, 내가 받은 매칭 요청 중에서 성사된 모든 매칭을 조회해야한다.
         final List<SuccessMatchingResponse> successMatchingResponseList = matchingService.getMySuccessMatching(accessor.getMemberId());
         return ResponseEntity.status(HttpStatus.OK).body(successMatchingResponseList);
+    }
+
+    // 내가 매칭 요청 보내기 전에 (어떤 프로필로 보낼지 선택하기 전에 응답 값 true/false)
+    @GetMapping("/existence/profile")
+    @MemberOnly
+    public ResponseEntity<ExistenceProfileResponse> getExistenceProfileBoolean(
+            @Auth final Accessor accessor
+    ) {
+        final ExistenceProfileResponse existenceProfileResponse = matchingService.getExistenceProfile(accessor.getMemberId());
+        return ResponseEntity.status(HttpStatus.OK).body(existenceProfileResponse);
     }
 
 //    @GetMapping("/matching/received/{profileId}")

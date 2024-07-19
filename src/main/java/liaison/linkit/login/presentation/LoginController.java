@@ -75,7 +75,9 @@ public class LoginController {
     // 회원 탈퇴
     @DeleteMapping("/account")
     @MemberOnly
-    public ResponseEntity<Void> deleteAccount(@Auth final Accessor accessor) {
+    public ResponseEntity<Void> deleteAccount(
+            @Auth final Accessor accessor
+    ) {
         loginService.deleteAccount(accessor.getMemberId());
         return ResponseEntity.noContent().build();
     }
