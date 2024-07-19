@@ -19,6 +19,7 @@ public class ProfileRegion {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "profile_region_id")
     private Long id;
 
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
