@@ -268,6 +268,15 @@ include::{snippets}/search-controller-test/get-private-mini-profile/query-parame
 include::{snippets}/search-controller-test/get-private-mini-profile/http-response.adoc[]
 include::{snippets}/search-controller-test/get-private-mini-profile/response-fields.adoc[]
 
+=== 6.2. 로그인 이후 팀원 찾기 페이지
+==== 요청
+include::{snippets}/search-controller-test/get-browse-private-mini-profile/http-request.adoc[]
+include::{snippets}/search-controller-test/get-browse-private-mini-profile/query-parameters.adoc[]
+
+==== 응답
+include::{snippets}/search-controller-test/get-browse-private-mini-profile/http-response.adoc[]
+include::{snippets}/search-controller-test/get-browse-private-mini-profile/response-fields.adoc[]
+
 == 7. 팀 찾기
 === 7.1. 팀 찾기 페이지
 ==== 요청
