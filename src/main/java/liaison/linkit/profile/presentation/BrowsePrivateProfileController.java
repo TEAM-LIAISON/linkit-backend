@@ -94,7 +94,7 @@ public class BrowsePrivateProfileController {
             final List<AwardsResponse> awardsResponses = getAwardsResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAwards());
             log.info("awardsResponses={}", awardsResponses);
 
-            final AttachResponse attachResponse = getAttachResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAttach());
+            final AttachResponse attachResponse = getAttachResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAttachUrl());
             log.info("attachResponse={}", attachResponse);
 
             final BrowsePrivateProfileResponse browsePrivateProfileResponse = browsePrivateProfileService.getProfileResponse(
@@ -119,10 +119,11 @@ public class BrowsePrivateProfileController {
 
     private AttachResponse getAttachResponses(
             final Long browseTargetPrivateProfileId,
-            final boolean isAttach
+            final boolean isAttachUrl
     ) {
-        if (isAttach) {
-            return attachService.getAttachList(browseTargetPrivateProfileId);
+        if (isAttachUrl) {
+            attachService.validateAttachUrlByProfile(browseTargetPrivateProfileId);
+            return attachService.getBrowseAttachList(browseTargetPrivateProfileId);
         } else {
             return new AttachResponse();
         }
