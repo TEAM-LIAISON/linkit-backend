@@ -18,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +42,13 @@ public class TeamBuildingFieldService {
             throw new AuthException(NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID);
         }
     }
+
+    public void validateBrowseProfileTeamBuildingFieldByProfile(final Long profileId) {
+        if (!profileTeamBuildingFieldRepository.existsByProfileId(profileId)) {
+            throw new AuthException(NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID);
+        }
+    }
+
 
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
@@ -94,5 +100,27 @@ public class TeamBuildingFieldService {
         } catch (Exception e) {
             throw new BadRequestException(NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileTeamBuildingFieldResponse getAllBrowseProfileTeamBuildingFields(final Long profileId) {
+        try {
+            final Profile profile = profileRepository.findById(profileId)
+                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+
+            List<ProfileTeamBuildingField> profileTeamBuildingFields = profileTeamBuildingFieldRepository.findAllByProfileId(profile.getId());
+
+            List<String> teamBuildingFieldNames = profileTeamBuildingFields.stream()
+                    .map(profileTeamBuildingField -> teamBuildingFieldRepository.findById(profileTeamBuildingField.getTeamBuildingField().getId()))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(TeamBuildingField::getTeamBuildingFieldName)
+                    .toList();
+
+            return ProfileTeamBuildingFieldResponse.of(teamBuildingFieldNames);
+        } catch (Exception e) {
+            throw new BadRequestException(NOT_FOUND_PROFILE_TEAM_BUILDING_FIELD_BY_PROFILE_ID);
+        }
+
     }
 }

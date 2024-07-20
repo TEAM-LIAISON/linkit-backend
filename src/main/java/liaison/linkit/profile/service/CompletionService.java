@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
 
 @Service
@@ -26,6 +27,13 @@ public class CompletionService {
     @Transactional(readOnly = true)
     public CompletionResponse getCompletion(final Long memberId) {
         final Profile profile = getProfile(memberId);
+        return CompletionResponse.profileCompletion(profile);
+    }
+
+    @Transactional(readOnly = true)
+    public CompletionResponse getBrowseCompletion(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
         return CompletionResponse.profileCompletion(profile);
     }
 }

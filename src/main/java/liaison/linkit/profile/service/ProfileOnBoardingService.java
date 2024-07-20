@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +54,12 @@ public class ProfileOnBoardingService {
     public void validateProfileByMember(final Long memberId) {
         if (!profileRepository.existsByMemberId(memberId)) {
             throw new AuthException(ExceptionCode.INVALID_PROFILE_WITH_MEMBER);
+        }
+    }
+
+    public void validateProfile(final Long profileId) {
+        if (!profileRepository.existsById(profileId)) {
+            throw new AuthException(NOT_FOUND_PROFILE_BY_ID);
         }
     }
 
@@ -156,6 +162,32 @@ public class ProfileOnBoardingService {
                 .toList();
 
         return JobAndSkillResponse.of(jobRoleNames, skillNames);
+    }
+
+    public JobAndSkillResponse getBrowseJobAndSkill(
+            // 열람 타깃 프로필 아이디
+            final Long profileId
+    ) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
+        List<ProfileJobRole> profileJobRoles = profileJobRoleRepository.findAllByProfileId(profile.getId());
+        List<String> jobRoleNames = profileJobRoles.stream()
+                .map(profileJobRole -> jobRoleRepository.findById(profileJobRole.getJobRole().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(JobRole::getJobRoleName)
+                .toList();
+
+        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(profile.getId());
+        List<String> skillNames = profileSkills.stream()
+                .map(profileSkill -> skillRepository.findById(profileSkill.getSkill().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(Skill::getSkillName)
+                .toList();
+
+        return JobAndSkillResponse.of(jobRoleNames, skillNames);
+
     }
 
 

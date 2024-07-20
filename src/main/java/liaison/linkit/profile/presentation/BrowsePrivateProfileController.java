@@ -63,6 +63,7 @@ public class BrowsePrivateProfileController {
             final Long browseTargetPrivateProfileId = browsePrivateProfileService.getTargetPrivateProfileIdByMiniProfileId(miniProfileId);
             log.info("browseTargetPrivateProfileId={}", browseTargetPrivateProfileId);
 
+            // 열람할 타깃 profile id 제공
             final ProfileIsValueResponse profileIsValueResponse = browsePrivateProfileService.getProfileIsValue(browseTargetPrivateProfileId);
             log.info("profileIsValueResponse={}", profileIsValueResponse);
 
@@ -78,7 +79,7 @@ public class BrowsePrivateProfileController {
             final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(browseTargetPrivateProfileId, profileIsValueResponse.isJobAndSkill());
             log.info("jobAndSkillResponse={}", jobAndSkillResponse);
 
-            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(accessor.getMemberId(), profileIsValueResponse.isProfileTeamBuildingField());
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(browseTargetPrivateProfileId, profileIsValueResponse.isProfileTeamBuildingField());
             log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
 
             final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(browseTargetPrivateProfileId, profileIsValueResponse.isProfileRegion());
@@ -132,8 +133,8 @@ public class BrowsePrivateProfileController {
             final boolean isAwards
     ) {
         if (isAwards) {
-            awardsService.validateAwardsByMember(browseTargetPrivateProfileId);
-            return awardsService.getAllAwards(browseTargetPrivateProfileId);
+            awardsService.validateAwardsByProfile(browseTargetPrivateProfileId);
+            return awardsService.getAllBrowseAwards(browseTargetPrivateProfileId);
         } else {
             return null;
         }
@@ -144,8 +145,8 @@ public class BrowsePrivateProfileController {
             final boolean isEducation
     ) {
         if (isEducation) {
-            educationService.validateEducationByMember(browseTargetPrivateProfileId);
-            return educationService.getAllEducations(browseTargetPrivateProfileId);
+            educationService.validateEducationByProfile(browseTargetPrivateProfileId);
+            return educationService.getAllBrowseEducations(browseTargetPrivateProfileId);
         } else {
             return null;
         }
@@ -156,8 +157,8 @@ public class BrowsePrivateProfileController {
             final boolean isAntecedents
     ) {
         if (isAntecedents) {
-            antecedentsService.validateAntecedentsByMember(browseTargetPrivateProfileId);
-            return antecedentsService.getAllAntecedents(browseTargetPrivateProfileId);
+            antecedentsService.validateAntecedentsByProfile(browseTargetPrivateProfileId);
+            return antecedentsService.getAllBrowseAntecedents(browseTargetPrivateProfileId);
         } else {
             return null;
         }
@@ -168,20 +169,20 @@ public class BrowsePrivateProfileController {
             final boolean isProfileRegion
     ) {
         if (isProfileRegion) {
-            profileRegionService.validateProfileRegionByMember(browseTargetPrivateProfileId);
-            return profileRegionService.getPersonalProfileRegion(browseTargetPrivateProfileId);
+            profileRegionService.validateProfileRegionByProfile(browseTargetPrivateProfileId);
+            return profileRegionService.getPersonalBrowseProfileRegion(browseTargetPrivateProfileId);
         } else {
             return null;
         }
     }
 
     private ProfileTeamBuildingFieldResponse getProfileTeamBuildingResponse(
-            final Long memberId,
+            final Long browseTargetPrivateProfileId,
             final boolean isProfileTeamBuildingField
     ) {
         if (isProfileTeamBuildingField) {
-            teamBuildingFieldService.validateProfileTeamBuildingFieldByMember(memberId);
-            return teamBuildingFieldService.getAllProfileTeamBuildingFields(memberId);
+            teamBuildingFieldService.validateBrowseProfileTeamBuildingFieldByProfile(browseTargetPrivateProfileId);
+            return teamBuildingFieldService.getAllBrowseProfileTeamBuildingFields(browseTargetPrivateProfileId);
         } else {
             return new ProfileTeamBuildingFieldResponse();
         }
@@ -194,8 +195,7 @@ public class BrowsePrivateProfileController {
             final boolean isJobAndSkill
     ) {
         if (isJobAndSkill) {
-            profileOnBoardingService.validateProfileByMember(browseTargetPrivateProfileId);
-            return profileOnBoardingService.getJobAndSkill(browseTargetPrivateProfileId);
+            return profileOnBoardingService.getBrowseJobAndSkill(browseTargetPrivateProfileId);
         } else {
             return new JobAndSkillResponse();
         }
@@ -206,7 +206,7 @@ public class BrowsePrivateProfileController {
             final boolean isIntroduction
     ) {
         if (isIntroduction) {
-            return profileService.getProfileIntroduction(browseTargetPrivateProfileId);
+            return profileService.getBrowseProfileIntroduction(browseTargetPrivateProfileId);
         } else {
             return new ProfileIntroductionResponse();
         }
@@ -216,7 +216,7 @@ public class BrowsePrivateProfileController {
     private CompletionResponse getCompletionResponse(
             final Long browseTargetPrivateProfileId
     ) {
-        return completionService.getCompletion(browseTargetPrivateProfileId);
+        return completionService.getBrowseCompletion(browseTargetPrivateProfileId);
     }
 
     // 회원 미니 프로필
@@ -224,10 +224,11 @@ public class BrowsePrivateProfileController {
             final Long browseTargetPrivateProfileId,
             final boolean isMiniProfile
     ) {
+        // 미니 프로필이 존재하는 경우
         if (isMiniProfile) {
-            miniProfileService.validateMiniProfileByMember(browseTargetPrivateProfileId);
+            miniProfileService.validateMiniProfileByTargetProfileId(browseTargetPrivateProfileId);
             log.info("targetPrivateProfileId={}가 유효합니다. in browsePrivateProfileController", browseTargetPrivateProfileId);
-            return miniProfileService.getPersonalMiniProfile(browseTargetPrivateProfileId);
+            return miniProfileService.getBrowserPersonalMiniProfile(browseTargetPrivateProfileId);
         } else {
             final String memberName = miniProfileService.getMemberName(browseTargetPrivateProfileId);
             final List<String> jobRoleNames = miniProfileService.getJobRoleNames(browseTargetPrivateProfileId);
