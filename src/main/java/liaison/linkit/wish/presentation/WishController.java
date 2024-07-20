@@ -83,6 +83,7 @@ public class WishController {
             @Auth final Accessor accessor
     ) {
         log.info("memberId={}의 내 이력서 찜하기 목록을 가져옵니다.", accessor.getMemberId());
+        // 찜한 주체의 ID를 전달한다.
         final List<MiniProfileResponse> miniProfileResponseList = wishService.getPrivateProfileWishList(accessor.getMemberId());
         return ResponseEntity.ok(miniProfileResponseList);
     }
@@ -94,6 +95,7 @@ public class WishController {
             @Auth final Accessor accessor
     ) {
         log.info("memberId={}의 팀 소개서 찜하기 목록을 가져옵니다.", accessor.getMemberId());
+        // 찜한 주체의 ID를 전달한다.
         final List<WishTeamProfileResponse> wishTeamProfileResponseList = wishService.getTeamProfileWishList(accessor.getMemberId());
         return ResponseEntity.ok(wishTeamProfileResponseList);
     }
