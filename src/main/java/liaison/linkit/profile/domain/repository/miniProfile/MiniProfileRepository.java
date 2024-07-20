@@ -24,7 +24,7 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
     void deleteByProfileId(@Param("profileId") final Long profileId);
 
 
-    @Query("""
+    @Query(value = """
            SELECT mp FROM MiniProfile mp
            JOIN mp.profile p
            
@@ -47,7 +47,7 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
            AND (:divisionName IS NULL OR r.divisionName = :divisionName)
            AND (mp.isActivate = true)
            
-           """)
+           """, countQuery = "SELECT count (mp) from MiniProfile mp JOIN mp.profile")
     Page<MiniProfile> findAll(
             @Param("teamBuildingFieldNames") final List<String> teamBuildingFieldNames,
             @Param("jobRoleNames") final List<String> jobRoleNames,

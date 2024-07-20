@@ -2,7 +2,7 @@
 spring:
   config:
     activate:
-      on-profile: "local"
+      on-profile: "dev"
   mvc:
     path match:
       matching-strategy: ant_path_matcher
@@ -15,7 +15,7 @@ spring:
         default_batch_fetch_size: 100
         format_sql: true
         use_sql_comments: true
-        show_sql: true
+        show_sql: false
     hibernate:
       ddl-auto: validate
 
@@ -24,25 +24,18 @@ spring:
     username: ${database.username}
     password: ${database.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
-#
-#  flyway:
-#    enabled: true
-#    baseline-on-migrate: true
+  #
+  #  flyway:
+  #    enabled: true
+  #    baseline-on-migrate: true
 
   data:
     redis:
       host: ${redis.host}
       port: ${redis.port}
-  
-  sql:
-    init:
-      mode: never
-
-  batch:
-    job:
-      enabled: false
-    jdbc:
-      initialize-schema: never
+    web:
+      pageable:
+        default-page-size: 15
 
   security:
     oauth2:
@@ -98,7 +91,15 @@ spring:
       mail.smtp.ssl.trust: smtp.naver.com
       mail.smtp.starttls.enable: true
 
+  sql:
+    init:
+      mode: never
 
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: never
 
   servlet:
     multipart:
