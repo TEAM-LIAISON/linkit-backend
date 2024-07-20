@@ -180,14 +180,19 @@ public class WishService {
     }
 
     public List<MiniProfileResponse> getPrivateProfileWishList(final Long memberId) {
+        // 주체 객체 조회
         final Member member = getMember(memberId);
+
         final List<PrivateWish> privateWishList = privateWishRepository.findAllByMemberId(member.getId());
         return privateWishList.stream()
                 .map(privateWish -> {
+                    // 상대의 미니 프로필 객체를 가져온다.
                     final MiniProfile miniProfile = privateWish.getProfile().getMiniProfile();
                     final List<MiniProfileKeyword> miniProfileKeywords = getMiniProfileKeywords(miniProfile.getId());
-                    final MemberBasicInform memberBasicInform = getMemberBasicInform(memberId);
-                    final List<String> jobRoleNames = getJobRoleNames(memberId);
+                    // 상대 회원의 기본 정보를 가져와야 한다.
+                    final MemberBasicInform memberBasicInform = getMemberBasicInform(miniProfile.getProfile().getMember().getId());
+                    final List<String> jobRoleNames = getJobRoleNames(miniProfile.getProfile().getMember().getId());
+
                     return MiniProfileResponse.personalMiniProfile(
                             miniProfile,
                             miniProfileKeywords,
@@ -198,7 +203,9 @@ public class WishService {
     }
 
 
+    // 찜한 상대 팀 (팀원 공고)를 찾아야 한다.
     public List<WishTeamProfileResponse> getTeamProfileWishList(final Long memberId) {
+        // 찜한 주체 객체 조회
         final Member member = getMember(memberId);
         // 팀 찜 목록 객체 조회
         final List<TeamWish> teamWishList = teamWishRepository.findAllByMemberId(member.getId());
@@ -209,6 +216,8 @@ public class WishService {
 
     // 팀 소개서 응답 변환
     private WishTeamProfileResponse convertToWishTeamProfileResponse(final TeamWish teamWish) {
+
+        // 팀원 공고를 조회한다.
         final TeamMemberAnnouncement teamMemberAnnouncement = teamWish.getTeamMemberAnnouncement();
 
         final TeamMiniProfile teamMiniProfile = getTeamMiniProfileByTeamProfileId(teamMemberAnnouncement.getTeamProfile().getId());
