@@ -90,7 +90,7 @@ public class ProfileController {
             final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(accessor.getMemberId(), profileIsValueResponse.isAntecedents());
             final List<EducationResponse> educationResponses = getEducationResponses(accessor.getMemberId(), profileIsValueResponse.isEducation());
             final List<AwardsResponse> awardsResponses = getAwardsResponses(accessor.getMemberId(), profileIsValueResponse.isAwards());
-            final AttachResponse attachResponse = getAttachResponses(accessor.getMemberId(), profileIsValueResponse.isAttach());
+            final AttachResponse attachResponse = getAttachResponses(accessor.getMemberId(), profileIsValueResponse.isAttachUrl());
 
             final ProfileResponse profileResponse = profileService.getProfileResponse(
                     isPrivateProfileEssential,
@@ -220,9 +220,9 @@ public class ProfileController {
 
     private AttachResponse getAttachResponses(
             final Long memberId,
-            final boolean isAttach
+            final boolean isAttachUrl
     ) {
-        if (isAttach) {
+        if (isAttachUrl) {
             return attachService.getAttachList(memberId);
         } else {
             return new AttachResponse();
