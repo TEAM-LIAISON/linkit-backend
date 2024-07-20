@@ -109,6 +109,13 @@ public class ProfileService {
         return ProfileIntroductionResponse.profileIntroduction(profile);
     }
 
+    @Transactional(readOnly = true)
+    public ProfileIntroductionResponse getBrowseProfileIntroduction(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+        return ProfileIntroductionResponse.profileIntroduction(profile);
+    }
+
     public ProfileResponse getProfileResponse(
             final boolean isPrivateProfileEssential,
             final MiniProfileResponse miniProfileResponse,

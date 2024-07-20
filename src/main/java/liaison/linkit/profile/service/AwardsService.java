@@ -52,6 +52,13 @@ public class AwardsService {
         }
     }
 
+    // 멤버로부터 프로필 아이디를 조회해서 존재성을 판단
+    public void validateAwardsByProfile(final Long profileId) {
+        if (!awardsRepository.existsByProfileId(profileId)) {
+            throw new AuthException(NOT_FOUND_AWARDS_LIST_BY_PROFILE_ID);
+        }
+    }
+
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     public void save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
@@ -111,6 +118,19 @@ public class AwardsService {
     @Transactional(readOnly = true)
     public List<AwardsResponse> getAllAwards(final Long memberId) {
         final Profile profile = getProfile(memberId);
+        final List<Awards> awards = awardsRepository.findAllByProfileId(profile.getId());
+        return awards.stream()
+                .map(this::getAwardsResponse)
+                .toList();
+    }
+
+    // 해당 회원의 모든 수상 항목을 조회하는 메서드 / 수정 이전 화면에서 필요
+    @Transactional(readOnly = true)
+    public List<AwardsResponse> getAllBrowseAwards(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+
+
         final List<Awards> awards = awardsRepository.findAllByProfileId(profile.getId());
         return awards.stream()
                 .map(this::getAwardsResponse)

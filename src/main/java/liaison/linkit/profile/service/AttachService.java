@@ -242,6 +242,25 @@ public class AttachService {
 
         return AttachResponse.getAttachResponse(attachUrlResponses);
     }
+    @Transactional(readOnly = true)
+    public AttachResponse getBrowseAttachList(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+
+        final List<AttachUrl> attachUrls = attachUrlRepository.findAllByProfileId(profile.getId());
+        log.info("attachUrls={}", attachUrls);
+
+//        final List<AttachFile> attachFiles = attachFileRepository.findAllByProfileId(profile.getId());
+//        log.info("attachFiles={}", attachFiles);
+
+        final List<AttachUrlResponse> attachUrlResponses = attachUrls.stream().map(this::getAttachUrlResponse).toList();
+        log.info("attachUrlResponses={}", attachUrlResponses);
+
+//        final List<AttachFileResponse> attachFileResponses = attachFiles.stream().map(this::getAttachFileResponse).toList();
+//        log.info("attachFileResponses={}", attachFileResponses);
+
+        return AttachResponse.getAttachResponse(attachUrlResponses);
+    }
 
 //    public void deleteFile(
 //            final Long memberId,

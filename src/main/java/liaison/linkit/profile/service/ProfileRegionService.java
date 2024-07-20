@@ -43,6 +43,13 @@ public class ProfileRegionService {
         }
     }
 
+    // 멤버 아이디로 미니 프로필의 유효성을 검증하는 로직
+    public void validateProfileRegionByProfile(final Long profileId) {
+        if (!profileRegionRepository.existsByProfileId(profileId)) {
+            throw new AuthException(NOT_FOUND_PROFILE_REGION_BY_MEMBER_ID);
+        }
+    }
+
     // 활동 지역 및 위치 생성/수정 메서드
     public void save(final Long memberId, final ProfileRegionCreateRequest profileRegionCreateRequest) {
         try {
@@ -82,6 +89,16 @@ public class ProfileRegionService {
     @Transactional(readOnly = true)
     public ProfileRegionResponse getPersonalProfileRegion(final Long memberId) {
         final Profile profile = getProfile(memberId);
+        ProfileRegion profileRegion = getProfileRegion(profile.getId());
+        return new ProfileRegionResponse(profileRegion.getRegion().getCityName(), profileRegion.getRegion().getDivisionName());
+    }
+
+    // 내 이력서에 매핑되어 있는 활동 지역 및 위치 조회
+    @Transactional(readOnly = true)
+    public ProfileRegionResponse getPersonalBrowseProfileRegion(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+
         ProfileRegion profileRegion = getProfileRegion(profile.getId());
         return new ProfileRegionResponse(profileRegion.getRegion().getCityName(), profileRegion.getRegion().getDivisionName());
     }
