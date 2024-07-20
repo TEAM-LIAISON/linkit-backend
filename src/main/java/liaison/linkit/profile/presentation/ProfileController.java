@@ -117,6 +117,7 @@ public class ProfileController {
             final Long memberId,
             final boolean isMiniProfile
     ) {
+        // 여기서 자꾸 오류 나는
         if (isMiniProfile) {
             miniProfileService.validateMiniProfileByMember(memberId);
             return miniProfileService.getPersonalMiniProfile(memberId);
