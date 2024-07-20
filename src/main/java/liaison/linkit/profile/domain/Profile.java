@@ -262,7 +262,6 @@ public class Profile {
     // 3.11.1 첨부 링크 업데이트
     public void updateIsAttachUrl(final boolean isAttachUrl) {
         this.isAttachUrl = isAttachUrl;
-
     }
     // 3.11.2 첨부 파일 업데이트
 //    public void updateIsAttachFile(final boolean isAttachFile) {

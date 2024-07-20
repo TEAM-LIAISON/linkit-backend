@@ -69,6 +69,12 @@ public class AttachService {
         }
     }
 
+    public void validateAttachUrlByProfile(final Long profileId) {
+        if (!attachUrlRepository.existsByProfileId(profileId)) {
+            throw new AuthException(INVALID_ATTACH_URL_WITH_PROFILE);
+        }
+    }
+
     // 단일 첨부 File 조회
 //    private AttachFile getAttachFile(final Long attachFileId) {
 //        return attachFileRepository.findById(attachFileId)
@@ -261,6 +267,8 @@ public class AttachService {
 
         return AttachResponse.getAttachResponse(attachUrlResponses);
     }
+
+
 
 //    public void deleteFile(
 //            final Long memberId,
