@@ -33,6 +33,7 @@ PrivateWish {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    // 찜한 상대의 내 이력서 객체
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
