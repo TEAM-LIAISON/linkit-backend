@@ -30,7 +30,7 @@ public class ProfileIsValueResponse {
     private final boolean isAwards;
 
     // 첨부 항목
-    private final boolean isAttach;
+    private final boolean isAttachUrl;
 
     // 미니 프로필 항목
     private final boolean isMiniProfile;
