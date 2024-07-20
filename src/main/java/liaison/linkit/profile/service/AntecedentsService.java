@@ -54,6 +54,13 @@ public class AntecedentsService {
         }
     }
 
+    public void validateAntecedentsByProfile(final Long profileId) {
+        if (!antecedentsRepository.existsByProfileId(profileId)) {
+            throw new AuthException(NOT_FOUND_ANTECEDENTS_BY_PROFILE_ID);
+        }
+    }
+
+
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     @Transactional
@@ -104,8 +111,19 @@ public class AntecedentsService {
     }
 
     @Transactional(readOnly = true)
-    public List<AntecedentsResponse> getAllAntecedents(Long memberId) {
+    public List<AntecedentsResponse> getAllAntecedents(final Long memberId) {
         final Profile profile = getProfile(memberId);
+        final List<Antecedents> antecedents = antecedentsRepository.findAllByProfileId(profile.getId());
+        return antecedents.stream()
+                .map(this::getAntecedentsResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<AntecedentsResponse> getAllBrowseAntecedents(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+
         final List<Antecedents> antecedents = antecedentsRepository.findAllByProfileId(profile.getId());
         return antecedents.stream()
                 .map(this::getAntecedentsResponse)

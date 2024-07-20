@@ -68,6 +68,13 @@ public class MiniProfileService {
             throw new AuthException(NOT_FOUND_MINI_PROFILE_BY_MEMBER_ID);
         }
     }
+
+    public void validateMiniProfileByTargetProfileId(final Long browseTargetPrivateProfileId) {
+        if (!miniProfileRepository.existsByProfileId(browseTargetPrivateProfileId)) {
+            throw new AuthException(NOT_FOUND_MINI_PROFILE_BY_PROFILE_ID);
+        }
+    }
+
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     // 미니 프로필 저장 메서드
@@ -181,6 +188,27 @@ public class MiniProfileService {
         log.info("대상 객체의 회원 기본 정보를 조회하였습니다.");
         // 직무, 역할 관련
         final List<String> jobRoleNames = getJobRoleNames(memberId);
+        log.info("대상 객체의 희망 직무 및 역할을 조회하였습니다.");
+
+        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName(), jobRoleNames);
+    }
+
+    @Transactional(readOnly = true)
+    public MiniProfileResponse getBrowserPersonalMiniProfile(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+
+        // 미니 프로필 관련
+        final MiniProfile miniProfile = getMiniProfile(profileId);
+        log.info("대상 객체의 미니 프로필 객체를 조회하였습니다.");
+        final List<MiniProfileKeyword> miniProfileKeywordList = getMiniProfileKeywords(miniProfile.getId());
+        log.info("대상 객체의 미니 프로필 키워드 리스트를 조회하였습니다.");
+
+        // 이름 관련
+        final MemberBasicInform memberBasicInform = getMemberBasicInform(profile.getMember().getId());
+        log.info("대상 객체의 회원 기본 정보를 조회하였습니다.");
+        // 직무, 역할 관련
+        final List<String> jobRoleNames = getJobRoleNames(profile.getMember().getId());
         log.info("대상 객체의 희망 직무 및 역할을 조회하였습니다.");
 
         return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName(), jobRoleNames);

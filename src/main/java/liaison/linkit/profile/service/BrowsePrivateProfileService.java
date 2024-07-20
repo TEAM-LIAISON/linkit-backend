@@ -29,6 +29,7 @@ import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class BrowsePrivateProfileService {
 
     private final ProfileRepository profileRepository;
@@ -57,7 +59,11 @@ public class BrowsePrivateProfileService {
 
     // 미니 프로필로 해당 내 이력서의 유효성 판단
     public void validatePrivateProfileByMiniProfile(final Long miniProfileId) {
-        if (!miniProfileRepository.existsById(miniProfileId)) {
+
+        final MiniProfile miniProfile = miniProfileRepository.findById(miniProfileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_ID));
+        log.info("validatePrivateProfileByMiniProfile 내에서 미니 프로필 객체를 조회하였습니다.");
+        if (!profileRepository.existsById(miniProfile.getProfile().getId())) {
             throw new AuthException(INVALID_MINI_PROFILE_WITH_MEMBER);
         }
     }
@@ -65,6 +71,7 @@ public class BrowsePrivateProfileService {
     // 미니 프로필 ID로 해당 내 이력서 ID 조회
     public Long getTargetPrivateProfileIdByMiniProfileId(final Long miniProfileId) {
         final Profile profile = getProfileByMiniProfileId(miniProfileId);
+        log.info("열람하고자 하는 내 이력서의 ID는 profileI={}입니다.", profile.getId());
         return profile.getId();
     }
 

@@ -54,6 +54,14 @@ public class EducationService {
         }
     }
 
+    // 멤버로부터 프로필 아이디를 조회해서 학력 정보 존재성을 판단
+    public void validateEducationByProfile(final Long profileId) {
+        if (!educationRepository.existsByProfileId(profileId)) {
+            throw new AuthException(NOT_FOUND_EDUCATIONS_BY_PROFILE_ID);
+        }
+    }
+
+
     public void saveAll(
             final Long memberId,
             final List<EducationCreateRequest> educationCreateRequests
@@ -100,6 +108,17 @@ public class EducationService {
     @Transactional(readOnly = true)
     public List<EducationResponse> getAllEducations(final Long memberId) {
         final Profile profile = getProfile(memberId);
+        final List<Education> educations = educationRepository.findAllByProfileId(profile.getId());
+        return educations.stream()
+                .map(this::getEducationResponse)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<EducationResponse> getAllBrowseEducations(final Long profileId) {
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+
         final List<Education> educations = educationRepository.findAllByProfileId(profile.getId());
         return educations.stream()
                 .map(this::getEducationResponse)
