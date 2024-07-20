@@ -226,6 +226,7 @@ public class BrowsePrivateProfileController {
     ) {
         if (isMiniProfile) {
             miniProfileService.validateMiniProfileByMember(browseTargetPrivateProfileId);
+            log.info("targetPrivateProfileId={}가 유효합니다. in browsePrivateProfileController", browseTargetPrivateProfileId);
             return miniProfileService.getPersonalMiniProfile(browseTargetPrivateProfileId);
         } else {
             final String memberName = miniProfileService.getMemberName(browseTargetPrivateProfileId);
