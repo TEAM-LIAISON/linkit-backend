@@ -7,7 +7,9 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.search.dto.response.SearchTeamProfileResponse;
-import liaison.linkit.search.dto.response.miniProfileResponse.BrowseMiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseTeamMemberAnnouncementResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.SearchBrowseTeamProfileResponse;
 import liaison.linkit.search.service.SearchService;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
@@ -68,6 +70,7 @@ public class SearchControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
+    // 로그인 이전
     private ResultActions performGetTeamAnnouncementAndTeamMiniProfile() throws Exception {
         MockHttpServletRequestBuilder requestBuilder = get("/search/team/profile")
                 .contentType(APPLICATION_JSON);
@@ -112,6 +115,45 @@ public class SearchControllerTest extends ControllerTest {
         return mockMvc.perform(requestBuilder);
     }
 
+    // 로그인 이후
+    private ResultActions performGetTeamAnnouncementAndTeamMiniProfileAfterLogin() throws Exception {
+        MockHttpServletRequestBuilder requestBuilder = get("/search/team/profile/login")
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
+                .contentType(APPLICATION_JSON);
+
+        List<String> teamBuildingFieldNames = null; // 예를 들어, null로 설정
+        if (teamBuildingFieldNames != null) {
+            teamBuildingFieldNames.forEach(name -> requestBuilder.queryParam("teamBuildingFieldName", name));
+        }
+
+        String jobRoleName = null; // null로 예시 설정
+        if (jobRoleName != null) {
+            requestBuilder.queryParam("jobRoleName", jobRoleName);
+        }
+
+        String skillName = null; // null로 예시 설정
+        if (skillName != null) {
+            requestBuilder.queryParam("skillName", skillName);
+        }
+
+        String cityName = null; // null로 예시 설정
+        if (cityName != null) {
+            requestBuilder.queryParam("cityName", cityName);
+        }
+
+        String divisionName = null; // null로 예시 설정
+        if (divisionName != null) {
+            requestBuilder.queryParam("divisionName", divisionName);
+        }
+
+        List<String> activityTagNames = null; // null로 예시 설정
+        if (activityTagNames != null) {
+            activityTagNames.forEach(tag -> requestBuilder.queryParam("activityTagName", tag));
+        }
+
+        return mockMvc.perform(requestBuilder);
+    }
 
     @Test
     @DisplayName("팀 찾기를 진행할 수 있다.")
@@ -186,6 +228,105 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.mainBusiness").description("주요 업무"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.skillNames").description("요구되는 기술 목록"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.applicationProcess").description("지원 절차"),
+                                        // 페이지와 관련된 필드 추가
+                                        subsectionWithPath("pageable").ignored(),
+                                        subsectionWithPath("sort").ignored(),
+                                        fieldWithPath("last").description("마지막 페이지 여부"),
+                                        fieldWithPath("totalPages").description("전체 페이지 수"),
+                                        fieldWithPath("totalElements").description("전체 요소 수"),
+                                        fieldWithPath("first").description("첫 페이지 여부"),
+                                        fieldWithPath("size").description("페이지당 요소 수"),
+                                        fieldWithPath("number").description("페이지 번호"),
+                                        fieldWithPath("numberOfElements").description("현재 페이지의 요소 수"),
+                                        fieldWithPath("empty").description("페이지가 비어 있는지 여부")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("로그인 이후 팀 찾기를 진행할 수 있다.")
+    void getTeamAnnouncementAndTeamMiniProfileAfterLogin() throws Exception {
+        // given
+        final TeamMiniProfileResponse teamMiniProfileResponse = new TeamMiniProfileResponse(
+                1L,
+                "SaaS",
+                "1-5인",
+                "리에종",
+                "팀 소개서 제목입니다.",
+                true,
+                "https://image.linkit.im/images/linkit_logo.png",
+                Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
+        );
+
+        final BrowseTeamMemberAnnouncementResponse browseTeamMemberAnnouncementResponse = new BrowseTeamMemberAnnouncementResponse(
+                1L,
+                "리에종",
+                "개발·데이터",
+                "주요 업무입니다.",
+                Arrays.asList("서버 개발", "DevOps"),
+                "지원 절차입니다.",
+                true
+        );
+
+        final SearchBrowseTeamProfileResponse searchTeamProfileResponse = new SearchBrowseTeamProfileResponse(
+                teamMiniProfileResponse,
+                browseTeamMemberAnnouncementResponse
+        );
+
+        Page<SearchBrowseTeamProfileResponse> page = new PageImpl<>(Collections.singletonList(searchTeamProfileResponse));
+        when(searchService.findTeamMemberAnnouncementsWithTeamMiniProfileAfterLogin(
+                anyLong(),
+                any(),
+                eq(null),
+                eq(null),
+                eq(null),
+                eq(null),
+                eq(null),
+                eq(null)
+        )).thenReturn(page);
+
+        // when
+        final ResultActions resultActions = performGetTeamAnnouncementAndTeamMiniProfileAfterLogin();
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                queryParameters(
+                                        parameterWithName("teamBuildingFieldName").description("희망 팀빌딩 분야 필터").optional(),
+                                        parameterWithName("jobRoleName").description("직무/역할 필터").optional(),
+                                        parameterWithName("skillName").description("보유 역량 필터").optional(),
+                                        parameterWithName("cityName").description("지역 (시/도) 필터").optional(),
+                                        parameterWithName("divisionName").description("지역 (시/군/구) 필터").optional(),
+                                        parameterWithName("activityTagName").description("활동 방식 필터").optional()
+                                ),
+                                responseFields(
+                                        fieldWithPath("content[].teamMiniProfileResponse.id").description("팀 미니 프로필 ID"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.sectorName").description("부문 이름"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.sizeType").description("팀 크기 유형"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.teamName").description("팀 이름"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.teamProfileTitle").description("팀 소개서 제목"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.isTeamActivate").description("팀 소개서 활성화 여부"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.teamLogoImageUrl").description("팀 로고 이미지 URL"),
+                                        fieldWithPath("content[].teamMiniProfileResponse.teamKeywordNames").description("팀 키워드").optional(),
+                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.id").description("팀원 공고 ID"),
+                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.teamName").description("팀 이름"),
+                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.jobRoleName").description("팀원 공고 직무 이름"),
+                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.mainBusiness").description("주요 업무"),
+                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.skillNames").description("요구되는 기술 목록"),
+                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.applicationProcess").description("지원 절차"),
+                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.isTeamSaved").type(JsonFieldType.BOOLEAN).description("로그인 사용자가 해당 팀원 공고 찜한 여부"),
+
                                         // 페이지와 관련된 필드 추가
                                         subsectionWithPath("pageable").ignored(),
                                         subsectionWithPath("sort").ignored(),

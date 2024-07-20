@@ -19,6 +19,6 @@ public interface PrivateWishRepository extends JpaRepository<PrivateWish, Long> 
     @Query("DELETE FROM PrivateWish pw WHERE pw.member.id = :memberId AND pw.profile.id = :profileId")
     void deleteByMemberIdAndProfileId(@Param("memberId") final Long memberId, @Param("profileId") final Long profileId);
 
-    @Query("SELECT pw FROM PrivateWish pw WHERE pw.member.id = : memberId AND pw.profile.id = : profileId")
+    @Query("SELECT COUNT (pw) > 0 FROM PrivateWish pw WHERE pw.member.id = : memberId AND pw.profile.id = : profileId")
     boolean findByMemberIdAndProfileId(@Param("memberId") final Long memberId, @Param("profileId") final Long profileId);
 }
