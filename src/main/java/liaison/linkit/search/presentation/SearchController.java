@@ -4,7 +4,8 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.search.dto.response.SearchTeamProfileResponse;
-import liaison.linkit.search.dto.response.miniProfileResponse.BrowseMiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.SearchBrowseTeamProfileResponse;
 import liaison.linkit.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -111,4 +112,29 @@ public class SearchController {
         return ResponseEntity.ok(searchTeamProfileResponsePage);
     }
 
+    // 로그인 이후 팀 찾기 컨트롤러
+    @GetMapping("/search/team/profile/login")
+    public ResponseEntity<Page<SearchBrowseTeamProfileResponse>> findSearchTeamProfileAfterLogin(
+            @Auth final Accessor accessor,
+            @PageableDefault(size = 10) final Pageable pageable,
+            @RequestParam(required = false) final List<String> teamBuildingFieldName,
+            @RequestParam(required = false) final List<String> jobRoleName,
+            @RequestParam(required = false) final List<String> skillName,
+            @RequestParam(required = false) final String cityName,
+            @RequestParam(required = false) final String divisionName,
+            @RequestParam(required = false) final List<String> activityTagName
+    ) {
+        log.info("팀 찾기(팀원 공고) 요청이 들어왔습니다.");
+        final Page<SearchBrowseTeamProfileResponse> searchTeamProfileResponsePage = searchService.findTeamMemberAnnouncementsWithTeamMiniProfileAfterLogin(
+                accessor.getMemberId(),
+                pageable,
+                teamBuildingFieldName,
+                jobRoleName,
+                skillName,
+                cityName,
+                divisionName,
+                activityTagName
+        );
+        return ResponseEntity.ok(searchTeamProfileResponsePage);
+    }
 }

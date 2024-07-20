@@ -15,7 +15,9 @@ import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.search.dto.response.SearchTeamProfileResponse;
-import liaison.linkit.search.dto.response.miniProfileResponse.BrowseMiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseTeamMemberAnnouncementResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.SearchBrowseTeamProfileResponse;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementSkill;
@@ -158,6 +160,31 @@ public class SearchService {
         return teamMemberAnnouncements.map(this::convertToSearchTeamProfileResponse);
     }
 
+    // 팀원 공고, 팀 미니 프로필 응답 (페이지) 조회
+    @Transactional(readOnly = true)
+    public Page<SearchBrowseTeamProfileResponse> findTeamMemberAnnouncementsWithTeamMiniProfileAfterLogin(
+            final Long memberId,
+            final Pageable pageable,
+            final List<String> teamBuildingFieldName,
+            final List<String> jobRoleName,
+            final List<String> skillName,
+            final String cityName,
+            String divisionName,
+            final List<String> activityTagName
+    ) {
+        Page<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementRepository.findAllByOrderByCreatedDateDesc(
+                teamBuildingFieldName,
+                jobRoleName,
+                skillName,
+                cityName,
+                divisionName,
+                activityTagName,
+                pageable
+        );
+        return teamMemberAnnouncements.map(teamMemberAnnouncement -> convertToSearchTeamProfileResponseAfterLogin(teamMemberAnnouncement, memberId));
+    }
+
+
     private SearchTeamProfileResponse convertToSearchTeamProfileResponse(final TeamMemberAnnouncement teamMemberAnnouncement) {
         // 각각의 개별 팀원 공고를 찾아냈다.
         final TeamMiniProfile teamMiniProfile = getTeamMiniProfileByTeamProfileId(teamMemberAnnouncement.getTeamProfile().getId());
@@ -171,6 +198,21 @@ public class SearchService {
         return new SearchTeamProfileResponse(
                 TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
                 TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList)
+        );
+    }
+
+    private SearchBrowseTeamProfileResponse convertToSearchTeamProfileResponseAfterLogin(final TeamMemberAnnouncement teamMemberAnnouncement, final Long memberId) {
+        final TeamMiniProfile teamMiniProfile = getTeamMiniProfileByTeamProfileId(teamMemberAnnouncement.getTeamProfile().getId());
+        final List<TeamMiniProfileKeyword> teamMiniProfileKeyword = teamMiniProfileKeywordRepository.findAllByTeamMiniProfileId(teamMiniProfile.getId());
+
+        final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole = getTeamMemberAnnouncementJobRole(teamMemberAnnouncement.getId());
+        final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
+        final String teamName = teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamName();
+        final boolean isTeamSaved = teamWishRepository.findByTeamMemberAnnouncementIdAndMemberId(teamMemberAnnouncement.getId(), memberId);
+
+        return new SearchBrowseTeamProfileResponse(
+                TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
+                BrowseTeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList, isTeamSaved)
         );
     }
 

@@ -1,4 +1,4 @@
-package liaison.linkit.search.dto.response.miniProfileResponse;
+package liaison.linkit.search.dto.response.browseAfterLogin;
 
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public class BrowseMiniProfileResponse {
+
     private final Long id;
     private final String profileTitle;
     private final String miniProfileImg;
