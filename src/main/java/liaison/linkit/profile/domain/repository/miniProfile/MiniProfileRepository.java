@@ -47,6 +47,7 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
            AND (:divisionName IS NULL OR r.divisionName = :divisionName)
            AND (mp.isActivate = true)
            
+           ORDER BY mp.createdDate DESC
            """, countQuery = "SELECT count (mp) from MiniProfile mp JOIN mp.profile")
     Page<MiniProfile> findAll(
             @Param("teamBuildingFieldNames") final List<String> teamBuildingFieldNames,

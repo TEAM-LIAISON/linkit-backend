@@ -1,7 +1,10 @@
 package liaison.linkit.search.presentation;
 
+import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.search.dto.response.SearchTeamProfileResponse;
+import liaison.linkit.search.dto.response.miniProfileResponse.BrowseMiniProfileResponse;
 import liaison.linkit.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,6 +56,30 @@ public class SearchController {
         return ResponseEntity.ok(privateMiniProfiles);
     }
 
+    // 로그인 이후 팀원 찾기 컨트롤러
+    @GetMapping("/search/private/profile/login")
+    public ResponseEntity<Page<BrowseMiniProfileResponse>> findPrivateMiniProfileLogin(
+            @Auth final Accessor accessor,
+            @PageableDefault(size = 100) Pageable pageable,
+            @RequestParam(required = false) final List<String> teamBuildingFieldName,
+            @RequestParam(required = false) final List<String> jobRoleName,
+            @RequestParam(required = false) final List<String> skillName,
+            @RequestParam(required = false) final String cityName,
+            @RequestParam(required = false) final String divisionName
+    ) {
+        log.info("로그인 상태에서 팀원 찾기 요청이 들어왔습니다.");
+        final Page<BrowseMiniProfileResponse> browseMiniProfileResponses = searchService.findPrivateMiniProfileLogin(
+                accessor.getMemberId(),
+                pageable,
+                teamBuildingFieldName,
+                jobRoleName,
+                skillName,
+                cityName,
+                divisionName
+        );
+
+        return ResponseEntity.ok(browseMiniProfileResponses);
+    }
 
     // 팀 찾기 컨트롤러
     @GetMapping("/search/team/profile")
