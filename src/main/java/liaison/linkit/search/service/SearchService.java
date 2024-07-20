@@ -95,7 +95,7 @@ public class SearchService {
                 pageable
         );
 
-        log.info("miniProfiles.getSize()={}", miniProfiles.getSize());
+        log.info("miniProfiles.getNumberOfElements={}", miniProfiles.getNumberOfElements());
         return miniProfiles.map(this::convertToMiniProfileResponse);
     }
 
