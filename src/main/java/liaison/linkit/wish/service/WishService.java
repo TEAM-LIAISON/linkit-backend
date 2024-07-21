@@ -14,7 +14,8 @@ import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRe
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
-import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseTeamMemberAnnouncementResponse;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementSkill;
@@ -25,7 +26,6 @@ import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncement
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementSkillRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileKeywordRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
-import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import liaison.linkit.wish.domain.PrivateWish;
 import liaison.linkit.wish.domain.TeamWish;
@@ -179,7 +179,7 @@ public class WishService {
         member.subTeamWishCount();
     }
 
-    public List<MiniProfileResponse> getPrivateProfileWishList(final Long memberId) {
+    public List<BrowseMiniProfileResponse> getPrivateProfileWishList(final Long memberId) {
         // 주체 객체 조회
         final Member member = getMember(memberId);
 
@@ -193,11 +193,16 @@ public class WishService {
                     final MemberBasicInform memberBasicInform = getMemberBasicInform(miniProfile.getProfile().getMember().getId());
                     final List<String> jobRoleNames = getJobRoleNames(miniProfile.getProfile().getMember().getId());
 
-                    return MiniProfileResponse.personalMiniProfile(
+                    // privateWish -> 찾아야함 (내가 이 해당 미니 프로필을 찜해뒀는지?)
+                    final boolean isPrivateWish = privateWishRepository.findByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
+
+                    return BrowseMiniProfileResponse.personalBrowseMiniProfile(
                             miniProfile,
                             miniProfileKeywords,
                             memberBasicInform.getMemberName(),
-                            jobRoleNames);
+                            jobRoleNames,
+                            isPrivateWish
+                    );
                 })
                 .toList();
     }
@@ -211,11 +216,11 @@ public class WishService {
         final List<TeamWish> teamWishList = teamWishRepository.findAllByMemberId(member.getId());
         log.info("teamWishList={}", teamWishList);
 
-        return teamWishList.stream().map(this::convertToWishTeamProfileResponse).toList();
+        return teamWishList.stream().map(teamWish -> convertToWishTeamProfileResponse(teamWish, member.getId())).toList();
     }
 
     // 팀 소개서 응답 변환
-    private WishTeamProfileResponse convertToWishTeamProfileResponse(final TeamWish teamWish) {
+    private WishTeamProfileResponse convertToWishTeamProfileResponse(final TeamWish teamWish, final Long memberId) {
 
         // 팀원 공고를 조회한다.
         final TeamMemberAnnouncement teamMemberAnnouncement = teamWish.getTeamMemberAnnouncement();
@@ -227,9 +232,11 @@ public class WishService {
         final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
         final String teamName = teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamName();
 
+        final boolean isTeamSaved = teamWishRepository.findByTeamMemberAnnouncementIdAndMemberId(teamMemberAnnouncement.getId(), memberId);
+
         return new WishTeamProfileResponse(
                 TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
-                TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList)
+                BrowseTeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList, isTeamSaved)
         );
     }
 
