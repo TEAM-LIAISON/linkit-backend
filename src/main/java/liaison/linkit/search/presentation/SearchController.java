@@ -1,6 +1,7 @@
 package liaison.linkit.search.presentation;
 
 import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.search.dto.response.SearchTeamProfileResponse;
@@ -59,6 +60,7 @@ public class SearchController {
 
     // 로그인 이후 팀원 찾기 컨트롤러
     @GetMapping("/search/private/profile/login")
+    @MemberOnly
     public ResponseEntity<Page<BrowseMiniProfileResponse>> findPrivateMiniProfileLogin(
             @Auth final Accessor accessor,
             @PageableDefault(size = 100) Pageable pageable,
@@ -114,6 +116,7 @@ public class SearchController {
 
     // 로그인 이후 팀 찾기 컨트롤러
     @GetMapping("/search/team/profile/login")
+    @MemberOnly
     public ResponseEntity<Page<SearchBrowseTeamProfileResponse>> findSearchTeamProfileAfterLogin(
             @Auth final Accessor accessor,
             @PageableDefault(size = 10) final Pageable pageable,
