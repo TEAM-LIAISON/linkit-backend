@@ -23,6 +23,6 @@ public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
     @Query("SELECT tw FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = : teamMemberAnnouncementId")
     Optional<TeamWish> findByTeamMemberAnnouncementId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
 
-    @Query("SELECT COUNT(tw) > 0 FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = : teamMemberAnnouncementId AND tw.member.id =: memberId")
+    @Query("SELECT COUNT(tw) > 0 FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = :teamMemberAnnouncementId AND tw.member.id = :memberId")
     boolean findByTeamMemberAnnouncementIdAndMemberId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId, @Param("memberId") final Long memberId);
 }
