@@ -60,4 +60,12 @@ public class PrivateMatching {
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
+
+    public void updateMatchingStatus(final boolean isAllow) {
+        if (isAllow) {
+            this.matchingStatus = MatchingStatus.SUCCESSFUL;
+        } else {
+            this.matchingStatus = MatchingStatus.REQUESTED;
+        }
+    }
 }

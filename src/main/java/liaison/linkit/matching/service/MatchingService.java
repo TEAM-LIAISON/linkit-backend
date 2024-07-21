@@ -7,6 +7,7 @@ import liaison.linkit.matching.domain.TeamMatching;
 import liaison.linkit.matching.domain.repository.PrivateMatchingRepository;
 import liaison.linkit.matching.domain.repository.TeamMatchingRepository;
 import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.dto.request.AllowMatchingRequest;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
 import liaison.linkit.matching.dto.response.RequestMatchingResponse;
@@ -423,6 +424,7 @@ public class MatchingService {
                 privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
                 jobRoleNames,
                 privateMatching.getRequestMessage(),
+                privateMatching.getSenderType(),
                 false
         );
     }
@@ -440,6 +442,7 @@ public class MatchingService {
                 privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
                 jobRoleNames,
                 privateMatching.getRequestMessage(),
+                privateMatching.getSenderType(),
                 false
         );
     }
@@ -450,13 +453,11 @@ public class MatchingService {
     ) {
         final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
 
-        final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole = getTeamMemberAnnouncementJobRole(teamMatching.getTeamMemberAnnouncement().getId());
-
         return new RequestTeamMatchingMessageResponse(
                 teamMatching.getId(),
                 teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                teamMemberAnnouncementJobRole.getJobRole().getJobRoleName(),
                 teamMatching.getRequestMessage(),
+                teamMatching.getSenderType(),
                 true
         );
     }
@@ -528,5 +529,24 @@ public class MatchingService {
     private TeamMemberAnnouncementJobRole getTeamMemberAnnouncementJobRole(final Long teamMemberAnnouncementId) {
         return teamMemberAnnouncementJobRoleRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE));
+    }
+
+    public void acceptPrivateMatching(final Long privateMatchingId, final AllowMatchingRequest allowMatchingRequest) {
+        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+
+        if (allowMatchingRequest.getIsAllowMatching()) {
+            privateMatching.updateMatchingStatus(true);
+        } else {
+            privateMatching.updateMatchingStatus(false);
+        }
+    }
+
+    public void acceptTeamMatching(final Long teamMatchingId, final AllowMatchingRequest allowMatchingRequest) {
+        final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
+        if (allowMatchingRequest.getIsAllowMatching()) {
+            teamMatching.updateMatchingStatus(true);
+        } else {
+            teamMatching.updateMatchingStatus(false);
+        }
     }
 }

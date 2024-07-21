@@ -378,7 +378,80 @@ include::{snippets}/matching-controller-test/get-received-private-to-private-mat
 include::{snippets}/matching-controller-test/get-received-private-to-private-matching-message/http-response.adoc[]
 include::{snippets}/matching-controller-test/get-received-private-to-private-matching-message/response-fields.adoc[]
 
+=== 10.10. 내가 받은 매칭 요청 / sender_type = Team / receivedTeamProfile = false
+==== 요청
+include::{snippets}/matching-controller-test/get-received-team-to-private-matching-message/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-received-team-to-private-matching-message/path-parameters.adoc[]
 
+==== 응답
+include::{snippets}/matching-controller-test/get-received-team-to-private-matching-message/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-received-team-to-private-matching-message/response-fields.adoc[]
+
+=== 10.11. 내가 받은 매칭 요청 / sender_type = private / receivedTeamProfile = true
+==== 요청
+include::{snippets}/matching-controller-test/get-received-private-to-team-matching-response/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-received-private-to-team-matching-response/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/matching-controller-test/get-received-private-to-team-matching-response/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-received-private-to-team-matching-response/response-fields.adoc[]
+
+=== 10.12. 내가 보낸 매칭 요청 / sender_type = private / requestTeamProfile = false
+==== 요청
+include::{snippets}/matching-controller-test/get-request-private-to-private-matching-message/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-request-private-to-private-matching-message/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/matching-controller-test/get-request-private-to-private-matching-message/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-request-private-to-private-matching-message/response-fields.adoc[]
+
+=== 10.13. 내가 보낸 매칭 요청 / sender_type = Team / requestTeamProfile = false
+==== 요청
+include::{snippets}/matching-controller-test/get-request-team-to-private-matching-message/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-request-team-to-private-matching-message/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/matching-controller-test/get-request-team-to-private-matching-message/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-request-team-to-private-matching-message/response-fields.adoc[]
+
+=== 10.14. 내가 보낸 매칭 요청 / sender_type = private / requestTeamProfile = true
+==== 요청
+include::{snippets}/matching-controller-test/get-received-private-to-team-matching-response/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-received-private-to-team-matching-response/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/matching-controller-test/get-received-private-to-team-matching-response/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-received-private-to-team-matching-response/response-fields.adoc[]
+
+=== 10.15. 내 이력서 관련 (receivedTeamProfile = false) - 내가 받은 매칭 요청 -> 수락/거절 선택
+==== 요청
+include::{snippets}/matching-controller-test/accept-receive-private-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/accept-receive-private-matching/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/accept-receive-private-matching/request-fields.adoc[]
+
+=== 10.16. 팀 소개서 관련 (receivedTeamProfile = true) - 내가 받은 매칭 요청 -> 수락/거절 선택
+==== 요청
+include::{snippets}/matching-controller-test/accept-receive-team-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/accept-receive-team-matching/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/accept-receive-team-matching/request-fields.adoc[]
+
+=== 10.17. 매칭 성사 / 연락하기 버튼 클릭 / 내 이력서인 경우
+==== 요청
+include::{snippets}/matching-controller-test/get-private-success-contact-response/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-private-success-contact-response/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/matching-controller-test/get-private-success-contact-response/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-private-success-contact-response/response-fields.adoc[]
+
+=== 10.18. 매칭 성사 / 연락하기 버튼 클릭 / 팀 소개서인 경우
+==== 요청
+include::{snippets}/matching-controller-test/get-team-success-contact-response/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-team-success-contact-response/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/matching-controller-test/get-team-success-contact-response/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-team-success-contact-response/response-fields.adoc[]
 
 == 11. 찜하기
 === 11.1. 내 이력서 (미니 프로필 ID) 찜하기 생성

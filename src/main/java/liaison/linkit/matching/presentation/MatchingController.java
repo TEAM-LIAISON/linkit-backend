@@ -6,6 +6,7 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.matching.CheckMatchingToPrivateProfileAccess;
 import liaison.linkit.matching.CheckMatchingToTeamProfileAccess;
+import liaison.linkit.matching.dto.request.AllowMatchingRequest;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
 import liaison.linkit.matching.dto.response.RequestMatchingResponse;
@@ -186,6 +187,7 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(requestPrivateMatchingMessageResponse);
     }
 
+
     // sender_type -> Team / requestTeamProfile = false
     // 내가 보낸 매칭 요청에서 private_matching 조회하는 경우 (팀 - 개인인 경우)
     @GetMapping("/request/team_to_private/matching/{privateMatchingId}")
@@ -197,6 +199,7 @@ public class MatchingController {
         final RequestPrivateMatchingMessageResponse requestPrivateMatchingMessageResponse = matchingService.getRequestTeamToPrivateMatchingMessage(privateMatchingId);
         return ResponseEntity.status(HttpStatus.OK).body(requestPrivateMatchingMessageResponse);
     }
+
 
     // sender_type -> private / requestTeamProfile = true
     // 내가 보낸 매칭 요청에서 team_matching 조회하는 경우 (개인 - 팀인 경우)
@@ -210,6 +213,31 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(requestTeamMatchingMessageResponse);
     }
 
+
+
+    // 내 이력서 관련 매칭일 때 수락/거절하기 버튼을 누른 경우
+    @PostMapping("/allow/private/matching/{privateMatchingId}")
+    @MemberOnly
+    public ResponseEntity<Void> acceptReceivePrivateMatching(
+            @Auth final Accessor accessor,
+            @PathVariable final Long privateMatchingId,
+            @RequestBody @Valid final AllowMatchingRequest allowMatchingRequest
+    ) {
+        matchingService.acceptPrivateMatching(privateMatchingId, allowMatchingRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    // 팀 소개서 관련 매칭일 때 수락하기 버튼을 누른 경우
+    @PostMapping("/allow/team/matching/{teamMatchingId}")
+    @MemberOnly
+    public ResponseEntity<Void> acceptReceiveTeamMatching(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMatchingId,
+            @RequestBody @Valid final AllowMatchingRequest allowMatchingRequest
+    ) {
+        matchingService.acceptTeamMatching(teamMatchingId, allowMatchingRequest);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
 
 
 
