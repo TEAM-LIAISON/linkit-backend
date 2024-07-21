@@ -18,6 +18,8 @@ public class RequestMatchingResponse {
 
     // 내 이력서 또는 팀 소개서에 매칭 요청 온 PK ID
     private final Long requestMatchingId;
+    // 미니 프로필 이미지
+    private final String miniProfileImg;
     // 수신자 이름
     private final String receiverName;
     // 매칭 요청 메시지
@@ -39,6 +41,7 @@ public class RequestMatchingResponse {
         return Stream.concat(
                 myPrivateMatchingResponseList.stream().map(mpm -> new RequestMatchingResponse(
                         mpm.getPrivateMatchingId(),
+                        mpm.getMiniProfileImg(),
                         mpm.getReceiverName(),
                         mpm.getRequestMessage(),
                         mpm.getRequestOccurTime(),
@@ -47,6 +50,7 @@ public class RequestMatchingResponse {
                         mpm.isRequestTeamProfile())),
                 myTeamMatchingResponseList.stream().map(mtm -> new RequestMatchingResponse(
                         mtm.getTeamMatchingId(),
+                        mtm.getMiniProfileImg(),
                         mtm.getReceiverName(),
                         mtm.getRequestMessage(),
                         mtm.getRequestOccurTime(),
