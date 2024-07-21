@@ -3,6 +3,7 @@ package liaison.linkit.matching.domain;
 import jakarta.persistence.*;
 import liaison.linkit.matching.domain.type.MatchingStatus;
 import liaison.linkit.matching.domain.type.MatchingType;
+import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.Profile;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,10 @@ public class PrivateMatching {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
+
+    @Column(name = "sender_type")
+    @Enumerated(value = STRING)
+    private SenderType senderType;
 
     // 어떤 소개서에 요청 보낸 것인지 type 필요
     @Column(name = "matching_type")

@@ -369,6 +369,17 @@ include::{snippets}/matching-controller-test/get-existence-profile/http-request.
 include::{snippets}/matching-controller-test/get-existence-profile/http-response.adoc[]
 include::{snippets}/matching-controller-test/get-existence-profile/response-fields.adoc[]
 
+=== 10.9. 내가 받은 매칭 요청 & 개별 조회 / sender_type = Private / receivedTeamProfile = false
+==== 요청
+include::{snippets}/matching-controller-test/get-received-private-to-private-matching-message/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-received-private-to-private-matching-message/path-parameters.adoc[]
+
+==== 응답
+include::{snippets}/matching-controller-test/get-received-private-to-private-matching-message/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-received-private-to-private-matching-message/response-fields.adoc[]
+
+
+
 == 11. 찜하기
 === 11.1. 내 이력서 (미니 프로필 ID) 찜하기 생성
 ==== 요청

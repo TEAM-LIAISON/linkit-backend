@@ -10,7 +10,9 @@ import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
 import liaison.linkit.matching.dto.response.RequestMatchingResponse;
 import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
+import liaison.linkit.matching.dto.response.contact.SuccessContactResponse;
 import liaison.linkit.matching.dto.response.existence.ExistenceProfileResponse;
+import liaison.linkit.matching.dto.response.messageResponse.*;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -128,13 +130,108 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(existenceProfileResponse);
     }
 
-//    @GetMapping("/matching/received/{profileId}")
-//    @MemberOnly
-//    public ResponseEntity<MatchingMessageResponse> getMatchingMessageResponse(
-//            @Auth final Accessor accessor,
-//            @PathVariable final Long profileId
-//    ) {
-//        final MatchingMessageResponse matchingMessageResponse = matchingService.getMatchingMessageResponse(accessor.getMemberId(), profileId);
-//        return ResponseEntity.status(HttpStatus.OK).body(matchingMessageResponse);
-//    }
+
+
+
+
+    // sender_type -> Private / receivedTeamProfile = false
+    // 내가 받은 매칭 요청에서 private_matching 조회하는 경우 (개인 - 개인인 경우)
+    @GetMapping("/received/private_to_private/matching/{privateMatchingId}")
+    @MemberOnly
+    public ResponseEntity<ReceivedPrivateMatchingMessageResponse> getReceivedPrivateToPrivateMatchingMessage(
+            @Auth final Accessor accessor,
+            @PathVariable final Long privateMatchingId
+    ) {
+        matchingService.validateReceivedMatchingRequest(accessor.getMemberId());
+        final ReceivedPrivateMatchingMessageResponse receivedPrivateMatchingMessageResponse = matchingService.getReceivedPrivateToPrivateMatchingMessage(privateMatchingId);
+        return ResponseEntity.status(HttpStatus.OK).body(receivedPrivateMatchingMessageResponse);
+    }
+
+    // sender_type -> Team / receivedTeamProfile = false
+    // 내가 받은 매칭 요청에서 private_matching 조회하는 경우 (팀 - 개인인 경우)
+    @GetMapping("/received/team_to_private/matching/{privateMatchingId}")
+    @MemberOnly
+    public ResponseEntity<ReceivedPrivateMatchingMessageResponse> getReceivedTeamToPrivateMatchingMessage(
+            @Auth final Accessor accessor,
+            @PathVariable final Long privateMatchingId
+    ) {
+        matchingService.validateReceivedMatchingRequest(accessor.getMemberId());
+        final ReceivedPrivateMatchingMessageResponse receivedPrivateMatchingMessageResponse = matchingService.getReceivedTeamToPrivateMatchingMessage(privateMatchingId);
+        return ResponseEntity.status(HttpStatus.OK).body(receivedPrivateMatchingMessageResponse);
+    }
+
+    // sender_type -> private / receivedTeamProfile = true
+    // 내가 받은 매칭 요청에서 team_matching 조회하는 경우 (개인 - 팀인 경우)
+    @GetMapping("/received/team_to_team/matching/{teamMatchingId}")
+    @MemberOnly
+    public ResponseEntity<ReceivedTeamMatchingMessageResponse> getReceivedPrivateToTeamMatchingResponse(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMatchingId
+    ) {
+        matchingService.validateReceivedMatchingRequest(accessor.getMemberId());
+        final ReceivedTeamMatchingMessageResponse receivedTeamMatchingMessageResponse = matchingService.getReceivedPrivateToTeamMatchingMessage(teamMatchingId);
+        return ResponseEntity.status(HttpStatus.OK).body(receivedTeamMatchingMessageResponse);
+    }
+
+
+    // sender_type -> private / requestTeamProfile = false
+    // 내가 보낸 매칭 요청에서 private_matching 조회하는 경우 (개인 - 개인인 경우)
+    @GetMapping("/request/private_to_private/matching/{privateMatchingId}")
+    @MemberOnly
+    public ResponseEntity<RequestPrivateMatchingMessageResponse> getRequestPrivateToPrivateMatchingMessage(
+            @Auth final Accessor accessor,
+            @PathVariable final Long privateMatchingId
+    ) {
+        final RequestPrivateMatchingMessageResponse requestPrivateMatchingMessageResponse = matchingService.getRequestPrivateToPrivateMatchingMessage(privateMatchingId);
+        return ResponseEntity.status(HttpStatus.OK).body(requestPrivateMatchingMessageResponse);
+    }
+
+    // sender_type -> Team / requestTeamProfile = false
+    // 내가 보낸 매칭 요청에서 private_matching 조회하는 경우 (팀 - 개인인 경우)
+    @GetMapping("/request/team_to_private/matching/{privateMatchingId}")
+    @MemberOnly
+    public ResponseEntity<RequestPrivateMatchingMessageResponse> getRequestTeamToPrivateMatchingMessage(
+            @Auth final Accessor accessor,
+            @PathVariable final Long privateMatchingId
+    ) {
+        final RequestPrivateMatchingMessageResponse requestPrivateMatchingMessageResponse = matchingService.getRequestTeamToPrivateMatchingMessage(privateMatchingId);
+        return ResponseEntity.status(HttpStatus.OK).body(requestPrivateMatchingMessageResponse);
+    }
+
+    // sender_type -> private / requestTeamProfile = true
+    // 내가 보낸 매칭 요청에서 team_matching 조회하는 경우 (개인 - 팀인 경우)
+    @GetMapping("/request/private_to_team/matching/{teamMatchingId}")
+    @MemberOnly
+    public ResponseEntity<RequestTeamMatchingMessageResponse> getRequestPrivateToTeamMatchingMessage(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMatchingId
+    ) {
+        final RequestTeamMatchingMessageResponse requestTeamMatchingMessageResponse = matchingService.getRequestPrivateToTeamMatchingMessage(teamMatchingId);
+        return ResponseEntity.status(HttpStatus.OK).body(requestTeamMatchingMessageResponse);
+    }
+
+
+
+
+    // 내 이력서 관련 매칭일 때 연락하기 버튼을 누른 경우
+    @GetMapping("/success/private/matching/contact/{privateMatchingId}")
+    @MemberOnly
+    public ResponseEntity<SuccessContactResponse> getPrivateSuccessContactResponse(
+            @Auth final Accessor accessor,
+            @PathVariable final Long privateMatchingId
+    ) {
+        final SuccessContactResponse successContactResponse = matchingService.getPrivateSuccessContactResponse(accessor.getMemberId(), privateMatchingId);
+        return ResponseEntity.status(HttpStatus.OK).body(successContactResponse);
+    }
+
+    // 팀 매칭 관련일 때 연락하기 버튼을 누른 경우
+    @GetMapping("/success/team/matching/contact/{teamMatchingId}")
+    @MemberOnly
+    public ResponseEntity<SuccessContactResponse> getTeamSuccessContactResponse(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMatchingId
+    ) {
+        final SuccessContactResponse successContactResponse = matchingService.getTeamSuccessContactResponse(accessor.getMemberId(), teamMatchingId);
+        return ResponseEntity.status(HttpStatus.OK).body(successContactResponse);
+    }
 }

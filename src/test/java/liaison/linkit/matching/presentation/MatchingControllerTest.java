@@ -7,11 +7,13 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.matching.domain.type.MatchingType;
+import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
 import liaison.linkit.matching.dto.response.RequestMatchingResponse;
 import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
 import liaison.linkit.matching.dto.response.existence.ExistenceProfileResponse;
+import liaison.linkit.matching.dto.response.messageResponse.ReceivedPrivateMatchingMessageResponse;
 import liaison.linkit.matching.dto.response.requestPrivateMatching.MyPrivateMatchingResponse;
 import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingResponse;
 import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
@@ -165,6 +167,68 @@ class MatchingControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performGetReceivedPrivateToPrivateMatchingMessage(
+            final int privateMatchingId
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/received/private_to_private/matching/{privateMatchingId}", privateMatchingId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+
+    private ResultActions performGetReceivedTeamToPrivateMatchingMessage(
+            final int privateMatchingId
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/received/team_to_private/matching/{privateMatchingId}", privateMatchingId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performGetReceivedPrivateToTeamMatchingResponse(
+            final int teamMatchingId
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/received/team_to_team/matching/{teamMatchingId}", teamMatchingId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performGetRequestPrivateToPrivateMatchingMessage(
+            final int privateMatchingId
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/request/private_to_private/matching/{privateMatchingId}", privateMatchingId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+
+    private ResultActions performGetRequestTeamToPrivateMatchingMessage(
+            final int privateMatchingId
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/request/team_to_private/matching/{privateMatchingId}", privateMatchingId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performGetRequestPrivateToTeamMatchingMessage(
+            final int teamMatchingId
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/request/private_to_team/matching/{teamMatchingId}", teamMatchingId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
     @DisplayName("내 이력서로 내 이력서에 매칭 요청을 보낼 수 있다.")
     @Test
     void createPrivateProfileMatchingToPrivate() throws Exception {
@@ -289,6 +353,7 @@ class MatchingControllerTest extends ControllerTest {
                 "김동혁",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
+                SenderType.PRIVATE,
                 MatchingType.PROFILE,
                 false // 이력서 수신 여부
         );
@@ -298,6 +363,7 @@ class MatchingControllerTest extends ControllerTest {
                 "권동민",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
+                SenderType.PRIVATE,
                 MatchingType.PROFILE,
                 false // 이력서 수신 여부
         );
@@ -309,6 +375,7 @@ class MatchingControllerTest extends ControllerTest {
                 "링킷",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 12, 10),
+                SenderType.TEAM,
                 MatchingType.TEAM_PROFILE,
                 true // 팀 소개서 수신 여부
         );
@@ -318,6 +385,7 @@ class MatchingControllerTest extends ControllerTest {
                 "링컬쳐",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2022, 10, 10),
+                SenderType.TEAM,
                 MatchingType.TEAM_PROFILE,
                 true // 팀 소개서 수신 여부
         );
@@ -349,6 +417,7 @@ class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("[].senderName").type(JsonFieldType.STRING).description("발신자 이름"),
                                         fieldWithPath("[].requestMessage").type(JsonFieldType.STRING).description("매칭 요청 메시지"),
                                         fieldWithPath("[].requestOccurTime").type(JsonFieldType.STRING).description("매칭 요청 발생 날짜"),
+                                        fieldWithPath("[].senderType").type(JsonFieldType.STRING).description("발신자 이력/소개서 타입"),
                                         fieldWithPath("[].matchingType").type(JsonFieldType.STRING).description("매칭 요청 타입"),
                                         fieldWithPath("[].receivedTeamProfile").type(JsonFieldType.BOOLEAN).description("이력/소개서 수신 여부")
                                 )
@@ -366,6 +435,7 @@ class MatchingControllerTest extends ControllerTest {
                 "주서영",
                 "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
+                SenderType.PRIVATE,
                 MatchingType.PROFILE,
                 false
         );
@@ -375,6 +445,7 @@ class MatchingControllerTest extends ControllerTest {
                 "주은강",
                 "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 8, 10),
+                SenderType.PRIVATE,
                 MatchingType.PROFILE,
                 false
         );
@@ -386,6 +457,7 @@ class MatchingControllerTest extends ControllerTest {
                 "링컬쳐",
                 "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
+                SenderType.PRIVATE,
                 MatchingType.TEAM_PROFILE,
                 true
         );
@@ -395,6 +467,7 @@ class MatchingControllerTest extends ControllerTest {
                 "하이브",
                 "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 10, 10),
+                SenderType.PRIVATE,
                 MatchingType.TEAM_PROFILE,
                 true
         );
@@ -429,6 +502,7 @@ class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("[].receiverName").description("발신자 이름"),
                                         fieldWithPath("[].requestMessage").description("매칭 요청 메시지"),
                                         fieldWithPath("[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
+                                        fieldWithPath("[].senderType").description("발신자 요청 타입"),
                                         fieldWithPath("[].matchingType").description("매칭 요청 타입"),
                                         fieldWithPath("[].requestTeamProfile").type(JsonFieldType.BOOLEAN).description("이력/소개서 발신 여부")
                                 )
@@ -445,6 +519,7 @@ class MatchingControllerTest extends ControllerTest {
                 "김동혁",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
+                SenderType.PRIVATE,
                 MatchingType.PROFILE,
                 false
         );
@@ -454,6 +529,7 @@ class MatchingControllerTest extends ControllerTest {
                 "권동민",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
+                SenderType.PRIVATE,
                 MatchingType.PROFILE,
                 false
         );
@@ -465,6 +541,7 @@ class MatchingControllerTest extends ControllerTest {
                 "링킷",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 12, 10),
+                SenderType.TEAM,
                 MatchingType.TEAM_PROFILE,
                 true
         );
@@ -474,6 +551,7 @@ class MatchingControllerTest extends ControllerTest {
                 "링컬쳐",
                 "매칭 요청 메시지입니다.",
                 LocalDate.of(2022, 10, 10),
+                SenderType.TEAM,
                 MatchingType.TEAM_PROFILE,
                 true
         );
@@ -485,6 +563,7 @@ class MatchingControllerTest extends ControllerTest {
                 "주서영",
                 "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
+                SenderType.PRIVATE,
                 MatchingType.PROFILE,
                 false
         );
@@ -494,6 +573,7 @@ class MatchingControllerTest extends ControllerTest {
                 "주은강",
                 "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 8, 10),
+                SenderType.PRIVATE,
                 MatchingType.PROFILE,
                 false
         );
@@ -505,6 +585,7 @@ class MatchingControllerTest extends ControllerTest {
                 "링컬쳐",
                 "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
+                SenderType.PRIVATE,
                 MatchingType.TEAM_PROFILE,
                 true
         );
@@ -514,6 +595,7 @@ class MatchingControllerTest extends ControllerTest {
                 "하이브",
                 "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 10, 10),
+                SenderType.PRIVATE,
                 MatchingType.TEAM_PROFILE,
                 true
         );
@@ -563,6 +645,40 @@ class MatchingControllerTest extends ControllerTest {
                         responseFields(
                                 fieldWithPath("isPrivateProfileMatchingAllow").type(JsonFieldType.BOOLEAN).description("내 이력서로 매칭 요청 가능 여부 true -> 80% 이상"),
                                 fieldWithPath("isTeamProfileMatchingAllow").type(JsonFieldType.BOOLEAN).description("팀 소개서로 매칭 요청 가능 여부 true -> 80% 이상")
+                        )
+                ));
+    }
+
+    @DisplayName("내가 받은 매칭 요청 / sender_type = Private / receivedTeamProfile = false")
+    @Test
+    void getReceivedPrivateToPrivateMatchingMessage() throws Exception {
+        // given
+        final ReceivedPrivateMatchingMessageResponse receivedPrivateMatchingMessageResponse = new ReceivedPrivateMatchingMessageResponse(
+                1L,
+                "권동민",
+                Arrays.asList("개발·데이터"),
+                "권동민님이 나에게 보낸 매칭 요청 메시지입니다.",
+                false
+        );
+
+        given(matchingService.getReceivedPrivateToPrivateMatchingMessage(1L)).willReturn(receivedPrivateMatchingMessageResponse);
+
+        // when
+        final ResultActions resultActions = performGetReceivedPrivateToPrivateMatchingMessage(1);
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("privateMatchingId")
+                                        .description("내 이력서 대상 매칭 PK")
+                        ),
+                        responseFields(
+                                fieldWithPath("receivedMatchingId").type(JsonFieldType.NUMBER).description("내 이력서/팀 소개서에 매칭 PK ID"),
+                                fieldWithPath("senderName").type(JsonFieldType.STRING).description("발신자 이름"),
+                                fieldWithPath("jobRoleNames").type(JsonFieldType.ARRAY).description("발신자의 희망 역할 및 직무"),
+                                fieldWithPath("requestMessage").type(JsonFieldType.STRING).description("매칭 요청 메시지"),
+                                fieldWithPath("receivedTeamProfile").type(JsonFieldType.BOOLEAN).description("이력/소개서 수신 여부")
                         )
                 ));
     }
