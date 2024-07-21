@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -20,7 +18,7 @@ public class MemberBasicInform {
     @Column(name = "member_basic_inform_id")
     private Long id;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @OneToOne
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
