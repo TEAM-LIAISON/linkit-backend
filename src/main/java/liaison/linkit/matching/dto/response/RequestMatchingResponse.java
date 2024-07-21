@@ -1,6 +1,7 @@
 package liaison.linkit.matching.dto.response;
 
 import liaison.linkit.matching.domain.type.MatchingType;
+import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.dto.response.requestPrivateMatching.MyPrivateMatchingResponse;
 import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingResponse;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,8 @@ public class RequestMatchingResponse {
     private final String requestMessage;
     // 매칭 요청 발생 날짜
     private final LocalDate requestOccurTime;
+    // 발신자가 누구인지
+    private final SenderType senderType;
     // 매칭 요청 타입
     private final MatchingType matchingType;
     // 어떤 이력/소개서에 매칭 요청을 보냈는지
@@ -39,6 +42,7 @@ public class RequestMatchingResponse {
                         mpm.getReceiverName(),
                         mpm.getRequestMessage(),
                         mpm.getRequestOccurTime(),
+                        mpm.getSenderType(),
                         mpm.getMatchingType(),
                         mpm.isRequestTeamProfile())),
                 myTeamMatchingResponseList.stream().map(mtm -> new RequestMatchingResponse(
@@ -46,6 +50,7 @@ public class RequestMatchingResponse {
                         mtm.getReceiverName(),
                         mtm.getRequestMessage(),
                         mtm.getRequestOccurTime(),
+                        mtm.getSenderType(),
                         mtm.getMatchingType(),
                         mtm.isRequestTeamProfile()))
         ).collect(Collectors.toList());

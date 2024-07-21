@@ -51,6 +51,8 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
          AND (:divisionName IS NULL OR r.divisionName = :divisionName)
          AND (:activityTagNames IS NULL OR amt.activityTagName IN :activityTagNames)
          AND (tmp.isTeamActivate = true )
+         
+         ORDER BY tma.createdDate DESC
          """)
     Page<TeamMemberAnnouncement> findAllByOrderByCreatedDateDesc(
             @Param("teamBuildingFieldNames") final List<String> teamBuildingFieldNames,

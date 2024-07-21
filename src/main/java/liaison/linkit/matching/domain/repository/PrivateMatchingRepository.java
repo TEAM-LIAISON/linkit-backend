@@ -20,4 +20,6 @@ public interface PrivateMatchingRepository extends JpaRepository<PrivateMatching
 
     @Query("SELECT pm FROM PrivateMatching pm WHERE pm.matchingStatus = 'SUCCESSFUL' AND pm.member.id = :memberId")
     List<PrivateMatching> findSuccessRequestMatching(@Param("memberId") final Long memberId);
+
+    boolean existsByProfileId(@Param("profileId") final Long profileId);
 }
