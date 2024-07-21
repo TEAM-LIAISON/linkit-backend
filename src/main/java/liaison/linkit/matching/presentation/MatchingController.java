@@ -134,7 +134,6 @@ public class MatchingController {
 
 
 
-
     // sender_type -> Private / receivedTeamProfile = false
     // 내가 받은 매칭 요청에서 private_matching 조회하는 경우 (개인 - 개인인 경우)
     @GetMapping("/received/private_to_private/matching/{privateMatchingId}")

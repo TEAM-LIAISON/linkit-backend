@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 public class ToTeamMatchingResponse {
     // 팀 소개서에 온 매칭 요청 PK ID
     private final Long teamMatchingId;
+    // 프로필 이미지 src
+    private final String miniProfileImg;
     // 발신자 이름
     private final String senderName;
     // 매칭 요청 메시지
@@ -32,6 +34,7 @@ public class ToTeamMatchingResponse {
         return teamMatchingList.stream()
                 .map(teamMatching -> new ToTeamMatchingResponse(
                         teamMatching.getId(),
+                        teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
                         teamMatching.getMember().getMemberBasicInform().getMemberName(),
                         teamMatching.getRequestMessage(),
                         LocalDate.from(teamMatching.getCreatedAt()),

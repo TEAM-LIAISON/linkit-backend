@@ -16,6 +16,8 @@ public class ToPrivateMatchingResponse {
 
     // 내 이력서에 온 매칭 요청 PK ID
     private final Long privateMatchingId;
+    // 프로필 이미지 src
+    private final String miniProfileImg;
     // 발신자 이름
     private final String senderName;
     // 매칭 요청 메시지
@@ -29,10 +31,13 @@ public class ToPrivateMatchingResponse {
     // 어떤 이력/소개서에 매칭 요청이 왔는지
     private final boolean isReceivedTeamProfile;
 
-    public static List<ToPrivateMatchingResponse> toPrivateMatchingResponse(final List<PrivateMatching> privateMatchingList) {
+    public static List<ToPrivateMatchingResponse> toPrivateMatchingResponse(
+            final List<PrivateMatching> privateMatchingList
+    ) {
         return privateMatchingList.stream()
                 .map(privateMatching -> new ToPrivateMatchingResponse(
                         privateMatching.getId(),
+                        privateMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
                         privateMatching.getMember().getMemberBasicInform().getMemberName(),
                         privateMatching.getRequestMessage(),
                         LocalDate.from(privateMatching.getCreatedAt()),
@@ -41,4 +46,6 @@ public class ToPrivateMatchingResponse {
                         false
                 )).collect(Collectors.toList());
     }
+
+
 }

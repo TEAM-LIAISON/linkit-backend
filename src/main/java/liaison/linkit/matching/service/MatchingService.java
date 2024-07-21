@@ -244,6 +244,7 @@ public class MatchingService {
         teamMatchingRepository.save(newTeamMatching);
     }
 
+    // 내가 받은 매칭
     public List<ReceivedMatchingResponse> getReceivedMatching(
             final Long memberId
     ) {
@@ -254,6 +255,7 @@ public class MatchingService {
         if (profileRepository.existsByMemberId(memberId)) {
             final Profile profile = getProfile(memberId);
             final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByProfileId(profile.getId());
+
             toPrivateMatchingResponseList = ToPrivateMatchingResponse.toPrivateMatchingResponse(privateMatchingList);
         }
 
@@ -287,6 +289,7 @@ public class MatchingService {
         return RequestMatchingResponse.requestMatchingResponseList(myPrivateMatchingResponseList, myTeamMatchingResponseList);
     }
 
+    // 성사된 매칭
     public List<SuccessMatchingResponse> getMySuccessMatching(final Long memberId) {
         List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
         List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
