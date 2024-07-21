@@ -3,7 +3,7 @@ package liaison.linkit.wish.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
 import liaison.linkit.wish.dto.response.WishTeamProfileResponse;
 import liaison.linkit.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
@@ -79,13 +79,13 @@ public class WishController {
     // 내 이력서 찜한 목록 조회
     @GetMapping("/wish/private/profile/list")
     @MemberOnly
-    public ResponseEntity<List<MiniProfileResponse>> getPrivateProfileWishList(
+    public ResponseEntity<List<BrowseMiniProfileResponse>> getPrivateProfileWishList(
             @Auth final Accessor accessor
     ) {
         log.info("memberId={}의 내 이력서 찜하기 목록을 가져옵니다.", accessor.getMemberId());
         // 찜한 주체의 ID를 전달한다.
-        final List<MiniProfileResponse> miniProfileResponseList = wishService.getPrivateProfileWishList(accessor.getMemberId());
-        return ResponseEntity.ok(miniProfileResponseList);
+        final List<BrowseMiniProfileResponse> browseMiniProfileResponseList = wishService.getPrivateProfileWishList(accessor.getMemberId());
+        return ResponseEntity.ok(browseMiniProfileResponseList);
     }
 
     // 팀 소개서 찜한 목록 조회
