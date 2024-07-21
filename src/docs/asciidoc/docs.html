@@ -661,6 +661,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_10_6_내가_보낸_매칭">10.6. 내가 보낸 매칭</a></li>
 <li><a href="#_10_7_성사된_매칭">10.7. 성사된 매칭</a></li>
 <li><a href="#_10_8_매칭_보낼_프로필_선택_truefalse">10.8. 매칭 보낼 프로필 선택 true/false</a></li>
+<li><a href="#_10_9_내가_받은_매칭_요청_개별_조회_sender_type_private_receivedteamprofile_false">10.9. 내가 받은 매칭 요청 &amp; 개별 조회 / sender_type = Private / receivedTeamProfile = false</a></li>
+<li><a href="#_10_10_내가_받은_매칭_요청_sender_type_team_receivedteamprofile_false">10.10. 내가 받은 매칭 요청 / sender_type = Team / receivedTeamProfile = false</a></li>
+<li><a href="#_10_11_내가_받은_매칭_요청_sender_type_private_receivedteamprofile_true">10.11. 내가 받은 매칭 요청 / sender_type = private / receivedTeamProfile = true</a></li>
+<li><a href="#_10_12_내가_보낸_매칭_요청_sender_type_private_requestteamprofile_false">10.12. 내가 보낸 매칭 요청 / sender_type = private / requestTeamProfile = false</a></li>
+<li><a href="#_10_13_내가_보낸_매칭_요청_sender_type_team_requestteamprofile_false">10.13. 내가 보낸 매칭 요청 / sender_type = Team / requestTeamProfile = false</a></li>
+<li><a href="#_10_14_내가_보낸_매칭_요청_sender_type_private_requestteamprofile_true">10.14. 내가 보낸 매칭 요청 / sender_type = private / requestTeamProfile = true</a></li>
+<li><a href="#_10_15_내_이력서_관련_receivedteamprofile_false_내가_받은_매칭_요청_수락거절_선택">10.15. 내 이력서 관련 (receivedTeamProfile = false) - 내가 받은 매칭 요청 &#8594; 수락/거절 선택</a></li>
+<li><a href="#_10_16_팀_소개서_관련_receivedteamprofile_true_내가_받은_매칭_요청_수락거절_선택">10.16. 팀 소개서 관련 (receivedTeamProfile = true) - 내가 받은 매칭 요청 &#8594; 수락/거절 선택</a></li>
+<li><a href="#_10_17_매칭_성사_연락하기_버튼_클릭_내_이력서인_경우">10.17. 매칭 성사 / 연락하기 버튼 클릭 / 내 이력서인 경우</a></li>
+<li><a href="#_10_18_매칭_성사_연락하기_버튼_클릭_팀_소개서인_경우">10.18. 매칭 성사 / 연락하기 버튼 클릭 / 팀 소개서인 경우</a></li>
 </ul>
 </li>
 <li><a href="#_11_찜하기">11. 찜하기</a>
@@ -763,7 +773,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 27 Jul 2024 15:01:41 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 28 Jul 2024 11:47:18 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2163,13 +2173,13 @@ Content-Length: 3264
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
+    "profileSkill" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
-    "profileSkill" : true,
+    "awards" : true,
     "attach" : true
   },
   "profileIntroductionResponse" : {
@@ -3296,12 +3306,12 @@ Content-Length: 2918
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "history" : true,
-    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
+    "activity" : true,
+    "history" : true,
     "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
@@ -5281,13 +5291,13 @@ Content-Length: 3246
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
+    "profileSkill" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
-    "profileSkill" : true,
+    "awards" : true,
     "attach" : true
   },
   "profileIntroductionResponse" : {
@@ -5716,12 +5726,12 @@ Content-Length: 2908
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "history" : true,
-    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
+    "activity" : true,
+    "history" : true,
     "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
@@ -6307,13 +6317,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 887
+Content-Length: 993
 
 [ {
   "receivedMatchingId" : 1,
   "senderName" : "김동혁",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
+  "senderType" : "PRIVATE",
   "matchingType" : "PROFILE",
   "receivedTeamProfile" : false
 }, {
@@ -6321,6 +6332,7 @@ Content-Length: 887
   "senderName" : "권동민",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
+  "senderType" : "PRIVATE",
   "matchingType" : "PROFILE",
   "receivedTeamProfile" : false
 }, {
@@ -6328,6 +6340,7 @@ Content-Length: 887
   "senderName" : "링킷",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2023-12-10",
+  "senderType" : "TEAM",
   "matchingType" : "TEAM_PROFILE",
   "receivedTeamProfile" : true
 }, {
@@ -6335,6 +6348,7 @@ Content-Length: 887
   "senderName" : "링컬쳐",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2022-10-10",
+  "senderType" : "TEAM",
   "matchingType" : "TEAM_PROFILE",
   "receivedTeamProfile" : true
 } ]</code></pre>
@@ -6375,6 +6389,11 @@ Content-Length: 887
 <td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 발생 날짜</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].senderType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이력/소개서 타입</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].matchingType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 타입</p></td>
@@ -6404,13 +6423,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1050
+Content-Length: 1162
 
 [ {
   "requestMatchingId" : 1,
   "receiverName" : "주서영",
   "requestMessage" : "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
+  "senderType" : "PRIVATE",
   "matchingType" : "PROFILE",
   "requestTeamProfile" : false
 }, {
@@ -6418,6 +6438,7 @@ Content-Length: 1050
   "receiverName" : "주은강",
   "requestMessage" : "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-08-10",
+  "senderType" : "PRIVATE",
   "matchingType" : "PROFILE",
   "requestTeamProfile" : false
 }, {
@@ -6425,6 +6446,7 @@ Content-Length: 1050
   "receiverName" : "링컬쳐",
   "requestMessage" : "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
+  "senderType" : "PRIVATE",
   "matchingType" : "TEAM_PROFILE",
   "requestTeamProfile" : true
 }, {
@@ -6432,6 +6454,7 @@ Content-Length: 1050
   "receiverName" : "하이브",
   "requestMessage" : "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2023-10-10",
+  "senderType" : "PRIVATE",
   "matchingType" : "TEAM_PROFILE",
   "requestTeamProfile" : true
 } ]</code></pre>
@@ -6472,6 +6495,11 @@ Content-Length: 1050
 <td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 발생 날짜</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].senderType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 요청 타입</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].matchingType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 타입</p></td>
@@ -6501,40 +6529,56 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1311
+Content-Length: 1731
 
 [ {
+  "matchingId" : 1,
   "successMatchingMemberName" : "김동혁",
   "requestMessage" : "매칭 요청 메시지입니다.",
-  "requestOccurTime" : "2024-07-10"
+  "requestOccurTime" : "2024-07-10",
+  "matchingType" : "PROFILE"
 }, {
+  "matchingId" : 2,
   "successMatchingMemberName" : "권동민",
   "requestMessage" : "매칭 요청 메시지입니다.",
-  "requestOccurTime" : "2024-07-10"
+  "requestOccurTime" : "2024-07-10",
+  "matchingType" : "PROFILE"
 }, {
+  "matchingId" : 1,
   "successMatchingMemberName" : "링킷",
   "requestMessage" : "매칭 요청 메시지입니다.",
-  "requestOccurTime" : "2023-12-10"
+  "requestOccurTime" : "2023-12-10",
+  "matchingType" : "TEAM_PROFILE"
 }, {
+  "matchingId" : 2,
   "successMatchingMemberName" : "링컬쳐",
   "requestMessage" : "매칭 요청 메시지입니다.",
-  "requestOccurTime" : "2022-10-10"
+  "requestOccurTime" : "2022-10-10",
+  "matchingType" : "TEAM_PROFILE"
 }, {
+  "matchingId" : 1,
   "successMatchingMemberName" : "주서영",
   "requestMessage" : "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
-  "requestOccurTime" : "2024-07-10"
+  "requestOccurTime" : "2024-07-10",
+  "matchingType" : "PROFILE"
 }, {
+  "matchingId" : 2,
   "successMatchingMemberName" : "주은강",
   "requestMessage" : "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
-  "requestOccurTime" : "2024-08-10"
+  "requestOccurTime" : "2024-08-10",
+  "matchingType" : "PROFILE"
 }, {
+  "matchingId" : 1,
   "successMatchingMemberName" : "링컬쳐",
   "requestMessage" : "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
-  "requestOccurTime" : "2024-07-10"
+  "requestOccurTime" : "2024-07-10",
+  "matchingType" : "TEAM_PROFILE"
 }, {
+  "matchingId" : 2,
   "successMatchingMemberName" : "하이브",
   "requestMessage" : "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
-  "requestOccurTime" : "2023-10-10"
+  "requestOccurTime" : "2023-10-10",
+  "matchingType" : "TEAM_PROFILE"
 } ]</code></pre>
 </div>
 </div>
@@ -6633,6 +6677,856 @@ Content-Length: 83
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_10_9_내가_받은_매칭_요청_개별_조회_sender_type_private_receivedteamprofile_false"><a class="link" href="#_10_9_내가_받은_매칭_요청_개별_조회_sender_type_private_receivedteamprofile_false">10.9. 내가 받은 매칭 요청 &amp; 개별 조회 / sender_type = Private / receivedTeamProfile = false</a></h3>
+<div class="sect3">
+<h4 id="_요청_33"><a class="link" href="#_요청_33">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /received/private_to_private/matching/1 HTTP/1.1
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 22. /received/private_to_private/matching/{privateMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privateMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_17"><a class="link" href="#_응답_17">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 242
+
+{
+  "receivedMatchingId" : 1,
+  "senderName" : "권동민",
+  "jobRoleNames" : [ "개발·데이터" ],
+  "requestMessage" : "권동민님이 나의 내 이력서에 보낸 매칭 요청 메시지입니다.",
+  "receivedTeamProfile" : false
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receivedMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서/팀 소개서에 매칭 PK ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>senderName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자의 희망 역할 및 직무</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receivedTeamProfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력/소개서 수신 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_10_10_내가_받은_매칭_요청_sender_type_team_receivedteamprofile_false"><a class="link" href="#_10_10_내가_받은_매칭_요청_sender_type_team_receivedteamprofile_false">10.10. 내가 받은 매칭 요청 / sender_type = Team / receivedTeamProfile = false</a></h3>
+<div class="sect3">
+<h4 id="_요청_34"><a class="link" href="#_요청_34">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /received/team_to_private/matching/1 HTTP/1.1
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 23. /received/team_to_private/matching/{privateMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privateMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_18"><a class="link" href="#_응답_18">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 242
+
+{
+  "receivedMatchingId" : 1,
+  "senderName" : "권동민",
+  "jobRoleNames" : [ "개발·데이터" ],
+  "requestMessage" : "권동민님이 나의 내 이력서에 보낸 매칭 요청 메시지입니다.",
+  "receivedTeamProfile" : false
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receivedMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서/팀 소개서에 매칭 PK ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>senderName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자의 희망 역할 및 직무</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receivedTeamProfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력/소개서 수신 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_10_11_내가_받은_매칭_요청_sender_type_private_receivedteamprofile_true"><a class="link" href="#_10_11_내가_받은_매칭_요청_sender_type_private_receivedteamprofile_true">10.11. 내가 받은 매칭 요청 / sender_type = private / receivedTeamProfile = true</a></h3>
+<div class="sect3">
+<h4 id="_요청_35"><a class="link" href="#_요청_35">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /received/team_to_team/matching/1 HTTP/1.1
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 24. /received/team_to_team/matching/{teamMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_19"><a class="link" href="#_응답_19">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 242
+
+{
+  "receivedMatchingId" : 1,
+  "senderName" : "권동민",
+  "jobRoleNames" : [ "개발·데이터" ],
+  "requestMessage" : "권동민님이 나의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
+  "receivedTeamProfile" : false
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receivedMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서/팀 소개서에 매칭 PK ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>senderName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자의 희망 역할 및 직무</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receivedTeamProfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력/소개서 수신 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_10_12_내가_보낸_매칭_요청_sender_type_private_requestteamprofile_false"><a class="link" href="#_10_12_내가_보낸_매칭_요청_sender_type_private_requestteamprofile_false">10.12. 내가 보낸 매칭 요청 / sender_type = private / requestTeamProfile = false</a></h3>
+<div class="sect3">
+<h4 id="_요청_36"><a class="link" href="#_요청_36">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /request/private_to_private/matching/1 HTTP/1.1
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 25. /request/private_to_private/matching/{privateMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privateMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_20"><a class="link" href="#_응답_20">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 270
+
+{
+  "requestMatchingId" : 1,
+  "receiverName" : "권동민",
+  "jobRoleNames" : [ "개발·데이터" ],
+  "requestMessage" : "권동민님이 나의 내 이력서에 보낸 매칭 요청 메시지입니다.",
+  "senderType" : "PRIVATE",
+  "requestTeamProfile" : false
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서/팀 소개서에 매칭 PK ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receiverName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자의 희망 역할 및 직무</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>senderType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestTeamProfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력/소개서 수신 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_10_13_내가_보낸_매칭_요청_sender_type_team_requestteamprofile_false"><a class="link" href="#_10_13_내가_보낸_매칭_요청_sender_type_team_requestteamprofile_false">10.13. 내가 보낸 매칭 요청 / sender_type = Team / requestTeamProfile = false</a></h3>
+<div class="sect3">
+<h4 id="_요청_37"><a class="link" href="#_요청_37">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /request/team_to_private/matching/1 HTTP/1.1
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 26. /request/team_to_private/matching/{privateMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privateMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_21"><a class="link" href="#_응답_21">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 267
+
+{
+  "requestMatchingId" : 1,
+  "receiverName" : "권동민",
+  "jobRoleNames" : [ "개발·데이터" ],
+  "requestMessage" : "리에종님이 나의 내 이력서에 보낸 매칭 요청 메시지입니다.",
+  "senderType" : "TEAM",
+  "requestTeamProfile" : false
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서/팀 소개서에 매칭 PK ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receiverName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">수신자 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">수신자의 희망 역할 및 직무</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>senderType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestTeamProfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력/소개서 수신 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_10_14_내가_보낸_매칭_요청_sender_type_private_requestteamprofile_true"><a class="link" href="#_10_14_내가_보낸_매칭_요청_sender_type_private_requestteamprofile_true">10.14. 내가 보낸 매칭 요청 / sender_type = private / requestTeamProfile = true</a></h3>
+<div class="sect3">
+<h4 id="_요청_38"><a class="link" href="#_요청_38">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /received/team_to_team/matching/1 HTTP/1.1
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 27. /received/team_to_team/matching/{teamMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_22"><a class="link" href="#_응답_22">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 242
+
+{
+  "receivedMatchingId" : 1,
+  "senderName" : "권동민",
+  "jobRoleNames" : [ "개발·데이터" ],
+  "requestMessage" : "권동민님이 나의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
+  "receivedTeamProfile" : false
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receivedMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서/팀 소개서에 매칭 PK ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>senderName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jobRoleNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자의 희망 역할 및 직무</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>receivedTeamProfile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력/소개서 수신 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_10_15_내_이력서_관련_receivedteamprofile_false_내가_받은_매칭_요청_수락거절_선택"><a class="link" href="#_10_15_내_이력서_관련_receivedteamprofile_false_내가_받은_매칭_요청_수락거절_선택">10.15. 내 이력서 관련 (receivedTeamProfile = false) - 내가 받은 매칭 요청 &#8594; 수락/거절 선택</a></h3>
+<div class="sect3">
+<h4 id="_요청_39"><a class="link" href="#_요청_39">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /allow/private/matching/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: accessToken
+Cookie: refresh-token=refreshToken
+
+{
+  "isAllowMatching" : true
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 28. /allow/private/matching/{privateMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privateMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isAllowMatching</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 수락 여부 (true) &#8594; 수락하기</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_10_16_팀_소개서_관련_receivedteamprofile_true_내가_받은_매칭_요청_수락거절_선택"><a class="link" href="#_10_16_팀_소개서_관련_receivedteamprofile_true_내가_받은_매칭_요청_수락거절_선택">10.16. 팀 소개서 관련 (receivedTeamProfile = true) - 내가 받은 매칭 요청 &#8594; 수락/거절 선택</a></h3>
+<div class="sect3">
+<h4 id="_요청_40"><a class="link" href="#_요청_40">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /allow/team/matching/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: accessToken
+Cookie: refresh-token=refreshToken
+
+{
+  "isAllowMatching" : true
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 29. /allow/team/matching/{teamMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isAllowMatching</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 수락 여부 (true) &#8594; 수락하기</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_10_17_매칭_성사_연락하기_버튼_클릭_내_이력서인_경우"><a class="link" href="#_10_17_매칭_성사_연락하기_버튼_클릭_내_이력서인_경우">10.17. 매칭 성사 / 연락하기 버튼 클릭 / 내 이력서인 경우</a></h3>
+<div class="sect3">
+<h4 id="_요청_41"><a class="link" href="#_요청_41">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /success/private/matching/contact/1 HTTP/1.1
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 30. /success/private/matching/contact/{privateMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>privateMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_23"><a class="link" href="#_응답_23">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 65
+
+{
+  "memberName" : "권동민",
+  "email" : "kwondm7@naver.com"
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 대상자 연락처</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_10_18_매칭_성사_연락하기_버튼_클릭_팀_소개서인_경우"><a class="link" href="#_10_18_매칭_성사_연락하기_버튼_클릭_팀_소개서인_경우">10.18. 매칭 성사 / 연락하기 버튼 클릭 / 팀 소개서인 경우</a></h3>
+<div class="sect3">
+<h4 id="_요청_42"><a class="link" href="#_요청_42">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /success/team/matching/contact/1 HTTP/1.1
+Authorization: accessToken
+Cookie: refresh-token=refreshToken</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 31. /success/team/matching/contact/{teamMatchingId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamMatchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 소개서 대상 매칭 PK</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_24"><a class="link" href="#_응답_24">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 62
+
+{
+  "memberName" : "링킷",
+  "email" : "kwondm7@linkit.im"
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 대상자 연락처</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -6641,7 +7535,7 @@ Content-Length: 83
 <div class="sect2">
 <h3 id="_11_1_내_이력서_미니_프로필_id_찜하기_생성"><a class="link" href="#_11_1_내_이력서_미니_프로필_id_찜하기_생성">11.1. 내 이력서 (미니 프로필 ID) 찜하기 생성</a></h3>
 <div class="sect3">
-<h4 id="_요청_33"><a class="link" href="#_요청_33">요청</a></h4>
+<h4 id="_요청_43"><a class="link" href="#_요청_43">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /wish/private/profile/1 HTTP/1.1
@@ -6651,7 +7545,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. /wish/private/profile/{miniProfileId}</caption>
+<caption class="title">Table 32. /wish/private/profile/{miniProfileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6674,7 +7568,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <div class="sect2">
 <h3 id="_11_2_팀_소개서_팀원_공고_id_찜하기_생성"><a class="link" href="#_11_2_팀_소개서_팀원_공고_id_찜하기_생성">11.2. 팀 소개서 (팀원 공고 ID) 찜하기 생성</a></h3>
 <div class="sect3">
-<h4 id="_요청_34"><a class="link" href="#_요청_34">요청</a></h4>
+<h4 id="_요청_44"><a class="link" href="#_요청_44">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /wish/team/profile/1 HTTP/1.1
@@ -6684,7 +7578,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 23. /wish/team/profile/{teamMemberAnnouncementId}</caption>
+<caption class="title">Table 33. /wish/team/profile/{teamMemberAnnouncementId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6707,7 +7601,7 @@ Content-Type: application/x-www-form-urlencoded</code></pre>
 <div class="sect2">
 <h3 id="_11_3_내_이력서_미니_프로필_id_찜하기_취소"><a class="link" href="#_11_3_내_이력서_미니_프로필_id_찜하기_취소">11.3. 내 이력서 (미니 프로필 ID) 찜하기 취소</a></h3>
 <div class="sect3">
-<h4 id="_요청_35"><a class="link" href="#_요청_35">요청</a></h4>
+<h4 id="_요청_45"><a class="link" href="#_요청_45">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /wish/private/profile/1 HTTP/1.1
@@ -6716,7 +7610,7 @@ Cookie: refresh-token=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 24. /wish/private/profile/{miniProfileId}</caption>
+<caption class="title">Table 34. /wish/private/profile/{miniProfileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6746,7 +7640,7 @@ Cookie: refresh-token=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 25. /wish/team/profile/{teamMemberAnnouncementId}</caption>
+<caption class="title">Table 35. /wish/team/profile/{teamMemberAnnouncementId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6768,7 +7662,7 @@ Cookie: refresh-token=refreshToken</code></pre>
 <div class="sect2">
 <h3 id="_11_5_내_이력서_찜한_목록_조회"><a class="link" href="#_11_5_내_이력서_찜한_목록_조회">11.5. 내 이력서 찜한 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_요청_36"><a class="link" href="#_요청_36">요청</a></h4>
+<h4 id="_요청_46"><a class="link" href="#_요청_46">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /wish/private/profile/list HTTP/1.1
@@ -6779,7 +7673,7 @@ Cookie: refresh-token=refreshToken</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_17"><a class="link" href="#_응답_17">응답</a></h4>
+<h4 id="_응답_25"><a class="link" href="#_응답_25">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -6864,7 +7758,7 @@ Content-Length: 728
 <div class="sect2">
 <h3 id="_11_6_팀_소개서_찜한_목록_조회"><a class="link" href="#_11_6_팀_소개서_찜한_목록_조회">11.6. 팀 소개서 찜한 목록 조회</a></h3>
 <div class="sect3">
-<h4 id="_요청_37"><a class="link" href="#_요청_37">요청</a></h4>
+<h4 id="_요청_47"><a class="link" href="#_요청_47">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /wish/team/profile/list HTTP/1.1
@@ -6875,7 +7769,7 @@ Cookie: refresh-token=refreshToken</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_18"><a class="link" href="#_응답_18">응답</a></h4>
+<h4 id="_응답_26"><a class="link" href="#_응답_26">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -7022,7 +7916,7 @@ Content-Length: 1403
 <div class="sect2">
 <h3 id="_회원_탈퇴"><a class="link" href="#_회원_탈퇴">회원 탈퇴</a></h3>
 <div class="sect3">
-<h4 id="_요청_38"><a class="link" href="#_요청_38">요청</a></h4>
+<h4 id="_요청_48"><a class="link" href="#_요청_48">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /account HTTP/1.1
@@ -7077,7 +7971,7 @@ Cookie: refresh-token=refreshToken</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답_19"><a class="link" href="#_응답_19">응답</a></h4>
+<h4 id="_응답_27"><a class="link" href="#_응답_27">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 204 No Content
@@ -7088,7 +7982,7 @@ Vary: Access-Control-Request-Headers</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_20"><a class="link" href="#_응답_20">응답</a></h4>
+<h4 id="_응답_28"><a class="link" href="#_응답_28">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -7155,7 +8049,7 @@ Content-Length: 135
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-07-21 00:04:15 +0900
+Last updated 2024-07-21 20:51:02 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
