@@ -5,6 +5,7 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.type.ProfileType;
 import liaison.linkit.profile.domain.awards.Awards;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
+import liaison.linkit.profile.domain.role.ProfileJobRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,6 +39,9 @@ public class Profile {
     // 3.10. 수상
     @OneToMany(mappedBy = "profile", cascade = REMOVE)
     private List<Awards> awardsList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "profile", cascade = REMOVE)
+    private List<ProfileJobRole> profileJobRoleList = new ArrayList<>();
 
     // 3.3. 프로필 완성도
     // 전체 프로필 완성도 값 (%) - 소수점 가능 (double 자료형)
