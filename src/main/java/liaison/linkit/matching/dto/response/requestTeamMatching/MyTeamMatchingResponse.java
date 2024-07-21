@@ -16,6 +16,8 @@ public class MyTeamMatchingResponse {
 
     // 팀 소개서에 보낸 매칭 요청 PK ID
     private final Long teamMatchingId;
+    // 미니 프로필 이미지
+    private final String miniProfileImg;
     // 수신자 이름
     private final String receiverName;
     // 매칭 요청 메시지
@@ -33,6 +35,7 @@ public class MyTeamMatchingResponse {
         return teamMatchingList.stream()
                 .map(teamMatching -> new MyTeamMatchingResponse(
                         teamMatching.getId(),
+                        teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
                         teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
                         teamMatching.getRequestMessage(),
                         LocalDate.from(teamMatching.getCreatedAt()),

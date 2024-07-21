@@ -773,7 +773,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 28 Jul 2024 12:25:39 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 28 Jul 2024 17:33:56 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2173,13 +2173,13 @@ Content-Length: 3264
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
     "profileSkill" : true,
+    "awards" : true,
     "attach" : true
   },
   "profileIntroductionResponse" : {
@@ -3306,13 +3306,13 @@ Content-Length: 2918
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "teamProfileTeamBuildingField" : true,
-    "history" : true,
-    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true
+    "teamAttach" : true,
+    "activity" : true,
+    "history" : true,
+    "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -5291,13 +5291,13 @@ Content-Length: 3246
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
     "profileSkill" : true,
+    "awards" : true,
     "attach" : true
   },
   "profileIntroductionResponse" : {
@@ -5726,13 +5726,13 @@ Content-Length: 2908
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "teamProfileTeamBuildingField" : true,
-    "history" : true,
-    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
-    "teamAttach" : true
+    "teamAttach" : true,
+    "activity" : true,
+    "history" : true,
+    "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -6317,10 +6317,11 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 993
+Content-Length: 1277
 
 [ {
   "receivedMatchingId" : 1,
+  "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "senderName" : "김동혁",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
@@ -6329,6 +6330,7 @@ Content-Length: 993
   "receivedTeamProfile" : false
 }, {
   "receivedMatchingId" : 2,
+  "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "senderName" : "권동민",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
@@ -6337,6 +6339,7 @@ Content-Length: 993
   "receivedTeamProfile" : false
 }, {
   "receivedMatchingId" : 1,
+  "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "senderName" : "링킷",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2023-12-10",
@@ -6345,6 +6348,7 @@ Content-Length: 993
   "receivedTeamProfile" : true
 }, {
   "receivedMatchingId" : 2,
+  "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "senderName" : "링컬쳐",
   "requestMessage" : "매칭 요청 메시지입니다.",
   "requestOccurTime" : "2022-10-10",
@@ -6372,6 +6376,11 @@ Content-Length: 993
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].receivedMatchingId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">내 이력서/팀 소개서에 매칭 PK ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].miniProfileImg</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 프로필 이미지</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].senderName</code></p></td>
@@ -6423,10 +6432,11 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1162
+Content-Length: 1446
 
 [ {
   "requestMatchingId" : 1,
+  "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "receiverName" : "주서영",
   "requestMessage" : "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
@@ -6435,6 +6445,7 @@ Content-Length: 1162
   "requestTeamProfile" : false
 }, {
   "requestMatchingId" : 2,
+  "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "receiverName" : "주은강",
   "requestMessage" : "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-08-10",
@@ -6443,6 +6454,7 @@ Content-Length: 1162
   "requestTeamProfile" : false
 }, {
   "requestMatchingId" : 1,
+  "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "receiverName" : "링컬쳐",
   "requestMessage" : "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2024-07-10",
@@ -6451,6 +6463,7 @@ Content-Length: 1162
   "requestTeamProfile" : true
 }, {
   "requestMatchingId" : 2,
+  "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "receiverName" : "하이브",
   "requestMessage" : "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
   "requestOccurTime" : "2023-10-10",
@@ -6478,6 +6491,11 @@ Content-Length: 1162
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].requestMatchingId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">매칭 요청 보낸 항목 PK ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].miniProfileImg</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 프로필 이미지</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].receiverName</code></p></td>

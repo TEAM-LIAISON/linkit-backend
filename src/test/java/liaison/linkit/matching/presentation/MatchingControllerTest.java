@@ -489,6 +489,7 @@ class MatchingControllerTest extends ControllerTest {
         // given
         final MyPrivateMatchingResponse firstMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
                 1L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "주서영",
                 "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -499,6 +500,7 @@ class MatchingControllerTest extends ControllerTest {
 
         final MyPrivateMatchingResponse secondMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
                 2L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "주은강",
                 "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 8, 10),
@@ -511,6 +513,7 @@ class MatchingControllerTest extends ControllerTest {
 
         final MyTeamMatchingResponse firstMyTeamMatchingResponse = new MyTeamMatchingResponse(
                 1L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "링컬쳐",
                 "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -521,6 +524,7 @@ class MatchingControllerTest extends ControllerTest {
 
         final MyTeamMatchingResponse secondMyTeamMatchingResponse = new MyTeamMatchingResponse(
                 2L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "하이브",
                 "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 10, 10),
@@ -556,6 +560,7 @@ class MatchingControllerTest extends ControllerTest {
                                 ),
                                 responseFields(
                                         fieldWithPath("[].requestMatchingId").description("매칭 요청 보낸 항목 PK ID"),
+                                        fieldWithPath("[].miniProfileImg").description("발신자 프로필 이미지"),
                                         fieldWithPath("[].receiverName").description("발신자 이름"),
                                         fieldWithPath("[].requestMessage").description("매칭 요청 메시지"),
                                         fieldWithPath("[].requestOccurTime").description("매칭 요청 발생 날짜").type(JsonFieldType.STRING),
@@ -621,6 +626,7 @@ class MatchingControllerTest extends ControllerTest {
 
         final MyPrivateMatchingResponse firstMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
                 1L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "주서영",
                 "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -631,6 +637,7 @@ class MatchingControllerTest extends ControllerTest {
 
         final MyPrivateMatchingResponse secondMyPrivateMatchingResponse = new MyPrivateMatchingResponse(
                 2L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "주은강",
                 "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 8, 10),
@@ -643,6 +650,7 @@ class MatchingControllerTest extends ControllerTest {
 
         final MyTeamMatchingResponse firstMyTeamMatchingResponse = new MyTeamMatchingResponse(
                 1L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "링컬쳐",
                 "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2024, 7, 10),
@@ -653,6 +661,7 @@ class MatchingControllerTest extends ControllerTest {
 
         final MyTeamMatchingResponse secondMyTeamMatchingResponse = new MyTeamMatchingResponse(
                 2L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "하이브",
                 "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
                 LocalDate.of(2023, 10, 10),
