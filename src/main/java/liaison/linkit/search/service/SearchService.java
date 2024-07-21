@@ -305,6 +305,7 @@ public class SearchService {
 
         // privateWish -> 찾아야함 (내가 이 해당 미니 프로필을 찜해뒀는지?)
         final boolean isPrivateWish = privateWishRepository.findByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
+
         return new BrowseMiniProfileResponse(
                 miniProfile.getId(),
                 miniProfile.getProfileTitle(),
