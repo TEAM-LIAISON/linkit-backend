@@ -27,13 +27,13 @@ public class Antecedents {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    // 포지션
-    @Column(nullable = false)
-    private String projectRole;
-
     // 회사/프로젝트명
     @Column(nullable = false)
     private String projectName;
+
+    // 포지션
+    @Column(nullable = false)
+    private String projectRole;
 
     // 시작 날짜
     @Column(nullable = false)

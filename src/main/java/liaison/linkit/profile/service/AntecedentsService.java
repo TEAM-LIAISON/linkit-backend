@@ -92,6 +92,8 @@ public class AntecedentsService {
 
     // DB 저장 로직
     private void saveAntecedent(final Profile profile, final AntecedentsCreateRequest request) {
+        log.info("request.getProjectName()={}", request.getProjectName());
+        log.info("request.getProjectRole()={}", request.getProjectRole());
         final Antecedents newAntecedents = Antecedents.of(
                 profile,
                 request.getProjectName(),
