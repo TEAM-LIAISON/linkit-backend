@@ -49,13 +49,13 @@ public class ProfileOnBoardingController {
             @RequestBody @Valid final OnBoardingPersonalJobAndSkillCreateRequest createRequest
     ) throws BadRequestException {
         // 2개 중에 하나라도 null인 경우
-        if (createRequest.getSkillNames() == null || createRequest.getJobRoleNames() == null) {
+        if (createRequest.getSkillNames().isEmpty() || createRequest.getJobRoleNames().isEmpty()) {
+            log.info("createRequest 포함된 값에 Null이 존재합니다.");
             throw new BadRequestException(HAVE_TO_INPUT_BOTH_JOB_AND_SKILL);
         } else {
             // 2개 다 입력이 들어온 경우
             profileOnBoardingService.savePersonalJobAndRole(accessor.getMemberId(), createRequest.getJobRoleNames());
             profileOnBoardingService.savePersonalSkill(accessor.getMemberId(), createRequest.getSkillNames());
-
             // 2개 모두 저장 완료, true로 저장 완료함
             profileOnBoardingService.updateMemberProfileType(accessor.getMemberId());
         }

@@ -62,13 +62,13 @@ public class AwardsService {
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     public void save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
+
         final Profile profile = getProfile(memberId);
 
-        // 실제 저장 메서드
-        saveAwards(profile, awardsCreateRequest);
-
-        // 기존에 수상 이력 존재 X
-        if (!profile.getIsAwards()) {
+        if (profile.getIsAwards()) {
+            saveAwards(profile, awardsCreateRequest);
+        } else{
+            saveAwards(profile, awardsCreateRequest);
             profile.updateIsAwards(true);
             profile.updateMemberProfileTypeByCompletion();
         }
@@ -154,11 +154,12 @@ public class AwardsService {
         final Profile profile = getProfile(memberId);
         final Awards awards = getAwards(awardsId);
 
+        // 해당 수상 정보 삭제
         awardsRepository.deleteById(awards.getId());
 
         if (!awardsRepository.existsByProfileId(profile.getId())) {
             // 존재하지 않는 경우
-            profile.cancelPerfectionTen();
+            profile.updateIsAwards(false);
             profile.updateMemberProfileTypeByCompletion();
         }
     }

@@ -66,9 +66,7 @@ public class ProfileRegionService {
             );
 
             if (region == null) {
-                throw new IllegalArgumentException("Region not found for city: " +
-                        profileRegionCreateRequest.getCityName() + " and division: " +
-                        profileRegionCreateRequest.getDivisionName());
+                throw new BadRequestException(HAVE_TO_INPUT_REGION);
             }
 
             ProfileRegion newProfileRegion = new ProfileRegion(null, profile, region);

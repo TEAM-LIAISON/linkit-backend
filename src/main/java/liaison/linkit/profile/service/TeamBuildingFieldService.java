@@ -54,17 +54,20 @@ public class TeamBuildingFieldService {
 
     // 희망 팀빌딩 분야 저장 비즈니스 로직
     public void save(final Long memberId, final ProfileTeamBuildingCreateRequest createRequest) {
+
         final Profile profile = getProfile(memberId);
 
         // 이미 저장된 이력이 존재하는 프로필의 경우 먼저 삭제한다.
-        if (profileTeamBuildingFieldRepository.existsByProfileId(profile.getId())) {
-            profileTeamBuildingFieldRepository.deleteAllByProfileId(profile.getId());
 
+        if (profileTeamBuildingFieldRepository.existsByProfileId(profile.getId())) {
+            // 전체 삭제
+            profileTeamBuildingFieldRepository.deleteAllByProfileId(profile.getId());
             // 삭제 이후 false 변경과 11.8 빼기 진행해줘야 함
             profile.updateIsProfileTeamBuildingField(false);
             profile.updateMemberProfileTypeByCompletion();
         }
 
+        // 무조건 입력 값이 들어온다
         final List<TeamBuildingField> teamBuildingFields = teamBuildingFieldRepository
                 .findTeamBuildingFieldsByFieldNames(createRequest.getTeamBuildingFieldNames());
 
