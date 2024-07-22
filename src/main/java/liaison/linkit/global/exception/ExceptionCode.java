@@ -144,6 +144,7 @@ public enum ExceptionCode {
     HAVE_TO_INPUT_MAIN_BUSINESS(10008, "팀원 공고의 주요 업무를 입력해주세요"),
     HAVE_TO_INPUT_SKILL_NAMES(10009, "팀원 공고의 요구 기술을 입력해주세요"),
     HAVE_TO_INPUT_APPLICATION_PROCESS(10010, "팀원 공고의 지원 절차를 입력해주세요"),
+    HAVE_TO_INPUT_HISTORY(10011, "팀 연혁을 입력해주세요"),
 
     // 팀 소개서 관련 항목
     NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),

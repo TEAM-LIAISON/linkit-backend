@@ -165,46 +165,51 @@ public class TeamProfile extends BaseEntity {
 
     // 4.6. 활동 방식 + 활동 지역 및 위치 업데이트
     // 2개 다 관리하는 메서드
-    public void updateIsActivity(final boolean isActivityMethod, final boolean isActivityRegion) {
-        // 기존에 활동 형태 값과 수정 사항에 따른 값과 달라진다면 내부 메서드 실행
-        if (this.isActivity != (isActivityMethod && isActivityRegion)) {
-            // true -> false or false -> true
-            this.isActivity = !this.isActivity;
-            if (this.isActivity) {
-                // true로 변했다면
-                addTeamPerfectionDefault25();
-            } else {
-                // false로 변했다면
-                cancelTeamPerfectionDefault25();
-            }
+    public void updateIsActivity() {
+        if (!this.isActivity) {
+            addTeamPerfectionDefault25();
+            this.isActivity = true;
         }
     }
 
     // 4.6.1 활동 방식 업데이트
     public void updateIsActivityMethod(final boolean isActivityMethod) {
         this.isActivityMethod = isActivityMethod;
-        updateIsActivity(isActivityMethod, this.isActivityRegion);
     }
 
     // 4.6.2. 활동 지역 및 위치 업데이트
     public void updateIsActivityRegion(final boolean isActivityRegion) {
         this.isActivityRegion = isActivityRegion;
-        updateIsActivity(this.isActivityMethod, isActivityRegion);
     }
 
     // 4.7. 팀 소개 업데이트
     public void updateIsTeamIntroduction(final boolean isTeamIntroduction) {
         this.isTeamIntroduction = isTeamIntroduction;
+        if (this.isTeamIntroduction) {
+            addTeamPerfectionFifteen();
+        } else{
+            cancelTeamPerfectionFifteen();
+        }
     }
 
     // 4.8. 팀원 소개 업데이트
     public void updateIsTeamMemberIntroduction(final boolean isTeamMemberIntroduction) {
         this.isTeamMemberIntroduction = isTeamMemberIntroduction;
+        if (this.isTeamMemberIntroduction) {
+            addTeamPerfectionFifteen();
+        } else {
+            cancelTeamPerfectionFifteen();
+        }
     }
 
     // 4.9. 연혁 업데이트
     public void updateIsHistory(final boolean isHistory) {
         this.isHistory = isHistory;
+        if (this.isHistory) {
+            addTeamPerfectionTwoPointFive();
+        } else {
+            cancelTeamPerfectionTwoPointFive();
+        }
     }
 
     // 4.10. 팀 첨부 업데이트
@@ -223,6 +228,11 @@ public class TeamProfile extends BaseEntity {
     public void updateIsTeamAttachUrl(final boolean isTeamAttachUrl) {
         this.isTeamAttachUrl = isTeamAttachUrl;
         log.info("isTeamAttachUrl={}", isTeamAttachUrl);
+        if (this.isTeamAttachUrl) {
+            addTeamPerfectionTwoPointFive();
+        } else {
+            cancelTeamPerfectionTwoPointFive();
+        }
     }
 
     // 4.10.2. 팀 첨부 파일 업데이트
@@ -255,6 +265,7 @@ public class TeamProfile extends BaseEntity {
         return isHistory;
     }
     public boolean getIsTeamAttach() {return isTeamAttach;}
+    public boolean getIsTeamAttachUrl() { return isTeamAttachUrl; }
     public boolean getIsTeamMiniProfile() {return isTeamMiniProfile;}
 
 
@@ -263,11 +274,10 @@ public class TeamProfile extends BaseEntity {
         if (teamIntroduction != null && !teamIntroduction.isEmpty()) {  // 텍스트가 들어오는 경우
             log.info("teamIntroduction={}", teamIntroduction);
             // 기존에 저장되어있었던 경우
-            if (this.teamIntroduction != null) {
+            if (this.teamIntroduction == null) {
                 log.info("기존에 팀 소개가 저장되어 있지 않았습니다.");
                 this.teamIntroduction = teamIntroduction;
                 updateIsTeamIntroduction(true);
-                addTeamPerfectionFifteen();
                 updateMemberTeamProfileTypeByCompletion();
             } else {
                 // 기존에 저장되었던 경우 (수정으로 간주)
@@ -275,11 +285,14 @@ public class TeamProfile extends BaseEntity {
                 this.teamIntroduction = teamIntroduction;
             }
         } else {  // 삭제 요청으로 간주 (null이거나 empty인 경우)
-            log.info("팀 소개 삭제 요청이 발생합니다.");
-            this.teamIntroduction = null;
-            updateIsTeamIntroduction(false);
-            cancelTeamPerfectionFifteen();
-            updateMemberTeamProfileTypeByCompletion();
+            if (this.teamIntroduction == null) {
+                // 기존에 저장되어있지 않은 경우
+            } else {
+                // 기존에 저장되어 있었던 경우
+                this.teamIntroduction = null;
+                updateIsTeamIntroduction(false);
+                updateMemberTeamProfileTypeByCompletion();
+            }
         }
     }
 
