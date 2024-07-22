@@ -14,7 +14,10 @@ import liaison.linkit.matching.dto.response.RequestMatchingResponse;
 import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
 import liaison.linkit.matching.dto.response.contact.SuccessContactResponse;
 import liaison.linkit.matching.dto.response.existence.ExistenceProfileResponse;
-import liaison.linkit.matching.dto.response.messageResponse.*;
+import liaison.linkit.matching.dto.response.messageResponse.ReceivedPrivateMatchingMessageResponse;
+import liaison.linkit.matching.dto.response.messageResponse.ReceivedTeamMatchingMessageResponse;
+import liaison.linkit.matching.dto.response.messageResponse.RequestPrivateMatchingMessageResponse;
+import liaison.linkit.matching.dto.response.messageResponse.RequestTeamMatchingMessageResponse;
 import liaison.linkit.matching.dto.response.requestPrivateMatching.MyPrivateMatchingResponse;
 import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingResponse;
 import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
@@ -37,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -135,8 +137,7 @@ public class MatchingService {
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
-                REQUESTED,
-                LocalDateTime.now()
+                REQUESTED
         );
 
         // to 내 이력서
@@ -166,8 +167,7 @@ public class MatchingService {
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
-                REQUESTED,
-                LocalDateTime.now()
+                REQUESTED
         );
 
         privateMatchingRepository.save(newPrivateMatching);
@@ -199,8 +199,7 @@ public class MatchingService {
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
-                REQUESTED,
-                LocalDateTime.now()
+                REQUESTED
         );
 
         teamMatchingRepository.save(newTeamMatching);
@@ -237,8 +236,7 @@ public class MatchingService {
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
-                REQUESTED,
-                LocalDateTime.now()
+                REQUESTED
         );
 
         teamMatchingRepository.save(newTeamMatching);

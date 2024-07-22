@@ -38,7 +38,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
@@ -116,8 +115,7 @@ public class WishService {
                 null,
                 member,
                 profile,
-                WishType.PROFILE,
-                LocalDateTime.now()
+                WishType.PROFILE
         );
 
         privateWishRepository.save(privateWish);
@@ -151,8 +149,7 @@ public class WishService {
                 null,
                 member,
                 teamMemberAnnouncement,
-                WishType.TEAM_PROFILE,
-                LocalDateTime.now()
+                WishType.TEAM_PROFILE
         );
 
         // DB에 저장

@@ -9,12 +9,17 @@ import liaison.linkit.login.dto.MemberTokensAndOnBoardingStepInform;
 import liaison.linkit.login.dto.RenewTokenResponse;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
+import liaison.linkit.matching.domain.repository.PrivateMatchingRepository;
+import liaison.linkit.matching.domain.repository.TeamMatchingRepository;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.wish.domain.repository.PrivateWishRepository;
+import liaison.linkit.wish.domain.repository.TeamWishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,6 +42,12 @@ public class LoginService {
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
+
+    private final MemberBasicInformRepository memberBasicInformRepository;
+    private final PrivateMatchingRepository privateMatchingRepository;
+    private final TeamMatchingRepository teamMatchingRepository;
+    private final PrivateWishRepository privateWishRepository;
+    private final TeamWishRepository teamWishRepository;
 
     // 회원 조회
     private Member getMember(final Long memberId) {
@@ -70,7 +81,9 @@ public class LoginService {
         final boolean existMemberBasicInform = member.isExistMemberBasicInform();
         log.info("loginService login method memberId={}", member.getId());
 
+        log.info("저장된 profile 가져오기 시도");
         final Profile profile = getProfileByMember(member.getId());
+
         final TeamProfile teamProfile = getTeamProfile(member.getId());
 
         final boolean existDefaultPrivateProfile = profile.getExistDefaultPrivateProfile();
@@ -100,19 +113,21 @@ public class LoginService {
                 .orElseGet(() -> createMember(socialLoginId, email));
     }
 
-    private Member createMember(final String socialLoginId, final String email) {
+    @Transactional
+    public Member createMember(final String socialLoginId, final String email) {
+        log.info("createMember 정상 실행");
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberRepository.existsByEmail(email)) {
                 // 만약 이메일에 의해서 존재하지 않는 회원임이 판단된다면
-                Member member = memberRepository.save(new Member(socialLoginId, email, null));
+                final Member member = memberRepository.save(new Member(socialLoginId, email, null));
                 log.info("memberId={}", member.getId());
 
                 // 내 이력서는 자동으로 생성된다. -> 미니 프로필도 함께 생성되어야 한다.
-                Profile savedProfile = profileRepository.save(new Profile(member, 0));
+                final Profile savedProfile = profileRepository.save(new Profile(member, 0));
                 log.info("savedProfile.ID={}", savedProfile.getId());
 
-                TeamProfile savedTeamProfile = teamProfileRepository.save(new TeamProfile(member, 0));
+                final TeamProfile savedTeamProfile = teamProfileRepository.save(new TeamProfile(member, 0));
                 log.info("savedTeamProfile.ID={}", savedTeamProfile.getId());
 
                 return member;
@@ -179,6 +194,32 @@ public class LoginService {
 
     // 수정 필요
     public void deleteAccount(final Long memberId) {
+        final Member member = getMember(memberId);
+
+        // 존재성 여부 판단 필요
+        if (teamMatchingRepository.existsByMemberId(memberId)) {
+            teamMatchingRepository.deleteByMemberId(memberId);
+        }
+
+        if (privateMatchingRepository.existsByMemberId(memberId)) {
+            privateMatchingRepository.deleteByMemberId(memberId);
+        }
+
+        if (teamWishRepository.existsByMemberId(memberId)) {
+            teamWishRepository.deleteByMemberId(memberId);
+        }
+
+        if (privateWishRepository.existsByMemberId(memberId)) {
+            privateWishRepository.deleteByMemberId(memberId);
+        }
+
+        if(memberBasicInformRepository.existsByMemberId(memberId)){
+            memberBasicInformRepository.deleteByMemberId(memberId);
+        }
+
+        // 회원가입하면 무조건 생기는 저장 데이터
+        teamProfileRepository.deleteByMemberId(memberId);
+        profileRepository.deleteByMemberId(memberId);
         memberRepository.deleteByMemberId(memberId);
     }
 

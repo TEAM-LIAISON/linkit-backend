@@ -1,6 +1,7 @@
 package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
+import liaison.linkit.global.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +12,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class MemberBasicInform {
+public class MemberBasicInform extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -19,7 +20,7 @@ public class MemberBasicInform {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "member_id", unique = true)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     // 성함

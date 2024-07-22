@@ -1,30 +1,33 @@
 package liaison.linkit.team.domain;
 
 import jakarta.persistence.*;
+import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.SQLRestriction;
 
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static liaison.linkit.member.domain.type.TeamProfileType.ALLOW_MATCHING;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
+@SQLRestriction("status = 'USABLE'")
 @Slf4j
-public class TeamProfile {
+public class TeamProfile extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "member_id", unique = true)
+    @OneToOne
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @OneToOne(mappedBy = "teamProfile")
@@ -309,7 +312,7 @@ public class TeamProfile {
 
 
     public boolean getExistDefaultTeamProfile() {
-        if (this.isTeamProfileTeamBuildingField && this.isActivity) {
+        if (this.isTeamProfileTeamBuildingField && this.isActivity && this.isTeamMiniProfile) {
             return true;
         } else return false;
     }

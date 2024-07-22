@@ -1,6 +1,7 @@
 package liaison.linkit.matching.domain;
 
 import jakarta.persistence.*;
+import liaison.linkit.global.BaseEntity;
 import liaison.linkit.matching.domain.type.MatchingStatus;
 import liaison.linkit.matching.domain.type.MatchingType;
 import liaison.linkit.matching.domain.type.SenderType;
@@ -9,9 +10,7 @@ import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
+import org.hibernate.annotations.SQLRestriction;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
@@ -22,7 +21,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
-public class TeamMatching {
+@SQLRestriction("status = 'USABLE'")
+public class TeamMatching extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -56,10 +56,6 @@ public class TeamMatching {
     @Column(name = "matching_status")
     @Enumerated(value = STRING)
     private MatchingStatus matchingStatus;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 
     public void updateMatchingStatus(final boolean isAllow) {
         if (isAllow) {
