@@ -17,4 +17,11 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
     Optional<Profile> findByMemberId(@Param("memberId") final Long memberId);
 
     boolean existsByMemberId(final Long memberId);
+
+    @Query("""
+           UPDATE Profile profile
+           SET profile.status = 'DELETED'
+           WHERE profile.member.id = :memberId
+           """)
+    void deleteByMemberId(@Param("memberId") final Long memberId);
 }

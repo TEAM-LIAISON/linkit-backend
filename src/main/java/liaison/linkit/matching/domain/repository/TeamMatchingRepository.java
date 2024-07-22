@@ -20,4 +20,13 @@ public interface TeamMatchingRepository extends JpaRepository<TeamMatching, Long
 
     @Query("SELECT tm FROM TeamMatching tm WHERE tm.matchingStatus = 'SUCCESSFUL' AND tm.member.id = :memberId")
     List<TeamMatching> findSuccessRequestMatching(@Param("memberId")final Long memberId);
+
+    @Query("""
+           UPDATE TeamMatching teamMatching
+           SET teamMatching.status = 'DELETED'
+           WHERE teamMatching.member.id = :memberId
+           """)
+    void deleteByMemberId(@Param("memberId") final Long memberId);
+
+    boolean existsByMemberId(@Param("memberId") final Long memberId);
 }

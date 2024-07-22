@@ -17,4 +17,11 @@ public interface MemberBasicInformRepository extends JpaRepository<MemberBasicIn
 
     @Query("SELECT memberBasicInform FROM MemberBasicInform memberBasicInform WHERE memberBasicInform.member.id = :memberId")
     Optional<MemberBasicInform> findByMemberId(@Param("memberId") final Long memberId);
+
+    @Query("""
+           UPDATE MemberBasicInform memberBasicInform
+           SET memberBasicInform.status = 'DELETED'
+           WHERE memberBasicInform.member.id = :memberId
+           """)
+    void deleteByMemberId(@Param("memberId") final Long memberId);
 }

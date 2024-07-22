@@ -1,13 +1,16 @@
 package liaison.linkit.profile.domain;
 
 import jakarta.persistence.*;
+import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.type.ProfileType;
 import liaison.linkit.profile.domain.awards.Awards;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,21 +18,22 @@ import java.util.Objects;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.CascadeType.REMOVE;
-import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Profile {
+@SQLRestriction("status = 'USABLE'")
+public class Profile extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "member_id", unique = true)
+    @OneToOne
+    @JoinColumn(name = "member_id")
     private Member member;
 
     // 3.1. 미니 프로필
@@ -345,7 +349,7 @@ public class Profile {
     public void deleteIntroduction() {this.introduction = null;}
 
     public boolean getExistDefaultPrivateProfile() {
-        if (this.isProfileTeamBuildingField && this.isProfileRegion) {
+        if (this.isProfileTeamBuildingField && this.isProfileRegion && this.isMiniProfile) {
             return true;
         } else return false;
     }

@@ -17,4 +17,11 @@ public interface TeamProfileRepository extends JpaRepository<TeamProfile, Long> 
     Optional<TeamProfile> findByMemberId(@Param("memberId") final Long memberId);
 
     boolean existsByMemberId(final Long memberId);
+
+    @Query("""
+           UPDATE TeamProfile teamProfile
+           SET teamProfile.status = 'DELETED'
+           WHERE teamProfile.member.id = :memberId
+           """)
+    void deleteByMemberId(@Param("memberId") final Long memberId);
 }
