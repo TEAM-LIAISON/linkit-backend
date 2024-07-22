@@ -101,7 +101,7 @@ public class BrowseTeamProfileController {
             log.info("historyResponse={}", historyResponse);
 
             // 4.10. 첨부
-            final TeamAttachResponse teamAttachResponse = getTeamAttach(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamAttach());
+            final TeamAttachResponse teamAttachResponse = getTeamAttach(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamAttachUrl());
             log.info("teamAttachResponse={}", teamAttachResponse);
 
             final BrowseTeamProfileResponse browseTeamProfileResponse = browseTeamProfileService.getBrowseTeamProfileResponse(

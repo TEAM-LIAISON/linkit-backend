@@ -110,8 +110,9 @@ public class ActivityService {
 
         // 활동 지역 저장
         activityRegionRepository.save(activityRegion);
-
         teamProfile.updateIsActivityRegion(true);
+        // isActivity -> true였다면 그대로 / false였다면 더하기
+        teamProfile.updateIsActivity();
         teamProfile.updateMemberTeamProfileTypeByCompletion();
     }
 
