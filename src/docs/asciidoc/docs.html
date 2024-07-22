@@ -5063,7 +5063,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 990
+Content-Length: 1024
 
 {
   "content" : [ {
@@ -5077,13 +5077,14 @@ Content-Length: 990
       "teamLogoImageUrl" : "https://image.linkit.im/images/linkit_logo.png",
       "teamKeywordNames" : [ "재택 가능", "Pre-A", "사수 있음", "스톡 제공" ]
     },
-    "teamMemberAnnouncementResponse" : {
+    "browseTeamMemberAnnouncementResponse" : {
       "id" : 1,
       "teamName" : "리에종",
       "jobRoleName" : "개발·데이터",
       "mainBusiness" : "주요 업무입니다.",
       "skillNames" : [ "서버 개발", "DevOps" ],
-      "applicationProcess" : "지원 절차입니다."
+      "applicationProcess" : "지원 절차입니다.",
+      "isTeamSaved" : true
     }
   } ],
   "pageable" : "INSTANCE",
@@ -5158,34 +5159,39 @@ Content-Length: 990
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 키워드</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.teamName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.jobRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.jobRoleName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 직무 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.mainBusiness</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.mainBusiness</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주요 업무</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.skillNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.skillNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">요구되는 기술 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.applicationProcess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.applicationProcess</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지원 절차</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.isTeamSaved</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 사용자가 해당 팀원 공고 찜한 여부</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>last</code></p></td>
@@ -8081,7 +8087,7 @@ Content-Length: 135
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-07-21 20:51:02 +0900
+Last updated 2024-07-23 03:06:21 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

@@ -301,8 +301,8 @@ include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-p
 include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile-after-login/http-request.adoc[]
 
 ==== 응답
-include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/http-response.adoc[]
-include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile/response-fields.adoc[]
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile-after-login/http-response.adoc[]
+include::{snippets}/search-controller-test/get-team-announcement-and-team-mini-profile-after-login/response-fields.adoc[]
 
 == 8. 이력서 열람
 === 8.1. 내 이력서 열람
