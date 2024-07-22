@@ -44,24 +44,41 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
          
          LEFT JOIN TeamMiniProfile tmp ON tp.id = tmp.teamProfile.id
          
-         WHERE (:teamBuildingFieldNames IS NULL OR tbf.teamBuildingFieldName IN :teamBuildingFieldNames)
-         AND (:jobRoleNames IS NULL OR jr.jobRoleName IN :jobRoleNames)
-         AND (:skillNames IS NULL OR s.skillName IN :skillNames)
+         WHERE (:teamBuildingFieldName IS NULL OR
+               (SELECT COUNT(tbf2.teamBuildingFieldName) FROM TeamBuildingField tbf2
+                JOIN TeamProfileTeamBuildingField tptbf2 ON tbf2.id = tptbf2.teamBuildingField.id
+                WHERE tptbf2.teamProfile.id = tp.id AND tbf2.teamBuildingFieldName IN :teamBuildingFieldName) = :teamBuildingFieldCount)
+         AND (:jobRoleName IS NULL OR
+              (SELECT COUNT(jr2.jobRoleName) FROM JobRole jr2
+               JOIN TeamMemberAnnouncementJobRole tmajr2 ON jr2.id = tmajr2.jobRole.id
+               WHERE tmajr2.teamMemberAnnouncement.id = tma.id AND jr2.jobRoleName IN :jobRoleName) = :jobRoleCount)
+         AND (:skillName IS NULL OR
+              (SELECT COUNT(s2.skillName) FROM Skill s2
+               JOIN TeamMemberAnnouncementSkill tmas2 ON s2.id = tmas2.skill.id
+               WHERE tmas2.teamMemberAnnouncement.id = tma.id AND s2.skillName IN :skillName) = :skillCount)
          AND (:cityName IS NULL OR r.cityName = :cityName)
          AND (:divisionName IS NULL OR r.divisionName = :divisionName)
-         AND (:activityTagNames IS NULL OR amt.activityTagName IN :activityTagNames)
-         AND (tmp.isTeamActivate = true )
+         AND (:activityTagName IS NULL OR
+              (SELECT COUNT(amt2.activityTagName) FROM ActivityMethodTag amt2
+               JOIN ActivityMethod am2 ON amt2.id = am2.activityMethodTag.id
+               WHERE am2.teamProfile.id = tp.id AND amt2.activityTagName IN :activityTagName) = :activityTagCount)
+         AND (tmp.isTeamActivate = true)
          
          ORDER BY tma.createdDate DESC
          """)
     Page<TeamMemberAnnouncement> findAllByOrderByCreatedDateDesc(
-            @Param("teamBuildingFieldNames") final List<String> teamBuildingFieldNames,
-            @Param("jobRoleNames") final List<String> jobRoleNames,
-            @Param("skillNames") final List<String> skillNames,
+            @Param("teamBuildingFieldName") final List<String> teamBuildingFieldName,
+            @Param("teamBuildingFieldCount") final Long teamBuildingFieldCount,
+            @Param("jobRoleName") final List<String> jobRoleName,
+            @Param("jobRoleCount") final Long jobRoleCount,
+            @Param("skillName") final List<String> skillName,
+            @Param("skillCount") final Long skillCount,
             @Param("cityName") final String cityName,
             @Param("divisionName") final String divisionName,
-            @Param("activityTagNames") final List<String> activityTagNames,
+            @Param("activityTagName") final List<String> activityTagName,
+            @Param("activityTagCount") final Long activityTagCount,
             Pageable pageable
     );
+
 
 }

@@ -252,7 +252,7 @@ public class MatchingService {
 
         if (profileRepository.existsByMemberId(memberId)) {
             final Profile profile = getProfile(memberId);
-            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByProfileId(profile.getId());
+            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByProfileIdAndMatchingStatus(profile.getId());
 
             toPrivateMatchingResponseList = ToPrivateMatchingResponse.toPrivateMatchingResponse(privateMatchingList);
         }
@@ -275,12 +275,12 @@ public class MatchingService {
 
 
         if (profileRepository.existsByMemberId(memberId)) {
-            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByMemberId(memberId);
+            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByMemberIdAndMatchingStatus(memberId);
             myPrivateMatchingResponseList = MyPrivateMatchingResponse.myPrivateMatchingResponseList(privateMatchingList);
         }
 
         if (teamProfileRepository.existsByMemberId(memberId)) {
-            final List<TeamMatching> teamMatchingList = teamMatchingRepository.findByMemberId(memberId);
+            final List<TeamMatching> teamMatchingList = teamMatchingRepository.findByMemberIdAndMatchingStatus(memberId);
             myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamMatchingList);
         }
 

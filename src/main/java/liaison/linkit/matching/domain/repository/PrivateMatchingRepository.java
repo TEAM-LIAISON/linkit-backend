@@ -11,11 +11,11 @@ import java.util.List;
 
 public interface PrivateMatchingRepository extends JpaRepository<PrivateMatching, Long> {
 
-    @Query("SELECT pm FROM PrivateMatching pm WHERE pm.profile.id = :profileId")
-    List<PrivateMatching> findByProfileId(@Param("profileId") final Long profileId);
+    @Query("SELECT pm FROM PrivateMatching pm WHERE pm.profile.id = :profileId AND pm.matchingStatus = 'REQUESTED'")
+    List<PrivateMatching> findByProfileIdAndMatchingStatus(@Param("profileId") final Long profileId);
 
-    @Query("SELECT pm FROM PrivateMatching pm WHERE pm.member.id = :memberId")
-    List<PrivateMatching> findByMemberId(@Param("memberId") final Long memberId);
+    @Query("SELECT pm FROM PrivateMatching pm WHERE pm.member.id = :memberId AND pm.matchingStatus = 'REQUESTED'")
+    List<PrivateMatching> findByMemberIdAndMatchingStatus(@Param("memberId") final Long memberId);
 
     @Query("SELECT pm FROM PrivateMatching pm WHERE pm.matchingStatus = 'SUCCESSFUL' AND pm.profile.id = :profileId")
     List<PrivateMatching> findSuccessReceivedMatching(@Param("profileId") final Long profileId);
