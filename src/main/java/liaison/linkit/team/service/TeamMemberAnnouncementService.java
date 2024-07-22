@@ -83,15 +83,38 @@ public class TeamMemberAnnouncementService {
             final Long memberId,
             final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
     ) {
+        if (teamMemberAnnouncementRequest.getJobRoleName() == null || teamMemberAnnouncementRequest.getJobRoleName().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_JOB_ROLE_NAME);
+        }
+
+        if (teamMemberAnnouncementRequest.getMainBusiness() == null || teamMemberAnnouncementRequest.getMainBusiness().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_MAIN_BUSINESS);
+        }
+
+        if (teamMemberAnnouncementRequest.getSkillNames() == null || teamMemberAnnouncementRequest.getSkillNames().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_SKILL_NAMES);
+        }
+
+        if (teamMemberAnnouncementRequest.getApplicationProcess() == null || teamMemberAnnouncementRequest.getApplicationProcess().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_APPLICATION_PROCESS);
+        }
+
         final TeamProfile teamProfile = getTeamProfile(memberId);
-        // 메인 객체 우선 저장
-        final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, teamMemberAnnouncementRequest);
 
-        saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
-        saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
-
-        // 팀원 공고가 존재하지 않았던 경우
-        if (!teamProfile.getIsTeamMemberAnnouncement()) {
+        if (teamProfile.getIsTeamMemberAnnouncement()) {
+            // 메인 객체 우선 저장
+            final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, teamMemberAnnouncementRequest);
+            // 직무/역할 저장
+            saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
+            // 요구 기술 저장
+            saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
+        } else {
+            // 메인 객체 우선 저장
+            final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, teamMemberAnnouncementRequest);
+            // 직무/역할 저장
+            saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
+            // 요구 기술 저장
+            saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
             teamProfile.updateIsTeamMemberAnnouncement(true);
             teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
@@ -159,8 +182,6 @@ public class TeamMemberAnnouncementService {
         final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole =
                 new TeamMemberAnnouncementJobRole(null, teamMemberAnnouncement, jobRole);
 
-
-
         teamMemberAnnouncementJobRoleRepository.save(teamMemberAnnouncementJobRole);
     }
 
@@ -187,9 +208,15 @@ public class TeamMemberAnnouncementService {
         final TeamProfile teamProfile = getTeamProfile(memberId);
         final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
 
+        // 객체 삭제
+        teamMemberAnnouncementJobRoleRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+        log.info("팀원 공고 직무/역할 삭제 완료");
+        teamMemberAnnouncementSkillRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+        log.info("팀원 공고 보유 기술 삭제 완료");
         teamMemberAnnouncementRepository.deleteById(teamMemberAnnouncement.getId());
+        log.info("팀원 공고 메인 객체 삭제 완료");
         if (!teamMemberAnnouncementRepository.existsByTeamProfileId(teamProfile.getId())) {
-            teamProfile.cancelTeamPerfectionFifteen();
+            teamProfile.updateIsTeamMemberAnnouncement(false);
             teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }
@@ -199,7 +226,23 @@ public class TeamMemberAnnouncementService {
             final Long teamMemberAnnouncementId,
             final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
     ) {
-        // 삭제 먼저 진행
+        if (teamMemberAnnouncementRequest.getJobRoleName() == null || teamMemberAnnouncementRequest.getJobRoleName().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_JOB_ROLE_NAME);
+        }
+
+        if (teamMemberAnnouncementRequest.getMainBusiness() == null || teamMemberAnnouncementRequest.getMainBusiness().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_MAIN_BUSINESS);
+        }
+
+        if (teamMemberAnnouncementRequest.getSkillNames() == null || teamMemberAnnouncementRequest.getSkillNames().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_SKILL_NAMES);
+        }
+
+        if (teamMemberAnnouncementRequest.getApplicationProcess() == null || teamMemberAnnouncementRequest.getApplicationProcess().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_APPLICATION_PROCESS);
+        }
+
+        // 기존에 매핑되어 있던 항목들 먼저 삭제
         teamMemberAnnouncementSkillRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
         teamMemberAnnouncementJobRoleRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
 

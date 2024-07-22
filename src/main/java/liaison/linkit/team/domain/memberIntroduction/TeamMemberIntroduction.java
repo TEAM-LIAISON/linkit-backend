@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -22,7 +21,7 @@ public class TeamMemberIntroduction {
     @Column(name = "team_member_introduction_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
+    @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "team_profile_id")
     private TeamProfile teamProfile;
 

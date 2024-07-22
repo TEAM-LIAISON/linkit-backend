@@ -61,11 +61,13 @@ public class HistoryService {
             final HistoryCreateRequest historyCreateRequest
     ) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
-        saveHistoryMethod(teamProfile, historyCreateRequest);
-        if (!teamProfile.getIsHistory()) {
+
+        if (teamProfile.getIsHistory()) {
+            saveHistoryMethod(teamProfile, historyCreateRequest);
+        } else{
+            saveHistoryMethod(teamProfile, historyCreateRequest);
             teamProfile.updateIsHistory(true);
             teamProfile.updateMemberTeamProfileTypeByCompletion();
-
         }
     }
 
