@@ -90,6 +90,7 @@ public class AntecedentsService {
         profile.updateMemberProfileTypeByCompletion();
     }
 
+    // DB 저장 로직
     private void saveAntecedent(final Profile profile, final AntecedentsCreateRequest request) {
         final Antecedents newAntecedents = Antecedents.of(
                 profile,
@@ -146,9 +147,11 @@ public class AntecedentsService {
         final Profile profile = getProfile(memberId);
         final Antecedents antecedents = getAntecedents(antecedentsId);
 
+        // 조회한 경력을 삭제함
         antecedentsRepository.deleteById(antecedents.getId());
         log.info("삭제 완료");
 
+        // 존재하지 않는다면
         if (!antecedentsRepository.existsByProfileId(profile.getId())) {
             log.info("더 이상 경력이 존재하지 않습니다.");
             // 더 이상 경력이 존재하지 않다면
@@ -163,9 +166,12 @@ public class AntecedentsService {
             final AntecedentsCreateRequest antecedentsCreateRequest
     ) {
         final Profile profile = getProfile(memberId);
+        // 해당 프로필이 경력을 보유하고 있는 경우
         if (profile.getIsAntecedents()) {
+            // 그냥 저장
             saveAntecedent(profile, antecedentsCreateRequest);
         } else {
+            // 경력을 보유하고 있지 않았던 경우
             saveAntecedent(profile, antecedentsCreateRequest);
             profile.updateIsAntecedents(true);
             profile.updateMemberProfileTypeByCompletion();

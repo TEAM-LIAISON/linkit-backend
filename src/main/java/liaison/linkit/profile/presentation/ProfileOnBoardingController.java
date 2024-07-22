@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.member.service.MemberService;
 import liaison.linkit.profile.dto.request.onBoarding.OnBoardingPersonalJobAndSkillCreateRequest;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
@@ -12,11 +13,9 @@ import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueRespo
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.onBoarding.OnBoardingProfileResponse;
+import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.profile.service.ProfileOnBoardingService;
-import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
-import liaison.linkit.profile.service.ProfileRegionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_BOTH_JOB_AND_SKILL;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
@@ -47,10 +47,19 @@ public class ProfileOnBoardingController {
     public ResponseEntity<Void> createOnBoardingPersonalJobAndSkill(
             @Auth final Accessor accessor,
             @RequestBody @Valid final OnBoardingPersonalJobAndSkillCreateRequest createRequest
-    ) {
-        profileOnBoardingService.savePersonalJobAndRole(accessor.getMemberId(), createRequest.getJobRoleNames());
-        profileOnBoardingService.savePersonalSkill(accessor.getMemberId(), createRequest.getSkillNames());
-        profileOnBoardingService.updateMemberProfileType(accessor.getMemberId());
+    ) throws BadRequestException {
+        // 2개 중에 하나라도 null인 경우
+        if (createRequest.getSkillNames() == null || createRequest.getJobRoleNames() == null) {
+            throw new BadRequestException(HAVE_TO_INPUT_BOTH_JOB_AND_SKILL);
+        } else {
+            // 2개 다 입력이 들어온 경우
+            profileOnBoardingService.savePersonalJobAndRole(accessor.getMemberId(), createRequest.getJobRoleNames());
+            profileOnBoardingService.savePersonalSkill(accessor.getMemberId(), createRequest.getSkillNames());
+
+            // 2개 모두 저장 완료, true로 저장 완료함
+            profileOnBoardingService.updateMemberProfileType(accessor.getMemberId());
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
