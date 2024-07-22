@@ -3,18 +3,13 @@ package liaison.linkit.profile.service;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.FileException;
-import liaison.linkit.image.domain.PortfolioFile;
-import liaison.linkit.image.domain.S3PortfolioEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.profile.domain.Profile;
-//import liaison.linkit.profile.domain.attach.AttachFile;
 import liaison.linkit.profile.domain.attach.AttachUrl;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-//import liaison.linkit.profile.domain.repository.attach.AttachFileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
-//import liaison.linkit.profile.dto.response.attach.AttachFileResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import lombok.RequiredArgsConstructor;
@@ -173,21 +168,21 @@ public class AttachService {
 //        profile.updateIsAttachFile(true);
 //        // 프로필 상태 관리 첨부용으로 추가 필요
 //    }
+//
+//    private String saveFileS3(final MultipartFile attachFile) {
+//        validateSizeofFile(attachFile);
+//        final PortfolioFile portfolioFile = new PortfolioFile(attachFile);
+//        return uploadPortfolioFile(portfolioFile);
+//    }
 
-    private String saveFileS3(final MultipartFile attachFile) {
-        validateSizeofFile(attachFile);
-        final PortfolioFile portfolioFile = new PortfolioFile(attachFile);
-        return uploadPortfolioFile(portfolioFile);
-    }
-
-    private String uploadPortfolioFile(final PortfolioFile portfolioFile) {
-        try {
-            return s3Uploader.uploadPortfolioFile(portfolioFile);
-        } catch (final Exception e) {
-            publisher.publishEvent(new S3PortfolioEvent(portfolioFile.getHashedName()));
-            throw e;
-        }
-    }
+//    private String uploadPortfolioFile(final PortfolioFile portfolioFile) {
+//        try {
+//            return s3Uploader.uploadPortfolioFile(portfolioFile);
+//        } catch (final Exception e) {
+//            publisher.publishEvent(new S3PortfolioEvent(portfolioFile.getHashedName()));
+//            throw e;
+//        }
+//    }
 
     private void validateSizeofFile(final MultipartFile attachFile) {
         if (attachFile == null || attachFile.isEmpty()) {
