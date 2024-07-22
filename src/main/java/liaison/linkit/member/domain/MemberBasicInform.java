@@ -20,7 +20,7 @@ public class MemberBasicInform extends BaseEntity {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "member")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     // 성함

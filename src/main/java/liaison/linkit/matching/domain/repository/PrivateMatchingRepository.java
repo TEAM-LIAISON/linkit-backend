@@ -2,8 +2,10 @@ package liaison.linkit.matching.domain.repository;
 
 import liaison.linkit.matching.domain.PrivateMatching;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,6 +25,8 @@ public interface PrivateMatchingRepository extends JpaRepository<PrivateMatching
 
     boolean existsByProfileId(@Param("profileId") final Long profileId);
 
+    @Modifying
+    @Transactional
     @Query("""
            UPDATE PrivateMatching privateMatching
            SET privateMatching.status = 'DELETED'

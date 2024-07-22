@@ -2,8 +2,10 @@ package liaison.linkit.profile.domain.repository;
 
 import liaison.linkit.profile.domain.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +20,8 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     boolean existsByMemberId(final Long memberId);
 
+    @Modifying
+    @Transactional
     @Query("""
            UPDATE Profile profile
            SET profile.status = 'DELETED'
