@@ -111,8 +111,8 @@ public class ActivityService {
         // 활동 지역 저장
         activityRegionRepository.save(activityRegion);
 
-
         teamProfile.updateIsActivityRegion(true);
+        teamProfile.updateMemberTeamProfileTypeByCompletion();
     }
 
     // 활동 방식 전체 조회

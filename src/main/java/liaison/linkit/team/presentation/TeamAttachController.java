@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.dto.request.attach.TeamAttachUrlCreateRequest;
 import liaison.linkit.team.service.TeamAttachService;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_TEAM_ATTACH_URL;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,6 +30,10 @@ public class TeamAttachController {
             @Auth final Accessor accessor,
             @RequestBody @Valid List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequests
     ) {
+        if (teamAttachUrlCreateRequests.isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_TEAM_ATTACH_URL);
+        }
+
         teamAttachService.saveUrl(accessor.getMemberId(), teamAttachUrlCreateRequests);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

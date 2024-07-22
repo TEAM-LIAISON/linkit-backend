@@ -49,9 +49,13 @@ public class TeamProfileTeamBuildingFieldService {
         // 팀 소개서 객체 조회
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
+        // 희망 팀빌딩 분야 존재한 이력이 있었다면
         log.info("팀 소개서 희망 팀빌딩 분야 실행 part1");
         if (teamProfileTeamBuildingFieldRepository.existsByTeamProfileId(teamProfile.getId())) {
             teamProfileTeamBuildingFieldRepository.deleteAllByTeamProfileId(teamProfile.getId());
+            // 완성도 빼기 로직
+            teamProfile.updateIsTeamProfileTeamBuildingField(false);
+            teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
 
         log.info("팀 소개서 희망 팀빌딩 분야 실행 part2 (삭제 완료)");
@@ -68,6 +72,7 @@ public class TeamProfileTeamBuildingFieldService {
 
         // 프로그레스바 처리 비즈니스 로직
         teamProfile.updateIsTeamProfileTeamBuildingField(true);
+        teamProfile.updateMemberTeamProfileTypeByCompletion();
         log.info("팀 소개서 희망 팀빌딩 분야 실행 part3 (저장 완료)");
     }
 
