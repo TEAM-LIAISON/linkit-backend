@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public interface TeamMiniProfileRepository extends JpaRepository<TeamMiniProfile, Long> {
 
-    boolean existsByTeamProfileId(final Long teamProfileId);
+    boolean existsByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
 
     Optional<TeamMiniProfile> findByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);

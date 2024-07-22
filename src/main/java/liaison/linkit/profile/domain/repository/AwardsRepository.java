@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface AwardsRepository extends JpaRepository<Awards, Long> {
 
-    boolean existsByProfileId(Long profileId);
+    boolean existsByProfileId(@Param("profileId") final Long profileId);
 
     @Query("SELECT awards FROM Awards awards WHERE awards.profile.id = :profileId")
     List<Awards> findAllByProfileId(@Param("profileId") final Long profileId);

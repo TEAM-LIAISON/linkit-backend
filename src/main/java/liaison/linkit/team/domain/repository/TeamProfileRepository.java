@@ -18,7 +18,7 @@ public interface TeamProfileRepository extends JpaRepository<TeamProfile, Long> 
            """)
     Optional<TeamProfile> findByMemberId(@Param("memberId") final Long memberId);
 
-    boolean existsByMemberId(final Long memberId);
+    boolean existsByMemberId(@Param("memberId") final Long memberId);
 
     @Modifying
     @Transactional

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface TeamProfileTeamBuildingFieldRepository extends JpaRepository<TeamProfileTeamBuildingField, Long> {
 
-    boolean existsByTeamProfileId(final Long teamProfileId);
+    boolean existsByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
     @Query("SELECT teamProfileTeamBuildingField FROM TeamProfileTeamBuildingField teamProfileTeamBuildingField WHERE teamProfileTeamBuildingField.teamProfile.id = :teamProfileId")
     List<TeamProfileTeamBuildingField> findAllByTeamProfileId(final Long teamProfileId);

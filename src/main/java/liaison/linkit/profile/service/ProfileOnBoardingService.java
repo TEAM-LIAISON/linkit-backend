@@ -98,8 +98,14 @@ public class ProfileOnBoardingService {
             final Long memberId,
             final List<String> jobRoleNames
     ) {
-        log.info("OnBoardingService savePersonalJobAndRole 메서드가 실행됩니다.");
+        // 입력이 발생한 경우
+        if (jobRoleNames != null) {
 
+        } else {    // 입력이 발생하지 앟ㄴ은 경우
+
+        }
+
+        log.info("OnBoardingService savePersonalJobAndRole 메서드가 실행됩니다.");
         final Profile profile = getProfileByMember(memberId);
         if (profileJobRoleRepository.existsByProfileId(profile.getId())) {
             profileJobRoleRepository.deleteAllByProfileId(profile.getId());
@@ -107,6 +113,7 @@ public class ProfileOnBoardingService {
 
         final List<JobRole> jobRoles = jobRoleRepository
                 .findJobRoleByJobRoleNames(jobRoleNames);
+
 
         final List<ProfileJobRole> profileJobRoles = jobRoles.stream()
                 .map(jobRole -> new ProfileJobRole(null, profile, jobRole))
