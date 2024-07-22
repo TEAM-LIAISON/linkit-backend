@@ -141,6 +141,15 @@ public class AttachService {
         attachUrl.update(updateRequest);
     }
 
+    public void deleteAllUrl(final Long memberId) {
+        final Profile profile = getProfile(memberId);
+        if (attachUrlRepository.existsByProfileId(profile.getId())) {
+            attachUrlRepository.deleteAllByProfileId(profile.getId());
+            profile.updateIsAttachUrl(false);
+            profile.updateMemberProfileTypeByCompletion();
+        }
+    }
+
     // 삭제 메서드
     public void deleteUrl(final Long memberId, final Long attachUrlId) {
         final Profile profile = getProfile(memberId);
@@ -264,6 +273,7 @@ public class AttachService {
 
         return AttachResponse.getAttachResponse(attachUrlResponses);
     }
+
 
 
 

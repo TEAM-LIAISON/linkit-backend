@@ -170,4 +170,20 @@ public class TeamAttachService {
             teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }
+
+    public void deleteAllTeamAttachUrl(final Long memberId) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+
+        // 빈 값 들어왔다고 무조건 제외하면 안되고, 상황 판단 이후에 제거해야 한다.
+        // 기존에 존재했던 이력이 있으먄
+        if (teamAttachUrlRepository.existsByTeamProfileId(teamProfile.getId())) {
+            // 모든 팀 첨부 항목 삭제
+            teamAttachUrlRepository.deleteAllByTeamProfileId(teamProfile.getId());
+            teamProfile.updateIsTeamAttachUrl(false);
+            log.info("teamProfile -> false로 변경");
+            teamProfile.updateMemberTeamProfileTypeByCompletion();
+            // 삭제한다.
+        }
+
+    }
 }
