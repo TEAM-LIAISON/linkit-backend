@@ -3,17 +3,12 @@ package liaison.linkit.team.service;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.FileException;
-import liaison.linkit.image.domain.PortfolioFile;
-import liaison.linkit.image.domain.S3PortfolioEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.team.domain.TeamProfile;
-//import liaison.linkit.team.domain.attach.TeamAttachFile;
 import liaison.linkit.team.domain.attach.TeamAttachUrl;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
-//import liaison.linkit.team.domain.repository.attach.TeamAttachFileRepository;
 import liaison.linkit.team.domain.repository.attach.TeamAttachUrlRepository;
 import liaison.linkit.team.dto.request.attach.TeamAttachUrlCreateRequest;
-//import liaison.linkit.team.dto.response.attach.TeamAttachFileResponse;
 import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
 import liaison.linkit.team.dto.response.attach.TeamAttachUrlResponse;
 import lombok.RequiredArgsConstructor;
@@ -110,21 +105,21 @@ public class TeamAttachService {
 //    }
 
     // S3에 파일 저장
-    private String saveFileS3(final MultipartFile teamAttachFile) {
-        validateSizeofFile(teamAttachFile);
-        final PortfolioFile portfolioFile = new PortfolioFile(teamAttachFile);
-        return uploadPortfolioFile(portfolioFile);
-    }
+//    private String saveFileS3(final MultipartFile teamAttachFile) {
+//        validateSizeofFile(teamAttachFile);
+//        final PortfolioFile portfolioFile = new PortfolioFile(teamAttachFile);
+//        return uploadPortfolioFile(portfolioFile);
+//    }
 
     // 포트폴리오 파일 업로드
-    private String uploadPortfolioFile(final PortfolioFile portfolioFile) {
-        try {
-            return s3Uploader.uploadPortfolioFile(portfolioFile);
-        } catch (final Exception e) {
-            publisher.publishEvent(new S3PortfolioEvent(portfolioFile.getHashedName()));
-            throw e;
-        }
-    }
+//    private String uploadPortfolioFile(final PortfolioFile portfolioFile) {
+//        try {
+//            return s3Uploader.uploadPortfolioFile(portfolioFile);
+//        } catch (final Exception e) {
+//            publisher.publishEvent(new S3PortfolioEvent(portfolioFile.getHashedName()));
+//            throw e;
+//        }
+//    }
 
     // 파일 유효성 판단
     private void validateSizeofFile(final MultipartFile teamAttachFile) {
