@@ -773,7 +773,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 28 Jul 2024 17:33:56 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 28 Jul 2024 17:57:28 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2173,12 +2173,12 @@ Content-Length: 3264
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
+    "profileSkill" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
-    "profileSkill" : true,
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true,
     "awards" : true,
     "attach" : true
   },
@@ -3310,8 +3310,8 @@ Content-Length: 2918
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
-    "activity" : true,
     "history" : true,
+    "activity" : true,
     "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
@@ -5291,12 +5291,12 @@ Content-Length: 3246
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
+    "profileSkill" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
-    "profileSkill" : true,
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true,
     "awards" : true,
     "attach" : true
   },
@@ -5730,8 +5730,8 @@ Content-Length: 2908
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
-    "activity" : true,
     "history" : true,
+    "activity" : true,
     "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
@@ -7699,7 +7699,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 728
+Content-Length: 782
 
 [ {
   "id" : 1,
@@ -7708,7 +7708,8 @@ Content-Length: 728
   "isActivate" : true,
   "myKeywordNames" : [ "2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년" ],
   "memberName" : "권동민",
-  "jobRoleNames" : [ "개발·데이터" ]
+  "jobRoleNames" : [ "개발·데이터" ],
+  "isPrivateSaved" : true
 }, {
   "id" : 1,
   "profileTitle" : "시니어 소프트웨어 개발자",
@@ -7716,7 +7717,8 @@ Content-Length: 728
   "isActivate" : true,
   "myKeywordNames" : [ "2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년" ],
   "memberName" : "권동민",
-  "jobRoleNames" : [ "개발·데이터" ]
+  "jobRoleNames" : [ "개발·데이터" ],
+  "isPrivateSaved" : true
 } ]</code></pre>
 </div>
 </div>
@@ -7769,6 +7771,11 @@ Content-Length: 728
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무 및 역할</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].isPrivateSaved</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">찜 여부</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -7795,7 +7802,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1403
+Content-Length: 1467
 
 [ {
   "teamMiniProfileResponse" : {
@@ -7808,13 +7815,14 @@ Content-Length: 1403
     "teamLogoImageUrl" : "https://image.linkit.im/images/linkit_logo.png",
     "teamKeywordNames" : [ "재택 가능", "Pre-A", "사수 있음", "스톡 제공" ]
   },
-  "teamMemberAnnouncementResponse" : {
+  "browseTeamMemberAnnouncementResponse" : {
     "id" : 1,
     "teamName" : "리에종",
     "jobRoleName" : "개발·데이터",
     "mainBusiness" : "주요 업무입니다.",
     "skillNames" : [ "서버 개발", "DevOps" ],
-    "applicationProcess" : "지원 절차입니다."
+    "applicationProcess" : "지원 절차입니다.",
+    "isTeamSaved" : true
   }
 }, {
   "teamMiniProfileResponse" : {
@@ -7827,13 +7835,14 @@ Content-Length: 1403
     "teamLogoImageUrl" : "https://image.linkit.im/images/linkit_logo.png",
     "teamKeywordNames" : [ "재택 가능", "Pre-A", "사수 있음", "스톡 제공" ]
   },
-  "teamMemberAnnouncementResponse" : {
+  "browseTeamMemberAnnouncementResponse" : {
     "id" : 2,
     "teamName" : "팀명팀명",
     "jobRoleName" : "디자인",
     "mainBusiness" : "주요 업무입니다. (두번째 팀원 공고)",
     "skillNames" : [ "웹 디자인", "앱 디자인" ],
-    "applicationProcess" : "지원 절차입니다. (두번째 팀원 공고)"
+    "applicationProcess" : "지원 절차입니다. (두번째 팀원 공고)",
+    "isTeamSaved" : true
   }
 } ]</code></pre>
 </div>
@@ -7893,34 +7902,39 @@ Content-Length: 1403
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 키워드 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].teamMemberAnnouncementResponse.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].browseTeamMemberAnnouncementResponse.id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].teamMemberAnnouncementResponse.teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].browseTeamMemberAnnouncementResponse.teamName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">공고에 대한 팀 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].teamMemberAnnouncementResponse.jobRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].browseTeamMemberAnnouncementResponse.jobRoleName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">직무 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].teamMemberAnnouncementResponse.mainBusiness</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].browseTeamMemberAnnouncementResponse.mainBusiness</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주요 업무 내용</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].teamMemberAnnouncementResponse.skillNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].browseTeamMemberAnnouncementResponse.skillNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">필요 기술 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].teamMemberAnnouncementResponse.applicationProcess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].browseTeamMemberAnnouncementResponse.applicationProcess</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지원 절차 설명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].browseTeamMemberAnnouncementResponse.isTeamSaved</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 찜 여부</p></td>
 </tr>
 </tbody>
 </table>

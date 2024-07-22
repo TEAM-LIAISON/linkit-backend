@@ -25,4 +25,13 @@ public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
 
     @Query("SELECT COUNT(tw) > 0 FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = :teamMemberAnnouncementId AND tw.member.id = :memberId")
     boolean findByTeamMemberAnnouncementIdAndMemberId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId, @Param("memberId") final Long memberId);
+
+    @Query("""
+           UPDATE TeamWish teamWish
+           SET teamWish.status = 'DELETED'
+           WHERE teamWish.member.id = :memberId
+           """)
+    void deleteByMemberId(@Param("memberId") final Long memberId);
+
+    boolean existsByMemberId(@Param("memberId") final Long memberId);
 }

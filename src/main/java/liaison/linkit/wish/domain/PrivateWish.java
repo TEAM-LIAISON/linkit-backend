@@ -1,15 +1,14 @@
 package liaison.linkit.wish.domain;
 
 import jakarta.persistence.*;
+import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.wish.domain.type.WishType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
+import org.hibernate.annotations.SQLRestriction;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
@@ -20,8 +19,8 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
-public class
-PrivateWish {
+@SQLRestriction("status = 'USABLE'")
+public class PrivateWish extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "private_wish_id")
@@ -41,8 +40,4 @@ PrivateWish {
     @Column(name = "wish_type")
     @Enumerated(value = STRING)
     private WishType wishType;
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 }

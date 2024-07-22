@@ -15,7 +15,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Modifying
     @Query("""
-           DELETE FROM Member member WHERE member.id = :memberId
+           UPDATE Member member
+           SET member.status = 'DELETED'
+           WHERE member.id = :memberId
             """)
     void deleteByMemberId(@Param("memberId") final Long memberId);
 }
