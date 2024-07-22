@@ -38,21 +38,33 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
            LEFT JOIN Skill s ON ps.skill.id = s.id
            
            LEFT JOIN ProfileRegion pr ON p.id = pr.profile.id
-           LEFT JOIN Region r ON pr.profile.id = r.id
+           LEFT JOIN Region r ON pr.region.id = r.id
            
-           WHERE (:teamBuildingFieldNames IS NULL OR tbf.teamBuildingFieldName IN :teamBuildingFieldNames)
-           AND (:jobRoleNames IS NULL OR jr.jobRoleName IN :jobRoleNames)
-           AND (:skillNames IS NULL OR s.skillName IN :skillNames)
+           WHERE (:teamBuildingFieldName IS NULL OR
+                 (SELECT COUNT(tbf.teamBuildingFieldName) FROM TeamBuildingField tbf
+                  JOIN ProfileTeamBuildingField ptbf2 ON tbf.id = ptbf2.teamBuildingField.id
+                  WHERE ptbf2.profile.id = p.id AND tbf.teamBuildingFieldName IN :teamBuildingFieldName) = :teamBuildingFieldCount)
+           AND (:jobRoleName IS NULL OR
+                (SELECT COUNT(jr.jobRoleName) FROM JobRole jr
+                 JOIN ProfileJobRole pjr2 ON jr.id = pjr2.jobRole.id
+                 WHERE pjr2.profile.id = p.id AND jr.jobRoleName IN :jobRoleName) = :jobRoleCount)
+           AND (:skillName IS NULL OR
+                (SELECT COUNT(s.skillName) FROM Skill s
+                 JOIN ProfileSkill ps2 ON s.id = ps2.skill.id
+                 WHERE ps2.profile.id = p.id AND s.skillName IN :skillName) = :skillCount)
            AND (:cityName IS NULL OR r.cityName = :cityName)
            AND (:divisionName IS NULL OR r.divisionName = :divisionName)
            AND (mp.isActivate = true)
            
            ORDER BY mp.createdDate DESC
-           """, countQuery = "SELECT count (mp) from MiniProfile mp JOIN mp.profile")
+           """)
     Page<MiniProfile> findAll(
-            @Param("teamBuildingFieldNames") final List<String> teamBuildingFieldNames,
-            @Param("jobRoleNames") final List<String> jobRoleNames,
-            @Param("skillNames") final List<String> skillNames,
+            @Param("teamBuildingFieldName") final List<String> teamBuildingFieldName,
+            @Param("teamBuildingFieldCount") final Long teamBuildingFieldCount,
+            @Param("jobRoleName") final List<String> jobRoleName,
+            @Param("jobRoleCount") final Long jobRoleCount,
+            @Param("skillName") final List<String> skillName,
+            @Param("skillCount") final Long skillCount,
             @Param("cityName") final String cityName,
             @Param("divisionName") final String divisionName,
             final Pageable pageable
