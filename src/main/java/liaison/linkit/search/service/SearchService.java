@@ -89,11 +89,18 @@ public class SearchService {
         log.info("cityName={}", cityName);
         log.info("divisionName={}", divisionName);
 
+        final Long teamBuildingFieldCount = (teamBuildingFieldName != null) ? (long) teamBuildingFieldName.size() : null;
+        final Long jobRoleCount = (jobRoleName != null) ? (long) jobRoleName.size() : null;
+        final Long skillCount = (skillName != null) ? (long) skillName.size() : null;
+
         // 미니 프로필 이력서에서 페이지네이션으로 조회
         final Page<MiniProfile> miniProfiles = miniProfileRepository.findAll(
                 teamBuildingFieldName,
+                teamBuildingFieldCount,
                 jobRoleName,
+                jobRoleCount,
                 skillName,
+                skillCount,
                 cityName,
                 divisionName,
                 pageable
@@ -113,11 +120,19 @@ public class SearchService {
             final String cityName,
             String divisionName
     ) {
+
+        final Long teamBuildingFieldCount = (teamBuildingFieldName != null) ? (long) teamBuildingFieldName.size() : null;
+        final Long jobRoleCount = (jobRoleName != null) ? (long) jobRoleName.size() : null;
+        final Long skillCount = (skillName != null) ? (long) skillName.size() : null;
+
         // 미니 프로필 이력서에서 페이지네이션으로 조회
         final Page<MiniProfile> miniProfiles = miniProfileRepository.findAll(
                 teamBuildingFieldName,
+                teamBuildingFieldCount,
                 jobRoleName,
+                jobRoleCount,
                 skillName,
+                skillCount,
                 cityName,
                 divisionName,
                 pageable
@@ -147,16 +162,27 @@ public class SearchService {
         // 해당 팀원 공고들을 찾는다.
         // 해당 팀원 공고와 연결된 팀 미니 프로필을 같이 반환한다.
 
+        final Long teamBuildingFieldCount = (teamBuildingFieldName != null) ? (long) teamBuildingFieldName.size() : null;
+        final Long jobRoleCount = (jobRoleName != null) ? (long) jobRoleName.size() : null;
+        final Long skillCount = (skillName != null) ? (long) skillName.size() : null;
+        final Long activityTagCount = (activityTagName != null) ? (long) activityTagName.size() : null;
+
+
         // 해당되는 모든 팀원 공고를 조회한다.
         Page<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementRepository.findAllByOrderByCreatedDateDesc(
                 teamBuildingFieldName,
+                teamBuildingFieldCount,
                 jobRoleName,
+                jobRoleCount,
                 skillName,
+                skillCount,
                 cityName,
                 divisionName,
                 activityTagName,
+                activityTagCount,
                 pageable
         );
+
         return teamMemberAnnouncements.map(this::convertToSearchTeamProfileResponse);
     }
 
@@ -172,13 +198,23 @@ public class SearchService {
             String divisionName,
             final List<String> activityTagName
     ) {
+        final Long teamBuildingFieldCount = (teamBuildingFieldName != null) ? (long) teamBuildingFieldName.size() : null;
+        final Long jobRoleCount = (jobRoleName != null) ? (long) jobRoleName.size() : null;
+        final Long skillCount = (skillName != null) ? (long) skillName.size() : null;
+        final Long activityTagCount = (activityTagName != null) ? (long) activityTagName.size() : null;
+
+        // 해당되는 모든 팀원 공고를 조회한다.
         Page<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementRepository.findAllByOrderByCreatedDateDesc(
                 teamBuildingFieldName,
+                teamBuildingFieldCount,
                 jobRoleName,
+                jobRoleCount,
                 skillName,
+                skillCount,
                 cityName,
                 divisionName,
                 activityTagName,
+                activityTagCount,
                 pageable
         );
         return teamMemberAnnouncements.map(teamMemberAnnouncement -> convertToSearchTeamProfileResponseAfterLogin(teamMemberAnnouncement, memberId));
