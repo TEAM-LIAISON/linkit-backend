@@ -133,6 +133,8 @@ public enum ExceptionCode {
     CANNOT_CREATE_PRIVATE_WISH_BECAUSE_OF_MAX_COUNT(8000, "내 이력서 찜하기 최대 개수에 도달했습니다. 더 이상 저장할 수 없어요."),
     CANNOT_CREATE_TEAM_WISH_BECAUSE_OF_MAX_COUNT(8001, "팀 소개서 찜하기 최대 개수에 도달했습니다. 더 이상 저장할 수 없어요."),
 
+    HAVE_TO_INPUT_BOTH_JOB_AND_SKILL(10000, "희망 역할과 보유 기술을 모두 입력해주세요"),
+
     // 팀 소개서 관련 항목
     NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),
     NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),

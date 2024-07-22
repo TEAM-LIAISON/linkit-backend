@@ -190,13 +190,17 @@ public class Profile extends BaseEntity {
 
     // 3.5.1. 내 이력서 직무/역할
     public void updateIsProfileJobRole(final boolean isProfileJobRole) {
+        log.info("isProfileJobRole={}", isProfileJobRole);
         this.isProfileJobRole = isProfileJobRole;
+
     }
 
     // 3.5.2. 내 이력서 보유 기술
     public void updateIsProfileSkill(final boolean isProfileSkill) {
         log.info("isProfileSkill={}", isProfileSkill);
         this.isProfileSkill = isProfileSkill;
+
+        // 모두 true인 경우
         if (this.isJobAndSkill != (this.isProfileJobRole && isProfileSkill)) {
             this.isJobAndSkill = !this.isJobAndSkill;
             if(this.isJobAndSkill){
