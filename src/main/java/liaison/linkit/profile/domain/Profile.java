@@ -10,6 +10,7 @@ import liaison.linkit.profile.domain.role.ProfileJobRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLRestriction;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import static lombok.AccessLevel.PROTECTED;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 @SQLRestriction("status = 'USABLE'")
+@Slf4j
 public class Profile extends BaseEntity {
 
     @Id
@@ -193,6 +195,7 @@ public class Profile extends BaseEntity {
 
     // 3.5.2. 내 이력서 보유 기술
     public void updateIsProfileSkill(final boolean isProfileSkill) {
+        log.info("isProfileSkill={}", isProfileSkill);
         this.isProfileSkill = isProfileSkill;
         if (this.isJobAndSkill != (this.isProfileJobRole && isProfileSkill)) {
             this.isJobAndSkill = !this.isJobAndSkill;
@@ -206,6 +209,7 @@ public class Profile extends BaseEntity {
 
     // 3.6. 희망 팀빌딩 분야 업데이트
     public void updateIsProfileTeamBuildingField(final boolean isProfileTeamBuildingField) {
+        log.info("isProfileTeamBuildingField={}", isProfileTeamBuildingField);
         this.isProfileTeamBuildingField = isProfileTeamBuildingField;
         if (isProfileTeamBuildingField) {
             addPerfectionDefault();
@@ -216,6 +220,7 @@ public class Profile extends BaseEntity {
 
     // 3.7. 활동 지역 및 위치 업데이트
     public void updateIsProfileRegion(final boolean isProfileRegion) {
+        log.info("isProfileRegion={}", isProfileRegion);
         this.isProfileRegion = isProfileRegion;
         if (isProfileRegion) {
             addPerfectionDefault();
@@ -226,6 +231,7 @@ public class Profile extends BaseEntity {
 
     // 3.8. 이력 업데이트
     public void updateIsAntecedents(final boolean isAntecedents) {
+        log.info("isAntecedents={}", isAntecedents);
         this.isAntecedents = isAntecedents;
         if (isAntecedents) {
             addPerfectionDefault();
@@ -236,6 +242,7 @@ public class Profile extends BaseEntity {
 
     // 3.9. 학력 업데이트
     public void updateIsEducation(final boolean isEducation) {
+        log.info("isEducation={}", isEducation);
         this.isEducation = isEducation;
         if (isEducation) {
             addPerfectionDefault();
@@ -246,6 +253,7 @@ public class Profile extends BaseEntity {
 
     // 3.10. 수상 업데이트
     public void updateIsAwards(final boolean isAwards) {
+        log.info("isAwards={}", isAwards);
         this.isAwards = isAwards;
         if (isAwards) {
             addPerfectionTen();

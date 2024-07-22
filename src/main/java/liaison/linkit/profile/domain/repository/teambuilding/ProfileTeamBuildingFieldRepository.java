@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface ProfileTeamBuildingFieldRepository extends JpaRepository<ProfileTeamBuildingField, Long> {
 
-    boolean existsByProfileId(final Long profileId);
+    boolean existsByProfileId(@Param("profileId") final Long profileId);
 
     @Query("SELECT profileTeamBuildingField FROM ProfileTeamBuildingField profileTeamBuildingField WHERE profileTeamBuildingField.profile.id = :profileId")
     List<ProfileTeamBuildingField> findAllByProfileId(@Param("profileId") final Long profileId);
