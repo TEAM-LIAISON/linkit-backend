@@ -145,13 +145,17 @@ public class AntecedentsService {
     public void delete(final Long memberId, final Long antecedentsId) {
         final Profile profile = getProfile(memberId);
         final Antecedents antecedents = getAntecedents(antecedentsId);
+
         antecedentsRepository.deleteById(antecedents.getId());
         log.info("삭제 완료");
+
         if (!antecedentsRepository.existsByProfileId(profile.getId())) {
+            log.info("더 이상 경력이 존재하지 않습니다.");
+            // 더 이상 경력이 존재하지 않다면
             profile.updateIsAntecedents(false);
-            profile.cancelPerfectionDefault();
             profile.updateMemberProfileTypeByCompletion();
         }
+        log.info("profile.getId={}의 경력이 아직 존재합니다.", profile.getId());
     }
 
     public void save(

@@ -13,7 +13,7 @@ import java.util.Optional;
 
 public interface AntecedentsRepository extends JpaRepository<Antecedents, Long> {
 
-    boolean existsByProfileId(final Long profileId);
+    boolean existsByProfileId(@Param("profileId") final Long profileId);
 
     Optional<Antecedents> findByProfileId(@Param("profileId") final Long profileId);
 
