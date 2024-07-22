@@ -237,6 +237,7 @@ public class Profile extends BaseEntity {
     public void updateIsAntecedents(final boolean isAntecedents) {
         log.info("isAntecedents={}", isAntecedents);
         this.isAntecedents = isAntecedents;
+        log.info("this.Antecedents={}", this.isAntecedents);
         if (isAntecedents) {
             addPerfectionDefault();
         } else {
@@ -338,24 +339,16 @@ public class Profile extends BaseEntity {
     public boolean getIsProfileRegion() {
         return isProfileRegion;
     }
-    public boolean getIsAntecedents() {
-        return isAntecedents;
-    }
+    public boolean getIsAntecedents() {return isAntecedents;}
     public boolean getIsEducation() {
         return isEducation;
     }
     public boolean getIsAwards() {
         return isAwards;
     }
-//    public boolean getIsAttach() {
-//        return isAttach;
-//    }
     public boolean getIsAttachUrl() {
         return isAttachUrl;
     }
-//    public boolean getIsAttachFile() {
-//        return isAttachFile;
-//    }
 
     // 3.4. 자기소개 초기화 및 삭제 메서드
     public void deleteIntroduction() {this.introduction = null;}

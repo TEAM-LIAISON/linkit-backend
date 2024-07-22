@@ -33,6 +33,7 @@ public class EducationController {
         return ResponseEntity.ok().build();
     }
 
+    // 학력 단일 생성
     @PostMapping("/education")
     @MemberOnly
     public ResponseEntity<Void> createEducation(

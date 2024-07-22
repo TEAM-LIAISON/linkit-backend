@@ -134,6 +134,9 @@ public enum ExceptionCode {
     CANNOT_CREATE_TEAM_WISH_BECAUSE_OF_MAX_COUNT(8001, "팀 소개서 찜하기 최대 개수에 도달했습니다. 더 이상 저장할 수 없어요."),
 
     HAVE_TO_INPUT_BOTH_JOB_AND_SKILL(10000, "희망 역할과 보유 기술을 모두 입력해주세요"),
+    HAVE_TO_INPUT_TEAM_BUILDING_FIELD(10001, "희망 팀빌딩 분야를 입력해주세요"),
+    HAVE_TO_INPUT_REGION(10002, "활동 지역 및 위치를 입력해주세요"),
+    HAVE_TO_INPUT_PRIVATE_ATTACH_URL(10003, "내 이력서의 첨부 URL을 입력해주세요"),
 
     // 팀 소개서 관련 항목
     NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),
