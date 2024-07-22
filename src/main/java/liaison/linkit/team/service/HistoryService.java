@@ -60,6 +60,12 @@ public class HistoryService {
             final Long memberId,
             final HistoryCreateRequest historyCreateRequest
     ) {
+        if (historyCreateRequest.getHistoryOneLineIntroduction().isEmpty() ||
+                historyCreateRequest.getHistoryIntroduction().isEmpty()
+        ) {
+            throw new BadRequestException(HAVE_TO_INPUT_HISTORY);
+        }
+
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
         if (teamProfile.getIsHistory()) {

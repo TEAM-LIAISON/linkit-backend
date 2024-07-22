@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_ACTIVITY_TAG_NAME;
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_REGION;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,9 +36,15 @@ public class ActivityController {
         if (activityCreateRequest.getActivityTagNames().isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_ACTIVITY_TAG_NAME);
         }
+
+        if (activityCreateRequest.getCityName().isEmpty() || activityCreateRequest.getDivisionName().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_REGION);
+        }
         
         // 활동 방식은 활동 방식 테이블에 저장
         activityService.saveActivityMethod(accessor.getMemberId(), activityCreateRequest);
+        // 무조건 다 지웠다가 다 저장함 -> 성공했다면 isActivityMethod -> true
+
         // 활동 지역은 활동 지역 테이블에 저장
         activityService.saveActivityRegion(accessor.getMemberId(), activityCreateRequest);
 

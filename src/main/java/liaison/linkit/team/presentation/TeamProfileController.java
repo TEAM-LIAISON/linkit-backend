@@ -102,7 +102,7 @@ public class TeamProfileController {
             log.info("historyResponse={}", historyResponse);
 
             // 4.10. 첨부
-            final TeamAttachResponse teamAttachResponse = getTeamAttach(accessor.getMemberId(), teamProfileIsValueResponse.isTeamAttach());
+            final TeamAttachResponse teamAttachResponse = getTeamAttach(accessor.getMemberId(), teamProfileIsValueResponse.isTeamAttachUrl());
             log.info("teamAttachResponse={}", teamAttachResponse);
 
             final TeamProfileResponse teamProfileResponse = teamProfileService.getTeamProfileResponse(

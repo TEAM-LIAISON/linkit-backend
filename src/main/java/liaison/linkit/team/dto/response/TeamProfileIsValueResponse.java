@@ -30,7 +30,7 @@ public class TeamProfileIsValueResponse {
     private final boolean isHistory;
 
     // 4.10. 첨부 (url, file) 둘 중 하나라도.
-    private final boolean isTeamAttach;
+    private final boolean isTeamAttachUrl;
 
     public static TeamProfileIsValueResponse teamProfileIsValue(
             final TeamProfile teamProfile
@@ -43,7 +43,7 @@ public class TeamProfileIsValueResponse {
                 teamProfile.getIsTeamIntroduction(),
                 teamProfile.getIsTeamMemberIntroduction(),
                 teamProfile.getIsHistory(),
-                teamProfile.getIsTeamAttach()
+                teamProfile.getIsTeamAttachUrl()
         );
     }
 }
