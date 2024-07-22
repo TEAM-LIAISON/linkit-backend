@@ -6,5 +6,7 @@ public enum MatchingStatus {
     REQUESTED,
 
     // 성사됨
-    SUCCESSFUL
+    SUCCESSFUL,
+
+    DENIED
 }
