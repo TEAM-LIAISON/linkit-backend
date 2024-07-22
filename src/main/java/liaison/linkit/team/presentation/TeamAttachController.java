@@ -4,21 +4,20 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.dto.request.attach.TeamAttachUrlCreateRequest;
 import liaison.linkit.team.service.TeamAttachService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_TEAM_ATTACH_URL;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
+@Slf4j
 public class TeamAttachController {
 
     private final TeamAttachService teamAttachService;
@@ -31,10 +30,11 @@ public class TeamAttachController {
             @RequestBody @Valid List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequests
     ) {
         if (teamAttachUrlCreateRequests.isEmpty()) {
-            throw new BadRequestException(HAVE_TO_INPUT_TEAM_ATTACH_URL);
+            log.info("teamAttachUrlCreateRequest가 비어있습니다.");
+            teamAttachService.deleteAllTeamAttachUrl(accessor.getMemberId());
+        } else{
+            teamAttachService.saveUrl(accessor.getMemberId(), teamAttachUrlCreateRequests);
         }
-
-        teamAttachService.saveUrl(accessor.getMemberId(), teamAttachUrlCreateRequests);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

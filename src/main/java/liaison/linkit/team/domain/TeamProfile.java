@@ -222,13 +222,12 @@ public class TeamProfile extends BaseEntity {
     // 4.10.1. 팀 첨부 링크 업데이트
     public void updateIsTeamAttachUrl(final boolean isTeamAttachUrl) {
         this.isTeamAttachUrl = isTeamAttachUrl;
-        updateIsTeamAttach(isTeamAttachUrl, this.isTeamAttachFile);
+        log.info("isTeamAttachUrl={}", isTeamAttachUrl);
     }
 
     // 4.10.2. 팀 첨부 파일 업데이트
     public void updateIsTeamAttachFile(final boolean isTeamAttachFile) {
         this.isTeamAttachFile = isTeamAttachFile;
-        updateIsTeamAttach(this.isTeamAttachUrl, isTeamAttachFile);
     }
 
     public boolean getIsTeamProfileTeamBuildingField() {

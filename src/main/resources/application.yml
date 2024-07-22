@@ -17,7 +17,7 @@ spring:
         use_sql_comments: true
         show_sql: false
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
 
   datasource:
     url: ${database.url}
@@ -36,13 +36,13 @@ spring:
   
   sql:
     init:
-      mode: never
+      mode: always
 
   batch:
     job:
-      enabled: false
+      enabled: true
     jdbc:
-      initialize-schema: never
+      initialize-schema: always
 
   security:
     oauth2:

@@ -4,22 +4,21 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.service.AttachService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_PRIVATE_ATTACH_URL;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
+@Slf4j
 public class AttachController {
 
     private final AttachService attachService;
@@ -32,9 +31,11 @@ public class AttachController {
             @RequestBody @Valid List<AttachUrlCreateRequest> attachUrlCreateRequests
     ) {
         if (attachUrlCreateRequests.isEmpty()) {
-            throw new BadRequestException(HAVE_TO_INPUT_PRIVATE_ATTACH_URL);
+            log.info("attachUrlCreateRequests 비어있습니다.");
+            attachService.deleteAllUrl(accessor.getMemberId());
+        } else {
+            attachService.saveUrl(accessor.getMemberId(), attachUrlCreateRequests);
         }
-        attachService.saveUrl(accessor.getMemberId(), attachUrlCreateRequests);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
