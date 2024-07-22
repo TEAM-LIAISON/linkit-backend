@@ -22,6 +22,8 @@ public interface PrivateWishRepository extends JpaRepository<PrivateWish, Long> 
     @Query("SELECT COUNT (pw) > 0 FROM PrivateWish pw WHERE pw.member.id = :memberId AND pw.profile.id = :profileId")
     boolean findByMemberIdAndProfileId(@Param("memberId") final Long memberId, @Param("profileId") final Long profileId);
 
+    @Modifying
+    @Transactional
     @Query("""
            UPDATE PrivateWish privateWish
            SET privateWish.status = 'DELETED'
