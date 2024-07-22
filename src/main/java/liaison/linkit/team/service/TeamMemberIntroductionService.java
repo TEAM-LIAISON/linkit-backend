@@ -47,12 +47,13 @@ public class TeamMemberIntroductionService {
             final Long memberId,
             final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
     ) {
+        // 모든 입력 값이 존재하는 상태로 넘어옴
         final TeamProfile teamProfile = getTeamProfile(memberId);
         // 저장 메서드 실행
-        saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
-
-        // 존재하지 않았던 경우
-        if (!teamProfile.getIsTeamMemberIntroduction()) {
+        if (teamProfile.getIsTeamMemberIntroduction()) {
+            saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
+        } else {
+            saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
             teamProfile.updateIsTeamMemberIntroduction(true);
             teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
@@ -114,13 +115,16 @@ public class TeamMemberIntroductionService {
             final Long memberId,
             final Long teamMemberIntroductionId
     ) {
+
         final TeamProfile teamProfile = getTeamProfile(memberId);
         final TeamMemberIntroduction teamMemberIntroduction = getTeamMemberIntroduction(teamMemberIntroductionId);
 
+        // 해당 팀원 소개 삭제
         teamMemberIntroductionRepository.deleteById(teamMemberIntroduction.getId());
 
+        // 존재하지 않는다면
         if (!teamMemberIntroductionRepository.existsByTeamProfileId(teamProfile.getId())) {
-            teamProfile.cancelTeamPerfectionFifteen();
+            teamProfile.updateIsTeamIntroduction(false);
             teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }

@@ -136,7 +136,6 @@ public class TeamProfileController {
         return ResponseEntity.ok().build();
     }
 
-
     // 4.3. 프로필 완성도
     private TeamCompletionResponse getTeamCompletionResponse(
             final Long memberId

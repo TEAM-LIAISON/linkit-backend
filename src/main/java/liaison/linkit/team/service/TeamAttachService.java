@@ -62,6 +62,7 @@ public class TeamAttachService {
             final List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequests
     ) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
+        // 존재 이력이 있으면 전체 삭제 먼저
         if (teamAttachUrlRepository.existsByTeamProfileId(teamProfile.getId())) {
             teamAttachUrlRepository.deleteAllByTeamProfileId(teamProfile.getId());
             teamProfile.updateIsTeamAttachUrl(false);
@@ -160,10 +161,12 @@ public class TeamAttachService {
         final TeamProfile teamProfile = getTeamProfile(memberId);
         final TeamAttachUrl teamAttachUrl = getTeamAttachUrl(teamAttachUrlId);
 
+        // 해당 팀 첨부 URL 단일 삭제
         teamAttachUrlRepository.deleteById(teamAttachUrl.getId());
 
+        // 해당 팀 첨부가 존재하지 않는다면
         if (!teamAttachUrlRepository.existsByTeamProfileId(teamProfile.getId())) {
-            teamProfile.cancelTeamPerfectionTwoPointFive();
+            teamProfile.updateIsTeamAttachUrl(false);
             teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }

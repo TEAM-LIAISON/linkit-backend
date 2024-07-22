@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.dto.request.onBoarding.OnBoardingFieldTeamInformRequest;
 import liaison.linkit.team.dto.response.OnBoardingTeamProfileResponse;
 import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
@@ -17,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_PRIVATE_ATTACH_URL;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
@@ -41,6 +43,10 @@ public class TeamOnBoardingController {
             @Auth final Accessor accessor,
             @RequestBody @Valid final OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest
     ) {
+        if (onBoardingFieldTeamInformRequest.getTeamBuildingFieldNames().isEmpty()) {
+            throw new BadRequestException(HAVE_TO_INPUT_PRIVATE_ATTACH_URL);
+        }
+
         // 일단 희망 팀빌딩 분야부터 처리
         teamProfileTeamBuildingFieldService.saveTeamBuildingField(accessor.getMemberId(), onBoardingFieldTeamInformRequest.getTeamBuildingFieldNames());
 

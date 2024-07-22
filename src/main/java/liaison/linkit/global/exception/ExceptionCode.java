@@ -137,6 +137,9 @@ public enum ExceptionCode {
     HAVE_TO_INPUT_TEAM_BUILDING_FIELD(10001, "희망 팀빌딩 분야를 입력해주세요"),
     HAVE_TO_INPUT_REGION(10002, "활동 지역 및 위치를 입력해주세요"),
     HAVE_TO_INPUT_PRIVATE_ATTACH_URL(10003, "내 이력서의 첨부 URL을 입력해주세요"),
+    HAVE_TO_INPUT_ACTIVITY_TAG_NAME(10004, "팀 소개서의 활동 방식을 입력해주세요"),
+    HAVE_TO_INPUT_TEAM_MEMBER_INTRODUCTION(10005, "팀원 소개 항목을 입력해주세요"),
+    HAVE_TO_INPUT_TEAM_ATTACH_URL(10006, "팀 소개서의 첨부 URL을 입력해주세요"),
 
     // 팀 소개서 관련 항목
     NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),
