@@ -29,6 +29,7 @@ public class RegionController {
             @Auth final Accessor accessor,
             @RequestBody @Valid ProfileRegionCreateRequest profileRegionCreateRequest
     ) {
+
         log.info("memberId={}의 프로필 지역 생성 요청이 들어왔습니다.", accessor.getMemberId());
         profileRegionService.save(accessor.getMemberId(), profileRegionCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();

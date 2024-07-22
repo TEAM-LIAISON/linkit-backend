@@ -99,6 +99,8 @@ public class AttachService {
             final List<AttachUrlCreateRequest> attachUrlCreateRequests
     ) {
         final Profile profile = getProfile(memberId);
+
+        // 기존에 존재 이력이 있다면
         if (attachUrlRepository.existsByProfileId(profile.getId())) {
             attachUrlRepository.deleteAllByProfileId(profile.getId());
             profile.updateIsAttachUrl(false);
