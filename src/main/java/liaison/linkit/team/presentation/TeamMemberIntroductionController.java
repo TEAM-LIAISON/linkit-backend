@@ -29,9 +29,9 @@ public class TeamMemberIntroductionController {
             @Auth final Accessor accessor,
             @RequestBody @Valid TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
     ) {
-        if (teamMemberIntroductionCreateRequest.getTeamMemberIntroductionText() == null ||
-                teamMemberIntroductionCreateRequest.getTeamMemberName() == null ||
-                teamMemberIntroductionCreateRequest.getTeamMemberRole() == null) {
+        if (teamMemberIntroductionCreateRequest.getTeamMemberIntroductionText().isEmpty() ||
+                teamMemberIntroductionCreateRequest.getTeamMemberName().isEmpty() ||
+                teamMemberIntroductionCreateRequest.getTeamMemberRole().isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_TEAM_MEMBER_INTRODUCTION);
         }
 

@@ -61,7 +61,7 @@ public class PrivateMatching extends BaseEntity {
         if (isAllow) {
             this.matchingStatus = MatchingStatus.SUCCESSFUL;
         } else {
-            this.matchingStatus = MatchingStatus.REQUESTED;
+            this.matchingStatus = MatchingStatus.DENIED;
         }
     }
 }

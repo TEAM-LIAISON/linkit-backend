@@ -162,8 +162,8 @@ public class MatchingService {
                 profile,
                 // 팀 소개서로 나한테 요청 보냄
                 SenderType.TEAM,
-                // 내 이력서로 요청을 보냈음을 저장
-                TEAM_PROFILE,
+                // 팀 소개서로 요청을 보냈음을 저장
+                PROFILE,
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
@@ -542,6 +542,7 @@ public class MatchingService {
         }
     }
 
+    // 팀 매칭 허용
     public void acceptTeamMatching(final Long teamMatchingId, final AllowMatchingRequest allowMatchingRequest) {
         final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
         if (allowMatchingRequest.getIsAllowMatching()) {
