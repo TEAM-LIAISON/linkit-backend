@@ -2,6 +2,8 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
+import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.repository.AntecedentsRepository;
@@ -28,7 +30,8 @@ import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
+import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,7 +47,9 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Slf4j
 public class BrowsePrivateProfileService {
 
+    private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
+    private final TeamProfileRepository teamProfileRepository;
     private final MiniProfileRepository miniProfileRepository;
     private final ProfileSkillRepository profileSkillRepository;
     private final SkillRepository skillRepository;
@@ -57,6 +62,11 @@ public class BrowsePrivateProfileService {
     private final MajorRepository majorRepository;
     private final AttachUrlRepository attachUrlRepository;
 
+    // 회원 조회
+    private Member getMember(final Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BY_MEMBER_ID));
+    }
 
     // 미니 프로필로 해당 내 이력서의 유효성 판단
     public void validatePrivateProfileByMiniProfile(final Long miniProfileId) {
@@ -121,5 +131,17 @@ public class BrowsePrivateProfileService {
                 awardsResponses,
                 attachResponse
         );
+    }
+
+    public boolean checkBrowseAuthority(final Long memberId) {
+        final Profile profile = profileRepository.findByMemberId(memberId).orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+        final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_ID));
+
+        if (profile.getCompletion() < 50 && teamProfile.getTeamProfileCompletion() < 50) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

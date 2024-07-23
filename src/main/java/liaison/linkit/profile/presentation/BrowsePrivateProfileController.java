@@ -3,7 +3,8 @@ package liaison.linkit.profile.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.browse.CheckBrowseToPrivateProfileAccess;
+import liaison.linkit.global.exception.BadRequestException;
+import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
@@ -50,12 +51,16 @@ public class BrowsePrivateProfileController {
     // 타겟 이력서 열람 컨트롤러
     @GetMapping("/browse/private/profile/{miniProfileId}")
     @MemberOnly
-    @CheckBrowseToPrivateProfileAccess
     public ResponseEntity<?> getBrowsePrivateProfile(
             @Auth final Accessor accessor,
             @PathVariable final Long miniProfileId
     ) {
         log.info("miniProfileId={}에 대한 내 이력서 열람 요청이 발생했습니다.", miniProfileId);
+
+        if (browsePrivateProfileService.checkBrowseAuthority(accessor.getMemberId())) {
+            throw new BadRequestException(ExceptionCode.NOT_ALLOW_BROWSE);
+        }
+
         try {
             // 1. 열람하고자 하는 내 이력서의 유효성을 판단한다.
             log.info("타겟 이력서 열람 유효성 검사 로직");
