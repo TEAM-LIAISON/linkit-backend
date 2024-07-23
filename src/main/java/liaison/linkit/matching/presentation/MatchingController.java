@@ -59,6 +59,7 @@ public class MatchingController {
             @PathVariable final Long profileId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
+
         matchingService.createTeamProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

@@ -16,11 +16,13 @@ import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseTeamMemberAnnouncementResponse;
+import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementSkill;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
+import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementJobRoleRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementSkillRepository;
@@ -39,6 +41,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
@@ -58,6 +61,7 @@ public class WishService {
     private final ProfileJobRoleRepository profileJobRoleRepository;
     private final MiniProfileKeywordRepository miniProfileKeywordRepository;
     private final TeamMiniProfileKeywordRepository teamMiniProfileKeywordRepository;
+    private final TeamProfileRepository teamProfileRepository;
 
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
@@ -93,6 +97,11 @@ public class WishService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
     }
 
+    private TeamProfile getTeamProfile(final Long memberId) {
+        return teamProfileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
+    }
+
     private Profile getProfileByMiniProfileId(
             final Long miniProfileId
     ) {
@@ -110,6 +119,11 @@ public class WishService {
         final Member member = getMember(memberId);
         // 상대방의 내 이력서를
         final Profile profile = getProfileByMiniProfileId(miniProfileId);
+
+        if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
+            throw new BadRequestException(NOT_ALLOW_P2P_WISH);
+        }
+
         // 찜한다
         final PrivateWish privateWish = new PrivateWish(
                 null,
@@ -144,6 +158,10 @@ public class WishService {
 
         final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementRepository.findById(teamMemberAnnouncementId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID));
+
+        if (Objects.equals(getTeamProfile(memberId).getId(), teamMemberAnnouncement.getTeamProfile().getId())) {
+            throw new BadRequestException(NOT_ALLOW_P2T_WISH);
+        }
 
         final TeamWish teamWish = new TeamWish(
                 null,
