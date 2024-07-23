@@ -773,7 +773,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Tue, 30 Jul 2024 06:13:50 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Tue, 30 Jul 2024 06:41:28 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -3291,7 +3291,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2918
+Content-Length: 2972
 
 {
   "teamMiniProfileResponse" : {
@@ -3323,14 +3323,16 @@ Content-Length: 2918
     "jobRoleName" : "기획·경영",
     "mainBusiness" : "주요 업무입니다. (첫번째 팀원 공고)",
     "skillNames" : [ "서비스 기획", "데이터 엔지니어" ],
-    "applicationProcess" : "지원 절차입니다. (첫번째 팀원 공고)"
+    "applicationProcess" : "지원 절차입니다. (첫번째 팀원 공고)",
+    "isTeamSaved" : false
   }, {
     "id" : 2,
     "teamName" : "리에종",
     "jobRoleName" : "디자인",
     "mainBusiness" : "주요 업무입니다. (두번째 팀원 공고)",
     "skillNames" : [ "웹 디자인", "앱 디자인" ],
-    "applicationProcess" : "지원 절차입니다. (두번째 팀원 공고)"
+    "applicationProcess" : "지원 절차입니다. (두번째 팀원 공고)",
+    "isTeamSaved" : false
   } ],
   "activityResponse" : {
     "activityTagName" : [ "사무실 있음", "비대면 활동" ],
@@ -4867,7 +4869,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1024
+Content-Length: 1018
 
 {
   "content" : [ {
@@ -4881,7 +4883,7 @@ Content-Length: 1024
       "teamLogoImageUrl" : "https://image.linkit.im/images/linkit_logo.png",
       "teamKeywordNames" : [ "재택 가능", "Pre-A", "사수 있음", "스톡 제공" ]
     },
-    "browseTeamMemberAnnouncementResponse" : {
+    "teamMemberAnnouncementResponse" : {
       "id" : 1,
       "teamName" : "리에종",
       "jobRoleName" : "개발·데이터",
@@ -4963,37 +4965,37 @@ Content-Length: 1024
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 키워드</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.teamName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.jobRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.jobRoleName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 직무 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.mainBusiness</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.mainBusiness</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주요 업무</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.skillNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.skillNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">요구되는 기술 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.applicationProcess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.applicationProcess</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지원 절차</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.isTeamSaved</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.isTeamSaved</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인 사용자가 해당 팀원 공고 찜한 여부</p></td>
 </tr>
@@ -5063,7 +5065,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1024
+Content-Length: 1018
 
 {
   "content" : [ {
@@ -5077,7 +5079,7 @@ Content-Length: 1024
       "teamLogoImageUrl" : "https://image.linkit.im/images/linkit_logo.png",
       "teamKeywordNames" : [ "재택 가능", "Pre-A", "사수 있음", "스톡 제공" ]
     },
-    "browseTeamMemberAnnouncementResponse" : {
+    "teamMemberAnnouncementResponse" : {
       "id" : 1,
       "teamName" : "리에종",
       "jobRoleName" : "개발·데이터",
@@ -5159,37 +5161,37 @@ Content-Length: 1024
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 키워드</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.teamName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.jobRoleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.jobRoleName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀원 공고 직무 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.mainBusiness</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.mainBusiness</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">주요 업무</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.skillNames</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.skillNames</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">요구되는 기술 목록</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.applicationProcess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.applicationProcess</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지원 절차</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].browseTeamMemberAnnouncementResponse.isTeamSaved</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>content[].teamMemberAnnouncementResponse.isTeamSaved</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인 사용자가 해당 팀원 공고 찜한 여부</p></td>
 </tr>

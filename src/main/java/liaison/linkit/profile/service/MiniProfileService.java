@@ -19,7 +19,6 @@ import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
 import liaison.linkit.wish.domain.repository.PrivateWishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -198,7 +197,7 @@ public class MiniProfileService {
     }
 
     @Transactional(readOnly = true)
-    public BrowseMiniProfileResponse getBrowsePersonalMiniProfile(final Long memberId, final Long profileId) {
+    public MiniProfileResponse getBrowsePersonalMiniProfile(final Long memberId, final Long profileId) {
         final Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
 
@@ -217,7 +216,7 @@ public class MiniProfileService {
 
         final boolean isPrivateSaved = privateWishRepository.findByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
 
-        return BrowseMiniProfileResponse.personalBrowseMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName(), jobRoleNames, isPrivateSaved);
+        return MiniProfileResponse.personalBrowseMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName(), jobRoleNames, isPrivateSaved);
     }
 
     private List<ProfileJobRole> getProfileJobRoleList(final Long profileId) {

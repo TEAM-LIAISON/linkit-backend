@@ -320,7 +320,8 @@ public class SearchService {
                 miniProfile.isActivate(),
                 myKeywordNames,
                 memberName,
-                jobRoleNames
+                jobRoleNames,
+                false
         );
     }
 
