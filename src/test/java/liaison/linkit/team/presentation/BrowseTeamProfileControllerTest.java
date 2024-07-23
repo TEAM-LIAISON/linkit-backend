@@ -142,7 +142,8 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
                 "기획·경영",
                 "주요 업무입니다. (첫번째 팀원 공고)",
                 Arrays.asList("서비스 기획", "데이터 엔지니어"),
-                "지원 절차입니다. (첫번째 팀원 공고)"
+                "지원 절차입니다. (첫번째 팀원 공고)",
+                false
         );
 
         final TeamMemberAnnouncementResponse secondTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
@@ -151,7 +152,8 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
                 "디자인",
                 "주요 업무입니다. (두번째 팀원 공고)",
                 Arrays.asList("웹 디자인", "앱 디자인"),
-                "지원 절차입니다. (두번째 팀원 공고)"
+                "지원 절차입니다. (두번째 팀원 공고)",
+                false
         );
 
 

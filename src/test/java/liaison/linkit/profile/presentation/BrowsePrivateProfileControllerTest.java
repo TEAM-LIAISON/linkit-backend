@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.member.domain.type.ProfileType;
-import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
@@ -15,11 +13,11 @@ import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
+import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
-import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -83,7 +81,6 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        given(profileBrowseAccessInterceptor.isAccessJudge(any(ProfileType.class), any(TeamProfileType.class))).willReturn(true);
     }
 
     private ResultActions performGetBrowsePrivateProfile(
@@ -115,11 +112,11 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                         profileIsValueResponse.isJobAndSkill()
         );
 
-        final BrowseMiniProfileResponse browseMiniProfileResponse = new BrowseMiniProfileResponse(
+        final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
                 1L, "시니어 소프트웨어 개발자", "https://image.linkit.im/images/linkit_logo.png", true,
                 Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"), "권동민", Arrays.asList("개발·데이터"), true
         );
-        given(miniProfileService.getBrowsePersonalMiniProfile(1L, 1L)).willReturn(browseMiniProfileResponse);
+        given(miniProfileService.getBrowsePersonalMiniProfile(1L, 1L)).willReturn(miniProfileResponse);
 
         final CompletionResponse completionResponse = new CompletionResponse(
                 "100.0", true, true, true, true, true, true, true, true
@@ -182,7 +179,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                 any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(BrowsePrivateProfileResponse.privateProfile(
                 1L,
-                browseMiniProfileResponse,
+                miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 jobAndSkillResponse,

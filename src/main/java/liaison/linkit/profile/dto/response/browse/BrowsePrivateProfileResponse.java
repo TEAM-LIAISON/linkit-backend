@@ -6,10 +6,10 @@ import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
+import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class BrowsePrivateProfileResponse {
 
     private final Long profileId;
-    private final BrowseMiniProfileResponse browseMiniProfileResponse;
+    private final MiniProfileResponse miniProfileResponse;
     private final CompletionResponse completionResponse;
     private final ProfileIntroductionResponse profileIntroductionResponse;
     private final JobAndSkillResponse jobAndSkillResponse;
@@ -33,7 +33,7 @@ public class BrowsePrivateProfileResponse {
 
     public static BrowsePrivateProfileResponse privateProfile(
             final Long profileId,
-            final BrowseMiniProfileResponse browseMiniProfileResponse,
+            final MiniProfileResponse miniProfileResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
             final JobAndSkillResponse jobAndSkillResponse,
@@ -46,7 +46,7 @@ public class BrowsePrivateProfileResponse {
     ) {
         return new BrowsePrivateProfileResponse(
                 profileId,
-                browseMiniProfileResponse,
+                miniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 jobAndSkillResponse,
