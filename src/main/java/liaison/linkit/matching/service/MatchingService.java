@@ -123,6 +123,9 @@ public class MatchingService {
         log.info("memberId={}가 매칭 요청을 보냅니다.", memberId);
 
         final Profile profile = getProfileById(profileId);
+        if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
+            throw new BadRequestException(NOT_ALLOW_P2P_MATCHING);
+        }
 
         // 새로운 매칭 객체를 생성한다.
         final PrivateMatching newPrivateMatching = new PrivateMatching(
@@ -154,6 +157,10 @@ public class MatchingService {
     ) {
         final Member member = getMember(memberId);
         final Profile profile = getProfileById(profileId);
+        if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
+            throw new BadRequestException(NOT_ALLOW_T2P_MATCHING);
+        }
+
         final PrivateMatching newPrivateMatching = new PrivateMatching(
                 null,
                 // 요청 보낸 회원
@@ -185,6 +192,11 @@ public class MatchingService {
 
         // 팀원 공고 객체 조회
         final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
+
+        if (Objects.equals(getTeamProfile(memberId).getId(), teamMemberAnnouncement.getTeamProfile().getId())) {
+            throw new BadRequestException(NOT_ALLOW_T2T_MATCHING);
+        }
+
 
         // 해당 팀원 공고 객체에 대한 팀 매칭 객체 생성
         final TeamMatching newTeamMatching = new TeamMatching(
@@ -223,6 +235,10 @@ public class MatchingService {
 
         // 팀원 공고 객체 조회
         final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
+
+        if (Objects.equals(getTeamProfile(memberId).getId(), teamMemberAnnouncement.getTeamProfile().getId())) {
+            throw new BadRequestException(NOT_ALLOW_P2T_MATCHING);
+        }
 
         final TeamMatching newTeamMatching = new TeamMatching(
                 null,
