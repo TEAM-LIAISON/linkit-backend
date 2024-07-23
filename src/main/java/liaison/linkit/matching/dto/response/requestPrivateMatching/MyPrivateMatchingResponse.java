@@ -31,6 +31,7 @@ public class MyPrivateMatchingResponse {
     // 어떤 이력/소개서에 매칭 요청을 보냈는지
     private final boolean isRequestTeamProfile;
 
+    // 내가 매칭 요청 보낸 것
     public static List<MyPrivateMatchingResponse> myPrivateMatchingResponseList(
             final List<PrivateMatching> privateMatchingList
     ) {

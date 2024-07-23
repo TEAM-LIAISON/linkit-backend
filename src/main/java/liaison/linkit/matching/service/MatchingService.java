@@ -289,12 +289,13 @@ public class MatchingService {
         List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Collections.emptyList();
         List<MyTeamMatchingResponse> myTeamMatchingResponseList = Collections.emptyList();
 
-
+        // 내 이력서에 매칭 요청 보낸 것
         if (profileRepository.existsByMemberId(memberId)) {
             final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByMemberIdAndMatchingStatus(memberId);
             myPrivateMatchingResponseList = MyPrivateMatchingResponse.myPrivateMatchingResponseList(privateMatchingList);
         }
 
+        // 내가 팀 소개서에 매칭 요청 보낸 것
         if (teamProfileRepository.existsByMemberId(memberId)) {
             final List<TeamMatching> teamMatchingList = teamMatchingRepository.findByMemberIdAndMatchingStatus(memberId);
             myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamMatchingList);
