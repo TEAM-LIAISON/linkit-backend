@@ -20,6 +20,7 @@ public class  TeamMemberAnnouncementResponse {
     private final String mainBusiness;
     private final List<String> skillNames;
     private final String applicationProcess;
+    private final Boolean isTeamSaved;
 
     public static TeamMemberAnnouncementResponse of(
             final TeamMemberAnnouncement teamMemberAnnouncement,
@@ -46,8 +47,38 @@ public class  TeamMemberAnnouncementResponse {
                 jobRoleName,
                 teamMemberAnnouncement.getMainBusiness(),
                 skillNames,
-                teamMemberAnnouncement.getApplicationProcess()
+                teamMemberAnnouncement.getApplicationProcess(),
+                false
         );
     }
 
+    public static TeamMemberAnnouncementResponse afterLogin(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final String teamName,
+            final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole,
+            final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList,
+            final Boolean isTeamSaved
+    ) {
+        final JobRole jobRole = teamMemberAnnouncementJobRole.getJobRole();
+
+        final String jobRoleName = jobRole.getJobRoleName();
+
+        final List<Skill> skillList = teamMemberAnnouncementSkillList.stream()
+                .map(TeamMemberAnnouncementSkill::getSkill)
+                .toList();
+
+        final List<String> skillNames = skillList.stream()
+                .map(Skill::getSkillName)
+                .toList();
+
+        return new TeamMemberAnnouncementResponse(
+                teamMemberAnnouncement.getId(),
+                teamName,
+                jobRoleName,
+                teamMemberAnnouncement.getMainBusiness(),
+                skillNames,
+                teamMemberAnnouncement.getApplicationProcess(),
+                isTeamSaved
+        );
+    }
 }

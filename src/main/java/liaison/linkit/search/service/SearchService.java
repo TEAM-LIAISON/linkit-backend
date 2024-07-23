@@ -16,7 +16,6 @@ import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.search.dto.response.SearchTeamProfileResponse;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
-import liaison.linkit.search.dto.response.browseAfterLogin.BrowseTeamMemberAnnouncementResponse;
 import liaison.linkit.search.dto.response.browseAfterLogin.SearchBrowseTeamProfileResponse;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
@@ -249,7 +248,7 @@ public class SearchService {
 
         return new SearchBrowseTeamProfileResponse(
                 TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
-                BrowseTeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList, isTeamSaved)
+                TeamMemberAnnouncementResponse.afterLogin(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList, isTeamSaved)
         );
     }
 

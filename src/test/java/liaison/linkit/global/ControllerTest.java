@@ -10,6 +10,8 @@ import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.matching.MatchingAccessInterceptor;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.browse.ProfileBrowseAccessInterceptor;
+import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,10 +44,10 @@ public abstract class ControllerTest {
     protected AdminLoginArgumentResolver adminLoginArgumentResolver;
 
     @Autowired
-    ProfileBrowseAccessInterceptor profileBrowseAccessInterceptor;
+    protected ProfileBrowseAccessInterceptor profileBrowseAccessInterceptor;
 
     @Autowired
-    MatchingAccessInterceptor matchingAccessInterceptor;
+    protected MatchingAccessInterceptor matchingAccessInterceptor;
 
     @MockBean
     protected JwtProvider jwtProvider;
@@ -58,6 +60,12 @@ public abstract class ControllerTest {
 
     @MockBean
     protected MemberRepository memberRepository;
+
+    @MockBean
+    protected ProfileRepository profileRepository;
+
+    @MockBean
+    protected TeamProfileRepository teamProfileRepository;
 
     @MockBean
     BearerAuthorizationExtractor bearerExtractor;

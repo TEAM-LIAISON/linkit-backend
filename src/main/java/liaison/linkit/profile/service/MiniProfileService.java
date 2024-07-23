@@ -19,6 +19,8 @@ import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
+import liaison.linkit.wish.domain.repository.PrivateWishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -43,6 +45,8 @@ public class MiniProfileService {
     private final ProfileJobRoleRepository profileJobRoleRepository;
     private final S3Uploader s3Uploader;
     private final ApplicationEventPublisher publisher;
+
+    private final PrivateWishRepository privateWishRepository;
 
     // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
     private Profile getProfile(final Long memberId) {
@@ -194,7 +198,7 @@ public class MiniProfileService {
     }
 
     @Transactional(readOnly = true)
-    public MiniProfileResponse getBrowserPersonalMiniProfile(final Long profileId) {
+    public BrowseMiniProfileResponse getBrowsePersonalMiniProfile(final Long memberId, final Long profileId) {
         final Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
 
@@ -211,7 +215,9 @@ public class MiniProfileService {
         final List<String> jobRoleNames = getJobRoleNames(profile.getMember().getId());
         log.info("대상 객체의 희망 직무 및 역할을 조회하였습니다.");
 
-        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName(), jobRoleNames);
+        final boolean isPrivateSaved = privateWishRepository.findByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
+
+        return BrowseMiniProfileResponse.personalBrowseMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName(), jobRoleNames, isPrivateSaved);
     }
 
     private List<ProfileJobRole> getProfileJobRoleList(final Long profileId) {
@@ -274,5 +280,10 @@ public class MiniProfileService {
         return jobRoleList.stream()
                 .map(JobRole::getJobRoleName)
                 .toList();
+    }
+
+    public boolean getIsPrivateSaved(final Long memberId, final Long profileId) {
+        final MiniProfile miniProfile = getMiniProfile(profileId);
+        return privateWishRepository.findByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
     }
 }
