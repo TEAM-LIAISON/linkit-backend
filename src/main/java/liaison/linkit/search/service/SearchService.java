@@ -216,6 +216,7 @@ public class SearchService {
                 activityTagCount,
                 pageable
         );
+
         return teamMemberAnnouncements.map(teamMemberAnnouncement -> convertToSearchTeamProfileResponseAfterLogin(teamMemberAnnouncement, memberId));
     }
 

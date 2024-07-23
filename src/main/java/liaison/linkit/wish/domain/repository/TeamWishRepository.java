@@ -36,4 +36,9 @@ public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
     void deleteByMemberId(@Param("memberId") final Long memberId);
 
     boolean existsByMemberId(@Param("memberId") final Long memberId);
+
+    @Query("SELECT tw FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = :teamMemberAnnouncementId AND tw.member.id = :memberId")
+    Optional<TeamWish> findByMemberIdAndTeamMemberAnnouncementId(final Long teamMemberAnnouncementId, final Long memberId);
+
+
 }
