@@ -15,7 +15,6 @@ import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepositor
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
-import liaison.linkit.search.dto.response.browseAfterLogin.BrowseTeamMemberAnnouncementResponse;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
@@ -28,6 +27,7 @@ import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncement
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementSkillRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileKeywordRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
+import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import liaison.linkit.wish.domain.PrivateWish;
 import liaison.linkit.wish.domain.TeamWish;
@@ -252,7 +252,7 @@ public class WishService {
 
         return new WishTeamProfileResponse(
                 TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
-                BrowseTeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList, isTeamSaved)
+                TeamMemberAnnouncementResponse.afterLogin(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList, isTeamSaved)
         );
     }
 
