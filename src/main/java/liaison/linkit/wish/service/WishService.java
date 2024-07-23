@@ -159,6 +159,7 @@ public class WishService {
         final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementRepository.findById(teamMemberAnnouncementId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID));
 
+        // 나의 팀 프로필의 ID -> 내가 찜한 팀원 공고의 팀 프로필과 같은지
         if (Objects.equals(getTeamProfile(memberId).getId(), teamMemberAnnouncement.getTeamProfile().getId())) {
             throw new BadRequestException(NOT_ALLOW_P2T_WISH);
         }
@@ -184,7 +185,7 @@ public class WishService {
         final Member member = getMember(memberId);
 
         // 삭제하고자 하는 팀 찜하기 객체 조회
-        final TeamWish teamWish = teamWishRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
+        final TeamWish teamWish = teamWishRepository.findByMemberIdAndTeamMemberAnnouncementId(teamMemberAnnouncementId, memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_WISH_BY_TEAM_MEMBER_ANNOUNCEMENT_ID));
 
         // 바로 삭제
