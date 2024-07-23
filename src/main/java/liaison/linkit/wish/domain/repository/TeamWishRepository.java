@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
 
     @Query("SELECT tw FROM TeamWish tw WHERE tw.member.id = : memberId")
-    List<TeamWish> findAllByMemberId(@Param("memberID") final Long memberId);
+    List<TeamWish> findAllByMemberId(@Param("memberId") final Long memberId);
 
     @Modifying
     @Transactional
