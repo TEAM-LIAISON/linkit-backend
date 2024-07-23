@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
 
-    @Query("SELECT tw FROM TeamWish tw WHERE tw.member.id = : memberId")
+    @Query("SELECT tw FROM TeamWish tw WHERE tw.member.id = :memberId")
     List<TeamWish> findAllByMemberId(@Param("memberId") final Long memberId);
 
     @Modifying
@@ -20,7 +20,7 @@ public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
     @Query("DELETE FROM TeamWish tw WHERE tw.member.id = :memberId AND tw.teamMemberAnnouncement.id = :teamMemberAnnouncementId")
     void deleteByMemberIdAndTeamMemberAnnouncementId(@Param("memberId") final Long memberId, @Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
 
-    @Query("SELECT tw FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = : teamMemberAnnouncementId")
+    @Query("SELECT tw FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = :teamMemberAnnouncementId")
     Optional<TeamWish> findByTeamMemberAnnouncementId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
 
     @Query("SELECT COUNT(tw) > 0 FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = :teamMemberAnnouncementId AND tw.member.id = :memberId")
@@ -36,4 +36,9 @@ public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
     void deleteByMemberId(@Param("memberId") final Long memberId);
 
     boolean existsByMemberId(@Param("memberId") final Long memberId);
+
+    @Query("SELECT tw FROM TeamWish tw WHERE tw.teamMemberAnnouncement.id = :teamMemberAnnouncementId AND tw.member.id = :memberId")
+    Optional<TeamWish> findByMemberIdAndTeamMemberAnnouncementId(final Long teamMemberAnnouncementId, final Long memberId);
+
+
 }

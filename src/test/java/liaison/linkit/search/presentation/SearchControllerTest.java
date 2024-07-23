@@ -8,7 +8,6 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.search.dto.response.SearchTeamProfileResponse;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
-import liaison.linkit.search.dto.response.browseAfterLogin.BrowseTeamMemberAnnouncementResponse;
 import liaison.linkit.search.dto.response.browseAfterLogin.SearchBrowseTeamProfileResponse;
 import liaison.linkit.search.service.SearchService;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
@@ -176,7 +175,8 @@ public class SearchControllerTest extends ControllerTest {
                 "개발·데이터",
                 "주요 업무입니다.",
                 Arrays.asList("서버 개발", "DevOps"),
-                "지원 절차입니다."
+                "지원 절차입니다.",
+                false
         );
 
         final SearchTeamProfileResponse searchTeamProfileResponse = new SearchTeamProfileResponse(
@@ -228,6 +228,9 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.mainBusiness").description("주요 업무"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.skillNames").description("요구되는 기술 목록"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.applicationProcess").description("지원 절차"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.isTeamSaved").description("팀원 공고 찜하기 여부"),
+
+
                                         // 페이지와 관련된 필드 추가
                                         subsectionWithPath("pageable").ignored(),
                                         subsectionWithPath("sort").ignored(),
@@ -259,7 +262,7 @@ public class SearchControllerTest extends ControllerTest {
                 Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
         );
 
-        final BrowseTeamMemberAnnouncementResponse browseTeamMemberAnnouncementResponse = new BrowseTeamMemberAnnouncementResponse(
+        final TeamMemberAnnouncementResponse teamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 1L,
                 "리에종",
                 "개발·데이터",
@@ -271,7 +274,7 @@ public class SearchControllerTest extends ControllerTest {
 
         final SearchBrowseTeamProfileResponse searchTeamProfileResponse = new SearchBrowseTeamProfileResponse(
                 teamMiniProfileResponse,
-                browseTeamMemberAnnouncementResponse
+                teamMemberAnnouncementResponse
         );
 
         Page<SearchBrowseTeamProfileResponse> page = new PageImpl<>(Collections.singletonList(searchTeamProfileResponse));
@@ -320,13 +323,13 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].teamMiniProfileResponse.teamLogoImageUrl").description("팀 로고 이미지 URL"),
                                         fieldWithPath("content[].teamMiniProfileResponse.teamKeywordNames").description("팀 키워드").optional(),
 
-                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.id").description("팀원 공고 ID"),
-                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.teamName").description("팀 이름"),
-                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.jobRoleName").description("팀원 공고 직무 이름"),
-                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.mainBusiness").description("주요 업무"),
-                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.skillNames").description("요구되는 기술 목록"),
-                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.applicationProcess").description("지원 절차"),
-                                        fieldWithPath("content[].browseTeamMemberAnnouncementResponse.isTeamSaved").type(JsonFieldType.BOOLEAN).description("로그인 사용자가 해당 팀원 공고 찜한 여부"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.id").description("팀원 공고 ID"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.teamName").description("팀 이름"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.jobRoleName").description("팀원 공고 직무 이름"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.mainBusiness").description("주요 업무"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.skillNames").description("요구되는 기술 목록"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.applicationProcess").description("지원 절차"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.isTeamSaved").type(JsonFieldType.BOOLEAN).description("로그인 사용자가 해당 팀원 공고 찜한 여부"),
 
                                         // 페이지와 관련된 필드 추가
                                         subsectionWithPath("pageable").ignored(),
@@ -427,7 +430,8 @@ public class SearchControllerTest extends ControllerTest {
                 true,
                 Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
                 "권동민",
-                Arrays.asList("개발·데이터")
+                Arrays.asList("개발·데이터"),
+                false
         );
 
         Page<MiniProfileResponse> page = new PageImpl<>(Collections.singletonList(miniProfileResponse));
@@ -464,6 +468,7 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].myKeywordNames").description("키워드 목록"),
                                         fieldWithPath("content[].memberName").description("회원 이름"),
                                         fieldWithPath("content[].jobRoleNames").type(JsonFieldType.ARRAY).description("직무 및 역할 이름 배열"),
+                                        fieldWithPath("content[].isPrivateSaved").type(JsonFieldType.BOOLEAN).description("찜하기 여부"),
 
                                         fieldWithPath("pageable").description("페이징 처리 객체"),
                                         fieldWithPath("sort.empty").description("정렬 규칙이 비어 있는지 여부"),

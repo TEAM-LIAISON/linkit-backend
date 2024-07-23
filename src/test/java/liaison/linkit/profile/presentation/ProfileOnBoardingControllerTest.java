@@ -233,7 +233,8 @@ public class ProfileOnBoardingControllerTest extends ControllerTest {
                 true,
                 Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
                 "권동민",
-                Arrays.asList("개발·데이터")
+                Arrays.asList("개발·데이터"),
+                false
         );
 
         given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);

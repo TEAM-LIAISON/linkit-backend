@@ -3,7 +3,6 @@ package liaison.linkit.profile.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.browse.CheckBrowseToPrivateProfileAccess;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.attach.AttachResponse;
@@ -17,6 +16,7 @@ import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.service.*;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -50,7 +50,6 @@ public class BrowsePrivateProfileController {
     // 타겟 이력서 열람 컨트롤러
     @GetMapping("/browse/private/profile/{miniProfileId}")
     @MemberOnly
-    @CheckBrowseToPrivateProfileAccess
     public ResponseEntity<?> getBrowsePrivateProfile(
             @Auth final Accessor accessor,
             @PathVariable final Long miniProfileId
@@ -69,7 +68,7 @@ public class BrowsePrivateProfileController {
             final ProfileIsValueResponse profileIsValueResponse = browsePrivateProfileService.getProfileIsValue(browseTargetPrivateProfileId);
             log.info("profileIsValueResponse={}", profileIsValueResponse);
 
-            final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(browseTargetPrivateProfileId, profileIsValueResponse.isMiniProfile());
+            final MiniProfileResponse miniProfileResponse = getBrowseMiniProfileResponse(accessor.getMemberId(), browseTargetPrivateProfileId, profileIsValueResponse.isMiniProfile());
             log.info("miniProfileResponse={}", miniProfileResponse);
 
             final CompletionResponse completionResponse = getCompletionResponse(browseTargetPrivateProfileId);
@@ -223,7 +222,8 @@ public class BrowsePrivateProfileController {
     }
 
     // 회원 미니 프로필
-    private MiniProfileResponse getMiniProfileResponse(
+    private MiniProfileResponse getBrowseMiniProfileResponse(
+            final Long memberId,
             final Long browseTargetPrivateProfileId,
             final boolean isMiniProfile
     ) {
@@ -231,7 +231,7 @@ public class BrowsePrivateProfileController {
         if (isMiniProfile) {
             miniProfileService.validateMiniProfileByTargetProfileId(browseTargetPrivateProfileId);
             log.info("targetPrivateProfileId={}가 유효합니다. in browsePrivateProfileController", browseTargetPrivateProfileId);
-            return miniProfileService.getBrowserPersonalMiniProfile(browseTargetPrivateProfileId);
+            return miniProfileService.getBrowsePersonalMiniProfile(memberId, browseTargetPrivateProfileId);
         } else {
             final String memberName = miniProfileService.getMemberName(browseTargetPrivateProfileId);
             final List<String> jobRoleNames = miniProfileService.getJobRoleNames(browseTargetPrivateProfileId);

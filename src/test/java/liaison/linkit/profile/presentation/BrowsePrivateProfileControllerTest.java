@@ -114,9 +114,9 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
 
         final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
                 1L, "시니어 소프트웨어 개발자", "https://image.linkit.im/images/linkit_logo.png", true,
-                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"), "권동민", Arrays.asList("개발·데이터")
+                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"), "권동민", Arrays.asList("개발·데이터"), true
         );
-        given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
+        given(miniProfileService.getBrowsePersonalMiniProfile(1L, 1L)).willReturn(miniProfileResponse);
 
         final CompletionResponse completionResponse = new CompletionResponse(
                 "100.0", true, true, true, true, true, true, true, true

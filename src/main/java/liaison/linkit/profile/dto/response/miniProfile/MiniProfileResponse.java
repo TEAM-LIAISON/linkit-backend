@@ -19,6 +19,7 @@ public class MiniProfileResponse {
     private final List<String> myKeywordNames;
     private final String memberName;
     private final List<String> jobRoleNames;
+    private final Boolean isPrivateSaved;
 
     public MiniProfileResponse(final String memberName, final List<String> jobRoleNames) {
         this.id = null;
@@ -28,6 +29,7 @@ public class MiniProfileResponse {
         this.myKeywordNames = null;
         this.memberName = memberName;
         this.jobRoleNames = jobRoleNames;
+        this.isPrivateSaved = false;
     }
 
     public static MiniProfileResponse personalMiniProfile(
@@ -47,7 +49,32 @@ public class MiniProfileResponse {
                 miniProfile.isActivate(),
                 myKeywordNames,
                 memberName,
-                jobRoleNames
+                jobRoleNames,
+                false
+        );
+    }
+
+
+    public static MiniProfileResponse personalBrowseMiniProfile(
+            final MiniProfile miniProfile,
+            final List<MiniProfileKeyword> miniProfileKeywordList,
+            final String memberName,
+            final List<String> jobRoleNames,
+            final boolean isPrivateSaved
+    ) {
+        List<String> myKeywordNames = miniProfileKeywordList.stream()
+                .map(MiniProfileKeyword::getMyKeywordNames) // 올바른 메서드 참조 사용
+                .collect(Collectors.toList());
+
+        return new MiniProfileResponse(
+                miniProfile.getId(),
+                miniProfile.getProfileTitle(),
+                miniProfile.getMiniProfileImg(),
+                miniProfile.isActivate(),
+                myKeywordNames,
+                memberName,
+                jobRoleNames,
+                isPrivateSaved
         );
     }
 }
