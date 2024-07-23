@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class WishTeamProfileResponse {
+    // 팀 찜하기 응답
     private final TeamMiniProfileResponse teamMiniProfileResponse;
     private final TeamMemberAnnouncementResponse teamMemberAnnouncementResponse;
 }
