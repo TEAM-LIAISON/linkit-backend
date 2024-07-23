@@ -16,6 +16,7 @@ import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncement
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementSkillRepository;
 import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
+import liaison.linkit.wish.domain.repository.TeamWishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class TeamMemberAnnouncementService {
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
+    private final TeamWishRepository teamWishRepository;
 
     private final JobRoleRepository jobRoleRepository;
     private final SkillRepository skillRepository;
@@ -211,10 +213,19 @@ public class TeamMemberAnnouncementService {
         // 객체 삭제
         teamMemberAnnouncementJobRoleRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
         log.info("팀원 공고 직무/역할 삭제 완료");
+
         teamMemberAnnouncementSkillRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
         log.info("팀원 공고 보유 기술 삭제 완료");
+
+        // 누군가가 나의 팀원 공고를 찜했다면
+        if (teamWishRepository.existsByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
+            // 모든 teamWish 객체를 Usable -> 치환
+            teamWishRepository.deleteByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+        }
+
         teamMemberAnnouncementRepository.deleteById(teamMemberAnnouncement.getId());
         log.info("팀원 공고 메인 객체 삭제 완료");
+
         if (!teamMemberAnnouncementRepository.existsByTeamProfileId(teamProfile.getId())) {
             teamProfile.updateIsTeamMemberAnnouncement(false);
             teamProfile.updateMemberTeamProfileTypeByCompletion();

@@ -102,6 +102,7 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
         final TeamProfileIsValueResponse teamProfileIsValueResponse = new TeamProfileIsValueResponse(
                 true, true, true, true, true, true, true, true
         );
+
         given(browseTeamProfileService.getTeamProfileIsValue(1L)).willReturn(teamProfileIsValueResponse);
 
         // 팀 소개서 필수 항목 존재 여부
