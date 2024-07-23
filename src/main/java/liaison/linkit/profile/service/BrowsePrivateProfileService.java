@@ -24,10 +24,10 @@ import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
-import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
+import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -96,7 +96,7 @@ public class BrowsePrivateProfileService {
 
     public BrowsePrivateProfileResponse getProfileResponse(
             final Long profileId,
-            final MiniProfileResponse miniProfileResponse,
+            final BrowseMiniProfileResponse browseMiniProfileResponse,
             final CompletionResponse completionResponse,
             final ProfileIntroductionResponse profileIntroductionResponse,
             final JobAndSkillResponse jobAndSkillResponse,
@@ -109,7 +109,7 @@ public class BrowsePrivateProfileService {
     ) {
         return BrowsePrivateProfileResponse.privateProfile(
                 profileId,
-                miniProfileResponse,
+                browseMiniProfileResponse,
                 completionResponse,
                 profileIntroductionResponse,
                 jobAndSkillResponse,

@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
-import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.member.domain.type.ProfileType;
 import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.profile.domain.Profile;
@@ -21,15 +20,14 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
 
-@RequiredArgsConstructor
+
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class ProfileBrowseAccessInterceptor implements HandlerInterceptor {
 
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor extractor;
-    private final MemberRepository memberRepository;
-
     private final ProfileRepository profileRepository;
     private final TeamProfileRepository teamProfileRepository;
 

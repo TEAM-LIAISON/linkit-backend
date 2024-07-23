@@ -1,5 +1,6 @@
 package liaison.linkit.search.dto.response.browseAfterLogin;
 
+import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -8,5 +9,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SearchBrowseTeamProfileResponse {
     private final TeamMiniProfileResponse teamMiniProfileResponse;
-    private final BrowseTeamMemberAnnouncementResponse browseTeamMemberAnnouncementResponse;
+    private final TeamMemberAnnouncementResponse teamMemberAnnouncementResponse;
 }
