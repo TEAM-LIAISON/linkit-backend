@@ -152,7 +152,7 @@ public enum ExceptionCode {
     NOT_ALLOW_P2T_MATCHING(10015, "나의 팀 소개서에 매칭 요청을 보낼 수 없습니다,"),
 
     NOT_ALLOW_P2P_WISH(10016, "나의 내 이력서를 찜할 수 없습니다,"),
-    NOT_ALLOW_P2T_WISH(10017, "나의 팀 소개서를에 찜할 수 없습니다,"),
+    NOT_ALLOW_P2T_WISH(10017, "나의 팀 소개서를 찜할 수 없습니다,"),
 
     // 팀 소개서 관련 항목
     NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID(1005, "사용자의 ID에 해당하는 팀 소개서 정보가 존재하지 않습니다."),
