@@ -80,5 +80,4 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
             Pageable pageable
     );
 
-
 }

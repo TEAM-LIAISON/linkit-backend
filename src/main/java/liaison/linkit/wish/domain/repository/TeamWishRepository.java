@@ -41,4 +41,15 @@ public interface TeamWishRepository extends JpaRepository<TeamWish, Long> {
     Optional<TeamWish> findByMemberIdAndTeamMemberAnnouncementId(final Long teamMemberAnnouncementId, final Long memberId);
 
 
+    boolean existsByTeamMemberAnnouncementId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
+
+    @Modifying
+    @Transactional
+    @Query("""
+           UPDATE TeamWish teamWish
+           SET teamWish.status = 'DELETED'
+           WHERE teamWish.teamMemberAnnouncement.id = :teamMemberAnnouncementId
+           """)
+    void deleteByTeamMemberAnnouncementId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
+
 }
