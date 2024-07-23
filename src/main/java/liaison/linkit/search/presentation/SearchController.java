@@ -33,7 +33,7 @@ public class SearchController {
     // 팀원 찾기 구현부
     @GetMapping("/search/private/profile")
     public ResponseEntity<Page<MiniProfileResponse>> findPrivateMiniProfile(
-            @PageableDefault(size = 100) Pageable pageable,
+            @PageableDefault(size = 1000) Pageable pageable,
             // 필터링 항목 1. 팀빌딩 분야
             @RequestParam(required = false) final List<String> teamBuildingFieldName,
             // 필터링 항목 2. 희망 역할
@@ -63,7 +63,7 @@ public class SearchController {
     @MemberOnly
     public ResponseEntity<Page<BrowseMiniProfileResponse>> findPrivateMiniProfileLogin(
             @Auth final Accessor accessor,
-            @PageableDefault(size = 100) Pageable pageable,
+            @PageableDefault(size = 1000) Pageable pageable,
             @RequestParam(required = false) final List<String> teamBuildingFieldName,
             @RequestParam(required = false) final List<String> jobRoleName,
             @RequestParam(required = false) final List<String> skillName,
@@ -87,7 +87,7 @@ public class SearchController {
     // 팀 찾기 컨트롤러
     @GetMapping("/search/team/profile")
     public ResponseEntity<Page<SearchTeamProfileResponse>> findSearchTeamProfile(
-            @PageableDefault(size = 10) final Pageable pageable,
+            @PageableDefault(size = 1000) final Pageable pageable,
             // 필터링 항목 1. 희망 팀빌딩 분야
             @RequestParam(required = false) final List<String> teamBuildingFieldName,
             // 필터링 항목 2. 직무 및 역할
@@ -119,7 +119,7 @@ public class SearchController {
     @MemberOnly
     public ResponseEntity<Page<SearchBrowseTeamProfileResponse>> findSearchTeamProfileAfterLogin(
             @Auth final Accessor accessor,
-            @PageableDefault(size = 10) final Pageable pageable,
+            @PageableDefault(size = 1000) final Pageable pageable,
             @RequestParam(required = false) final List<String> teamBuildingFieldName,
             @RequestParam(required = false) final List<String> jobRoleName,
             @RequestParam(required = false) final List<String> skillName,

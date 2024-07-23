@@ -3,6 +3,7 @@ package liaison.linkit.team.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.profile.browse.CheckBrowseToTeamProfileAccess;
 import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
 import liaison.linkit.team.dto.response.TeamProfileIntroductionResponse;
 import liaison.linkit.team.dto.response.TeamProfileIsValueResponse;
@@ -55,6 +56,7 @@ public class BrowseTeamProfileController {
 
     @GetMapping("/browse/team/profile/{teamMiniProfileId}")
     @MemberOnly
+    @CheckBrowseToTeamProfileAccess
     public ResponseEntity<?> getBrowseTeamProfile(
             @Auth final Accessor accessor,
             @PathVariable final Long teamMiniProfileId

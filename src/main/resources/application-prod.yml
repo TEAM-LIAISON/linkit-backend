@@ -16,17 +16,17 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 
   sql:
     init:
-      mode: always
+      mode: never
 
   batch:
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
     job:
-      enabled: true
+      enabled: false
 
   datasource:
     url: ${database.url}
