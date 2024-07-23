@@ -55,7 +55,7 @@ public class Profile extends BaseEntity {
     private double completion;
 
     // 3.4. 자기소개
-    @Column(name = "introduction")
+    @Column(name = "introduction", length = 300)
     private String introduction;
 
     // 3.4. 자기소개 기입 여부

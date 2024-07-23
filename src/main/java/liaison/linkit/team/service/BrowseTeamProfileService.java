@@ -2,6 +2,8 @@ package liaison.linkit.team.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
+import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
@@ -27,6 +29,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Transactional
 public class BrowseTeamProfileService {
 
+    private final ProfileRepository profileRepository;
     private final TeamProfileRepository teamProfileRepository;
     private final TeamMiniProfileRepository teamMiniProfileRepository;
 
@@ -84,4 +87,15 @@ public class BrowseTeamProfileService {
                 teamAttachResponse
         );
     }
+
+    public boolean checkBrowseAuthority(final Long memberId) {
+        final Profile profile = profileRepository.findByMemberId(memberId).orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+        final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_ID));
+
+        if (profile.getCompletion() < 50 && teamProfile.getTeamProfileCompletion() < 50) {
+            return true;
+        } else {
+            return false;
+        }
 }

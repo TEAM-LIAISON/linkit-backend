@@ -5,7 +5,7 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
-import liaison.linkit.search.dto.response.browseAfterLogin.BrowseTeamMemberAnnouncementResponse;
+import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import liaison.linkit.wish.dto.response.WishTeamProfileResponse;
 import liaison.linkit.wish.service.WishService;
@@ -270,7 +270,7 @@ public class WishControllerTest extends ControllerTest {
                 Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공")
         );
 
-        final BrowseTeamMemberAnnouncementResponse firstBrowseTeamMemberAnnouncementResponse = new BrowseTeamMemberAnnouncementResponse(
+        final TeamMemberAnnouncementResponse firstTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 1L,
                 "리에종",
                 "개발·데이터",
@@ -280,7 +280,7 @@ public class WishControllerTest extends ControllerTest {
                 true
         );
 
-        final BrowseTeamMemberAnnouncementResponse secondBrowseTeamMemberAnnouncementResponse = new BrowseTeamMemberAnnouncementResponse(
+        final TeamMemberAnnouncementResponse secondTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 2L,
                 "팀명팀명",
                 "디자인",
@@ -290,8 +290,8 @@ public class WishControllerTest extends ControllerTest {
                 true
         );
 
-        final WishTeamProfileResponse firstWishTeamProfileResponse = new WishTeamProfileResponse(firstTeamMiniProfileResponse, firstBrowseTeamMemberAnnouncementResponse);
-        final WishTeamProfileResponse secondWishTeamProfileResponse = new WishTeamProfileResponse(secondTeamMiniProfileResponse, secondBrowseTeamMemberAnnouncementResponse);
+        final WishTeamProfileResponse firstWishTeamProfileResponse = new WishTeamProfileResponse(firstTeamMiniProfileResponse, firstTeamMemberAnnouncementResponse);
+        final WishTeamProfileResponse secondWishTeamProfileResponse = new WishTeamProfileResponse(secondTeamMiniProfileResponse, secondTeamMemberAnnouncementResponse);
 
         final List<WishTeamProfileResponse> wishTeamProfileResponseList = Arrays.asList(firstWishTeamProfileResponse, secondWishTeamProfileResponse);
 
@@ -312,13 +312,13 @@ public class WishControllerTest extends ControllerTest {
                                 fieldWithPath("[].teamMiniProfileResponse.teamLogoImageUrl").type(JsonFieldType.STRING).description("팀 로고 이미지 URL"),
                                 fieldWithPath("[].teamMiniProfileResponse.teamKeywordNames").type(JsonFieldType.ARRAY).description("팀 키워드 목록"),
 
-                                fieldWithPath("[].browseTeamMemberAnnouncementResponse.id").type(JsonFieldType.NUMBER).description("팀원 공고 ID"),
-                                fieldWithPath("[].browseTeamMemberAnnouncementResponse.teamName").type(JsonFieldType.STRING).description("공고에 대한 팀 이름"),
-                                fieldWithPath("[].browseTeamMemberAnnouncementResponse.jobRoleName").type(JsonFieldType.STRING).description("직무 이름"),
-                                fieldWithPath("[].browseTeamMemberAnnouncementResponse.mainBusiness").type(JsonFieldType.STRING).description("주요 업무 내용"),
-                                fieldWithPath("[].browseTeamMemberAnnouncementResponse.skillNames").type(JsonFieldType.ARRAY).description("필요 기술 목록"),
-                                fieldWithPath("[].browseTeamMemberAnnouncementResponse.applicationProcess").type(JsonFieldType.STRING).description("지원 절차 설명"),
-                                fieldWithPath("[].browseTeamMemberAnnouncementResponse.isTeamSaved").type(JsonFieldType.BOOLEAN).description("팀 찜 여부")
+                                fieldWithPath("[].teamMemberAnnouncementResponse.id").type(JsonFieldType.NUMBER).description("팀원 공고 ID"),
+                                fieldWithPath("[].teamMemberAnnouncementResponse.teamName").type(JsonFieldType.STRING).description("공고에 대한 팀 이름"),
+                                fieldWithPath("[].teamMemberAnnouncementResponse.jobRoleName").type(JsonFieldType.STRING).description("직무 이름"),
+                                fieldWithPath("[].teamMemberAnnouncementResponse.mainBusiness").type(JsonFieldType.STRING).description("주요 업무 내용"),
+                                fieldWithPath("[].teamMemberAnnouncementResponse.skillNames").type(JsonFieldType.ARRAY).description("필요 기술 목록"),
+                                fieldWithPath("[].teamMemberAnnouncementResponse.applicationProcess").type(JsonFieldType.STRING).description("지원 절차 설명"),
+                                fieldWithPath("[].teamMemberAnnouncementResponse.isTeamSaved").type(JsonFieldType.BOOLEAN).description("팀 찜 여부")
                         )
                 ));
 
