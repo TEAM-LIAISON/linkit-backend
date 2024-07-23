@@ -3,7 +3,8 @@ package liaison.linkit.team.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.profile.browse.CheckBrowseToTeamProfileAccess;
+import liaison.linkit.global.exception.BadRequestException;
+import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
 import liaison.linkit.team.dto.response.TeamProfileIntroductionResponse;
 import liaison.linkit.team.dto.response.TeamProfileIsValueResponse;
@@ -56,11 +57,14 @@ public class BrowseTeamProfileController {
 
     @GetMapping("/browse/team/profile/{teamMiniProfileId}")
     @MemberOnly
-    @CheckBrowseToTeamProfileAccess
     public ResponseEntity<?> getBrowseTeamProfile(
             @Auth final Accessor accessor,
             @PathVariable final Long teamMiniProfileId
     ) {
+        if (browseTeamProfileService.checkBrowseAuthority(accessor.getMemberId())) {
+            throw new BadRequestException(ExceptionCode.NOT_ALLOW_BROWSE);
+        }
+
         log.info("teamMiniProfileId={}에 대한 팀 소개서 열람 요청이 발생했습니다.", teamMiniProfileId);
         try {
             log.info("타겟 팀 소개서 열람 유효성 검사 로직");
