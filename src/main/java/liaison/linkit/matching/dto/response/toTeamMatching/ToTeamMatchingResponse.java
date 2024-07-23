@@ -32,15 +32,31 @@ public class ToTeamMatchingResponse {
 
     public static List<ToTeamMatchingResponse> toTeamMatchingResponse(final List<TeamMatching> teamMatchingList) {
         return teamMatchingList.stream()
-                .map(teamMatching -> new ToTeamMatchingResponse(
-                        teamMatching.getId(),
-                        teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
-                        teamMatching.getMember().getMemberBasicInform().getMemberName(),
-                        teamMatching.getRequestMessage(),
-                        LocalDate.from(teamMatching.getCreatedAt()),
-                        teamMatching.getSenderType(),
-                        teamMatching.getMatchingType(),
-                        true
-                )).collect(Collectors.toList());
+                .map(teamMatching -> {
+                    if (teamMatching.getSenderType() == SenderType.PRIVATE) {
+                        return new ToTeamMatchingResponse(
+                                teamMatching.getId(),
+                                teamMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
+                                teamMatching.getMember().getMemberBasicInform().getMemberName(),
+                                teamMatching.getRequestMessage(),
+                                LocalDate.from(teamMatching.getCreatedAt()),
+                                teamMatching.getSenderType(),
+                                teamMatching.getMatchingType(),
+                                true
+                        );
+                    } else {
+                        return new ToTeamMatchingResponse(
+                                teamMatching.getId(),
+                                teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
+                                teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                                teamMatching.getRequestMessage(),
+                                LocalDate.from(teamMatching.getCreatedAt()),
+                                teamMatching.getSenderType(),
+                                teamMatching.getMatchingType(),
+                                true
+                        );
+                    }
+                })
+                .collect(Collectors.toList());
     }
 }

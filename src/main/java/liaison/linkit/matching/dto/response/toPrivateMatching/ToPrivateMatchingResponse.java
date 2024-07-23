@@ -35,17 +35,32 @@ public class ToPrivateMatchingResponse {
             final List<PrivateMatching> privateMatchingList
     ) {
         return privateMatchingList.stream()
-                .map(privateMatching -> new ToPrivateMatchingResponse(
-                        privateMatching.getId(),
-                        privateMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
-                        privateMatching.getMember().getMemberBasicInform().getMemberName(),
-                        privateMatching.getRequestMessage(),
-                        LocalDate.from(privateMatching.getCreatedAt()),
-                        privateMatching.getSenderType(),
-                        privateMatching.getMatchingType(),
-                        false
-                )).collect(Collectors.toList());
+                .map(privateMatching -> {
+                    if (privateMatching.getSenderType() == SenderType.PRIVATE) {
+                        return new ToPrivateMatchingResponse(
+                                privateMatching.getId(),
+                                privateMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
+                                privateMatching.getMember().getMemberBasicInform().getMemberName(),
+                                privateMatching.getRequestMessage(),
+                                LocalDate.from(privateMatching.getCreatedAt()),
+                                privateMatching.getSenderType(),
+                                privateMatching.getMatchingType(),
+                                false
+                        );
+                    } else {
+                        return new ToPrivateMatchingResponse(
+                                privateMatching.getId(),
+                                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
+                                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                                privateMatching.getRequestMessage(),
+                                LocalDate.from(privateMatching.getCreatedAt()),
+                                privateMatching.getSenderType(),
+                                privateMatching.getMatchingType(),
+                                true
+                        );
+                    }
+                })
+                .collect(Collectors.toList());
     }
-
 
 }
