@@ -5,17 +5,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
-import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.member.domain.type.ProfileType;
 import liaison.linkit.member.domain.type.TeamProfileType;
+import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.domain.repository.TeamProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
 
 @RequiredArgsConstructor
 @Component
@@ -25,6 +29,9 @@ public class ProfileBrowseAccessInterceptor implements HandlerInterceptor {
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor extractor;
     private final MemberRepository memberRepository;
+
+    private final ProfileRepository profileRepository;
+    private final TeamProfileRepository teamProfileRepository;
 
 //    public ProfileBrowseAccessInterceptor() {
 //        this.jwtProvider = null;
@@ -92,15 +99,32 @@ public class ProfileBrowseAccessInterceptor implements HandlerInterceptor {
 
     // 내 이력서 타입 반환
     private ProfileType getPrivateProfileType(final Long memberId) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
-        return member.getProfileType();
+//        final Member member = memberRepository.findById(memberId)
+//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
+
+        final Profile profile = profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
+
+        if (profile.getCompletion() < 50) {
+            return ProfileType.NO_PERMISSION;
+        } else if (profile.getCompletion() >= 80) {
+            return ProfileType.ALLOW_MATCHING;
+        } else {
+            return ProfileType.ALLOW_BROWSE;
+        }
     }
 
     // 팀 소개서 타입 반환
     private TeamProfileType getTeamProfileType(final Long memberId) {
-        final Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_ID));
-        return member.getTeamProfileType();
+        final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
+
+        if (teamProfile.getTeamProfileCompletion() < 50) {
+            return TeamProfileType.NO_PERMISSION;
+        } else if (teamProfile.getTeamProfileCompletion() >= 80) {
+            return TeamProfileType.ALLOW_MATCHING;
+        } else {
+            return TeamProfileType.ALLOW_BROWSE;
+        }
     }
 }
