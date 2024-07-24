@@ -22,7 +22,6 @@ public class ImageService {
     private final S3Uploader s3Uploader;
     private final ApplicationEventPublisher publisher;
 
-
     public MiniProfileImageResponse save(final MultipartFile miniProfileImageFile) {
         validateSizeOfImage(miniProfileImageFile);
         final ImageFile imageFile = new ImageFile(miniProfileImageFile);
