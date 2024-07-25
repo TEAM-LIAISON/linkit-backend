@@ -13,7 +13,6 @@ import java.util.List;
 
 public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemberAnnouncement, Long> {
 
-    @Query("SELECT COUNT(tma) > 0 FROM TeamMemberAnnouncement tma WHERE tma.teamProfile.id = :teamProfileId AND tma.status = 'USABLE'")
     boolean existsByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
     @Query("SELECT teamMemberAnnouncement FROM TeamMemberAnnouncement teamMemberAnnouncement WHERE teamMemberAnnouncement.teamProfile.id = :teamProfileId")
