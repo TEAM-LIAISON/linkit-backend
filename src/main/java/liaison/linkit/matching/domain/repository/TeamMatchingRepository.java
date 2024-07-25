@@ -34,4 +34,17 @@ public interface TeamMatchingRepository extends JpaRepository<TeamMatching, Long
     void deleteByMemberId(@Param("memberId") final Long memberId);
 
     boolean existsByMemberId(@Param("memberId") final Long memberId);
+
+
+    @Query("SELECT COUNT(tm) > 0 FROM TeamMatching tm WHERE tm.teamMemberAnnouncement.id IN :teamMemberAnnouncementIds")
+    boolean existsByTeamMemberAnnouncementIds(@Param("teamMemberAnnouncementIds") final List<Long> teamMemberAnnouncementIds);
+
+    @Modifying
+    @Transactional
+    @Query("""
+           UPDATE TeamMatching teamMatching
+           SET teamMatching.status = 'DELETED'
+           WHERE teamMatching.teamMemberAnnouncement.id IN :teamMemberAnnouncementIds
+           """)
+    void deleteByTeamMemberAnnouncementIds(@Param("teamMemberAnnouncementIds") final List<Long> teamMemberAnnouncementIds);
 }

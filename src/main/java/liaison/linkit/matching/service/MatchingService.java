@@ -266,10 +266,10 @@ public class MatchingService {
         List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
         List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
 
+        // 일단 나의 내 이력서에 보낸 사람만
         if (profileRepository.existsByMemberId(memberId)) {
             final Profile profile = getProfile(memberId);
             final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByProfileIdAndMatchingStatus(profile.getId());
-
             toPrivateMatchingResponseList = ToPrivateMatchingResponse.toPrivateMatchingResponse(privateMatchingList);
         }
 
@@ -306,6 +306,7 @@ public class MatchingService {
 
     // 성사된 매칭
     public List<SuccessMatchingResponse> getMySuccessMatching(final Long memberId) {
+
         List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
         List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
         List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Collections.emptyList();

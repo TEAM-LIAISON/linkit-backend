@@ -25,8 +25,7 @@ import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
@@ -266,14 +265,13 @@ public class AntecedentsControllerTest extends ControllerTest {
                 false,
                 "경력 설명입니다."
         );
-
-        doNothing().when(antecedentsService).save(1L, antecedentsCreateRequest);
+        when(antecedentsService.save(1L, antecedentsCreateRequest)).thenReturn(1L);
 
         // when
         final ResultActions resultActions = performPostRequest(antecedentsCreateRequest);
 
         // then
-        resultActions.andExpect(status().isOk())
+        resultActions.andExpect(status().isCreated())
                 .andDo(restDocs.document(
                         requestFields(
                                 fieldWithPath("projectName")

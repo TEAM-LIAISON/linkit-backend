@@ -17,13 +17,17 @@ import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.wish.domain.repository.PrivateWishRepository;
 import liaison.linkit.wish.domain.repository.TeamWishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 
@@ -48,6 +52,7 @@ public class LoginService {
     private final TeamMatchingRepository teamMatchingRepository;
     private final PrivateWishRepository privateWishRepository;
     private final TeamWishRepository teamWishRepository;
+    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
 
     // 회원 조회
     private Member getMember(final Long memberId) {
@@ -195,14 +200,28 @@ public class LoginService {
     // 수정 필요
     public void deleteAccount(final Long memberId) {
         final Member member = getMember(memberId);
+        final Profile profile = getProfileByMember(memberId);
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+        final List<TeamMemberAnnouncement> teamMemberAnnouncementList = getTeamMemberAnnouncementList(teamProfile);
+        final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream()
+                .map(TeamMemberAnnouncement::getId)
+                .toList();
 
         // 존재성 여부 판단 필요
         if (teamMatchingRepository.existsByMemberId(memberId)) {
             teamMatchingRepository.deleteByMemberId(memberId);
         }
 
+        if (teamMatchingRepository.existsByTeamMemberAnnouncementIds(teamMemberAnnouncementIds)) {
+            teamMatchingRepository.deleteByTeamMemberAnnouncementIds(teamMemberAnnouncementIds);
+        }
+
         if (privateMatchingRepository.existsByMemberId(memberId)) {
             privateMatchingRepository.deleteByMemberId(memberId);
+        }
+
+        if (privateMatchingRepository.existsByProfileId(profile.getId())) {
+            privateMatchingRepository.deleteByProfileId(profile.getId());
         }
 
         if (teamWishRepository.existsByMemberId(memberId)) {
@@ -221,6 +240,10 @@ public class LoginService {
         teamProfileRepository.deleteByMemberId(memberId);
         profileRepository.deleteByMemberId(memberId);
         memberRepository.deleteByMemberId(memberId);
+    }
+
+    private List<TeamMemberAnnouncement> getTeamMemberAnnouncementList(final TeamProfile teamProfile) {
+        return teamMemberAnnouncementRepository.findAllByTeamProfileId(teamProfile.getId());
     }
 
 

@@ -402,6 +402,7 @@ class MatchingControllerTest extends ControllerTest {
         // given
         final ToPrivateMatchingResponse firstToPrivateMatchingResponse = new ToPrivateMatchingResponse(
                 1L,
+                1L,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "김동혁",
                 "매칭 요청 메시지입니다.",
@@ -412,6 +413,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final ToPrivateMatchingResponse secondToPrivateMatchingResponse = new ToPrivateMatchingResponse(
+                2L,
                 2L,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "권동민",
@@ -425,6 +427,7 @@ class MatchingControllerTest extends ControllerTest {
         final List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Arrays.asList(firstToPrivateMatchingResponse, secondToPrivateMatchingResponse);
 
         final ToTeamMatchingResponse firstToTeamMatchingResponse = new ToTeamMatchingResponse(
+                3L,
                 1L,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "링킷",
@@ -436,6 +439,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final ToTeamMatchingResponse secondToTeamMatchingResponse = new ToTeamMatchingResponse(
+                4L,
                 2L,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "링컬쳐",
@@ -469,6 +473,7 @@ class MatchingControllerTest extends ControllerTest {
                                         headerWithName("Authorization").description("access token").attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 responseFields(
+                                        fieldWithPath("[].profileId").type(JsonFieldType.NUMBER).description("miniProfileId / teamMiniProfileId -> senderType에 따라 프론트에서 처리 바람"),
                                         fieldWithPath("[].receivedMatchingId").type(JsonFieldType.NUMBER).description("내 이력서/팀 소개서에 매칭 PK ID"),
                                         fieldWithPath("[].miniProfileImg").type(JsonFieldType.STRING).description("발신자 프로필 이미지"),
                                         fieldWithPath("[].senderName").type(JsonFieldType.STRING).description("발신자 이름"),
@@ -480,6 +485,7 @@ class MatchingControllerTest extends ControllerTest {
                                 )
                         )
                 );
+
     }
 
 
@@ -578,6 +584,7 @@ class MatchingControllerTest extends ControllerTest {
         // given
         final ToPrivateMatchingResponse firstToPrivateMatchingResponse = new ToPrivateMatchingResponse(
                 1L,
+                1L,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "김동혁",
                 "매칭 요청 메시지입니다.",
@@ -588,6 +595,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final ToPrivateMatchingResponse secondToPrivateMatchingResponse = new ToPrivateMatchingResponse(
+                2L,
                 2L,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "권동민",
@@ -601,6 +609,7 @@ class MatchingControllerTest extends ControllerTest {
         final List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Arrays.asList(firstToPrivateMatchingResponse, secondToPrivateMatchingResponse);
 
         final ToTeamMatchingResponse firstToTeamMatchingResponse = new ToTeamMatchingResponse(
+                3L,
                 1L,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "링킷",
@@ -612,6 +621,7 @@ class MatchingControllerTest extends ControllerTest {
         );
 
         final ToTeamMatchingResponse secondToTeamMatchingResponse = new ToTeamMatchingResponse(
+                4L,
                 2L,
                 "https://image.linkit.im/images/linkit_logo.png",
                 "링컬쳐",
