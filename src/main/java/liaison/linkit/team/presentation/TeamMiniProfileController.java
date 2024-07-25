@@ -31,6 +31,7 @@ public class TeamMiniProfileController {
             @RequestPart @Valid TeamMiniProfileCreateRequest teamMiniProfileCreateRequest,
             @RequestPart(required = false) MultipartFile teamMiniProfileImage
     ) {
+        log.info("memberId={}의 팀 미니 프로필 생성 요청이 발생하였습니다.", accessor.getMemberId());
         teamMiniProfileService.updateTeamMiniProfile(accessor.getMemberId(), teamMiniProfileCreateRequest, teamMiniProfileImage);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

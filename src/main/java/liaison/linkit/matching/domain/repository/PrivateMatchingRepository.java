@@ -35,4 +35,13 @@ public interface PrivateMatchingRepository extends JpaRepository<PrivateMatching
     void deleteByMemberId(@Param("memberId") final Long memberId);
 
     boolean existsByMemberId(@Param("memberId") final Long memberId);
+
+    @Modifying
+    @Transactional
+    @Query("""
+           UPDATE PrivateMatching privateMatching
+           SET privateMatching.status = 'DELETED'
+           WHERE privateMatching.profile.id = :profileId
+           """)
+    void deleteByProfileId(@Param("profileId") final Long profileId);
 }
