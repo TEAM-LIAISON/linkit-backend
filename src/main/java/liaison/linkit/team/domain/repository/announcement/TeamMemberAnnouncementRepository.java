@@ -64,7 +64,7 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
                WHERE am2.teamProfile.id = tp.id AND amt2.activityTagName IN :activityTagName) = :activityTagCount)
          AND (tmp.isTeamActivate = true)
          
-         ORDER BY tma.createdDate DESC
+         ORDER BY tma.createdAt DESC
          """)
     Page<TeamMemberAnnouncement> findAllByOrderByCreatedDateDesc(
             @Param("teamBuildingFieldName") final List<String> teamBuildingFieldName,

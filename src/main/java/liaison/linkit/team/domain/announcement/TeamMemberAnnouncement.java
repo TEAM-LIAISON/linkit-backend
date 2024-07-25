@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
-import java.time.LocalDateTime;
-
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -40,14 +38,6 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @Column(name = "application_process")
     private String applicationProcess;
 
-    @Column(updatable = false)
-    private LocalDateTime createdDate;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdDate = LocalDateTime.now();
-    }
-
     public static TeamMemberAnnouncement of(
             final TeamProfile teamProfile,
             final String mainBusiness,
@@ -57,8 +47,7 @@ public class TeamMemberAnnouncement extends BaseEntity {
                 null,
                 teamProfile,
                 mainBusiness,
-                applicationProcess,
-                null
+                applicationProcess
         );
     }
 
