@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemberAnnouncement, Long> {
 
-    boolean existsByTeamProfileId(final Long teamProfileId);
+    boolean existsByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
     @Query("SELECT teamMemberAnnouncement FROM TeamMemberAnnouncement teamMemberAnnouncement WHERE teamMemberAnnouncement.teamProfile.id = :teamProfileId")
     List<TeamMemberAnnouncement> findAllByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
