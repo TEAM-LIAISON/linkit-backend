@@ -81,7 +81,7 @@ public class TeamMemberAnnouncementService {
     }
 
     // 팀원 공고 저장 메서드
-    public void saveAnnouncement(
+    public Long saveAnnouncement(
             final Long memberId,
             final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
     ) {
@@ -110,6 +110,7 @@ public class TeamMemberAnnouncementService {
             saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
             // 요구 기술 저장
             saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
+            return savedTeamMemberAnnouncement.getId();
         } else {
             // 메인 객체 우선 저장
             final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, teamMemberAnnouncementRequest);
@@ -119,6 +120,7 @@ public class TeamMemberAnnouncementService {
             saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
             teamProfile.updateIsTeamMemberAnnouncement(true);
             teamProfile.updateMemberTeamProfileTypeByCompletion();
+            return savedTeamMemberAnnouncement.getId();
         }
     }
 
@@ -233,7 +235,7 @@ public class TeamMemberAnnouncementService {
     }
 
 
-    public void updateTeamMemberAnnouncement(
+    public Long updateTeamMemberAnnouncement(
             final Long teamMemberAnnouncementId,
             final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
     ) {
@@ -261,6 +263,7 @@ public class TeamMemberAnnouncementService {
         saveTeamMemberAnnouncementJobRole(teamMemberAnnouncement, teamMemberAnnouncementRequest);
         saveTeamMemberAnnouncementSkill(teamMemberAnnouncement, teamMemberAnnouncementRequest);
         teamMemberAnnouncement.update(teamMemberAnnouncementRequest);
+        return teamMemberAnnouncement.getId();
     }
 
     private TeamMemberAnnouncementJobRole getTeamMemberAnnouncementJobRole(final Long teamMemberAnnouncementId) {

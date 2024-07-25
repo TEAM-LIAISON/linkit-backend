@@ -91,7 +91,7 @@ public class AntecedentsService {
     }
 
     // DB 저장 로직
-    private void saveAntecedent(final Profile profile, final AntecedentsCreateRequest request) {
+    private Long saveAntecedent(final Profile profile, final AntecedentsCreateRequest request) {
         log.info("request.getProjectName()={}", request.getProjectName());
         log.info("request.getProjectRole()={}", request.getProjectRole());
         final Antecedents newAntecedents = Antecedents.of(
@@ -103,7 +103,7 @@ public class AntecedentsService {
                 request.isRetirement(),
                 request.getAntecedentsDescription()
         );
-        antecedentsRepository.save(newAntecedents);
+        return antecedentsRepository.save(newAntecedents).getId();
     }
 
     @Transactional(readOnly = true)
@@ -138,10 +138,11 @@ public class AntecedentsService {
     }
 
     // update 메서드
-    public void update(final Long antecedentsId, final AntecedentsCreateRequest antecedentsCreateRequest) {
+    public Long update(final Long antecedentsId, final AntecedentsCreateRequest antecedentsCreateRequest) {
         final Antecedents antecedents = getAntecedents(antecedentsId);
         // 해당 객체 업데이트
         antecedents.update(antecedentsCreateRequest);
+        return antecedents.getId();
     }
 
     // 삭제 메서드
@@ -163,7 +164,7 @@ public class AntecedentsService {
         log.info("profile.getId={}의 경력이 아직 존재합니다.", profile.getId());
     }
 
-    public void save(
+    public Long save(
             final Long memberId,
             final AntecedentsCreateRequest antecedentsCreateRequest
     ) {
@@ -171,12 +172,12 @@ public class AntecedentsService {
         // 해당 프로필이 경력을 보유하고 있는 경우
         if (profile.getIsAntecedents()) {
             // 그냥 저장
-            saveAntecedent(profile, antecedentsCreateRequest);
+            return saveAntecedent(profile, antecedentsCreateRequest);
         } else {
             // 경력을 보유하고 있지 않았던 경우
-            saveAntecedent(profile, antecedentsCreateRequest);
             profile.updateIsAntecedents(true);
             profile.updateMemberProfileTypeByCompletion();
+            return saveAntecedent(profile, antecedentsCreateRequest);
         }
     }
 }

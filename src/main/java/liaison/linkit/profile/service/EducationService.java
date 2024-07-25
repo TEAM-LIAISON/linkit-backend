@@ -145,7 +145,7 @@ public class EducationService {
     }
 
     // 단일 저장
-    public void save(
+    public Long save(
             final Long memberId,
             final EducationCreateRequest educationCreateRequest
     ) {
@@ -153,16 +153,16 @@ public class EducationService {
 
         // 기존에 학력 정보가 존재했던 경우
         if (profile.getIsEducation()) {
-            makeNewEducation(educationCreateRequest, profile);
+            return makeNewEducation(educationCreateRequest, profile);
         } else {
             // 기존에 존재하지 않았던 경우
-            makeNewEducation(educationCreateRequest, profile);
             profile.updateIsEducation(true);
             profile.updateMemberProfileTypeByCompletion();
+            return makeNewEducation(educationCreateRequest, profile);
         }
     }
 
-    public void update(
+    public Long update(
             final Long educationId,
             final EducationCreateRequest educationCreateRequest
     ) {
@@ -178,9 +178,10 @@ public class EducationService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_MAJOR_NAME));
 
         education.update(educationCreateRequest, university, major, degree);
+        return education.getId();
     }
 
-    private void makeNewEducation(
+    private Long makeNewEducation(
             final EducationCreateRequest educationCreateRequest,
             final Profile profile
     ) {
@@ -202,6 +203,6 @@ public class EducationService {
                 major
         );
 
-        educationRepository.save(newEducation);
+        return educationRepository.save(newEducation).getId();
     }
 }

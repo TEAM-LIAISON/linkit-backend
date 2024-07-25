@@ -9,9 +9,10 @@ import liaison.linkit.profile.dto.request.education.EducationListCreateRequest;
 import liaison.linkit.profile.service.EducationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,25 +37,26 @@ public class EducationController {
     // 학력 단일 생성
     @PostMapping("/education")
     @MemberOnly
-    public ResponseEntity<Void> createEducation(
+    public ResponseEntity<?> createEducation(
             @Auth final Accessor accessor,
             @RequestBody @Valid EducationCreateRequest educationCreateRequest
     ) {
         log.info("memberId={}의 학력 생성 요청이 들어왔습니다.", accessor.getMemberId());
-        educationService.save(accessor.getMemberId(), educationCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        final Long educationId = educationService.save(accessor.getMemberId(), educationCreateRequest);
+        return ResponseEntity.status(CREATED).body(educationId);
     }
 
+    // 학력 단일 수정
     @PostMapping("/education/{educationId}")
     @MemberOnly
-    public ResponseEntity<Void> updateEducation(
+    public ResponseEntity<?> updateEducation(
             @Auth final Accessor accessor,
             @PathVariable final Long educationId,
             @RequestBody @Valid EducationCreateRequest educationCreateRequest
     ) {
-        log.info("memberId={}의 학력 수정 요청이 들어왔습니다.", accessor.getMemberId());
-        educationService.update(educationId, educationCreateRequest);
-        return ResponseEntity.ok().build();
+        log.info("memberId={}의 educationId={} 수정 요청이 발생하였습니다.", accessor.getMemberId(), educationId);
+        final Long updatedEducationId = educationService.update(educationId, educationCreateRequest);
+        return ResponseEntity.ok().body(updatedEducationId);
     }
 
     @DeleteMapping("/education/{educationId}")
