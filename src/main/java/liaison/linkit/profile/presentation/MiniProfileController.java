@@ -36,7 +36,6 @@ public class MiniProfileController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
     @PostMapping("/mini-profile/update")
     @MemberOnly
     public ResponseEntity<Void> updateMiniProfile(

@@ -773,7 +773,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 1 Aug 2024 06:24:01 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 1 Aug 2024 12:17:19 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -2175,13 +2175,13 @@ Content-Length: 3294
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "profileSkill" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
+    "profileSkill" : true,
+    "awards" : true,
     "attach" : true
   },
   "profileIntroductionResponse" : {
@@ -3308,12 +3308,12 @@ Content-Length: 2972
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "history" : true,
-    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
+    "activity" : true,
+    "history" : true,
     "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
@@ -5308,13 +5308,13 @@ Content-Length: 3275
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
-    "profileSkill" : true,
     "profileTeamBuildingField" : true,
     "profileRegion" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
+    "profileSkill" : true,
+    "awards" : true,
     "attach" : true
   },
   "profileIntroductionResponse" : {
@@ -5743,12 +5743,12 @@ Content-Length: 2962
   },
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
-    "history" : true,
-    "activity" : true,
     "teamMemberAnnouncement" : true,
     "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
+    "activity" : true,
+    "history" : true,
     "teamProfileTeamBuildingField" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
@@ -6336,9 +6336,10 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1277
+Content-Length: 1353
 
 [ {
+  "profileId" : 1,
   "receivedMatchingId" : 1,
   "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "senderName" : "김동혁",
@@ -6348,6 +6349,7 @@ Content-Length: 1277
   "matchingType" : "PROFILE",
   "receivedTeamProfile" : false
 }, {
+  "profileId" : 2,
   "receivedMatchingId" : 2,
   "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "senderName" : "권동민",
@@ -6357,6 +6359,7 @@ Content-Length: 1277
   "matchingType" : "PROFILE",
   "receivedTeamProfile" : false
 }, {
+  "profileId" : 3,
   "receivedMatchingId" : 1,
   "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "senderName" : "링킷",
@@ -6366,6 +6369,7 @@ Content-Length: 1277
   "matchingType" : "TEAM_PROFILE",
   "receivedTeamProfile" : true
 }, {
+  "profileId" : 4,
   "receivedMatchingId" : 2,
   "miniProfileImg" : "https://image.linkit.im/images/linkit_logo.png",
   "senderName" : "링컬쳐",
@@ -6391,6 +6395,11 @@ Content-Length: 1277
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].profileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">miniProfileId / teamMiniProfileId &#8594; senderType에 따라 프론트에서 처리 바람</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].receivedMatchingId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>

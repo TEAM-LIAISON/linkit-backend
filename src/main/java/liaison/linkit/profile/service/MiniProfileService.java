@@ -307,59 +307,47 @@ public class MiniProfileService {
             miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
             log.info("miniProfileImage != null case : 기존 미니프로필 키워드 삭제 완료");
 
-            miniProfileRepository.deleteByProfileId(profile.getId());
-            profile.updateIsMiniProfile(false);
-
-            log.info("miniProfileImage != null case : 기존 미니프로필 객체 삭제 완료");
+//            miniProfileRepository.deleteByProfileId(profile.getId());
+//            profile.updateIsMiniProfile(false);
+//
+//            log.info("miniProfileImage != null case : 기존 미니프로필 객체 삭제 완료");
 
             // 미니 프로필 이미지를 s3 저장 -> 해당 이미지 URL을 받아옴
             final String miniProfileImageUrl = saveImage(miniProfileImage);
 
-            final MiniProfile newMiniProfileByImage = MiniProfile.of(
+            miniProfile.update(
                     profile,
                     miniProfileRequest.getProfileTitle(),
                     miniProfileImageUrl,
                     miniProfileRequest.getIsActivate()
             );
 
-            // 미니 프로필 저장된 객체
-            final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileByImage);
-
             final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
-                    .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
+                    .map(keyWordName -> new MiniProfileKeyword(null, miniProfile, keyWordName))
                     .toList();
 
             miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
-            profile.updateIsMiniProfile(true);
         } else {
             log.info("요청 객체의 miniProfileImage가 null입니다.");
 
             // 기존 미니 프로필 조회
             final MiniProfile miniProfile = getMiniProfile(profile.getId());
 
-            // 새로운 미니 프로필 이미지 객체 생성
-            final MiniProfile newMiniProfileNoImage = MiniProfile.of(
+            miniProfile.update(
                     profile,
                     miniProfileRequest.getProfileTitle(),
                     miniProfile.getMiniProfileImg(),
                     miniProfileRequest.getIsActivate()
             );
-            miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
-            miniProfileRepository.deleteByProfileId(profile.getId());
-            profile.updateIsMiniProfile(false);
-            log.info("저장되어 있었던 미니 프로필 객체가 삭제 되었습니다.");
 
-            final MiniProfile savedMiniProfile = miniProfileRepository.save(newMiniProfileNoImage);
+            miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
+
             final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
-                    .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
+                    .map(keyWordName -> new MiniProfileKeyword(null, miniProfile, keyWordName))
                     .toList();
 
             miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
-            profile.updateIsMiniProfile(true);
             // 미니 프로필 이미지와 미니 프로필 객체의 키워드가 저장됨
         }
-
-
-
     }
 }
