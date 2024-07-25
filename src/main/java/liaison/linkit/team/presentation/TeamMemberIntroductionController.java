@@ -8,48 +8,52 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.dto.request.memberIntroduction.TeamMemberIntroductionCreateRequest;
 import liaison.linkit.team.service.TeamMemberIntroductionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_TEAM_MEMBER_INTRODUCTION;
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
+@Slf4j
 public class TeamMemberIntroductionController {
 
     private final TeamMemberIntroductionService teamMemberIntroductionService;
 
+    // 팀원 소개
     @PostMapping("/team/member")
     @MemberOnly
-    public ResponseEntity<Void> createTeamMemberIntroduction(
+    public ResponseEntity<?> createTeamMemberIntroduction(
             @Auth final Accessor accessor,
             @RequestBody @Valid TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
     ) {
+        log.info("memberId={}의 팀원 소개 생성 요청이 들어왔습니다.", accessor.getMemberId());
         if (teamMemberIntroductionCreateRequest.getTeamMemberIntroductionText().isEmpty() ||
                 teamMemberIntroductionCreateRequest.getTeamMemberName().isEmpty() ||
                 teamMemberIntroductionCreateRequest.getTeamMemberRole().isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_TEAM_MEMBER_INTRODUCTION);
         }
-
-        teamMemberIntroductionService.saveTeamMemberIntroduction(accessor.getMemberId(), teamMemberIntroductionCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        final Long teamMemberIntroductionId = teamMemberIntroductionService.saveTeamMemberIntroduction(accessor.getMemberId(), teamMemberIntroductionCreateRequest);
+        return ResponseEntity.status(CREATED).body(teamMemberIntroductionId);
     }
 
     // 수정
     @PostMapping("/team/member/{teamMemberIntroductionId}")
     @MemberOnly
-    public ResponseEntity<Void> updateTeamMemberIntroduction(
+    public ResponseEntity<?> updateTeamMemberIntroduction(
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberIntroductionId,
             @RequestBody @Valid TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
     ) {
+        log.info("memberId={}의 teamMemberIntroductionId={} 수정 요청이 발생하였습니다.", accessor.getMemberId(), teamMemberIntroductionId);
         teamMemberIntroductionService.validateTeamMemberIntroductionByMember(accessor.getMemberId());
-        teamMemberIntroductionService.updateTeamMemberIntroduction(teamMemberIntroductionId, teamMemberIntroductionCreateRequest);
-        return ResponseEntity.ok().build();
+        final Long savedTeamMemberIntroductionId = teamMemberIntroductionService.updateTeamMemberIntroduction(teamMemberIntroductionId, teamMemberIntroductionCreateRequest);
+        return ResponseEntity.ok().body(savedTeamMemberIntroductionId);
     }
 
     @PostMapping("/team/members")
@@ -59,7 +63,7 @@ public class TeamMemberIntroductionController {
             @RequestBody @Valid List<TeamMemberIntroductionCreateRequest> teamMemberIntroductionCreateRequests
     ) {
         teamMemberIntroductionService.saveTeamMemberIntroductions(accessor.getMemberId(), teamMemberIntroductionCreateRequests);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(CREATED).build();
     }
 
     // 단일 팀원 소개 삭제
