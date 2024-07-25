@@ -223,7 +223,7 @@ public class TeamMemberAnnouncementService {
             teamWishRepository.deleteByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
         }
 
-        teamMemberAnnouncementRepository.deleteById(teamMemberAnnouncement.getId());
+        teamMemberAnnouncementRepository.deleteByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
         log.info("팀원 공고 메인 객체 삭제 완료");
 
         if (!teamMemberAnnouncementRepository.existsByTeamProfileId(teamProfile.getId())) {
