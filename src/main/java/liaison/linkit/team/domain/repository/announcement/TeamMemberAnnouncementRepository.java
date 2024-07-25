@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemberAnnouncement, Long> {
+
     boolean existsByTeamProfileId(final Long teamProfileId);
 
     @Query("SELECT teamMemberAnnouncement FROM TeamMemberAnnouncement teamMemberAnnouncement WHERE teamMemberAnnouncement.teamProfile.id = :teamProfileId")
@@ -80,4 +81,13 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
             Pageable pageable
     );
 
+
+    @Modifying
+    @Transactional
+    @Query("""
+           UPDATE TeamMemberAnnouncement teamMemberAnnouncement
+           SET teamMemberAnnouncement.status = 'DELETED'
+           WHERE teamMemberAnnouncement.id = :teamMemberAnnouncementId
+           """)
+    void deleteByTeamMemberAnnouncementId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
 }
