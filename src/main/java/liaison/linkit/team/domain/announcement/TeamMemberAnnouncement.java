@@ -1,11 +1,13 @@
 package liaison.linkit.team.domain.announcement;
 
 import jakarta.persistence.*;
+import liaison.linkit.global.BaseEntity;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 
@@ -17,8 +19,9 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
+@SQLRestriction("status = 'USABLE'")
 // 팀원 공고
-public class TeamMemberAnnouncement {
+public class TeamMemberAnnouncement extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
