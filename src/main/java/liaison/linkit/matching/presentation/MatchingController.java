@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
@@ -47,7 +49,7 @@ public class MatchingController {
     ) {
         log.info("profileId={}에게 내 이력서 대상으로 memberId={} 매칭 요청이 발생했습니다.", profileId, accessor.getMemberId());
         matchingService.createPrivateProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(CREATED).build();
     }
 
     // accessor.getMemberId -> 해당 회원의 팀 소개서와 상대의 내 이력서가 매칭
@@ -61,7 +63,7 @@ public class MatchingController {
     ) {
 
         matchingService.createTeamProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(CREATED).build();
     }
 
     // 팀 소개서가 팀 소개서에 매칭 요청을 보내는 경우
@@ -74,7 +76,7 @@ public class MatchingController {
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
         matchingService.createTeamProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(CREATED).build();
     }
 
     // 내 이력서가 팀 소개서에 매칭 요청을 보내는 경우
@@ -87,7 +89,7 @@ public class MatchingController {
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
         matchingService.createPrivateProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(CREATED).build();
     }
 
     // 내가 받은 매칭 조회
@@ -238,8 +240,6 @@ public class MatchingController {
         matchingService.acceptTeamMatching(teamMatchingId, allowMatchingRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-
 
     // 내 이력서 관련 매칭일 때 연락하기 버튼을 누른 경우
     @GetMapping("/success/private/matching/contact/{privateMatchingId}")

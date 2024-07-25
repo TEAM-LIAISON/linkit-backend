@@ -62,4 +62,17 @@ public class MiniProfile{
                 null
         );
     }
+
+
+    public void update(
+            final Profile profile,
+            final String profileTitle,
+            final String miniProfileImageUrl,
+            final Boolean isActivate
+    ) {
+        this.profile = profile;
+        this.profileTitle = profileTitle;
+        this.miniProfileImg = miniProfileImageUrl;
+        this.isActivate = isActivate;
+    }
 }

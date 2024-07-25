@@ -13,6 +13,10 @@ import java.util.stream.Collectors;
 @Getter
 @RequiredArgsConstructor
 public class ToTeamMatchingResponse {
+
+    // 발신자의 miniProfileId / teamMiniProfileId
+    private final Long profileId;
+
     // 팀 소개서에 온 매칭 요청 PK ID
     private final Long teamMatchingId;
     // 프로필 이미지 src
@@ -34,7 +38,9 @@ public class ToTeamMatchingResponse {
         return teamMatchingList.stream()
                 .map(teamMatching -> {
                     if (teamMatching.getSenderType() == SenderType.PRIVATE) {
+                        // 내 이력서로 나의 팀 소개서에 보낸 경우
                         return new ToTeamMatchingResponse(
+                                teamMatching.getMember().getProfile().getId(),
                                 teamMatching.getId(),
                                 teamMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
                                 teamMatching.getMember().getMemberBasicInform().getMemberName(),
@@ -45,7 +51,9 @@ public class ToTeamMatchingResponse {
                                 true
                         );
                     } else {
+                        // 팀 소개서로 내 팀 소개서에 보낸 경우
                         return new ToTeamMatchingResponse(
+                                teamMatching.getMember().getTeamProfile().getId(),
                                 teamMatching.getId(),
                                 teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
                                 teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),

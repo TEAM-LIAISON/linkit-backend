@@ -121,11 +121,10 @@ public class MiniProfileService {
             final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
                     .map(keyWordName -> new MiniProfileKeyword(null, savedMiniProfile, keyWordName))
                     .toList();
-
             miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
-
             profile.updateIsMiniProfile(true);
         }
+
         // 요청 객체의 미니 프로필 이미지가 null인 경우
         // 기존 이미지 유지로 간주
         else {
@@ -284,5 +283,71 @@ public class MiniProfileService {
     public boolean getIsPrivateSaved(final Long memberId, final Long profileId) {
         final MiniProfile miniProfile = getMiniProfile(profileId);
         return privateWishRepository.findByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
+    }
+
+    // 미니 프로필의 유효성 검증이 끝난 후 수정한다.
+    public void update(
+            final Long memberId,
+            final MiniProfileRequest miniProfileRequest,
+            final MultipartFile miniProfileImage
+    ) {
+        final Profile profile = getProfile(memberId);
+
+        // 미니 프로필 이미지가 존재한다면
+        if (miniProfileImage != null) {
+            // 미니 프로필 객체 조회
+            final MiniProfile miniProfile = getMiniProfile(profile.getId());
+
+            // 기존 미니 프로필 이미지가 존재했다면, 기존 미니 프로필 이미지를 삭제한다.
+            if (miniProfile.getMiniProfileImg() != null) {
+                s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
+            }
+            log.info("miniProfileImage != null case : 기존 미니프로필 이미지 삭제 완료");
+
+            miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
+            log.info("miniProfileImage != null case : 기존 미니프로필 키워드 삭제 완료");
+
+//            miniProfileRepository.deleteByProfileId(profile.getId());
+//            profile.updateIsMiniProfile(false);
+//
+//            log.info("miniProfileImage != null case : 기존 미니프로필 객체 삭제 완료");
+
+            // 미니 프로필 이미지를 s3 저장 -> 해당 이미지 URL을 받아옴
+            final String miniProfileImageUrl = saveImage(miniProfileImage);
+
+            miniProfile.update(
+                    profile,
+                    miniProfileRequest.getProfileTitle(),
+                    miniProfileImageUrl,
+                    miniProfileRequest.getIsActivate()
+            );
+
+            final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
+                    .map(keyWordName -> new MiniProfileKeyword(null, miniProfile, keyWordName))
+                    .toList();
+
+            miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
+        } else {
+            log.info("요청 객체의 miniProfileImage가 null입니다.");
+
+            // 기존 미니 프로필 조회
+            final MiniProfile miniProfile = getMiniProfile(profile.getId());
+
+            miniProfile.update(
+                    profile,
+                    miniProfileRequest.getProfileTitle(),
+                    miniProfile.getMiniProfileImg(),
+                    miniProfileRequest.getIsActivate()
+            );
+
+            miniProfileKeywordRepository.deleteAllByMiniProfileId(miniProfile.getId());
+
+            final List<MiniProfileKeyword> miniProfileKeywordList = miniProfileRequest.getMyKeywordNames().stream()
+                    .map(keyWordName -> new MiniProfileKeyword(null, miniProfile, keyWordName))
+                    .toList();
+
+            miniProfileKeywordRepository.saveAll(miniProfileKeywordList);
+            // 미니 프로필 이미지와 미니 프로필 객체의 키워드가 저장됨
+        }
     }
 }

@@ -10,11 +10,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,8 +31,21 @@ public class MiniProfileController {
             @RequestPart @Valid MiniProfileRequest miniProfileRequest,
             @RequestPart(required = false) MultipartFile miniProfileImage
     ){
-        log.info("memberId={}의 미니 프로필 생성/수정 요청이 들어왔습니다.", accessor.getMemberId());
+        log.info("memberId={}의 미니 프로필 생성 요청이 들어왔습니다.", accessor.getMemberId());
         miniProfileService.save(accessor.getMemberId(), miniProfileRequest, miniProfileImage);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/mini-profile/update")
+    @MemberOnly
+    public ResponseEntity<Void> updateMiniProfile(
+            @Auth final Accessor accessor,
+            @RequestPart @Valid MiniProfileRequest miniProfileRequest,
+            @RequestPart(required = false) MultipartFile miniProfileImage
+    ) {
+        log.info("memberId={}의 미니 프로필 수정 요청이 들어왔습니다.", accessor.getMemberId());
+        miniProfileService.validateMiniProfileByMember(accessor.getMemberId());
+        miniProfileService.update(accessor.getMemberId(), miniProfileRequest, miniProfileImage);
+        return ResponseEntity.status(OK).build();
     }
 }

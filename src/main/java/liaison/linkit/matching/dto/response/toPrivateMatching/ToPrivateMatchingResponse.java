@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ToPrivateMatchingResponse {
 
+    // 발신자의 miniProfileId / teamMiniProfileId
+    private final Long profileId;
     // 내 이력서에 온 매칭 요청 PK ID
     private final Long privateMatchingId;
     // 프로필 이미지 src
@@ -36,25 +38,32 @@ public class ToPrivateMatchingResponse {
     ) {
         return privateMatchingList.stream()
                 .map(privateMatching -> {
+                    // 내 이력서로 보낸 사람
+                    // 나의 내 이력서로 매칭 요청을 받음
                     if (privateMatching.getSenderType() == SenderType.PRIVATE) {
                         return new ToPrivateMatchingResponse(
+                                privateMatching.getMember().getProfile().getMiniProfile().getId(),
                                 privateMatching.getId(),
                                 privateMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
                                 privateMatching.getMember().getMemberBasicInform().getMemberName(),
                                 privateMatching.getRequestMessage(),
                                 LocalDate.from(privateMatching.getCreatedAt()),
-                                privateMatching.getSenderType(),
+                                privateMatching.getSenderType(),    // PRIVATE
                                 privateMatching.getMatchingType(),
                                 false
                         );
                     } else {
+                        // 팀 소개서로 보낸 사람
+                        // 나의 내 이력서로 매칭 요청을 받음
+                        // SenderType -> TEAM
                         return new ToPrivateMatchingResponse(
+                                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getId(),
                                 privateMatching.getId(),
                                 privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
                                 privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
                                 privateMatching.getRequestMessage(),
                                 LocalDate.from(privateMatching.getCreatedAt()),
-                                privateMatching.getSenderType(),
+                                privateMatching.getSenderType(),    // TEAM
                                 privateMatching.getMatchingType(),
                                 true
                         );
