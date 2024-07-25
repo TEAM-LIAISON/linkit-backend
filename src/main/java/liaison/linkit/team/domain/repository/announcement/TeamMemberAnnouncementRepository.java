@@ -78,7 +78,7 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
             @Param("divisionName") final String divisionName,
             @Param("activityTagName") final List<String> activityTagName,
             @Param("activityTagCount") final Long activityTagCount,
-            Pageable pageable
+            final Pageable pageable
     );
 
 
