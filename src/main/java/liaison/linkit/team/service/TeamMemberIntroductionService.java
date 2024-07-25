@@ -43,7 +43,7 @@ public class TeamMemberIntroductionService {
         }
     }
 
-    public void saveTeamMemberIntroduction(
+    public Long saveTeamMemberIntroduction(
             final Long memberId,
             final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
     ) {
@@ -51,11 +51,11 @@ public class TeamMemberIntroductionService {
         final TeamProfile teamProfile = getTeamProfile(memberId);
         // 저장 메서드 실행
         if (teamProfile.getIsTeamMemberIntroduction()) {
-            saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
+            return saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
         } else {
-            saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
             teamProfile.updateIsTeamMemberIntroduction(true);
             teamProfile.updateMemberTeamProfileTypeByCompletion();
+            return saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
         }
     }
 
@@ -81,7 +81,7 @@ public class TeamMemberIntroductionService {
     }
 
     // 팀원 소개 저장 메서드
-    private void saveTeamMemberIntroductionMethod(
+    private Long saveTeamMemberIntroductionMethod(
             final TeamProfile teamProfile,
             final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
     ) {
@@ -92,7 +92,7 @@ public class TeamMemberIntroductionService {
                 teamMemberIntroductionCreateRequest.getTeamMemberIntroductionText()
         );
 
-        teamMemberIntroductionRepository.save(newTeamMemberIntroduction);
+        return teamMemberIntroductionRepository.save(newTeamMemberIntroduction).getId();
     }
 
     // 팀원 소개 조회
@@ -130,11 +130,12 @@ public class TeamMemberIntroductionService {
     }
 
 
-    public void updateTeamMemberIntroduction(
+    public Long updateTeamMemberIntroduction(
             final Long teamMemberIntroductionId,
             final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest
     ) {
         final TeamMemberIntroduction teamMemberIntroduction = getTeamMemberIntroduction(teamMemberIntroductionId);
         teamMemberIntroduction.update(teamMemberIntroductionCreateRequest);
+        return teamMemberIntroduction.getId();
     }
 }

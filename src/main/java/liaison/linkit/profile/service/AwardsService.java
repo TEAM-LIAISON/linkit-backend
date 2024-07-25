@@ -61,25 +61,29 @@ public class AwardsService {
 
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
-    public void save(final Long memberId, final AwardsCreateRequest awardsCreateRequest) {
+    public Long save(
+            final Long memberId,
+            final AwardsCreateRequest awardsCreateRequest
+    ) {
 
         final Profile profile = getProfile(memberId);
 
         if (profile.getIsAwards()) {
-            saveAwards(profile, awardsCreateRequest);
+            return saveAwards(profile, awardsCreateRequest);
         } else{
-            saveAwards(profile, awardsCreateRequest);
             profile.updateIsAwards(true);
             profile.updateMemberProfileTypeByCompletion();
+            return saveAwards(profile, awardsCreateRequest);
         }
     }
 
-    public void update(
+    public Long update(
             final Long awardsId,
             final AwardsCreateRequest awardsCreateRequest
     ) {
         final Awards awards = getAwards(awardsId);
         awards.update(awardsCreateRequest);
+        return awards.getId();
     }
 
     // 회원에 대해서 수상 항목 리스트를 저장하는 메서드
@@ -101,7 +105,7 @@ public class AwardsService {
         profile.updateMemberProfileTypeByCompletion();
     }
 
-    private void saveAwards(final Profile profile, final AwardsCreateRequest awardsCreateRequest) {
+    private Long saveAwards(final Profile profile, final AwardsCreateRequest awardsCreateRequest) {
         final Awards newAwards = Awards.of(
                 profile,
                 awardsCreateRequest.getAwardsName(),
@@ -111,7 +115,7 @@ public class AwardsService {
                 awardsCreateRequest.getAwardsMonth(),
                 awardsCreateRequest.getAwardsDescription()
         );
-        awardsRepository.save(newAwards);
+        return awardsRepository.save(newAwards).getId();
     }
 
     // 해당 회원의 모든 수상 항목을 조회하는 메서드 / 수정 이전 화면에서 필요

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/private")
@@ -37,26 +39,27 @@ public class AntecedentsController {
     // 1.5.7 단일 경력 생성
     @PostMapping("/antecedent")
     @MemberOnly
-    public ResponseEntity<Void> createAntecedent(
+    public ResponseEntity<?> createAntecedent(
             @Auth final Accessor accessor,
             @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest
     ) {
-        antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
-        return ResponseEntity.ok().build();
+        log.info("memberId={}의 단일 경력 생성 요청이 발생하였습니다.", accessor.getMemberId());
+        final Long antecedentsId = antecedentsService.save(accessor.getMemberId(), antecedentsCreateRequest);
+        return ResponseEntity.status(CREATED).body(antecedentsId);
     }
-
 
     // 1.5.7. 단일 경력 수정
     @PostMapping("/antecedents/{antecedentsId}")
     @MemberOnly
-    public ResponseEntity<Void> updateAntecedent(
+    public ResponseEntity<?> updateAntecedent(
             @Auth final Accessor accessor,
             @RequestBody @Valid AntecedentsCreateRequest antecedentsCreateRequest,
             @PathVariable final Long antecedentsId
     ) {
+        log.info("memberId={}의 antecedentsId={} 수정 요청이 발생하였습니다.", accessor.getMemberId(), antecedentsId);
         antecedentsService.validateAntecedentsByMember(accessor.getMemberId());
-        antecedentsService.update(antecedentsId, antecedentsCreateRequest);
-        return ResponseEntity.ok().build();
+        final Long updatedAntecedentsId = antecedentsService.update(antecedentsId, antecedentsCreateRequest);
+        return ResponseEntity.ok().body(updatedAntecedentsId);
     }
 
     @DeleteMapping("/antecedents/{antecedentsId}")

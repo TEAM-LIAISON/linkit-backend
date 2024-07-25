@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +34,7 @@ public class SearchController {
     // 팀원 찾기 구현부
     @GetMapping("/search/private/profile")
     public ResponseEntity<Page<MiniProfileResponse>> findPrivateMiniProfile(
-            @PageableDefault(size = 1000) Pageable pageable,
+            @PageableDefault(size = 1000, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
             // 필터링 항목 1. 팀빌딩 분야
             @RequestParam(required = false) final List<String> teamBuildingFieldName,
             // 필터링 항목 2. 희망 역할
@@ -63,7 +64,7 @@ public class SearchController {
     @MemberOnly
     public ResponseEntity<Page<BrowseMiniProfileResponse>> findPrivateMiniProfileLogin(
             @Auth final Accessor accessor,
-            @PageableDefault(size = 1000) Pageable pageable,
+            @PageableDefault(size = 1000, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable,
             @RequestParam(required = false) final List<String> teamBuildingFieldName,
             @RequestParam(required = false) final List<String> jobRoleName,
             @RequestParam(required = false) final List<String> skillName,

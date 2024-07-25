@@ -7,39 +7,45 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.team.dto.request.HistoryCreateRequest;
 import liaison.linkit.team.service.HistoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CREATED;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping
+@Slf4j
 public class HistoryController {
 
     private final HistoryService historyService;
 
+    // 단일 연혁 생성
     @PostMapping("/team/history")
     @MemberOnly
-    public ResponseEntity<Void> createHistory(
+    public ResponseEntity<?> createHistory(
             @Auth final Accessor accessor,
             @RequestBody @Valid HistoryCreateRequest historyCreateRequest
     ) {
-        historyService.saveHistory(accessor.getMemberId(), historyCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        log.info("memberId={}의 연혁 생성 요청이 들어왔습니다.", accessor.getMemberId());
+        final Long historyId = historyService.saveHistory(accessor.getMemberId(), historyCreateRequest);
+        return ResponseEntity.status(CREATED).body(historyId);
     }
 
     @PostMapping("/team/history/{historyId}")
     @MemberOnly
-    public ResponseEntity<Void> updateHistory(
+    public ResponseEntity<?> updateHistory(
             @Auth final Accessor accessor,
             @PathVariable final Long historyId,
             @RequestBody @Valid HistoryCreateRequest historyCreateRequest
     ) {
+        log.info("memberId={}의 historyId={} 수정 요청이 발생하였습니다.", accessor.getMemberId(), historyId);
         historyService.validateHistoryByMember(accessor.getMemberId());
-        historyService.updateHistory(historyId, historyCreateRequest);
-        return ResponseEntity.ok().build();
+        final Long updatedHistoryId = historyService.updateHistory(historyId, historyCreateRequest);
+        return ResponseEntity.ok().body(updatedHistoryId);
     }
 
     @PostMapping("/team/histories")
@@ -49,7 +55,7 @@ public class HistoryController {
             @RequestBody @Valid List<HistoryCreateRequest> historyCreateRequests
     ) {
         historyService.saveHistories(accessor.getMemberId(), historyCreateRequests);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(CREATED).build();
     }
 
     @DeleteMapping("/team/history/{historyId}")
