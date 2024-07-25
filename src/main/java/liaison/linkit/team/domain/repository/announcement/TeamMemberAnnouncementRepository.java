@@ -12,7 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemberAnnouncement, Long> {
-    boolean existsByTeamProfileId(final Long teamProfileId);
+
+    boolean existsByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
     @Query("SELECT teamMemberAnnouncement FROM TeamMemberAnnouncement teamMemberAnnouncement WHERE teamMemberAnnouncement.teamProfile.id = :teamProfileId")
     List<TeamMemberAnnouncement> findAllByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
@@ -64,7 +65,7 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
                WHERE am2.teamProfile.id = tp.id AND amt2.activityTagName IN :activityTagName) = :activityTagCount)
          AND (tmp.isTeamActivate = true)
          
-         ORDER BY tma.createdDate DESC
+         ORDER BY tma.createdAt DESC
          """)
     Page<TeamMemberAnnouncement> findAllByOrderByCreatedDateDesc(
             @Param("teamBuildingFieldName") final List<String> teamBuildingFieldName,
@@ -80,4 +81,13 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
             Pageable pageable
     );
 
+
+    @Modifying
+    @Transactional
+    @Query("""
+           UPDATE TeamMemberAnnouncement teamMemberAnnouncement
+           SET teamMemberAnnouncement.status = 'DELETED'
+           WHERE teamMemberAnnouncement.id = :teamMemberAnnouncementId
+           """)
+    void deleteByTeamMemberAnnouncementId(@Param("teamMemberAnnouncementId") final Long teamMemberAnnouncementId);
 }
