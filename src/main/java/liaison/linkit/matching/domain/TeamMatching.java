@@ -53,7 +53,7 @@ public class TeamMatching extends BaseEntity {
     private String requestMessage;
 
     // 해당 매칭의 상태 관리 필요
-    @Column(name = "matching_status")
+    @Column(name = "matching_status_type")
     @Enumerated(value = STRING)
     private MatchingStatusType matchingStatusType;
 
