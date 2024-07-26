@@ -60,7 +60,6 @@ class TeamOnBoardingControllerTest extends ControllerTest {
 
     @MockBean
     private TeamOnBoardingService teamOnBoardingService;
-
     @MockBean
     private TeamMiniProfileService teamMiniProfileService;
     @MockBean
@@ -250,6 +249,56 @@ class TeamOnBoardingControllerTest extends ControllerTest {
                                 )
                         )
                 );
+    }
 
+    @DisplayName("희망 팀빌딩 분야 및 미니프로필 일부 정보 생성")
+    @Test
+    void updateOnBoardingFieldTeamInform() throws Exception {
+        // given
+        List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회");
+
+        final OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest = new OnBoardingFieldTeamInformRequest(
+                teamBuildingFieldNames,
+                "리에종",
+                "1-5인",
+                "플랫폼"
+        );
+
+        // when
+        final ResultActions resultActions = performPostRequest(onBoardingFieldTeamInformRequest);
+
+        // then
+        resultActions.andExpect(status().isCreated())
+                .andDo(
+                        restDocs.document(
+                                requestCookies(
+                                        cookieWithName("refresh-token")
+                                                .description("갱신 토큰")
+                                ),
+                                requestHeaders(
+                                        headerWithName("Authorization")
+                                                .description("access token")
+                                                .attributes(field("constraint", "문자열(jwt)"))
+                                ),
+                                requestFields(
+                                        fieldWithPath("teamBuildingFieldNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("희망 팀빌딩 분야(7가지 항목)")
+                                                .attributes(field("constraint", "문자열의 배열")),
+                                        fieldWithPath("teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀이름")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("sizeType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 규모")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("sectorName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("분야 이름")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                );
     }
 }

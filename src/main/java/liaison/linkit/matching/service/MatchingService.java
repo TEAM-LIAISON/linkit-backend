@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
-import static liaison.linkit.matching.domain.type.MatchingStatus.REQUESTED;
+import static liaison.linkit.matching.domain.type.MatchingStatusType.REQUESTED;
 import static liaison.linkit.matching.domain.type.MatchingType.PROFILE;
 import static liaison.linkit.matching.domain.type.MatchingType.TEAM_PROFILE;
 
