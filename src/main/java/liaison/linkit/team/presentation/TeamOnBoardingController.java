@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_PRIVATE_ATTACH_URL;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,7 +35,6 @@ public class TeamOnBoardingController {
     final TeamProfileTeamBuildingFieldService teamProfileTeamBuildingFieldService;
     // 4.6.
     final ActivityService activityService;
-
 
     // 팀 소개서 온보딩 과정에서 첫번째 항목
     @PostMapping("/team/team_building_field/basic_inform")
@@ -54,6 +54,17 @@ public class TeamOnBoardingController {
         teamMiniProfileService.saveOnBoarding(accessor.getMemberId(), onBoardingFieldTeamInformRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/update/onBoarding/team/mini-profile")
+    @MemberOnly
+    public ResponseEntity<Void> updateOnBoardingTeamMiniProfile(
+            @Auth final Accessor accessor,
+            @RequestBody @Valid OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest
+    ) {
+        log.info("memberId={}의 팀 미니 프로필 수정 요청이 발생하였습니다.", accessor.getMemberId());
+        teamMiniProfileService.updateOnBoarding(accessor.getMemberId(), onBoardingFieldTeamInformRequest);
+        return ResponseEntity.status(OK).build();
     }
 
     @GetMapping("/team/onBoarding")

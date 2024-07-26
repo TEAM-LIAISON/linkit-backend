@@ -2,7 +2,7 @@ package liaison.linkit.matching.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.global.BaseEntity;
-import liaison.linkit.matching.domain.type.MatchingStatus;
+import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.MatchingType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.member.domain.Member;
@@ -53,15 +53,15 @@ public class TeamMatching extends BaseEntity {
     private String requestMessage;
 
     // 해당 매칭의 상태 관리 필요
-    @Column(name = "matching_status")
+    @Column(name = "matching_status_type")
     @Enumerated(value = STRING)
-    private MatchingStatus matchingStatus;
+    private MatchingStatusType matchingStatusType;
 
     public void updateMatchingStatus(final boolean isAllow) {
         if (isAllow) {
-            this.matchingStatus = MatchingStatus.SUCCESSFUL;
+            this.matchingStatusType = MatchingStatusType.SUCCESSFUL;
         } else {
-            this.matchingStatus = MatchingStatus.DENIED;
+            this.matchingStatusType = MatchingStatusType.DENIED;
         }
     }
 }
