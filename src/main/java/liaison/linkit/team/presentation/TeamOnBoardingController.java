@@ -60,7 +60,7 @@ public class TeamOnBoardingController {
     @MemberOnly
     public ResponseEntity<Void> updateOnBoardingTeamMiniProfile(
             @Auth final Accessor accessor,
-            @RequestPart @Valid OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest
+            @RequestBody @Valid OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest
     ) {
         log.info("memberId={}의 팀 미니 프로필 수정 요청이 발생하였습니다.", accessor.getMemberId());
         teamMiniProfileService.updateOnBoarding(accessor.getMemberId(), onBoardingFieldTeamInformRequest);
