@@ -69,7 +69,6 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
         return new MockMultipartFile(name, path, contentType, path.getBytes(StandardCharsets.UTF_8));
     }
 
-
     @DisplayName("팀 소개서 미니 프로필을 생성할 수 있다.")
     @Test
     void createTeamMiniProfile() throws Exception {

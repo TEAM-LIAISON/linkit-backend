@@ -93,4 +93,14 @@ public class TeamMiniProfile {
         this.isTeamActivate = isTeamActivate;
         this.teamLogoImageUrl = teamLogoImageUrl;
     }
+
+    public void updateOnBoarding(
+            final String teamName,
+            final IndustrySector industrySector,
+            final TeamScale teamScale
+    ) {
+        this.teamName = teamName;
+        this.industrySector = industrySector;
+        this.teamScale = teamScale;
+    }
 }

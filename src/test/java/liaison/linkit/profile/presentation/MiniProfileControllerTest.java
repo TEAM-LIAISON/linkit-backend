@@ -141,4 +141,63 @@ class MiniProfileControllerTest extends ControllerTest {
                         )
                 ));
     }
+
+    @DisplayName("미니 프로필을 수정할 수 있다.")
+    @Test
+    void updateMiniProfile() throws Exception {
+        // given
+        final MiniProfileRequest miniProfileRequest = new MiniProfileRequest(
+                "시니어 소프트웨어 개발자",
+                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
+                true
+        );
+
+        final MockMultipartFile miniProfileImage = new MockMultipartFile(
+                "miniProfileImage",
+                "logo.png",
+                "multipart/form-data",
+                "./src/test/resources/static/images/logo.png".getBytes()
+        );
+
+        final MockMultipartFile createRequest = new MockMultipartFile(
+                "miniProfileRequest",
+                null,
+                "application/json",
+                objectMapper.writeValueAsString(miniProfileRequest).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST,"/private/mini-profile/update")
+                .file(miniProfileImage)
+                .file(createRequest)
+                .accept(APPLICATION_JSON)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .characterEncoding("UTF-8")
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE));
+
+        // then
+        resultActions.andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        requestCookies(
+                                cookieWithName("refresh-token")
+                                        .description("갱신 토큰")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization")
+                                        .description("access token")
+                                        .attributes(field("constraint", "문자열(jwt)"))
+                        ),
+                        requestParts(
+                                partWithName("miniProfileRequest").description("미니 프로필 생성 객체"),
+                                partWithName("miniProfileImage")
+                                        .description("미니 프로필 이미지 파일. 지원되는 형식은 .png, .jpg 등이 있습니다.")
+                        ),
+                        requestPartFields("miniProfileRequest",
+                                fieldWithPath("profileTitle").description("프로필 제목"),
+                                fieldWithPath("myKeywordNames").description("나를 소개하는 키워드 목록").attributes(field("constraint", "문자열 배열")),
+                                fieldWithPath("isActivate").description("프로필 활성화 여부")
+                        )
+                ));
+    }
 }

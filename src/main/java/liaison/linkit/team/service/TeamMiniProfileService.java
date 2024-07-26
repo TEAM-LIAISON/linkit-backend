@@ -340,6 +340,27 @@ public class TeamMiniProfileService {
         return teamMiniProfile.getTeamName();
     }
 
+    public void updateOnBoarding(
+            final Long memberId,
+            final OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest
+    ) {
+        final TeamProfile teamProfile = getTeamProfile(memberId);
+
+        final TeamMiniProfile teamMiniProfile = getTeamMiniProfile(teamProfile.getId());
+        // IndustrySector 찾기
+        final IndustrySector industrySector = industrySectorRepository.findBySectorName(onBoardingFieldTeamInformRequest.getSectorName());
+        // TeamScale 찾기
+        final TeamScale teamScale = teamScaleRepository.findBySizeType(onBoardingFieldTeamInformRequest.getSizeType());
+
+        teamMiniProfile.updateOnBoarding(
+                onBoardingFieldTeamInformRequest.getTeamName(),
+                industrySector,
+                teamScale
+        );
+        
+        log.info("memberId={}의 팀 미니 프로필 온보딩 항목 수정이 완료되었습니다.", memberId);
+    }
+
 
 //    private final TeamProfileRepository teamProfileRepository;
 //    private final TeamMiniProfileRepository teamMiniProfileRepository;

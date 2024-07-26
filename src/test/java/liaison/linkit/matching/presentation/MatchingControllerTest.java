@@ -473,7 +473,7 @@ class MatchingControllerTest extends ControllerTest {
                                         headerWithName("Authorization").description("access token").attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 responseFields(
-                                        fieldWithPath("[].profileId").type(JsonFieldType.NUMBER).description("miniProfileId / teamMiniProfileId -> senderType에 따라 프론트에서 처리 바람"),
+                                        fieldWithPath("[].profileId").type(JsonFieldType.NUMBER).description("miniProfileId / teamMiniProfileId -> senderType에 따라 프론트에서 처리 바람 -> senderType == team 이면 teamMiniProfileId로, Privated이면 miniProfile로"),
                                         fieldWithPath("[].receivedMatchingId").type(JsonFieldType.NUMBER).description("내 이력서/팀 소개서에 매칭 PK ID"),
                                         fieldWithPath("[].miniProfileImg").type(JsonFieldType.STRING).description("발신자 프로필 이미지"),
                                         fieldWithPath("[].senderName").type(JsonFieldType.STRING).description("발신자 이름"),
