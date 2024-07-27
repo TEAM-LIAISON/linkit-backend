@@ -14,7 +14,7 @@ public interface PrivateMatchingRepository extends JpaRepository<PrivateMatching
     @Query("SELECT pm FROM PrivateMatching pm WHERE pm.profile.id = :profileId AND pm.matchingStatusType = 'REQUESTED'")
     List<PrivateMatching> findByProfileIdAndMatchingStatus(@Param("profileId") final Long profileId);
 
-    @Query("SELECT pm FROM PrivateMatching pm WHERE pm.member.id = :memberId AND pm.matchingStatusType = 'REQUESTED'")
+    @Query("SELECT pm FROM PrivateMatching pm WHERE pm.member.id = :memberId AND pm.matchingStatusType = 'REQUESTED' AND pm.receiverDeleteStatusType = 'REMAINED'")
     List<PrivateMatching> findByMemberIdAndMatchingStatus(@Param("memberId") final Long memberId);
 
     @Query("SELECT pm FROM PrivateMatching pm WHERE pm.matchingStatusType = 'SUCCESSFUL' AND pm.profile.id = :profileId")

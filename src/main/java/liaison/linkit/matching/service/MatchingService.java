@@ -48,6 +48,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 import static liaison.linkit.matching.domain.type.MatchingStatusType.REQUESTED;
 import static liaison.linkit.matching.domain.type.MatchingType.PROFILE;
 import static liaison.linkit.matching.domain.type.MatchingType.TEAM_PROFILE;
+import static liaison.linkit.matching.domain.type.ReceiverDeleteStatusType.REMAINED;
 
 @Service
 @RequiredArgsConstructor
@@ -82,6 +83,7 @@ public class MatchingService {
         return teamProfileRepository.findById(teamProfileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
     }
+
     // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
     private Profile getProfile(final Long memberId) {
         return profileRepository.findByMemberId(memberId)
@@ -140,7 +142,8 @@ public class MatchingService {
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
-                REQUESTED
+                REQUESTED,
+                REMAINED
         );
 
         // to 내 이력서
@@ -174,7 +177,8 @@ public class MatchingService {
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
-                REQUESTED
+                REQUESTED,
+                REMAINED
         );
 
         privateMatchingRepository.save(newPrivateMatching);
@@ -211,7 +215,8 @@ public class MatchingService {
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
-                REQUESTED
+                REQUESTED,
+                REMAINED
         );
 
         teamMatchingRepository.save(newTeamMatching);
@@ -252,7 +257,8 @@ public class MatchingService {
                 // 요청 메시지를 저장한다
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
-                REQUESTED
+                REQUESTED,
+                REMAINED
         );
 
         teamMatchingRepository.save(newTeamMatching);
@@ -568,5 +574,17 @@ public class MatchingService {
         } else {
             teamMatching.updateMatchingStatus(false);
         }
+    }
+
+    public void deletePrivateMatching(final Long privateMatchingId) {
+        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+        // 삭제 요청하는 아이디와 동일하면
+        // 유효성 검증
+        privateMatching.updateReceiverDeleteStatusType(true);
+    }
+
+    public void deleteTeamMatching(final Long teamMatchingId) {
+        final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
+        teamMatching.updateReceiverDeleteStatusType(true);
     }
 }
