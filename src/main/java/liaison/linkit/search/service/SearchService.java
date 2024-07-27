@@ -232,7 +232,8 @@ public class SearchService {
 
         return new SearchTeamProfileResponse(
                 TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
-                TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList)
+                TeamMemberAnnouncementResponse.of(
+                        teamMiniProfile.getTeamLogoImageUrl(), teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList)
         );
     }
 
@@ -248,7 +249,7 @@ public class SearchService {
 
         return new SearchBrowseTeamProfileResponse(
                 TeamMiniProfileResponse.personalTeamMiniProfile(teamMiniProfile, teamMiniProfileKeyword),
-                TeamMemberAnnouncementResponse.afterLogin(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList, isTeamSaved)
+                TeamMemberAnnouncementResponse.afterLogin(teamMiniProfile.getTeamLogoImageUrl(), teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList, isTeamSaved)
         );
     }
 

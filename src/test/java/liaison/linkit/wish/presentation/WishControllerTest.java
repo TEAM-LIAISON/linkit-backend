@@ -272,6 +272,7 @@ public class WishControllerTest extends ControllerTest {
 
         final TeamMemberAnnouncementResponse firstTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 1L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "리에종",
                 "개발·데이터",
                 "주요 업무입니다.",
@@ -282,6 +283,7 @@ public class WishControllerTest extends ControllerTest {
 
         final TeamMemberAnnouncementResponse secondTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 2L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "팀명팀명",
                 "디자인",
                 "주요 업무입니다. (두번째 팀원 공고)",
@@ -313,6 +315,7 @@ public class WishControllerTest extends ControllerTest {
                                 fieldWithPath("[].teamMiniProfileResponse.teamKeywordNames").type(JsonFieldType.ARRAY).description("팀 키워드 목록"),
 
                                 fieldWithPath("[].teamMemberAnnouncementResponse.id").type(JsonFieldType.NUMBER).description("팀원 공고 ID"),
+                                fieldWithPath("[].teamMemberAnnouncementResponse.teamLogoImageUrl").type(JsonFieldType.STRING).description("팀 로고 이미지 경로"),
                                 fieldWithPath("[].teamMemberAnnouncementResponse.teamName").type(JsonFieldType.STRING).description("공고에 대한 팀 이름"),
                                 fieldWithPath("[].teamMemberAnnouncementResponse.jobRoleName").type(JsonFieldType.STRING).description("직무 이름"),
                                 fieldWithPath("[].teamMemberAnnouncementResponse.mainBusiness").type(JsonFieldType.STRING).description("주요 업무 내용"),
