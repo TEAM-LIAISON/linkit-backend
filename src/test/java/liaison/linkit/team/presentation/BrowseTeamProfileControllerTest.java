@@ -139,6 +139,7 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
         // 4.5. 팀원 공고
         final TeamMemberAnnouncementResponse firstTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 1L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "리에종",
                 "기획·경영",
                 "주요 업무입니다. (첫번째 팀원 공고)",
@@ -149,6 +150,7 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
 
         final TeamMemberAnnouncementResponse secondTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 2L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "리에종",
                 "디자인",
                 "주요 업무입니다. (두번째 팀원 공고)",
