@@ -86,6 +86,16 @@ class TeamOnBoardingControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performUpdateRequest(final OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest) throws Exception {
+        return mockMvc.perform(
+                post("/update/onBoarding/team/mini-profile")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(onBoardingFieldTeamInformRequest))
+        );
+    }
+
     @BeforeEach
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
@@ -251,24 +261,23 @@ class TeamOnBoardingControllerTest extends ControllerTest {
                 );
     }
 
-    @DisplayName("희망 팀빌딩 분야 및 미니프로필 일부 정보 생성")
+    @DisplayName("팀 미니프로필 일부 정보를 수정할 수 있습니다.")
     @Test
     void updateOnBoardingFieldTeamInform() throws Exception {
         // given
-        List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회");
 
         final OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest = new OnBoardingFieldTeamInformRequest(
-                teamBuildingFieldNames,
+                null,
                 "리에종",
                 "1-5인",
                 "플랫폼"
         );
 
         // when
-        final ResultActions resultActions = performPostRequest(onBoardingFieldTeamInformRequest);
+        final ResultActions resultActions = performUpdateRequest(onBoardingFieldTeamInformRequest);
 
         // then
-        resultActions.andExpect(status().isCreated())
+        resultActions.andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
                                 requestCookies(
@@ -282,7 +291,7 @@ class TeamOnBoardingControllerTest extends ControllerTest {
                                 ),
                                 requestFields(
                                         fieldWithPath("teamBuildingFieldNames")
-                                                .type(JsonFieldType.ARRAY)
+                                                .type(JsonFieldType.NULL)
                                                 .description("희망 팀빌딩 분야(7가지 항목)")
                                                 .attributes(field("constraint", "문자열의 배열")),
                                         fieldWithPath("teamName")
@@ -301,4 +310,6 @@ class TeamOnBoardingControllerTest extends ControllerTest {
                         )
                 );
     }
+
+
 }

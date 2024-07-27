@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface TeamMatchingRepository extends JpaRepository<TeamMatching, Long> {
 
-    @Query("SELECT tm FROM TeamMatching tm WHERE tm.teamMemberAnnouncement.id IN :teamMemberAnnouncementIds AND tm.matchingStatusType = 'REQUESTED'")
+    @Query("SELECT tm FROM TeamMatching tm WHERE tm.teamMemberAnnouncement.id IN :teamMemberAnnouncementIds AND tm.matchingStatusType = 'REQUESTED' AND tm.receiverDeleteStatusType = 'REMAINED'")
     List<TeamMatching> findAllByTeamMemberAnnouncementIds(@Param("teamMemberAnnouncementIds") final List<Long> teamMemberAnnouncementIds);
 
     @Query("SELECT tm FROM TeamMatching tm WHERE tm.member.id = :memberId AND tm.matchingStatusType = 'REQUESTED'")

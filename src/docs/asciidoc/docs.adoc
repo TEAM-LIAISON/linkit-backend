@@ -202,7 +202,12 @@ include::{snippets}/team-profile-controller-test/get-team-profile/http-request.a
 include::{snippets}/team-profile-controller-test/get-team-profile/http-response.adoc[]
 include::{snippets}/team-profile-controller-test/get-team-profile/response-fields.adoc[]
 
-=== 4.1. 팀 소개서 - 팀 미니 프로필 생성/수정 [온보딩 동일]
+=== 4.1. 팀 소개서 - 팀 미니 프로필 수정
+==== 요청
+include::{snippets}/team-on-boarding-controller-test/update-on-boarding-field-team-inform/http-request.adoc[]
+include::{snippets}/team-on-boarding-controller-test/update-on-boarding-field-team-inform/request-fields.adoc[]
+
+
 
 === 4.4. 팀 소개서 - 희망 팀빌딩 분야 생성/수정
 include::{snippets}/team-profile-team-building-field-controller-test/create-team-profile-team-building-field/http-request.adoc[]
@@ -458,6 +463,16 @@ include::{snippets}/matching-controller-test/get-team-success-contact-response/p
 ==== 응답
 include::{snippets}/matching-controller-test/get-team-success-contact-response/http-response.adoc[]
 include::{snippets}/matching-controller-test/get-team-success-contact-response/response-fields.adoc[]
+
+=== 10.19. 내 이력서 - 매칭 삭제 (matchingType : PROFILE) / 보낸 매칭, 성사된 매칭 모두 적용
+==== 요청
+include::{snippets}/matching-controller-test/delete-request-private-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/delete-request-private-matching/path-parameters.adoc[]
+
+==== 10.20. 팀 소개서 - 매칭 삭제 (matchingType : TEAM_PROFILE) / 보낸 매칭, 성사된 매칭 모두 적용
+==== 요청
+include::{snippets}/matching-controller-test/delete-request-team-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/delete-request-team-matching/path-parameters.adoc[]
 
 == 11. 찜하기
 === 11.1. 내 이력서 (미니 프로필 ID) 찜하기 생성

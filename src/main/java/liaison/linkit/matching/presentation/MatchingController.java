@@ -262,4 +262,35 @@ public class MatchingController {
         final SuccessContactResponse successContactResponse = matchingService.getTeamSuccessContactResponse(accessor.getMemberId(), teamMatchingId);
         return ResponseEntity.status(HttpStatus.OK).body(successContactResponse);
     }
+
+
+
+
+
+
+
+
+    // 내가 보낸 매칭, 성사된 매칭에서 내 이력서 대상 매칭 삭제하기
+    // matchingType -> PROFILE
+    @DeleteMapping("/delete/private/matching/{privateMatchingId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteRequestPrivateMatching(
+            @Auth final Accessor accessor,
+            @PathVariable final Long privateMatchingId
+    ) {
+        matchingService.deletePrivateMatching(privateMatchingId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // 내가 보낸 매칭, 성사된 매칭에서 팀 소개서 대상 매칭 삭제하기
+    // matchingType -> TeamProfile
+    @DeleteMapping("/delete/team/matching/{teamMatchingId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteRequestTeamMatching(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMatchingId
+    ) {
+        matchingService.deleteTeamMatching(teamMatchingId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 }
