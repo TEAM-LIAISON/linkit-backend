@@ -207,29 +207,44 @@ public class LoginService {
                 .map(TeamMemberAnnouncement::getId)
                 .toList();
 
-        // 존재성 여부 판단 필요
+        // 팀 매칭의 경우
+        // 내가 어떤 팀 소개서에 매칭 요청 보낸 경우
         if (teamMatchingRepository.existsByMemberId(memberId)) {
             teamMatchingRepository.deleteByMemberId(memberId);
         }
 
+        // 내가 올린 팀 소개서 (팀원 공고) 매칭 요청이 온 경우
         if (teamMatchingRepository.existsByTeamMemberAnnouncementIds(teamMemberAnnouncementIds)) {
             teamMatchingRepository.deleteByTeamMemberAnnouncementIds(teamMemberAnnouncementIds);
         }
 
+        // 내가 어떤 내 이력서에 매칭 요청 보낸 경우
         if (privateMatchingRepository.existsByMemberId(memberId)) {
             privateMatchingRepository.deleteByMemberId(memberId);
         }
 
+        // 내가 올린 내 이력서에 매칭 요청이 온 경우
         if (privateMatchingRepository.existsByProfileId(profile.getId())) {
             privateMatchingRepository.deleteByProfileId(profile.getId());
         }
 
+        // 내가 찜한 팀 소개서
         if (teamWishRepository.existsByMemberId(memberId)) {
             teamWishRepository.deleteByMemberId(memberId);
         }
 
+        // 나의 팀원 공고를 누가 찜한 경우
+        if (teamWishRepository.existsByTeamMemberAnnouncementIds(teamMemberAnnouncementIds)) {
+            teamWishRepository.deleteByTeamMemberAnnouncementIds(teamMemberAnnouncementIds);
+        }
+
+        // 내가 찜한 내 이력서
         if (privateWishRepository.existsByMemberId(memberId)) {
             privateWishRepository.deleteByMemberId(memberId);
+        }
+
+        if (privateWishRepository.existsByProfileId(profile.getId())) {
+            privateWishRepository.deleteByProfileId(profile.getId());
         }
 
         if(memberBasicInformRepository.existsByMemberId(memberId)){
