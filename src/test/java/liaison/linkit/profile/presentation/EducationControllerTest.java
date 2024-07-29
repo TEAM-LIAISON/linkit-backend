@@ -61,9 +61,9 @@ public class EducationControllerTest extends ControllerTest {
         doNothing().when(educationService).validateEducationByMember(1L);
     }
 
-    private void makeEducations() throws Exception {
+    private void makeEducation() throws Exception {
         // given
-        final EducationCreateRequest firstEducationCreateRequest = new EducationCreateRequest(
+        final EducationCreateRequest educationCreateRequest = new EducationCreateRequest(
                 2022,
                 2025,
                 "홍익대학교",
@@ -71,21 +71,8 @@ public class EducationControllerTest extends ControllerTest {
                 "졸업"
         );
 
-        final EducationCreateRequest secondEducationCreateRequest = new EducationCreateRequest(
-                2022,
-                2025,
-                "연세대학교",
-                "경영학과",
-                "졸업"
-        );
-        final List<EducationCreateRequest> educationCreateRequests = Arrays.asList(firstEducationCreateRequest, secondEducationCreateRequest);
-
-        final EducationListCreateRequest educationListCreateRequest = new EducationListCreateRequest(
-                educationCreateRequests
-        );
-
-        doNothing().when(educationService).saveAll(1L, educationCreateRequests);
-        performPostRequests(educationListCreateRequest);
+        doNothing().when(educationService).save(1L, educationCreateRequest);
+        performPostRequest(educationCreateRequest);
     }
 
     private ResultActions performUpdateRequest(final int educationId, final EducationCreateRequest educationCreateRequest) throws Exception {
@@ -178,76 +165,6 @@ public class EducationControllerTest extends ControllerTest {
                 ));
     }
 
-    // 1.5.6. 학력 생성 테스트
-    @DisplayName("학력 항목을 생성할 수 있다.")
-    @Test
-    void createEducations() throws Exception {
-        // given
-        final EducationCreateRequest firstEducationCreateRequest = new EducationCreateRequest(
-                2022,
-                2025,
-                "홍익대학교",
-                "컴퓨터공학과",
-                "졸업"
-        );
-
-        final EducationCreateRequest secondEducationCreateRequest = new EducationCreateRequest(
-                2022,
-                2025,
-                "연세대학교",
-                "경영학과",
-                "졸업"
-        );
-        final List<EducationCreateRequest> educationCreateRequests = Arrays.asList(firstEducationCreateRequest, secondEducationCreateRequest);
-
-        final EducationListCreateRequest educationListCreateRequest = new EducationListCreateRequest(
-                educationCreateRequests
-        );
-
-        doNothing().when(educationService).saveAll(anyLong(), anyList());
-
-        // when
-        final ResultActions resultActions = performPostRequests(educationListCreateRequest);
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                requestFields(
-                                        subsectionWithPath("educationList").description("학력 정보 배열").attributes(field("constraint", "객체(배열)")),
-                                        fieldWithPath("educationList[].admissionYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("입학 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("educationList[].graduationYear")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("졸업 연도")
-                                                .attributes(field("constraint", "4자리 숫자")),
-                                        fieldWithPath("educationList[].universityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학교명")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("educationList[].majorName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("전공명")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("educationList[].degreeName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학위명")
-                                                .attributes(field("constraint", "문자열"))
-                                )
-                        )
-                );
-    }
     @DisplayName("학력 항목 1개를 생성할 수 있다.")
     @Test
     void createEducation() throws Exception {

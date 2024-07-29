@@ -5,7 +5,6 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
-import liaison.linkit.profile.dto.request.education.EducationListCreateRequest;
 import liaison.linkit.profile.service.EducationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,17 +21,6 @@ public class EducationController {
 
     public final EducationService educationService;
 
-    // 1.5.6. 학력 생성/수정
-    @PostMapping("/educations")
-    @MemberOnly
-    public ResponseEntity<Void> createEducations(
-            @Auth final Accessor accessor,
-            @RequestBody @Valid EducationListCreateRequest educationListCreateRequest
-    ) {
-        log.info("memberId={}의 학력 생성/수정 요청이 들어왔습니다.", accessor.getMemberId());
-        educationService.saveAll(accessor.getMemberId(), educationListCreateRequest.getEducationList());
-        return ResponseEntity.ok().build();
-    }
 
     // 학력 단일 생성
     @PostMapping("/education")
