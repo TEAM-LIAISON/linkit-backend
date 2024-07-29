@@ -5,8 +5,6 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
-import liaison.linkit.profile.domain.education.Major;
-import liaison.linkit.profile.domain.education.University;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
@@ -61,7 +59,6 @@ public class EducationService {
         }
     }
 
-
     public void saveAll(
             final Long memberId,
             final List<EducationCreateRequest> educationCreateRequests
@@ -78,22 +75,16 @@ public class EducationService {
 
         // 반복문을 통해 들어온 순서대로 저장한다.
         for (EducationCreateRequest request : educationCreateRequests) {
-            final University university = universityRepository.findByUniversityName(request.getUniversityName())
-                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_UNIVERSITY_NAME));
-
             final Degree degree = degreeRepository.findByDegreeName(request.getDegreeName())
                     .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
-
-            final Major major = majorRepository.findByMajorName(request.getMajorName())
-                    .orElseThrow(() -> new BadRequestException(NOT_FOUND_MAJOR_NAME));
 
             final Education newEducation = Education.of(
                     profile,
                     request.getAdmissionYear(),
                     request.getGraduationYear(),
-                    university,
-                    degree,
-                    major
+                    request.getUniversityName(),
+                    request.getMajorName(),
+                    degree
             );
 
             Education savedEducation = educationRepository.save(newEducation);
@@ -168,16 +159,10 @@ public class EducationService {
     ) {
         final Education education = getEducation(educationId);
 
-        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName())
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_UNIVERSITY_NAME));
-
         final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
 
-        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName())
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MAJOR_NAME));
-
-        education.update(educationCreateRequest, university, major, degree);
+        education.update(educationCreateRequest, educationCreateRequest.getUniversityName(), educationCreateRequest.getMajorName(), degree);
         return education.getId();
     }
 
@@ -185,22 +170,16 @@ public class EducationService {
             final EducationCreateRequest educationCreateRequest,
             final Profile profile
     ) {
-        final University university = universityRepository.findByUniversityName(educationCreateRequest.getUniversityName())
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_UNIVERSITY_NAME));
-
         final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
-
-        final Major major = majorRepository.findByMajorName(educationCreateRequest.getMajorName())
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MAJOR_NAME));
 
         final Education newEducation = Education.of(
                 profile,
                 educationCreateRequest.getAdmissionYear(),
                 educationCreateRequest.getGraduationYear(),
-                university,
-                degree,
-                major
+                educationCreateRequest.getUniversityName(),
+                educationCreateRequest.getMajorName(),
+                degree
         );
 
         return educationRepository.save(newEducation).getId();
