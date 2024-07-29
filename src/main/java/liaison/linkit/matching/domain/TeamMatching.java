@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.MatchingType;
+import liaison.linkit.matching.domain.type.ReceiverDeleteStatusType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
@@ -57,11 +58,23 @@ public class TeamMatching extends BaseEntity {
     @Enumerated(value = STRING)
     private MatchingStatusType matchingStatusType;
 
+    @Column(name = "receiver_delete_status_type")
+    @Enumerated(value = STRING)
+    private ReceiverDeleteStatusType receiverDeleteStatusType;
+
     public void updateMatchingStatus(final boolean isAllow) {
         if (isAllow) {
             this.matchingStatusType = MatchingStatusType.SUCCESSFUL;
         } else {
             this.matchingStatusType = MatchingStatusType.DENIED;
+        }
+    }
+
+    public void updateReceiverDeleteStatusType(final boolean isDeleted) {
+        if (isDeleted) {
+            this.receiverDeleteStatusType = ReceiverDeleteStatusType.DELETED;
+        } else {
+            this.receiverDeleteStatusType = ReceiverDeleteStatusType.REMAINED;
         }
     }
 }

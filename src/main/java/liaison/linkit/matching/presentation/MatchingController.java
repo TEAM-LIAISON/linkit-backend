@@ -242,6 +242,7 @@ public class MatchingController {
     }
 
     // 내 이력서 관련 매칭일 때 연락하기 버튼을 누른 경우
+    // 수신자가 내 이력서일 때
     @GetMapping("/success/private/matching/contact/{privateMatchingId}")
     @MemberOnly
     public ResponseEntity<SuccessContactResponse> getPrivateSuccessContactResponse(
@@ -253,6 +254,7 @@ public class MatchingController {
     }
 
     // 팀 매칭 관련일 때 연락하기 버튼을 누른 경우
+    // 수신자가 팀 소개서일 때
     @GetMapping("/success/team/matching/contact/{teamMatchingId}")
     @MemberOnly
     public ResponseEntity<SuccessContactResponse> getTeamSuccessContactResponse(
@@ -261,5 +263,36 @@ public class MatchingController {
     ) {
         final SuccessContactResponse successContactResponse = matchingService.getTeamSuccessContactResponse(accessor.getMemberId(), teamMatchingId);
         return ResponseEntity.status(HttpStatus.OK).body(successContactResponse);
+    }
+
+
+
+
+
+
+
+
+    // 내가 보낸 매칭, 성사된 매칭에서 내 이력서 대상 매칭 삭제하기
+    // matchingType -> PROFILE
+    @DeleteMapping("/delete/private/matching/{privateMatchingId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteRequestPrivateMatching(
+            @Auth final Accessor accessor,
+            @PathVariable final Long privateMatchingId
+    ) {
+        matchingService.deletePrivateMatching(privateMatchingId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    // 내가 보낸 매칭, 성사된 매칭에서 팀 소개서 대상 매칭 삭제하기
+    // matchingType -> TeamProfile
+    @DeleteMapping("/delete/team/matching/{teamMatchingId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteRequestTeamMatching(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMatchingId
+    ) {
+        matchingService.deleteTeamMatching(teamMatchingId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

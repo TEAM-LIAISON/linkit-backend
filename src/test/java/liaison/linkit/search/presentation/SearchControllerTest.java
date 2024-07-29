@@ -171,6 +171,7 @@ public class SearchControllerTest extends ControllerTest {
 
         final TeamMemberAnnouncementResponse teamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 1L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "리에종",
                 "개발·데이터",
                 "주요 업무입니다.",
@@ -222,7 +223,9 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].teamMiniProfileResponse.isTeamActivate").description("팀 소개서 활성화 여부"),
                                         fieldWithPath("content[].teamMiniProfileResponse.teamLogoImageUrl").description("팀 로고 이미지 URL"),
                                         fieldWithPath("content[].teamMiniProfileResponse.teamKeywordNames").description("팀 키워드").optional(),
+
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.id").description("팀원 공고 ID"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.teamLogoImageUrl").description("팀 로고 이미지 경로"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.teamName").description("팀 이름"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.jobRoleName").description("팀원 공고 직무 이름"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.mainBusiness").description("주요 업무"),
@@ -264,6 +267,7 @@ public class SearchControllerTest extends ControllerTest {
 
         final TeamMemberAnnouncementResponse teamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
                 1L,
+                "https://image.linkit.im/images/linkit_logo.png",
                 "리에종",
                 "개발·데이터",
                 "주요 업무입니다.",
@@ -324,6 +328,7 @@ public class SearchControllerTest extends ControllerTest {
                                         fieldWithPath("content[].teamMiniProfileResponse.teamKeywordNames").description("팀 키워드").optional(),
 
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.id").description("팀원 공고 ID"),
+                                        fieldWithPath("content[].teamMemberAnnouncementResponse.teamLogoImageUrl").description("팀 로고 이미지 경로"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.teamName").description("팀 이름"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.jobRoleName").description("팀원 공고 직무 이름"),
                                         fieldWithPath("content[].teamMemberAnnouncementResponse.mainBusiness").description("주요 업무"),

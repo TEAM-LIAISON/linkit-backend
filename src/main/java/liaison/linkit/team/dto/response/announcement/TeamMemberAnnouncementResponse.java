@@ -15,6 +15,7 @@ import java.util.List;
 public class  TeamMemberAnnouncementResponse {
 
     private final Long id;
+    private final String teamLogoImageUrl;
     private final String teamName;
     private final String jobRoleName;
     private final String mainBusiness;
@@ -23,6 +24,7 @@ public class  TeamMemberAnnouncementResponse {
     private final Boolean isTeamSaved;
 
     public static TeamMemberAnnouncementResponse of(
+            final String teamLogoImageUrl,
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final String teamName,
             final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole,
@@ -43,6 +45,7 @@ public class  TeamMemberAnnouncementResponse {
 
         return new TeamMemberAnnouncementResponse(
                 teamMemberAnnouncement.getId(),
+                teamLogoImageUrl,
                 teamName,
                 jobRoleName,
                 teamMemberAnnouncement.getMainBusiness(),
@@ -53,6 +56,7 @@ public class  TeamMemberAnnouncementResponse {
     }
 
     public static TeamMemberAnnouncementResponse afterLogin(
+            final String teamLogoImageUrl,
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final String teamName,
             final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole,
@@ -73,6 +77,7 @@ public class  TeamMemberAnnouncementResponse {
 
         return new TeamMemberAnnouncementResponse(
                 teamMemberAnnouncement.getId(),
+                teamLogoImageUrl,
                 teamName,
                 jobRoleName,
                 teamMemberAnnouncement.getMainBusiness(),

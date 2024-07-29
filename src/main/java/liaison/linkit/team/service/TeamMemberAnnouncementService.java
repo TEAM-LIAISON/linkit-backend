@@ -77,7 +77,14 @@ public class TeamMemberAnnouncementService {
         final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole = getTeamMemberAnnouncementJobRole(teamMemberAnnouncement.getId());
         final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
         final String teamName = teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamName();
-        return TeamMemberAnnouncementResponse.of(teamMemberAnnouncement, teamName, teamMemberAnnouncementJobRole, teamMemberAnnouncementSkillList);
+
+        return TeamMemberAnnouncementResponse.of(
+                teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
+                teamMemberAnnouncement,
+                teamName,
+                teamMemberAnnouncementJobRole,
+                teamMemberAnnouncementSkillList
+        );
     }
 
     // 팀원 공고 저장 메서드
