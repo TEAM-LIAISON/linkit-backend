@@ -489,47 +489,85 @@ public class MatchingService {
 
 
     // 사용
+    // 수신자가 내 이력서일 때
+    // 1. 나의 개인 이력서에 매칭 요청 받은 것
+    // 2. 내가 개인 이력서에 매칭 요청 보낸 것
     public SuccessContactResponse getPrivateSuccessContactResponse(
+            // 조회하는 본인의 ID 제공
             final Long memberId,
             final Long privateMatchingId
     ) {
         final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-        // 보낸 사람의 ID = 열람한 사람의 ID -> Profile 객체의 정보를 가져온다
+        // 매칭 요청 보낸 사람의 ID = 열람한 사람의 ID -> Profile 객체의 정보를 가져온다
+
+        // 내가 개인 이력서에 매칭 요청 보낸 것이다.
+        // 상대 개인 이력서의 정보가 필요하다.
         if (Objects.equals(privateMatching.getMember().getId(), memberId)) {
             return new SuccessContactResponse(
                     privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
                     privateMatching.getProfile().getMember().getEmail()
             );
         } else {
+            // 나의 개인 이력서에 매칭 요청이 온 경우
             // 보낸 사람의 ID != 열람한 사람의 ID -> Member 객체의 정보를 가져온다
-            return new SuccessContactResponse(
-                    privateMatching.getMember().getMemberBasicInform().getMemberName(),
-                    privateMatching.getMember().getEmail()
-            );
+            if (privateMatching.getSenderType().equals(SenderType.PRIVATE)) {
+                // 내 이력서 - 내 이력서 매칭
+                return new SuccessContactResponse(
+                        privateMatching.getMember().getMemberBasicInform().getMemberName(),
+                        privateMatching.getMember().getEmail()
+                );
+            } else {
+                // 팀 소개서 - 내 이력서 매칭
+                return new SuccessContactResponse(
+                        privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                        privateMatching.getMember().getEmail()
+                );
+            }
         }
     }
 
     // 사용
+    // 수신자가 팀 소개서일 때
+    // 1. 나의 팀 소개서에 매칭 요청 받은 것
+    // 2. 내가 팀 소개서에 매칭 요청 보낸 것
     public SuccessContactResponse getTeamSuccessContactResponse(
+            // 열람하는 본인의 member - id
             final Long memberId,
             final Long teamMatchingId
     ) {
+
         // 전달 받은 PK -> 팀 매칭 객체 확인
         final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
         // 보낸 사람의 ID = 열람한 사람의 ID -> teamMemberAnnouncement 객체의 정보를 가져온다
+
+        // 내가 팀 소개서에 매칭 요청 보낸 것이다.
+        // 상대 팀의 정보가 필요하다
         if (Objects.equals(teamMatching.getMember().getId(), memberId)) {
             return new SuccessContactResponse(
                     teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
                     teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail()
             );
         } else {
+            // 누군가 나의 팀 소개서에 매칭 요청을 보내왔다.
             // 보낸 사람의 ID != 열람한 사람의 ID -> Member 객체의 정보를 가져온다
-            return new SuccessContactResponse(
-                    teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                    teamMatching.getMember().getEmail()
-            );
-        }
+            // 팀 소개서가 나한테 보냈을 수도, 개인 이력서가 지원했을수도 있다
 
+            if (teamMatching.getSenderType().equals(SenderType.PRIVATE)) {
+                // 개인 이력서가 팀 소개서에 매칭 요청 보낸 경우
+                // 상대 개인의 정보가 필요하다.
+                return new SuccessContactResponse(
+                        teamMatching.getMember().getMemberBasicInform().getMemberName(),
+                        teamMatching.getMember().getEmail()
+                );
+            } else {
+                // 팀 소개서가 나의 팀 소개서에 매칭 요청 보낸 경우
+                // 상대 팀의 정보가 필요하다
+                return new SuccessContactResponse(
+                        teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                        teamMatching.getMember().getEmail()
+                );
+            }
+        }
     }
 
 

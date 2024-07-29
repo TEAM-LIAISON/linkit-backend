@@ -242,6 +242,7 @@ public class MatchingController {
     }
 
     // 내 이력서 관련 매칭일 때 연락하기 버튼을 누른 경우
+    // 수신자가 내 이력서일 때
     @GetMapping("/success/private/matching/contact/{privateMatchingId}")
     @MemberOnly
     public ResponseEntity<SuccessContactResponse> getPrivateSuccessContactResponse(
@@ -253,6 +254,7 @@ public class MatchingController {
     }
 
     // 팀 매칭 관련일 때 연락하기 버튼을 누른 경우
+    // 수신자가 팀 소개서일 때
     @GetMapping("/success/team/matching/contact/{teamMatchingId}")
     @MemberOnly
     public ResponseEntity<SuccessContactResponse> getTeamSuccessContactResponse(
