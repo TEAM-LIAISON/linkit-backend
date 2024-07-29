@@ -24,8 +24,8 @@ public class EducationResponse {
                 education.getId(),
                 education.getAdmissionYear(),
                 education.getGraduationYear(),
-                education.getUniversity().getUniversityName(),
-                education.getMajor().getMajorName(),
+                education.getUniversityName(),
+                education.getMajorName(),
                 education.getDegree().getDegreeName()
         );
     }
@@ -35,8 +35,8 @@ public class EducationResponse {
                 education.getId(),
                 education.getAdmissionYear(),
                 education.getGraduationYear(),
-                education.getUniversity().getUniversityName(),
-                education.getMajor().getMajorName(),
+                education.getUniversityName(),
+                education.getMajorName(),
                 education.getDegree().getDegreeName()
         );
     }

@@ -31,47 +31,46 @@ public class Education {
     @Column(nullable = false)
     private int graduationYear;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "university_id")
-    private University university;
+    @Column(nullable = false)
+    private String universityName;
+
+    @Column(nullable = false)
+    private String majorName;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "degree_id")
     private Degree degree;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "major_id")
-    private Major major;
-
     public static Education of(
             final Profile profile,
             final int admissionYear,
             final int graduationYear,
-            final University university,
-            final Degree degree,
-            final Major major
+            final String universityName,
+            final String majorName,
+            final Degree degree
     ){
         return new Education(
                 null,
                 profile,
                 admissionYear,
                 graduationYear,
-                university,
-                degree,
-                major
+                universityName,
+                majorName,
+                degree
         );
     }
 
     public void update(
             final EducationCreateRequest educationCreateRequest,
-            final University university,
-            final Major major,
+            final String universityName,
+            final String majorName,
             final Degree degree
     ) {
         this.admissionYear = educationCreateRequest.getAdmissionYear();
         this.graduationYear = educationCreateRequest.getGraduationYear();
-        this.university = university;
-        this.major = major;
+        this.universityName = universityName;
+        this.majorName = majorName;
         this.degree = degree;
     }
+
 }
