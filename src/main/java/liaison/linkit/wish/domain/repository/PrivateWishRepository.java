@@ -33,4 +33,14 @@ public interface PrivateWishRepository extends JpaRepository<PrivateWish, Long> 
 
     boolean existsByMemberId(@Param("memberId") final Long memberId);
 
+    boolean existsByProfileId(@Param("profileId") final Long profileId);
+
+    @Modifying
+    @Transactional
+    @Query("""
+           UPDATE PrivateWish privateWish
+           SET privateWish.status = 'DELETED'
+           WHERE privateWish.profile.id = :profileId
+           """)
+    void deleteByProfileId(@Param("profileId") final Long profileId);
 }

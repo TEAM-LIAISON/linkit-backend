@@ -75,12 +75,14 @@ public class TeamMiniProfileService {
             final Long memberId,
             final OnBoardingFieldTeamInformRequest onBoardingFieldTeamInformRequest
     ) {
+        // 팀 프로필 객체 조회
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
+        // 팀 미니 프로필 객체가 존재했다면? 삭제 먼저?
+        //
         if (teamMiniProfileRepository.existsByTeamProfileId(teamProfile.getId())) {
             teamMiniProfileRepository.deleteByTeamProfileId(teamProfile.getId());
         }
-
 
         // IndustrySector 찾기
         final IndustrySector industrySector = industrySectorRepository.findBySectorName(onBoardingFieldTeamInformRequest.getSectorName());

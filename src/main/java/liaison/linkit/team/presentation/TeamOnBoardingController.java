@@ -51,6 +51,7 @@ public class TeamOnBoardingController {
         teamProfileTeamBuildingFieldService.saveTeamBuildingField(accessor.getMemberId(), onBoardingFieldTeamInformRequest.getTeamBuildingFieldNames());
 
         // 미니 프로필에 있는 팀 제목, 규모, 분야 저장
+        // 온보딩 항목 저장
         teamMiniProfileService.saveOnBoarding(accessor.getMemberId(), onBoardingFieldTeamInformRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
