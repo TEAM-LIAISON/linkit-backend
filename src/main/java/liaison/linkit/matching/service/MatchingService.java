@@ -282,7 +282,7 @@ public class MatchingService {
         if (teamProfileRepository.existsByMemberId(memberId)) {
             // 내가 등록한 나의 팀 소개서 중 팀원 공고들이 필요함
             final TeamProfile teamProfile = getTeamProfile(memberId);
-            final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileId(teamProfile.getId());
+            final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileIdUsableAndDeleted(teamProfile.getId());
             final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream().map(TeamMemberAnnouncement::getId).toList();
             final List<TeamMatching> teamMatchingList = teamMatchingRepository.findAllByTeamMemberAnnouncementIds(teamMemberAnnouncementIds);
             toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamMatchingList);
@@ -312,7 +312,6 @@ public class MatchingService {
 
     // 성사된 매칭
     public List<SuccessMatchingResponse> getMySuccessMatching(final Long memberId) {
-
         List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
         List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
         List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Collections.emptyList();
@@ -332,7 +331,7 @@ public class MatchingService {
         if (teamProfileRepository.existsByMemberId(memberId)) {
             // 나의 팀 소개서로 받은 매칭 요청 조회
             final TeamProfile teamProfile = getTeamProfile(memberId);
-            final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileId(teamProfile.getId());
+            final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileIdUsableAndDeleted(teamProfile.getId());
             final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream().map(TeamMemberAnnouncement::getId).toList();
             final List<TeamMatching> teamReceivedMatchingList = teamMatchingRepository.findSuccessReceivedMatching(teamMemberAnnouncementIds);
 
