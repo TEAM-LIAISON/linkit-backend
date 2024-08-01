@@ -49,6 +49,7 @@ public class TeamMemberAnnouncementController {
         return ResponseEntity.ok().body(updatedTeamMemberAnnouncementId);
     }
 
+    // 사용하지 않음
     @PostMapping("/members/announcements")
     @MemberOnly
     public ResponseEntity<Void> createTeamMemberAnnouncements(

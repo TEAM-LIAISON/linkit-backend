@@ -61,7 +61,6 @@ public class MatchingController {
             @PathVariable final Long profileId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
-
         matchingService.createTeamProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
         return ResponseEntity.status(CREATED).build();
     }
@@ -264,6 +263,11 @@ public class MatchingController {
         final SuccessContactResponse successContactResponse = matchingService.getTeamSuccessContactResponse(accessor.getMemberId(), teamMatchingId);
         return ResponseEntity.status(HttpStatus.OK).body(successContactResponse);
     }
+
+
+
+
+
 
 
 

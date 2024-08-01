@@ -88,15 +88,16 @@ spring:
             token-uri: ${google.token.uri}
             user-info-uri: ${google.user.info.uri}
   mail:
-    host: smtp.naver.com
+    host: smtp.worksmobile.com
     port: 465
-    username: linkit_official@naver.com
+    username: linkit@linkit.im
     password: ${mail.password}
     properties:
       mail.smtp.auth: true
-      mail.smtp.ssl.enable: true
-      mail.smtp.ssl.trust: smtp.naver.com
       mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
 
   servlet:
     multipart:
@@ -158,3 +159,7 @@ degree:
 
 jobRole:
   csv-path: ${jobRole.path}
+
+naver:
+  id: linkit@linkit.im
+  password: ${mail.password}
