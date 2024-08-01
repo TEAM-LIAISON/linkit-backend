@@ -8,8 +8,6 @@ import liaison.linkit.profile.domain.education.Education;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
-import liaison.linkit.profile.domain.repository.education.MajorRepository;
-import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +28,8 @@ public class EducationService {
 
     private final ProfileRepository profileRepository;
     private final EducationRepository educationRepository;
-    private final UniversityRepository universityRepository;
     private final DegreeRepository degreeRepository;
-    private final MajorRepository majorRepository;
+
 
     // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
     private Profile getProfile(final Long memberId) {
