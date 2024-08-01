@@ -15,9 +15,10 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
 
     boolean existsByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
-    @Query("SELECT teamMemberAnnouncement FROM TeamMemberAnnouncement teamMemberAnnouncement WHERE teamMemberAnnouncement.teamProfile.id = :teamProfileId")
+    @Query("SELECT teamMemberAnnouncement FROM TeamMemberAnnouncement teamMemberAnnouncement WHERE teamMemberAnnouncement.teamProfile.id = :teamProfileId AND teamMemberAnnouncement.status = 'USABLE'")
     List<TeamMemberAnnouncement> findAllByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
+    // 사용하지 않음
     @Modifying
     @Transactional
     // 메서드가 트랜잭션 내에서 실행되어야 함을 나타낸다.
@@ -64,6 +65,7 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
                JOIN ActivityMethod am2 ON amt2.id = am2.activityMethodTag.id
                WHERE am2.teamProfile.id = tp.id AND amt2.activityTagName IN :activityTagName) = :activityTagCount)
          AND (tmp.isTeamActivate = true)
+         AND (tma.status = 'USABLE')
          
          ORDER BY tma.createdAt DESC
          """)

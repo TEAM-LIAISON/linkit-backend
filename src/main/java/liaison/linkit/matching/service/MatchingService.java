@@ -335,6 +335,8 @@ public class MatchingService {
             final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileId(teamProfile.getId());
             final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream().map(TeamMemberAnnouncement::getId).toList();
             final List<TeamMatching> teamReceivedMatchingList = teamMatchingRepository.findSuccessReceivedMatching(teamMemberAnnouncementIds);
+
+            log.info("memberId={}의 팀 소개서로 받은 매칭 요청은 다음과 같습니다. teamReceivedMatchingList={}", memberId, teamReceivedMatchingList);
             toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamReceivedMatchingList);
 
             // 내가 팀 소개서로 보낸 매칭 요청 조회

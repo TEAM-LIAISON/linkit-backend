@@ -39,7 +39,6 @@ public class MailServiceImpl implements MailService {
     // Duration.ofMinutes(1)을 사용하여 1분으로 설정합니다.
     private Duration validityDuration = Duration.ofMinutes(1);
 
-
     // 메일 발송
     // sendSimpleMessage 의 매개변수 to는 이메일 주소가 되고,
     // MimeMessage 객체 안에 내가 전송할 메일의 내용을 담는다
