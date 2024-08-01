@@ -81,14 +81,14 @@ spring:
             token-uri: ${google.token.uri}
             user-info-uri: ${google.user.info.uri}
   mail:
-    host: smtp.naver.com
+    host: smtp.worksmobile.com
     port: 465
     username: linkit_official@naver.com
     password: ${mail.password}
     properties:
       mail.smtp.auth: true
       mail.smtp.ssl.enable: true
-      mail.smtp.ssl.trust: smtp.naver.com
+      mail.smtp.ssl.trust: smtp.worksmobile.com
       mail.smtp.starttls.enable: true
 
   sql:
@@ -161,3 +161,7 @@ degree:
 
 jobRole:
   csv-path: ${jobRole.path}
+
+naver:
+  id: linkit@linkit.im
+  password: ${mail.password}

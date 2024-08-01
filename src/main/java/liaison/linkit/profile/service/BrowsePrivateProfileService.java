@@ -13,8 +13,6 @@ import liaison.linkit.profile.domain.repository.SkillRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
-import liaison.linkit.profile.domain.repository.education.MajorRepository;
-import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
@@ -57,9 +55,7 @@ public class BrowsePrivateProfileService {
     private final TeamBuildingFieldRepository teamBuildingFieldRepository;
     private final AntecedentsRepository antecedentsRepository;
     private final EducationRepository educationRepository;
-    private final UniversityRepository universityRepository;
     private final DegreeRepository degreeRepository;
-    private final MajorRepository majorRepository;
     private final AttachUrlRepository attachUrlRepository;
 
     // 회원 조회

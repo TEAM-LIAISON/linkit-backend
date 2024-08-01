@@ -12,8 +12,6 @@ import liaison.linkit.profile.domain.repository.SkillRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
-import liaison.linkit.profile.domain.repository.education.MajorRepository;
-import liaison.linkit.profile.domain.repository.education.UniversityRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
@@ -58,9 +56,7 @@ public class ProfileService {
 
     // 학력 정보 담당
     private final EducationRepository educationRepository;
-    private final UniversityRepository universityRepository;
     private final DegreeRepository degreeRepository;
-    private final MajorRepository majorRepository;
 
     // 첨부 링크 정보 담당
     private final AttachUrlRepository attachUrlRepository;
