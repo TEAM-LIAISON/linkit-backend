@@ -16,7 +16,6 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-// 팀원 공고
 public class TeamMemberAnnouncement extends BaseEntity {
 
     @Id
