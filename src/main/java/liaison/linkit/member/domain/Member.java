@@ -91,7 +91,6 @@ public class Member {
     @Column(nullable = false)
     private int teamWishCount;
 
-
     public Member(
             final Long id,
             final String socialLoginId,
