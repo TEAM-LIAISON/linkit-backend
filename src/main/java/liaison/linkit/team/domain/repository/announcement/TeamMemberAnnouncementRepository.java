@@ -18,7 +18,7 @@ public interface TeamMemberAnnouncementRepository extends JpaRepository<TeamMemb
     @Query("SELECT teamMemberAnnouncement FROM TeamMemberAnnouncement teamMemberAnnouncement WHERE teamMemberAnnouncement.teamProfile.id = :teamProfileId AND teamMemberAnnouncement.status = 'USABLE'")
     List<TeamMemberAnnouncement> findAllByTeamProfileId(@Param("teamProfileId") final Long teamProfileId);
 
-    @Query("SELECT teamMemberAnnouncement FROM TeamMemberAnnouncement teamMemberAnnouncement WHERE teamMemberAnnouncement.teamProfile.id = :teamProfileId AND teamMemberAnnouncement.status = 'USABLE' OR teamMemberAnnouncement.status = 'DELETED'")
+    @Query("SELECT teamMemberAnnouncement FROM TeamMemberAnnouncement teamMemberAnnouncement WHERE teamMemberAnnouncement.teamProfile.id = :teamProfileId AND (teamMemberAnnouncement.status = 'USABLE' OR teamMemberAnnouncement.status = 'DELETED')")
     List<TeamMemberAnnouncement> findAllByTeamProfileIdUsableAndDeleted(@Param("teamProfileId") final Long teamProfileId);
 
     // 사용하지 않음
