@@ -331,6 +331,7 @@ public class MatchingService {
         if (teamProfileRepository.existsByMemberId(memberId)) {
             // 나의 팀 소개서로 받은 매칭 요청 조회
             final TeamProfile teamProfile = getTeamProfile(memberId);
+
             final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileIdUsableAndDeleted(teamProfile.getId());
             final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream().map(TeamMemberAnnouncement::getId).toList();
             final List<TeamMatching> teamReceivedMatchingList = teamMatchingRepository.findSuccessReceivedMatching(teamMemberAnnouncementIds);
