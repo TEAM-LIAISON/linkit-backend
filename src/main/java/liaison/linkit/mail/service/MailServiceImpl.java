@@ -90,7 +90,7 @@ public class MailServiceImpl implements MailService {
         message.setText(msgg, "utf-8", "html");
         // 보내는 사람의 이메일 주소, 보내는 사람 이름
         message.setFrom(id);
-        log.info("********creatMessage 함수에서 생성된 msgg 메시지********" + msgg);
+        log.info("********creatMessage 함수에서 생성된 msg 메시지********" + msgg);
         log.info("********creatMessage 함수에서 생성된 리턴 메시지********" + message);
 
         return message;

@@ -39,6 +39,7 @@ public class MatchingController {
     // 개인 이력서로 개인 이력서에 매칭 요청을 보내는 경우
     // 해당 개인 이력서의 PK id가 필요하다.
     // accessor.getMemberId -> 해당 회원의 내 이력서와 상대의 내 이력서가 매칭
+    // 이메일 발송 자동화 추가 필요
     @PostMapping("/private/profile/matching/private/{profileId}")
     @MemberOnly
     @CheckMatchingToPrivateProfileAccess
@@ -53,6 +54,7 @@ public class MatchingController {
     }
 
     // accessor.getMemberId -> 해당 회원의 팀 소개서와 상대의 내 이력서가 매칭
+    // 이메일 발송 자동화 추가 필요
     @PostMapping("/team/profile/matching/private/{profileId}")
     @MemberOnly
     @CheckMatchingToPrivateProfileAccess
@@ -66,6 +68,7 @@ public class MatchingController {
     }
 
     // 팀 소개서가 팀 소개서에 매칭 요청을 보내는 경우
+    // 이메일 발송 자동화 추가 필요
     @PostMapping("/team/profile/matching/team/{teamMemberAnnouncementId}")
     @MemberOnly
     @CheckMatchingToTeamProfileAccess
@@ -79,6 +82,7 @@ public class MatchingController {
     }
 
     // 내 이력서가 팀 소개서에 매칭 요청을 보내는 경우
+    // 이메일 발송 자동화 추가 필요
     @PostMapping("/private/profile/matching/team/{teamMemberAnnouncementId}")
     @MemberOnly
     @CheckMatchingToTeamProfileAccess
@@ -214,9 +218,8 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(requestTeamMatchingMessageResponse);
     }
 
-
-
     // 내 이력서 관련 매칭일 때 수락/거절하기 버튼을 누른 경우
+    // 이메일 발송 자동화 필요
     @PostMapping("/allow/private/matching/{privateMatchingId}")
     @MemberOnly
     public ResponseEntity<Void> acceptReceivePrivateMatching(
@@ -229,6 +232,7 @@ public class MatchingController {
     }
 
     // 팀 소개서 관련 매칭일 때 수락하기 버튼을 누른 경우
+    // 이메일 발송 자동화 필요
     @PostMapping("/allow/team/matching/{teamMatchingId}")
     @MemberOnly
     public ResponseEntity<Void> acceptReceiveTeamMatching(
