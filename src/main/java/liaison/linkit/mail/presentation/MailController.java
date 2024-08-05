@@ -18,7 +18,6 @@ public class MailController {
 
     @PostMapping("")
     public void mailConfirm(@RequestParam(name = "email") String email) throws Exception {
-        String code = mailService.sendSimpleMessage(email);
-        log.info("사용자에게 발송한 인증코드 ==> " + code);
+        mailService.sendSimpleMessage(email);
     }
 }
