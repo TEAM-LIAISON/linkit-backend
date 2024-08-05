@@ -25,9 +25,7 @@ public class MailConfig {
         javaMailSender.setHost("smtp.worksmobile.com");
         javaMailSender.setUsername(id);
         javaMailSender.setPassword(password);
-
         javaMailSender.setPort(465);
-
         javaMailSender.setJavaMailProperties(getMailProperties());
 
         return javaMailSender;
