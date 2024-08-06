@@ -2,6 +2,7 @@ package liaison.linkit.matching.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
+import liaison.linkit.mail.service.MailService;
 import liaison.linkit.matching.domain.PrivateMatching;
 import liaison.linkit.matching.domain.TeamMatching;
 import liaison.linkit.matching.domain.repository.PrivateMatchingRepository;
@@ -61,11 +62,12 @@ public class MatchingService {
     private final PrivateMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
     private final ProfileJobRoleRepository profileJobRoleRepository;
-
     private final TeamProfileRepository teamProfileRepository;
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
-
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
+
+    // 매칭 관리 -> 이메일 발송 자동화 service 계층 필요
+    public final MailService mailService;
 
     // 회원 정보를 가져오는 메서드
     private Member getMember(final Long memberId) {
@@ -157,7 +159,7 @@ public class MatchingService {
             final Long memberId,
             final Long profileId,
             final MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         final Member member = getMember(memberId);
         final Profile profile = getProfileById(profileId);
         if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
@@ -181,7 +183,14 @@ public class MatchingService {
                 REMAINED
         );
 
-        privateMatchingRepository.save(newPrivateMatching);
+        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
+
+        mailService.mailPrivateToPrivate(
+                profile.getMember().getMemberBasicInform().getMemberName(),
+                member.getMemberBasicInform().getMemberName(),
+                savedPrivateMatching.getCreatedAt(),
+                savedPrivateMatching.getRequestMessage()
+        );
     }
 
     // 3번

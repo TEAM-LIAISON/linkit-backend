@@ -13,7 +13,10 @@ import liaison.linkit.matching.dto.response.RequestMatchingResponse;
 import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
 import liaison.linkit.matching.dto.response.contact.SuccessContactResponse;
 import liaison.linkit.matching.dto.response.existence.ExistenceProfileResponse;
-import liaison.linkit.matching.dto.response.messageResponse.*;
+import liaison.linkit.matching.dto.response.messageResponse.ReceivedPrivateMatchingMessageResponse;
+import liaison.linkit.matching.dto.response.messageResponse.ReceivedTeamMatchingMessageResponse;
+import liaison.linkit.matching.dto.response.messageResponse.RequestPrivateMatchingMessageResponse;
+import liaison.linkit.matching.dto.response.messageResponse.RequestTeamMatchingMessageResponse;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +65,7 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long profileId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         matchingService.createTeamProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
         return ResponseEntity.status(CREATED).build();
     }
@@ -78,6 +81,7 @@ public class MatchingController {
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
         matchingService.createTeamProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
+
         return ResponseEntity.status(CREATED).build();
     }
 
@@ -218,6 +222,7 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).body(requestTeamMatchingMessageResponse);
     }
 
+
     // 내 이력서 관련 매칭일 때 수락/거절하기 버튼을 누른 경우
     // 이메일 발송 자동화 필요
     @PostMapping("/allow/private/matching/{privateMatchingId}")
@@ -231,7 +236,7 @@ public class MatchingController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    // 팀 소개서 관련 매칭일 때 수락하기 버튼을 누른 경우
+    // 팀 소개서 관련 매칭일 때 수락/거절하기 버튼을 누른 경우
     // 이메일 발송 자동화 필요
     @PostMapping("/allow/team/matching/{teamMatchingId}")
     @MemberOnly
@@ -243,6 +248,8 @@ public class MatchingController {
         matchingService.acceptTeamMatching(teamMatchingId, allowMatchingRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
 
     // 내 이력서 관련 매칭일 때 연락하기 버튼을 누른 경우
     // 수신자가 내 이력서일 때

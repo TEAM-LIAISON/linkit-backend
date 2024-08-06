@@ -10,7 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -22,35 +22,40 @@ public class MailServiceImpl implements MailService {
     @Value("${naver.id}")
     private String id;
 
+    // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
     @Override
-    public void sendSimpleMessage(String to) throws Exception {
-        MimeMessage message = createMessage(to); // "to" 로 메일 발송
-        log.info("********생성된 메시지******** => " + message);
+    public void mailPrivateToPrivate(
+            final String receiverName,
+            final String senderName,
+            final LocalDateTime requestDate,
+            final String requestMessage
+    ) throws Exception {
+        final MimeMessage mimeMessage = createPrivateToPrivateMail(
+                receiverName,
+                senderName,
+                requestDate,
+                requestMessage
+        );
 
         try {
-            emailSender.send(message);
+            emailSender.send(mimeMessage);
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException();
         }
     }
 
-    private MimeMessage createMessage(String to) throws MessagingException, UnsupportedEncodingException {
-        log.info("메일받을 사용자 : " + to);
+    private MimeMessage createPrivateToPrivateMail(
+            final String receiverName,
+            final String senderName,
+            final LocalDateTime requestDate,
+            final String requestMessage
+    ) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverName);
+        mimeMessage.setSubject("[링킷] 내 이력서 매칭 요청 알림");
 
-        MimeMessage message = emailSender.createMimeMessage();
-        message.addRecipients(Message.RecipientType.TO, to);
-        message.setSubject("관리자 회원가입을 위한 이메일 인증코드");
-
-        // Define dynamic content
-        String recipientName = "Recipient Name"; // e.g., fetched from user info
-        String senderName = "Sukki";
-        String requestDate = "7월 12일";
-        String matchingRequestMessage = "매칭 요청 본문";
-        String profileSummary = "홍익대학교 시각디자인과 재학 중 초기 창업팀 근무 경험(5개월)";
-
-        // Use String.format() to insert variables into the message body
-        String msgg = String.format("""
+        final String msgg = String.format("""
                 <div class="container" style="font-family: 'Pretendard', sans-serif; margin: 0; padding: 0; box-sizing: border-box; background-color: #F0F2F6; display: flex; width: 100%%; flex-direction: column; align-items: center; justify-content: center; padding-top: 5rem; padding-bottom: 5rem;">
                     <div class="mail-wrapper" style="display: flex; flex-direction: column; width: 40.125rem; padding: 3.75rem 1.25rem 5.625rem 1.25rem; gap: 3.125rem; background-color: white; align-items: flex-start;">
                         <div class="center-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 2.125rem; width: 100%%;">
@@ -92,7 +97,7 @@ public class MailServiceImpl implements MailService {
                                 <div class="normal-text font-semibold" style="font-size: 0.875rem; font-weight: 400; line-height: 1.5625rem; color: var(--, #000); font-feature-settings: 'liga' off, 'clig' off;">
                                     %s님의 이력</div>
                                 <div class="normal-text" style="color: var(--Grey-scale-grey80, #27364B); line-height: 1.4375rem; font-size: 0.875rem; font-weight: 400; color: var(--, #000); font-feature-settings: 'liga' off, 'clig' off;">
-                                    %s
+                                    이력 설명
                                 </div>
                                 <div class="profile-link" style="display: flex; justify-content: flex-end; align-items: center; gap: 0.625rem; width: 100%%;">
                                     <div class="right-text" style="text-align: right; font-size: 0.875rem; font-weight: 600; line-height: 1.5625rem; color: var(--, #000); font-feature-settings: 'liga' off, 'clig' off;">
@@ -121,13 +126,10 @@ public class MailServiceImpl implements MailService {
                         </div>
                     </div>
                 </div>
-                """, recipientName, recipientName, senderName, requestDate, senderName, matchingRequestMessage, senderName, profileSummary, senderName);
+                """, receiverName, receiverName, senderName, requestDate, senderName, requestMessage, senderName, senderName);
+        mimeMessage.setText(msgg, "utf-8", "html");
+        mimeMessage.setFrom(id);
 
-        message.setText(msgg, "utf-8", "html");
-        message.setFrom(id);
-        log.info("********createMessage 함수에서 생성된 msgg 메시지********" + msgg);
-        log.info("********createMessage 함수에서 생성된 리턴 메시지********" + message);
-
-        return message;
+        return mimeMessage;
     }
 }
