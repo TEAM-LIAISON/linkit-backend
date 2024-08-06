@@ -146,6 +146,7 @@ public class MatchingService {
                 // 요청 상태로 저장한다.
                 REQUESTED,
                 REMAINED,
+                false,
                 false
         );
 
@@ -192,6 +193,7 @@ public class MatchingService {
                 // 요청 상태로 저장한다.
                 REQUESTED,
                 REMAINED,
+                false,
                 false
         );
         privateMatchingRepository.save(newPrivateMatching);
@@ -230,6 +232,7 @@ public class MatchingService {
                 // 요청 상태로 저장한다.
                 REQUESTED,
                 REMAINED,
+                false,
                 false
         );
 
@@ -273,6 +276,7 @@ public class MatchingService {
                 // 요청 상태로 저장한다.
                 REQUESTED,
                 REMAINED,
+                false,
                 false
         );
 

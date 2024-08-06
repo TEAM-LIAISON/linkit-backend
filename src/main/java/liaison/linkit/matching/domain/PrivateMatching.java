@@ -64,8 +64,11 @@ PrivateMatching extends BaseEntity {
     @Enumerated(value = STRING)
     private ReceiverDeleteStatusType receiverDeleteStatusType;
 
-    @Column(name = "is_check", columnDefinition = "boolean default false")
-    private Boolean isCheck;
+    @Column(name = "is_sender_check", columnDefinition = "Boolean default false")
+    private Boolean isSenderCheck;
+
+    @Column(name = "is_receiver_check", columnDefinition = "boolean default false")
+    private Boolean isReceiverCheck;
 
     public void updateMatchingStatus(final boolean isAllow) {
         if (isAllow) {
