@@ -54,6 +54,7 @@ public class LoginService {
     private final TeamWishRepository teamWishRepository;
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
 
+
     // 회원 조회
     private Member getMember(final Long memberId) {
         return memberRepository.findById(memberId)
@@ -184,6 +185,8 @@ public class LoginService {
         log.info("existDefaultTeamProfile={}",existDefaultTeamProfile);
 
         final boolean existDefaultProfile = (existDefaultPrivateProfile || existDefaultTeamProfile);
+
+
 
         if (existMemberBasicInform && existDefaultProfile) {
             return new RenewTokenResponse(jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()), existMemberBasicInform, existDefaultProfile);

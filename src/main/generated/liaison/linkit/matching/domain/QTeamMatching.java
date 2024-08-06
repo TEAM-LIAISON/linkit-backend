@@ -29,6 +29,8 @@ public class QTeamMatching extends EntityPathBase<TeamMatching> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isCheck = createBoolean("isCheck");
+
     public final EnumPath<liaison.linkit.matching.domain.type.MatchingStatusType> matchingStatusType = createEnum("matchingStatusType", liaison.linkit.matching.domain.type.MatchingStatusType.class);
 
     public final EnumPath<liaison.linkit.matching.domain.type.MatchingType> matchingType = createEnum("matchingType", liaison.linkit.matching.domain.type.MatchingType.class);
