@@ -122,7 +122,7 @@ public class MatchingService {
             final Long profileId,
             // 매칭 요청 생성
             final MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         final Member member = getMember(memberId);
         log.info("memberId={}가 매칭 요청을 보냅니다.", memberId);
 
@@ -149,7 +149,17 @@ public class MatchingService {
         );
 
         // to 내 이력서
-        privateMatchingRepository.save(newPrivateMatching);
+        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
+        mailService.mailPrivateToPrivate(
+                // 수신자 이름
+                profile.getMember().getEmail(),
+                // 발신자 이름
+                member.getMemberBasicInform().getMemberName(),
+                // 매칭 요청 발생 시간
+                savedPrivateMatching.getCreatedAt(),
+                // 매칭 요청 메시지
+                savedPrivateMatching.getRequestMessage()
+        );
     }
 
     // 이미 애노테이션으로 매칭에 대한 권한을 체킹한 상태이다.
@@ -182,15 +192,7 @@ public class MatchingService {
                 REQUESTED,
                 REMAINED
         );
-
-        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
-
-        mailService.mailPrivateToPrivate(
-                profile.getMember().getMemberBasicInform().getMemberName(),
-                member.getMemberBasicInform().getMemberName(),
-                savedPrivateMatching.getCreatedAt(),
-                savedPrivateMatching.getRequestMessage()
-        );
+        privateMatchingRepository.save(newPrivateMatching);
     }
 
     // 3번

@@ -6,7 +6,7 @@ public interface MailService {
 
     // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
     void mailPrivateToPrivate(
-            final String receiverName,
+            final String receiverEmail,
             final String senderName,
             final LocalDateTime requestDate,
             final String requestMessage
