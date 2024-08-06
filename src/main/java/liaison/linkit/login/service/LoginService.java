@@ -191,13 +191,10 @@ public class LoginService {
                 .map(TeamMemberAnnouncement::getId)
                 .toList();
 
-
         // 2개 모두 false -> existNonCheckNotification -> true -> 알림 기능 형태 제공
         // 내가 보내거나 받은 내 이력서 관련 매칭 요청에서 check -> false인 것이 존재하는지
 
-
         // 내가 보내거나 받은 팀 소개서 관련 매칭 요청에서 check -> false인 것이 존재하는지
-
         final boolean existNonCheckNotification = ((privateMatchingRepository.existsNonCheckByMemberId(member.getId(), profile.getId())) || (teamMatchingRepository.existsNonCheckByMemberId(member.getId(), teamMemberAnnouncementIds)));
 
         if (existMemberBasicInform && existDefaultProfile) {
