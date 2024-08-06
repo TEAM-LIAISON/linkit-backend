@@ -186,8 +186,6 @@ public class LoginService {
 
         final boolean existDefaultProfile = (existDefaultPrivateProfile || existDefaultTeamProfile);
 
-
-
         if (existMemberBasicInform && existDefaultProfile) {
             return new RenewTokenResponse(jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()), existMemberBasicInform, existDefaultProfile);
         } else {
