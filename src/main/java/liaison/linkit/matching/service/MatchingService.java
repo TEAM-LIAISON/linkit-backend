@@ -145,7 +145,8 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED
+                REMAINED,
+                false
         );
 
         // to 내 이력서
@@ -190,7 +191,8 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED
+                REMAINED,
+                false
         );
         privateMatchingRepository.save(newPrivateMatching);
     }
@@ -227,7 +229,8 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED
+                REMAINED,
+                false
         );
 
         teamMatchingRepository.save(newTeamMatching);
@@ -269,7 +272,8 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED
+                REMAINED,
+                false
         );
 
         teamMatchingRepository.save(newTeamMatching);

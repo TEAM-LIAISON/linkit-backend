@@ -17,7 +17,6 @@ public class MailConfig {
     @Value("${naver.password}")
     private String password;
 
-
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
