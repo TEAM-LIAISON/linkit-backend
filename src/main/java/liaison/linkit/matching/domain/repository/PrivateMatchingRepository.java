@@ -44,4 +44,13 @@ public interface PrivateMatchingRepository extends JpaRepository<PrivateMatching
            WHERE privateMatching.profile.id = :profileId
            """)
     void deleteByProfileId(@Param("profileId") final Long profileId);
+
+
+    @Query("""
+           SELECT COUNT(pm) > 0 FROM PrivateMatching pm
+           WHERE (pm.member.id = :memberId AND pm.isSenderCheck = false)
+           OR (pm.profile.id = :profileId AND pm.isReceiverCheck = false)
+           """)
+    boolean existsNonCheckByMemberId(final Long memberId, final Long profileId);
+
 }
