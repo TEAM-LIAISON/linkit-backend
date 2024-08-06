@@ -46,13 +46,13 @@ public class MailServiceImpl implements MailService {
     }
 
     private MimeMessage createPrivateToPrivateMail(
-            final String receiverName,
+            final String receiverEmail,
             final String senderName,
             final LocalDateTime requestDate,
             final String requestMessage
     ) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
-        mimeMessage.addRecipients(Message.RecipientType.TO, receiverName);
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
         mimeMessage.setSubject("[링킷] 내 이력서 매칭 요청 알림");
 
         final String msgg = String.format("""
@@ -126,7 +126,7 @@ public class MailServiceImpl implements MailService {
                         </div>
                     </div>
                 </div>
-                """, receiverName, receiverName, senderName, requestDate, senderName, requestMessage, senderName, senderName);
+                """, receiverEmail, receiverEmail, senderName, requestDate, senderName, requestMessage, senderName, senderName);
         mimeMessage.setText(msgg, "utf-8", "html");
         mimeMessage.setFrom(id);
 

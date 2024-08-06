@@ -50,7 +50,7 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long profileId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         log.info("profileId={}에게 내 이력서 대상으로 memberId={} 매칭 요청이 발생했습니다.", profileId, accessor.getMemberId());
         matchingService.createPrivateProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
         return ResponseEntity.status(CREATED).build();
@@ -81,7 +81,6 @@ public class MatchingController {
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
     ) {
         matchingService.createTeamProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
-
         return ResponseEntity.status(CREATED).build();
     }
 
