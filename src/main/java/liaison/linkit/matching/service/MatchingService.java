@@ -153,8 +153,9 @@ public class MatchingService {
         // to 내 이력서
         final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
         mailService.mailPrivateToPrivate(
-                // 수신자 이름
+                // 수신자 이메일
                 profile.getMember().getEmail(),
+                profile.getMember().getMemberBasicInform().getMemberName(),
                 // 발신자 이름
                 member.getMemberBasicInform().getMemberName(),
                 // 매칭 요청 발생 시간
@@ -174,6 +175,7 @@ public class MatchingService {
     ) throws Exception {
         final Member member = getMember(memberId);
         final Profile profile = getProfileById(profileId);
+
         if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
             throw new BadRequestException(NOT_ALLOW_T2P_MATCHING);
         }

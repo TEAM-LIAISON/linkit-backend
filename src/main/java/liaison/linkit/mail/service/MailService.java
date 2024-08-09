@@ -7,6 +7,7 @@ public interface MailService {
     // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
     void mailPrivateToPrivate(
             final String receiverEmail,
+            final String receiverName,
             final String senderName,
             final LocalDateTime requestDate,
             final String requestMessage
@@ -19,15 +20,33 @@ public interface MailService {
         4. 매칭 요청 보낼 때 메시지 - requestMessage
      */
 
+    // 2. 팀 소개서 -> 내 이력서 매칭 요청 보낸 경우
+    void mailTeamToPrivate(
+            final String receiverEmail,
+            final String receiverName,
+            final String senderName,
+            final LocalDateTime requestDate,
+            final String requestMessage
+    ) throws Exception;
 
+    // 3. 내 이력서 -> 팀 소개서로 매칭 요청 보낸 경우
+    void mailPrivateToTeam(
+            final String receiverEmail,
+            final String receiverName,
+            final String senderName,
+            final LocalDateTime requestDate,
+            final String requestMessage
+    ) throws Exception;
 
+    // 4. 팀 소개서 -> 팀 소개서로 매칭 요청 보낸 경우
+    void mailTeamToTeam(
+            final String receiverEmail,
+            final String receiverName,
+            final String senderName,
+            final LocalDateTime requestDate,
+            final String requestMessage
+    ) throws Exception;
 
-
-
-//    // 2. 내 이력서 -> 팀 소개서 매칭 요청 보낸 경우
-//    void mailPrivateToTeam() throws Exception;
-//    // 3. 팀 소개서 -> 내 이력서 매칭 요청 보낸 경우
-//    void mailTeamToPrivate() throws Exception;
 //    // 4. 팀 소개서 -> 팀 소개서 매칭 요청 보낸 경우
 //    void mailTeamToTeam() throws Exception;
 //
