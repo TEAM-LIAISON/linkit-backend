@@ -91,8 +91,8 @@ public class MailServiceImpl implements MailService {
 
     // 6. 내 이력서 -> 내 이력서 매칭 성사 (수신자 메일)
     @Override
-    public void mailSuccessPrivateToPrivateReceiver(final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
-        final MimeMessage mimeMessage = createSuccessPrivateToPrivateReceiver(receiverName, receiverEmail, requestMessage);
+    public void mailSuccessPrivateToPrivateReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = createSuccessPrivateToPrivateReceiver(senderName, senderEmail, receiverEmail, requestMessage);
         try {
             emailSender.send(mimeMessage);
         } catch (Exception e) {
@@ -114,8 +114,8 @@ public class MailServiceImpl implements MailService {
     }
 
     // 8. 팀 소개서 -> 내 이력서 매칭 성사 (수신자 메일)
-    public void mailSuccessTeamToPrivateReceiver(final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException{
-        final MimeMessage mimeMessage = createSuccessTeamToPrivateReceiver(receiverName, receiverEmail, requestMessage);
+    public void mailSuccessTeamToPrivateReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException{
+        final MimeMessage mimeMessage = createSuccessTeamToPrivateReceiver(senderName, senderEmail, receiverEmail, requestMessage);
         try {
             emailSender.send(mimeMessage);
         } catch (Exception e) {
@@ -138,8 +138,8 @@ public class MailServiceImpl implements MailService {
 
 
     // 10. 내 이력서 -> 팀 소개서 매칭 성사 (수신자 메일)
-    public void mailSuccessPrivateToTeamReceiver(final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException{
-        final MimeMessage mimeMessage = createSuccessPrivateToTeamReceiver(receiverName, receiverEmail, requestMessage);
+    public void mailSuccessPrivateToTeamReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException{
+        final MimeMessage mimeMessage = createSuccessPrivateToTeamReceiver(senderName, senderEmail, receiverEmail, requestMessage);
         try {
             emailSender.send(mimeMessage);
         } catch (Exception e) {
@@ -163,8 +163,8 @@ public class MailServiceImpl implements MailService {
 
 
     // 12. 팀 소개서 -> 팀 소개서 매칭 성사 (수신자 메일)
-    public void mailSuccessTeamToTeamReceiver(final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
-        final MimeMessage mimeMessage = createSuccessTeamToTeamReceiver(receiverName, receiverEmail, requestMessage);
+    public void mailSuccessTeamToTeamReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = createSuccessTeamToTeamReceiver(senderName, senderEmail, receiverEmail, requestMessage);
         try {
             emailSender.send(mimeMessage);
         } catch (Exception e) {
@@ -202,10 +202,10 @@ public class MailServiceImpl implements MailService {
                                         </td>
                                     </tr>
 
-                                    <!-- Divider -->
-                                    <tr>
-                                        <td style="background-color: #CBD4E1; height: 1px;"></td>
-                                    </tr>
+                                        <!-- Divider -->
+                                        <tr>
+                                            <td style="background-color: #CBD4E1; height: 1px;"></td>
+                                        </tr>
 
                                     <!-- Greeting Section -->
                                     <tr>
@@ -866,6 +866,8 @@ public class MailServiceImpl implements MailService {
         return mimeMessage;
     }
 
+    // 매칭 성사 이메일 정리
+
     // 5. 내 이력서 -> 내 이력서 매칭 성사 (발신자 메일)
     private MimeMessage createSuccessPrivateToPrivateSender(final String senderEmail, final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
@@ -874,208 +876,17 @@ public class MailServiceImpl implements MailService {
         mimeMessage.setSubject("[링킷] 매칭 성사 알림");
 
         final String msgg = String.format("""
-        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-            <tbody>
-                <tr>
-                    <td>
-                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff"
-                            style="display: flex; max-width: 642px; border-radius: 8px; margin: 0 auto;">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                            <tbody>
-                                                <!-- First Frame -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                            style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
-                                                            <tbody>
-                                                                <tr style="align-self: stretch;">
-                                                                    <td align="left" style="padding: 20px;">
-                                                                        <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png"
-                                                                            alt="Logo"
-                                                                            style="display: block; width: 92px; height: auto;">
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Divider -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Greeting Section -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 34px; align-self: stretch;">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td align="center" style="padding: 34px 0px;">
-                                                                        <span
-                                                                            style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span>
-                                                                        <p
-                                                                            style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">
-                                                                            축하합니다!<br />
-                                                                            [%s]님과 매칭이 성사되었어요<br />
-                                                                            <span
-                                                                                style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을
-                                                                            통해 팀빌딩을 진행해보세요!
-                                                                        </p>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Divider -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                                <!-- Second Frame -->
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="display: flex; max-width: 602px; padding: 20px; flex-direction: column; align-items: flex-start; gap: 18px; align-self: stretch; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="font-size: 1.875rem; font-weight: bold;">📮</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td>
-                                                </tr>
-                                                <tr>
-                                                    <td
-                                                        style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">
-                                                        %s
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                                <!-- Third Frame -->
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                            <tbody>
-                                                <!-- Footer Section -->
-                                                <tr>
-                                                    <td align="left" style="padding-bottom: 12px;">
-                                                        <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo"
-                                                            style="display: block; width: 92px; height: auto;">
-                                                    </td>
-                                                </tr>
-                                                <!-- Divider -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td 
-                                                        style="
-                                                            color: var(--Grey-scale-grey50, #94A3B8);
-                                                            font-feature-settings: 'liga' off, 'clig' off;
-                                                            font-family: Pretendard;
-                                                            font-size: 12px;
-                                                            font-style: normal;
-                                                            font-weight: 500;
-                                                            line-height: 25px;
-                                                            padding-top: 10px; 
-                                                            padding-bottom: 10px;
-                                                        ">
-                                                        리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                                        Copyright ⓒ 2024. liaison All rights reserved. <br/>
-                                                        ※ 본 메일은 매칭 알림을 위해 발송되었습니다
-                                                    </td>
-                                                </tr>
-                                                
-                                                <!-- Divider -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s]님과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></center></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
         """,
                 receiverName,
                 receiverEmail,
@@ -1087,220 +898,31 @@ public class MailServiceImpl implements MailService {
     }
 
     // 6. 내 이력서 -> 내 이력서 매칭 성사 (수신자 메일)
-    private MimeMessage createSuccessPrivateToPrivateReceiver(final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+    private MimeMessage createSuccessPrivateToPrivateReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
         mimeMessage.setSubject("[링킷] 매칭 성사 알림");
 
         final String msgg = String.format("""
-    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-        <tbody>
-            <tr>
-                <td>
-                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff"
-                        style="display: flex; max-width: 642px; border-radius: 8px; margin: 0 auto;">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                        <tbody>
-                                            <!-- First Frame -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                        style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
-                                                        <tbody>
-                                                            <tr style="align-self: stretch;">
-                                                                <td align="left" style="padding: 20px;">
-                                                                    <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png"
-                                                                        alt="Logo"
-                                                                        style="display: block; width: 92px; height: auto;">
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Divider -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Greeting Section -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 34px; align-self: stretch;">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td align="center" style="padding: 34px 0px;">
-                                                                    <span
-                                                                        style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span>
-                                                                    <p
-                                                                        style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">
-                                                                        축하합니다!<br />
-                                                                        [%s]님과 매칭이 성사되었어요<br />
-                                                                        <span
-                                                                            style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을
-                                                                        통해 팀빌딩을 진행해보세요!
-                                                                    </p>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Divider -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- Second Frame -->
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="display: flex; max-width: 602px; padding: 20px; flex-direction: column; align-items: flex-start; gap: 18px; align-self: stretch; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="font-size: 1.875rem; font-weight: bold;">📮</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 님이 보낸 소개글</td>
-                                            </tr>
-                                            <tr>
-                                                <td
-                                                    style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">
-                                                    %s
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- Third Frame -->
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                        <tbody>
-                                            <!-- Footer Section -->
-                                            <tr>
-                                                <td align="left" style="padding-bottom: 12px;">
-                                                    <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo"
-                                                        style="display: block; width: 92px; height: auto;">
-                                                </td>
-                                            </tr>
-                                            <!-- Divider -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td 
-                                                    style="
-                                                        color: var(--Grey-scale-grey50, #94A3B8);
-                                                        font-feature-settings: 'liga' off, 'clig' off;
-                                                        font-family: Pretendard;
-                                                        font-size: 12px;
-                                                        font-style: normal;
-                                                        font-weight: 500;
-                                                        line-height: 25px;
-                                                        padding-top: 10px; 
-                                                        padding-bottom: 10px;
-                                                    ">
-                                                    리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                                    Copyright ⓒ 2024. liaison All rights reserved. <br/>
-                                                    ※ 본 메일은 매칭 알림을 위해 발송되었습니다
-                                                </td>
-                                            </tr>
-                                            
-                                            <!-- Divider -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    """,
-                receiverName,
-                receiverEmail,
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s]님과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 님이 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                senderName,
+                senderEmail,
+                senderName,
                 requestMessage
         );
+
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
         mimeMessage.setFrom(id);
         return mimeMessage;
@@ -1314,209 +936,18 @@ public class MailServiceImpl implements MailService {
         mimeMessage.setSubject("[링킷] 매칭 성사 알림");
 
         final String msgg = String.format("""
-        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-            <tbody>
-                <tr>
-                    <td>
-                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff"
-                            style="display: flex; max-width: 642px; border-radius: 8px; margin: 0 auto;">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                            <tbody>
-                                                <!-- First Frame -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                            style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
-                                                            <tbody>
-                                                                <tr style="align-self: stretch;">
-                                                                    <td align="left" style="padding: 20px;">
-                                                                        <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png"
-                                                                            alt="Logo"
-                                                                            style="display: block; width: 92px; height: auto;">
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Divider -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Greeting Section -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 34px; align-self: stretch;">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td align="center" style="padding: 34px 0px;">
-                                                                        <span
-                                                                            style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span>
-                                                                        <p
-                                                                            style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">
-                                                                            축하합니다!<br />
-                                                                            [%s]님과 매칭이 성사되었어요<br />
-                                                                            <span
-                                                                                style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을
-                                                                            통해 팀빌딩을 진행해보세요!
-                                                                        </p>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Divider -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                                <!-- Second Frame -->
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="display: flex; max-width: 602px; padding: 20px; flex-direction: column; align-items: flex-start; gap: 18px; align-self: stretch; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="font-size: 1.875rem; font-weight: bold;">📮</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td>
-                                                </tr>
-                                                <tr>
-                                                    <td
-                                                        style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">
-                                                        %s
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                                <!-- Third Frame -->
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                            <tbody>
-                                                <!-- Footer Section -->
-                                                <tr>
-                                                    <td align="left" style="padding-bottom: 12px;">
-                                                        <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo"
-                                                            style="display: block; width: 92px; height: auto;">
-                                                    </td>
-                                                </tr>
-                                                <!-- Divider -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td 
-                                                        style="
-                                                            color: var(--Grey-scale-grey50, #94A3B8);
-                                                            font-feature-settings: 'liga' off, 'clig' off;
-                                                            font-family: Pretendard;
-                                                            font-size: 12px;
-                                                            font-style: normal;
-                                                            font-weight: 500;
-                                                            line-height: 25px;
-                                                            padding-top: 10px; 
-                                                            padding-bottom: 10px;
-                                                        ">
-                                                        리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                                        Copyright ⓒ 2024. liaison All rights reserved. <br/>
-                                                        ※ 본 메일은 매칭 알림을 위해 발송되었습니다
-                                                    </td>
-                                                </tr>
-                                                
-                                                <!-- Divider -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        """,
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s]님과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
                 receiverName,
                 receiverEmail,
                 requestMessage
@@ -1527,218 +958,28 @@ public class MailServiceImpl implements MailService {
     }
 
     // 8. 팀 소개서 -> 내 이력서 매칭 성사 (수신자 메일)
-    private MimeMessage createSuccessTeamToPrivateReceiver(final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+    private MimeMessage createSuccessTeamToPrivateReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
         mimeMessage.setSubject("[링킷] 매칭 성사 알림");
 
         final String msgg = String.format("""
-    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-        <tbody>
-            <tr>
-                <td>
-                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff"
-                        style="display: flex; max-width: 642px; border-radius: 8px; margin: 0 auto;">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                        <tbody>
-                                            <!-- First Frame -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                        style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
-                                                        <tbody>
-                                                            <tr style="align-self: stretch;">
-                                                                <td align="left" style="padding: 20px;">
-                                                                    <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png"
-                                                                        alt="Logo"
-                                                                        style="display: block; width: 92px; height: auto;">
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Divider -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Greeting Section -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 34px; align-self: stretch;">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td align="center" style="padding: 34px 0px;">
-                                                                    <span
-                                                                        style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span>
-                                                                    <p
-                                                                        style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">
-                                                                        축하합니다!<br />
-                                                                        [%s] 팀과 매칭이 성사되었어요<br />
-                                                                        <span
-                                                                            style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을
-                                                                        통해 팀빌딩을 진행해보세요!
-                                                                    </p>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Divider -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- Second Frame -->
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="display: flex; max-width: 602px; padding: 20px; flex-direction: column; align-items: flex-start; gap: 18px; align-self: stretch; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="font-size: 1.875rem; font-weight: bold;">📮</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 팀이 보낸 소개글</td>
-                                            </tr>
-                                            <tr>
-                                                <td
-                                                    style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">
-                                                    %s
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- Third Frame -->
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                        <tbody>
-                                            <!-- Footer Section -->
-                                            <tr>
-                                                <td align="left" style="padding-bottom: 12px;">
-                                                    <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo"
-                                                        style="display: block; width: 92px; height: auto;">
-                                                </td>
-                                            </tr>
-                                            <!-- Divider -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td 
-                                                    style="
-                                                        color: var(--Grey-scale-grey50, #94A3B8);
-                                                        font-feature-settings: 'liga' off, 'clig' off;
-                                                        font-family: Pretendard;
-                                                        font-size: 12px;
-                                                        font-style: normal;
-                                                        font-weight: 500;
-                                                        line-height: 25px;
-                                                        padding-top: 10px; 
-                                                        padding-bottom: 10px;
-                                                    ">
-                                                    리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                                    Copyright ⓒ 2024. liaison All rights reserved. <br/>
-                                                    ※ 본 메일은 매칭 알림을 위해 발송되었습니다
-                                                </td>
-                                            </tr>
-                                            
-                                            <!-- Divider -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    """,
-                receiverName,
-                receiverEmail,
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s] 팀과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></center></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 팀이 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                senderName,
+                senderEmail,
+                senderName,
                 requestMessage
         );
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
@@ -1754,209 +995,18 @@ public class MailServiceImpl implements MailService {
         mimeMessage.setSubject("[링킷] 매칭 성사 알림");
 
         final String msgg = String.format("""
-        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-            <tbody>
-                <tr>
-                    <td>
-                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff"
-                            style="display: flex; max-width: 642px; border-radius: 8px; margin: 0 auto;">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                            <tbody>
-                                                <!-- First Frame -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                            style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
-                                                            <tbody>
-                                                                <tr style="align-self: stretch;">
-                                                                    <td align="left" style="padding: 20px;">
-                                                                        <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png"
-                                                                            alt="Logo"
-                                                                            style="display: block; width: 92px; height: auto;">
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Divider -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Greeting Section -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 34px; align-self: stretch;">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td align="center" style="padding: 34px 0px;">
-                                                                        <span
-                                                                            style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span>
-                                                                        <p
-                                                                            style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">
-                                                                            축하합니다!<br />
-                                                                            [%s] 팀과 매칭이 성사되었어요<br />
-                                                                            <span
-                                                                                style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을
-                                                                            통해 팀빌딩을 진행해보세요!
-                                                                        </p>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Divider -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                                <!-- Second Frame -->
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="display: flex; max-width: 602px; padding: 20px; flex-direction: column; align-items: flex-start; gap: 18px; align-self: stretch; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="font-size: 1.875rem; font-weight: bold;">📮</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td>
-                                                </tr>
-                                                <tr>
-                                                    <td
-                                                        style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">
-                                                        %s
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                                <!-- Third Frame -->
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                            <tbody>
-                                                <!-- Footer Section -->
-                                                <tr>
-                                                    <td align="left" style="padding-bottom: 12px;">
-                                                        <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo"
-                                                            style="display: block; width: 92px; height: auto;">
-                                                    </td>
-                                                </tr>
-                                                <!-- Divider -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td 
-                                                        style="
-                                                            color: var(--Grey-scale-grey50, #94A3B8);
-                                                            font-feature-settings: 'liga' off, 'clig' off;
-                                                            font-family: Pretendard;
-                                                            font-size: 12px;
-                                                            font-style: normal;
-                                                            font-weight: 500;
-                                                            line-height: 25px;
-                                                            padding-top: 10px; 
-                                                            padding-bottom: 10px;
-                                                        ">
-                                                        리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                                        Copyright ⓒ 2024. liaison All rights reserved. <br/>
-                                                        ※ 본 메일은 매칭 알림을 위해 발송되었습니다
-                                                    </td>
-                                                </tr>
-                                                
-                                                <!-- Divider -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        """,
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s] 팀과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></center></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
                 receiverName,
                 receiverEmail,
                 requestMessage
@@ -1967,218 +1017,28 @@ public class MailServiceImpl implements MailService {
     }
 
     // 10. 내 이력서 -> 팀 소개서 매칭 성사 (수신자 메일)
-    private MimeMessage createSuccessPrivateToTeamReceiver(final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+    private MimeMessage createSuccessPrivateToTeamReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
         mimeMessage.setSubject("[링킷] 매칭 성사 알림");
 
         final String msgg = String.format("""
-    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-        <tbody>
-            <tr>
-                <td>
-                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff"
-                        style="display: flex; max-width: 642px; border-radius: 8px; margin: 0 auto;">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                        <tbody>
-                                            <!-- First Frame -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                        style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
-                                                        <tbody>
-                                                            <tr style="align-self: stretch;">
-                                                                <td align="left" style="padding: 20px;">
-                                                                    <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png"
-                                                                        alt="Logo"
-                                                                        style="display: block; width: 92px; height: auto;">
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Divider -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Greeting Section -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 34px; align-self: stretch;">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td align="center" style="padding: 34px 0px;">
-                                                                    <span
-                                                                        style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span>
-                                                                    <p
-                                                                        style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">
-                                                                        축하합니다!<br />
-                                                                        [%s]님과 매칭이 성사되었어요<br />
-                                                                        <span
-                                                                            style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을
-                                                                        통해 팀빌딩을 진행해보세요!
-                                                                    </p>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Divider -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- Second Frame -->
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="display: flex; max-width: 602px; padding: 20px; flex-direction: column; align-items: flex-start; gap: 18px; align-self: stretch; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="font-size: 1.875rem; font-weight: bold;">📮</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 님이 보낸 소개글</td>
-                                            </tr>
-                                            <tr>
-                                                <td
-                                                    style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">
-                                                    %s
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- Third Frame -->
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                        <tbody>
-                                            <!-- Footer Section -->
-                                            <tr>
-                                                <td align="left" style="padding-bottom: 12px;">
-                                                    <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo"
-                                                        style="display: block; width: 92px; height: auto;">
-                                                </td>
-                                            </tr>
-                                            <!-- Divider -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td 
-                                                    style="
-                                                        color: var(--Grey-scale-grey50, #94A3B8);
-                                                        font-feature-settings: 'liga' off, 'clig' off;
-                                                        font-family: Pretendard;
-                                                        font-size: 12px;
-                                                        font-style: normal;
-                                                        font-weight: 500;
-                                                        line-height: 25px;
-                                                        padding-top: 10px; 
-                                                        padding-bottom: 10px;
-                                                    ">
-                                                    리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                                    Copyright ⓒ 2024. liaison All rights reserved. <br/>
-                                                    ※ 본 메일은 매칭 알림을 위해 발송되었습니다
-                                                </td>
-                                            </tr>
-                                            
-                                            <!-- Divider -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    """,
-                receiverName,
-                receiverEmail,
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s]님과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 님이 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                senderName,
+                senderEmail,
+                senderName,
                 requestMessage
         );
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
@@ -2194,209 +1054,18 @@ public class MailServiceImpl implements MailService {
         mimeMessage.setSubject("[링킷] 매칭 성사 알림");
 
         final String msgg = String.format("""
-        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-            <tbody>
-                <tr>
-                    <td>
-                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff"
-                            style="display: flex; max-width: 642px; border-radius: 8px; margin: 0 auto;">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                            <tbody>
-                                                <!-- First Frame -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                            style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
-                                                            <tbody>
-                                                                <tr style="align-self: stretch;">
-                                                                    <td align="left" style="padding: 20px;">
-                                                                        <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png"
-                                                                            alt="Logo"
-                                                                            style="display: block; width: 92px; height: auto;">
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Divider -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Greeting Section -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                            style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 34px; align-self: stretch;">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td align="center" style="padding: 34px 0px;">
-                                                                        <span
-                                                                            style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span>
-                                                                        <p
-                                                                            style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">
-                                                                            축하합니다!<br />
-                                                                            [%s] 팀과 매칭이 성사되었어요<br />
-                                                                            <span
-                                                                                style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을
-                                                                            통해 팀빌딩을 진행해보세요!
-                                                                        </p>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-
-                                                <!-- Divider -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                                <!-- Second Frame -->
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="display: flex; max-width: 602px; padding: 20px; flex-direction: column; align-items: flex-start; gap: 18px; align-self: stretch; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="font-size: 1.875rem; font-weight: bold;">📮</td>
-                                                </tr>
-                                                <tr>
-                                                    <td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td>
-                                                </tr>
-                                                <tr>
-                                                    <td
-                                                        style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">
-                                                        %s
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-
-                                <!-- Third Frame -->
-                                <tr>
-                                    <td>
-                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                            style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                            <tbody>
-                                                <!-- Footer Section -->
-                                                <tr>
-                                                    <td align="left" style="padding-bottom: 12px;">
-                                                        <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo"
-                                                            style="display: block; width: 92px; height: auto;">
-                                                    </td>
-                                                </tr>
-                                                <!-- Divider -->
-                                                <tr style="align-self: stretch;">
-                                                    <td>
-                                                        <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td 
-                                                        style="
-                                                            color: var(--Grey-scale-grey50, #94A3B8);
-                                                            font-feature-settings: 'liga' off, 'clig' off;
-                                                            font-family: Pretendard;
-                                                            font-size: 12px;
-                                                            font-style: normal;
-                                                            font-weight: 500;
-                                                            line-height: 25px;
-                                                            padding-top: 10px; 
-                                                            padding-bottom: 10px;
-                                                        ">
-                                                        리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                                        Copyright ⓒ 2024. liaison All rights reserved. <br/>
-                                                        ※ 본 메일은 매칭 알림을 위해 발송되었습니다
-                                                    </td>
-                                                </tr>
-                                                
-                                                <!-- Divider -->
-                                                <tr>
-                                                    <td>
-                                                        <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                            viewBox="0 0 602 2" fill="none"
-                                                                            style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                            <path d="M602 1.04688H0"
-                                                                                stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                        </svg>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        """,
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s]팀과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
                 receiverName,
                 receiverEmail,
                 requestMessage
@@ -2407,224 +1076,34 @@ public class MailServiceImpl implements MailService {
     }
 
     // 12. 팀 소개서 -> 팀 소개서 매칭 성사 (수신자 메일)
-    private MimeMessage createSuccessTeamToTeamReceiver(final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+    private MimeMessage createSuccessTeamToTeamReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
         mimeMessage.setSubject("[링킷] 매칭 성사 알림");
 
         final String msgg = String.format("""
-    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-        <tbody>
-            <tr>
-                <td>
-                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff"
-                        style="display: flex; max-width: 642px; border-radius: 8px; margin: 0 auto;">
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                        <tbody>
-                                            <!-- First Frame -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                        style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
-                                                        <tbody>
-                                                            <tr style="align-self: stretch;">
-                                                                <td align="left" style="padding: 20px;">
-                                                                    <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png"
-                                                                        alt="Logo"
-                                                                        style="display: block; width: 92px; height: auto;">
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Divider -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Greeting Section -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                                        style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 34px; align-self: stretch;">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td align="center" style="padding: 34px 0px;">
-                                                                    <span
-                                                                        style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span>
-                                                                    <p
-                                                                        style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">
-                                                                        축하합니다!<br />
-                                                                        [%s] 팀과 매칭이 성사되었어요<br />
-                                                                        <span
-                                                                            style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을
-                                                                        통해 팀빌딩을 진행해보세요!
-                                                                    </p>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-
-                                            <!-- Divider -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- Second Frame -->
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="display: flex; max-width: 602px; padding: 20px; flex-direction: column; align-items: flex-start; gap: 18px; align-self: stretch; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="font-size: 1.875rem; font-weight: bold;">📮</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 팀이 보낸 소개글</td>
-                                            </tr>
-                                            <tr>
-                                                <td
-                                                    style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">
-                                                    %s
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-
-                            <!-- Third Frame -->
-                            <tr>
-                                <td>
-                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0"
-                                        style="border-collapse: collapse; display: flex; max-width: 642px; flex-direction: column; align-items: center; gap: 50px; background: var(--Grey-scale-grey00, #FFF);">
-                                        <tbody>
-                                            <!-- Footer Section -->
-                                            <tr>
-                                                <td align="left" style="padding-bottom: 12px;">
-                                                    <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo"
-                                                        style="display: block; width: 92px; height: auto;">
-                                                </td>
-                                            </tr>
-                                            <!-- Divider -->
-                                            <tr style="align-self: stretch;">
-                                                <td>
-                                                    <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td 
-                                                    style="
-                                                        color: var(--Grey-scale-grey50, #94A3B8);
-                                                        font-feature-settings: 'liga' off, 'clig' off;
-                                                        font-family: Pretendard;
-                                                        font-size: 12px;
-                                                        font-style: normal;
-                                                        font-weight: 500;
-                                                        line-height: 25px;
-                                                        padding-top: 10px; 
-                                                        padding-bottom: 10px;
-                                                    ">
-                                                    리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                                    Copyright ⓒ 2024. liaison All rights reserved. <br/>
-                                                    ※ 본 메일은 매칭 알림을 위해 발송되었습니다
-                                                </td>
-                                            </tr>
-                                            
-                                            <!-- Divider -->
-                                            <tr>
-                                                <td>
-                                                    <table width="100%%" cellspacing="0" cellpadding="0" border="0">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="100%%" height="2"
-                                                                        viewBox="0 0 602 2" fill="none"
-                                                                        style="stroke-width: 1px; stroke: var(--Grey-scale-grey40, #CBD4E1);">
-                                                                        <path d="M602 1.04688H0"
-                                                                            stroke="var(--Grey-scale-grey40, #CBD4E1)" />
-                                                                    </svg>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    """,
-                receiverName,
-                receiverEmail,
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s] 팀과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></center></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 팀이 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                senderName,
+                senderEmail,
+                senderName,
                 requestMessage
         );
+
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
         mimeMessage.setFrom(id);
 
         return mimeMessage;
     }
-
 }

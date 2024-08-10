@@ -641,6 +641,7 @@ public class MatchingService {
             mailService.mailSuccessPrivateToPrivateReceiver(
                     privateMatching.getMember().getMemberBasicInform().getMemberName(),
                     privateMatching.getMember().getEmail(),
+                    privateMatching.getProfile().getMember().getEmail(),
                     privateMatching.getRequestMessage()
             );
 
@@ -655,6 +656,7 @@ public class MatchingService {
             mailService.mailSuccessTeamToPrivateReceiver(
                     privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
                     privateMatching.getMember().getEmail(),
+                    privateMatching.getProfile().getMember().getEmail(),
                     privateMatching.getRequestMessage()
             );
 
@@ -664,12 +666,14 @@ public class MatchingService {
     // 팀 매칭 성사
     public void acceptTeamMatching(final Long teamMatchingId, final AllowMatchingRequest allowMatchingRequest) throws MessagingException {
         final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
+
         // 매칭 성사 상태로 업데이트를 진행한다.
         if (allowMatchingRequest.getIsAllowMatching()) {
             teamMatching.updateMatchingStatus(true);
         } else {
             teamMatching.updateMatchingStatus(false);
         }
+
         // 이메일 자동 발송을 시작한다.
         // private to team인 경우
         if (SenderType.TEAM.equals(teamMatching.getSenderType())) {
@@ -682,6 +686,7 @@ public class MatchingService {
             mailService.mailSuccessPrivateToTeamReceiver(
                     teamMatching.getMember().getMemberBasicInform().getMemberName(),
                     teamMatching.getMember().getEmail(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
                     teamMatching.getRequestMessage()
             );
         } else {
@@ -694,6 +699,7 @@ public class MatchingService {
             mailService.mailSuccessTeamToTeamReceiver(
                     teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
                     teamMatching.getMember().getEmail(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
                     teamMatching.getRequestMessage()
             );
         }

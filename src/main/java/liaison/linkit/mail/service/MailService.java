@@ -59,9 +59,7 @@ public interface MailService {
 
     // 6. 내 이력서 -> 내 이력서 매칭 성사 (수신자 메일)
     void mailSuccessPrivateToPrivateReceiver(
-            final String receiverName,
-            final String receiverEmail,
-            final String requestMessage
+            final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage
     ) throws MessagingException;
 
     // 7. 팀 소개서 -> 내 이력서 매칭 성사 (발신자 메일)
@@ -74,9 +72,7 @@ public interface MailService {
 
     // 8. 팀 소개서 -> 내 이력서 매칭 성사 (수신자 메일)
     void mailSuccessTeamToPrivateReceiver(
-            final String receiverName,
-            final String receiverEmail,
-            final String requestMessage
+            final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage
     ) throws MessagingException;
 
     // 9. 내 이력서 -> 팀 소개서 매칭 성사 (발신자 메일)
@@ -89,9 +85,7 @@ public interface MailService {
 
     // 10. 내 이력서 -> 팀 소개서 매칭 성사 (수신자 메일)
     void mailSuccessPrivateToTeamReceiver(
-            final String receiverName,
-            final String receiverEmail,
-            final String requestMessage
+            final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage
     ) throws MessagingException;
 
     // 11. 팀 소개서 -> 팀 소개서 매칭 성사 (발신자 메일)
@@ -104,8 +98,6 @@ public interface MailService {
 
     // 12. 팀 소개서 -> 팀 소개서 매칭 성사 (수신자 메일)
     void mailSuccessTeamToTeamReceiver(
-            final String receiverName,
-            final String receiverEmail,
-            final String requestMessage
+            final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage
     ) throws MessagingException;
 }
