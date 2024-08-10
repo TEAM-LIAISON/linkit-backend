@@ -153,15 +153,14 @@ public class MatchingService {
 
         // to 내 이력서
         final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
-        mailService.mailPrivateToPrivate(
+        mailService.mailRequestPrivateToPrivate(
                 // 수신자 이메일
-                profile.getMember().getEmail(),
-                profile.getMember().getMemberBasicInform().getMemberName(),
-                // 발신자 이름
-                member.getMemberBasicInform().getMemberName(),
-                // 매칭 요청 발생 시간
+                savedPrivateMatching.getProfile().getMember().getEmail(),
+                savedPrivateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
+                savedPrivateMatching.getMember().getMemberBasicInform().getMemberName(),
+                savedPrivateMatching.getMember().getProfile().getProfileJobRoleList().toString(),
+                savedPrivateMatching.getMember().getProfile().getProfileJobRoleList().toString(),
                 savedPrivateMatching.getCreatedAt(),
-                // 매칭 요청 메시지
                 savedPrivateMatching.getRequestMessage()
         );
     }
@@ -199,7 +198,17 @@ public class MatchingService {
                 false,
                 false
         );
-        privateMatchingRepository.save(newPrivateMatching);
+        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
+        mailService.mailRequestTeamToPrivate(
+                savedPrivateMatching.getProfile().getMember().getEmail(),
+                savedPrivateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
+                savedPrivateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                "활동 방식",
+                "활동 지역",
+                savedPrivateMatching.getCreatedAt(),
+                savedPrivateMatching.getRequestMessage()
+        );
+
     }
 
     // 3번
@@ -208,7 +217,7 @@ public class MatchingService {
             final Long memberId,
             final Long teamMemberAnnouncementId,
             final MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws MessagingException {
         // 멤버 객체 조회
         final Member member = getMember(memberId);
 
@@ -218,7 +227,6 @@ public class MatchingService {
         if (Objects.equals(getTeamProfile(memberId).getId(), teamMemberAnnouncement.getTeamProfile().getId())) {
             throw new BadRequestException(NOT_ALLOW_T2T_MATCHING);
         }
-
 
         // 해당 팀원 공고 객체에 대한 팀 매칭 객체 생성
         final TeamMatching newTeamMatching = new TeamMatching(
@@ -239,7 +247,16 @@ public class MatchingService {
                 false
         );
 
-        teamMatchingRepository.save(newTeamMatching);
+        final TeamMatching savedTeamMatching = teamMatchingRepository.save(newTeamMatching);
+        mailService.mailRequestTeamToTeam(
+                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                savedTeamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                "활동 방식",
+                "활동 지역",
+                savedTeamMatching.getCreatedAt(),
+                savedTeamMatching.getRequestMessage()
+        );
     }
 
     private TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId) {
@@ -254,7 +271,7 @@ public class MatchingService {
             final Long memberId,
             final Long teamMemberAnnouncementId,
             final MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         // 매칭 요청 주체 객체 조회
         final Member member = getMember(memberId);
 
@@ -283,7 +300,16 @@ public class MatchingService {
                 false
         );
 
-        teamMatchingRepository.save(newTeamMatching);
+        final TeamMatching savedTeamMatching = teamMatchingRepository.save(newTeamMatching);
+        mailService.mailRequestPrivateToTeam(
+                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                savedTeamMatching.getMember().getMemberBasicInform().getMemberName(),
+                savedTeamMatching.getMember().getProfile().getProfileJobRoleList().toString(),
+                savedTeamMatching.getMember().getProfile().getProfileJobRoleList().toString(),
+                savedTeamMatching.getCreatedAt(),
+                savedTeamMatching.getRequestMessage()
+        );
     }
 
     // 내가 받은 매칭

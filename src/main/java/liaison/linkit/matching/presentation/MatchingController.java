@@ -80,7 +80,7 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberAnnouncementId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         matchingService.createTeamProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
         return ResponseEntity.status(CREATED).build();
     }
@@ -94,10 +94,12 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberAnnouncementId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         matchingService.createPrivateProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
         return ResponseEntity.status(CREATED).build();
     }
+
+
 
     // 내가 받은 매칭 조회
     @GetMapping("/matching/received")
