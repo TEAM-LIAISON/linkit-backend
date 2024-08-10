@@ -18,14 +18,13 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+// 내 이력서로 요청이 온 객체 저장
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
-// 내 이력서로 요청이 온 객체 저장
 @SQLRestriction("status = 'USABLE'")
-public class
-PrivateMatching extends BaseEntity {
+public class PrivateMatching extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

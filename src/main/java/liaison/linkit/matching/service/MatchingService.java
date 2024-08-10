@@ -1,5 +1,6 @@
 package liaison.linkit.matching.service;
 
+import jakarta.mail.MessagingException;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.mail.service.MailService;
@@ -153,8 +154,9 @@ public class MatchingService {
         // to 내 이력서
         final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
         mailService.mailPrivateToPrivate(
-                // 수신자 이름
+                // 수신자 이메일
                 profile.getMember().getEmail(),
+                profile.getMember().getMemberBasicInform().getMemberName(),
                 // 발신자 이름
                 member.getMemberBasicInform().getMemberName(),
                 // 매칭 요청 발생 시간
@@ -174,6 +176,7 @@ public class MatchingService {
     ) throws Exception {
         final Member member = getMember(memberId);
         final Profile profile = getProfileById(profileId);
+
         if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
             throw new BadRequestException(NOT_ALLOW_T2P_MATCHING);
         }
@@ -615,23 +618,84 @@ public class MatchingService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE));
     }
 
-    public void acceptPrivateMatching(final Long privateMatchingId, final AllowMatchingRequest allowMatchingRequest) {
+    public void acceptPrivateMatching(final Long privateMatchingId, final AllowMatchingRequest allowMatchingRequest) throws MessagingException {
         final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
 
+        // 매칭 성사 상태로 업데이트를 진행한다.
         if (allowMatchingRequest.getIsAllowMatching()) {
             privateMatching.updateMatchingStatus(true);
         } else {
             privateMatching.updateMatchingStatus(false);
         }
+
+        // 이메일 자동 발송을 시작한다.
+        // private to private인 경우
+        if (SenderType.PRIVATE.equals(privateMatching.getSenderType())) {
+            mailService.mailSuccessPrivateToPrivateSender(
+                    privateMatching.getMember().getEmail(),
+                    privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
+                    privateMatching.getProfile().getMember().getEmail(),
+                    privateMatching.getRequestMessage()
+            );
+
+            mailService.mailSuccessPrivateToPrivateReceiver(
+                    privateMatching.getMember().getMemberBasicInform().getMemberName(),
+                    privateMatching.getMember().getEmail(),
+                    privateMatching.getRequestMessage()
+            );
+
+        } else {
+            // team to private인 경우
+            mailService.mailSuccessTeamToPrivateSender(
+                    privateMatching.getMember().getEmail(),
+                    privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
+                    privateMatching.getProfile().getMember().getEmail(),
+                    privateMatching.getRequestMessage()
+            );
+            mailService.mailSuccessTeamToPrivateReceiver(
+                    privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                    privateMatching.getMember().getEmail(),
+                    privateMatching.getRequestMessage()
+            );
+
+        }
     }
 
-    // 팀 매칭 허용
-    public void acceptTeamMatching(final Long teamMatchingId, final AllowMatchingRequest allowMatchingRequest) {
+    // 팀 매칭 성사
+    public void acceptTeamMatching(final Long teamMatchingId, final AllowMatchingRequest allowMatchingRequest) throws MessagingException {
         final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
+        // 매칭 성사 상태로 업데이트를 진행한다.
         if (allowMatchingRequest.getIsAllowMatching()) {
             teamMatching.updateMatchingStatus(true);
         } else {
             teamMatching.updateMatchingStatus(false);
+        }
+        // 이메일 자동 발송을 시작한다.
+        // private to team인 경우
+        if (SenderType.TEAM.equals(teamMatching.getSenderType())) {
+            mailService.mailSuccessPrivateToTeamSender(
+                    teamMatching.getMember().getEmail(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                    teamMatching.getRequestMessage()
+            );
+            mailService.mailSuccessPrivateToTeamReceiver(
+                    teamMatching.getMember().getMemberBasicInform().getMemberName(),
+                    teamMatching.getMember().getEmail(),
+                    teamMatching.getRequestMessage()
+            );
+        } else {
+            mailService.mailSuccessTeamToTeamSender(
+                    teamMatching.getMember().getEmail(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                    teamMatching.getRequestMessage()
+            );
+            mailService.mailSuccessTeamToTeamReceiver(
+                    teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                    teamMatching.getMember().getEmail(),
+                    teamMatching.getRequestMessage()
+            );
         }
     }
 
