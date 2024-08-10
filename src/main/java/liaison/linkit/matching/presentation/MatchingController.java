@@ -1,5 +1,6 @@
 package liaison.linkit.matching.presentation;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
@@ -230,7 +231,7 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long privateMatchingId,
             @RequestBody @Valid final AllowMatchingRequest allowMatchingRequest
-    ) {
+    ) throws MessagingException {
         matchingService.acceptPrivateMatching(privateMatchingId, allowMatchingRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
@@ -243,7 +244,7 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long teamMatchingId,
             @RequestBody @Valid final AllowMatchingRequest allowMatchingRequest
-    ) {
+    ) throws MessagingException {
         matchingService.acceptTeamMatching(teamMatchingId, allowMatchingRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
