@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 @Service
@@ -27,7 +28,7 @@ public class MailServiceImpl implements MailService {
 
     // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
     @Override
-    public void mailRequestPrivateToPrivate(final String receiverEmail, final String receiverName, final String senderName, final String senderRole, final String senderSkill, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
+    public void mailRequestPrivateToPrivate(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
         final MimeMessage mimeMessage = createPrivateToPrivateMail(receiverEmail, receiverName, senderName, senderRole, senderSkill, requestDate, requestMessage);
         try {
             emailSender.send(mimeMessage);
@@ -39,7 +40,7 @@ public class MailServiceImpl implements MailService {
 
     // 2. 팀 소개서 -> 내 이력서 매칭 요청 보낸 경우
     @Override
-    public void mailRequestTeamToPrivate(final String receiverEmail, final String receiverName, final String senderName, final String senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
+    public void mailRequestTeamToPrivate(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
         final MimeMessage mimeMessage = createTeamToPrivateMail(receiverEmail, receiverName, senderName, senderActivityTagName, senderActivityRegionName, requestDate, requestMessage);
         try {
             emailSender.send(mimeMessage);
@@ -51,7 +52,7 @@ public class MailServiceImpl implements MailService {
 
     // 3. 내 이력서 -> 팀 소개서로 매칭 요청 보낸 경우
     @Override
-    public void mailRequestPrivateToTeam(final String receiverEmail, final String receiverName, final String senderName, final String senderRole, final String senderSkill, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
+    public void mailRequestPrivateToTeam(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
         final MimeMessage mimeMessage = createPrivateToTeamMail(receiverEmail, receiverName, senderName, senderRole, senderSkill, requestDate, requestMessage);
         try {
             emailSender.send(mimeMessage);
@@ -63,7 +64,7 @@ public class MailServiceImpl implements MailService {
 
     // 4. 팀 소개서 -> 팀 소개서로 매칭 요청 보낸 경우
     @Override
-    public void mailRequestTeamToTeam(final String receiverEmail, final String receiverName, final String senderName, final String senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
+    public void mailRequestTeamToTeam(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
         final MimeMessage mimeMessage = createTeamToTeamMail(receiverEmail, receiverName, senderName, senderActivityTagName, senderActivityRegionName, requestDate, requestMessage);
 
         try {
@@ -168,7 +169,7 @@ public class MailServiceImpl implements MailService {
     }
 
     // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
-    private MimeMessage createPrivateToPrivateMail(final String receiverEmail, final String receiverName, final String senderName, final String senderRole, final String senderSkill, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
+    private MimeMessage createPrivateToPrivateMail(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
@@ -212,7 +213,7 @@ public class MailServiceImpl implements MailService {
     }
 
     // 2. 팀 소개서 -> 내 이력서 매칭 요청 보낸 경우
-    private MimeMessage createTeamToPrivateMail(final String receiverEmail, final String receiverName, final String senderName, final String senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
+    private MimeMessage createTeamToPrivateMail(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
         mimeMessage.setSubject("[링킷] 내 이력서 매칭 요청 알림");
@@ -254,7 +255,7 @@ public class MailServiceImpl implements MailService {
     }
 
     // 3.
-    private MimeMessage createPrivateToTeamMail(final String receiverEmail, final String receiverName, final String senderName, final String senderRole, final String senderSkill, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
+    private MimeMessage createPrivateToTeamMail(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
@@ -296,7 +297,7 @@ public class MailServiceImpl implements MailService {
     }
 
     // 4.
-    private MimeMessage createTeamToTeamMail(final String receiverEmail, final String receiverName, final String senderName, final String senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
+    private MimeMessage createTeamToTeamMail(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
         final MimeMessage mimeMessage = emailSender.createMimeMessage();
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
         mimeMessage.setSubject("[링킷] 내 이력서 매칭 요청 알림");

@@ -163,7 +163,6 @@ public class ProfileOnBoardingService {
                 .map(Optional::get)
                 .map(Skill::getSkillName)
                 .toList();
-
         return JobAndSkillResponse.of(jobRoleNames, skillNames);
     }
 
