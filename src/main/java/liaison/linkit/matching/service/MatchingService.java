@@ -1,7 +1,9 @@
 package liaison.linkit.matching.service;
 
+import jakarta.mail.MessagingException;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
+import liaison.linkit.mail.service.MailService;
 import liaison.linkit.matching.domain.PrivateMatching;
 import liaison.linkit.matching.domain.TeamMatching;
 import liaison.linkit.matching.domain.repository.PrivateMatchingRepository;
@@ -26,13 +28,24 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.domain.repository.ProfileSkillRepository;
+import liaison.linkit.profile.domain.repository.SkillRepository;
+import liaison.linkit.profile.domain.repository.jobRole.JobRoleRepository;
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
+import liaison.linkit.profile.domain.skill.ProfileSkill;
+import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.team.domain.TeamProfile;
+import liaison.linkit.team.domain.activity.ActivityMethod;
+import liaison.linkit.team.domain.activity.ActivityMethodTag;
+import liaison.linkit.team.domain.activity.ActivityRegion;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
 import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.activity.ActivityMethodRepository;
+import liaison.linkit.team.domain.repository.activity.ActivityMethodTagRepository;
+import liaison.linkit.team.domain.repository.activity.ActivityRegionRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementJobRoleRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static liaison.linkit.global.exception.ExceptionCode.*;
 import static liaison.linkit.matching.domain.type.MatchingStatusType.REQUESTED;
@@ -61,11 +75,18 @@ public class MatchingService {
     private final PrivateMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
     private final ProfileJobRoleRepository profileJobRoleRepository;
-
+    private final JobRoleRepository jobRoleRepository;
+    private final ProfileSkillRepository profileSkillRepository;
+    private final SkillRepository skillRepository;
     private final TeamProfileRepository teamProfileRepository;
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
-
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
+    private final ActivityMethodRepository activityMethodRepository;
+    private final ActivityMethodTagRepository activityMethodTagRepository;
+    private final ActivityRegionRepository activityRegionRepository;
+
+    // 매칭 관리 -> 이메일 발송 자동화 service 계층 필요
+    public final MailService mailService;
 
     // 회원 정보를 가져오는 메서드
     private Member getMember(final Long memberId) {
@@ -120,7 +141,7 @@ public class MatchingService {
             final Long profileId,
             // 매칭 요청 생성
             final MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         final Member member = getMember(memberId);
         log.info("memberId={}가 매칭 요청을 보냅니다.", memberId);
 
@@ -143,11 +164,40 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED
+                REMAINED,
+                false,
+                false
         );
 
         // to 내 이력서
-        privateMatchingRepository.save(newPrivateMatching);
+        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
+
+        List<ProfileJobRole> profileJobRoles = profileJobRoleRepository.findAllByProfileId(savedPrivateMatching.getMember().getProfile().getId());
+        List<String> jobRoleNames = profileJobRoles.stream()
+                .map(profileJobRole -> jobRoleRepository.findById(profileJobRole.getJobRole().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(JobRole::getJobRoleName)
+                .toList();
+
+        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(savedPrivateMatching.getMember().getProfile().getId());
+        List<String> skillNames = profileSkills.stream()
+                .map(profileSkill -> skillRepository.findById(profileSkill.getSkill().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(Skill::getSkillName)
+                .toList();
+
+        mailService.mailRequestPrivateToPrivate(
+                // 수신자 이메일
+                savedPrivateMatching.getProfile().getMember().getEmail(),
+                savedPrivateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
+                savedPrivateMatching.getMember().getMemberBasicInform().getMemberName(),
+                jobRoleNames,
+                skillNames,
+                savedPrivateMatching.getCreatedAt(),
+                savedPrivateMatching.getRequestMessage()
+        );
     }
 
     // 이미 애노테이션으로 매칭에 대한 권한을 체킹한 상태이다.
@@ -157,9 +207,10 @@ public class MatchingService {
             final Long memberId,
             final Long profileId,
             final MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         final Member member = getMember(memberId);
         final Profile profile = getProfileById(profileId);
+
         if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
             throw new BadRequestException(NOT_ALLOW_T2P_MATCHING);
         }
@@ -178,10 +229,36 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED
+                REMAINED,
+                false,
+                false
         );
 
-        privateMatchingRepository.save(newPrivateMatching);
+        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
+
+        // 저장되어 있는 활동 방식 리포지토리에서 모든 활동 방식 조회
+        List<ActivityMethod> activityMethods = activityMethodRepository.findAllByTeamProfileId(savedPrivateMatching.getMember().getTeamProfile().getId());
+
+        List<String> activityTagNames = activityMethods.stream()
+                .map(activityMethod -> activityMethodTagRepository.findById(activityMethod.getActivityMethodTag().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(ActivityMethodTag::getActivityTagName)
+                .toList();
+
+        ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(savedPrivateMatching.getMember().getTeamProfile().getId())
+                .orElseThrow(()-> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
+
+        mailService.mailRequestTeamToPrivate(
+                savedPrivateMatching.getProfile().getMember().getEmail(),
+                savedPrivateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
+                savedPrivateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                activityTagNames,
+                String.join(", ", activityRegion.getRegion().getCityName(), activityRegion.getRegion().getDivisionName()),
+                savedPrivateMatching.getCreatedAt(),
+                savedPrivateMatching.getRequestMessage()
+        );
+
     }
 
     // 3번
@@ -190,7 +267,7 @@ public class MatchingService {
             final Long memberId,
             final Long teamMemberAnnouncementId,
             final MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws MessagingException {
         // 멤버 객체 조회
         final Member member = getMember(memberId);
 
@@ -200,7 +277,6 @@ public class MatchingService {
         if (Objects.equals(getTeamProfile(memberId).getId(), teamMemberAnnouncement.getTeamProfile().getId())) {
             throw new BadRequestException(NOT_ALLOW_T2T_MATCHING);
         }
-
 
         // 해당 팀원 공고 객체에 대한 팀 매칭 객체 생성
         final TeamMatching newTeamMatching = new TeamMatching(
@@ -216,10 +292,35 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED
+                REMAINED,
+                false,
+                false
         );
 
-        teamMatchingRepository.save(newTeamMatching);
+        final TeamMatching savedTeamMatching = teamMatchingRepository.save(newTeamMatching);
+
+        // 저장되어 있는 활동 방식 리포지토리에서 모든 활동 방식 조회
+        List<ActivityMethod> activityMethods = activityMethodRepository.findAllByTeamProfileId(savedTeamMatching.getMember().getTeamProfile().getId());
+
+        List<String> activityTagNames = activityMethods.stream()
+                .map(activityMethod -> activityMethodTagRepository.findById(activityMethod.getActivityMethodTag().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(ActivityMethodTag::getActivityTagName)
+                .toList();
+
+        ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(savedTeamMatching.getMember().getTeamProfile().getId())
+                .orElseThrow(()-> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
+
+        mailService.mailRequestTeamToTeam(
+                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                savedTeamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                activityTagNames,
+                String.join(", ", activityRegion.getRegion().getCityName(), activityRegion.getRegion().getDivisionName()),
+                savedTeamMatching.getCreatedAt(),
+                savedTeamMatching.getRequestMessage()
+        );
     }
 
     private TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId) {
@@ -234,7 +335,7 @@ public class MatchingService {
             final Long memberId,
             final Long teamMemberAnnouncementId,
             final MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         // 매칭 요청 주체 객체 조회
         final Member member = getMember(memberId);
 
@@ -258,10 +359,38 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED
+                REMAINED,
+                false,
+                false
         );
 
-        teamMatchingRepository.save(newTeamMatching);
+        final TeamMatching savedTeamMatching = teamMatchingRepository.save(newTeamMatching);
+
+        List<ProfileJobRole> profileJobRoles = profileJobRoleRepository.findAllByProfileId(savedTeamMatching.getMember().getProfile().getId());
+        List<String> jobRoleNames = profileJobRoles.stream()
+                .map(profileJobRole -> jobRoleRepository.findById(profileJobRole.getJobRole().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(JobRole::getJobRoleName)
+                .toList();
+
+        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(savedTeamMatching.getMember().getProfile().getId());
+        List<String> skillNames = profileSkills.stream()
+                .map(profileSkill -> skillRepository.findById(profileSkill.getSkill().getId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .map(Skill::getSkillName)
+                .toList();
+
+        mailService.mailRequestPrivateToTeam(
+                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                savedTeamMatching.getMember().getMemberBasicInform().getMemberName(),
+                jobRoleNames,
+                skillNames,
+                savedTeamMatching.getCreatedAt(),
+                savedTeamMatching.getRequestMessage()
+        );
     }
 
     // 내가 받은 매칭
@@ -596,23 +725,90 @@ public class MatchingService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE));
     }
 
-    public void acceptPrivateMatching(final Long privateMatchingId, final AllowMatchingRequest allowMatchingRequest) {
+    public void acceptPrivateMatching(final Long privateMatchingId, final AllowMatchingRequest allowMatchingRequest) throws MessagingException {
         final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
 
+        // 매칭 성사 상태로 업데이트를 진행한다.
         if (allowMatchingRequest.getIsAllowMatching()) {
             privateMatching.updateMatchingStatus(true);
         } else {
             privateMatching.updateMatchingStatus(false);
         }
+
+        // 이메일 자동 발송을 시작한다.
+        // private to private인 경우
+        if (SenderType.PRIVATE.equals(privateMatching.getSenderType())) {
+            mailService.mailSuccessPrivateToPrivateSender(
+                    privateMatching.getMember().getEmail(),
+                    privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
+                    privateMatching.getProfile().getMember().getEmail(),
+                    privateMatching.getRequestMessage()
+            );
+
+            mailService.mailSuccessPrivateToPrivateReceiver(
+                    privateMatching.getMember().getMemberBasicInform().getMemberName(),
+                    privateMatching.getMember().getEmail(),
+                    privateMatching.getProfile().getMember().getEmail(),
+                    privateMatching.getRequestMessage()
+            );
+
+        } else {
+            // team to private인 경우
+            mailService.mailSuccessTeamToPrivateSender(
+                    privateMatching.getMember().getEmail(),
+                    privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
+                    privateMatching.getProfile().getMember().getEmail(),
+                    privateMatching.getRequestMessage()
+            );
+            mailService.mailSuccessTeamToPrivateReceiver(
+                    privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                    privateMatching.getMember().getEmail(),
+                    privateMatching.getProfile().getMember().getEmail(),
+                    privateMatching.getRequestMessage()
+            );
+
+        }
     }
 
-    // 팀 매칭 허용
-    public void acceptTeamMatching(final Long teamMatchingId, final AllowMatchingRequest allowMatchingRequest) {
+    // 팀 매칭 성사
+    public void acceptTeamMatching(final Long teamMatchingId, final AllowMatchingRequest allowMatchingRequest) throws MessagingException {
         final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
+
+        // 매칭 성사 상태로 업데이트를 진행한다.
         if (allowMatchingRequest.getIsAllowMatching()) {
             teamMatching.updateMatchingStatus(true);
         } else {
             teamMatching.updateMatchingStatus(false);
+        }
+
+        // 이메일 자동 발송을 시작한다.
+        // private to team인 경우
+        if (SenderType.TEAM.equals(teamMatching.getSenderType())) {
+            mailService.mailSuccessPrivateToTeamSender(
+                    teamMatching.getMember().getEmail(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                    teamMatching.getRequestMessage()
+            );
+            mailService.mailSuccessPrivateToTeamReceiver(
+                    teamMatching.getMember().getMemberBasicInform().getMemberName(),
+                    teamMatching.getMember().getEmail(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                    teamMatching.getRequestMessage()
+            );
+        } else {
+            mailService.mailSuccessTeamToTeamSender(
+                    teamMatching.getMember().getEmail(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                    teamMatching.getRequestMessage()
+            );
+            mailService.mailSuccessTeamToTeamReceiver(
+                    teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+                    teamMatching.getMember().getEmail(),
+                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
+                    teamMatching.getRequestMessage()
+            );
         }
     }
 

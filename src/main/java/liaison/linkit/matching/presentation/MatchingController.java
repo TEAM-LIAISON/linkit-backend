@@ -1,5 +1,6 @@
 package liaison.linkit.matching.presentation;
 
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
@@ -13,7 +14,10 @@ import liaison.linkit.matching.dto.response.RequestMatchingResponse;
 import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
 import liaison.linkit.matching.dto.response.contact.SuccessContactResponse;
 import liaison.linkit.matching.dto.response.existence.ExistenceProfileResponse;
-import liaison.linkit.matching.dto.response.messageResponse.*;
+import liaison.linkit.matching.dto.response.messageResponse.ReceivedPrivateMatchingMessageResponse;
+import liaison.linkit.matching.dto.response.messageResponse.ReceivedTeamMatchingMessageResponse;
+import liaison.linkit.matching.dto.response.messageResponse.RequestPrivateMatchingMessageResponse;
+import liaison.linkit.matching.dto.response.messageResponse.RequestTeamMatchingMessageResponse;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +43,7 @@ public class MatchingController {
     // 개인 이력서로 개인 이력서에 매칭 요청을 보내는 경우
     // 해당 개인 이력서의 PK id가 필요하다.
     // accessor.getMemberId -> 해당 회원의 내 이력서와 상대의 내 이력서가 매칭
+    // 이메일 발송 자동화 추가 필요
     @PostMapping("/private/profile/matching/private/{profileId}")
     @MemberOnly
     @CheckMatchingToPrivateProfileAccess
@@ -46,13 +51,14 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long profileId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         log.info("profileId={}에게 내 이력서 대상으로 memberId={} 매칭 요청이 발생했습니다.", profileId, accessor.getMemberId());
         matchingService.createPrivateProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
         return ResponseEntity.status(CREATED).build();
     }
 
     // accessor.getMemberId -> 해당 회원의 팀 소개서와 상대의 내 이력서가 매칭
+    // 이메일 발송 자동화 추가 필요
     @PostMapping("/team/profile/matching/private/{profileId}")
     @MemberOnly
     @CheckMatchingToPrivateProfileAccess
@@ -60,12 +66,13 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long profileId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         matchingService.createTeamProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
         return ResponseEntity.status(CREATED).build();
     }
 
     // 팀 소개서가 팀 소개서에 매칭 요청을 보내는 경우
+    // 이메일 발송 자동화 추가 필요
     @PostMapping("/team/profile/matching/team/{teamMemberAnnouncementId}")
     @MemberOnly
     @CheckMatchingToTeamProfileAccess
@@ -73,12 +80,13 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberAnnouncementId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         matchingService.createTeamProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
         return ResponseEntity.status(CREATED).build();
     }
 
     // 내 이력서가 팀 소개서에 매칭 요청을 보내는 경우
+    // 이메일 발송 자동화 추가 필요
     @PostMapping("/private/profile/matching/team/{teamMemberAnnouncementId}")
     @MemberOnly
     @CheckMatchingToTeamProfileAccess
@@ -86,10 +94,12 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberAnnouncementId,
             @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
-    ) {
+    ) throws Exception {
         matchingService.createPrivateProfileMatchingToTeam(accessor.getMemberId(), teamMemberAnnouncementId, matchingCreateRequest);
         return ResponseEntity.status(CREATED).build();
     }
+
+
 
     // 내가 받은 매칭 조회
     @GetMapping("/matching/received")
@@ -215,30 +225,33 @@ public class MatchingController {
     }
 
 
-
     // 내 이력서 관련 매칭일 때 수락/거절하기 버튼을 누른 경우
+    // 이메일 발송 자동화 필요
     @PostMapping("/allow/private/matching/{privateMatchingId}")
     @MemberOnly
     public ResponseEntity<Void> acceptReceivePrivateMatching(
             @Auth final Accessor accessor,
             @PathVariable final Long privateMatchingId,
             @RequestBody @Valid final AllowMatchingRequest allowMatchingRequest
-    ) {
+    ) throws MessagingException {
         matchingService.acceptPrivateMatching(privateMatchingId, allowMatchingRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    // 팀 소개서 관련 매칭일 때 수락하기 버튼을 누른 경우
+    // 팀 소개서 관련 매칭일 때 수락/거절하기 버튼을 누른 경우
+    // 이메일 발송 자동화 필요
     @PostMapping("/allow/team/matching/{teamMatchingId}")
     @MemberOnly
     public ResponseEntity<Void> acceptReceiveTeamMatching(
             @Auth final Accessor accessor,
             @PathVariable final Long teamMatchingId,
             @RequestBody @Valid final AllowMatchingRequest allowMatchingRequest
-    ) {
+    ) throws MessagingException {
         matchingService.acceptTeamMatching(teamMatchingId, allowMatchingRequest);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+
 
     // 내 이력서 관련 매칭일 때 연락하기 버튼을 누른 경우
     // 수신자가 내 이력서일 때

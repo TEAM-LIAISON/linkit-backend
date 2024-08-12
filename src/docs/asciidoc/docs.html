@@ -775,7 +775,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 3 Aug 2024 17:18:14 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refresh-token=refreshToken; Path=/; Max-Age=604800; Expires=Tue, 13 Aug 2024 12:28:20 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 136
 
@@ -868,12 +868,13 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 109
+Content-Length: 147
 
 {
   "accessToken" : "I'mNewAccessToken!",
   "existMemberBasicInform" : true,
-  "existDefaultProfile" : true
+  "existDefaultProfile" : true,
+  "existNonCheckNotification" : true
 }</code></pre>
 </div>
 </div>
@@ -905,6 +906,11 @@ Content-Length: 109
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>existDefaultProfile</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 필수 항목 기입 완료)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>existNonCheckNotification</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">확인하지 않은 알림의 존재 유무</p></td>
 </tr>
 </tbody>
 </table>
@@ -2177,13 +2183,13 @@ Content-Length: 3294
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
     "profileSkill" : true,
+    "awards" : true,
     "attach" : true
   },
   "profileIntroductionResponse" : {
@@ -3391,12 +3397,12 @@ Content-Length: 3122
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
     "teamProfileTeamBuildingField" : true,
-    "history" : true,
-    "activity" : true,
-    "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
-    "teamMemberAnnouncement" : true
+    "teamIntroduction" : true,
+    "teamMemberAnnouncement" : true,
+    "activity" : true,
+    "history" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -5463,13 +5469,13 @@ Content-Length: 3275
   },
   "completionResponse" : {
     "completion" : "100.0",
-    "awards" : true,
+    "profileTeamBuildingField" : true,
+    "profileRegion" : true,
     "introduction" : true,
     "antecedents" : true,
     "education" : true,
-    "profileTeamBuildingField" : true,
-    "profileRegion" : true,
     "profileSkill" : true,
+    "awards" : true,
     "attach" : true
   },
   "profileIntroductionResponse" : {
@@ -5899,12 +5905,12 @@ Content-Length: 3112
   "teamCompletionResponse" : {
     "teamCompletion" : "100.0",
     "teamProfileTeamBuildingField" : true,
-    "history" : true,
-    "activity" : true,
-    "teamIntroduction" : true,
     "teamMemberIntroduction" : true,
     "teamAttach" : true,
-    "teamMemberAnnouncement" : true
+    "teamIntroduction" : true,
+    "teamMemberAnnouncement" : true,
+    "activity" : true,
+    "history" : true
   },
   "teamProfileTeamBuildingFieldResponse" : {
     "teamProfileTeamBuildingFieldNames" : [ "공모전", "대회", "창업" ]
@@ -8339,7 +8345,7 @@ Content-Length: 135
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-07-27 21:46:08 +0900
+Last updated 2024-08-06 10:52:44 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

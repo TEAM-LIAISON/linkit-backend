@@ -125,7 +125,7 @@ public class LoginControllerTest extends ControllerTest {
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
         final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
 
-        final RenewTokenResponse renewTokenResponse = new RenewTokenResponse(RENEW_ACCESS_TOKEN, true, true);
+        final RenewTokenResponse renewTokenResponse = new RenewTokenResponse(RENEW_ACCESS_TOKEN, true, true, true);
 
         when(loginService.renewalAccessToken(REFRESH_TOKEN, ACCESS_TOKEN))
                 .thenReturn(renewTokenResponse);
@@ -160,6 +160,10 @@ public class LoginControllerTest extends ControllerTest {
                                 fieldWithPath("existDefaultProfile")
                                         .type(JsonFieldType.BOOLEAN)
                                         .description("이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 필수 항목 기입 완료)")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("existNonCheckNotification")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("확인하지 않은 알림의 존재 유무")
                                         .attributes(field("constraint", "boolean 값"))
                         )
                 ))

@@ -17,17 +17,18 @@ spring:
         use_sql_comments: true
         show_sql: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 
   datasource:
     url: ${database.url}
     username: ${database.username}
     password: ${database.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
-#
-#  flyway:
-#    enabled: true
-#    baseline-on-migrate: true
+
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
 
   data:
     redis:
@@ -36,13 +37,13 @@ spring:
   
   sql:
     init:
-      mode: always
+      mode: never
 
   batch:
     job:
-      enabled: true
+      enabled: false
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
 
   security:
     oauth2:

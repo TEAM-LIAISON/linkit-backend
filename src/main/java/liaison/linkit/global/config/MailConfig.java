@@ -17,7 +17,6 @@ public class MailConfig {
     @Value("${naver.password}")
     private String password;
 
-
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
@@ -25,9 +24,7 @@ public class MailConfig {
         javaMailSender.setHost("smtp.worksmobile.com");
         javaMailSender.setUsername(id);
         javaMailSender.setPassword(password);
-
         javaMailSender.setPort(465);
-
         javaMailSender.setJavaMailProperties(getMailProperties());
 
         return javaMailSender;

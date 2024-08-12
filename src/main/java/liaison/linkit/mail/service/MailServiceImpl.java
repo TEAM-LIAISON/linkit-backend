@@ -10,140 +10,572 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
 public class MailServiceImpl implements MailService {
-    // MailConfig에서 등록해둔 Bean을 autowired하여 사용하기
-    private final JavaMailSender emailSender;
 
-    // 사용자가 메일로 받을 인증번호
-    private String key;
+    private final JavaMailSender emailSender;
 
     @Value("${naver.id}")
     private String id;
 
-    // Instant 클래스는 특정 지점의 시간을 나타내기 위한 클래스입니다.
-    // 코드 생성 시간을 나타내는 Instant 객체입니다.
-    private Instant codeGenerationTime;
-
-    // Duration 클래스는 두 시간 간의 차이를 나타내기 위한 클래스입니다.
-    // Duration.ofMinutes(1)을 사용하여 1분으로 설정합니다.
-    private Duration validityDuration = Duration.ofMinutes(1);
-
-    // 메일 발송
-    // sendSimpleMessage 의 매개변수 to는 이메일 주소가 되고,
-    // MimeMessage 객체 안에 내가 전송할 메일의 내용을 담는다
-    // bean으로 등록해둔 javaMail 객체를 사용하여 이메일을 발송한다
+    // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
     @Override
-    public String sendSimpleMessage(String to) throws Exception {
-        key = createKey(); // 랜덤 인증코드 생성
-        log.info("********생성된 랜덤 인증코드******** => " + key);
-
-        MimeMessage message = creatMessage(to); // "to" 로 메일 발송
-        log.info("********생성된 메시지******** => " + message);
-        // 예외처리
+    public void mailRequestPrivateToPrivate(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
+        final MimeMessage mimeMessage = createPrivateToPrivateMail(receiverEmail, receiverName, senderName, senderRole, senderSkill, requestDate, requestMessage);
         try {
-            // 이게 메일로 보내주는 메소드
-            emailSender.send(message);
+            emailSender.send(mimeMessage);
         } catch (Exception e) {
             e.printStackTrace();
             throw new IllegalArgumentException();
         }
-        // 메일로 사용자에게 보낸 인증코드를 서버로 반환! 인증코드 일치여부를 확인하기 위함
-        return key;
     }
 
-    // 메일 내용 작성
-    private MimeMessage creatMessage(String to) throws MessagingException, UnsupportedEncodingException {
-        log.info("메일받을 사용자 : " + to);
-        log.info("인증번호 : " + key);
-        codeGenerationTime = Instant.now();
-        log.info("********코드 생성 시간******** => " + codeGenerationTime);
-        log.info("********유효 시간******** => " + validityDuration);
-
-        MimeMessage message = emailSender.createMimeMessage();
-        message.addRecipients(Message.RecipientType.TO, to);
-        // 이메일 제목
-        message.setSubject("관리자 회원가입을 위한 이메일 인증코드");
-
-        String msgg = "";
-        msgg += "<h1>안녕하세요</h1>";
-        msgg += "<h1>저희는 BlueBucket 이커머스 플랫폼 입니다</h1>";
-        msgg += "<br>";
-        msgg += "<br>";
-        msgg += "<div align='center' style='border:1px solid black'>";
-        msgg += "<h3 style='color:blue'>회원가입 인증코드 입니다</h3>";
-        msgg += "<div style='font-size:130%'>";
-        msgg += "<strong>" + key + "</strong></div><br/>"; // 메일에 인증번호 ePw 넣기
-        msgg += "<p>유효 시간: " + validityDuration.toMinutes() + "분 동안만 유효합니다.</p>";
-        msgg += "</div>";
-        // 메일 내용, charset타입, subtype
-        message.setText(msgg, "utf-8", "html");
-        // 보내는 사람의 이메일 주소, 보내는 사람 이름
-        message.setFrom(id);
-        log.info("********creatMessage 함수에서 생성된 msgg 메시지********" + msgg);
-        log.info("********creatMessage 함수에서 생성된 리턴 메시지********" + message);
-
-        return message;
-    }
-
-    // 랜덤 인증코드 생성
-    private String createKey() throws Exception {
-        int length = 6;
-        try {
-            // SecureRandom.getInstanceStrong()을 호출하여 강력한 (strong) 알고리즘을 사용하는 SecureRandom 인스턴스를 가져옵니다.
-            // 이는 예측하기 어려운 안전한 랜덤 값을 제공합니다.
-            Random random = SecureRandom.getInstanceStrong();
-            // StringBuilder는 가변적인 문자열을 효율적으로 다루기 위한 클래스입니다.
-            // 여기서는 생성된 랜덤 값을 문자열로 변환하여 저장하기 위해 StringBuilder를 사용합니다.
-            StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < length; i++) {
-                builder.append(random.nextInt(10));
-            }
-            return builder.toString();
-        } catch (NoSuchAlgorithmException e) {
-            log.debug("MemberService.createCode() exception occur");
-            throw new Exception(e.getMessage());
-        }
-    }
-
-    // 사용자가 입력한 인증번호와 서버에서 생성한 인증번호를 비교하는 메서드
+    // 2. 팀 소개서 -> 내 이력서 매칭 요청 보낸 경우
     @Override
-    public String verifyCode(String code) {
+    public void mailRequestTeamToPrivate(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
+        final MimeMessage mimeMessage = createTeamToPrivateMail(receiverEmail, receiverName, senderName, senderActivityTagName, senderActivityRegionName, requestDate, requestMessage);
         try {
-            if (codeGenerationTime == null) {
-                // 시간 정보가 없으면 유효하지 않음
-                return "시간 정보가 없습니다.";
-            }
-            // 현재 시간과 코드 생성 시간의 차이 계산
-            Duration elapsedDuration = Duration.between(codeGenerationTime, Instant.now());
-            // 남은 시간 계산: 전체 유효 기간에서 경과된 시간을 뺀다
-            long remainDuration = validityDuration.minus(elapsedDuration).getSeconds();
-
-            // 시간이 0보다 높으면 즉, 유효기간이 지나지 않으면
-            // 사용자가 입력한 인증번호와 서버에서 생성한 인증번호를 비교해서 맞다면 true
-            if (remainDuration > 0) {
-                if (code.equals(key)) {
-                    return "인증 번호가 일치합니다.";
-                }
-            } else if (remainDuration < 0) {
-                return "인증 번호의 유효시간이 지났습니다.";
-            } else if (!code.equals(key)) {
-                return "인증 번호가 일치하지 않습니다.";
-            }
-            return null;
-        } catch (NullPointerException e) {
-            // 사용자가 정수가 아닌 값을 입력한 경우
-            return "유효하지 않는 인증 번호를 입력했습니다.";
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
         }
+    }
+
+    // 3. 내 이력서 -> 팀 소개서로 매칭 요청 보낸 경우
+    @Override
+    public void mailRequestPrivateToTeam(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
+        final MimeMessage mimeMessage = createPrivateToTeamMail(receiverEmail, receiverName, senderName, senderRole, senderSkill, requestDate, requestMessage);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 4. 팀 소개서 -> 팀 소개서로 매칭 요청 보낸 경우
+    @Override
+    public void mailRequestTeamToTeam(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage)  throws MessagingException {
+        final MimeMessage mimeMessage = createTeamToTeamMail(receiverEmail, receiverName, senderName, senderActivityTagName, senderActivityRegionName, requestDate, requestMessage);
+
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 5. 내 이력서 -> 내 이력서 매칭 성사 (발신자 메일)
+    @Override
+    public void mailSuccessPrivateToPrivateSender(final String senderEmail, final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = createSuccessPrivateToPrivateSender(senderEmail, receiverName, receiverEmail, requestMessage);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 6. 내 이력서 -> 내 이력서 매칭 성사 (수신자 메일)
+    @Override
+    public void mailSuccessPrivateToPrivateReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = createSuccessPrivateToPrivateReceiver(senderName, senderEmail, receiverEmail, requestMessage);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 7. 팀 소개서 -> 내 이력서 매칭 성사 (발신자 메일)
+    @Override
+    public void mailSuccessTeamToPrivateSender(final String senderEmail, final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = createSuccessTeamToPrivateSender(senderEmail, receiverName, receiverEmail, requestMessage);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 8. 팀 소개서 -> 내 이력서 매칭 성사 (수신자 메일)
+    public void mailSuccessTeamToPrivateReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException{
+        final MimeMessage mimeMessage = createSuccessTeamToPrivateReceiver(senderName, senderEmail, receiverEmail, requestMessage);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 9. 내 이력서 -> 팀 소개서 매칭 성사 (발신자 메일)
+    @Override
+    public void mailSuccessPrivateToTeamSender(final String senderEmail, final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = createSuccessPrivateToTeamSender(senderEmail, receiverName, receiverEmail, requestMessage);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 10. 내 이력서 -> 팀 소개서 매칭 성사 (수신자 메일)
+    public void mailSuccessPrivateToTeamReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException{
+        final MimeMessage mimeMessage = createSuccessPrivateToTeamReceiver(senderName, senderEmail, receiverEmail, requestMessage);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 11. 팀 소개서 -> 팀 소개서 매칭 성사 (발신자 메일)
+    @Override
+    public void mailSuccessTeamToTeamSender(final String senderEmail, final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = createSuccessTeamToTeamSender(senderEmail, receiverName, receiverEmail, requestMessage);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 12. 팀 소개서 -> 팀 소개서 매칭 성사 (수신자 메일)
+    public void mailSuccessTeamToTeamReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = createSuccessTeamToTeamReceiver(senderName, senderEmail, receiverEmail, requestMessage);
+        try {
+            emailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+    }
+
+    // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
+    private MimeMessage createPrivateToPrivateMail(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
+        mimeMessage.setSubject("[링킷] 내 이력서 매칭 요청 알림");
+
+        // DateTimeFormatter를 사용하여 날짜를 원하는 형식으로 포맷
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN);
+        String formattedDate = requestDate.format(formatter);
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr>
+                <td align="center" style="padding: 30px 20px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">👋👋</span><p style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">%s님 안녕하세요,\s
+                <a href="https://linkit.im" style="font-weight: 600; color: #2563EB; text-decoration: underline;">링킷</a>입니다. <br />%s님이 정성스럽게 써주신 이력서를 통해 <br />%s님께서 <span style="font-weight: 700;">%s</span>에 매칭 요청을 주셨습니다. <br />소개글을 확인하고 매칭 요청에 응답해 보세요!</p></td></tr><tr><td>
+                <hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; margin-top: 30px; margin-bottom: 30px;"><tbody><tr>
+                <td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 님의 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody>
+                </table></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F1F4F9; border-radius: 0.5rem; padding: 10px 20px; box-sizing: border-box;"><tbody><tr><td style="font-size: 0.875rem; font-weight: 600; padding-bottom: 10px;">%s님의 특징</td>
+                </tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #27364B; padding-bottom: 10px;">· [희망 역할] %s</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #27364B; padding-bottom: 10px;">· [보유 역량] %s</td></tr><tr>
+                <td align="right" style="font-size: 0.875rem; font-weight: 600; color: #000;"><a href="https://linkit.im" style="text-decoration: none; color: #000;">프로필 보러가기</a></td></tr></tbody></table></td></tr><tr><td align="center" style="padding: 20px 0px;">
+                <table width="100%%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td align="center" style="background-color: #2563EB; border-radius: 0.5rem; height: 55px;"><a href="https://linkit.im" style="display: block; font-size: 1rem; font-weight: 600; color: #FFF; text-decoration: none; line-height: 55px;">%s님에게 응답하기 ✍</a>
+                </td></tr></tbody></table></td></tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr><tr><td>
+                <hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im
+                <br />Copyright ⓒ 2024. liaison All rights reserved.<br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                receiverName,
+                receiverName,
+                senderName,
+                requestDate.format(DateTimeFormatter.ofPattern("M월 d일")), // Formatting date as "8월 6일"
+                senderName,
+                requestMessage,
+                senderName,
+                senderRole,
+                senderSkill,
+                senderName
+        );
+
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+
+        return mimeMessage;
+    }
+
+    // 2. 팀 소개서 -> 내 이력서 매칭 요청 보낸 경우
+    private MimeMessage createTeamToPrivateMail(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
+        mimeMessage.setSubject("[링킷] 내 이력서 매칭 요청 알림");
+        // DateTimeFormatter를 사용하여 날짜를 원하는 형식으로 포맷
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN);
+        final String formattedDate = requestDate.format(formatter);
+
+        final String msgg = String.format("""
+            <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+            <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr>
+            <td align="center" style="padding: 30px 20px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🚀</span><p style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">%s님 안녕하세요,\s
+            <a href="https://linkit.im" style="font-weight: 600; color: #2563EB; text-decoration: underline;">링킷</a>입니다. <br />%s님이 정성스럽게 써주신 이력서를 통해 <br />%s님께서 <span style="font-weight: 700;">%s</span>에 매칭 요청을 주셨습니다. <br />소개글을 확인하고 매칭 요청에 응답해 보세요!</p></td></tr><tr><td>
+            <hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; margin-top: 30px; margin-bottom: 30px;"><tbody><tr>
+            <td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">팀 %s의 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody>
+            </table></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F1F4F9; border-radius: 0.5rem; padding: 10px 20px; box-sizing: border-box;"><tbody><tr><td style="font-size: 0.875rem; font-weight: 600; padding-bottom: 10px;">%s 팀의 특징</td>
+            </tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #27364B; padding-bottom: 10px;">· [활동 방식] %s</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #27364B; padding-bottom: 10px;">· [활동 지역/위치] %s</td></tr><tr>
+            <td align="right" style="font-size: 0.875rem; font-weight: 600; color: #000;"><a href="https://linkit.im" style="text-decoration: none; color: #000;">프로필 보러가기</a></td></tr></tbody></table></td></tr><tr><td align="center" style="padding: 20px 0px;">
+            <table width="100%%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td align="center" style="background-color: #2563EB; border-radius: 0.5rem; height: 55px;"><a href="https://linkit.im" style="display: block; font-size: 1rem; font-weight: 600; color: #FFF; text-decoration: none; line-height: 55px;">%s 팀에게 응답하기 ✍</a>
+            </td></tr></tbody></table></td></tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr><tr><td>
+            <hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im
+            <br />Copyright ⓒ 2024. liaison All rights reserved.<br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>            
+            """,
+                receiverName,
+                receiverName,
+                senderName,
+                requestDate.format(DateTimeFormatter.ofPattern("M월 d일")), // Formatting date as "8월 6일"
+                senderName,
+                requestMessage,
+                senderName,
+                senderActivityTagName,
+                senderActivityRegionName,
+                senderName
+        );
+
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+
+        return mimeMessage;
+    }
+
+    // 3.
+    private MimeMessage createPrivateToTeamMail(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
+        mimeMessage.setSubject("[링킷] 내 이력서 매칭 요청 알림");
+
+        // DateTimeFormatter를 사용하여 날짜를 원하는 형식으로 포맷
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN);
+        String formattedDate = requestDate.format(formatter);
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr>
+                <td align="center" style="padding: 30px 20px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">👋👋</span><p style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">%s님 안녕하세요,\s
+                <a href="https://linkit.im" style="font-weight: 600; color: #2563EB; text-decoration: underline;">링킷</a>입니다. <br />%s님이 정성스럽게 써주신 이력서를 통해 <br />%s님께서 <span style="font-weight: 700;">%s</span>에 매칭 요청을 주셨습니다. <br />소개글을 확인하고 매칭 요청에 응답해 보세요!</p></td></tr><tr><td>
+                <hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; margin-top: 30px; margin-bottom: 30px;"><tbody><tr>
+                <td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 님의 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody>
+                </table></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F1F4F9; border-radius: 0.5rem; padding: 10px 20px; box-sizing: border-box;"><tbody><tr><td style="font-size: 0.875rem; font-weight: 600; padding-bottom: 10px;">%s님의 특징</td>
+                </tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #27364B; padding-bottom: 10px;">· [희망 역할] %s</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #27364B; padding-bottom: 10px;">· [보유 역량] %s</td></tr><tr>
+                <td align="right" style="font-size: 0.875rem; font-weight: 600; color: #000;"><a href="https://linkit.im" style="text-decoration: none; color: #000;">프로필 보러가기</a></td></tr></tbody></table></td></tr><tr><td align="center" style="padding: 20px 0px;">
+                <table width="100%%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td align="center" style="background-color: #2563EB; border-radius: 0.5rem; height: 55px;"><a href="https://linkit.im" style="display: block; font-size: 1rem; font-weight: 600; color: #FFF; text-decoration: none; line-height: 55px;">%s님에게 응답하기 ✍</a>
+                </td></tr></tbody></table></td></tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr><tr><td>
+                <hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im
+                <br />Copyright ⓒ 2024. liaison All rights reserved.<br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                receiverName,
+                receiverName,
+                senderName,
+                requestDate.format(DateTimeFormatter.ofPattern("M월 d일")), // Formatting date as "8월 6일"
+                senderName,
+                requestMessage,
+                senderName,
+                senderRole,
+                senderSkill,
+                senderName
+        );
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+        return mimeMessage;
+    }
+
+    // 4.
+    private MimeMessage createTeamToTeamMail(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderActivityTagName, final String senderActivityRegionName, final LocalDateTime requestDate, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
+        mimeMessage.setSubject("[링킷] 내 이력서 매칭 요청 알림");
+        // DateTimeFormatter를 사용하여 날짜를 원하는 형식으로 포맷
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN);
+        final String formattedDate = requestDate.format(formatter);
+
+        final String msgg = String.format("""
+            <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+            <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr>
+            <td align="center" style="padding: 30px 20px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🚀</span><p style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">%s님 안녕하세요,\s
+            <a href="https://linkit.im" style="font-weight: 600; color: #2563EB; text-decoration: underline;">링킷</a>입니다. <br />%s님이 정성스럽게 써주신 이력서를 통해 <br />%s님께서 <span style="font-weight: 700;">%s</span>에 매칭 요청을 주셨습니다. <br />소개글을 확인하고 매칭 요청에 응답해 보세요!</p></td></tr><tr><td>
+            <hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; margin-top: 30px; margin-bottom: 30px;"><tbody><tr>
+            <td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">팀 %s의 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody>
+            </table></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F1F4F9; border-radius: 0.5rem; padding: 10px 20px; box-sizing: border-box;"><tbody><tr><td style="font-size: 0.875rem; font-weight: 600; padding-bottom: 10px;">%s 팀의 특징</td>
+            </tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #27364B; padding-bottom: 10px;">· [활동 방식] %s</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #27364B; padding-bottom: 10px;">· [활동 지역/위치] %s</td></tr><tr>
+            <td align="right" style="font-size: 0.875rem; font-weight: 600; color: #000;"><a href="https://linkit.im" style="text-decoration: none; color: #000;">프로필 보러가기</a></td></tr></tbody></table></td></tr><tr><td align="center" style="padding: 20px 0px;">
+            <table width="100%%" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td align="center" style="background-color: #2563EB; border-radius: 0.5rem; height: 55px;"><a href="https://linkit.im" style="display: block; font-size: 1rem; font-weight: 600; color: #FFF; text-decoration: none; line-height: 55px;">%s 팀에게 응답하기 ✍</a>
+            </td></tr></tbody></table></td></tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr><tr><td>
+            <hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im
+            <br />Copyright ⓒ 2024. liaison All rights reserved.<br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>            
+            """,
+                receiverName,
+                receiverName,
+                senderName,
+                requestDate.format(DateTimeFormatter.ofPattern("M월 d일")), // Formatting date as "8월 6일"
+                senderName,
+                requestMessage,
+                senderName,
+                senderActivityTagName,
+                senderActivityRegionName,
+                senderName
+        );
+
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+
+        return mimeMessage;
+    }
+
+    // 매칭 성사 이메일 정리
+
+    // 5. 내 이력서 -> 내 이력서 매칭 성사 (발신자 메일)
+    private MimeMessage createSuccessPrivateToPrivateSender(final String senderEmail, final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, senderEmail);
+        mimeMessage.setSubject("[링킷] 매칭 성사 알림");
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s]님과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></center></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+        """,
+                receiverName,
+                receiverEmail,
+                requestMessage
+        );
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+        return mimeMessage;
+    }
+
+    // 6. 내 이력서 -> 내 이력서 매칭 성사 (수신자 메일)
+    private MimeMessage createSuccessPrivateToPrivateReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
+        mimeMessage.setSubject("[링킷] 매칭 성사 알림");
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s]님과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 님이 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                senderName,
+                senderEmail,
+                senderName,
+                requestMessage
+        );
+
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+        return mimeMessage;
+    }
+
+    // 7. 팀 소개서 -> 내 이력서 매칭 성사 (발신자 메일)
+    private MimeMessage createSuccessTeamToPrivateSender(final String senderEmail, final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, senderEmail);
+        mimeMessage.setSubject("[링킷] 매칭 성사 알림");
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s]님과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                receiverName,
+                receiverEmail,
+                requestMessage
+        );
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+        return mimeMessage;
+    }
+
+    // 8. 팀 소개서 -> 내 이력서 매칭 성사 (수신자 메일)
+    private MimeMessage createSuccessTeamToPrivateReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
+        mimeMessage.setSubject("[링킷] 매칭 성사 알림");
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s] 팀과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></center></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 팀이 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                senderName,
+                senderEmail,
+                senderName,
+                requestMessage
+        );
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+        return mimeMessage;
+    }
+
+    // 9. 내 이력서 -> 팀 소개서 매칭 성사 (발신자 메일)
+    private MimeMessage createSuccessPrivateToTeamSender(final String senderEmail, final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, senderEmail);
+        mimeMessage.setSubject("[링킷] 매칭 성사 알림");
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s] 팀과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></center></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                receiverName,
+                receiverEmail,
+                requestMessage
+        );
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+        return mimeMessage;
+    }
+
+    // 10. 내 이력서 -> 팀 소개서 매칭 성사 (수신자 메일)
+    private MimeMessage createSuccessPrivateToTeamReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
+        mimeMessage.setSubject("[링킷] 매칭 성사 알림");
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s]님과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 님이 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                senderName,
+                senderEmail,
+                senderName,
+                requestMessage
+        );
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+        return mimeMessage;
+    }
+
+    // 11. 팀 소개서 -> 팀 소개서 매칭 성사 (발신자 메일)
+    private MimeMessage createSuccessTeamToTeamSender(final String senderEmail, final String receiverName, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, senderEmail);
+        mimeMessage.setSubject("[링킷] 매칭 성사 알림");
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1; "></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s] 팀과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">내가 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                receiverName,
+                receiverEmail,
+                requestMessage
+        );
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+        return mimeMessage;
+    }
+
+    // 12. 팀 소개서 -> 팀 소개서 매칭 성사 (수신자 메일)
+    private MimeMessage createSuccessTeamToTeamReceiver(final String senderName, final String senderEmail, final String receiverEmail, final String requestMessage) throws MessagingException {
+        final MimeMessage mimeMessage = emailSender.createMimeMessage();
+
+        mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
+        mimeMessage.setSubject("[링킷] 매칭 성사 알림");
+
+        final String msgg = String.format("""
+                <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;"><tbody><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 642px; border-radius: 8px; margin: 0 auto;"><tbody><tr>
+                <td align="left" style="padding: 20px;"><img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td></tr>
+                <tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table width="100%%" cellspacing="0" cellpadding="0" border="0" style="margin: 0 auto; text-align: center;"><tbody>
+                <tr><td align="center" style="padding: 34px 0px;"><span style="font-size: 2.5rem; font-weight: 400; color: #000;">🥳</span><p style="font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; text-align: center;">축하합니다!<br />
+                [%s] 팀과 매칭이 성사되었어요<br /><span style="font-weight: 700; color: var(--Key-blue-key60, #2563EB); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 14px; font-style: normal; line-height: 25px; text-decoration-line: underline;">%s</span>을 통해 팀빌딩을 진행해보세요!</p></td></tr></tbody>
+                </table></center></td></tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; padding: 20px; border-radius: 8px; background: var(--Grey-scale-grey20, #F1F4F9); margin-top: 50px; margin-bottom: 50px;"><tbody>
+                <tr><td style="font-size: 1.875rem; font-weight: bold;">📮</td></tr><tr><td style="font-size: 1.2rem; font-weight: bold; padding-top: 10px;">%s 팀이 보낸 소개글</td></tr><tr><td style="font-size: 0.875rem; font-weight: 400; line-height: 1.5; color: #000; padding-top: 10px;">%s</td></tr></tbody></table></td>
+                </tr><tr><td align="center"><table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="max-width: 642px; background: var(--Grey-scale-grey00, #FFF);"><tbody><tr><td align="left" style="padding-bottom: 12px;"><img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;"></td>
+                </tr><tr><td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr><tr><td style="color: var(--Grey-scale-grey50, #94A3B8); font-feature-settings: 'liga' off, 'clig' off; font-family: Pretendard; font-size: 12px; font-style: normal; font-weight: 500; line-height: 25px; padding-top: 10px; padding-bottom: 10px;">
+                리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민 ㅣ 주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br />Copyright ⓒ 2024. liaison All rights reserved. <br />※ 본 메일은 매칭 알림을 위해 발송되었습니다</td></tr><tr>
+                <td><hr style="border: 0; height: 1px; background-color: #CBD4E1;"></td></tr></tbody></table></td></tr></tbody></table></td></tr></tbody></table>
+                """,
+                senderName,
+                senderEmail,
+                senderName,
+                requestMessage
+        );
+
+        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
+        mimeMessage.setFrom(id);
+
+        return mimeMessage;
     }
 }

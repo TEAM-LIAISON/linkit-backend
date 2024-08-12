@@ -62,6 +62,12 @@ public class TeamMatching extends BaseEntity {
     @Enumerated(value = STRING)
     private ReceiverDeleteStatusType receiverDeleteStatusType;
 
+    @Column(name = "is_sender_check", columnDefinition = "boolean default false")
+    private Boolean isSenderCheck;
+
+    @Column(name = "is_receiver_check", columnDefinition = "boolean default false")
+    private Boolean isReceiverCheck;
+
     public void updateMatchingStatus(final boolean isAllow) {
         if (isAllow) {
             this.matchingStatusType = MatchingStatusType.SUCCESSFUL;
