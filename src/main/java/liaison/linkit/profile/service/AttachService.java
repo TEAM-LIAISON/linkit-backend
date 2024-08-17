@@ -28,7 +28,6 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Transactional
 @Slf4j
 public class AttachService {
-
     private final ProfileRepository profileRepository;
     private final AttachUrlRepository attachUrlRepository;
 //    private final AttachFileRepository attachFileRepository;
@@ -54,7 +53,6 @@ public class AttachService {
         } catch (Exception e) {
             throw new BadRequestException(NOT_FOUND_ATTACH_URLS_BY_PROFILE_ID);
         }
-
     }
 
     // 해당 회원이 1개라도 Attach URL 보유하고 있는지

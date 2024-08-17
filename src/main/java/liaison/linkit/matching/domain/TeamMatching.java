@@ -62,9 +62,11 @@ public class TeamMatching extends BaseEntity {
     @Enumerated(value = STRING)
     private ReceiverDeleteStatusType receiverDeleteStatusType;
 
+    // 이 매칭 요청을 보낸 사람이 열람을 했나요?
     @Column(name = "is_sender_check", columnDefinition = "boolean default false")
     private Boolean isSenderCheck;
 
+    // 이 매칭 요청을 받은 사람이 열람을 했나요?
     @Column(name = "is_receiver_check", columnDefinition = "boolean default false")
     private Boolean isReceiverCheck;
 
