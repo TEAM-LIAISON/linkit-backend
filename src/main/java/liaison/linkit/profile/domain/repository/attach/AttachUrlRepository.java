@@ -2,21 +2,11 @@ package liaison.linkit.profile.domain.repository.attach;
 
 import liaison.linkit.profile.domain.attach.AttachUrl;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 public interface AttachUrlRepository extends JpaRepository<AttachUrl, Long>, AttachUrlRepositoryCustom{
 
-    boolean existsByProfileId(final Long profileId);
-
     Optional<AttachUrl> findByProfileId(@Param("profileId") final Long profileId);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM AttachUrl attachUrl WHERE attachUrl.profile.id = :profileId")
-    void deleteAllByProfileId(@Param("profileId") final Long profileId);
 }
