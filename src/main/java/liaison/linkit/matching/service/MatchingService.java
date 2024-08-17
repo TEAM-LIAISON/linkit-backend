@@ -6,7 +6,7 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.mail.service.MailService;
 import liaison.linkit.matching.domain.PrivateMatching;
 import liaison.linkit.matching.domain.TeamMatching;
-import liaison.linkit.matching.domain.repository.PrivateMatchingRepository;
+import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
 import liaison.linkit.matching.domain.repository.TeamMatchingRepository;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.dto.request.AllowMatchingRequest;

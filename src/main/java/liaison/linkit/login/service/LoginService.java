@@ -9,7 +9,7 @@ import liaison.linkit.login.dto.MemberTokensAndOnBoardingStepInform;
 import liaison.linkit.login.dto.RenewTokenResponse;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
-import liaison.linkit.matching.domain.repository.PrivateMatchingRepository;
+import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
 import liaison.linkit.matching.domain.repository.TeamMatchingRepository;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
