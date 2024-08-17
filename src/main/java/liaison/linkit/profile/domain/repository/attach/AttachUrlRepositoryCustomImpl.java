@@ -4,11 +4,14 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.attach.AttachUrl;
 import liaison.linkit.profile.domain.attach.QAttachUrl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Slf4j
 public class AttachUrlRepositoryCustomImpl implements AttachUrlRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -29,14 +32,12 @@ public class AttachUrlRepositoryCustomImpl implements AttachUrlRepositoryCustom 
     public boolean existsByProfileId(final Long profileId) {
         QAttachUrl attachUrl = QAttachUrl.attachUrl;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(attachUrl)
+        long count = jpaQueryFactory
+                .selectFrom(attachUrl)
                 .where(attachUrl.profile.id.eq(profileId))
-                .fetchFirst(); // fetchFirst()는 레코드가 존재하는지 확인하기 위해 첫 번째 결과를 가져옵니다.
+                .fetchCount(); // 레코드의 수를 반환
 
-        // 존재하면 true, 그렇지 않으면 false 반환
-        return count != null;
+        return count > 0; // 0보다 크면 true, 그렇지 않으면 false
     }
 
     @Override
@@ -47,8 +48,11 @@ public class AttachUrlRepositoryCustomImpl implements AttachUrlRepositoryCustom 
                 .fetch();
     }
 
+
     @Override
+    @Transactional
     public void deleteAllByProfileId(final Long profileId){
+        log.info("Deleting all AttachUrls for profileId: {}", profileId);
         QAttachUrl attachUrl = QAttachUrl.attachUrl;
         jpaQueryFactory.delete(attachUrl)
                 .where(attachUrl.profile.id.eq(profileId))
