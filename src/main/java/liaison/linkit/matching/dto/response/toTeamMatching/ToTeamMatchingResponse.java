@@ -33,6 +33,8 @@ public class ToTeamMatchingResponse {
     private final MatchingType matchingType;
     // 어떤 이력/소개서에 매칭 요청이 왔는지
     private final boolean isReceivedTeamProfile;
+    // 내가 열람한 매칭 요청인지 여부
+    private final Boolean isReceiverCheck;
 
     public static List<ToTeamMatchingResponse> toTeamMatchingResponse(final List<TeamMatching> teamMatchingList) {
         return teamMatchingList.stream()
@@ -48,7 +50,8 @@ public class ToTeamMatchingResponse {
                                 LocalDate.from(teamMatching.getCreatedAt()),
                                 teamMatching.getSenderType(),
                                 teamMatching.getMatchingType(),
-                                true
+                                true,
+                                teamMatching.getIsReceiverCheck()
                         );
                     } else {
                         // 팀 소개서로 내 팀 소개서에 보낸 경우
@@ -61,7 +64,8 @@ public class ToTeamMatchingResponse {
                                 LocalDate.from(teamMatching.getCreatedAt()),
                                 teamMatching.getSenderType(),
                                 teamMatching.getMatchingType(),
-                                true
+                                true,
+                                teamMatching.getIsReceiverCheck()
                         );
                     }
                 })

@@ -36,6 +36,9 @@ public class ReceivedMatchingResponse {
     // 어떤 이력/소개서에 매칭 요청이 왔는지
     private final boolean isReceivedTeamProfile;
 
+    // 내가 열람한 매칭 요청인지 여부
+    private final Boolean isReceiverCheck;
+
     public static List<ReceivedMatchingResponse> toReceivedMatchingResponse(
             final List<ToPrivateMatchingResponse> toPrivateMatchingResponseList,
             final List<ToTeamMatchingResponse> toTeamMatchingResponseList
@@ -51,7 +54,8 @@ public class ReceivedMatchingResponse {
                         pmr.getRequestOccurTime(),
                         pmr.getSenderType(),
                         pmr.getMatchingType(),
-                        pmr.isReceivedTeamProfile())),
+                        pmr.isReceivedTeamProfile(),
+                        pmr.getIsReceiverCheck())),
                 toTeamMatchingResponseList.stream().map(tmr -> new ReceivedMatchingResponse(
                         tmr.getProfileId(),
                         tmr.getTeamMatchingId(),
@@ -61,7 +65,8 @@ public class ReceivedMatchingResponse {
                         tmr.getRequestOccurTime(),
                         tmr.getSenderType(),
                         tmr.getMatchingType(),
-                        tmr.isReceivedTeamProfile()))
+                        tmr.isReceivedTeamProfile(),
+                        tmr.getIsReceiverCheck()))
         ).collect(Collectors.toList());
     }
 }
