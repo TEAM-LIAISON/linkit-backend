@@ -3,7 +3,7 @@ package liaison.linkit.profile.service;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.domain.repository.MemberRepository;
+import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.repository.AntecedentsRepository;

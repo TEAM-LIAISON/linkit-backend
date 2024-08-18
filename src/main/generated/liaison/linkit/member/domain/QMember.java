@@ -48,7 +48,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath socialLoginId = createString("socialLoginId");
 
-    public final EnumPath<MemberState> status = createEnum("status", MemberState.class);
+    public final EnumPath<liaison.linkit.member.domain.type.MemberState> status = createEnum("status", liaison.linkit.member.domain.type.MemberState.class);
 
     public final liaison.linkit.team.domain.QTeamProfile teamProfile;
 
