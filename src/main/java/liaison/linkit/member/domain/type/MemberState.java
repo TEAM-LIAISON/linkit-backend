@@ -1,4 +1,4 @@
-package liaison.linkit.member.domain;
+package liaison.linkit.member.domain.type;
 
 public enum MemberState {
     // 휴면 계정

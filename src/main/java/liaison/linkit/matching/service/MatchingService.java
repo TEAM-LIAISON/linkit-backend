@@ -7,7 +7,7 @@ import liaison.linkit.mail.service.MailService;
 import liaison.linkit.matching.domain.PrivateMatching;
 import liaison.linkit.matching.domain.TeamMatching;
 import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
-import liaison.linkit.matching.domain.repository.TeamMatchingRepository;
+import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.dto.request.AllowMatchingRequest;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
@@ -25,7 +25,7 @@ import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingRe
 import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
 import liaison.linkit.matching.dto.response.toTeamMatching.ToTeamMatchingResponse;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.domain.repository.MemberRepository;
+import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.profile.domain.repository.ProfileSkillRepository;

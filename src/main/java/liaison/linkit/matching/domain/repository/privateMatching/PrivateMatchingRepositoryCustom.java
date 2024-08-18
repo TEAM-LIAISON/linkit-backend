@@ -8,7 +8,6 @@ public interface PrivateMatchingRepositoryCustom {
 
     List<PrivateMatching> findByProfileIdAndMatchingStatus( final Long profileId);
     List<PrivateMatching> findByMemberIdAndMatchingStatus(final Long memberId);
-
     List<PrivateMatching> findSuccessReceivedMatching(final Long profileId);
     List<PrivateMatching> findSuccessRequestMatching(final Long memberId);
 

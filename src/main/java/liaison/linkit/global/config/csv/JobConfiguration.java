@@ -8,8 +8,6 @@ import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorReader;
 import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorWriter;
 import liaison.linkit.global.config.csv.jobRole.CsvJobRoleReader;
 import liaison.linkit.global.config.csv.jobRole.CsvJobRoleWriter;
-import liaison.linkit.global.config.csv.memberRole.CsvMemberRoleReader;
-import liaison.linkit.global.config.csv.memberRole.CsvMemberRoleWriter;
 import liaison.linkit.global.config.csv.region.CsvRegionReader;
 import liaison.linkit.global.config.csv.region.CsvRegionWriter;
 import liaison.linkit.global.config.csv.skill.CsvSkillReader;
@@ -18,7 +16,6 @@ import liaison.linkit.global.config.csv.teamBuildingField.CsvTeamBuildingFieldRe
 import liaison.linkit.global.config.csv.teamBuildingField.CsvTeamBuildingFieldWriter;
 import liaison.linkit.global.config.csv.teamScale.CsvTeamScaleReader;
 import liaison.linkit.global.config.csv.teamScale.CsvTeamScaleWriter;
-import liaison.linkit.member.dto.csv.MemberRoleCsvData;
 import liaison.linkit.profile.dto.csv.*;
 import liaison.linkit.team.dto.csv.ActivityMethodTagCsvData;
 import liaison.linkit.team.dto.csv.IndustrySectorCsvData;
@@ -49,9 +46,6 @@ public class JobConfiguration {
     private final CsvTeamScaleReader csvTeamScaleReader;
     private final CsvTeamScaleWriter csvTeamScaleWriter;
 
-    private final CsvMemberRoleReader csvMemberRoleReader;
-    private final CsvMemberRoleWriter csvMemberRoleWriter;
-
     private final CsvIndustrySectorReader csvIndustrySectorReader;
     private final CsvIndustrySectorWriter csvIndustrySectorWriter;
 
@@ -73,7 +67,6 @@ public class JobConfiguration {
                                  Step teamBuildingFieldDataLoadStep,
                                  Step regionDataLoadStep,
                                  Step teamScaleDataLoadStep,
-                                 Step memberRoleDataLoadStep,
                                  Step industrySectorDataLoadStep,
                                  Step activityMethodTagDataLoadStep,
                                  Step jobRoleDataLoadStep,
@@ -83,7 +76,6 @@ public class JobConfiguration {
                 .start(teamBuildingFieldDataLoadStep)
                 .next(regionDataLoadStep)
                 .next(teamScaleDataLoadStep)
-                .next(memberRoleDataLoadStep)
                 .next(industrySectorDataLoadStep)
                 .next(activityMethodTagDataLoadStep)
                 .next(jobRoleDataLoadStep)
@@ -127,19 +119,6 @@ public class JobConfiguration {
                 .<TeamScaleCsvData, TeamScaleCsvData>chunk(10, platformTransactionManager)
                 .reader(csvTeamScaleReader.csvTeamScaleReader())
                 .writer(csvTeamScaleWriter)
-                .allowStartIfComplete(true)
-                .build();
-    }
-
-    @Bean
-    public Step memberRoleDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
-        return new StepBuilder("memberRoleDataLoadStep", jobRepository)
-                .<MemberRoleCsvData, MemberRoleCsvData>chunk(10, platformTransactionManager)
-                .reader(csvMemberRoleReader.csvMemberRoleReader())
-                .writer(csvMemberRoleWriter)
                 .allowStartIfComplete(true)
                 .build();
     }

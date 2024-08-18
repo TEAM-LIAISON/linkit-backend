@@ -2,7 +2,7 @@ package liaison.linkit.admin.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.admin.domain.type.AdminType;
-import liaison.linkit.member.domain.MemberState;
+import liaison.linkit.member.domain.type.MemberState;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;

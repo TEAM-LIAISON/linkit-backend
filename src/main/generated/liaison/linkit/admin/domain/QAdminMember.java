@@ -31,7 +31,7 @@ public class QAdminMember extends EntityPathBase<AdminMember> {
 
     public final StringPath password = createString("password");
 
-    public final EnumPath<liaison.linkit.member.domain.MemberState> status = createEnum("status", liaison.linkit.member.domain.MemberState.class);
+    public final EnumPath<liaison.linkit.member.domain.type.MemberState> status = createEnum("status", liaison.linkit.member.domain.type.MemberState.class);
 
     public final StringPath username = createString("username");
 
