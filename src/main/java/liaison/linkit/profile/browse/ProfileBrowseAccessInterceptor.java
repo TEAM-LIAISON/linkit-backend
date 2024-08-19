@@ -10,7 +10,7 @@ import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
 import liaison.linkit.team.domain.TeamProfile;
-import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

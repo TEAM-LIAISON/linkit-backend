@@ -2,7 +2,7 @@ package liaison.linkit.team.service;
 
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.domain.TeamProfile;
-import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

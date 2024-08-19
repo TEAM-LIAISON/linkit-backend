@@ -1,7 +1,7 @@
 package liaison.linkit.global.config.csv.industrySector;
 
 import liaison.linkit.team.domain.miniprofile.IndustrySector;
-import liaison.linkit.team.domain.repository.miniprofile.IndustrySectorRepository;
+import liaison.linkit.team.domain.repository.miniprofile.industrySector.IndustrySectorRepository;
 import liaison.linkit.team.dto.csv.IndustrySectorCsvData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.Chunk;

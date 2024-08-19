@@ -1,7 +1,7 @@
 package liaison.linkit.global.config.csv.activityMethodTag;
 
 import liaison.linkit.team.domain.activity.ActivityMethodTag;
-import liaison.linkit.team.domain.repository.activity.ActivityMethodTagRepository;
+import liaison.linkit.team.domain.repository.activity.method.ActivityMethodTagRepository;
 import liaison.linkit.team.dto.csv.ActivityMethodTagCsvData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.Chunk;

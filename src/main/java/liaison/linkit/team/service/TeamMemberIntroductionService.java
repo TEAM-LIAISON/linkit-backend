@@ -4,7 +4,7 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.memberIntroduction.TeamMemberIntroduction;
-import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.memberIntroduction.TeamMemberIntroductionRepository;
 import liaison.linkit.team.dto.request.memberIntroduction.TeamMemberIntroductionCreateRequest;
 import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
