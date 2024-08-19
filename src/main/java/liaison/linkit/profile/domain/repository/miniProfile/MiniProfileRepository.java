@@ -4,42 +4,39 @@ import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> {
+public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long>, MiniProfileRepositoryCustom {
 
-    boolean existsByProfileId(final Long profileId);
-
-    Optional<MiniProfile> findByProfileId(@Param("profileId") final Long profileId);
-
-    @Modifying
-    @Transactional // 메서드가 트랜잭션 내에서 실행되어야 함을 나타낸다.
-    @Query("DELETE FROM MiniProfile miniProfile WHERE miniProfile.profile.id = :profileId")
-    void deleteByProfileId(@Param("profileId") final Long profileId);
-
-
+//    boolean existsByProfileId(final Long profileId);
+//
+//    Optional<MiniProfile> findByProfileId(@Param("profileId") final Long profileId);
+//
+//    @Modifying
+//    @Transactional // 메서드가 트랜잭션 내에서 실행되어야 함을 나타낸다.
+//    @Query("DELETE FROM MiniProfile miniProfile WHERE miniProfile.profile.id = :profileId")
+//    void deleteByProfileId(@Param("profileId") final Long profileId);
+//
+//
     @Query(value = """
            SELECT mp FROM MiniProfile mp
            JOIN mp.profile p
-           
+
            LEFT JOIN ProfileTeamBuildingField ptbf ON p.id = ptbf.profile.id
            LEFT JOIN TeamBuildingField tbf ON ptbf.teamBuildingField.id = tbf.id
-           
+
            LEFT JOIN ProfileJobRole pjr ON p.id = pjr.profile.id
            LEFT JOIN JobRole jr ON pjr.jobRole.id = jr.id
-           
+
            LEFT JOIN ProfileSkill ps ON p.id = ps.profile.id
            LEFT JOIN Skill s ON ps.skill.id = s.id
-           
+
            LEFT JOIN ProfileRegion pr ON p.id = pr.profile.id
            LEFT JOIN Region r ON pr.region.id = r.id
-           
+
            WHERE (:teamBuildingFieldName IS NULL OR
                  (SELECT COUNT(tbf.teamBuildingFieldName) FROM TeamBuildingField tbf
                   JOIN ProfileTeamBuildingField ptbf2 ON tbf.id = ptbf2.teamBuildingField.id
@@ -55,7 +52,7 @@ public interface MiniProfileRepository extends JpaRepository<MiniProfile, Long> 
            AND (:cityName IS NULL OR r.cityName = :cityName)
            AND (:divisionName IS NULL OR r.divisionName = :divisionName)
            AND (mp.isActivate = true)
-           
+
            ORDER BY mp.createdDate DESC
            """)
     Page<MiniProfile> findAll(

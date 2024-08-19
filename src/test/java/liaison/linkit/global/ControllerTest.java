@@ -11,7 +11,7 @@ import liaison.linkit.matching.MatchingAccessInterceptor;
 import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.browse.ProfileBrowseAccessInterceptor;
 import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
