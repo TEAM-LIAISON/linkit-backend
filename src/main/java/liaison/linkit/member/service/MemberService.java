@@ -10,7 +10,7 @@ import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformCrea
 import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformUpdateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
 import liaison.linkit.member.dto.response.MemberResponse;
-import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

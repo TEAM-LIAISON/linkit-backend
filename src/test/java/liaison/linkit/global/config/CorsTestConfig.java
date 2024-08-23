@@ -5,7 +5,7 @@ import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.matching.MatchingAccessInterceptor;
 import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.browse.ProfileBrowseAccessInterceptor;
-import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
