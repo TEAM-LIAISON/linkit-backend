@@ -571,44 +571,47 @@ public class SearchControllerTest extends ControllerTest {
                 );
     }
 
-    private ResultActions performFindPrivateMiniProfileRequest() throws Exception {
-        MockHttpServletRequestBuilder requestBuilder = get("/search/private/profile").contentType(APPLICATION_JSON);
-
-        // 마지막 인덱스 PK
-        Long lastIndex = null;
-        if (lastIndex != null) {
-            requestBuilder.queryParam("lastIndex", lastIndex);
-        }
-
-        // 희망 팀빌딩 분야
-        List<String> teamBuildingFieldNames = null; // 예를 들어, null로 설정
-        if (teamBuildingFieldNames != null) {
-            teamBuildingFieldNames.forEach(name -> requestBuilder.queryParam("teamBuildingFieldName", name));
-        }
-
-        // 희망 역할
-        String jobRoleName = null; // null로 예시 설정
-        if (jobRoleName != null) {
-            requestBuilder.queryParam("jobRoleName", jobRoleName);
-        }
-
-        // 보유 역량
-        String skillName = null; // null로 예시 설정
-        if (skillName != null) {
-            requestBuilder.queryParam("skillName", skillName);
-        }
-
-        // 시군구 (시군)
-        String cityName = null; // null로 예시 설정
-        if (cityName != null) {
-            requestBuilder.queryParam("cityName", cityName);
-        }
-
-        // (시도)
-        String divisionName = null; // null로 예시 설정
-        if (divisionName != null) {
-            requestBuilder.queryParam("divisionName", divisionName);
-        }
-    }
+//    private ResultActions performFindPrivateMiniProfileRequest() throws Exception {
+//        MockHttpServletRequestBuilder requestBuilder = get("/search/private/profile").contentType(APPLICATION_JSON);
+//
+//        // 마지막 인덱스 PK
+//        Long lastIndex = null;
+//        // 마지막 인덱스 PK가 null이 아닌 경우에만 쿼리 파라미터를 추가합니다.
+//        if (lastIndex != null) {
+//            requestBuilder.queryParam("lastIndex", String.valueOf(lastIndex));
+//        }
+//
+//        // 희망 팀빌딩 분야
+//        List<String> teamBuildingFieldNames = null; // 예를 들어, null로 설정
+//        if (teamBuildingFieldNames != null) {
+//            teamBuildingFieldNames.forEach(name -> requestBuilder.queryParam("teamBuildingFieldName", name));
+//        }
+//
+//        // 희망 역할
+//        String jobRoleName = null; // null로 예시 설정
+//        if (jobRoleName != null) {
+//            requestBuilder.queryParam("jobRoleName", jobRoleName);
+//        }
+//
+//        // 보유 역량
+//        String skillName = null; // null로 예시 설정
+//        if (skillName != null) {
+//            requestBuilder.queryParam("skillName", skillName);
+//        }
+//
+//        // 시군구 (시군)
+//        String cityName = null; // null로 예시 설정
+//        if (cityName != null) {
+//            requestBuilder.queryParam("cityName", cityName);
+//        }
+//
+//        // (시도)
+//        String divisionName = null; // null로 예시 설정
+//        if (divisionName != null) {
+//            requestBuilder.queryParam("divisionName", divisionName);
+//        }
+//
+//
+//    }
 
 }
