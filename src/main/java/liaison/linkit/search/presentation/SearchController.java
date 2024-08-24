@@ -143,10 +143,9 @@ public class SearchController {
         return ResponseEntity.ok(searchTeamProfileResponsePage);
     }
 
-    @GetMapping("/search/private/profile/login/v2")
+    @GetMapping("/search/private/profile/v2")
     @MemberOnly
     public ResponseEntity<?> searchPrivateMiniProfileLogin(
-//            @Auth final Accessor accessor,
             @RequestParam(value = "lastIndex", required = false) final Long lastIndex,
             @RequestParam(required = false) final List<String> teamBuildingFieldName,
             @RequestParam(required = false) final List<String> jobRoleName,
@@ -155,8 +154,7 @@ public class SearchController {
             @RequestParam(required = false) final String divisionName,
             final Pageable pageable
     ) {
-        final Slice<MiniProfileResponse> miniProfileResponses = searchService.searchPrivateMiniProfileLogin(
-//                accessor.getMemberId(),
+        final Slice<MiniProfileResponse> miniProfileResponses = searchService.searchPrivateMiniProfile(
                 lastIndex,
                 pageable,
                 teamBuildingFieldName,

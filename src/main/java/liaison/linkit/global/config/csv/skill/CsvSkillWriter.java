@@ -1,6 +1,6 @@
 package liaison.linkit.global.config.csv.skill;
 
-import liaison.linkit.profile.domain.repository.SkillRepository;
+import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.dto.csv.SkillCsvData;
 import lombok.RequiredArgsConstructor;

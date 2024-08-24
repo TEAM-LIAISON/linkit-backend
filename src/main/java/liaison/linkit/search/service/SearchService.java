@@ -397,7 +397,7 @@ public class SearchService {
     }
 
     @Transactional(readOnly = true)
-    public Slice<MiniProfileResponse> searchPrivateMiniProfileLogin(
+    public Slice<MiniProfileResponse> searchPrivateMiniProfile(
 //            final Long memberId,
             final Long lastIndex,
             final Pageable pageable,

@@ -8,7 +8,7 @@ import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
-import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;

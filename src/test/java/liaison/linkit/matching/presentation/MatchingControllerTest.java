@@ -428,7 +428,8 @@ class MatchingControllerTest extends ControllerTest {
                 LocalDate.of(2024, 7, 10),
                 SenderType.PRIVATE,
                 MatchingType.PROFILE,
-                false // 이력서 수신 여부
+                false, // 이력서 수신 여부
+                false
         );
 
         final ToPrivateMatchingResponse secondToPrivateMatchingResponse = new ToPrivateMatchingResponse(
@@ -440,7 +441,8 @@ class MatchingControllerTest extends ControllerTest {
                 LocalDate.of(2024, 7, 10),
                 SenderType.PRIVATE,
                 MatchingType.PROFILE,
-                false // 이력서 수신 여부
+                false, // 이력서 수신 여부
+                false
         );
 
         final List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Arrays.asList(firstToPrivateMatchingResponse, secondToPrivateMatchingResponse);
@@ -454,7 +456,8 @@ class MatchingControllerTest extends ControllerTest {
                 LocalDate.of(2023, 12, 10),
                 SenderType.TEAM,
                 MatchingType.TEAM_PROFILE,
-                true // 팀 소개서 수신 여부
+                true, // 팀 소개서 수신 여부
+                false
         );
 
         final ToTeamMatchingResponse secondToTeamMatchingResponse = new ToTeamMatchingResponse(
@@ -466,7 +469,8 @@ class MatchingControllerTest extends ControllerTest {
                 LocalDate.of(2022, 10, 10),
                 SenderType.TEAM,
                 MatchingType.TEAM_PROFILE,
-                true // 팀 소개서 수신 여부
+                true, // 팀 소개서 수신 여부
+                false
         );
 
         final List<ToTeamMatchingResponse> toTeamMatchingResponseList = Arrays.asList(firstToTeamMatchingResponse, secondToTeamMatchingResponse);
@@ -481,7 +485,6 @@ class MatchingControllerTest extends ControllerTest {
         // when
         final ResultActions resultActions = performGetReceivedMatching();
 
-        // then
         resultActions.andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
@@ -500,10 +503,12 @@ class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("[].requestOccurTime").type(JsonFieldType.STRING).description("매칭 요청 발생 날짜"),
                                         fieldWithPath("[].senderType").type(JsonFieldType.STRING).description("발신자 이력/소개서 타입"),
                                         fieldWithPath("[].matchingType").type(JsonFieldType.STRING).description("매칭 요청 타입"),
-                                        fieldWithPath("[].receivedTeamProfile").type(JsonFieldType.BOOLEAN).description("이력/소개서 수신 여부")
+                                        fieldWithPath("[].receivedTeamProfile").type(JsonFieldType.BOOLEAN).description("이력/소개서 수신 여부"),
+                                        fieldWithPath("[].isReceiverCheck").type(JsonFieldType.BOOLEAN).description("수신자가 확인했는지 여부")
                                 )
                         )
                 );
+
 
     }
 
@@ -610,6 +615,7 @@ class MatchingControllerTest extends ControllerTest {
                 LocalDate.of(2024, 7, 10),
                 SenderType.PRIVATE,
                 MatchingType.PROFILE,
+                false,
                 false
         );
 
@@ -622,6 +628,7 @@ class MatchingControllerTest extends ControllerTest {
                 LocalDate.of(2024, 7, 10),
                 SenderType.PRIVATE,
                 MatchingType.PROFILE,
+                false,
                 false
         );
 
@@ -636,7 +643,8 @@ class MatchingControllerTest extends ControllerTest {
                 LocalDate.of(2023, 12, 10),
                 SenderType.TEAM,
                 MatchingType.TEAM_PROFILE,
-                true
+                true,
+                false
         );
 
         final ToTeamMatchingResponse secondToTeamMatchingResponse = new ToTeamMatchingResponse(
@@ -648,7 +656,8 @@ class MatchingControllerTest extends ControllerTest {
                 LocalDate.of(2022, 10, 10),
                 SenderType.TEAM,
                 MatchingType.TEAM_PROFILE,
-                true
+                true,
+                false
         );
 
         final List<ToTeamMatchingResponse> toTeamMatchingResponseList = Arrays.asList(firstToTeamMatchingResponse, secondToTeamMatchingResponse);

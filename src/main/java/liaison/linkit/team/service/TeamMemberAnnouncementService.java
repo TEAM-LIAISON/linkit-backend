@@ -2,7 +2,7 @@ package liaison.linkit.team.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.profile.domain.repository.SkillRepository;
+import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.repository.jobRole.JobRoleRepository;
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.skill.Skill;

@@ -5,7 +5,7 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
-import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
 import liaison.linkit.profile.dto.request.education.EducationCreateRequest;

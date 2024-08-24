@@ -6,7 +6,7 @@ import liaison.linkit.global.exception.FileException;
 import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.attach.AttachUrl;
-import liaison.linkit.profile.domain.repository.ProfileRepository;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlUpdateRequest;
