@@ -5,7 +5,9 @@ import liaison.linkit.global.type.StatusType;
 import liaison.linkit.matching.domain.QTeamMatching;
 import liaison.linkit.matching.domain.TeamMatching;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
-import liaison.linkit.matching.domain.type.ReceiverDeleteStatusType;
+import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
+import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
+import liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +27,7 @@ public class TeamMatchingRepositoryCustomImpl implements TeamMatchingRepositoryC
         return jpaQueryFactory
                 .selectFrom(teamMatching)
                 .where(teamMatching.teamMemberAnnouncement.id.in(teamMemberAnnouncementIds)
-                        .and(teamMatching.matchingStatusType.eq(MatchingStatusType.REQUESTED))
-                        .and(teamMatching.receiverDeleteStatusType.eq(ReceiverDeleteStatusType.REMAINED)))
+                        .and(teamMatching.matchingStatusType.eq(MatchingStatusType.REQUESTED)))
                 .fetch();
     }
 
@@ -37,7 +38,8 @@ public class TeamMatchingRepositoryCustomImpl implements TeamMatchingRepositoryC
         return jpaQueryFactory
                 .selectFrom(teamMatching)
                 .where(teamMatching.member.id.eq(memberId)
-                        .and(teamMatching.matchingStatusType.eq(MatchingStatusType.REQUESTED)))
+                        .and(teamMatching.matchingStatusType.eq(MatchingStatusType.REQUESTED))
+                        .and(teamMatching.requestSenderDeleteStatusType.eq(RequestSenderDeleteStatusType.REMAINED)))
                 .fetch();
     }
 
@@ -48,7 +50,8 @@ public class TeamMatchingRepositoryCustomImpl implements TeamMatchingRepositoryC
         return jpaQueryFactory
                 .selectFrom(teamMatching)
                 .where(teamMatching.matchingStatusType.eq(MatchingStatusType.SUCCESSFUL)
-                        .and(teamMatching.teamMemberAnnouncement.id.in(teamMemberAnnouncementIds)))
+                        .and(teamMatching.teamMemberAnnouncement.id.in(teamMemberAnnouncementIds))
+                        .and(teamMatching.successReceiverDeleteStatusType.eq(SuccessReceiverDeleteStatusType.REMAINED)))
                 .fetch();
     }
 
@@ -59,7 +62,8 @@ public class TeamMatchingRepositoryCustomImpl implements TeamMatchingRepositoryC
         return jpaQueryFactory
                 .selectFrom(teamMatching)
                 .where(teamMatching.matchingStatusType.eq(MatchingStatusType.SUCCESSFUL)
-                        .and(teamMatching.member.id.eq(memberId)))
+                        .and(teamMatching.member.id.eq(memberId))
+                        .and(teamMatching.successSenderDeleteStatusType.eq(SuccessSenderDeleteStatusType.REMAINED)))
                 .fetch();
     }
 
