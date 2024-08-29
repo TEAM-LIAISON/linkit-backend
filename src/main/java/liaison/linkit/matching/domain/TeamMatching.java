@@ -2,10 +2,7 @@ package liaison.linkit.matching.domain;
 
 import jakarta.persistence.*;
 import liaison.linkit.global.BaseEntity;
-import liaison.linkit.matching.domain.type.MatchingStatusType;
-import liaison.linkit.matching.domain.type.MatchingType;
-import liaison.linkit.matching.domain.type.ReceiverDeleteStatusType;
-import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.domain.type.*;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import lombok.AllArgsConstructor;
@@ -58,9 +55,20 @@ public class TeamMatching extends BaseEntity {
     @Enumerated(value = STRING)
     private MatchingStatusType matchingStatusType;
 
-    @Column(name = "receiver_delete_status_type")
+    // 내가 보낸 매칭 삭제 관리 컬럼 (발신자)
+    @Column(name = "request_sender_delete_status_type")
     @Enumerated(value = STRING)
-    private ReceiverDeleteStatusType receiverDeleteStatusType;
+    private RequestSenderDeleteStatusType requestSenderDeleteStatusType;
+
+    // 성사된 매칭 삭제 관리 컬럼 (발신자)
+    @Column(name = "success_sender_delete_status_type")
+    @Enumerated(value = STRING)
+    private SuccessSenderDeleteStatusType successSenderDeleteStatusType;
+
+    // 성사된 매칭 삭제 관리 컬럼 (수신자)
+    @Column(name = "success_receiver_delete_status_type")
+    @Enumerated(value = STRING)
+    private SuccessReceiverDeleteStatusType successReceiverDeleteStatusType;
 
     // 이 매칭 요청을 보낸 사람이 열람을 했나요?
     @Column(name = "is_sender_check", columnDefinition = "boolean default false")
@@ -78,11 +86,31 @@ public class TeamMatching extends BaseEntity {
         }
     }
 
-    public void updateReceiverDeleteStatusType(final boolean isDeleted) {
+
+    // 내가 보낸 매칭에서 발신자가 삭제한 경우
+    public void updateRequestSenderDeleteStatusType(final boolean isDeleted) {
         if (isDeleted) {
-            this.receiverDeleteStatusType = ReceiverDeleteStatusType.DELETED;
+            this.requestSenderDeleteStatusType = RequestSenderDeleteStatusType.DELETED;
         } else {
-            this.receiverDeleteStatusType = ReceiverDeleteStatusType.REMAINED;
+            this.requestSenderDeleteStatusType = RequestSenderDeleteStatusType.REMAINED;
+        }
+    }
+
+    // 성사된 매칭에서 발신자가 삭제한 경우
+    public void updateSuccessSenderDeleteStatusType(final boolean isDeleted) {
+        if (isDeleted) {
+            this.successSenderDeleteStatusType = SuccessSenderDeleteStatusType.DELETED;
+        } else {
+            this.successSenderDeleteStatusType = SuccessSenderDeleteStatusType.REMAINED;
+        }
+    }
+
+    // 성사된 매칭에서 수신자가 삭제한 경우
+    public void updateSuccessReceiverDeleteStatusType(final boolean isDeleted) {
+        if (isDeleted) {
+            this.successReceiverDeleteStatusType = SuccessReceiverDeleteStatusType.DELETED;
+        } else {
+            this.successReceiverDeleteStatusType = SuccessReceiverDeleteStatusType.REMAINED;
         }
     }
 }

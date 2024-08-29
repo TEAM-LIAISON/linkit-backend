@@ -5,7 +5,9 @@ import liaison.linkit.global.type.StatusType;
 import liaison.linkit.matching.domain.PrivateMatching;
 import liaison.linkit.matching.domain.QPrivateMatching;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
-import liaison.linkit.matching.domain.type.ReceiverDeleteStatusType;
+import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
+import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
+import liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +39,7 @@ public class PrivateMatchingRepositoryCustomImpl implements PrivateMatchingRepos
                 .selectFrom(privateMatching)
                 .where(privateMatching.member.id.eq(memberId)
                         .and(privateMatching.matchingStatusType.eq(MatchingStatusType.REQUESTED))
-                        .and(privateMatching.receiverDeleteStatusType.eq(ReceiverDeleteStatusType.REMAINED)))
+                        .and(privateMatching.requestSenderDeleteStatusType.eq(RequestSenderDeleteStatusType.REMAINED)))
                 .fetch();
     }
 
@@ -48,7 +50,8 @@ public class PrivateMatchingRepositoryCustomImpl implements PrivateMatchingRepos
         return jpaQueryFactory
                 .selectFrom(privateMatching)
                 .where(privateMatching.profile.id.eq(profileId)
-                        .and(privateMatching.matchingStatusType.eq(MatchingStatusType.SUCCESSFUL)))
+                        .and(privateMatching.matchingStatusType.eq(MatchingStatusType.SUCCESSFUL))
+                        .and(privateMatching.successReceiverDeleteStatusType.eq(SuccessReceiverDeleteStatusType.REMAINED)))
                 .fetch();
     }
 
@@ -59,10 +62,11 @@ public class PrivateMatchingRepositoryCustomImpl implements PrivateMatchingRepos
         return jpaQueryFactory
                 .selectFrom(privateMatching)
                 .where(privateMatching.member.id.eq(memberId)
-                        .and(privateMatching.matchingStatusType.eq(MatchingStatusType.SUCCESSFUL)))
+                        .and(privateMatching.matchingStatusType.eq(MatchingStatusType.SUCCESSFUL))
+                        .and(privateMatching.successSenderDeleteStatusType.eq(SuccessSenderDeleteStatusType.REMAINED)))
                 .fetch();
     }
-
+    
     @Override
     public boolean existsByProfileId(final Long profileId) {
         QPrivateMatching privateMatching = QPrivateMatching.privateMatching;

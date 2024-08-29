@@ -279,22 +279,43 @@ class MatchingControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performDeletePrivateMatching(
+    private ResultActions performRequestDeletePrivateMatching(
             final int privateMatchingId
     ) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/delete/private/matching/{privateMatchingId}", privateMatchingId)
+                RestDocumentationRequestBuilders.delete("/delete/request/private/matching/{privateMatchingId}", privateMatchingId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(APPLICATION_JSON)
         );
     }
 
-    private ResultActions performDeleteTeamMatching(
+    private ResultActions performRequestDeleteTeamMatching(
             final int teamMatchingId
     ) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/delete/team/matching/{teamMatchingId}", teamMatchingId)
+                RestDocumentationRequestBuilders.delete("/delete/request/team/matching/{teamMatchingId}", teamMatchingId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performSuccessDeletePrivateMatching(
+            final int privateMatchingId
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/delete/success/private/matching/{privateMatchingId}", privateMatchingId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(APPLICATION_JSON)
+        );
+    }
+
+    private ResultActions performSuccessDeleteTeamMatching(
+            final int teamMatchingId
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/delete/success/team/matching/{teamMatchingId}", teamMatchingId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -1070,13 +1091,13 @@ class MatchingControllerTest extends ControllerTest {
                 ));
     }
 
-    @DisplayName("matchingType -> PROFILE - 내 이력서 대상 매칭 삭제하기")
+    @DisplayName("matchingType -> PROFILE - 내가 보낸 매칭에서 내 이력서 대상 매칭 삭제하기")
     @Test
     void deleteRequestPrivateMatching() throws Exception {
         // given
 
         // when
-        final ResultActions resultActions = performDeletePrivateMatching(1);
+        final ResultActions resultActions = performRequestDeletePrivateMatching(1);
         // then
         resultActions.andExpect(status().isNoContent())
                 .andDo(
@@ -1089,13 +1110,51 @@ class MatchingControllerTest extends ControllerTest {
                 );
     }
 
-    @DisplayName("matchingType -> TEAM_PROFILE - 팀 소개서 대상 매칭 삭제하기")
+    @DisplayName("matchingType -> TEAM_PROFILE - 내가 보낸 매칭에서 팀 소개서 대상 매칭 삭제하기")
     @Test
     void deleteRequestTeamMatching() throws Exception {
         // given
 
         // when
-        final ResultActions resultActions = performDeleteTeamMatching(1);
+        final ResultActions resultActions = performRequestDeleteTeamMatching(1);
+        // then
+        resultActions.andExpect(status().isNoContent())
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamMatchingId")
+                                                .description("팀 소개서 ID")
+                                )
+                        )
+                );
+    }
+
+    @DisplayName("matchingType -> PROFILE - 성사된 매칭에서 내 이력서 대상 매칭 삭제하기")
+    @Test
+    void deleteSuccessPrivateMatching() throws Exception {
+        // given
+
+        // when
+        final ResultActions resultActions = performSuccessDeletePrivateMatching(1);
+        // then
+        resultActions.andExpect(status().isNoContent())
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("privateMatchingId")
+                                                .description("내 이력서 ID")
+                                )
+                        )
+                );
+    }
+
+    @DisplayName("matchingType -> TEAM_PROFILE - 성사된 매칭에서 팀 소개서 대상 매칭 삭제하기")
+    @Test
+    void deleteSuccessTeamMatching() throws Exception {
+        // given
+
+        // when
+        final ResultActions resultActions = performSuccessDeleteTeamMatching(1);
         // then
         resultActions.andExpect(status().isNoContent())
                 .andDo(

@@ -464,13 +464,22 @@ include::{snippets}/matching-controller-test/get-team-success-contact-response/p
 include::{snippets}/matching-controller-test/get-team-success-contact-response/http-response.adoc[]
 include::{snippets}/matching-controller-test/get-team-success-contact-response/response-fields.adoc[]
 
-=== 10.19. 내 이력서 - 매칭 삭제 (matchingType : PROFILE) / 보낸 매칭, 성사된 매칭 모두 적용
+=== 10.19. 내가 보낸 매칭 - 매칭 삭제 (matchingType: PROFILE)
 ==== 요청
 include::{snippets}/matching-controller-test/delete-request-private-matching/http-request.adoc[]
 include::{snippets}/matching-controller-test/delete-request-private-matching/path-parameters.adoc[]
 
-==== 10.20. 팀 소개서 - 매칭 삭제 (matchingType : TEAM_PROFILE) / 보낸 매칭, 성사된 매칭 모두 적용
+=== 10.20. 내가 보낸 매칭 - 매칭 삭제 (matchingType: TEAM_PROFILE)
 ==== 요청
+include::{snippets}/matching-controller-test/delete-request-team-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/delete-request-team-matching/path-parameters.adoc[]
+
+=== 10.21. 성사된 매칭 - 매칭 삭제 (matchingType: PROFILE)
+==== 요청
+include::{snippets}/matching-controller-test/delete-success-private-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/delete-success-private-matching/path-parameters.adoc[]
+
+=== 10.22. 성사된 매칭 - 매칭 삭제 (matchingType: TEAM_PROFILE)
 include::{snippets}/matching-controller-test/delete-request-team-matching/http-request.adoc[]
 include::{snippets}/matching-controller-test/delete-request-team-matching/path-parameters.adoc[]
 
