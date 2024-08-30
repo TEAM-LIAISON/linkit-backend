@@ -43,7 +43,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         QMember member = QMember.member;
 
         jpaQueryFactory.update(member)
-                .set(member.status, MemberState.DELETED)
+                .set(member.memberState, MemberState.DELETED)
                 .where(member.id.eq(memberId))
                 .execute();
     }
