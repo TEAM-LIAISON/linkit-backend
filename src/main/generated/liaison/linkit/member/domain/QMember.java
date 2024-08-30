@@ -26,17 +26,13 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath email = createString("email");
 
-    public final BooleanPath existDefaultPrivateProfile = createBoolean("existDefaultPrivateProfile");
-
-    public final BooleanPath existDefaultTeamProfile = createBoolean("existDefaultTeamProfile");
-
     public final BooleanPath existMemberBasicInform = createBoolean("existMemberBasicInform");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final QMemberBasicInform memberBasicInform;
 
-    public final EnumPath<liaison.linkit.member.domain.type.MemberType> memberType = createEnum("memberType", liaison.linkit.member.domain.type.MemberType.class);
+    public final EnumPath<liaison.linkit.member.domain.type.MemberState> memberState = createEnum("memberState", liaison.linkit.member.domain.type.MemberState.class);
 
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = createDateTime("modifiedAt", java.time.LocalDateTime.class);
 
@@ -47,8 +43,6 @@ public class QMember extends EntityPathBase<Member> {
     public final EnumPath<liaison.linkit.member.domain.type.ProfileType> profileType = createEnum("profileType", liaison.linkit.member.domain.type.ProfileType.class);
 
     public final StringPath socialLoginId = createString("socialLoginId");
-
-    public final EnumPath<liaison.linkit.member.domain.type.MemberState> status = createEnum("status", liaison.linkit.member.domain.type.MemberState.class);
 
     public final liaison.linkit.team.domain.QTeamProfile teamProfile;
 

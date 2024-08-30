@@ -31,8 +31,17 @@ public class MemberBasicInform extends BaseEntity {
     @Column(nullable = false, length = 30)
     private String contact;
 
+    @Column(nullable = false)
+    private boolean serviceUseAgree;
+
+    @Column(nullable = false)
+    private boolean privateInformAgree;
+
+    @Column(nullable = false)
+    private boolean ageCheck;
+
     // 뉴스레터 및 마케팅 정보 수신동의
-    @Column
+    @Column(nullable = false)
     private boolean marketingAgree;
 
     // 생성자
@@ -48,6 +57,9 @@ public class MemberBasicInform extends BaseEntity {
         this.contact = contact;
         this.marketingAgree = marketingAgree;
         this.member = member;
+        this.serviceUseAgree = true;
+        this.privateInformAgree = true;
+        this.ageCheck = true;
     }
 
     public MemberBasicInform(
