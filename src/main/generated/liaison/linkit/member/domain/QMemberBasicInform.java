@@ -24,6 +24,8 @@ public class QMemberBasicInform extends EntityPathBase<MemberBasicInform> {
 
     public final liaison.linkit.global.QBaseEntity _super = new liaison.linkit.global.QBaseEntity(this);
 
+    public final BooleanPath ageCheck = createBoolean("ageCheck");
+
     public final StringPath contact = createString("contact");
 
     //inherited
@@ -39,6 +41,10 @@ public class QMemberBasicInform extends EntityPathBase<MemberBasicInform> {
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
+
+    public final BooleanPath privateInformAgree = createBoolean("privateInformAgree");
+
+    public final BooleanPath serviceUseAgree = createBoolean("serviceUseAgree");
 
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
