@@ -3,8 +3,8 @@ package liaison.linkit.search.service;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
-import liaison.linkit.member.domain.repository.MemberBasicInformRepository;
-import liaison.linkit.member.domain.repository.MemberRepository;
+import liaison.linkit.member.domain.repository.member.MemberRepository;
+import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
@@ -25,16 +25,17 @@ import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementJobRoleRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementSkillRepository;
-import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileKeywordRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
+import liaison.linkit.team.domain.repository.miniprofile.teamMiniProfileKeyword.TeamMiniProfileKeywordRepository;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
-import liaison.linkit.wish.domain.repository.PrivateWishRepository;
-import liaison.linkit.wish.domain.repository.TeamWishRepository;
+import liaison.linkit.wish.domain.repository.privateWish.PrivateWishRepository;
+import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -395,6 +396,31 @@ public class SearchService {
         return teamMemberAnnouncementSkillRepository.findAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
     }
 
+    @Transactional(readOnly = true)
+    public Slice<MiniProfileResponse> searchPrivateMiniProfile(
+//            final Long memberId,
+            final Long lastIndex,
+            final Pageable pageable,
+            final List<String> teamBuildingFieldName,
+            final List<String> jobRoleName,
+            final List<String> skillName,
+            final String cityName,
+            final String divisionName
+    ) {
+        // MiniProfile 조회
+        final Slice<MiniProfile> miniProfiles = miniProfileRepository.searchAll(
+//                memberId,
+                lastIndex,
+                pageable,
+                teamBuildingFieldName,
+                jobRoleName,
+                skillName,
+                cityName,
+                divisionName
+        );
 
+        // MiniProfile을 BrowseMiniProfileResponse로 변환
+        return miniProfiles.map(this::convertToMiniProfileResponse);
+    }
 
 }

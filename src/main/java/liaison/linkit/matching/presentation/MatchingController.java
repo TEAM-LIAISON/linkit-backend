@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +40,6 @@ public class MatchingController {
 
     // 매칭 요청을 보내기 전에 GET 메서드로 해당 사용자의 권한을 체킹?
     // 아니면 요청이 발생했을 때 사용자의 권한을 조회하는 방법?
-
     // 개인 이력서로 개인 이력서에 매칭 요청을 보내는 경우
     // 해당 개인 이력서의 PK id가 필요하다.
     // accessor.getMemberId -> 해당 회원의 내 이력서와 상대의 내 이력서가 매칭
@@ -100,7 +100,6 @@ public class MatchingController {
     }
 
 
-
     // 내가 받은 매칭 조회
     @GetMapping("/matching/received")
     @MemberOnly
@@ -142,8 +141,6 @@ public class MatchingController {
         final ExistenceProfileResponse existenceProfileResponse = matchingService.getExistenceProfile(accessor.getMemberId());
         return ResponseEntity.status(HttpStatus.OK).body(existenceProfileResponse);
     }
-
-
 
 
     // sender_type -> Private / receivedTeamProfile = false
@@ -252,7 +249,6 @@ public class MatchingController {
     }
 
 
-
     // 내 이력서 관련 매칭일 때 연락하기 버튼을 누른 경우
     // 수신자가 내 이력서일 때
     @GetMapping("/success/private/matching/contact/{privateMatchingId}")
@@ -278,38 +274,52 @@ public class MatchingController {
     }
 
 
+    // 내가 보낸 매칭을 삭제한다. -> 발신자의 입장에서 삭제
+    // 성사된 매칭을 삭제한다 -> 발신자 또는 수신자의 입장에서 삭제
 
-
-
-
-
-
-
-
-
-
-
-    // 내가 보낸 매칭, 성사된 매칭에서 내 이력서 대상 매칭 삭제하기
+    // 내가 보낸 매칭에서 내 이력서 대상 매칭 삭제하기 (내가 어떤 거로든 내 이력서에 매칭 요청 보낸 것 삭제)
     // matchingType -> PROFILE
-    @DeleteMapping("/delete/private/matching/{privateMatchingId}")
+    @DeleteMapping("/delete/request/private/matching/{privateMatchingId}")
     @MemberOnly
     public ResponseEntity<Void> deleteRequestPrivateMatching(
             @Auth final Accessor accessor,
             @PathVariable final Long privateMatchingId
     ) {
-        matchingService.deletePrivateMatching(privateMatchingId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        matchingService.deleteRequestPrivateMatching(privateMatchingId);
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 
-    // 내가 보낸 매칭, 성사된 매칭에서 팀 소개서 대상 매칭 삭제하기
+    // 내가 보낸 매칭에서 팀 소개서 대상 매칭 삭제하기
     // matchingType -> TeamProfile
-    @DeleteMapping("/delete/team/matching/{teamMatchingId}")
+    @DeleteMapping("/delete/request/team/matching/{teamMatchingId}")
     @MemberOnly
     public ResponseEntity<Void> deleteRequestTeamMatching(
             @Auth final Accessor accessor,
             @PathVariable final Long teamMatchingId
     ) {
-        matchingService.deleteTeamMatching(teamMatchingId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        matchingService.deleteRequestTeamMatching(teamMatchingId);
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    // 성사된 매칭에서 내 이력서 대상 매칭 삭제하기
+    @DeleteMapping("/delete/success/private/matching/{privateMatchingId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteSuccessPrivateMatching(
+            @Auth final Accessor accessor,
+            @PathVariable final Long privateMatchingId
+    ) {
+        matchingService.deleteSuccessPrivateMatching(accessor.getMemberId(), privateMatchingId);
+        return ResponseEntity.status(NO_CONTENT).build();
+    }
+
+    // 성사된 매칭에서 팀 소개서 대상 매칭 삭제하기
+    @DeleteMapping("/delete/success/team/matching/{teamMatchingId}")
+    @MemberOnly
+    public ResponseEntity<Void> deleteSuccessTeamMatching(
+            @Auth final Accessor accessor,
+            @PathVariable final Long teamMatchingId
+    ) {
+        matchingService.deleteSuccessTeamMatching(accessor.getMemberId(), teamMatchingId);
+        return ResponseEntity.status(NO_CONTENT).build();
     }
 }

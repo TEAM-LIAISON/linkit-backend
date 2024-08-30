@@ -44,14 +44,18 @@ public class QPrivateMatching extends EntityPathBase<PrivateMatching> {
 
     public final liaison.linkit.profile.domain.QProfile profile;
 
-    public final EnumPath<liaison.linkit.matching.domain.type.ReceiverDeleteStatusType> receiverDeleteStatusType = createEnum("receiverDeleteStatusType", liaison.linkit.matching.domain.type.ReceiverDeleteStatusType.class);
-
     public final StringPath requestMessage = createString("requestMessage");
+
+    public final EnumPath<liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType> requestSenderDeleteStatusType = createEnum("requestSenderDeleteStatusType", liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType.class);
 
     public final EnumPath<liaison.linkit.matching.domain.type.SenderType> senderType = createEnum("senderType", liaison.linkit.matching.domain.type.SenderType.class);
 
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
+
+    public final EnumPath<liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType> successReceiverDeleteStatusType = createEnum("successReceiverDeleteStatusType", liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType.class);
+
+    public final EnumPath<liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType> successSenderDeleteStatusType = createEnum("successSenderDeleteStatusType", liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType.class);
 
     public QPrivateMatching(String variable) {
         this(PrivateMatching.class, forVariable(variable), INITS);

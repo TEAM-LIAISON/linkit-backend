@@ -6,9 +6,12 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.mail.service.MailService;
 import liaison.linkit.matching.domain.PrivateMatching;
 import liaison.linkit.matching.domain.TeamMatching;
-import liaison.linkit.matching.domain.repository.PrivateMatchingRepository;
-import liaison.linkit.matching.domain.repository.TeamMatchingRepository;
+import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
+import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
+import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
+import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
 import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType;
 import liaison.linkit.matching.dto.request.AllowMatchingRequest;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
@@ -25,11 +28,11 @@ import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingRe
 import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
 import liaison.linkit.matching.dto.response.toTeamMatching.ToTeamMatchingResponse;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.domain.repository.MemberRepository;
+import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.repository.ProfileRepository;
-import liaison.linkit.profile.domain.repository.ProfileSkillRepository;
-import liaison.linkit.profile.domain.repository.SkillRepository;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
+import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
+import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.repository.jobRole.JobRoleRepository;
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
 import liaison.linkit.profile.domain.role.JobRole;
@@ -42,10 +45,10 @@ import liaison.linkit.team.domain.activity.ActivityMethodTag;
 import liaison.linkit.team.domain.activity.ActivityRegion;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
-import liaison.linkit.team.domain.repository.TeamProfileRepository;
-import liaison.linkit.team.domain.repository.activity.ActivityMethodRepository;
-import liaison.linkit.team.domain.repository.activity.ActivityMethodTagRepository;
-import liaison.linkit.team.domain.repository.activity.ActivityRegionRepository;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.activity.method.ActivityMethodRepository;
+import liaison.linkit.team.domain.repository.activity.method.ActivityMethodTagRepository;
+import liaison.linkit.team.domain.repository.activity.region.ActivityRegionRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementJobRoleRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import lombok.RequiredArgsConstructor;
@@ -62,7 +65,6 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 import static liaison.linkit.matching.domain.type.MatchingStatusType.REQUESTED;
 import static liaison.linkit.matching.domain.type.MatchingType.PROFILE;
 import static liaison.linkit.matching.domain.type.MatchingType.TEAM_PROFILE;
-import static liaison.linkit.matching.domain.type.ReceiverDeleteStatusType.REMAINED;
 
 @Service
 @RequiredArgsConstructor
@@ -164,7 +166,9 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED,
+                RequestSenderDeleteStatusType.REMAINED,
+                SuccessSenderDeleteStatusType.REMAINED,
+                SuccessReceiverDeleteStatusType.REMAINED,
                 false,
                 false
         );
@@ -229,7 +233,9 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED,
+                RequestSenderDeleteStatusType.REMAINED,
+                SuccessSenderDeleteStatusType.REMAINED,
+                SuccessReceiverDeleteStatusType.REMAINED,
                 false,
                 false
         );
@@ -292,7 +298,9 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED,
+                RequestSenderDeleteStatusType.REMAINED,
+                SuccessSenderDeleteStatusType.REMAINED,
+                SuccessReceiverDeleteStatusType.REMAINED,
                 false,
                 false
         );
@@ -359,7 +367,9 @@ public class MatchingService {
                 matchingCreateRequest.getRequestMessage(),
                 // 요청 상태로 저장한다.
                 REQUESTED,
-                REMAINED,
+                RequestSenderDeleteStatusType.REMAINED,
+                SuccessSenderDeleteStatusType.REMAINED,
+                SuccessReceiverDeleteStatusType.REMAINED,
                 false,
                 false
         );
@@ -812,15 +822,39 @@ public class MatchingService {
         }
     }
 
-    public void deletePrivateMatching(final Long privateMatchingId) {
+    // 내가 보낸 매칭 삭제 (내 이력서 대상)
+    public void deleteRequestPrivateMatching(final Long privateMatchingId) {
         final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-        // 삭제 요청하는 아이디와 동일하면
-        // 유효성 검증
-        privateMatching.updateReceiverDeleteStatusType(true);
+        privateMatching.updateRequestSenderDeleteStatusType(true);
     }
 
-    public void deleteTeamMatching(final Long teamMatchingId) {
+    // 내가 보낸 매칭 삭제 (팀 소개서 대상)
+    public void deleteRequestTeamMatching(final Long teamMatchingId) {
         final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
-        teamMatching.updateReceiverDeleteStatusType(true);
+        teamMatching.updateRequestSenderDeleteStatusType(true);
+    }
+
+    // 성사된 매칭에서 내 이력서 대상 매칭을 삭제하는 경우
+    public void deleteSuccessPrivateMatching(final Long memberId, final Long privateMatchingId) {
+        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+        if (Objects.equals(privateMatching.getMember().getId(), memberId)) {
+//            발신자 쪽에서 매칭 삭제
+            privateMatching.updateSuccessSenderDeleteStatusType(true);
+        } else {
+//            수신자 쪽에서 매칭 삭제
+            privateMatching.updateSuccessReceiverDeleteStatusType(true);
+        }
+    }
+
+    // 성사된 매칭에서 팀 소개서 대상 매칭을 삭제하는 경우
+    public void deleteSuccessTeamMatching(final Long memberId, final Long teamMatchingId) {
+        final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
+        if (Objects.equals(teamMatching.getMember().getId(), memberId)) {
+            // 발신자 쪽에서 매칭 삭제
+            teamMatching.updateSuccessSenderDeleteStatusType(true);
+        } else {
+            // 수신자 쪽에서 매칭 삭제
+            teamMatching.updateSuccessReceiverDeleteStatusType(true);
+        }
     }
 }

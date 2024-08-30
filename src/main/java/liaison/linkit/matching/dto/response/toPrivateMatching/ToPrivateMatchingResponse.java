@@ -32,6 +32,8 @@ public class ToPrivateMatchingResponse {
     private final MatchingType matchingType;
     // 어떤 이력/소개서에 매칭 요청이 왔는지
     private final boolean isReceivedTeamProfile;
+    // 내가 열람한 매칭 요청인지 여부
+    private final Boolean isReceiverCheck;
 
     public static List<ToPrivateMatchingResponse> toPrivateMatchingResponse(
             final List<PrivateMatching> privateMatchingList
@@ -50,7 +52,8 @@ public class ToPrivateMatchingResponse {
                                 LocalDate.from(privateMatching.getCreatedAt()),
                                 privateMatching.getSenderType(),    // PRIVATE
                                 privateMatching.getMatchingType(),
-                                false
+                                false,
+                                privateMatching.getIsReceiverCheck()
                         );
                     } else {
                         // 팀 소개서로 보낸 사람
@@ -65,7 +68,8 @@ public class ToPrivateMatchingResponse {
                                 LocalDate.from(privateMatching.getCreatedAt()),
                                 privateMatching.getSenderType(),    // TEAM
                                 privateMatching.getMatchingType(),
-                                true
+                                true,
+                                privateMatching.getIsReceiverCheck()
                         );
                     }
                 })

@@ -3,7 +3,7 @@ package liaison.linkit.team.service;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.domain.TeamProfile;
-import liaison.linkit.team.domain.repository.TeamProfileRepository;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.request.TeamIntroductionCreateRequest;
 import liaison.linkit.team.dto.response.*;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;

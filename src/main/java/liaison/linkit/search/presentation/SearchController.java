@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -141,4 +142,28 @@ public class SearchController {
         );
         return ResponseEntity.ok(searchTeamProfileResponsePage);
     }
+
+    @GetMapping("/search/private/profile/v2")
+    @MemberOnly
+    public ResponseEntity<?> searchPrivateMiniProfileLogin(
+            @RequestParam(value = "lastIndex", required = false) final Long lastIndex,
+            @RequestParam(required = false) final List<String> teamBuildingFieldName,
+            @RequestParam(required = false) final List<String> jobRoleName,
+            @RequestParam(required = false) final List<String> skillName,
+            @RequestParam(required = false) final String cityName,
+            @RequestParam(required = false) final String divisionName,
+            final Pageable pageable
+    ) {
+        final Slice<MiniProfileResponse> miniProfileResponses = searchService.searchPrivateMiniProfile(
+                lastIndex,
+                pageable,
+                teamBuildingFieldName,
+                jobRoleName,
+                skillName,
+                cityName,
+                divisionName
+        );
+        return ResponseEntity.ok(miniProfileResponses);
+    }
+
 }

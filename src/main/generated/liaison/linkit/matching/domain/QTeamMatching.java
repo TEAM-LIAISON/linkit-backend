@@ -42,14 +42,18 @@ public class QTeamMatching extends EntityPathBase<TeamMatching> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final EnumPath<liaison.linkit.matching.domain.type.ReceiverDeleteStatusType> receiverDeleteStatusType = createEnum("receiverDeleteStatusType", liaison.linkit.matching.domain.type.ReceiverDeleteStatusType.class);
-
     public final StringPath requestMessage = createString("requestMessage");
+
+    public final EnumPath<liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType> requestSenderDeleteStatusType = createEnum("requestSenderDeleteStatusType", liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType.class);
 
     public final EnumPath<liaison.linkit.matching.domain.type.SenderType> senderType = createEnum("senderType", liaison.linkit.matching.domain.type.SenderType.class);
 
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
+
+    public final EnumPath<liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType> successReceiverDeleteStatusType = createEnum("successReceiverDeleteStatusType", liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType.class);
+
+    public final EnumPath<liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType> successSenderDeleteStatusType = createEnum("successSenderDeleteStatusType", liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType.class);
 
     public final liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement teamMemberAnnouncement;
 

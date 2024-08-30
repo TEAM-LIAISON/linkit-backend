@@ -1,6 +1,7 @@
 package liaison.linkit.member.domain;
 
 import jakarta.persistence.*;
+import liaison.linkit.member.domain.type.MemberState;
 import liaison.linkit.member.domain.type.MemberType;
 import liaison.linkit.member.domain.type.ProfileType;
 import liaison.linkit.member.domain.type.TeamProfileType;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static liaison.linkit.member.domain.MemberState.ACTIVE;
+import static liaison.linkit.member.domain.type.MemberState.ACTIVE;
 import static liaison.linkit.member.domain.type.MemberType.EMPTY_PROFILE;
 import static lombok.AccessLevel.PROTECTED;
 
