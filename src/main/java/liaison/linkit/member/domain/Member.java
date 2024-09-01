@@ -23,7 +23,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@SQLRestriction("status = 'ACTIVE'")
+@SQLRestriction("member_state = 'ACTIVE'")
 public class Member {
 
     private static final String DEFAULT_MEMBER_IMAGE_NAME = "default-image.png";
