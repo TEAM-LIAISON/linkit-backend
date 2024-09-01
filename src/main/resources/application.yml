@@ -89,10 +89,10 @@ spring:
             token-uri: ${google.token.uri}
             user-info-uri: ${google.user.info.uri}
   mail:
-    host: smtp.worksmobile.com
-    port: 465
+    host: smtp-relay.gmail.com
+    port: 567
     username: linkit@linkit.im
-    password: ${mail.password}
+    password: ${google.workspace.password}
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
@@ -168,3 +168,4 @@ naver:
 google:
   id: linkit@linkit.im
   password: ${google.workspace.password}
+
