@@ -20,13 +20,22 @@ public class RestDocsConfiguration {
         return MockMvcRestDocumentation.document(
                 "{class-name}/{method-name}",
                 Preprocessors.preprocessRequest(
-                        Preprocessors.removeHeaders("Content-Length", "Host"),
+                        // Preprocessors.removeHeaders 대신 사용할 새로운 메서드로 대체
+                        Preprocessors.modifyHeaders()
+                                .remove("Content-Length")
+                                .remove("Host"),
                         Preprocessors.prettyPrint()
                 ),
                 Preprocessors.preprocessResponse(
-                        Preprocessors.removeHeaders("Transfer-Encoding", "Date", "Keep-Alive", "Connection"),
+                        // Preprocessors.removeHeaders 대신 사용할 새로운 메서드로 대체
+                        Preprocessors.modifyHeaders()
+                                .remove("Transfer-Encoding")
+                                .remove("Date")
+                                .remove("Keep-Alive")
+                                .remove("Connection"),
                         Preprocessors.prettyPrint()
                 )
         );
     }
+
 }

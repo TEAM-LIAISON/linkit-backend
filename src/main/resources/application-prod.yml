@@ -166,3 +166,6 @@ naver:
 google:
   id: linkit@linkit.im
   password: ${google.workspace.password}
+logging:
+  level:
+    root: debug
