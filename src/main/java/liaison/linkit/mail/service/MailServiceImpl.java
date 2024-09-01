@@ -23,7 +23,7 @@ public class MailServiceImpl implements MailService {
 
     private final JavaMailSender emailSender;
 
-    @Value("${naver.id}")
+    @Value("${google.id}")
     private String id;
 
     // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
