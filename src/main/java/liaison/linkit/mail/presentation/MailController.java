@@ -24,7 +24,7 @@ public class MailController {
 //        );
 //        return ResponseEntity.status(HttpStatus.OK).build();
 //    }
-
+//
 //    // 2. 팀 소개서 -> 내 이력서로 매칭 요청 보낸 경우
 //    @PostMapping("/team/private")
 //    public ResponseEntity<?> sendTeamToPrivateMatchingRequest() throws Exception {
@@ -37,7 +37,7 @@ public class MailController {
 //        );
 //        return ResponseEntity.status(HttpStatus.OK).build();
 //    }
-
+//
 //    // 3. 내 이력서 -> 팀 소개서로 매칭 요청 보낸 경우
 //    @PostMapping("/private/team")
 //    public ResponseEntity<?> sendPrivateToTeamMatchingRequest() throws Exception {

@@ -11,17 +11,17 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
-    @Value("${naver.id}")
+    @Value("${google.id}")
     private String id;
 
-    @Value("${naver.password}")
+    @Value("${google.password}")
     private String password;
 
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
-        javaMailSender.setHost("smtp.worksmobile.com");
+        javaMailSender.setHost("smtp-relay.gmail.com");
         javaMailSender.setUsername(id);
         javaMailSender.setPassword(password);
         javaMailSender.setPort(465);
@@ -36,7 +36,7 @@ public class MailConfig {
         properties.setProperty("mail.smtp.auth", "true");
         properties.setProperty("mail.smtp.starttls.enable", "true");
         properties.setProperty("mail.debug", "true");
-        properties.setProperty("mail.smtp.ssl.trust","smtp.worksmobile.com");
+        properties.setProperty("mail.smtp.ssl.trust","smtp-relay.gmail.com");
         properties.setProperty("mail.smtp.ssl.enable","true");
         return properties;
     }
