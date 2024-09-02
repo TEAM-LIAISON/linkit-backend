@@ -11,20 +11,20 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
-    @Value("${naver.id}")
+    @Value("${google.id}")
     private String id;
 
-    @Value("${naver.password}")
+    @Value("${google.password}")
     private String password;
 
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
-        javaMailSender.setHost("smtp.worksmobile.com");
+        javaMailSender.setHost("smtp.gmail.com");  // 일반적인 Gmail 서버를 사용
         javaMailSender.setUsername(id);
         javaMailSender.setPassword(password);
-        javaMailSender.setPort(465);
+        javaMailSender.setPort(587);  // TLS 포트 설정
         javaMailSender.setJavaMailProperties(getMailProperties());
 
         return javaMailSender;
@@ -34,10 +34,10 @@ public class MailConfig {
         Properties properties = new Properties();
         properties.setProperty("mail.transport.protocol", "smtp");
         properties.setProperty("mail.smtp.auth", "true");
-        properties.setProperty("mail.smtp.starttls.enable", "true");
+        properties.setProperty("mail.smtp.starttls.enable", "true");  // TLS 설정
         properties.setProperty("mail.debug", "true");
-        properties.setProperty("mail.smtp.ssl.trust","smtp.worksmobile.com");
-        properties.setProperty("mail.smtp.ssl.enable","true");
+        properties.setProperty("mail.smtp.ssl.trust", "smtp.gmail.com");
         return properties;
     }
 }
+

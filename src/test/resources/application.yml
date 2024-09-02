@@ -144,7 +144,6 @@ naver:
   id: linkit@linkit.im
   password: ${mail.password}
 
-logging:
-  level:
-    root: debug
-
+google:
+  id: linkit@linkit.im
+  password: ${google.workspace.password}

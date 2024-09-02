@@ -82,15 +82,16 @@ spring:
             token-uri: ${google.token.uri}
             user-info-uri: ${google.user.info.uri}
   mail:
-    host: smtp.worksmobile.com
-    port: 465
-    username: linkit_official@naver.com
-    password: ${mail.password}
+    host: smtp.gmail.com
+    port: 587
+    username: linkit@linkit.im
+    password: ${google.workspace.password}
     properties:
       mail.smtp.auth: true
-      mail.smtp.ssl.enable: true
-      mail.smtp.ssl.trust: smtp.worksmobile.com
       mail.smtp.starttls.enable: true
+      mail.smtp.connectiontimeout: 5000
+      mail.smtp.timeout: 5000
+      mail.smtp.writetimeout: 5000
 
   sql:
     init:
@@ -166,3 +167,7 @@ jobRole:
 naver:
   id: linkit@linkit.im
   password: ${mail.password}
+
+google:
+  id: linkit@linkit.im
+  password: ${google.workspace.password}
