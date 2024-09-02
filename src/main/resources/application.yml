@@ -89,8 +89,8 @@ spring:
             token-uri: ${google.token.uri}
             user-info-uri: ${google.user.info.uri}
   mail:
-    host: smtp-relay.gmail.com
-    port: 567
+    host: smtp.gmail.com
+    port: 587
     username: linkit@linkit.im
     password: ${google.workspace.password}
     properties:
