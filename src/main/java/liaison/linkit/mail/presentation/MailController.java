@@ -25,8 +25,8 @@ public class MailController {
                 "kwondm7@naver.com",
                 "권동민",
                 "주서영",
-                Arrays.asList("test"),
-                Arrays.asList("test"),
+                Arrays.asList("test", "test2"),
+                Arrays.asList("test", "test2"),
                 LocalDateTime.now(),
                 "요청 메시지입니다."
         );
