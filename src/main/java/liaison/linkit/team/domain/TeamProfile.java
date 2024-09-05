@@ -22,6 +22,7 @@ import static lombok.AccessLevel.PROTECTED;
 @SQLRestriction("status = 'USABLE'")
 @Slf4j
 public class TeamProfile extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
