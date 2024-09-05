@@ -25,7 +25,6 @@ public class Team extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    // TeamMember와 다대일 관계
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teamMembers = new ArrayList<>();
 

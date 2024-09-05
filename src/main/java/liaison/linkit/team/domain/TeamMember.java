@@ -13,6 +13,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 public class TeamMember {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
