@@ -1,0 +1,10 @@
+= LINKIT API 명세서 Version 2.0
+:toc: left
+:toclevels: 4
+:source-highlighter: highlightjs
+:sectlinks:
+:icons: font
+
+== 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
+== 링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im
+
