@@ -9,7 +9,6 @@ import liaison.linkit.profile.dto.request.IntroductionRequest;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
@@ -44,7 +43,6 @@ public class ProfileController {
     public final AntecedentsService antecedentsService;
     public final EducationService educationService;
     public final AwardsService awardsService;
-    public final AttachService attachService;
     public final ProfileRegionService profileRegionService;
 
     // 자기소개 생성/수정 메서드
@@ -90,7 +88,6 @@ public class ProfileController {
             final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(accessor.getMemberId(), profileIsValueResponse.isAntecedents());
             final List<EducationResponse> educationResponses = getEducationResponses(accessor.getMemberId(), profileIsValueResponse.isEducation());
             final List<AwardsResponse> awardsResponses = getAwardsResponses(accessor.getMemberId(), profileIsValueResponse.isAwards());
-            final AttachResponse attachResponse = getAttachResponses(accessor.getMemberId(), profileIsValueResponse.isAttachUrl());
 
             final ProfileResponse profileResponse = profileService.getProfileResponse(
                     isPrivateProfileEssential,
@@ -102,8 +99,7 @@ public class ProfileController {
                     profileRegionResponse,
                     antecedentsResponses,
                     educationResponses,
-                    awardsResponses,
-                    attachResponse
+                    awardsResponses
             );
 
             return ResponseEntity.ok().body(profileResponse);
@@ -215,17 +211,6 @@ public class ProfileController {
             return antecedentsService.getAllAntecedents(memberId);
         } else {
             return null;
-        }
-    }
-
-    private AttachResponse getAttachResponses(
-            final Long memberId,
-            final boolean isAttachUrl
-    ) {
-        if (isAttachUrl) {
-            return attachService.getAttachList(memberId);
-        } else {
-            return new AttachResponse();
         }
     }
 }

@@ -6,8 +6,6 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
-import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
@@ -69,8 +67,6 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
     public EducationService educationService;
     @MockBean
     public AwardsService awardsService;
-    @MockBean
-    public AttachService attachService;
     @MockBean
     public ProfileRegionService profileRegionService;
     @MockBean
@@ -167,16 +163,8 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         final List<AwardsResponse> awardsResponses = Arrays.asList(firstAwardsResponse, secondAwardsResponse);
         given(awardsService.getAllAwards(1L)).willReturn(awardsResponses);
 
-        final AttachResponse attachResponse = new AttachResponse(
-                Arrays.asList(
-                        new AttachUrlResponse(2L, "깃허브", "https://github.com/TEAM-LIAISON"),
-                        new AttachUrlResponse(3L, "노션", "https://www.notion.so/ko-kr")
-                )
-        );
-        given(attachService.getAttachList(1L)).willReturn(attachResponse);
-
         when(browsePrivateProfileService.getProfileResponse(
-                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(BrowsePrivateProfileResponse.privateProfile(
                 1L,
                 miniProfileResponse,
@@ -187,9 +175,9 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses,
-                attachResponse
+                awardsResponses
         ));
+
         // when
         final ResultActions resultActions = performGetBrowsePrivateProfile(miniProfileId);
 
@@ -268,15 +256,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                                 fieldWithPath("awardsResponse[].organizer").type(JsonFieldType.STRING).description("주최자"),
                                 fieldWithPath("awardsResponse[].awardsYear").type(JsonFieldType.NUMBER).description("수상 연도"),
                                 fieldWithPath("awardsResponse[].awardsMonth").type(JsonFieldType.NUMBER).description("수상 월"),
-                                fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING).description("수상 내용"),
-
-                                // attachResponse
-                                subsectionWithPath("attachResponse").description("첨부 파일 정보"),
-                                fieldWithPath("attachResponse.attachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL ID"),
-                                fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(JsonFieldType.STRING).description("첨부된 URL 이름"),
-                                fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(JsonFieldType.STRING).description("첨부된 URL")
-//                                        fieldWithPath("attachResponse.attachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 ID"),
-//                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFilePath").type(JsonFieldType.STRING).description("첨부 파일 URL")
-                        )));
+                                fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING).description("수상 내용")
+                                )));
     }
 }
