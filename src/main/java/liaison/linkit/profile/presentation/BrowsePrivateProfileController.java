@@ -7,7 +7,6 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
@@ -44,7 +43,6 @@ public class BrowsePrivateProfileController {
     public final AntecedentsService antecedentsService;
     public final EducationService educationService;
     public final AwardsService awardsService;
-    public final AttachService attachService;
     public final ProfileRegionService profileRegionService;
     public final BrowsePrivateProfileService browsePrivateProfileService;
 
@@ -101,9 +99,6 @@ public class BrowsePrivateProfileController {
             final List<AwardsResponse> awardsResponses = getAwardsResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAwards());
             log.info("awardsResponses={}", awardsResponses);
 
-            final AttachResponse attachResponse = getAttachResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAttachUrl());
-            log.info("attachResponse={}", attachResponse);
-
             final BrowsePrivateProfileResponse browsePrivateProfileResponse = browsePrivateProfileService.getProfileResponse(
                     browseTargetPrivateProfileId,
                     miniProfileResponse,
@@ -114,25 +109,12 @@ public class BrowsePrivateProfileController {
                     profileRegionResponse,
                     antecedentsResponses,
                     educationResponses,
-                    awardsResponses,
-                    attachResponse
+                    awardsResponses
             );
 
             return ResponseEntity.ok().body(browsePrivateProfileResponse);
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("내 이력서를 조회하는 과정에서 문제가 발생했습니다.");
-        }
-    }
-
-    private AttachResponse getAttachResponses(
-            final Long browseTargetPrivateProfileId,
-            final boolean isAttachUrl
-    ) {
-        if (isAttachUrl) {
-            attachService.validateAttachUrlByProfile(browseTargetPrivateProfileId);
-            return attachService.getBrowseAttachList(browseTargetPrivateProfileId);
-        } else {
-            return new AttachResponse();
         }
     }
 

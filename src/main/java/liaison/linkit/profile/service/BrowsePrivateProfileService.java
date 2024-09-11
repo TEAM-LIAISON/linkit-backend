@@ -7,18 +7,16 @@ import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.repository.antecedents.AntecedentsRepository;
-import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
-import liaison.linkit.profile.domain.repository.skill.SkillRepository;
-import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
+import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
+import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
@@ -56,7 +54,6 @@ public class BrowsePrivateProfileService {
     private final AntecedentsRepository antecedentsRepository;
     private final EducationRepository educationRepository;
     private final DegreeRepository degreeRepository;
-    private final AttachUrlRepository attachUrlRepository;
 
     // 회원 조회
     private Member getMember(final Long memberId) {
@@ -111,8 +108,7 @@ public class BrowsePrivateProfileService {
             final ProfileRegionResponse profileRegionResponse,
             final List<AntecedentsResponse> antecedentsResponses,
             final List<EducationResponse> educationResponses,
-            final List<AwardsResponse> awardsResponses,
-            final AttachResponse attachResponse
+            final List<AwardsResponse> awardsResponses
     ) {
         return BrowsePrivateProfileResponse.privateProfile(
                 profileId,
@@ -124,8 +120,7 @@ public class BrowsePrivateProfileService {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses,
-                attachResponse
+                awardsResponses
         );
     }
 
