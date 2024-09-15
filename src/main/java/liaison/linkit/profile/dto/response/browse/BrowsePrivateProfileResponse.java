@@ -2,6 +2,7 @@ package liaison.linkit.profile.dto.response.browse;
 
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
+import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
@@ -28,6 +29,7 @@ public class BrowsePrivateProfileResponse {
     private final List<AntecedentsResponse> antecedentsResponse;
     private final List<EducationResponse> educationResponse;
     private final List<AwardsResponse> awardsResponse;
+    private final AttachResponse attachResponse;
 
     public static BrowsePrivateProfileResponse privateProfile(
             final Long profileId,
@@ -39,7 +41,8 @@ public class BrowsePrivateProfileResponse {
             final ProfileRegionResponse profileRegionResponse,
             final List<AntecedentsResponse> antecedentsResponses,
             final List<EducationResponse> educationResponses,
-            final List<AwardsResponse> awardsResponses
+            final List<AwardsResponse> awardsResponses,
+            final AttachResponse attachResponse
     ) {
         return new BrowsePrivateProfileResponse(
                 profileId,
@@ -51,7 +54,8 @@ public class BrowsePrivateProfileResponse {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses
+                awardsResponses,
+                attachResponse
         );
     }
 }

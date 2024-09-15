@@ -10,6 +10,8 @@ import liaison.linkit.profile.dto.request.IntroductionRequest;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
+import liaison.linkit.profile.dto.response.attach.AttachResponse;
+import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
@@ -78,6 +80,8 @@ class ProfileControllerTest extends ControllerTest {
     private EducationService educationService;
     @MockBean
     private AwardsService awardsService;
+    @MockBean
+    private AttachService attachService;
     @MockBean
     private ProfileRegionService profileRegionService;
 
@@ -292,6 +296,34 @@ class ProfileControllerTest extends ControllerTest {
         final List<AwardsResponse> awardsResponses = Arrays.asList(firstAwardsResponse, secondAwardsResponse);
         given(awardsService.getAllAwards(1L)).willReturn(awardsResponses);
 
+        // 10. 첨부
+        final AttachUrlResponse firstAttachUrlResponse = new AttachUrlResponse(
+                1L,
+                "깃허브",
+                "https://github.com/TEAM-LIAISON"
+        );
+
+        final AttachUrlResponse secondAttachUrlResponse = new AttachUrlResponse(
+                2L,
+                "노션",
+                "https://www.notion.so/ko-kr"
+        );
+
+//        final AttachFileResponse firstAttachFileResponse = new AttachFileResponse(
+//                1L,
+//                "A4+-=1.pdf",
+//                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
+//        );
+
+        final List<AttachUrlResponse> attachUrlResponseList = Arrays.asList(firstAttachUrlResponse, secondAttachUrlResponse);
+//        final List<AttachFileResponse> attachFileResponseList = Arrays.asList(firstAttachFileResponse);
+        final AttachResponse attachResponses = new AttachResponse(
+                attachUrlResponseList
+//                attachFileResponseList
+        );
+
+        given(attachService.getAttachList(1L)).willReturn(attachResponses);
+
         final ProfileResponse profileResponse = new ProfileResponse(
                 isPrivateProfileEssential,
                 miniProfileResponse,
@@ -302,7 +334,8 @@ class ProfileControllerTest extends ControllerTest {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses
+                awardsResponses,
+                attachResponses
         );
 
         given(profileService.getProfileResponse(
@@ -315,7 +348,8 @@ class ProfileControllerTest extends ControllerTest {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses
+                awardsResponses,
+                attachResponses
         )).willReturn(profileResponse);
 
         // when
@@ -401,10 +435,17 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("awardsResponse[].organizer").type(JsonFieldType.STRING).description("주최자"),
                                         fieldWithPath("awardsResponse[].awardsYear").type(JsonFieldType.NUMBER).description("수상 연도"),
                                         fieldWithPath("awardsResponse[].awardsMonth").type(JsonFieldType.NUMBER).description("수상 월"),
-                                        fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING).description("수상 내용")
+                                        fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING).description("수상 내용"),
+
+                                        // attachResponse
+                                        subsectionWithPath("attachResponse").description("첨부 파일 정보"),
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL ID"),
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(JsonFieldType.STRING).description("첨부된 URL 이름"),
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(JsonFieldType.STRING).description("첨부된 URL")
+//                                        fieldWithPath("attachResponse.attachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 ID"),
+//                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFilePath").type(JsonFieldType.STRING).description("첨부 파일 URL")
                                 )
                         ));
-
     }
 
     @DisplayName("프로필 자기소개 항목을 생성할 수 있다.")
