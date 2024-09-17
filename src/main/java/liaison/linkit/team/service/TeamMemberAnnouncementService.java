@@ -1,19 +1,29 @@
 package liaison.linkit.team.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_APPLICATION_PROCESS;
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_JOB_ROLE_NAME;
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_MAIN_BUSINESS;
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_SKILL_NAMES;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_TEAM_MEMBER_ANNOUNCEMENT_WITH_PROFILE;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
+
+import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.repository.jobRole.JobRoleRepository;
+import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementSkill;
-import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementJobRoleRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementSkillRepository;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
@@ -21,10 +31,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +70,8 @@ public class TeamMemberAnnouncementService {
     @Transactional(readOnly = true)
     public List<TeamMemberAnnouncementResponse> getTeamMemberAnnouncements(final Long memberId) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
-        final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementRepository.findAllByTeamProfileId(teamProfile.getId());
+        final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementRepository.findAllByTeamProfileId(
+                teamProfile.getId());
 
         return teamMemberAnnouncements.stream()
                 .map(this::getTeamMemberAnnouncementResponse)
@@ -74,8 +81,10 @@ public class TeamMemberAnnouncementService {
     private TeamMemberAnnouncementResponse getTeamMemberAnnouncementResponse(
             final TeamMemberAnnouncement teamMemberAnnouncement
     ) {
-        final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole = getTeamMemberAnnouncementJobRole(teamMemberAnnouncement.getId());
-        final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(teamMemberAnnouncement.getId());
+        final TeamMemberAnnouncementJobRole teamMemberAnnouncementJobRole = getTeamMemberAnnouncementJobRole(
+                teamMemberAnnouncement.getId());
+        final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(
+                teamMemberAnnouncement.getId());
         final String teamName = teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamName();
 
         return TeamMemberAnnouncementResponse.of(
@@ -92,19 +101,23 @@ public class TeamMemberAnnouncementService {
             final Long memberId,
             final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
     ) {
-        if (teamMemberAnnouncementRequest.getJobRoleName() == null || teamMemberAnnouncementRequest.getJobRoleName().isEmpty()) {
+        if (teamMemberAnnouncementRequest.getJobRoleName() == null || teamMemberAnnouncementRequest.getJobRoleName()
+                .isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_JOB_ROLE_NAME);
         }
 
-        if (teamMemberAnnouncementRequest.getMainBusiness() == null || teamMemberAnnouncementRequest.getMainBusiness().isEmpty()) {
+        if (teamMemberAnnouncementRequest.getMainBusiness() == null || teamMemberAnnouncementRequest.getMainBusiness()
+                .isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_MAIN_BUSINESS);
         }
 
-        if (teamMemberAnnouncementRequest.getSkillNames() == null || teamMemberAnnouncementRequest.getSkillNames().isEmpty()) {
+        if (teamMemberAnnouncementRequest.getSkillNames() == null || teamMemberAnnouncementRequest.getSkillNames()
+                .isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_SKILL_NAMES);
         }
 
-        if (teamMemberAnnouncementRequest.getApplicationProcess() == null || teamMemberAnnouncementRequest.getApplicationProcess().isEmpty()) {
+        if (teamMemberAnnouncementRequest.getApplicationProcess() == null
+                || teamMemberAnnouncementRequest.getApplicationProcess().isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_APPLICATION_PROCESS);
         }
 
@@ -112,7 +125,8 @@ public class TeamMemberAnnouncementService {
 
         if (teamProfile.getIsTeamMemberAnnouncement()) {
             // 메인 객체 우선 저장
-            final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, teamMemberAnnouncementRequest);
+            final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile,
+                    teamMemberAnnouncementRequest);
             // 직무/역할 저장
             saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
             // 요구 기술 저장
@@ -120,13 +134,13 @@ public class TeamMemberAnnouncementService {
             return savedTeamMemberAnnouncement.getId();
         } else {
             // 메인 객체 우선 저장
-            final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, teamMemberAnnouncementRequest);
+            final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile,
+                    teamMemberAnnouncementRequest);
             // 직무/역할 저장
             saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
             // 요구 기술 저장
             saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, teamMemberAnnouncementRequest);
             teamProfile.updateIsTeamMemberAnnouncement(true);
-            teamProfile.updateMemberTeamProfileTypeByCompletion();
             return savedTeamMemberAnnouncement.getId();
         }
     }
@@ -148,7 +162,8 @@ public class TeamMemberAnnouncementService {
 
             // 순차적으로 1개씩 저장
             teamMemberAnnouncementRequestList.forEach(request -> {
-                final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, request);
+                final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile,
+                        request);
                 saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, request);
                 saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, request);
             });
@@ -157,7 +172,8 @@ public class TeamMemberAnnouncementService {
         // 팀원 공고가 존재하지 않는다 -> 새로운 생성 필요
         else {
             teamMemberAnnouncementRequestList.forEach(request -> {
-                final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile, request);
+                final TeamMemberAnnouncement savedTeamMemberAnnouncement = saveTeamMemberAnnouncement(teamProfile,
+                        request);
                 saveTeamMemberAnnouncementJobRole(savedTeamMemberAnnouncement, request);
                 saveTeamMemberAnnouncementSkill(savedTeamMemberAnnouncement, request);
             });
@@ -237,7 +253,6 @@ public class TeamMemberAnnouncementService {
 
         if (!teamMemberAnnouncementRepository.existsByTeamProfileId(teamProfile.getId())) {
             teamProfile.updateIsTeamMemberAnnouncement(false);
-            teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }
 
@@ -246,19 +261,23 @@ public class TeamMemberAnnouncementService {
             final Long teamMemberAnnouncementId,
             final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
     ) {
-        if (teamMemberAnnouncementRequest.getJobRoleName() == null || teamMemberAnnouncementRequest.getJobRoleName().isEmpty()) {
+        if (teamMemberAnnouncementRequest.getJobRoleName() == null || teamMemberAnnouncementRequest.getJobRoleName()
+                .isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_JOB_ROLE_NAME);
         }
 
-        if (teamMemberAnnouncementRequest.getMainBusiness() == null || teamMemberAnnouncementRequest.getMainBusiness().isEmpty()) {
+        if (teamMemberAnnouncementRequest.getMainBusiness() == null || teamMemberAnnouncementRequest.getMainBusiness()
+                .isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_MAIN_BUSINESS);
         }
 
-        if (teamMemberAnnouncementRequest.getSkillNames() == null || teamMemberAnnouncementRequest.getSkillNames().isEmpty()) {
+        if (teamMemberAnnouncementRequest.getSkillNames() == null || teamMemberAnnouncementRequest.getSkillNames()
+                .isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_SKILL_NAMES);
         }
 
-        if (teamMemberAnnouncementRequest.getApplicationProcess() == null || teamMemberAnnouncementRequest.getApplicationProcess().isEmpty()) {
+        if (teamMemberAnnouncementRequest.getApplicationProcess() == null
+                || teamMemberAnnouncementRequest.getApplicationProcess().isEmpty()) {
             throw new BadRequestException(HAVE_TO_INPUT_APPLICATION_PROCESS);
         }
 

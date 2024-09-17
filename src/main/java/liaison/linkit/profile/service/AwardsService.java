@@ -1,9 +1,16 @@
 package liaison.linkit.profile.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_AWARDS_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_AWARDS_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_AWARDS_LIST_BY_PROFILE_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+
+import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.profile.domain.awards.Awards;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.awards.Awards;
 import liaison.linkit.profile.domain.repository.awards.AwardsRepository;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.dto.request.awards.AwardsCreateRequest;
@@ -11,10 +18,6 @@ import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -36,15 +39,6 @@ public class AwardsService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_AWARDS_BY_ID));
     }
 
-    // 해당 내 이력서로부터 모든 보유 기술들을 조회하려고 할 때
-    private List<Awards> getAwardsList(final Long profileId) {
-        try {
-            return awardsRepository.findAllByProfileId(profileId);
-        } catch (Exception e) {
-            throw new BadRequestException(NOT_FOUND_AWARDS_LIST_BY_PROFILE_ID);
-        }
-    }
-
     // 멤버로부터 프로필 아이디를 조회해서 존재성을 판단
     public void validateAwardsByMember(final Long memberId) {
         if (!awardsRepository.existsByProfileId(getProfile(memberId).getId())) {
@@ -59,8 +53,6 @@ public class AwardsService {
         }
     }
 
-    // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
-
     public Long save(
             final Long memberId,
             final AwardsCreateRequest awardsCreateRequest
@@ -70,9 +62,8 @@ public class AwardsService {
 
         if (profile.getIsAwards()) {
             return saveAwards(profile, awardsCreateRequest);
-        } else{
+        } else {
             profile.updateIsAwards(true);
-            profile.updateMemberProfileTypeByCompletion();
             return saveAwards(profile, awardsCreateRequest);
         }
     }
@@ -94,7 +85,6 @@ public class AwardsService {
         if (awardsRepository.existsByProfileId(profile.getId())) {
             awardsRepository.deleteAllByProfileId(profile.getId());
             profile.updateIsAwards(false);
-            profile.updateMemberProfileTypeByCompletion();
         }
 
         awardsCreateRequests.forEach(request -> {
@@ -102,7 +92,6 @@ public class AwardsService {
         });
 
         profile.updateIsAwards(true);
-        profile.updateMemberProfileTypeByCompletion();
     }
 
     private Long saveAwards(final Profile profile, final AwardsCreateRequest awardsCreateRequest) {
@@ -134,7 +123,6 @@ public class AwardsService {
         final Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
 
-
         final List<Awards> awards = awardsRepository.findAllByProfileId(profile.getId());
         return awards.stream()
                 .map(this::getAwardsResponse)
@@ -148,7 +136,7 @@ public class AwardsService {
 
     // 수상 항목 1개 조회 (비공개 처리 로직 추가 필요)
     @Transactional(readOnly = true)
-    public AwardsResponse getAwardsDetail(final Long awardsId){
+    public AwardsResponse getAwardsDetail(final Long awardsId) {
         final Awards awards = awardsRepository.findById(awardsId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_AWARDS_ID));
         return AwardsResponse.personalAwards(awards);
@@ -164,10 +152,8 @@ public class AwardsService {
         if (!awardsRepository.existsByProfileId(profile.getId())) {
             // 존재하지 않는 경우
             profile.updateIsAwards(false);
-            profile.updateMemberProfileTypeByCompletion();
         }
     }
-
 
 
 }

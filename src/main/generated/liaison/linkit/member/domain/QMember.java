@@ -40,13 +40,9 @@ public class QMember extends EntityPathBase<Member> {
 
     public final liaison.linkit.profile.domain.QProfile profile;
 
-    public final EnumPath<liaison.linkit.member.domain.type.ProfileType> profileType = createEnum("profileType", liaison.linkit.member.domain.type.ProfileType.class);
-
     public final StringPath socialLoginId = createString("socialLoginId");
 
     public final liaison.linkit.team.domain.QTeamProfile teamProfile;
-
-    public final EnumPath<liaison.linkit.member.domain.type.TeamProfileType> teamProfileType = createEnum("teamProfileType", liaison.linkit.member.domain.type.TeamProfileType.class);
 
     public final NumberPath<Integer> teamWishCount = createNumber("teamWishCount", Integer.class);
 

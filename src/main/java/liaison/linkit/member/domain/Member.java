@@ -1,9 +1,20 @@
 package liaison.linkit.member.domain;
 
-import jakarta.persistence.*;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static liaison.linkit.member.domain.type.MemberState.ACTIVE;
+import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import java.time.LocalDateTime;
 import liaison.linkit.member.domain.type.MemberState;
-import liaison.linkit.member.domain.type.ProfileType;
-import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.team.domain.TeamProfile;
 import lombok.Getter;
@@ -11,14 +22,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
-
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static liaison.linkit.member.domain.type.MemberState.ACTIVE;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -52,16 +55,6 @@ public class Member {
     @Enumerated(value = STRING)
     private MemberState memberState;
 
-    // 내 이력서 타입 (완성도 기반)
-    @Column(nullable = false)
-    @Enumerated(value = STRING)
-    private ProfileType profileType;
-
-    // 팀 소개서 타입 (완성도 기반)
-    @Column(nullable = false)
-    @Enumerated(value = STRING)
-    private TeamProfileType teamProfileType;
-
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -87,8 +80,6 @@ public class Member {
         this.id = id;
         this.socialLoginId = socialLoginId;
         this.email = email;
-        this.profileType = ProfileType.NO_PERMISSION;
-        this.teamProfileType = TeamProfileType.NO_PERMISSION;
         this.memberState = ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
@@ -108,14 +99,6 @@ public class Member {
 
     public void changeIsMemberBasicInform(final Boolean existMemberBasicInform) {
         this.existMemberBasicInform = existMemberBasicInform;
-    }
-
-    public void setProfileType(final ProfileType profileType) {
-        this.profileType = profileType;
-    }
-
-    public void setTeamProfileType(final TeamProfileType teamProfileType) {
-        this.teamProfileType = teamProfileType;
     }
 
     public void addPrivateWishCount() {

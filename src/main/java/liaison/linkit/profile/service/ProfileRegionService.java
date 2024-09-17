@@ -1,20 +1,24 @@
 package liaison.linkit.profile.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_REGION;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_REGION_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_REGION_BY_PROFILE_ID;
+
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.region.ProfileRegion;
-import liaison.linkit.profile.domain.repository.region.ProfileRegionRepository;
+import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
+import liaison.linkit.profile.domain.repository.region.ProfileRegionRepository;
 import liaison.linkit.profile.dto.request.profileRegion.ProfileRegionCreateRequest;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
-import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.team.domain.repository.activity.region.RegionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -58,23 +62,21 @@ public class ProfileRegionService {
             if (profileRegionRepository.existsByProfileId(profile.getId())) {
                 profileRegionRepository.deleteByProfileId(profile.getId());
                 profile.updateIsProfileRegion(false);
-                profile.updateMemberProfileTypeByCompletion();
             }
 
             final Region region = regionRepository
-                    .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(), profileRegionCreateRequest.getDivisionName()
-            );
+                    .findRegionByCityNameAndDivisionName(profileRegionCreateRequest.getCityName(),
+                            profileRegionCreateRequest.getDivisionName()
+                    );
 
             if (region == null) {
                 throw new BadRequestException(HAVE_TO_INPUT_REGION);
             }
 
             ProfileRegion newProfileRegion = new ProfileRegion(null, profile, region);
-
             profileRegionRepository.save(newProfileRegion);
 
             profile.updateIsProfileRegion(true);
-            profile.updateMemberProfileTypeByCompletion();
         } catch (IllegalArgumentException e) {
             throw e;  // or return a custom response or error code
         } catch (Exception e) {
@@ -88,7 +90,8 @@ public class ProfileRegionService {
     public ProfileRegionResponse getPersonalProfileRegion(final Long memberId) {
         final Profile profile = getProfile(memberId);
         ProfileRegion profileRegion = getProfileRegion(profile.getId());
-        return new ProfileRegionResponse(profileRegion.getRegion().getCityName(), profileRegion.getRegion().getDivisionName());
+        return new ProfileRegionResponse(profileRegion.getRegion().getCityName(),
+                profileRegion.getRegion().getDivisionName());
     }
 
     // 내 이력서에 매핑되어 있는 활동 지역 및 위치 조회
@@ -98,7 +101,8 @@ public class ProfileRegionService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
 
         ProfileRegion profileRegion = getProfileRegion(profile.getId());
-        return new ProfileRegionResponse(profileRegion.getRegion().getCityName(), profileRegion.getRegion().getDivisionName());
+        return new ProfileRegionResponse(profileRegion.getRegion().getCityName(),
+                profileRegion.getRegion().getDivisionName());
     }
 
 }

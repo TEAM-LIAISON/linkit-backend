@@ -1,17 +1,23 @@
 package liaison.linkit.team.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_ACTIVITY_METHOD_BY_TEAM_PROFILE_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
+
+import java.util.List;
+import java.util.Optional;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.team.domain.activity.ActivityRegion;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.activity.ActivityMethod;
 import liaison.linkit.team.domain.activity.ActivityMethodTag;
-import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
+import liaison.linkit.team.domain.activity.ActivityRegion;
 import liaison.linkit.team.domain.repository.activity.method.ActivityMethodRepository;
 import liaison.linkit.team.domain.repository.activity.method.ActivityMethodTagRepository;
 import liaison.linkit.team.domain.repository.activity.region.ActivityRegionRepository;
 import liaison.linkit.team.domain.repository.activity.region.RegionRepository;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.request.activity.ActivityCreateRequest;
 import liaison.linkit.team.dto.response.activity.ActivityMethodResponse;
 import liaison.linkit.team.dto.response.activity.ActivityRegionResponse;
@@ -20,11 +26,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -104,7 +105,8 @@ public class ActivityService {
         }
 
         // 지역 정보 구현 로직
-        final Region region = regionRepository.findRegionByCityNameAndDivisionName(activityCreateRequest.getCityName(), activityCreateRequest.getDivisionName());
+        final Region region = regionRepository.findRegionByCityNameAndDivisionName(activityCreateRequest.getCityName(),
+                activityCreateRequest.getDivisionName());
 
         ActivityRegion activityRegion = new ActivityRegion(null, teamProfile, region);
 
@@ -113,7 +115,6 @@ public class ActivityService {
         teamProfile.updateIsActivityRegion(true);
         // isActivity -> true였다면 그대로 / false였다면 더하기
         teamProfile.updateIsActivity();
-        teamProfile.updateMemberTeamProfileTypeByCompletion();
     }
 
     // 활동 방식 전체 조회
@@ -130,7 +131,8 @@ public class ActivityService {
         log.info("오류 찾기 part 1");
 
         List<String> activityTagNames = activityMethods.stream()
-                .map(activityMethod -> activityMethodTagRepository.findById(activityMethod.getActivityMethodTag().getId()))
+                .map(activityMethod -> activityMethodTagRepository.findById(
+                        activityMethod.getActivityMethodTag().getId()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(ActivityMethodTag::getActivityTagName)
@@ -146,9 +148,10 @@ public class ActivityService {
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
         ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(teamProfile.getId())
-                .orElseThrow(()-> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
 
-        return new ActivityRegionResponse(activityRegion.getRegion().getCityName(), activityRegion.getRegion().getDivisionName());
+        return new ActivityRegionResponse(activityRegion.getRegion().getCityName(),
+                activityRegion.getRegion().getDivisionName());
     }
 
     public ActivityResponse getActivity(final Long memberId) {

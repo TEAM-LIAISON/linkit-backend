@@ -32,7 +32,6 @@ public class AttachController {
     ) {
         if (attachUrlCreateRequests.isEmpty()) {
             log.info("attachUrlCreateRequests 비어있습니다.");
-            attachService.deleteAllUrl(accessor.getMemberId());
         } else {
             attachService.saveUrl(accessor.getMemberId(), attachUrlCreateRequests);
         }

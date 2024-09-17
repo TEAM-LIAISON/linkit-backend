@@ -1,14 +1,20 @@
 package liaison.linkit.profile.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_ID;
+
+import java.util.List;
+import java.util.Optional;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.repository.jobRole.JobRoleRepository;
+import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
 import liaison.linkit.profile.domain.repository.skill.SkillRepository;
-import liaison.linkit.profile.domain.repository.jobRole.JobRoleRepository;
-import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
@@ -19,17 +25,12 @@ import liaison.linkit.profile.dto.response.isValue.ProfileOnBoardingIsValueRespo
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.onBoarding.OnBoardingProfileResponse;
-import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -198,7 +199,6 @@ public class ProfileOnBoardingService {
             final Long memberId
     ) {
         final Profile profile = getProfileByMember(memberId);
-        profile.updateMemberProfileTypeByCompletion();
     }
 
 

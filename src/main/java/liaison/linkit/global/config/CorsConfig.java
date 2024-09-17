@@ -1,7 +1,6 @@
 package liaison.linkit.global.config;
 
 import liaison.linkit.matching.MatchingAccessInterceptor;
-import liaison.linkit.profile.browse.ProfileBrowseAccessInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +14,8 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000", "https://www.linkit.im", "https://linkit.im", "https://dev-linkit.vercel.app", "https://liaison-dev.site", "https://www.liaison-dev.site")
+                .allowedOrigins("http://localhost:3000", "https://www.linkit.im", "https://linkit.im",
+                        "https://dev-linkit.vercel.app", "https://liaison-dev.site", "https://www.liaison-dev.site")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowCredentials(true)
                 .exposedHeaders(HttpHeaders.LOCATION);
@@ -23,14 +23,10 @@ public class CorsConfig implements WebMvcConfigurer {
     }
 
     @Autowired
-    private ProfileBrowseAccessInterceptor profileBrowseAccessInterceptor;
-
-    @Autowired
     private MatchingAccessInterceptor matchingAccessInterceptor;
 
     @Override
     public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(profileBrowseAccessInterceptor).addPathPatterns("/browse/**");
         registry.addInterceptor(matchingAccessInterceptor).addPathPatterns("/matching/**");
     }
 }

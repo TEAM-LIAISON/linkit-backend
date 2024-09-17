@@ -1,5 +1,11 @@
 package liaison.linkit.team.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_HISTORY;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_HISTORY_WITH_TEAM_PROFILE;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_HISTORY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
+
+import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.domain.TeamProfile;
@@ -12,10 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -72,7 +74,6 @@ public class HistoryService {
             return saveHistoryMethod(teamProfile, historyCreateRequest);
         } else {
             teamProfile.updateIsHistory(true);
-            teamProfile.updateMemberTeamProfileTypeByCompletion();
             return saveHistoryMethod(teamProfile, historyCreateRequest);
         }
     }
@@ -86,7 +87,6 @@ public class HistoryService {
         if (historyRepository.existsByTeamProfileId(teamProfile.getId())) {
             historyRepository.deleteAllByTeamProfileId(teamProfile.getId());
             teamProfile.updateIsHistory(false);
-            teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
 
         historyCreateRequests.forEach(request -> {
@@ -94,7 +94,6 @@ public class HistoryService {
         });
 
         teamProfile.updateIsHistory(true);
-        teamProfile.updateMemberTeamProfileTypeByCompletion();
     }
 
     private Long saveHistoryMethod(
@@ -123,7 +122,6 @@ public class HistoryService {
         log.info("History 삭제 완료");
         if (!historyRepository.existsByTeamProfileId(teamProfile.getId())) {
             teamProfile.cancelTeamPerfectionTwoPointFive();
-            teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }
 
@@ -132,19 +130,6 @@ public class HistoryService {
         history.update(historyCreateRequest);
         return history.getId();
     }
-
-
-//    public void update(final Long memberId, final HistoryUpdateRequest historyUpdateRequest) {
-//        final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId);
-//        final Long historyId = validateHistoryByMember(memberId);
-//
-//        final History history = historyRepository.findById(historyId)
-//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_HISTORY_ID));
-//
-//        history.update(historyUpdateRequest);
-//        historyRepository.save(history);
-//    }
-
 }
 
 

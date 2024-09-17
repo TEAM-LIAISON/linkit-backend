@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.4'
-	id 'io.spring.dependency-management' version '1.1.4'
+    id 'java'
+    id 'org.springframework.boot' version '3.2.4'
+    id 'io.spring.dependency-management' version '1.1.4'
     id 'org.asciidoctor.jvm.convert' version "3.3.2"
     id 'jacoco'
 }
@@ -10,18 +10,18 @@ group = 'liaison'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = '17'
+    sourceCompatibility = '17'
 }
 
 configurations {
     asciidoctorExt
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
@@ -30,12 +30,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-batch'
+    
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.715'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
+
     // p6spy 자리
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
@@ -74,7 +76,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
 
-	implementation 'org.mindrot:jbcrypt:0.4'
+    implementation 'org.mindrot:jbcrypt:0.4'
 }
 
 test {
@@ -116,7 +118,7 @@ tasks.withType(JavaCompile) {
 
 // java source set 에 querydsl QClass 위치 추가
 sourceSets {
-    main.java.srcDirs += [ generated ]
+    main.java.srcDirs += [generated]
 }
 
 // gradle clean 시에 QClass 디렉토리 삭제
