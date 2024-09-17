@@ -6,8 +6,6 @@ import java.util.Optional;
 
 public interface MemberRepositoryCustom {
     Optional<Member> findBySocialLoginId(final String socialLoginId);
-
     boolean existsByEmail(final String email);
-
     void deleteByMemberId(final Long memberId);
 }

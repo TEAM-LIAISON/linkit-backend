@@ -94,17 +94,10 @@ public class Profile extends BaseEntity {
     @Column(nullable = false)
     private boolean isAwards;
 
-//    // 3.11. 첨부 기입 여부
-//    @Column(nullable = false)
-//    private boolean isAttach;
-
     // 3.11. 첨부 링크(URL) 기입 여부
     @Column(nullable = false)
     private boolean isAttachUrl;
 
-//    // 3.11. 첨부 파일(File) 기입 여부
-//    @Column(nullable = false)
-//    private boolean isAttachFile;
 
     // 3.1. 미니 프로필 기입 여부
     @Column(nullable = false)
@@ -267,19 +260,6 @@ public class Profile extends BaseEntity {
         }
     }
 
-    // 3.11. 첨부 업데이트
-//    private void updateIsAttach(final boolean isAttachUrl, final boolean isAttachFile) {
-//        // attachUrl, attachFile 2개 중에 하나라도 참이면 isAttach는 참이다.
-//        if (this.isAttach != (isAttachUrl || isAttachFile)) {
-//            this.isAttach = !this.isAttach;
-//            if (this.isAttach) {
-//                addPerfectionTen();
-//            } else {
-//                cancelPerfectionTen();
-//            }
-//        }
-//    }
-
     // 3.11.1 첨부 링크 업데이트
     public void updateIsAttachUrl(final boolean isAttachUrl) {
         this.isAttachUrl = isAttachUrl;
@@ -289,15 +269,6 @@ public class Profile extends BaseEntity {
             cancelPerfectionTen();
         }
     }
-    // 3.11.2 첨부 파일 업데이트
-//    public void updateIsAttachFile(final boolean isAttachFile) {
-//        this.isAttachFile = isAttachFile;
-//        updateIsAttach(this.isAttachUrl, isAttachFile);
-//    }
-
-
-
-
 
     // 내 이력서의 완성도 % 기반으로 접근 권한 관리 메서드
     public void updateMemberProfileTypeByCompletion() {
