@@ -1,5 +1,12 @@
 package liaison.linkit.profile.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_MINI_PROFILE_WITH_MEMBER;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_MEMBER_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MINI_PROFILE_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_ID;
+
+import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.member.domain.Member;
@@ -7,18 +14,16 @@ import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.repository.antecedents.AntecedentsRepository;
-import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
-import liaison.linkit.profile.domain.repository.skill.SkillRepository;
-import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
+import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
+import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
@@ -34,10 +39,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -56,7 +57,6 @@ public class BrowsePrivateProfileService {
     private final AntecedentsRepository antecedentsRepository;
     private final EducationRepository educationRepository;
     private final DegreeRepository degreeRepository;
-    private final AttachUrlRepository attachUrlRepository;
 
     // 회원 조회
     private Member getMember(final Long memberId) {
@@ -111,8 +111,7 @@ public class BrowsePrivateProfileService {
             final ProfileRegionResponse profileRegionResponse,
             final List<AntecedentsResponse> antecedentsResponses,
             final List<EducationResponse> educationResponses,
-            final List<AwardsResponse> awardsResponses,
-            final AttachResponse attachResponse
+            final List<AwardsResponse> awardsResponses
     ) {
         return BrowsePrivateProfileResponse.privateProfile(
                 profileId,
@@ -124,13 +123,13 @@ public class BrowsePrivateProfileService {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses,
-                attachResponse
+                awardsResponses
         );
     }
 
     public boolean checkBrowseAuthority(final Long memberId) {
-        final Profile profile = profileRepository.findByMemberId(memberId).orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+        final Profile profile = profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
         final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_ID));
 

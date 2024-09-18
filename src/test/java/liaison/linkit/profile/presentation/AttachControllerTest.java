@@ -6,7 +6,6 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.attach.AttachFileCreateRequest;
 import liaison.linkit.profile.dto.request.attach.AttachUrlCreateRequest;
-import liaison.linkit.profile.service.AttachService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -74,13 +73,15 @@ public class AttachControllerTest extends ControllerTest {
                 "https://www.notion.no"
         );
 
-        final List<AttachUrlCreateRequest> attachUrlCreateRequestList = Arrays.asList(attachUrlCreateRequest1, attachUrlCreateRequest2);
+        final List<AttachUrlCreateRequest> attachUrlCreateRequestList = Arrays.asList(attachUrlCreateRequest1,
+                attachUrlCreateRequest2);
 
         doNothing().when(attachService).saveUrl(1L, attachUrlCreateRequestList);
         performPostUrlRequest(attachUrlCreateRequestList);
     }
 
-    private ResultActions performPostUrlRequest(final List<AttachUrlCreateRequest> attachUrlCreateRequests) throws Exception {
+    private ResultActions performPostUrlRequest(final List<AttachUrlCreateRequest> attachUrlCreateRequests)
+            throws Exception {
         return mockMvc.perform(
                 post("/private/attach/url")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -114,7 +115,8 @@ public class AttachControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performPostFileRequest(final AttachFileCreateRequest attachFileCreateRequest) throws Exception {
+    private ResultActions performPostFileRequest(final AttachFileCreateRequest attachFileCreateRequest)
+            throws Exception {
         return mockMvc.perform(
                 post("/attach/file")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -138,7 +140,8 @@ public class AttachControllerTest extends ControllerTest {
                 "https://www.notion.no"
         );
 
-        final List<AttachUrlCreateRequest> attachUrlCreateRequestList = Arrays.asList(attachUrlCreateRequest1, attachUrlCreateRequest2);
+        final List<AttachUrlCreateRequest> attachUrlCreateRequestList = Arrays.asList(attachUrlCreateRequest1,
+                attachUrlCreateRequest2);
 
 //        doNothing().when(attachService).saveUrl(anyLong(), attachUrlCreateRequestList);
         // when

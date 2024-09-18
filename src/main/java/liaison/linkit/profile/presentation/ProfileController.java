@@ -1,6 +1,9 @@
 package liaison.linkit.profile.presentation;
 
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
 import jakarta.validation.Valid;
+import java.util.List;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -9,7 +12,6 @@ import liaison.linkit.profile.dto.request.IntroductionRequest;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
@@ -18,15 +20,24 @@ import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.profile.service.*;
+import liaison.linkit.profile.service.AntecedentsService;
+import liaison.linkit.profile.service.AwardsService;
+import liaison.linkit.profile.service.CompletionService;
+import liaison.linkit.profile.service.EducationService;
+import liaison.linkit.profile.service.MiniProfileService;
+import liaison.linkit.profile.service.ProfileOnBoardingService;
+import liaison.linkit.profile.service.ProfileRegionService;
+import liaison.linkit.profile.service.ProfileService;
+import liaison.linkit.profile.service.ProfileSkillService;
+import liaison.linkit.profile.service.TeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +55,6 @@ public class ProfileController {
     public final AntecedentsService antecedentsService;
     public final EducationService educationService;
     public final AwardsService awardsService;
-    public final AttachService attachService;
     public final ProfileRegionService profileRegionService;
 
     // 자기소개 생성/수정 메서드
@@ -68,10 +78,13 @@ public class ProfileController {
         try {
             profileService.validateProfileByMember(accessor.getMemberId());
 
-            final ProfileIsValueResponse profileIsValueResponse = profileService.getProfileIsValue(accessor.getMemberId());
+            final ProfileIsValueResponse profileIsValueResponse = profileService.getProfileIsValue(
+                    accessor.getMemberId());
             log.info("profileIsValueResponse={}", profileIsValueResponse);
 
-            final boolean isPrivateProfileEssential = (profileIsValueResponse.isProfileTeamBuildingField() && profileIsValueResponse.isProfileRegion() && profileIsValueResponse.isMiniProfile() && profileIsValueResponse.isJobAndSkill());
+            final boolean isPrivateProfileEssential = (profileIsValueResponse.isProfileTeamBuildingField()
+                    && profileIsValueResponse.isProfileRegion() && profileIsValueResponse.isMiniProfile()
+                    && profileIsValueResponse.isJobAndSkill());
             log.info("isPrivateProfileEssential={}", isPrivateProfileEssential);
 
             if (!isPrivateProfileEssential) {
@@ -79,18 +92,25 @@ public class ProfileController {
                 return ResponseEntity.ok().body(new ProfileResponse());
             }
 
-            final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileIsValueResponse.isMiniProfile());
+            final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(),
+                    profileIsValueResponse.isMiniProfile());
             log.info("miniProfileResponse={}", miniProfileResponse);
 
             final CompletionResponse completionResponse = getCompletionResponse(accessor.getMemberId());
-            final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(accessor.getMemberId(), profileIsValueResponse.isIntroduction());
-            final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(accessor.getMemberId(), profileIsValueResponse.isJobAndSkill());
-            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(accessor.getMemberId(), profileIsValueResponse.isProfileTeamBuildingField());
-            final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(accessor.getMemberId(), profileIsValueResponse.isProfileRegion());
-            final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(accessor.getMemberId(), profileIsValueResponse.isAntecedents());
-            final List<EducationResponse> educationResponses = getEducationResponses(accessor.getMemberId(), profileIsValueResponse.isEducation());
-            final List<AwardsResponse> awardsResponses = getAwardsResponses(accessor.getMemberId(), profileIsValueResponse.isAwards());
-            final AttachResponse attachResponse = getAttachResponses(accessor.getMemberId(), profileIsValueResponse.isAttachUrl());
+            final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(
+                    accessor.getMemberId(), profileIsValueResponse.isIntroduction());
+            final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(accessor.getMemberId(),
+                    profileIsValueResponse.isJobAndSkill());
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(
+                    accessor.getMemberId(), profileIsValueResponse.isProfileTeamBuildingField());
+            final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(accessor.getMemberId(),
+                    profileIsValueResponse.isProfileRegion());
+            final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(accessor.getMemberId(),
+                    profileIsValueResponse.isAntecedents());
+            final List<EducationResponse> educationResponses = getEducationResponses(accessor.getMemberId(),
+                    profileIsValueResponse.isEducation());
+            final List<AwardsResponse> awardsResponses = getAwardsResponses(accessor.getMemberId(),
+                    profileIsValueResponse.isAwards());
 
             final ProfileResponse profileResponse = profileService.getProfileResponse(
                     isPrivateProfileEssential,
@@ -102,8 +122,7 @@ public class ProfileController {
                     profileRegionResponse,
                     antecedentsResponses,
                     educationResponses,
-                    awardsResponses,
-                    attachResponse
+                    awardsResponses
             );
 
             return ResponseEntity.ok().body(profileResponse);
@@ -215,17 +234,6 @@ public class ProfileController {
             return antecedentsService.getAllAntecedents(memberId);
         } else {
             return null;
-        }
-    }
-
-    private AttachResponse getAttachResponses(
-            final Long memberId,
-            final boolean isAttachUrl
-    ) {
-        if (isAttachUrl) {
-            return attachService.getAttachList(memberId);
-        } else {
-            return new AttachResponse();
         }
     }
 }

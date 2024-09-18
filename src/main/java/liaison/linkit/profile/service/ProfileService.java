@@ -9,7 +9,6 @@ import liaison.linkit.profile.domain.repository.antecedents.AntecedentsRepositor
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
 import liaison.linkit.profile.domain.repository.skill.SkillRepository;
-import liaison.linkit.profile.domain.repository.attach.AttachUrlRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
@@ -19,7 +18,6 @@ import liaison.linkit.profile.dto.request.IntroductionRequest;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
@@ -58,12 +56,6 @@ public class ProfileService {
     private final EducationRepository educationRepository;
     private final DegreeRepository degreeRepository;
 
-    // 첨부 링크 정보 담당
-    private final AttachUrlRepository attachUrlRepository;
-    
-    // 첨부 이미지(파일 경로) 정보 담당
-//    private final AttachFileRepository attachFileRepository;
-
     // 프로필 (내 이력서) 1개 조회
     private Profile getProfileByMember(final Long memberId) {
         return profileRepository.findByMemberId(memberId)
@@ -81,7 +73,6 @@ public class ProfileService {
             throw new AuthException(ExceptionCode.INVALID_PROFILE_WITH_MEMBER);
         }
     }
-
 
 
     // 생성/수정/삭제 포함
@@ -122,8 +113,7 @@ public class ProfileService {
             final ProfileRegionResponse profileRegionResponse,
             final List<AntecedentsResponse> antecedentsResponses,
             final List<EducationResponse> educationResponses,
-            final List<AwardsResponse> awardsResponses,
-            final AttachResponse attachResponse
+            final List<AwardsResponse> awardsResponses
     ) {
         return ProfileResponse.profileItems(
                 isPrivateProfileEssential,
@@ -135,12 +125,9 @@ public class ProfileService {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses,
-                attachResponse
+                awardsResponses
         );
     }
-
-
 
 
     private Profile getProfileByMiniProfile(final Long miniProfileId) {

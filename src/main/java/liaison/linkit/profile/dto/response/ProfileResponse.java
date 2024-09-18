@@ -1,18 +1,16 @@
 package liaison.linkit.profile.dto.response;
 
+import java.util.List;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
-import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -29,7 +27,6 @@ public class ProfileResponse {
     private final List<AntecedentsResponse> antecedentsResponse;
     private final List<EducationResponse> educationResponse;
     private final List<AwardsResponse> awardsResponse;
-    private final AttachResponse attachResponse;
 
     public ProfileResponse() {
         this.isPrivateProfileEssential = false;
@@ -42,7 +39,6 @@ public class ProfileResponse {
         this.antecedentsResponse = null;
         this.educationResponse = null;
         this.awardsResponse = null;
-        this.attachResponse = null;
     }
 
     public static ProfileResponse profileItems(
@@ -55,8 +51,7 @@ public class ProfileResponse {
             final ProfileRegionResponse profileRegionResponse,
             final List<AntecedentsResponse> antecedentsResponses,
             final List<EducationResponse> educationResponses,
-            final List<AwardsResponse> awardsResponses,
-            final AttachResponse attachResponse
+            final List<AwardsResponse> awardsResponses
     ) {
 
         return new ProfileResponse(
@@ -69,8 +64,7 @@ public class ProfileResponse {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses,
-                attachResponse
+                awardsResponses
         );
     }
 }
