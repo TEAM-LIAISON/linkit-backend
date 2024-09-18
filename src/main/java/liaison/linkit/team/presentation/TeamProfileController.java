@@ -8,7 +8,6 @@ import liaison.linkit.team.dto.request.TeamIntroductionCreateRequest;
 import liaison.linkit.team.dto.response.*;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
-import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
@@ -43,8 +42,6 @@ public class TeamProfileController {
     final TeamMemberIntroductionService teamMemberIntroductionService;
     // 4.9.
     final HistoryService historyService;
-    // 4.10.
-    final TeamAttachService teamAttachService;
 
     // 팀 소개서 전체 조회
     @GetMapping("/team/profile")
@@ -56,10 +53,13 @@ public class TeamProfileController {
             log.info("--- 팀 이력서가 유효합니다. ---");
 
             // 팀 소개서에 있는 항목들의 존재 여부 파악
-            final TeamProfileIsValueResponse teamProfileIsValueResponse = teamProfileService.getTeamProfileIsValue(accessor.getMemberId());
+            final TeamProfileIsValueResponse teamProfileIsValueResponse = teamProfileService.getTeamProfileIsValue(
+                    accessor.getMemberId());
             log.info("teamProfileIsValueResponse={}", teamProfileIsValueResponse);
 
-            final boolean isTeamProfileEssential = (teamProfileIsValueResponse.isTeamMiniProfile() && teamProfileIsValueResponse.isActivity() && teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
+            final boolean isTeamProfileEssential = (teamProfileIsValueResponse.isTeamMiniProfile()
+                    && teamProfileIsValueResponse.isActivity()
+                    && teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
 
             log.info("isTeamProfileEssential={}", isTeamProfileEssential);
 
@@ -70,7 +70,8 @@ public class TeamProfileController {
             }
 
             // 4.1. 팀 미니 프로필
-            final TeamMiniProfileResponse teamMiniProfileResponse = getTeamMiniProfileResponse(accessor.getMemberId(), teamProfileIsValueResponse.isTeamMiniProfile());
+            final TeamMiniProfileResponse teamMiniProfileResponse = getTeamMiniProfileResponse(accessor.getMemberId(),
+                    teamProfileIsValueResponse.isTeamMiniProfile());
             log.info("teamMiniProfileResponse={}", teamMiniProfileResponse);
 
             // 4.3. 프로필 완성도
@@ -78,32 +79,34 @@ public class TeamProfileController {
             log.info("teamCompletionResponse={}", teamCompletionResponse);
 
             // 4.4. 희망 팀빌딩 분야
-            final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse = getTeamProfileTeamBuildingFieldResponse(accessor.getMemberId(), teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
+            final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse = getTeamProfileTeamBuildingFieldResponse(
+                    accessor.getMemberId(), teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
             log.info("teamProfileTeamBuildingFieldResponse={}", teamProfileTeamBuildingFieldResponse);
 
             // 4.5. 팀원 공고
-            final List<TeamMemberAnnouncementResponse> teamMemberAnnouncementResponse = getTeamMemberAnnouncement(accessor.getMemberId(), teamProfileIsValueResponse.isTeamMemberAnnouncement());
+            final List<TeamMemberAnnouncementResponse> teamMemberAnnouncementResponse = getTeamMemberAnnouncement(
+                    accessor.getMemberId(), teamProfileIsValueResponse.isTeamMemberAnnouncement());
             log.info("teamMemberAnnouncementResponse={}", teamMemberAnnouncementResponse);
 
             // 4.6. 활동 방식 + 활동 지역/위치
-            final ActivityResponse activityResponse = getActivityResponse(accessor.getMemberId(), teamProfileIsValueResponse.isActivity());
+            final ActivityResponse activityResponse = getActivityResponse(accessor.getMemberId(),
+                    teamProfileIsValueResponse.isActivity());
             log.info("activityResponse={}", activityResponse);
 
             // 4.7. 팀 소개
-            final TeamProfileIntroductionResponse teamProfileIntroductionResponse = getTeamProfileIntroduction(accessor.getMemberId(), teamProfileIsValueResponse.isTeamIntroduction());
+            final TeamProfileIntroductionResponse teamProfileIntroductionResponse = getTeamProfileIntroduction(
+                    accessor.getMemberId(), teamProfileIsValueResponse.isTeamIntroduction());
             log.info("teamProfileIntroductionResponse={}", teamProfileIntroductionResponse);
 
             // 4.8. 팀원 소개
-            final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponse = getTeamMemberIntroduction(accessor.getMemberId(), teamProfileIsValueResponse.isTeamMemberIntroduction());
+            final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponse = getTeamMemberIntroduction(
+                    accessor.getMemberId(), teamProfileIsValueResponse.isTeamMemberIntroduction());
             log.info("teamMemberIntroductionResponse={}", teamMemberIntroductionResponse);
 
             // 4.9. 연혁
-            final List<HistoryResponse> historyResponse = getHistory(accessor.getMemberId(), teamProfileIsValueResponse.isHistory());
+            final List<HistoryResponse> historyResponse = getHistory(accessor.getMemberId(),
+                    teamProfileIsValueResponse.isHistory());
             log.info("historyResponse={}", historyResponse);
-
-            // 4.10. 첨부
-            final TeamAttachResponse teamAttachResponse = getTeamAttach(accessor.getMemberId(), teamProfileIsValueResponse.isTeamAttachUrl());
-            log.info("teamAttachResponse={}", teamAttachResponse);
 
             final TeamProfileResponse teamProfileResponse = teamProfileService.getTeamProfileResponse(
                     isTeamProfileEssential,
@@ -114,8 +117,7 @@ public class TeamProfileController {
                     activityResponse,
                     teamProfileIntroductionResponse,
                     teamMemberIntroductionResponse,
-                    historyResponse,
-                    teamAttachResponse
+                    historyResponse
             );
 
             return ResponseEntity.ok().body(teamProfileResponse);
@@ -168,6 +170,7 @@ public class TeamProfileController {
             return null;
         }
     }
+
     // 4.6. 활동 방식 + 활동 지역 및 위치
     private ActivityResponse getActivityResponse(
             final Long memberId,
@@ -216,18 +219,6 @@ public class TeamProfileController {
             return historyService.getAllHistories(memberId);
         } else {
             return null;
-        }
-    }
-
-    // 4.10 첨부
-    private TeamAttachResponse getTeamAttach(
-            final Long memberId,
-            final boolean isTeamAttach
-    ) {
-        if (isTeamAttach) {
-            return teamAttachService.getTeamAttachList(memberId);
-        } else {
-            return new TeamAttachResponse();
         }
     }
 

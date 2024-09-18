@@ -1,14 +1,22 @@
 package liaison.linkit.team.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
+
+import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.request.TeamIntroductionCreateRequest;
-import liaison.linkit.team.dto.response.*;
+import liaison.linkit.team.dto.response.OnBoardingTeamProfileResponse;
+import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
+import liaison.linkit.team.dto.response.TeamProfileIntroductionResponse;
+import liaison.linkit.team.dto.response.TeamProfileIsValueResponse;
+import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
+import liaison.linkit.team.dto.response.TeamProfileResponse;
+import liaison.linkit.team.dto.response.TeamProfileTeamBuildingFieldResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
-import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
@@ -16,10 +24,6 @@ import liaison.linkit.team.dto.response.onBoarding.OnBoardingFieldTeamInformResp
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -89,8 +93,7 @@ public class TeamProfileService {
             final ActivityResponse activityResponse,
             final TeamProfileIntroductionResponse teamProfileIntroductionResponse,
             final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponse,
-            final List<HistoryResponse> historyResponse,
-            final TeamAttachResponse teamAttachResponse
+            final List<HistoryResponse> historyResponse
     ) {
         return TeamProfileResponse.teamProfileItems(
                 isTeamProfileEssential,
@@ -101,8 +104,7 @@ public class TeamProfileService {
                 activityResponse,
                 teamProfileIntroductionResponse,
                 teamMemberIntroductionResponse,
-                historyResponse,
-                teamAttachResponse
+                historyResponse
         );
     }
 }

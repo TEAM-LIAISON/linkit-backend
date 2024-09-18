@@ -5,7 +5,6 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.dto.request.attach.TeamAttachUrlCreateRequest;
-import liaison.linkit.team.service.TeamAttachService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,14 +71,16 @@ public class TeamAttachControllerTest extends ControllerTest {
                 "https://github.com/TEAM-LIAISON"
         );
 
-        final List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequestList = Arrays.asList(teamAttachUrlCreateRequest1, teamAttachUrlCreateRequest2);
+        final List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequestList = Arrays.asList(
+                teamAttachUrlCreateRequest1, teamAttachUrlCreateRequest2);
 
         doNothing().when(teamAttachService).saveUrl(1L, teamAttachUrlCreateRequestList);
         performPostTeamUrlRequest(teamAttachUrlCreateRequestList);
     }
 
 
-    private ResultActions performPostTeamUrlRequest(final List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequests) throws Exception {
+    private ResultActions performPostTeamUrlRequest(final List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequests)
+            throws Exception {
         return mockMvc.perform(
                 post("/team/attach/url")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -91,7 +92,7 @@ public class TeamAttachControllerTest extends ControllerTest {
 
     private ResultActions performDeleteTeamAttachUrlRequest(
             final int teamAttachUrlId
-    ) throws  Exception {
+    ) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.delete("/team/attach/url/{teamAttachUrlId}", teamAttachUrlId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -114,7 +115,8 @@ public class TeamAttachControllerTest extends ControllerTest {
                 "https://www.notion.no"
         );
 
-        final List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequestList = Arrays.asList(firstTeamAttachUrlCreateRequest, secondTeamAttachUrlCreateRequest);
+        final List<TeamAttachUrlCreateRequest> teamAttachUrlCreateRequestList = Arrays.asList(
+                firstTeamAttachUrlCreateRequest, secondTeamAttachUrlCreateRequest);
 
         // when
         final ResultActions resultActions = performPostTeamUrlRequest(teamAttachUrlCreateRequestList);

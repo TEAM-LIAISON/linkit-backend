@@ -1,8 +1,23 @@
 package liaison.linkit.team.presentation;
 
 
+import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
+import java.util.Arrays;
+import java.util.List;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
@@ -11,13 +26,19 @@ import liaison.linkit.team.dto.response.TeamProfileIsValueResponse;
 import liaison.linkit.team.dto.response.TeamProfileTeamBuildingFieldResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
-import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
-import liaison.linkit.team.dto.response.attach.TeamAttachUrlResponse;
 import liaison.linkit.team.dto.response.browse.BrowseTeamProfileResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
-import liaison.linkit.team.service.*;
+import liaison.linkit.team.service.ActivityService;
+import liaison.linkit.team.service.BrowseTeamProfileService;
+import liaison.linkit.team.service.HistoryService;
+import liaison.linkit.team.service.TeamCompletionService;
+import liaison.linkit.team.service.TeamMemberAnnouncementService;
+import liaison.linkit.team.service.TeamMemberIntroductionService;
+import liaison.linkit.team.service.TeamMiniProfileService;
+import liaison.linkit.team.service.TeamProfileService;
+import liaison.linkit.team.service.TeamProfileTeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,20 +50,6 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BrowseTeamProfileController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -72,8 +79,6 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
     public TeamMemberIntroductionService teamMemberIntroductionService;
     @MockBean
     public HistoryService historyService;
-    @MockBean
-    public TeamAttachService teamAttachService;
 
     @BeforeEach
     void setUp() {
@@ -106,7 +111,9 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
         given(browseTeamProfileService.getTeamProfileIsValue(1L)).willReturn(teamProfileIsValueResponse);
 
         // 팀 소개서 필수 항목 존재 여부
-        final boolean isTeamProfileEssential = (teamProfileIsValueResponse.isTeamMiniProfile() && teamProfileIsValueResponse.isActivity() && teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
+        final boolean isTeamProfileEssential = (teamProfileIsValueResponse.isTeamMiniProfile()
+                && teamProfileIsValueResponse.isActivity()
+                && teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
 
         // 4.1. 미니 프로필
         final TeamMiniProfileResponse teamMiniProfileResponse = new TeamMiniProfileResponse(
@@ -134,7 +141,8 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
         final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse = new TeamProfileTeamBuildingFieldResponse(
                 teamBuildingFieldNames
         );
-        given(teamProfileTeamBuildingFieldService.getAllTeamProfileTeamBuildingFields(1L)).willReturn(teamProfileTeamBuildingFieldResponse);
+        given(teamProfileTeamBuildingFieldService.getAllTeamProfileTeamBuildingFields(1L)).willReturn(
+                teamProfileTeamBuildingFieldResponse);
 
         // 4.5. 팀원 공고
         final TeamMemberAnnouncementResponse firstTeamMemberAnnouncementResponse = new TeamMemberAnnouncementResponse(
@@ -159,10 +167,11 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
                 false
         );
 
+        final List<TeamMemberAnnouncementResponse> teamMemberAnnouncementResponseList = Arrays.asList(
+                firstTeamMemberAnnouncementResponse, secondTeamMemberAnnouncementResponse);
 
-        final List<TeamMemberAnnouncementResponse> teamMemberAnnouncementResponseList = Arrays.asList(firstTeamMemberAnnouncementResponse, secondTeamMemberAnnouncementResponse);
-
-        given(teamMemberAnnouncementService.getTeamMemberAnnouncements(1L)).willReturn(teamMemberAnnouncementResponseList);
+        given(teamMemberAnnouncementService.getTeamMemberAnnouncements(1L)).willReturn(
+                teamMemberAnnouncementResponseList);
 
         // 4.6. 활동 방식 + 활동 지역/위치
         final List<String> activityTagName = Arrays.asList("사무실 있음", "비대면 활동");
@@ -194,8 +203,10 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
                 "백엔드 개발자입니다."
         );
 
-        final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponseList = Arrays.asList(firstTeamMemberIntroductionResponse, secondTeamMemberIntroductionResponse);
-        given(teamMemberIntroductionService.getAllTeamMemberIntroduction(1L)).willReturn(teamMemberIntroductionResponseList);
+        final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponseList = Arrays.asList(
+                firstTeamMemberIntroductionResponse, secondTeamMemberIntroductionResponse);
+        given(teamMemberIntroductionService.getAllTeamMemberIntroduction(1L)).willReturn(
+                teamMemberIntroductionResponseList);
 
         // 4.9. 연혁
         final HistoryResponse firstHistoryResponse = new HistoryResponse(
@@ -218,29 +229,8 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
         final List<HistoryResponse> historyResponseList = Arrays.asList(firstHistoryResponse, secondHistoryResponse);
         given(historyService.getAllHistories(1L)).willReturn(historyResponseList);
 
-        // 4.10. 첨부
-        final TeamAttachUrlResponse firstTeamAttachUrlResponse = new TeamAttachUrlResponse(
-                1L,
-                "깃허브",
-                "https://github.com/TEAM-LIAISON"
-        );
-
-        final TeamAttachUrlResponse secondTeamAttachUrlResponse = new TeamAttachUrlResponse(
-                2L,
-                "노션",
-                "https://www.notion.so/ko-kr"
-        );
-
-        final List<TeamAttachUrlResponse> teamAttachUrlResponseList = Arrays.asList(firstTeamAttachUrlResponse, secondTeamAttachUrlResponse);
-        final TeamAttachResponse teamAttachResponse = new TeamAttachResponse(
-                teamAttachUrlResponseList
-        );
-        given(teamAttachService.getTeamAttachList(1L)).willReturn(teamAttachResponse);
-
-
-
         when(browseTeamProfileService.getBrowseTeamProfileResponse(
-                any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(BrowseTeamProfileResponse.teamProfile(
                 1L,
                 teamMiniProfileResponse,
@@ -250,8 +240,7 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
                 activityResponse,
                 teamProfileIntroductionResponse,
                 teamMemberIntroductionResponseList,
-                historyResponseList,
-                teamAttachResponse
+                historyResponseList
         ));
 
         // when
@@ -266,73 +255,127 @@ public class BrowseTeamProfileControllerTest extends ControllerTest {
                                                 .description("팀 미니 프로필 ID")
                                 ),
                                 responseFields(
-                                        fieldWithPath("teamProfileId").type(JsonFieldType.NUMBER).description("타깃 열람 팀 소개서 PK ID"),
+                                        fieldWithPath("teamProfileId").type(JsonFieldType.NUMBER)
+                                                .description("타깃 열람 팀 소개서 PK ID"),
                                         // 4.1.
-                                        subsectionWithPath("teamMiniProfileResponse").type(JsonFieldType.OBJECT).description("팀 미니 프로필 응답 객체"),
+                                        subsectionWithPath("teamMiniProfileResponse").type(JsonFieldType.OBJECT)
+                                                .description("팀 미니 프로필 응답 객체"),
 
-                                        fieldWithPath("teamMiniProfileResponse.sectorName").type(JsonFieldType.STRING).description("팀 미니 프로필 분야"),
-                                        fieldWithPath("teamMiniProfileResponse.sizeType").type(JsonFieldType.STRING).description("팀 미니 프로필 규모"),
-                                        fieldWithPath("teamMiniProfileResponse.teamName").type(JsonFieldType.STRING).description("팀 이름"),
-                                        fieldWithPath("teamMiniProfileResponse.teamProfileTitle").type(JsonFieldType.STRING).description("팀 미니 프로필 제목"),
-                                        fieldWithPath("teamMiniProfileResponse.isTeamActivate").type(JsonFieldType.BOOLEAN).description("팀 소개서 활성화 여부"),
-                                        fieldWithPath("teamMiniProfileResponse.teamLogoImageUrl").type(JsonFieldType.STRING).description("이미지 파일 소스 경로"),
-                                        fieldWithPath("teamMiniProfileResponse.teamKeywordNames").type(JsonFieldType.ARRAY).description("팀 소개 항목").attributes(field("constraint", "문자열 배열")),
+                                        fieldWithPath("teamMiniProfileResponse.sectorName").type(JsonFieldType.STRING)
+                                                .description("팀 미니 프로필 분야"),
+                                        fieldWithPath("teamMiniProfileResponse.sizeType").type(JsonFieldType.STRING)
+                                                .description("팀 미니 프로필 규모"),
+                                        fieldWithPath("teamMiniProfileResponse.teamName").type(JsonFieldType.STRING)
+                                                .description("팀 이름"),
+                                        fieldWithPath("teamMiniProfileResponse.teamProfileTitle").type(
+                                                JsonFieldType.STRING).description("팀 미니 프로필 제목"),
+                                        fieldWithPath("teamMiniProfileResponse.isTeamActivate").type(
+                                                JsonFieldType.BOOLEAN).description("팀 소개서 활성화 여부"),
+                                        fieldWithPath("teamMiniProfileResponse.teamLogoImageUrl").type(
+                                                JsonFieldType.STRING).description("이미지 파일 소스 경로"),
+                                        fieldWithPath("teamMiniProfileResponse.teamKeywordNames").type(
+                                                        JsonFieldType.ARRAY).description("팀 소개 항목")
+                                                .attributes(field("constraint", "문자열 배열")),
 
                                         // 4.3.
-                                        subsectionWithPath("teamCompletionResponse").type(JsonFieldType.OBJECT).description("팀 소개서 완성도 응답 객체"),
-                                        fieldWithPath("teamCompletionResponse.teamCompletion").type(JsonFieldType.STRING).description("팀 소개서 완성도 % 값"),
-                                        fieldWithPath("teamCompletionResponse.teamProfileTeamBuildingField").type(JsonFieldType.BOOLEAN).description("희망 팀빌딩 분야 기입 여부"),
-                                        fieldWithPath("teamCompletionResponse.teamMemberAnnouncement").type(JsonFieldType.BOOLEAN).description("팀원 공고"),
-                                        fieldWithPath("teamCompletionResponse.activity").type(JsonFieldType.BOOLEAN).description("활동 방식 및 활동 지역 및 위치"),
-                                        fieldWithPath("teamCompletionResponse.teamIntroduction").type(JsonFieldType.BOOLEAN).description("팀 소개"),
-                                        fieldWithPath("teamCompletionResponse.teamMemberIntroduction").type(JsonFieldType.BOOLEAN).description("팀원 소개"),
-                                        fieldWithPath("teamCompletionResponse.history").type(JsonFieldType.BOOLEAN).description("연혁"),
-                                        fieldWithPath("teamCompletionResponse.teamAttach").type(JsonFieldType.BOOLEAN).description("첨부"),
+                                        subsectionWithPath("teamCompletionResponse").type(JsonFieldType.OBJECT)
+                                                .description("팀 소개서 완성도 응답 객체"),
+                                        fieldWithPath("teamCompletionResponse.teamCompletion").type(
+                                                JsonFieldType.STRING).description("팀 소개서 완성도 % 값"),
+                                        fieldWithPath("teamCompletionResponse.teamProfileTeamBuildingField").type(
+                                                JsonFieldType.BOOLEAN).description("희망 팀빌딩 분야 기입 여부"),
+                                        fieldWithPath("teamCompletionResponse.teamMemberAnnouncement").type(
+                                                JsonFieldType.BOOLEAN).description("팀원 공고"),
+                                        fieldWithPath("teamCompletionResponse.activity").type(JsonFieldType.BOOLEAN)
+                                                .description("활동 방식 및 활동 지역 및 위치"),
+                                        fieldWithPath("teamCompletionResponse.teamIntroduction").type(
+                                                JsonFieldType.BOOLEAN).description("팀 소개"),
+                                        fieldWithPath("teamCompletionResponse.teamMemberIntroduction").type(
+                                                JsonFieldType.BOOLEAN).description("팀원 소개"),
+                                        fieldWithPath("teamCompletionResponse.history").type(JsonFieldType.BOOLEAN)
+                                                .description("연혁"),
+                                        fieldWithPath("teamCompletionResponse.teamAttach").type(JsonFieldType.BOOLEAN)
+                                                .description("첨부"),
 
                                         // 4.4.
-                                        subsectionWithPath("teamProfileTeamBuildingFieldResponse").type(JsonFieldType.OBJECT).description("희망 팀빌딩 분야 응답 객체"),
-                                        fieldWithPath("teamProfileTeamBuildingFieldResponse.teamProfileTeamBuildingFieldNames").type(JsonFieldType.ARRAY).description("희망 팀빌딩 분야 이름"),
+                                        subsectionWithPath("teamProfileTeamBuildingFieldResponse").type(
+                                                JsonFieldType.OBJECT).description("희망 팀빌딩 분야 응답 객체"),
+                                        fieldWithPath(
+                                                "teamProfileTeamBuildingFieldResponse.teamProfileTeamBuildingFieldNames").type(
+                                                JsonFieldType.ARRAY).description("희망 팀빌딩 분야 이름"),
 
                                         // 4.5.
-                                        subsectionWithPath("teamMemberAnnouncementResponses").type(JsonFieldType.ARRAY).description("팀원 공고 응답 객체"),
-                                        fieldWithPath("teamMemberAnnouncementResponses[].id").type(JsonFieldType.NUMBER).description("팀원 공고 응답 객체 ID"),
-                                        fieldWithPath("teamMemberAnnouncementResponses[].teamName").type(JsonFieldType.STRING).description("팀 이름"),
-                                        fieldWithPath("teamMemberAnnouncementResponses[].jobRoleName").type(JsonFieldType.STRING).description("직무, 역할 이름"),
-                                        fieldWithPath("teamMemberAnnouncementResponses[].mainBusiness").type(JsonFieldType.STRING).description("팀원 공고 주요 업무"),
-                                        fieldWithPath("teamMemberAnnouncementResponses[].skillNames").type(JsonFieldType.ARRAY).description("보유 역량 이름 배열"),
-                                        fieldWithPath("teamMemberAnnouncementResponses[].applicationProcess").type(JsonFieldType.STRING).description("지원 절차"),
+                                        subsectionWithPath("teamMemberAnnouncementResponses").type(JsonFieldType.ARRAY)
+                                                .description("팀원 공고 응답 객체"),
+                                        fieldWithPath("teamMemberAnnouncementResponses[].id").type(JsonFieldType.NUMBER)
+                                                .description("팀원 공고 응답 객체 ID"),
+                                        fieldWithPath("teamMemberAnnouncementResponses[].teamName").type(
+                                                JsonFieldType.STRING).description("팀 이름"),
+                                        fieldWithPath("teamMemberAnnouncementResponses[].jobRoleName").type(
+                                                JsonFieldType.STRING).description("직무, 역할 이름"),
+                                        fieldWithPath("teamMemberAnnouncementResponses[].mainBusiness").type(
+                                                JsonFieldType.STRING).description("팀원 공고 주요 업무"),
+                                        fieldWithPath("teamMemberAnnouncementResponses[].skillNames").type(
+                                                JsonFieldType.ARRAY).description("보유 역량 이름 배열"),
+                                        fieldWithPath("teamMemberAnnouncementResponses[].applicationProcess").type(
+                                                JsonFieldType.STRING).description("지원 절차"),
 
                                         // 4.6.
-                                        subsectionWithPath("activityResponse").type(JsonFieldType.OBJECT).description("활동 방식 및 활동 지역 및 위치 응답 객체"),
-                                        fieldWithPath("activityResponse.activityTagName").type(JsonFieldType.ARRAY).description("활동 방식"),
-                                        fieldWithPath("activityResponse.cityName").type(JsonFieldType.STRING).description("시/도 이름"),
-                                        fieldWithPath("activityResponse.divisionName").type(JsonFieldType.STRING).description("시/군/구 이름"),
+                                        subsectionWithPath("activityResponse").type(JsonFieldType.OBJECT)
+                                                .description("활동 방식 및 활동 지역 및 위치 응답 객체"),
+                                        fieldWithPath("activityResponse.activityTagName").type(JsonFieldType.ARRAY)
+                                                .description("활동 방식"),
+                                        fieldWithPath("activityResponse.cityName").type(JsonFieldType.STRING)
+                                                .description("시/도 이름"),
+                                        fieldWithPath("activityResponse.divisionName").type(JsonFieldType.STRING)
+                                                .description("시/군/구 이름"),
 
                                         // 4.7.
-                                        subsectionWithPath("teamProfileIntroductionResponse").type(JsonFieldType.OBJECT).description("팀 소개 응답 객체"),
-                                        fieldWithPath("teamProfileIntroductionResponse.teamIntroduction").type(JsonFieldType.STRING).description("팀 소개 텍스트"),
+                                        subsectionWithPath("teamProfileIntroductionResponse").type(JsonFieldType.OBJECT)
+                                                .description("팀 소개 응답 객체"),
+                                        fieldWithPath("teamProfileIntroductionResponse.teamIntroduction").type(
+                                                JsonFieldType.STRING).description("팀 소개 텍스트"),
 
                                         // 4.8.
-                                        subsectionWithPath("teamMemberIntroductionResponses").type(JsonFieldType.ARRAY).description("팀원 소개 응답 객체"),
-                                        fieldWithPath("teamMemberIntroductionResponses[].id").type(JsonFieldType.NUMBER).description("팀원 소개 응답 객체 ID"),
-                                        fieldWithPath("teamMemberIntroductionResponses[].teamMemberName").type(JsonFieldType.STRING).description("팀원 이름"),
-                                        fieldWithPath("teamMemberIntroductionResponses[].teamMemberRole").type(JsonFieldType.STRING).description("팀원 직무/역할"),
-                                        fieldWithPath("teamMemberIntroductionResponses[].teamMemberIntroductionText").type(JsonFieldType.STRING).description("팀원 소개 텍스트"),
+                                        subsectionWithPath("teamMemberIntroductionResponses").type(JsonFieldType.ARRAY)
+                                                .description("팀원 소개 응답 객체"),
+                                        fieldWithPath("teamMemberIntroductionResponses[].id").type(JsonFieldType.NUMBER)
+                                                .description("팀원 소개 응답 객체 ID"),
+                                        fieldWithPath("teamMemberIntroductionResponses[].teamMemberName").type(
+                                                JsonFieldType.STRING).description("팀원 이름"),
+                                        fieldWithPath("teamMemberIntroductionResponses[].teamMemberRole").type(
+                                                JsonFieldType.STRING).description("팀원 직무/역할"),
+                                        fieldWithPath(
+                                                "teamMemberIntroductionResponses[].teamMemberIntroductionText").type(
+                                                JsonFieldType.STRING).description("팀원 소개 텍스트"),
 
                                         // 4.9
-                                        subsectionWithPath("historyResponses").type(JsonFieldType.ARRAY).description("연혁 응답 객체"),
-                                        fieldWithPath("historyResponses[].id").type(JsonFieldType.NUMBER).description("연혁 응답 객체 ID"),
-                                        fieldWithPath("historyResponses[].historyOneLineIntroduction").type(JsonFieldType.STRING).description("연혁 한 줄 소개"),
-                                        fieldWithPath("historyResponses[].startYear").type(JsonFieldType.NUMBER).description("시작 연도"),
-                                        fieldWithPath("historyResponses[].endYear").type(JsonFieldType.NUMBER).description("종료 연도"),
-                                        fieldWithPath("historyResponses[].historyIntroduction").type(JsonFieldType.STRING).description("연혁 소개"),
-                                        fieldWithPath("historyResponses[].inProgress").type(JsonFieldType.BOOLEAN).description("진행 여부"),
+                                        subsectionWithPath("historyResponses").type(JsonFieldType.ARRAY)
+                                                .description("연혁 응답 객체"),
+                                        fieldWithPath("historyResponses[].id").type(JsonFieldType.NUMBER)
+                                                .description("연혁 응답 객체 ID"),
+                                        fieldWithPath("historyResponses[].historyOneLineIntroduction").type(
+                                                JsonFieldType.STRING).description("연혁 한 줄 소개"),
+                                        fieldWithPath("historyResponses[].startYear").type(JsonFieldType.NUMBER)
+                                                .description("시작 연도"),
+                                        fieldWithPath("historyResponses[].endYear").type(JsonFieldType.NUMBER)
+                                                .description("종료 연도"),
+                                        fieldWithPath("historyResponses[].historyIntroduction").type(
+                                                JsonFieldType.STRING).description("연혁 소개"),
+                                        fieldWithPath("historyResponses[].inProgress").type(JsonFieldType.BOOLEAN)
+                                                .description("진행 여부"),
 
                                         // 4.10.
-                                        subsectionWithPath("teamAttachResponse").type(JsonFieldType.OBJECT).description("팀 첨부 응답 객체"),
-                                        fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL 객체 ID"),
-                                        fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].teamAttachUrlName").type(JsonFieldType.STRING).description("팀 첨부 URL 이름"),
-                                        fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].teamAttachUrlPath").type(JsonFieldType.STRING).description("팀 첨부 URL 경로")
+                                        subsectionWithPath("teamAttachResponse").type(JsonFieldType.OBJECT)
+                                                .description("팀 첨부 응답 객체"),
+                                        fieldWithPath("teamAttachResponse.teamAttachUrlResponseList[].id").type(
+                                                JsonFieldType.NUMBER).description("첨부 URL 객체 ID"),
+                                        fieldWithPath(
+                                                "teamAttachResponse.teamAttachUrlResponseList[].teamAttachUrlName").type(
+                                                JsonFieldType.STRING).description("팀 첨부 URL 이름"),
+                                        fieldWithPath(
+                                                "teamAttachResponse.teamAttachUrlResponseList[].teamAttachUrlPath").type(
+                                                JsonFieldType.STRING).description("팀 첨부 URL 경로")
                                 )
                         )
                 );
