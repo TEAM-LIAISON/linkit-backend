@@ -1,6 +1,7 @@
 package liaison.linkit.common.presentation;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonProperty({"isSuccess", "code", "message", "result"})
+@JsonPropertyOrder({"isSuccess", "code", "message", "result"})
 public class CommonResponse<T> {
 
     @JsonProperty("isSuccess")

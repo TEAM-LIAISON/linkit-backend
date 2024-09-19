@@ -1,12 +1,17 @@
 package liaison.linkit.member.domain;
 
-import jakarta.persistence.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import liaison.linkit.global.BaseEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 // 이름 및 사용자 정보 기입 플로우 추가 구현 필요
 @Entity
@@ -31,16 +36,19 @@ public class MemberBasicInform extends BaseEntity {
     @Column(nullable = false, length = 30)
     private String contact;
 
+    // 서비스 이용약관 동의
     @Column(nullable = false)
     private boolean serviceUseAgree;
 
+    // 개인정보 수집 및 이용 동의
     @Column(nullable = false)
     private boolean privateInformAgree;
 
+    // 만 14세 이상
     @Column(nullable = false)
     private boolean ageCheck;
 
-    // 뉴스레터 및 마케팅 정보 수신동의
+    // 광고성 정보 수신 동의
     @Column(nullable = false)
     private boolean marketingAgree;
 

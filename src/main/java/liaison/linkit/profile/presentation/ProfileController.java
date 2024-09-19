@@ -7,7 +7,7 @@ import java.util.List;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.member.service.MemberService;
+import liaison.linkit.member.business.MemberService;
 import liaison.linkit.profile.dto.request.IntroductionRequest;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;

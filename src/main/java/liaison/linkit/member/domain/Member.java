@@ -13,24 +13,20 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import java.time.LocalDateTime;
+import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.member.domain.type.MemberState;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.team.domain.TeamProfile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @SQLRestriction("member_state = 'ACTIVE'")
-public class Member {
-
-    private static final String DEFAULT_MEMBER_IMAGE_NAME = "default-image.png";
-
+public class Member extends BaseDateTimeEntity {
+    
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -55,13 +51,6 @@ public class Member {
     @Enumerated(value = STRING)
     private MemberState memberState;
 
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
-
     @Column(nullable = false)
     private boolean existMemberBasicInform;
 
@@ -81,8 +70,6 @@ public class Member {
         this.socialLoginId = socialLoginId;
         this.email = email;
         this.memberState = ACTIVE;
-        this.createdAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
         this.memberBasicInform = memberBasicInform;
         this.existMemberBasicInform = false;
         this.privateWishCount = 0;

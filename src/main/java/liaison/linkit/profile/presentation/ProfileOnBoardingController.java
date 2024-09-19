@@ -5,7 +5,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.member.service.MemberService;
+import liaison.linkit.member.business.MemberService;
 import liaison.linkit.profile.dto.request.onBoarding.OnBoardingPersonalJobAndSkillCreateRequest;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
@@ -71,13 +71,20 @@ public class ProfileOnBoardingController {
         try {
             profileOnBoardingService.validateProfileByMember(accessor.getMemberId());
 
-            final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse = profileOnBoardingService.getProfileOnBoardingIsValue(accessor.getMemberId());
-            final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isMiniProfile());
-            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
-            final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileRegion());
-            final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(accessor.getMemberId(), profileOnBoardingIsValueResponse.isJobAndSkill());
-            final List<EducationResponse> educationResponses = getEducationResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isEducation());
-            final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(accessor.getMemberId(), profileOnBoardingIsValueResponse.isAntecedents());
+            final ProfileOnBoardingIsValueResponse profileOnBoardingIsValueResponse = profileOnBoardingService.getProfileOnBoardingIsValue(
+                    accessor.getMemberId());
+            final MiniProfileResponse miniProfileResponse = getMiniProfileResponse(accessor.getMemberId(),
+                    profileOnBoardingIsValueResponse.isMiniProfile());
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(
+                    accessor.getMemberId(), profileOnBoardingIsValueResponse.isProfileTeamBuildingField());
+            final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(accessor.getMemberId(),
+                    profileOnBoardingIsValueResponse.isProfileRegion());
+            final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(accessor.getMemberId(),
+                    profileOnBoardingIsValueResponse.isJobAndSkill());
+            final List<EducationResponse> educationResponses = getEducationResponses(accessor.getMemberId(),
+                    profileOnBoardingIsValueResponse.isEducation());
+            final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(accessor.getMemberId(),
+                    profileOnBoardingIsValueResponse.isAntecedents());
 
             final OnBoardingProfileResponse onBoardingProfileResponse = profileOnBoardingService.getOnBoardingProfile(
                     profileTeamBuildingFieldResponse,

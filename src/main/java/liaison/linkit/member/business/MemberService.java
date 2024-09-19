@@ -1,4 +1,4 @@
-package liaison.linkit.member.service;
+package liaison.linkit.member.business;
 
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID;
 
@@ -6,14 +6,12 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
-import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformCreateRequest;
 import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformUpdateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
 import liaison.linkit.member.dto.response.MemberResponse;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,9 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class MemberService {
     private final MemberQueryAdapter memberQueryAdapter;
-    private final MemberRepository memberRepository;
     private final MemberBasicInformRepository memberBasicInformRepository;
-    private final ProfileRepository profileRepository;
 
     // 회원 기본 정보를 가져오는 메서드
     private MemberBasicInform getMemberBasicInform(final Long memberId) {
@@ -92,6 +88,7 @@ public class MemberService {
             final MemberBasicInformUpdateRequest memberBasicInformUpdateRequest
     ) {
         final Member member = memberQueryAdapter.findById(memberId);
+
         final MemberBasicInform updateMemberBasicInform = new MemberBasicInform(
                 memberId,
                 memberBasicInformUpdateRequest.getMemberName(),
@@ -99,6 +96,7 @@ public class MemberService {
                 memberBasicInformUpdateRequest.isMarketingAgree(),
                 member
         );
+
         memberBasicInformRepository.delete(member.getMemberBasicInform());
         memberBasicInformRepository.save(updateMemberBasicInform);
     }

@@ -22,7 +22,10 @@ public class QMember extends EntityPathBase<Member> {
 
     public static final QMember member = new QMember("member1");
 
-    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
+    public final liaison.linkit.common.domain.QBaseDateTimeEntity _super = new liaison.linkit.common.domain.QBaseDateTimeEntity(this);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
     public final StringPath email = createString("email");
 
@@ -34,8 +37,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<liaison.linkit.member.domain.type.MemberState> memberState = createEnum("memberState", liaison.linkit.member.domain.type.MemberState.class);
 
-    public final DateTimePath<java.time.LocalDateTime> modifiedAt = createDateTime("modifiedAt", java.time.LocalDateTime.class);
-
     public final NumberPath<Integer> privateWishCount = createNumber("privateWishCount", Integer.class);
 
     public final liaison.linkit.profile.domain.QProfile profile;
@@ -45,6 +46,9 @@ public class QMember extends EntityPathBase<Member> {
     public final liaison.linkit.team.domain.QTeamProfile teamProfile;
 
     public final NumberPath<Integer> teamWishCount = createNumber("teamWishCount", Integer.class);
+
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QMember(String variable) {
         this(Member.class, forVariable(variable), INITS);
