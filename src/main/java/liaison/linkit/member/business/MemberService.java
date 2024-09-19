@@ -11,6 +11,7 @@ import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformCrea
 import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformUpdateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
 import liaison.linkit.member.dto.response.MemberResponse;
+import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class MemberService {
     private final MemberQueryAdapter memberQueryAdapter;
-    private final MemberBasicInformRepository memberBasicInformRepository;
+    private final MemberBasicInformQueryAdapter memberBasicInformQueryAdapter;
 
     // 회원 기본 정보를 가져오는 메서드
     private MemberBasicInform getMemberBasicInform(final Long memberId) {
