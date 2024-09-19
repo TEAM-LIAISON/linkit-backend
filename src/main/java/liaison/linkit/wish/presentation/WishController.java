@@ -1,18 +1,26 @@
 package liaison.linkit.wish.presentation;
 
+import java.util.List;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
+import liaison.linkit.wish.presentation.dto.privateWish.PrivateWishResponseDTO;
+import liaison.linkit.wish.presentation.dto.privateWish.PrivateWishResponseDTO.AddPrivateWish;
 import liaison.linkit.wish.presentation.dto.response.WishTeamProfileResponse;
+import liaison.linkit.wish.presentation.dto.teamWish.TeamWishResponseDTO;
 import liaison.linkit.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,32 +29,26 @@ import java.util.List;
 public class WishController {
 
     public final WishService wishService;
-    
-    @PostMapping("/wish/private/profile/{miniProfileId}")
+
+    @PostMapping("/wish/private/profile/{profileId}")
     @MemberOnly
-    public ResponseEntity<Void> createWishToPrivateProfile(
+    public CommonResponse<PrivateWishResponseDTO.AddPrivateWish> createWishToPrivateProfile(
             @Auth final Accessor accessor,
-            @PathVariable final Long miniProfileId
+            @PathVariable final Long profileId
     ) {
         wishService.validateMemberMaxPrivateWish(accessor.getMemberId());
-        wishService.createWishToPrivateProfile(accessor.getMemberId(), miniProfileId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return CommonResponse.onSuccess(wishService.createWishToPrivateProfile(accessor.getMemberId(), profileId));
     }
 
-    // 팀 소개서 찜하기
     @PostMapping("/wish/team/profile/{teamMemberAnnouncementId}")
     @MemberOnly
-    public ResponseEntity<Void> createWishToTeamProfile(
+    public CommonResponse<TeamWishResponseDTO.AddTeamWish> createWishToTeamProfile(
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberAnnouncementId
     ) {
-        log.info("teamMemberAnnouncementId={} 을 memberId={}가 찜하는 요청이 발생했습니다.", teamMemberAnnouncementId,
-                accessor.getMemberId());
         wishService.validateMemberMaxTeamWish(accessor.getMemberId());
-
-        // 최대 개수를 넘지 않았다면 아래가 실행된다.
-        wishService.createWishToTeamProfile(accessor.getMemberId(), teamMemberAnnouncementId);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return CommonResponse.onSuccess(
+                wishService.createWishToTeamProfile(accessor.getMemberId(), teamMemberAnnouncementId));
     }
 
     // 내 이력서 찜하기 취소

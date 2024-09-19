@@ -1,10 +1,10 @@
 package liaison.linkit.wish.service;
 
-import static liaison.linkit.global.exception.ExceptionCode.CANNOT_CREATE_TEAM_WISH_BECAUSE_OF_MAX_COUNT;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_ALLOW_P2P_WISH;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_ALLOW_P2T_WISH;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MINI_PROFILE_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE;
@@ -43,12 +43,17 @@ import liaison.linkit.team.domain.repository.miniprofile.teamMiniProfileKeyword.
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
+import liaison.linkit.wish.business.PrivateWishMapper;
+import liaison.linkit.wish.business.TeamWishMapper;
 import liaison.linkit.wish.domain.PrivateWish;
 import liaison.linkit.wish.domain.TeamWish;
 import liaison.linkit.wish.domain.repository.privateWish.PrivateWishRepository;
 import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
 import liaison.linkit.wish.exception.privateWish.PrivateWishManyRequestException;
+import liaison.linkit.wish.exception.teamWish.TeamWishManyRequestException;
+import liaison.linkit.wish.presentation.dto.privateWish.PrivateWishResponseDTO;
 import liaison.linkit.wish.presentation.dto.response.WishTeamProfileResponse;
+import liaison.linkit.wish.presentation.dto.teamWish.TeamWishResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -56,11 +61,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class WishService {
 
     private final MemberQueryAdapter memberQueryAdapter;
+    private final PrivateWishMapper privateWishMapper;
+    private final TeamWishMapper teamWishMapper;
 
     private final ProfileRepository profileRepository;
     private final MiniProfileRepository miniProfileRepository;
@@ -77,23 +83,6 @@ public class WishService {
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
 
-    // 내 이력서 찜하기 최대 개수 판단 메서드
-    public void validateMemberMaxPrivateWish(final Long memberId) {
-        final Member member = memberQueryAdapter.findById(memberId);
-        final int memberPrivateWishCount = member.getPrivateWishCount();
-        if (memberPrivateWishCount >= 8) {
-            throw PrivateWishManyRequestException.EXCEPTION;
-        }
-    }
-
-    // 팀 소개서 찜하기 최대 개수 판단 메서드
-    public void validateMemberMaxTeamWish(final Long memberId) {
-        final Member member = memberQueryAdapter.findById(memberId);
-        final int memberTeamWishCount = member.getTeamWishCount();
-        if (memberTeamWishCount >= 8) {
-            throw new BadRequestException(CANNOT_CREATE_TEAM_WISH_BECAUSE_OF_MAX_COUNT);
-        }
-    }
 
     // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
     private Profile getProfile(final Long memberId) {
@@ -115,14 +104,14 @@ public class WishService {
         return miniProfile.getProfile();
     }
 
-    public void createWishToPrivateProfile(
+    @Transactional
+    public PrivateWishResponseDTO.AddPrivateWish createWishToPrivateProfile(
             final Long memberId,
-            final Long miniProfileId
+            final Long profileId
     ) {
-        // 내가
         final Member member = memberQueryAdapter.findById(memberId);
-        // 상대방의 내 이력서를
-        final Profile profile = getProfileByMiniProfileId(miniProfileId);
+        final Profile profile = profileRepository.findById(profileId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
 
         if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
             throw new BadRequestException(NOT_ALLOW_P2P_WISH);
@@ -138,6 +127,7 @@ public class WishService {
         privateWishRepository.save(privateWish);
         // 내 이력서 찜하기 카운트 + 1
         member.addPrivateWishCount();
+        return privateWishMapper.toAddPrivateWish();
     }
 
     // 찜하기 취소 메서드
@@ -153,7 +143,7 @@ public class WishService {
     }
 
     // 팀 소개서 찜하기 메서드
-    public void createWishToTeamProfile(
+    public TeamWishResponseDTO.AddTeamWish createWishToTeamProfile(
             final Long memberId,
             final Long teamMemberAnnouncementId
     ) {
@@ -179,6 +169,7 @@ public class WishService {
 
         // 팀 소개서 찜하기 카운트 + 1
         member.addTeamWishCount();
+        return teamWishMapper.toAddTeamWish();
     }
 
     public void cancelWishToTeamProfile(
@@ -309,5 +300,24 @@ public class WishService {
 
     private List<MiniProfileKeyword> getMiniProfileKeywords(final Long miniProfileId) {
         return miniProfileKeywordRepository.findAllByMiniProfileId(miniProfileId);
+    }
+
+
+    // 내 이력서 찜하기 최대 개수 판단 메서드
+    public void validateMemberMaxPrivateWish(final Long memberId) {
+        final Member member = memberQueryAdapter.findById(memberId);
+        final int memberPrivateWishCount = member.getPrivateWishCount();
+        if (memberPrivateWishCount >= 8) {
+            throw PrivateWishManyRequestException.EXCEPTION;
+        }
+    }
+
+    // 팀 소개서 찜하기 최대 개수 판단 메서드
+    public void validateMemberMaxTeamWish(final Long memberId) {
+        final Member member = memberQueryAdapter.findById(memberId);
+        final int memberTeamWishCount = member.getTeamWishCount();
+        if (memberTeamWishCount >= 8) {
+            throw TeamWishManyRequestException.EXCEPTION;
+        }
     }
 }
