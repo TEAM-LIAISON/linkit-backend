@@ -9,7 +9,7 @@ import liaison.linkit.common.exception.GlobalErrorCode;
 import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformCreateRequest;
 import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformUpdateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
-import liaison.linkit.member.exception.MemberErrorCode;
+import liaison.linkit.member.exception.member.MemberErrorCode;
 import liaison.linkit.member.business.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

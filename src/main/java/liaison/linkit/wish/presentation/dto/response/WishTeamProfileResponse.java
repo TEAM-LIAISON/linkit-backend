@@ -1,4 +1,4 @@
-package liaison.linkit.wish.dto.response;
+package liaison.linkit.wish.presentation.dto.response;
 
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;

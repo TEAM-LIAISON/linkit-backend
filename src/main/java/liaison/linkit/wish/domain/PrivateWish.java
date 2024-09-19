@@ -14,12 +14,14 @@ import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.Profile;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @SQLRestriction("status = 'USABLE'")

@@ -1,8 +1,9 @@
-package liaison.linkit.member.exception;
+package liaison.linkit.member.exception.member;
 
 import liaison.linkit.common.exception.BaseCodeException;
 
 public class MemberNotFoundException extends BaseCodeException {
+
     public static BaseCodeException EXCEPTION = new MemberNotFoundException();
 
     private MemberNotFoundException() {

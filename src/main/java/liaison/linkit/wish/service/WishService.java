@@ -1,6 +1,5 @@
 package liaison.linkit.wish.service;
 
-import static liaison.linkit.global.exception.ExceptionCode.CANNOT_CREATE_PRIVATE_WISH_BECAUSE_OF_MAX_COUNT;
 import static liaison.linkit.global.exception.ExceptionCode.CANNOT_CREATE_TEAM_WISH_BECAUSE_OF_MAX_COUNT;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_ALLOW_P2P_WISH;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_ALLOW_P2T_WISH;
@@ -48,7 +47,8 @@ import liaison.linkit.wish.domain.PrivateWish;
 import liaison.linkit.wish.domain.TeamWish;
 import liaison.linkit.wish.domain.repository.privateWish.PrivateWishRepository;
 import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
-import liaison.linkit.wish.dto.response.WishTeamProfileResponse;
+import liaison.linkit.wish.exception.privateWish.PrivateWishManyRequestException;
+import liaison.linkit.wish.presentation.dto.response.WishTeamProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -61,6 +61,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WishService {
 
     private final MemberQueryAdapter memberQueryAdapter;
+
     private final ProfileRepository profileRepository;
     private final MiniProfileRepository miniProfileRepository;
     private final TeamMiniProfileRepository teamMiniProfileRepository;
@@ -81,7 +82,7 @@ public class WishService {
         final Member member = memberQueryAdapter.findById(memberId);
         final int memberPrivateWishCount = member.getPrivateWishCount();
         if (memberPrivateWishCount >= 8) {
-            throw new BadRequestException(CANNOT_CREATE_PRIVATE_WISH_BECAUSE_OF_MAX_COUNT);
+            throw PrivateWishManyRequestException.EXCEPTION;
         }
     }
 

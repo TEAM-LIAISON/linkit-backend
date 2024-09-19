@@ -1,4 +1,4 @@
-package liaison.linkit.member.exception;
+package liaison.linkit.member.exception.memberBasicInform;
 
 import liaison.linkit.common.exception.BaseCodeException;
 

@@ -4,7 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
-import liaison.linkit.wish.dto.response.WishTeamProfileResponse;
+import liaison.linkit.wish.presentation.dto.response.WishTeamProfileResponse;
 import liaison.linkit.wish.service.WishService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,17 +21,14 @@ import java.util.List;
 public class WishController {
 
     public final WishService wishService;
-
-    // 내 이력서 찜하기
+    
     @PostMapping("/wish/private/profile/{miniProfileId}")
     @MemberOnly
     public ResponseEntity<Void> createWishToPrivateProfile(
             @Auth final Accessor accessor,
             @PathVariable final Long miniProfileId
     ) {
-        log.info("miniProfileId={} 을 memberId={}가 찜하는 요청이 발생했습니다.", miniProfileId, accessor.getMemberId());
         wishService.validateMemberMaxPrivateWish(accessor.getMemberId());
-        // 최대 개수를 넘지 않았다면 아래가 실행된다.
         wishService.createWishToPrivateProfile(accessor.getMemberId(), miniProfileId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -43,14 +40,14 @@ public class WishController {
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberAnnouncementId
     ) {
-        log.info("teamMemberAnnouncementId={} 을 memberId={}가 찜하는 요청이 발생했습니다.", teamMemberAnnouncementId, accessor.getMemberId());
+        log.info("teamMemberAnnouncementId={} 을 memberId={}가 찜하는 요청이 발생했습니다.", teamMemberAnnouncementId,
+                accessor.getMemberId());
         wishService.validateMemberMaxTeamWish(accessor.getMemberId());
 
         // 최대 개수를 넘지 않았다면 아래가 실행된다.
         wishService.createWishToTeamProfile(accessor.getMemberId(), teamMemberAnnouncementId);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
 
     // 내 이력서 찜하기 취소
     @DeleteMapping("/wish/private/profile/{miniProfileId}")
@@ -71,11 +68,12 @@ public class WishController {
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberAnnouncementId
     ) {
-        log.info("teamMemberAnnouncementId={} 을 memberId={}가 찜하는 요청이 발생했습니다.", teamMemberAnnouncementId, accessor.getMemberId());
+        log.info("teamMemberAnnouncementId={} 을 memberId={}가 찜하는 요청이 발생했습니다.", teamMemberAnnouncementId,
+                accessor.getMemberId());
         wishService.cancelWishToTeamProfile(accessor.getMemberId(), teamMemberAnnouncementId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-    
+
     // 내 이력서 찜한 목록 조회
     @GetMapping("/wish/private/profile/list")
     @MemberOnly
@@ -84,7 +82,8 @@ public class WishController {
     ) {
         log.info("memberId={}의 내 이력서 찜하기 목록을 가져옵니다.", accessor.getMemberId());
         // 찜한 주체의 ID를 전달한다.
-        final List<BrowseMiniProfileResponse> browseMiniProfileResponseList = wishService.getPrivateProfileWishList(accessor.getMemberId());
+        final List<BrowseMiniProfileResponse> browseMiniProfileResponseList = wishService.getPrivateProfileWishList(
+                accessor.getMemberId());
         return ResponseEntity.ok(browseMiniProfileResponseList);
     }
 
@@ -96,7 +95,8 @@ public class WishController {
     ) {
         log.info("memberId={}의 팀 소개서 찜하기 목록을 가져옵니다.", accessor.getMemberId());
         // 찜한 주체의 ID를 전달한다.
-        final List<WishTeamProfileResponse> wishTeamProfileResponseList = wishService.getTeamProfileWishList(accessor.getMemberId());
+        final List<WishTeamProfileResponse> wishTeamProfileResponseList = wishService.getTeamProfileWishList(
+                accessor.getMemberId());
         return ResponseEntity.ok(wishTeamProfileResponseList);
     }
 }

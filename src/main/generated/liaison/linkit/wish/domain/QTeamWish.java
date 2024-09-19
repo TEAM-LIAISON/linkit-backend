@@ -39,8 +39,6 @@ public class QTeamWish extends EntityPathBase<TeamWish> {
 
     public final liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement teamMemberAnnouncement;
 
-    public final EnumPath<liaison.linkit.wish.domain.type.WishType> wishType = createEnum("wishType", liaison.linkit.wish.domain.type.WishType.class);
-
     public QTeamWish(String variable) {
         this(TeamWish.class, forVariable(variable), INITS);
     }

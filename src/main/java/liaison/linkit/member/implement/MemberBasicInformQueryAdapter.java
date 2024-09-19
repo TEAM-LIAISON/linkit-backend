@@ -3,7 +3,7 @@ package liaison.linkit.member.implement;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
-import liaison.linkit.member.exception.MemberBasicInformNotFoundException;
+import liaison.linkit.member.exception.memberBasicInform.MemberBasicInformNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Adapter
