@@ -16,7 +16,17 @@ public class TeamWishResponseDTO {
     @AllArgsConstructor
     public static class AddTeamWish {
         @Builder.Default
-        @JsonProperty("isPrivateWish")
+        @JsonProperty("isTeamWish")
         private boolean like = true;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveTeamWish {
+        @Builder.Default
+        @JsonProperty("isTeamWish")
+        private boolean like = false;
     }
 }

@@ -15,4 +15,9 @@ public class TeamWishMapper {
     public TeamWishResponseDTO.AddTeamWish toAddTeamWish() {
         return TeamWishResponseDTO.AddTeamWish.builder().build();
     }
+
+    public TeamWishResponseDTO.RemoveTeamWish toRemoveTeamWish() {
+        return TeamWishResponseDTO.RemoveTeamWish.builder()
+                .build();
+    }
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class TeamWishRepositoryCustomImpl implements TeamWishRepositoryCustom{
+public class TeamWishRepositoryCustomImpl implements TeamWishRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -37,7 +37,7 @@ public class TeamWishRepositoryCustomImpl implements TeamWishRepositoryCustom{
     }
 
     @Override
-    public Optional<TeamWish> findByMemberIdAndTeamMemberAnnouncementId(Long teamMemberAnnouncementId, Long memberId) {
+    public Optional<TeamWish> findByMemberIdAndTeamMemberAnnouncementId(Long memberId, Long teamMemberAnnouncementId) {
         QTeamWish teamWish = QTeamWish.teamWish;
         TeamWish result = jpaQueryFactory
                 .selectFrom(teamWish)
@@ -48,7 +48,8 @@ public class TeamWishRepositoryCustomImpl implements TeamWishRepositoryCustom{
     }
 
     @Override
-    public boolean findByTeamMemberAnnouncementIdAndMemberId(final Long teamMemberAnnouncementId, final Long memberId) {
+    public boolean existsByTeamMemberAnnouncementIdAndMemberId(final Long teamMemberAnnouncementId,
+                                                               final Long memberId) {
         QTeamWish teamWish = QTeamWish.teamWish;
         Integer count = jpaQueryFactory
                 .selectOne()

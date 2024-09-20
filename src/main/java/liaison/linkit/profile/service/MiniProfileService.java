@@ -192,7 +192,8 @@ public class MiniProfileService {
         final List<String> jobRoleNames = getJobRoleNames(memberId);
         log.info("대상 객체의 희망 직무 및 역할을 조회하였습니다.");
 
-        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName(), jobRoleNames);
+        return MiniProfileResponse.personalMiniProfile(miniProfile, miniProfileKeywordList,
+                memberBasicInform.getMemberName(), jobRoleNames);
     }
 
     @Transactional(readOnly = true)
@@ -213,9 +214,11 @@ public class MiniProfileService {
         final List<String> jobRoleNames = getJobRoleNames(profile.getMember().getId());
         log.info("대상 객체의 희망 직무 및 역할을 조회하였습니다.");
 
-        final boolean isPrivateSaved = privateWishRepository.findByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
+        final boolean isPrivateSaved = privateWishRepository.existsByMemberIdAndProfileId(memberId,
+                miniProfile.getProfile().getId());
 
-        return MiniProfileResponse.personalBrowseMiniProfile(miniProfile, miniProfileKeywordList, memberBasicInform.getMemberName(), jobRoleNames, isPrivateSaved);
+        return MiniProfileResponse.personalBrowseMiniProfile(miniProfile, miniProfileKeywordList,
+                memberBasicInform.getMemberName(), jobRoleNames, isPrivateSaved);
     }
 
     private List<ProfileJobRole> getProfileJobRoleList(final Long profileId) {
@@ -228,12 +231,12 @@ public class MiniProfileService {
 
 
     private boolean getSavedImageUrl(final Profile profile) {
-            final MiniProfile miniProfile = getMiniProfile(profile.getId());
-            if (miniProfile.getMiniProfileImg() != null) {
-                return true;
-            } else {
-                return false;
-            }
+        final MiniProfile miniProfile = getMiniProfile(profile.getId());
+        if (miniProfile.getMiniProfileImg() != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // 나중에 리팩토링 필요한 부분
@@ -282,7 +285,7 @@ public class MiniProfileService {
 
     public boolean getIsPrivateSaved(final Long memberId, final Long profileId) {
         final MiniProfile miniProfile = getMiniProfile(profileId);
-        return privateWishRepository.findByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
+        return privateWishRepository.existsByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
     }
 
     // 미니 프로필의 유효성 검증이 끝난 후 수정한다.

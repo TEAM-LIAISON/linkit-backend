@@ -15,4 +15,8 @@ public class PrivateWishMapper {
     public PrivateWishResponseDTO.AddPrivateWish toAddPrivateWish() {
         return PrivateWishResponseDTO.AddPrivateWish.builder().build();
     }
+
+    public PrivateWishResponseDTO.RemovePrivateWish toRemovePrivateWish() {
+        return PrivateWishResponseDTO.RemovePrivateWish.builder().build();
+    }
 }

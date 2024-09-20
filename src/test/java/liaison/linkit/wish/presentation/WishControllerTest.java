@@ -8,7 +8,7 @@ import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResp
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import liaison.linkit.wish.presentation.dto.response.WishTeamProfileResponse;
-import liaison.linkit.wish.service.WishService;
+import liaison.linkit.wish.business.WishService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

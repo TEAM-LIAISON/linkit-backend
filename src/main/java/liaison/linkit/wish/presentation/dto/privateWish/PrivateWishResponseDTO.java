@@ -19,5 +19,14 @@ public class PrivateWishResponseDTO {
         @JsonProperty("isPrivateWish")
         private boolean like = true;
     }
-    
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemovePrivateWish {
+        @Builder.Default
+        @JsonProperty("isPrivateWish")
+        private boolean like = false;
+    }
 }

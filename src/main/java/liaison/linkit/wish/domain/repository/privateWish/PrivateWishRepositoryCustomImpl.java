@@ -12,7 +12,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
-public class PrivateWishRepositoryCustomImpl implements PrivateWishRepositoryCustom{
+public class PrivateWishRepositoryCustomImpl implements PrivateWishRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -89,7 +89,7 @@ public class PrivateWishRepositoryCustomImpl implements PrivateWishRepositoryCus
     }
 
     @Override
-    public boolean findByMemberIdAndProfileId(final Long memberId, final Long profileId) {
+    public boolean existsByMemberIdAndProfileId(final Long memberId, final Long profileId) {
         QPrivateWish privateWish = QPrivateWish.privateWish;
 
         Integer count = jpaQueryFactory
