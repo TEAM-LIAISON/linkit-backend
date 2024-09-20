@@ -7,7 +7,7 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformCreateRequest;
 import liaison.linkit.member.dto.response.MemberBasicInformResponse;
-import liaison.linkit.member.service.MemberService;
+import liaison.linkit.member.business.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +57,8 @@ class MemberControllerTest extends ControllerTest {
         doNothing().when(memberService).validateMemberBasicInformByMember(1L);
     }
 
-    private ResultActions performPostRequest(final MemberBasicInformCreateRequest memberBasicInformCreateRequest) throws Exception {
+    private ResultActions performPostRequest(final MemberBasicInformCreateRequest memberBasicInformCreateRequest)
+            throws Exception {
         return mockMvc.perform(
                 post("/members/basic-inform")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())

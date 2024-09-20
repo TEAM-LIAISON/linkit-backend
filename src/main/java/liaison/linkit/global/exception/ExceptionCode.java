@@ -94,7 +94,7 @@ public enum ExceptionCode {
 
     // 1. antecedents 2. attach (URL/FILE) 3. awards
     INVALID_TEAM_MINI_PROFILE(6004, "해당 팀 미니 프로필이 정보가 존재하지 않습니다."),
-    NOT_FOUND_MEMBER_BY_MEMBER_ID(1004, "사용자의 ID에 해당하는 회원 정보가 존재하지 않습니다."),
+
     NOT_FOUND_MEMBER_BASIC_INFORM_BY_MEMBER_ID(1004, "사용자의 ID에 해당하는 회원 기본 정보가 존재하지 않습니다."),
 
     NOT_FOUND_PROFILE_BY_MEMBER_ID(1004, "사용자의 ID에 해당하는 내 이력서 정보가 존재하지 않습니다."),
@@ -175,7 +175,11 @@ public enum ExceptionCode {
     NOT_FOUND_PRIVATE_MATCHING_BY_ID(9000, "내 이력서 대상 매칭 정보를 찾을 수 없습니다."),
     NOT_FOUND_TEAM_MATCHING_BY_ID(9001, "팀 소개서 대상 매칭 정보를 찾을 수 없습니다."),
 
-    NOT_FOUND_TEAM_WISH_BY_ID(5001, "팀 소개서 온보딩에서 팀 이름, 규모, 분야를 먼저 선택해주세요");
+    NOT_FOUND_TEAM_WISH_BY_ID(5001, "팀 소개서 온보딩에서 팀 이름, 규모, 분야를 먼저 선택해주세요"),
+
+
+    // 링킷 1.0 버전 이후 기능 업데이트 에러 코드 업데이트 (9월 15일 이후 작성 부분)
+    NOT_FOUND_MEMBER_BY_MEMBER_ID(110, "사용자의 ID에 해당하는 회원 정보가 존재하지 않습니다.");
     private final int code;
     private final String message;
 }

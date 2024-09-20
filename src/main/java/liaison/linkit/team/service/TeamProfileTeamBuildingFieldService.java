@@ -1,5 +1,10 @@
 package liaison.linkit.team.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_TEAM_PROFILE_TEAM_BUILDING_WITH_MEMBER;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
+
+import java.util.List;
+import java.util.Optional;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
@@ -13,12 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
-
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_TEAM_PROFILE_TEAM_BUILDING_WITH_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +54,6 @@ public class TeamProfileTeamBuildingFieldService {
             teamProfileTeamBuildingFieldRepository.deleteAllByTeamProfileId(teamProfile.getId());
             // 완성도 빼기 로직
             teamProfile.updateIsTeamProfileTeamBuildingField(false);
-            teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
 
         log.info("팀 소개서 희망 팀빌딩 분야 실행 part2 (삭제 완료)");
@@ -72,7 +70,6 @@ public class TeamProfileTeamBuildingFieldService {
 
         // 프로그레스바 처리 비즈니스 로직
         teamProfile.updateIsTeamProfileTeamBuildingField(true);
-        teamProfile.updateMemberTeamProfileTypeByCompletion();
         log.info("팀 소개서 희망 팀빌딩 분야 실행 part3 (저장 완료)");
     }
 
@@ -80,10 +77,12 @@ public class TeamProfileTeamBuildingFieldService {
     public TeamProfileTeamBuildingFieldResponse getAllTeamProfileTeamBuildingFields(final Long memberId) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
 
-        final List<TeamProfileTeamBuildingField> teamProfileTeamBuildingFields = teamProfileTeamBuildingFieldRepository.findAllByTeamProfileId(teamProfile.getId());
+        final List<TeamProfileTeamBuildingField> teamProfileTeamBuildingFields = teamProfileTeamBuildingFieldRepository.findAllByTeamProfileId(
+                teamProfile.getId());
 
         List<String> teamBuildingFieldNames = teamProfileTeamBuildingFields.stream()
-                .map(teamProfileTeamBuildingField -> teamBuildingFieldRepository.findById(teamProfileTeamBuildingField.getTeamBuildingField().getId()))
+                .map(teamProfileTeamBuildingField -> teamBuildingFieldRepository.findById(
+                        teamProfileTeamBuildingField.getTeamBuildingField().getId()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .map(TeamBuildingField::getTeamBuildingFieldName)

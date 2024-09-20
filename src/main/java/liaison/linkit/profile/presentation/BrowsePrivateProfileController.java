@@ -7,7 +7,6 @@ import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ExceptionCode;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
@@ -44,7 +43,6 @@ public class BrowsePrivateProfileController {
     public final AntecedentsService antecedentsService;
     public final EducationService educationService;
     public final AwardsService awardsService;
-    public final AttachService attachService;
     public final ProfileRegionService profileRegionService;
     public final BrowsePrivateProfileService browsePrivateProfileService;
 
@@ -67,42 +65,49 @@ public class BrowsePrivateProfileController {
             browsePrivateProfileService.validatePrivateProfileByMiniProfile(miniProfileId);
 
             // 2. 열람하고자 하는 회원의 ID를 가져온다.
-            final Long browseTargetPrivateProfileId = browsePrivateProfileService.getTargetPrivateProfileIdByMiniProfileId(miniProfileId);
+            final Long browseTargetPrivateProfileId = browsePrivateProfileService.getTargetPrivateProfileIdByMiniProfileId(
+                    miniProfileId);
             log.info("browseTargetPrivateProfileId={}", browseTargetPrivateProfileId);
 
             // 열람할 타깃 profile id 제공
-            final ProfileIsValueResponse profileIsValueResponse = browsePrivateProfileService.getProfileIsValue(browseTargetPrivateProfileId);
+            final ProfileIsValueResponse profileIsValueResponse = browsePrivateProfileService.getProfileIsValue(
+                    browseTargetPrivateProfileId);
             log.info("profileIsValueResponse={}", profileIsValueResponse);
 
-            final MiniProfileResponse miniProfileResponse = getBrowseMiniProfileResponse(accessor.getMemberId(), browseTargetPrivateProfileId, profileIsValueResponse.isMiniProfile());
+            final MiniProfileResponse miniProfileResponse = getBrowseMiniProfileResponse(accessor.getMemberId(),
+                    browseTargetPrivateProfileId, profileIsValueResponse.isMiniProfile());
             log.info("miniProfileResponse={}", miniProfileResponse);
 
             final CompletionResponse completionResponse = getCompletionResponse(browseTargetPrivateProfileId);
             log.info("completionResponse={}", completionResponse);
 
-            final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(browseTargetPrivateProfileId, profileIsValueResponse.isIntroduction());
+            final ProfileIntroductionResponse profileIntroductionResponse = getProfileIntroduction(
+                    browseTargetPrivateProfileId, profileIsValueResponse.isIntroduction());
             log.info("profileIntroductionResponse={}", profileIntroductionResponse);
 
-            final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(browseTargetPrivateProfileId, profileIsValueResponse.isJobAndSkill());
+            final JobAndSkillResponse jobAndSkillResponse = getJobAndSkillResponse(browseTargetPrivateProfileId,
+                    profileIsValueResponse.isJobAndSkill());
             log.info("jobAndSkillResponse={}", jobAndSkillResponse);
 
-            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(browseTargetPrivateProfileId, profileIsValueResponse.isProfileTeamBuildingField());
+            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = getProfileTeamBuildingResponse(
+                    browseTargetPrivateProfileId, profileIsValueResponse.isProfileTeamBuildingField());
             log.info("profileTeamBuildingFieldResponse={}", profileTeamBuildingFieldResponse);
 
-            final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(browseTargetPrivateProfileId, profileIsValueResponse.isProfileRegion());
+            final ProfileRegionResponse profileRegionResponse = getProfileRegionResponse(browseTargetPrivateProfileId,
+                    profileIsValueResponse.isProfileRegion());
             log.info("profileRegionResponse={}", profileRegionResponse);
 
-            final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAntecedents());
+            final List<AntecedentsResponse> antecedentsResponses = getAntecedentsResponses(browseTargetPrivateProfileId,
+                    profileIsValueResponse.isAntecedents());
             log.info("antecedentsResponses={}", antecedentsResponses);
 
-            final List<EducationResponse> educationResponses = getEducationResponses(browseTargetPrivateProfileId, profileIsValueResponse.isEducation());
+            final List<EducationResponse> educationResponses = getEducationResponses(browseTargetPrivateProfileId,
+                    profileIsValueResponse.isEducation());
             log.info("educationResponses={}", educationResponses);
 
-            final List<AwardsResponse> awardsResponses = getAwardsResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAwards());
+            final List<AwardsResponse> awardsResponses = getAwardsResponses(browseTargetPrivateProfileId,
+                    profileIsValueResponse.isAwards());
             log.info("awardsResponses={}", awardsResponses);
-
-            final AttachResponse attachResponse = getAttachResponses(browseTargetPrivateProfileId, profileIsValueResponse.isAttachUrl());
-            log.info("attachResponse={}", attachResponse);
 
             final BrowsePrivateProfileResponse browsePrivateProfileResponse = browsePrivateProfileService.getProfileResponse(
                     browseTargetPrivateProfileId,
@@ -114,25 +119,12 @@ public class BrowsePrivateProfileController {
                     profileRegionResponse,
                     antecedentsResponses,
                     educationResponses,
-                    awardsResponses,
-                    attachResponse
+                    awardsResponses
             );
 
             return ResponseEntity.ok().body(browsePrivateProfileResponse);
         } catch (Exception e) {
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("내 이력서를 조회하는 과정에서 문제가 발생했습니다.");
-        }
-    }
-
-    private AttachResponse getAttachResponses(
-            final Long browseTargetPrivateProfileId,
-            final boolean isAttachUrl
-    ) {
-        if (isAttachUrl) {
-            attachService.validateAttachUrlByProfile(browseTargetPrivateProfileId);
-            return attachService.getBrowseAttachList(browseTargetPrivateProfileId);
-        } else {
-            return new AttachResponse();
         }
     }
 
@@ -236,7 +228,8 @@ public class BrowsePrivateProfileController {
         // 미니 프로필이 존재하는 경우
         if (isMiniProfile) {
             miniProfileService.validateMiniProfileByTargetProfileId(browseTargetPrivateProfileId);
-            log.info("targetPrivateProfileId={}가 유효합니다. in browsePrivateProfileController", browseTargetPrivateProfileId);
+            log.info("targetPrivateProfileId={}가 유효합니다. in browsePrivateProfileController",
+                    browseTargetPrivateProfileId);
             return miniProfileService.getBrowsePersonalMiniProfile(memberId, browseTargetPrivateProfileId);
         } else {
             final String memberName = miniProfileService.getMemberName(browseTargetPrivateProfileId);

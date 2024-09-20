@@ -1,13 +1,25 @@
 package liaison.linkit.profile.presentation;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
+import java.util.Arrays;
+import java.util.List;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
-import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
 import liaison.linkit.profile.dto.response.awards.AwardsResponse;
 import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
 import liaison.linkit.profile.dto.response.completion.CompletionResponse;
@@ -17,7 +29,16 @@ import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.profile.service.*;
+import liaison.linkit.profile.service.AntecedentsService;
+import liaison.linkit.profile.service.AwardsService;
+import liaison.linkit.profile.service.BrowsePrivateProfileService;
+import liaison.linkit.profile.service.CompletionService;
+import liaison.linkit.profile.service.EducationService;
+import liaison.linkit.profile.service.MiniProfileService;
+import liaison.linkit.profile.service.ProfileOnBoardingService;
+import liaison.linkit.profile.service.ProfileRegionService;
+import liaison.linkit.profile.service.ProfileService;
+import liaison.linkit.profile.service.TeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,19 +50,6 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(BrowsePrivateProfileController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -70,8 +78,6 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
     @MockBean
     public AwardsService awardsService;
     @MockBean
-    public AttachService attachService;
-    @MockBean
     public ProfileRegionService profileRegionService;
     @MockBean
     public BrowsePrivateProfileService browsePrivateProfileService;
@@ -84,7 +90,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
     }
 
     private ResultActions performGetBrowsePrivateProfile(
-        final int miniProfileId
+            final int miniProfileId
     ) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/browse/private/profile/{miniProfileId}", miniProfileId)
@@ -134,8 +140,10 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         given(profileOnBoardingService.getJobAndSkill(1L)).willReturn(jobAndSkillResponse);
 
         List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
-        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = new ProfileTeamBuildingFieldResponse(teamBuildingFieldNames);
-        given(teamBuildingFieldService.getAllProfileTeamBuildingFields(1L)).willReturn(profileTeamBuildingFieldResponse);
+        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = new ProfileTeamBuildingFieldResponse(
+                teamBuildingFieldNames);
+        given(teamBuildingFieldService.getAllProfileTeamBuildingFields(1L)).willReturn(
+                profileTeamBuildingFieldResponse);
 
         final ProfileRegionResponse profileRegionResponse = new ProfileRegionResponse("서울특별시", "강남구");
         given(profileRegionService.getPersonalProfileRegion(1L)).willReturn(profileRegionResponse);
@@ -167,16 +175,8 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
         final List<AwardsResponse> awardsResponses = Arrays.asList(firstAwardsResponse, secondAwardsResponse);
         given(awardsService.getAllAwards(1L)).willReturn(awardsResponses);
 
-        final AttachResponse attachResponse = new AttachResponse(
-                Arrays.asList(
-                        new AttachUrlResponse(2L, "깃허브", "https://github.com/TEAM-LIAISON"),
-                        new AttachUrlResponse(3L, "노션", "https://www.notion.so/ko-kr")
-                )
-        );
-        given(attachService.getAttachList(1L)).willReturn(attachResponse);
-
         when(browsePrivateProfileService.getProfileResponse(
-                any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
+                any(), any(), any(), any(), any(), any(), any(), any(), any(), any()
         )).thenReturn(BrowsePrivateProfileResponse.privateProfile(
                 1L,
                 miniProfileResponse,
@@ -187,8 +187,7 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses,
-                attachResponse
+                awardsResponses
         ));
         // when
         final ResultActions resultActions = performGetBrowsePrivateProfile(miniProfileId);
@@ -205,76 +204,118 @@ public class BrowsePrivateProfileControllerTest extends ControllerTest {
 
                                 // miniProfileResponse
                                 subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
-                                fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING).description("프로필의 제목"),
-                                fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
-                                fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
-                                fieldWithPath("miniProfileResponse.isActivate").type(JsonFieldType.BOOLEAN).description("미니 프로필 활성화 여부"),
-                                fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING).description("회원 이름"),
-                                fieldWithPath("miniProfileResponse.jobRoleNames").type(JsonFieldType.ARRAY).description("직무 및 역할"),
+                                fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING)
+                                        .description("프로필의 제목"),
+                                fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING)
+                                        .description("미니 프로필 이미지 URL"),
+                                fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY)
+                                        .description("나를 소개하는 키워드 목록"),
+                                fieldWithPath("miniProfileResponse.isActivate").type(JsonFieldType.BOOLEAN)
+                                        .description("미니 프로필 활성화 여부"),
+                                fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING)
+                                        .description("회원 이름"),
+                                fieldWithPath("miniProfileResponse.jobRoleNames").type(JsonFieldType.ARRAY)
+                                        .description("직무 및 역할"),
 
                                 // completionResponse
                                 subsectionWithPath("completionResponse").description("프로필의 완성도 정보"),
-                                fieldWithPath("completionResponse.completion").type(JsonFieldType.STRING).description("프로필 완성도 (백분율)"),
-                                fieldWithPath("completionResponse.introduction").type(JsonFieldType.BOOLEAN).description("소개의 완성 여부"),
-                                fieldWithPath("completionResponse.profileSkill").type(JsonFieldType.BOOLEAN).description("스킬 섹션의 완성 여부"),
-                                fieldWithPath("completionResponse.profileTeamBuildingField").type(JsonFieldType.BOOLEAN).description("팀 빌딩 필드의 완성 여부"),
-                                fieldWithPath("completionResponse.profileRegion").type(JsonFieldType.BOOLEAN).description("지역 정보의 완성 여부"),
-                                fieldWithPath("completionResponse.antecedents").type(JsonFieldType.BOOLEAN).description("이력 사항의 완성 여부"),
-                                fieldWithPath("completionResponse.education").type(JsonFieldType.BOOLEAN).description("교육 이력의 완성 여부"),
-                                fieldWithPath("completionResponse.awards").type(JsonFieldType.BOOLEAN).description("수상 이력의 완성 여부"),
-                                fieldWithPath("completionResponse.attach").type(JsonFieldType.BOOLEAN).description("첨부 파일의 유무"),
+                                fieldWithPath("completionResponse.completion").type(JsonFieldType.STRING)
+                                        .description("프로필 완성도 (백분율)"),
+                                fieldWithPath("completionResponse.introduction").type(JsonFieldType.BOOLEAN)
+                                        .description("소개의 완성 여부"),
+                                fieldWithPath("completionResponse.profileSkill").type(JsonFieldType.BOOLEAN)
+                                        .description("스킬 섹션의 완성 여부"),
+                                fieldWithPath("completionResponse.profileTeamBuildingField").type(JsonFieldType.BOOLEAN)
+                                        .description("팀 빌딩 필드의 완성 여부"),
+                                fieldWithPath("completionResponse.profileRegion").type(JsonFieldType.BOOLEAN)
+                                        .description("지역 정보의 완성 여부"),
+                                fieldWithPath("completionResponse.antecedents").type(JsonFieldType.BOOLEAN)
+                                        .description("이력 사항의 완성 여부"),
+                                fieldWithPath("completionResponse.education").type(JsonFieldType.BOOLEAN)
+                                        .description("교육 이력의 완성 여부"),
+                                fieldWithPath("completionResponse.awards").type(JsonFieldType.BOOLEAN)
+                                        .description("수상 이력의 완성 여부"),
+                                fieldWithPath("completionResponse.attach").type(JsonFieldType.BOOLEAN)
+                                        .description("첨부 파일의 유무"),
 
                                 // profileIntroductionResponse
                                 subsectionWithPath("profileIntroductionResponse").description("프로필 소개"),
-                                fieldWithPath("profileIntroductionResponse.introduction").type(JsonFieldType.STRING).description("소개 내용"),
+                                fieldWithPath("profileIntroductionResponse.introduction").type(JsonFieldType.STRING)
+                                        .description("소개 내용"),
 
                                 // jobAndSkillResponse
                                 subsectionWithPath("jobAndSkillResponse").description("나의 직무/역할 및 보유 기술 정보"),
-                                fieldWithPath("jobAndSkillResponse.jobRoleNames").type(JsonFieldType.ARRAY).description("직무/역할 명칭"),
-                                fieldWithPath("jobAndSkillResponse.skillNames").type(JsonFieldType.ARRAY).description("보유 기술 명칭"),
+                                fieldWithPath("jobAndSkillResponse.jobRoleNames").type(JsonFieldType.ARRAY)
+                                        .description("직무/역할 명칭"),
+                                fieldWithPath("jobAndSkillResponse.skillNames").type(JsonFieldType.ARRAY)
+                                        .description("보유 기술 명칭"),
 
                                 // profileTeamBuildingFieldResponse
                                 subsectionWithPath("profileTeamBuildingFieldResponse").description("팀 빌딩 필드 응답"),
-                                fieldWithPath("profileTeamBuildingFieldResponse.teamBuildingFieldNames").type(JsonFieldType.ARRAY).description("팀 빌딩 필드 이름"),
+                                fieldWithPath("profileTeamBuildingFieldResponse.teamBuildingFieldNames").type(
+                                        JsonFieldType.ARRAY).description("팀 빌딩 필드 이름"),
 
                                 // profileRegionResponse
                                 subsectionWithPath("profileRegionResponse").description("활동 지역 및 위치 응답"),
-                                fieldWithPath("profileRegionResponse.cityName").type(JsonFieldType.STRING).description("시/도 이름"),
-                                fieldWithPath("profileRegionResponse.divisionName").type(JsonFieldType.STRING).description("시/군/구 이름"),
+                                fieldWithPath("profileRegionResponse.cityName").type(JsonFieldType.STRING)
+                                        .description("시/도 이름"),
+                                fieldWithPath("profileRegionResponse.divisionName").type(JsonFieldType.STRING)
+                                        .description("시/군/구 이름"),
 
                                 // antecedentsResponse
                                 subsectionWithPath("antecedentsResponse").description("과거 경력 정보"),
-                                fieldWithPath("antecedentsResponse[].id").type(JsonFieldType.NUMBER).description("경력 ID"),
-                                fieldWithPath("antecedentsResponse[].projectName").type(JsonFieldType.STRING).description("프로젝트 이름"),
-                                fieldWithPath("antecedentsResponse[].projectRole").type(JsonFieldType.STRING).description("프로젝트 역할"),
-                                fieldWithPath("antecedentsResponse[].startDate").type(JsonFieldType.STRING).description("시작 연도/월"),
-                                fieldWithPath("antecedentsResponse[].endDate").type(JsonFieldType.STRING).description("종료 연도/월"),
-                                fieldWithPath("antecedentsResponse[].retirement").type(JsonFieldType.BOOLEAN).description("퇴직 여부"),
+                                fieldWithPath("antecedentsResponse[].id").type(JsonFieldType.NUMBER)
+                                        .description("경력 ID"),
+                                fieldWithPath("antecedentsResponse[].projectName").type(JsonFieldType.STRING)
+                                        .description("프로젝트 이름"),
+                                fieldWithPath("antecedentsResponse[].projectRole").type(JsonFieldType.STRING)
+                                        .description("프로젝트 역할"),
+                                fieldWithPath("antecedentsResponse[].startDate").type(JsonFieldType.STRING)
+                                        .description("시작 연도/월"),
+                                fieldWithPath("antecedentsResponse[].endDate").type(JsonFieldType.STRING)
+                                        .description("종료 연도/월"),
+                                fieldWithPath("antecedentsResponse[].retirement").type(JsonFieldType.BOOLEAN)
+                                        .description("퇴직 여부"),
 
                                 // educationResponse
                                 subsectionWithPath("educationResponse").description("교육 이력 정보"),
-                                fieldWithPath("educationResponse[].id").type(JsonFieldType.NUMBER).description("교육 이력 ID"),
-                                fieldWithPath("educationResponse[].admissionYear").type(JsonFieldType.NUMBER).description("입학 연도"),
-                                fieldWithPath("educationResponse[].graduationYear").type(JsonFieldType.NUMBER).description("졸업 연도"),
-                                fieldWithPath("educationResponse[].universityName").type(JsonFieldType.STRING).description("대학교 이름"),
-                                fieldWithPath("educationResponse[].majorName").type(JsonFieldType.STRING).description("전공 이름"),
-                                fieldWithPath("educationResponse[].degreeName").type(JsonFieldType.STRING).description("학위명"),
+                                fieldWithPath("educationResponse[].id").type(JsonFieldType.NUMBER)
+                                        .description("교육 이력 ID"),
+                                fieldWithPath("educationResponse[].admissionYear").type(JsonFieldType.NUMBER)
+                                        .description("입학 연도"),
+                                fieldWithPath("educationResponse[].graduationYear").type(JsonFieldType.NUMBER)
+                                        .description("졸업 연도"),
+                                fieldWithPath("educationResponse[].universityName").type(JsonFieldType.STRING)
+                                        .description("대학교 이름"),
+                                fieldWithPath("educationResponse[].majorName").type(JsonFieldType.STRING)
+                                        .description("전공 이름"),
+                                fieldWithPath("educationResponse[].degreeName").type(JsonFieldType.STRING)
+                                        .description("학위명"),
 
                                 // awardsResponse
                                 subsectionWithPath("awardsResponse").description("수상 이력 정보"),
                                 fieldWithPath("awardsResponse[].id").type(JsonFieldType.NUMBER).description("수상 ID"),
-                                fieldWithPath("awardsResponse[].awardsName").type(JsonFieldType.STRING).description("수상 이름"),
-                                fieldWithPath("awardsResponse[].ranking").type(JsonFieldType.STRING).description("수상 순위"),
-                                fieldWithPath("awardsResponse[].organizer").type(JsonFieldType.STRING).description("주최자"),
-                                fieldWithPath("awardsResponse[].awardsYear").type(JsonFieldType.NUMBER).description("수상 연도"),
-                                fieldWithPath("awardsResponse[].awardsMonth").type(JsonFieldType.NUMBER).description("수상 월"),
-                                fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING).description("수상 내용"),
+                                fieldWithPath("awardsResponse[].awardsName").type(JsonFieldType.STRING)
+                                        .description("수상 이름"),
+                                fieldWithPath("awardsResponse[].ranking").type(JsonFieldType.STRING)
+                                        .description("수상 순위"),
+                                fieldWithPath("awardsResponse[].organizer").type(JsonFieldType.STRING)
+                                        .description("주최자"),
+                                fieldWithPath("awardsResponse[].awardsYear").type(JsonFieldType.NUMBER)
+                                        .description("수상 연도"),
+                                fieldWithPath("awardsResponse[].awardsMonth").type(JsonFieldType.NUMBER)
+                                        .description("수상 월"),
+                                fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING)
+                                        .description("수상 내용"),
 
                                 // attachResponse
                                 subsectionWithPath("attachResponse").description("첨부 파일 정보"),
-                                fieldWithPath("attachResponse.attachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL ID"),
-                                fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(JsonFieldType.STRING).description("첨부된 URL 이름"),
-                                fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(JsonFieldType.STRING).description("첨부된 URL")
+                                fieldWithPath("attachResponse.attachUrlResponseList[].id").type(JsonFieldType.NUMBER)
+                                        .description("첨부 URL ID"),
+                                fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(
+                                        JsonFieldType.STRING).description("첨부된 URL 이름"),
+                                fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(
+                                        JsonFieldType.STRING).description("첨부된 URL")
 //                                        fieldWithPath("attachResponse.attachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 ID"),
 //                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFilePath").type(JsonFieldType.STRING).description("첨부 파일 URL")
                         )));

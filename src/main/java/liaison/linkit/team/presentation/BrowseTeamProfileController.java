@@ -11,7 +11,6 @@ import liaison.linkit.team.dto.response.TeamProfileIsValueResponse;
 import liaison.linkit.team.dto.response.TeamProfileTeamBuildingFieldResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
-import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
 import liaison.linkit.team.dto.response.browse.BrowseTeamProfileResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
@@ -52,8 +51,6 @@ public class BrowseTeamProfileController {
     public final TeamMemberIntroductionService teamMemberIntroductionService;
     // 4.9.
     public final HistoryService historyService;
-    // 4.10.
-    public final TeamAttachService teamAttachService;
 
     @GetMapping("/browse/team/profile/{teamMiniProfileId}")
     @MemberOnly
@@ -71,14 +68,17 @@ public class BrowseTeamProfileController {
             browseTeamProfileService.validateTeamProfileByTeamMiniProfile(teamMiniProfileId);
 
             // 2. 열람하고자 하는 회원의 ID를 가져온다.
-            final Long browseTargetTeamProfileId = browseTeamProfileService.getTargetTeamProfileByTeamMiniProfileId(teamMiniProfileId);
+            final Long browseTargetTeamProfileId = browseTeamProfileService.getTargetTeamProfileByTeamMiniProfileId(
+                    teamMiniProfileId);
             log.info("browseTargetTeamProfileId={}", browseTargetTeamProfileId);
 
             // 팀 소개서에 있는 항목들의 존재 여부 파악
-            final TeamProfileIsValueResponse teamProfileIsValueResponse = browseTeamProfileService.getTeamProfileIsValue(browseTargetTeamProfileId);
+            final TeamProfileIsValueResponse teamProfileIsValueResponse = browseTeamProfileService.getTeamProfileIsValue(
+                    browseTargetTeamProfileId);
 
             // 4.1. 팀 미니 프로필
-            final TeamMiniProfileResponse teamMiniProfileResponse = getTeamMiniProfileResponse(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamMiniProfile());
+            final TeamMiniProfileResponse teamMiniProfileResponse = getTeamMiniProfileResponse(
+                    browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamMiniProfile());
             log.info("teamMiniProfileResponse={}", teamMiniProfileResponse);
 
             // 4.3. 프로필 완성도
@@ -86,32 +86,34 @@ public class BrowseTeamProfileController {
             log.info("teamCompletionResponse={}", teamCompletionResponse);
 
             // 4.4. 희망 팀빌딩 분야
-            final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse = getTeamProfileTeamBuildingFieldResponse(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
+            final TeamProfileTeamBuildingFieldResponse teamProfileTeamBuildingFieldResponse = getTeamProfileTeamBuildingFieldResponse(
+                    browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamProfileTeamBuildingField());
             log.info("teamProfileTeamBuildingFieldResponse={}", teamProfileTeamBuildingFieldResponse);
 
             // 4.5. 팀원 공고
-            final List<TeamMemberAnnouncementResponse> teamMemberAnnouncementResponse = getTeamMemberAnnouncement(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamMemberAnnouncement());
+            final List<TeamMemberAnnouncementResponse> teamMemberAnnouncementResponse = getTeamMemberAnnouncement(
+                    browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamMemberAnnouncement());
             log.info("teamMemberAnnouncementResponse={}", teamMemberAnnouncementResponse);
 
             // 4.6. 활동 방식 + 활동 지역/위치
-            final ActivityResponse activityResponse = getActivityResponse(browseTargetTeamProfileId, teamProfileIsValueResponse.isActivity());
+            final ActivityResponse activityResponse = getActivityResponse(browseTargetTeamProfileId,
+                    teamProfileIsValueResponse.isActivity());
             log.info("activityResponse={}", activityResponse);
 
             // 4.7. 팀 소개
-            final TeamProfileIntroductionResponse teamProfileIntroductionResponse = getTeamProfileIntroduction(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamIntroduction());
+            final TeamProfileIntroductionResponse teamProfileIntroductionResponse = getTeamProfileIntroduction(
+                    browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamIntroduction());
             log.info("teamProfileIntroductionResponse={}", teamProfileIntroductionResponse);
 
             // 4.8. 팀원 소개
-            final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponse = getTeamMemberIntroduction(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamMemberIntroduction());
+            final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponse = getTeamMemberIntroduction(
+                    browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamMemberIntroduction());
             log.info("teamMemberIntroductionResponse={}", teamMemberIntroductionResponse);
 
             // 4.9. 연혁
-            final List<HistoryResponse> historyResponse = getHistory(browseTargetTeamProfileId, teamProfileIsValueResponse.isHistory());
+            final List<HistoryResponse> historyResponse = getHistory(browseTargetTeamProfileId,
+                    teamProfileIsValueResponse.isHistory());
             log.info("historyResponse={}", historyResponse);
-
-            // 4.10. 첨부
-            final TeamAttachResponse teamAttachResponse = getTeamAttach(browseTargetTeamProfileId, teamProfileIsValueResponse.isTeamAttachUrl());
-            log.info("teamAttachResponse={}", teamAttachResponse);
 
             final BrowseTeamProfileResponse browseTeamProfileResponse = browseTeamProfileService.getBrowseTeamProfileResponse(
                     browseTargetTeamProfileId,
@@ -122,8 +124,7 @@ public class BrowseTeamProfileController {
                     activityResponse,
                     teamProfileIntroductionResponse,
                     teamMemberIntroductionResponse,
-                    historyResponse,
-                    teamAttachResponse
+                    historyResponse
             );
 
             return ResponseEntity.ok().body(browseTeamProfileResponse);
@@ -165,6 +166,7 @@ public class BrowseTeamProfileController {
             return null;
         }
     }
+
     // 4.6. 활동 방식 + 활동 지역 및 위치
     private ActivityResponse getActivityResponse(
             final Long memberId,
@@ -211,18 +213,6 @@ public class BrowseTeamProfileController {
             return historyService.getAllHistories(memberId);
         } else {
             return null;
-        }
-    }
-
-    // 4.10 첨부
-    private TeamAttachResponse getTeamAttach(
-            final Long memberId,
-            final boolean isTeamAttach
-    ) {
-        if (isTeamAttach) {
-            return teamAttachService.getTeamAttachList(memberId);
-        } else {
-            return new TeamAttachResponse();
         }
     }
 

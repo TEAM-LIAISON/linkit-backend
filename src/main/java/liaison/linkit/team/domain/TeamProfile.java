@@ -1,19 +1,22 @@
 package liaison.linkit.team.domain;
 
-import jakarta.persistence.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.domain.type.TeamProfileType;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLRestriction;
-
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static liaison.linkit.member.domain.type.TeamProfileType.ALLOW_MATCHING;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -121,22 +124,30 @@ public class TeamProfile extends BaseEntity {
         this(null, member, teamProfileCompletion);
     }
 
-    // 기본 입력 항목 (희망 팀빌딩 분야 / 활동 방식 + 활동 지역 및 위치)
-    // 팀원 공고 15.0%
-    // 팀 소개 15.0%
-    // 팀원 소개 15.0%
-    // 연혁 2.5%
-    // 첨부 2.5%
-
     // 디폴트 항목 관리 메서드
-    public void addTeamPerfectionDefault25() {this.teamProfileCompletion += 25.0;}
-    public void cancelTeamPerfectionDefault25() {this.teamProfileCompletion -= 25.0;}
+    public void addTeamPerfectionDefault25() {
+        this.teamProfileCompletion += 25.0;
+    }
 
-    public void addTeamPerfectionFifteen() {this.teamProfileCompletion += 15.0;}
-    public void cancelTeamPerfectionFifteen() {this.teamProfileCompletion -= 15.0;}
+    public void cancelTeamPerfectionDefault25() {
+        this.teamProfileCompletion -= 25.0;
+    }
 
-    public void addTeamPerfectionTwoPointFive() {this.teamProfileCompletion += 2.5;}
-    public void cancelTeamPerfectionTwoPointFive() {this.teamProfileCompletion -= 2.5;}
+    public void addTeamPerfectionFifteen() {
+        this.teamProfileCompletion += 15.0;
+    }
+
+    public void cancelTeamPerfectionFifteen() {
+        this.teamProfileCompletion -= 15.0;
+    }
+
+    public void addTeamPerfectionTwoPointFive() {
+        this.teamProfileCompletion += 2.5;
+    }
+
+    public void cancelTeamPerfectionTwoPointFive() {
+        this.teamProfileCompletion -= 2.5;
+    }
 
     // 4.1. 미니 프로필 업데이트
     public void updateIsTeamMiniProfile(final boolean isTeamMiniProfile) {
@@ -188,7 +199,7 @@ public class TeamProfile extends BaseEntity {
         this.isTeamIntroduction = isTeamIntroduction;
         if (this.isTeamIntroduction) {
             addTeamPerfectionFifteen();
-        } else{
+        } else {
             cancelTeamPerfectionFifteen();
         }
     }
@@ -244,30 +255,46 @@ public class TeamProfile extends BaseEntity {
     public boolean getIsTeamProfileTeamBuildingField() {
         return isTeamProfileTeamBuildingField;
     }
+
     public boolean getIsTeamMemberAnnouncement() {
         return isTeamMemberAnnouncement;
     }
+
     public boolean getIsActivity() {
         return isActivity;
     }
+
     public boolean getIsActivityMethod() {
         return isActivityMethod;
     }
+
     public boolean getIsActivityRegion() {
         return isActivityRegion;
     }
+
     public boolean getIsTeamIntroduction() {
         return isTeamIntroduction;
     }
+
     public boolean getIsTeamMemberIntroduction() {
         return isTeamMemberIntroduction;
     }
+
     public boolean getIsHistory() {
         return isHistory;
     }
-    public boolean getIsTeamAttach() {return isTeamAttach;}
-    public boolean getIsTeamAttachUrl() { return isTeamAttachUrl; }
-    public boolean getIsTeamMiniProfile() {return isTeamMiniProfile;}
+
+    public boolean getIsTeamAttach() {
+        return isTeamAttach;
+    }
+
+    public boolean getIsTeamAttachUrl() {
+        return isTeamAttachUrl;
+    }
+
+    public boolean getIsTeamMiniProfile() {
+        return isTeamMiniProfile;
+    }
 
 
     // 4.7. 팀 소개 텍스트 내용 업데이트
@@ -279,7 +306,6 @@ public class TeamProfile extends BaseEntity {
                 log.info("기존에 팀 소개가 저장되어 있지 않았습니다.");
                 this.teamIntroduction = teamIntroduction;
                 updateIsTeamIntroduction(true);
-                updateMemberTeamProfileTypeByCompletion();
             } else {
                 // 기존에 저장되었던 경우 (수정으로 간주)
                 log.info("기존에 팀 소개가 저장되어 있었습니다.");
@@ -292,33 +318,6 @@ public class TeamProfile extends BaseEntity {
                 // 기존에 저장되어 있었던 경우
                 this.teamIntroduction = null;
                 updateIsTeamIntroduction(false);
-                updateMemberTeamProfileTypeByCompletion();
-            }
-        }
-    }
-
-    // 프로필 권한 관리 메서드
-    public void updateMemberTeamProfileTypeByCompletion() {
-        final double presentTeamProfileCompletion = this.getTeamProfileCompletion();
-        final TeamProfileType teamProfileType = this.getMember().getTeamProfileType();
-
-        if (presentTeamProfileCompletion >= 0 && presentTeamProfileCompletion < 50) {
-            if (TeamProfileType.NO_PERMISSION.equals(teamProfileType)) {
-                return;
-            } else {
-                this.getMember().setTeamProfileType(TeamProfileType.NO_PERMISSION);
-            }
-        } else if (presentTeamProfileCompletion >= 50 && presentTeamProfileCompletion < 80) {
-            if (TeamProfileType.ALLOW_BROWSE.equals(teamProfileType)) {
-                return;
-            } else {
-                this.getMember().setTeamProfileType(TeamProfileType.ALLOW_BROWSE);
-            }
-        } else {
-            if (ALLOW_MATCHING.equals(teamProfileType)) {
-                return;
-            } else {
-                this.getMember().setTeamProfileType(ALLOW_MATCHING);
             }
         }
     }
@@ -327,6 +326,8 @@ public class TeamProfile extends BaseEntity {
     public boolean getExistDefaultTeamProfile() {
         if (this.isTeamProfileTeamBuildingField && this.isActivity && this.isTeamMiniProfile) {
             return true;
-        } else return false;
+        } else {
+            return false;
+        }
     }
 }

@@ -1,17 +1,25 @@
 package liaison.linkit.team.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_TEAM_MINI_PROFILE;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MINI_PROFILE_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_ID;
+
+import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
-import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
-import liaison.linkit.team.dto.response.*;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
+import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
+import liaison.linkit.team.dto.response.TeamProfileIntroductionResponse;
+import liaison.linkit.team.dto.response.TeamProfileIsValueResponse;
+import liaison.linkit.team.dto.response.TeamProfileTeamBuildingFieldResponse;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
-import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
 import liaison.linkit.team.dto.response.browse.BrowseTeamProfileResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
@@ -19,10 +27,6 @@ import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -71,8 +75,7 @@ public class BrowseTeamProfileService {
             final ActivityResponse activityResponse,
             final TeamProfileIntroductionResponse teamProfileIntroductionResponse,
             final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponse,
-            final List<HistoryResponse> historyResponse,
-            final TeamAttachResponse teamAttachResponse
+            final List<HistoryResponse> historyResponse
     ) {
         return BrowseTeamProfileResponse.teamProfile(
                 profileId,
@@ -83,13 +86,13 @@ public class BrowseTeamProfileService {
                 activityResponse,
                 teamProfileIntroductionResponse,
                 teamMemberIntroductionResponse,
-                historyResponse,
-                teamAttachResponse
+                historyResponse
         );
     }
 
     public boolean checkBrowseAuthority(final Long memberId) {
-        final Profile profile = profileRepository.findByMemberId(memberId).orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
+        final Profile profile = profileRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
         final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_ID));
 

@@ -1,15 +1,13 @@
 package liaison.linkit.team.dto.response;
 
+import java.util.List;
 import liaison.linkit.team.dto.response.activity.ActivityResponse;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
-import liaison.linkit.team.dto.response.attach.TeamAttachResponse;
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -42,9 +40,6 @@ public class TeamProfileResponse {
     // 4.9. 연혁
     private final List<HistoryResponse> historyResponses;
 
-    // 4.10. 첨부
-    private final TeamAttachResponse teamAttachResponse;
-
     public TeamProfileResponse() {
         this.isTeamProfileEssential = false;
         this.teamMiniProfileResponse = null;
@@ -55,14 +50,7 @@ public class TeamProfileResponse {
         this.teamProfileIntroductionResponse = null;
         this.teamMemberIntroductionResponses = null;
         this.historyResponses = null;
-        this.teamAttachResponse = null;
     }
-
-//    public TeamProfileResponse() {
-//        this.isTeamProfileEssential = false;
-//        this.teamMiniProfileResponse = null;
-//
-//    }
 
     public static TeamProfileResponse teamProfileItems(
             final boolean isTeamProfileEssential,
@@ -73,8 +61,7 @@ public class TeamProfileResponse {
             final ActivityResponse activityResponse,
             final TeamProfileIntroductionResponse teamProfileIntroductionResponse,
             final List<TeamMemberIntroductionResponse> teamMemberIntroductionResponse,
-            final List<HistoryResponse> historyResponse,
-            final TeamAttachResponse teamAttachResponse
+            final List<HistoryResponse> historyResponse
     ) {
         return new TeamProfileResponse(
                 isTeamProfileEssential,
@@ -85,8 +72,7 @@ public class TeamProfileResponse {
                 activityResponse,
                 teamProfileIntroductionResponse,
                 teamMemberIntroductionResponse,
-                historyResponse,
-                teamAttachResponse
+                historyResponse
         );
     }
 }

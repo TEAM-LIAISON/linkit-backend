@@ -1,5 +1,12 @@
 package liaison.linkit.profile.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_ANTECEDENTS_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_ANTECEDENTS_BY_PROFILE_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_ANTECEDENTS_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+
+import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
@@ -12,10 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -60,7 +63,6 @@ public class AntecedentsService {
         }
     }
 
-
     // validate 및 실제 비즈니스 로직 구분 라인 -------------------------------------------------------------
 
     @Transactional
@@ -76,7 +78,6 @@ public class AntecedentsService {
         if (antecedentsRepository.existsByProfileId(profile.getId())) {
             antecedentsRepository.deleteAllByProfileId(profile.getId());
             profile.updateIsAntecedents(false);
-            profile.updateMemberProfileTypeByCompletion();
         }
 
         // 저장 로직을 반복 실행하여 모든 경력 데이터 저장
@@ -87,7 +88,6 @@ public class AntecedentsService {
 
         // 프로필 업데이트
         profile.updateIsAntecedents(true);
-        profile.updateMemberProfileTypeByCompletion();
     }
 
     // DB 저장 로직
@@ -159,7 +159,6 @@ public class AntecedentsService {
             log.info("더 이상 경력이 존재하지 않습니다.");
             // 더 이상 경력이 존재하지 않다면
             profile.updateIsAntecedents(false);
-            profile.updateMemberProfileTypeByCompletion();
         }
         log.info("profile.getId={}의 경력이 아직 존재합니다.", profile.getId());
     }
@@ -176,7 +175,6 @@ public class AntecedentsService {
         } else {
             // 경력을 보유하고 있지 않았던 경우
             profile.updateIsAntecedents(true);
-            profile.updateMemberProfileTypeByCompletion();
             return saveAntecedent(profile, antecedentsCreateRequest);
         }
     }

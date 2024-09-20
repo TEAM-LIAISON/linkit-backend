@@ -1,21 +1,22 @@
 package liaison.linkit.team.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_TEAM_INTRODUCTION_WITH_TEAM_PROFILE;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MEMBER_INTRODUCTION_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID;
+
+import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.memberIntroduction.TeamMemberIntroduction;
-import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.memberIntroduction.TeamMemberIntroductionRepository;
+import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.request.memberIntroduction.TeamMemberIntroductionCreateRequest;
 import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -54,7 +55,6 @@ public class TeamMemberIntroductionService {
             return saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
         } else {
             teamProfile.updateIsTeamMemberIntroduction(true);
-            teamProfile.updateMemberTeamProfileTypeByCompletion();
             return saveTeamMemberIntroductionMethod(teamProfile, teamMemberIntroductionCreateRequest);
         }
     }
@@ -69,7 +69,6 @@ public class TeamMemberIntroductionService {
         if (teamMemberIntroductionRepository.existsByTeamProfileId(teamProfile.getId())) {
             teamMemberIntroductionRepository.deleteAllByTeamProfileId(teamProfile.getId());
             teamProfile.updateIsTeamMemberIntroduction(false);
-            teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
 
         teamMemberIntroductionCreateRequests.forEach(request -> {
@@ -77,7 +76,6 @@ public class TeamMemberIntroductionService {
         });
 
         teamProfile.updateIsTeamMemberIntroduction(true);
-        teamProfile.updateMemberTeamProfileTypeByCompletion();
     }
 
     // 팀원 소개 저장 메서드
@@ -101,13 +99,15 @@ public class TeamMemberIntroductionService {
             final Long memberId
     ) {
         final TeamProfile teamProfile = getTeamProfile(memberId);
-        final List<TeamMemberIntroduction> teamMemberIntroductions = teamMemberIntroductionRepository.findAllByTeamProfileId(teamProfile.getId());
+        final List<TeamMemberIntroduction> teamMemberIntroductions = teamMemberIntroductionRepository.findAllByTeamProfileId(
+                teamProfile.getId());
         return teamMemberIntroductions.stream()
                 .map(this::getTeamMemberIntroductionResponse)
                 .toList();
     }
 
-    private TeamMemberIntroductionResponse getTeamMemberIntroductionResponse(final TeamMemberIntroduction teamMemberIntroduction) {
+    private TeamMemberIntroductionResponse getTeamMemberIntroductionResponse(
+            final TeamMemberIntroduction teamMemberIntroduction) {
         return TeamMemberIntroductionResponse.of(teamMemberIntroduction);
     }
 
@@ -125,7 +125,6 @@ public class TeamMemberIntroductionService {
         // 존재하지 않는다면
         if (!teamMemberIntroductionRepository.existsByTeamProfileId(teamProfile.getId())) {
             teamProfile.updateIsTeamIntroduction(false);
-            teamProfile.updateMemberTeamProfileTypeByCompletion();
         }
     }
 

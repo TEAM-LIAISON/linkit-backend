@@ -5,7 +5,7 @@ import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.member.service.MemberService;
+import liaison.linkit.member.business.MemberService;
 import liaison.linkit.profile.dto.request.IntroductionRequest;
 import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
 import liaison.linkit.profile.dto.response.ProfileResponse;
@@ -99,7 +99,7 @@ class ProfileControllerTest extends ControllerTest {
     }
 
 
-    private void makeIntroduction() throws Exception{
+    private void makeIntroduction() throws Exception {
         final IntroductionRequest introductionRequest = new IntroductionRequest(
                 "자기소개 정보를 생성합니다."
         );
@@ -315,7 +315,8 @@ class ProfileControllerTest extends ControllerTest {
 //                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
 //        );
 
-        final List<AttachUrlResponse> attachUrlResponseList = Arrays.asList(firstAttachUrlResponse, secondAttachUrlResponse);
+        final List<AttachUrlResponse> attachUrlResponseList = Arrays.asList(firstAttachUrlResponse,
+                secondAttachUrlResponse);
 //        final List<AttachFileResponse> attachFileResponseList = Arrays.asList(firstAttachFileResponse);
         final AttachResponse attachResponses = new AttachResponse(
                 attachUrlResponseList
@@ -369,79 +370,124 @@ class ProfileControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 responseFields(
-                                        fieldWithPath("privateProfileEssential").type(JsonFieldType.BOOLEAN).description("내 이력서 필수 입력 항목 존재 여부"),
+                                        fieldWithPath("privateProfileEssential").type(JsonFieldType.BOOLEAN)
+                                                .description("내 이력서 필수 입력 항목 존재 여부"),
                                         // miniProfileResponse
                                         subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
-                                        fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING).description("프로필의 제목"),
-                                        fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
-                                        fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
-                                        fieldWithPath("miniProfileResponse.isActivate").type(JsonFieldType.BOOLEAN).description("미니 프로필 활성화 여부"),
-                                        fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING).description("회원 이름"),
-                                        fieldWithPath("miniProfileResponse.jobRoleNames").type(JsonFieldType.ARRAY).description("직무 및 역할"),
+                                        fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING)
+                                                .description("프로필의 제목"),
+                                        fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING)
+                                                .description("미니 프로필 이미지 URL"),
+                                        fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY)
+                                                .description("나를 소개하는 키워드 목록"),
+                                        fieldWithPath("miniProfileResponse.isActivate").type(JsonFieldType.BOOLEAN)
+                                                .description("미니 프로필 활성화 여부"),
+                                        fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING)
+                                                .description("회원 이름"),
+                                        fieldWithPath("miniProfileResponse.jobRoleNames").type(JsonFieldType.ARRAY)
+                                                .description("직무 및 역할"),
 
                                         // completionResponse
                                         subsectionWithPath("completionResponse").description("프로필의 완성도 정보"),
-                                        fieldWithPath("completionResponse.completion").type(JsonFieldType.STRING).description("프로필 완성도 (백분율)"),
-                                        fieldWithPath("completionResponse.introduction").type(JsonFieldType.BOOLEAN).description("소개의 완성 여부"),
-                                        fieldWithPath("completionResponse.profileSkill").type(JsonFieldType.BOOLEAN).description("스킬 섹션의 완성 여부"),
-                                        fieldWithPath("completionResponse.profileTeamBuildingField").type(JsonFieldType.BOOLEAN).description("팀 빌딩 필드의 완성 여부"),
-                                        fieldWithPath("completionResponse.profileRegion").type(JsonFieldType.BOOLEAN).description("지역 정보의 완성 여부"),
-                                        fieldWithPath("completionResponse.antecedents").type(JsonFieldType.BOOLEAN).description("이력 사항의 완성 여부"),
-                                        fieldWithPath("completionResponse.education").type(JsonFieldType.BOOLEAN).description("교육 이력의 완성 여부"),
-                                        fieldWithPath("completionResponse.awards").type(JsonFieldType.BOOLEAN).description("수상 이력의 완성 여부"),
-                                        fieldWithPath("completionResponse.attach").type(JsonFieldType.BOOLEAN).description("첨부 파일의 유무"),
+                                        fieldWithPath("completionResponse.completion").type(JsonFieldType.STRING)
+                                                .description("프로필 완성도 (백분율)"),
+                                        fieldWithPath("completionResponse.introduction").type(JsonFieldType.BOOLEAN)
+                                                .description("소개의 완성 여부"),
+                                        fieldWithPath("completionResponse.profileSkill").type(JsonFieldType.BOOLEAN)
+                                                .description("스킬 섹션의 완성 여부"),
+                                        fieldWithPath("completionResponse.profileTeamBuildingField").type(
+                                                JsonFieldType.BOOLEAN).description("팀 빌딩 필드의 완성 여부"),
+                                        fieldWithPath("completionResponse.profileRegion").type(JsonFieldType.BOOLEAN)
+                                                .description("지역 정보의 완성 여부"),
+                                        fieldWithPath("completionResponse.antecedents").type(JsonFieldType.BOOLEAN)
+                                                .description("이력 사항의 완성 여부"),
+                                        fieldWithPath("completionResponse.education").type(JsonFieldType.BOOLEAN)
+                                                .description("교육 이력의 완성 여부"),
+                                        fieldWithPath("completionResponse.awards").type(JsonFieldType.BOOLEAN)
+                                                .description("수상 이력의 완성 여부"),
+                                        fieldWithPath("completionResponse.attach").type(JsonFieldType.BOOLEAN)
+                                                .description("첨부 파일의 유무"),
 
                                         // profileIntroductionResponse
                                         subsectionWithPath("profileIntroductionResponse").description("프로필 소개"),
-                                        fieldWithPath("profileIntroductionResponse.introduction").type(JsonFieldType.STRING).description("소개 내용"),
+                                        fieldWithPath("profileIntroductionResponse.introduction").type(
+                                                JsonFieldType.STRING).description("소개 내용"),
 
                                         // jobAndSkillResponse
                                         subsectionWithPath("jobAndSkillResponse").description("나의 직무/역할 및 보유 기술 정보"),
-                                        fieldWithPath("jobAndSkillResponse.jobRoleNames").type(JsonFieldType.ARRAY).description("직무/역할 명칭"),
-                                        fieldWithPath("jobAndSkillResponse.skillNames").type(JsonFieldType.ARRAY).description("보유 기술 명칭"),
+                                        fieldWithPath("jobAndSkillResponse.jobRoleNames").type(JsonFieldType.ARRAY)
+                                                .description("직무/역할 명칭"),
+                                        fieldWithPath("jobAndSkillResponse.skillNames").type(JsonFieldType.ARRAY)
+                                                .description("보유 기술 명칭"),
 
                                         // profileTeamBuildingFieldResponse
-                                        subsectionWithPath("profileTeamBuildingFieldResponse").description("팀 빌딩 필드 응답"),
-                                        fieldWithPath("profileTeamBuildingFieldResponse.teamBuildingFieldNames").type(JsonFieldType.ARRAY).description("팀 빌딩 필드 이름"),
+                                        subsectionWithPath("profileTeamBuildingFieldResponse").description(
+                                                "팀 빌딩 필드 응답"),
+                                        fieldWithPath("profileTeamBuildingFieldResponse.teamBuildingFieldNames").type(
+                                                JsonFieldType.ARRAY).description("팀 빌딩 필드 이름"),
 
                                         // profileRegionResponse
                                         subsectionWithPath("profileRegionResponse").description("활동 지역 및 위치 응답"),
-                                        fieldWithPath("profileRegionResponse.cityName").type(JsonFieldType.STRING).description("시/도 이름"),
-                                        fieldWithPath("profileRegionResponse.divisionName").type(JsonFieldType.STRING).description("시/군/구 이름"),
+                                        fieldWithPath("profileRegionResponse.cityName").type(JsonFieldType.STRING)
+                                                .description("시/도 이름"),
+                                        fieldWithPath("profileRegionResponse.divisionName").type(JsonFieldType.STRING)
+                                                .description("시/군/구 이름"),
 
                                         // antecedentsResponse
                                         subsectionWithPath("antecedentsResponse").description("과거 경력 정보"),
-                                        fieldWithPath("antecedentsResponse[].id").type(JsonFieldType.NUMBER).description("경력 ID"),
-                                        fieldWithPath("antecedentsResponse[].projectName").type(JsonFieldType.STRING).description("프로젝트 이름"),
-                                        fieldWithPath("antecedentsResponse[].projectRole").type(JsonFieldType.STRING).description("프로젝트 역할"),
-                                        fieldWithPath("antecedentsResponse[].startDate").type(JsonFieldType.STRING).description("시작 연도/월"),
-                                        fieldWithPath("antecedentsResponse[].endDate").type(JsonFieldType.STRING).description("종료 연도/월"),
-                                        fieldWithPath("antecedentsResponse[].retirement").type(JsonFieldType.BOOLEAN).description("퇴직 여부"),
+                                        fieldWithPath("antecedentsResponse[].id").type(JsonFieldType.NUMBER)
+                                                .description("경력 ID"),
+                                        fieldWithPath("antecedentsResponse[].projectName").type(JsonFieldType.STRING)
+                                                .description("프로젝트 이름"),
+                                        fieldWithPath("antecedentsResponse[].projectRole").type(JsonFieldType.STRING)
+                                                .description("프로젝트 역할"),
+                                        fieldWithPath("antecedentsResponse[].startDate").type(JsonFieldType.STRING)
+                                                .description("시작 연도/월"),
+                                        fieldWithPath("antecedentsResponse[].endDate").type(JsonFieldType.STRING)
+                                                .description("종료 연도/월"),
+                                        fieldWithPath("antecedentsResponse[].retirement").type(JsonFieldType.BOOLEAN)
+                                                .description("퇴직 여부"),
 
                                         // educationResponse
                                         subsectionWithPath("educationResponse").description("교육 이력 정보"),
-                                        fieldWithPath("educationResponse[].id").type(JsonFieldType.NUMBER).description("교육 이력 ID"),
-                                        fieldWithPath("educationResponse[].admissionYear").type(JsonFieldType.NUMBER).description("입학 연도"),
-                                        fieldWithPath("educationResponse[].graduationYear").type(JsonFieldType.NUMBER).description("졸업 연도"),
-                                        fieldWithPath("educationResponse[].universityName").type(JsonFieldType.STRING).description("대학교 이름"),
-                                        fieldWithPath("educationResponse[].majorName").type(JsonFieldType.STRING).description("전공 이름"),
-                                        fieldWithPath("educationResponse[].degreeName").type(JsonFieldType.STRING).description("학위명"),
+                                        fieldWithPath("educationResponse[].id").type(JsonFieldType.NUMBER)
+                                                .description("교육 이력 ID"),
+                                        fieldWithPath("educationResponse[].admissionYear").type(JsonFieldType.NUMBER)
+                                                .description("입학 연도"),
+                                        fieldWithPath("educationResponse[].graduationYear").type(JsonFieldType.NUMBER)
+                                                .description("졸업 연도"),
+                                        fieldWithPath("educationResponse[].universityName").type(JsonFieldType.STRING)
+                                                .description("대학교 이름"),
+                                        fieldWithPath("educationResponse[].majorName").type(JsonFieldType.STRING)
+                                                .description("전공 이름"),
+                                        fieldWithPath("educationResponse[].degreeName").type(JsonFieldType.STRING)
+                                                .description("학위명"),
 
                                         // awardsResponse
                                         subsectionWithPath("awardsResponse").description("수상 이력 정보"),
-                                        fieldWithPath("awardsResponse[].id").type(JsonFieldType.NUMBER).description("수상 ID"),
-                                        fieldWithPath("awardsResponse[].awardsName").type(JsonFieldType.STRING).description("수상 이름"),
-                                        fieldWithPath("awardsResponse[].ranking").type(JsonFieldType.STRING).description("수상 순위"),
-                                        fieldWithPath("awardsResponse[].organizer").type(JsonFieldType.STRING).description("주최자"),
-                                        fieldWithPath("awardsResponse[].awardsYear").type(JsonFieldType.NUMBER).description("수상 연도"),
-                                        fieldWithPath("awardsResponse[].awardsMonth").type(JsonFieldType.NUMBER).description("수상 월"),
-                                        fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING).description("수상 내용"),
+                                        fieldWithPath("awardsResponse[].id").type(JsonFieldType.NUMBER)
+                                                .description("수상 ID"),
+                                        fieldWithPath("awardsResponse[].awardsName").type(JsonFieldType.STRING)
+                                                .description("수상 이름"),
+                                        fieldWithPath("awardsResponse[].ranking").type(JsonFieldType.STRING)
+                                                .description("수상 순위"),
+                                        fieldWithPath("awardsResponse[].organizer").type(JsonFieldType.STRING)
+                                                .description("주최자"),
+                                        fieldWithPath("awardsResponse[].awardsYear").type(JsonFieldType.NUMBER)
+                                                .description("수상 연도"),
+                                        fieldWithPath("awardsResponse[].awardsMonth").type(JsonFieldType.NUMBER)
+                                                .description("수상 월"),
+                                        fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING)
+                                                .description("수상 내용"),
 
                                         // attachResponse
                                         subsectionWithPath("attachResponse").description("첨부 파일 정보"),
-                                        fieldWithPath("attachResponse.attachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL ID"),
-                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(JsonFieldType.STRING).description("첨부된 URL 이름"),
-                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(JsonFieldType.STRING).description("첨부된 URL")
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].id").type(
+                                                JsonFieldType.NUMBER).description("첨부 URL ID"),
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(
+                                                JsonFieldType.STRING).description("첨부된 URL 이름"),
+                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(
+                                                JsonFieldType.STRING).description("첨부된 URL")
 //                                        fieldWithPath("attachResponse.attachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 ID"),
 //                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFilePath").type(JsonFieldType.STRING).description("첨부 파일 URL")
                                 )

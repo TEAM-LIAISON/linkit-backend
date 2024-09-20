@@ -1,22 +1,27 @@
 package liaison.linkit.wish.domain;
 
-import jakarta.persistence.*;
-import liaison.linkit.global.BaseEntity;
-import liaison.linkit.member.domain.Member;
-import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
-import liaison.linkit.wish.domain.type.WishType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLRestriction;
-
-import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import liaison.linkit.global.BaseEntity;
+import liaison.linkit.member.domain.Member;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = PROTECTED)
 @AllArgsConstructor
 @SQLRestriction("status = 'USABLE'")
@@ -36,9 +41,4 @@ public class TeamWish extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "team_member_announcement_id")
     private TeamMemberAnnouncement teamMemberAnnouncement;
-
-    @Column(name = "wish_type")
-    @Enumerated(value = STRING)
-    private WishType wishType;
-
 }

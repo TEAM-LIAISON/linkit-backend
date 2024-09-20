@@ -1,24 +1,27 @@
 package liaison.linkit.profile.service;
 
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_DEGREE_NAME;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_EDUCATIONS_BY_PROFILE_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_EDUCATION_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
+
+import java.util.ArrayList;
+import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.Education;
-import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
+import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
 import liaison.linkit.profile.dto.response.education.EducationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Service
 @RequiredArgsConstructor
@@ -65,7 +68,6 @@ public class EducationService {
         if (educationRepository.existsByProfileId(profile.getId())) {
             educationRepository.deleteAllByProfileId(profile.getId());
             profile.updateIsEducation(false);
-            profile.updateMemberProfileTypeByCompletion();
         }
 
         List<EducationResponse> responses = new ArrayList<>();
@@ -90,7 +92,6 @@ public class EducationService {
 
         // 반복문 종료 후에 프로필의 상태를 업데이트한다.
         profile.updateIsEducation(true);
-        profile.updateMemberProfileTypeByCompletion();
     }
 
     @Transactional(readOnly = true)
@@ -128,7 +129,6 @@ public class EducationService {
         log.info("삭제 완료");
         if (!educationRepository.existsByProfileId(profile.getId())) {
             profile.updateIsEducation(false);
-            profile.updateMemberProfileTypeByCompletion();
         }
     }
 
@@ -145,7 +145,6 @@ public class EducationService {
         } else {
             // 기존에 존재하지 않았던 경우
             profile.updateIsEducation(true);
-            profile.updateMemberProfileTypeByCompletion();
             return makeNewEducation(educationCreateRequest, profile);
         }
     }
@@ -159,7 +158,8 @@ public class EducationService {
         final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
 
-        education.update(educationCreateRequest, educationCreateRequest.getUniversityName(), educationCreateRequest.getMajorName(), degree);
+        education.update(educationCreateRequest, educationCreateRequest.getUniversityName(),
+                educationCreateRequest.getMajorName(), degree);
         return education.getId();
     }
 

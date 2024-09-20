@@ -39,8 +39,6 @@ public class QPrivateWish extends EntityPathBase<PrivateWish> {
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
 
-    public final EnumPath<liaison.linkit.wish.domain.type.WishType> wishType = createEnum("wishType", liaison.linkit.wish.domain.type.WishType.class);
-
     public QPrivateWish(String variable) {
         this(PrivateWish.class, forVariable(variable), INITS);
     }

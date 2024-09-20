@@ -1,9 +1,22 @@
 package liaison.linkit.profile.domain;
 
-import jakarta.persistence.*;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.domain.type.ProfileType;
 import liaison.linkit.profile.domain.awards.Awards;
 import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
@@ -12,15 +25,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLRestriction;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.CascadeType.REMOVE;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -94,17 +98,10 @@ public class Profile extends BaseEntity {
     @Column(nullable = false)
     private boolean isAwards;
 
-//    // 3.11. 첨부 기입 여부
-//    @Column(nullable = false)
-//    private boolean isAttach;
-
     // 3.11. 첨부 링크(URL) 기입 여부
     @Column(nullable = false)
     private boolean isAttachUrl;
 
-//    // 3.11. 첨부 파일(File) 기입 여부
-//    @Column(nullable = false)
-//    private boolean isAttachFile;
 
     // 3.1. 미니 프로필 기입 여부
     @Column(nullable = false)
@@ -147,16 +144,31 @@ public class Profile extends BaseEntity {
     // 첨부 10%
 
     // 디폴트 항목 관리 메서드
-    public void addPerfectionDefault() {this.completion += 10.0;}
-    public void cancelPerfectionDefault() {this.completion -= 10.0;}
+    public void addPerfectionDefault() {
+        this.completion += 10.0;
+    }
+
+    public void cancelPerfectionDefault() {
+        this.completion -= 10.0;
+    }
 
     // 수상 및 첨부 관리 메서드
-    public void addPerfectionTen() {this.completion += 10.0;}
-    public void cancelPerfectionTen() {this.completion -= 10.0;}
+    public void addPerfectionTen() {
+        this.completion += 10.0;
+    }
+
+    public void cancelPerfectionTen() {
+        this.completion -= 10.0;
+    }
 
     // 자기소개 관리 메서드
-    public void addPerfectionThirty() { this.completion += 30.0; }
-    public void cancelPerfectionThirty() {this.completion -= 30.0;}
+    public void addPerfectionThirty() {
+        this.completion += 30.0;
+    }
+
+    public void cancelPerfectionThirty() {
+        this.completion -= 30.0;
+    }
 
     // 3.1. 미니 프로필 업데이트
     public void updateIsMiniProfile(final Boolean isMiniProfile) {
@@ -173,13 +185,11 @@ public class Profile extends BaseEntity {
                 this.introduction = introduction;
                 updateIsIntroduction(true);
                 addPerfectionThirty();
-                updateMemberProfileTypeByCompletion();
             }
         } else {                              // 삭제 요청인 경우
             deleteIntroduction();
             updateIsIntroduction(false);
             cancelPerfectionThirty();
-            updateMemberProfileTypeByCompletion();
         }
     }
 
@@ -203,7 +213,7 @@ public class Profile extends BaseEntity {
         // 모두 true인 경우
         if (this.isJobAndSkill != (this.isProfileJobRole && isProfileSkill)) {
             this.isJobAndSkill = !this.isJobAndSkill;
-            if(this.isJobAndSkill){
+            if (this.isJobAndSkill) {
                 addPerfectionDefault();
             } else {
                 cancelPerfectionDefault();
@@ -267,19 +277,6 @@ public class Profile extends BaseEntity {
         }
     }
 
-    // 3.11. 첨부 업데이트
-//    private void updateIsAttach(final boolean isAttachUrl, final boolean isAttachFile) {
-//        // attachUrl, attachFile 2개 중에 하나라도 참이면 isAttach는 참이다.
-//        if (this.isAttach != (isAttachUrl || isAttachFile)) {
-//            this.isAttach = !this.isAttach;
-//            if (this.isAttach) {
-//                addPerfectionTen();
-//            } else {
-//                cancelPerfectionTen();
-//            }
-//        }
-//    }
-
     // 3.11.1 첨부 링크 업데이트
     public void updateIsAttachUrl(final boolean isAttachUrl) {
         this.isAttachUrl = isAttachUrl;
@@ -289,48 +286,16 @@ public class Profile extends BaseEntity {
             cancelPerfectionTen();
         }
     }
-    // 3.11.2 첨부 파일 업데이트
-//    public void updateIsAttachFile(final boolean isAttachFile) {
-//        this.isAttachFile = isAttachFile;
-//        updateIsAttach(this.isAttachUrl, isAttachFile);
-//    }
-
-
-
-
-
-    // 내 이력서의 완성도 % 기반으로 접근 권한 관리 메서드
-    public void updateMemberProfileTypeByCompletion() {
-        final double presentCompletion = this.getCompletion();
-        final ProfileType profileType = this.getMember().getProfileType();
-
-        if (presentCompletion >= 0 && presentCompletion < 50) {
-            if (ProfileType.NO_PERMISSION.equals(profileType)) {
-                return;
-            } else {
-                // 해당 상태를 변경해줘야함.
-                this.getMember().setProfileType(ProfileType.NO_PERMISSION);
-            }
-        } else if (presentCompletion >= 50 && presentCompletion < 80) {
-            if (ProfileType.ALLOW_BROWSE.equals(profileType)) {
-                return;
-            } else {
-                this.getMember().setProfileType(ProfileType.ALLOW_BROWSE);
-            }
-        } else {
-            if (ProfileType.ALLOW_MATCHING.equals(profileType)) {
-                return;
-            } else {
-                this.getMember().setProfileType(ProfileType.ALLOW_MATCHING);
-            }
-        }
-    }
 
     // 내 이력서의 각 항목들 기입 여부 조회 개별 메서드
-    public boolean getIsMiniProfile() { return isMiniProfile; }
+    public boolean getIsMiniProfile() {
+        return isMiniProfile;
+    }
+
     public boolean getIsIntroduction() {
         return isIntroduction;
     }
+
     public boolean getIsProfileSkill() {
         return isProfileSkill;
     }
@@ -338,32 +303,42 @@ public class Profile extends BaseEntity {
     public boolean getIsJobAndSkill() {
         return isJobAndSkill;
     }
+
     public boolean getIsProfileTeamBuildingField() {
         return isProfileTeamBuildingField;
     }
+
     public boolean getIsProfileRegion() {
         return isProfileRegion;
     }
-    public boolean getIsAntecedents() {return isAntecedents;}
+
+    public boolean getIsAntecedents() {
+        return isAntecedents;
+    }
+
     public boolean getIsEducation() {
         return isEducation;
     }
+
     public boolean getIsAwards() {
         return isAwards;
     }
+
     public boolean getIsAttachUrl() {
         return isAttachUrl;
     }
 
 
     // 3.4. 자기소개 초기화 및 삭제 메서드
-    public void deleteIntroduction() {this.introduction = null;}
+    public void deleteIntroduction() {
+        this.introduction = null;
+    }
 
     public boolean getExistDefaultPrivateProfile() {
         if (this.isProfileTeamBuildingField && this.isProfileRegion && this.isMiniProfile) {
             return true;
-        } else return false;
+        } else {
+            return false;
+        }
     }
-
-
 }
