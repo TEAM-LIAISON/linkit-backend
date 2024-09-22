@@ -14,7 +14,7 @@ import java.util.Optional;
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-
+    
     @Override
     public Optional<Member> findBySocialLoginId(String socialLoginId) {
         QMember member = QMember.member;
@@ -36,6 +36,17 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .from(member)
                 .where(member.email.eq(email))
                 .fetchFirst() != null;
+    }
+
+    @Override
+    public String findEmailById(final Long memberId) {
+        QMember member = QMember.member;
+
+        return jpaQueryFactory
+                .select(member.email)
+                .from(member)
+                .where(member.id.eq(memberId))
+                .fetchOne(); // 하나의 결과를 반환
     }
 
     @Override

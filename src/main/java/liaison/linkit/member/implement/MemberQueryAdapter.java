@@ -23,6 +23,10 @@ public class MemberQueryAdapter {
         return memberRepository.findBySocialLoginId(socialLoginId);
     }
 
+    public String findEmailById(final Long memberId) {
+        return memberRepository.findEmailById(memberId);
+    }
+
     public boolean existsByEmail(final String email) {
         return memberRepository.existsByEmail(email);
     }

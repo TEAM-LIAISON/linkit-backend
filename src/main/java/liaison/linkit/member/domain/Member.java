@@ -26,7 +26,7 @@ import org.hibernate.annotations.SQLRestriction;
 @NoArgsConstructor(access = PROTECTED)
 @SQLRestriction("member_state = 'ACTIVE'")
 public class Member extends BaseDateTimeEntity {
-    
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -84,7 +84,7 @@ public class Member extends BaseDateTimeEntity {
         this(null, socialLoginId, email, memberBasicInform);
     }
 
-    public void changeIsMemberBasicInform(final Boolean existMemberBasicInform) {
+    public void existIsMemberBasicInform(final Boolean existMemberBasicInform) {
         this.existMemberBasicInform = existMemberBasicInform;
     }
 

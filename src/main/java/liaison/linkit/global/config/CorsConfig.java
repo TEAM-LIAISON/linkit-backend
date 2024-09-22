@@ -1,11 +1,8 @@
 package liaison.linkit.global.config;
 
-import liaison.linkit.matching.MatchingAccessInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -25,13 +22,5 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowCredentials(true)
                 .exposedHeaders(HttpHeaders.LOCATION);
         WebMvcConfigurer.super.addCorsMappings(registry);
-    }
-
-    @Autowired
-    private MatchingAccessInterceptor matchingAccessInterceptor;
-
-    @Override
-    public void addInterceptors(final InterceptorRegistry registry) {
-        registry.addInterceptor(matchingAccessInterceptor).addPathPatterns("/matching/**");
     }
 }

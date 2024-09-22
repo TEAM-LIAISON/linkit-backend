@@ -2,7 +2,6 @@ package liaison.linkit.global.config;
 
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
-import liaison.linkit.matching.MatchingAccessInterceptor;
 import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.browse.ProfileBrowseAccessInterceptor;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;

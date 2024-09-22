@@ -5,8 +5,7 @@ import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformCreateRequest;
-import liaison.linkit.member.dto.response.MemberBasicInformResponse;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import liaison.linkit.member.business.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -88,7 +87,7 @@ class MemberControllerTest extends ControllerTest {
     @Test
     void getMemberBasicInform() throws Exception {
         // given
-        final MemberBasicInformResponse response = new MemberBasicInformResponse(
+        final MemberBasicInformResponseDTO response = new MemberBasicInformResponseDTO(
                 1L,
                 "권동민",
                 "010-3661-4067",

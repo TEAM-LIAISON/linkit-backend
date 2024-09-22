@@ -1,4 +1,4 @@
-package liaison.linkit.member.dto.csv;
+package liaison.linkit.member.presentation.dto.csv;
 
 import lombok.Data;
 
