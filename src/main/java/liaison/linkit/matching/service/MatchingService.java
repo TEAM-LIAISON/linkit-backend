@@ -37,15 +37,12 @@ import liaison.linkit.profile.domain.repository.jobRole.JobRoleRepository;
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
-import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.skill.Skill;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.activity.ActivityMethod;
 import liaison.linkit.team.domain.activity.ActivityMethodTag;
 import liaison.linkit.team.domain.activity.ActivityRegion;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
-import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.activity.method.ActivityMethodRepository;
 import liaison.linkit.team.domain.repository.activity.method.ActivityMethodTagRepository;
 import liaison.linkit.team.domain.repository.activity.region.ActivityRegionRepository;
@@ -101,11 +98,12 @@ public class MatchingService {
         return profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
     }
-    // 팀 소개서 ID -> team Profile 객체 조회
-    private TeamProfile getTeamProfileById(final Long teamProfileId) {
-        return teamProfileRepository.findById(teamProfileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
-    }
+
+//    // 팀 소개서 ID -> team Profile 객체 조회
+//    private TeamProfile getTeamProfileById(final Long teamProfileId) {
+//        return teamProfileRepository.findById(teamProfileId)
+//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
+//    }
 
     // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
     private Profile getProfile(final Long memberId) {
@@ -113,10 +111,10 @@ public class MatchingService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
     }
 
-    private TeamProfile getTeamProfile(final Long memberId) {
-        return teamProfileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
-    }
+//    private TeamProfile getTeamProfile(final Long memberId) {
+//        return teamProfileRepository.findByMemberId(memberId)
+//                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
+//    }
 
     private PrivateMatching getPrivateMatching(final Long privateMatchingId) {
         return privateMatchingRepository.findById(privateMatchingId)
@@ -129,7 +127,7 @@ public class MatchingService {
     }
 
     public void validateReceivedMatchingRequest(final Long memberId) {
-        if(!privateMatchingRepository.existsByProfileId(getProfile(memberId).getId())){
+        if (!privateMatchingRepository.existsByProfileId(getProfile(memberId).getId())) {
             throw new AuthException(NOT_FOUND_PRIVATE_MATCHING_BY_ID);
         }
     }
@@ -253,7 +251,7 @@ public class MatchingService {
                 .toList();
 
         ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(savedPrivateMatching.getMember().getTeamProfile().getId())
-                .orElseThrow(()-> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
 
         mailService.mailRequestTeamToPrivate(
                 savedPrivateMatching.getProfile().getMember().getEmail(),
@@ -318,7 +316,7 @@ public class MatchingService {
                 .toList();
 
         ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(savedTeamMatching.getMember().getTeamProfile().getId())
-                .orElseThrow(()-> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
+                .orElseThrow(() -> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
 
         mailService.mailRequestTeamToTeam(
                 savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
@@ -502,20 +500,17 @@ public class MatchingService {
                     true,
                     true
             );
-        }
-        else if (profile.getCompletion() >= 80 && teamProfile.getTeamProfileCompletion() < 80) {
+        } else if (profile.getCompletion() >= 80 && teamProfile.getTeamProfileCompletion() < 80) {
             return new ExistenceProfileResponse(
                     true,
                     false
             );
-        }
-        else if (profile.getCompletion() < 80 && teamProfile.getTeamProfileCompletion() >= 80) {
+        } else if (profile.getCompletion() < 80 && teamProfile.getTeamProfileCompletion() >= 80) {
             return new ExistenceProfileResponse(
                     false,
                     true
             );
-        }
-        else {
+        } else {
             return new ExistenceProfileResponse(
                     false,
                     false
@@ -710,7 +705,6 @@ public class MatchingService {
             }
         }
     }
-
 
 
     public List<String> getJobRoleNames(final Long memberId) {

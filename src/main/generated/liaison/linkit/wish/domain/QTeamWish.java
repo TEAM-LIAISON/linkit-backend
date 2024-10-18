@@ -22,22 +22,13 @@ public class QTeamWish extends EntityPathBase<TeamWish> {
 
     public static final QTeamWish teamWish = new QTeamWish("teamWish");
 
-    public final liaison.linkit.global.QBaseEntity _super = new liaison.linkit.global.QBaseEntity(this);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final liaison.linkit.member.domain.QMember member;
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
-
-    //inherited
-    public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
-
-    public final liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement teamMemberAnnouncement;
+    public final liaison.linkit.team.domain.QTeam team;
 
     public QTeamWish(String variable) {
         this(TeamWish.class, forVariable(variable), INITS);
@@ -58,7 +49,7 @@ public class QTeamWish extends EntityPathBase<TeamWish> {
     public QTeamWish(Class<? extends TeamWish> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new liaison.linkit.member.domain.QMember(forProperty("member"), inits.get("member")) : null;
-        this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement"), inits.get("teamMemberAnnouncement")) : null;
+        this.team = inits.isInitialized("team") ? new liaison.linkit.team.domain.QTeam(forProperty("team"), inits.get("team")) : null;
     }
 
 }

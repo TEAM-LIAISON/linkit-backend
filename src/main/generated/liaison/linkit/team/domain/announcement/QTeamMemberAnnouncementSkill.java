@@ -47,7 +47,7 @@ public class QTeamMemberAnnouncementSkill extends EntityPathBase<TeamMemberAnnou
     public QTeamMemberAnnouncementSkill(Class<? extends TeamMemberAnnouncementSkill> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.skill = inits.isInitialized("skill") ? new liaison.linkit.profile.domain.skill.QSkill(forProperty("skill")) : null;
-        this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement"), inits.get("teamMemberAnnouncement")) : null;
+        this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement")) : null;
     }
 
 }

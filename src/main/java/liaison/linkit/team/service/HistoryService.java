@@ -8,10 +8,8 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFI
 import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.history.History;
 import liaison.linkit.team.domain.repository.history.HistoryRepository;
-import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.request.HistoryCreateRequest;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class HistoryService {
 
-    private final TeamProfileRepository teamProfileRepository;
     private final HistoryRepository historyRepository;
-
-    // 모든 "팀 소개서" 서비스 계층에 필요한 TeamProfile 조회 메서드
-    private TeamProfile getTeamProfile(final Long memberId) {
-        return teamProfileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
-    }
-
+    
     private History getHistory(final Long historyId) {
         return historyRepository.findById(historyId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_HISTORY_ID));

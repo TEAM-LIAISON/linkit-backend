@@ -32,12 +32,18 @@ public class QTeam extends EntityPathBase<Team> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
+    public final liaison.linkit.profile.domain.region.QRegion region;
+
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
 
+    public final StringPath teamIntroduction = createString("teamIntroduction");
+
     public final ListPath<TeamMember, QTeamMember> teamMembers = this.<TeamMember, QTeamMember>createList("teamMembers", TeamMember.class, QTeamMember.class, PathInits.DIRECT2);
 
-    public final QTeamProfile teamProfile;
+    public final StringPath teamName = createString("teamName");
+
+    public final StringPath teamShortDescription = createString("teamShortDescription");
 
     public QTeam(String variable) {
         this(Team.class, forVariable(variable), INITS);
@@ -57,7 +63,7 @@ public class QTeam extends EntityPathBase<Team> {
 
     public QTeam(Class<? extends Team> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.teamProfile = inits.isInitialized("teamProfile") ? new QTeamProfile(forProperty("teamProfile"), inits.get("teamProfile")) : null;
+        this.region = inits.isInitialized("region") ? new liaison.linkit.profile.domain.region.QRegion(forProperty("region")) : null;
     }
 
 }

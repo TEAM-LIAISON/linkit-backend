@@ -1,6 +1,5 @@
 package liaison.linkit.global.config.csv.degree;
 
-import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.dto.csv.DegreeCsvData;
 import lombok.RequiredArgsConstructor;

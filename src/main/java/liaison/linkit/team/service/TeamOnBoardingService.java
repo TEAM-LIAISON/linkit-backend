@@ -2,7 +2,6 @@ package liaison.linkit.team.service;
 
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.response.TeamProfileOnBoardingIsValueResponse;
 import lombok.RequiredArgsConstructor;

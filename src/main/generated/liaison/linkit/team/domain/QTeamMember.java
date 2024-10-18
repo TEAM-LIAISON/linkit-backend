@@ -28,6 +28,8 @@ public class QTeamMember extends EntityPathBase<TeamMember> {
 
     public final QTeam team;
 
+    public final EnumPath<liaison.linkit.global.type.TeamMemberType> teamMemberType = createEnum("teamMemberType", liaison.linkit.global.type.TeamMemberType.class);
+
     public QTeamMember(String variable) {
         this(TeamMember.class, forVariable(variable), INITS);
     }

@@ -36,6 +36,7 @@ public class WishController {
         return CommonResponse.onSuccess(wishService.createWishToPrivateProfile(accessor.getMemberId(), profileId));
     }
 
+
     // 팀원 공고 찜하기 (미확정 09.20)
     @PostMapping("/wish/team/profile/{teamMemberAnnouncementId}")
     @MemberOnly

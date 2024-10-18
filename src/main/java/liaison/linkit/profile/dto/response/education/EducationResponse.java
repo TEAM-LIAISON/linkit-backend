@@ -1,6 +1,6 @@
 package liaison.linkit.profile.dto.response.education;
 
-import liaison.linkit.profile.domain.education.Education;
+import liaison.linkit.profile.domain.ProfileEducation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -19,25 +19,25 @@ public class EducationResponse {
     // 재학 기간 관련 타입
     private final String degreeName;
 
-    public static EducationResponse of(final Education education) {
+    public static EducationResponse of(final ProfileEducation profileEducation) {
         return new EducationResponse(
-                education.getId(),
-                education.getAdmissionYear(),
-                education.getGraduationYear(),
-                education.getUniversityName(),
-                education.getMajorName(),
-                education.getDegree().getDegreeName()
+                profileEducation.getId(),
+                profileEducation.getAdmissionYear(),
+                profileEducation.getGraduationYear(),
+                profileEducation.getUniversityName(),
+                profileEducation.getMajorName(),
+                profileEducation.getDegree().getDegreeName()
         );
     }
 
-    public static EducationResponse personalEducation(final Education education) {
+    public static EducationResponse personalEducation(final ProfileEducation profileEducation) {
         return new EducationResponse(
-                education.getId(),
-                education.getAdmissionYear(),
-                education.getGraduationYear(),
-                education.getUniversityName(),
-                education.getMajorName(),
-                education.getDegree().getDegreeName()
+                profileEducation.getId(),
+                profileEducation.getAdmissionYear(),
+                profileEducation.getGraduationYear(),
+                profileEducation.getUniversityName(),
+                profileEducation.getMajorName(),
+                profileEducation.getDegree().getDegreeName()
         );
     }
 }

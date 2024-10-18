@@ -25,6 +25,4 @@ public class MemberBasicInformQueryAdapter {
         return memberBasicInformRepository.findByMemberId(memberId)
                 .orElseThrow(() -> MemberBasicInformNotFoundException.NOT_FOUND_EXCEPTION);
     }
-
-
 }

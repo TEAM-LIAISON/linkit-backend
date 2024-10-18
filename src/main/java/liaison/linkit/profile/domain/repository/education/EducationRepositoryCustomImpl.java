@@ -1,7 +1,7 @@
 package liaison.linkit.profile.domain.repository.education;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import liaison.linkit.profile.domain.education.Education;
+import liaison.linkit.profile.domain.ProfileEducation;
 import liaison.linkit.profile.domain.education.QEducation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ public class EducationRepositoryCustomImpl implements EducationRepositoryCustom 
     }
 
     @Override
-    public Education findByProfileId(Long profileId) {
+    public ProfileEducation findByProfileId(Long profileId) {
         QEducation education = QEducation.education;
 
         return jpaQueryFactory
@@ -40,7 +40,7 @@ public class EducationRepositoryCustomImpl implements EducationRepositoryCustom 
     }
 
     @Override
-    public List<Education> findAllByProfileId(Long profileId) {
+    public List<ProfileEducation> findAllByProfileId(Long profileId) {
         QEducation education = QEducation.education;
 
         return jpaQueryFactory

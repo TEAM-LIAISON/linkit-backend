@@ -1,6 +1,10 @@
 package liaison.linkit.profile.presentation;
 
+import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_BOTH_JOB_AND_SKILL;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+
 import jakarta.validation.Valid;
+import java.util.List;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -15,17 +19,21 @@ import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
 import liaison.linkit.profile.dto.response.onBoarding.OnBoardingProfileResponse;
 import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.profile.service.*;
+import liaison.linkit.profile.service.AntecedentsService;
+import liaison.linkit.profile.service.EducationService;
+import liaison.linkit.profile.service.MiniProfileService;
+import liaison.linkit.profile.service.ProfileOnBoardingService;
+import liaison.linkit.profile.service.ProfileRegionService;
+import liaison.linkit.profile.service.TeamBuildingFieldService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static liaison.linkit.global.exception.ExceptionCode.HAVE_TO_INPUT_BOTH_JOB_AND_SKILL;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +48,7 @@ public class ProfileOnBoardingController {
     public final ProfileRegionService profileRegionService;
     public final EducationService educationService;
     public final AntecedentsService antecedentsService;
-
+    
     // 1.5.4 희망 역할 및 보유 기술 생성/수정
     @PostMapping("/private/job/skill")
     @MemberOnly

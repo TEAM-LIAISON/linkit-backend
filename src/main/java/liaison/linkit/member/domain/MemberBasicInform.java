@@ -10,13 +10,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import liaison.linkit.global.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 // 이름 및 사용자 정보 기입 플로우 추가 구현 필요
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor
 public class MemberBasicInform extends BaseEntity {
 
     @Id
@@ -51,36 +55,4 @@ public class MemberBasicInform extends BaseEntity {
     // 광고성 정보 수신 동의
     @Column(nullable = false)
     private boolean marketingAgree;
-
-    // 생성자
-    public MemberBasicInform(
-            final Long id,
-            final String memberName,
-            final String contact,
-            final boolean marketingAgree,
-            final Member member
-    ) {
-        this.id = id;
-        this.memberName = memberName;
-        this.contact = contact;
-        this.marketingAgree = marketingAgree;
-        this.member = member;
-        this.serviceUseAgree = true;
-        this.privateInformAgree = true;
-        this.ageCheck = true;
-    }
-
-    public MemberBasicInform(
-            final String memberName,
-            final String contact,
-            final boolean marketingAgree,
-            final Member member) {
-        this(null, memberName, contact, marketingAgree, member);
-    }
-
-    public void update(final MemberBasicInform memberBasicInform) {
-        this.memberName = memberBasicInform.getMemberName();
-        this.contact = memberBasicInform.getContact();
-        this.marketingAgree = memberBasicInform.isMarketingAgree();
-    }
 }

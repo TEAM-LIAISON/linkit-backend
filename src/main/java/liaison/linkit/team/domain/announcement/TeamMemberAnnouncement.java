@@ -1,16 +1,17 @@
 package liaison.linkit.team.domain.announcement;
 
-import jakarta.persistence.*;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 import liaison.linkit.global.BaseEntity;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -23,10 +24,6 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @Column(name = "team_member_announcement_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_profile_id")
-    private TeamProfile teamProfile;
-
     // 2. 주요 업무
     @Column(name = "main_business")
     private String mainBusiness;
@@ -36,13 +33,11 @@ public class TeamMemberAnnouncement extends BaseEntity {
     private String applicationProcess;
 
     public static TeamMemberAnnouncement of(
-            final TeamProfile teamProfile,
             final String mainBusiness,
             final String applicationProcess
     ) {
         return new TeamMemberAnnouncement(
                 null,
-                teamProfile,
                 mainBusiness,
                 applicationProcess
         );

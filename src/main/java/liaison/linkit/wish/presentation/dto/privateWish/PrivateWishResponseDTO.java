@@ -1,6 +1,7 @@
 package liaison.linkit.wish.presentation.dto.privateWish;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,8 @@ public class PrivateWishResponseDTO {
         @Builder.Default
         @JsonProperty("isPrivateWish")
         private boolean like = true;
+
+        private LocalDateTime createdAt;
     }
 
     @Builder
@@ -28,5 +31,7 @@ public class PrivateWishResponseDTO {
         @Builder.Default
         @JsonProperty("isPrivateWish")
         private boolean like = false;
+
+        private LocalDateTime deletedAt;
     }
 }

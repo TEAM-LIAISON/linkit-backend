@@ -1,6 +1,6 @@
 package liaison.linkit.profile.dto.response.awards;
 
-import liaison.linkit.profile.domain.awards.Awards;
+import liaison.linkit.profile.domain.ProfileAwards;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -16,27 +16,27 @@ public class AwardsResponse {
     private final int awardsMonth;
     private final String awardsDescription;
 
-    public static AwardsResponse of(final Awards awards){
+    public static AwardsResponse of(final ProfileAwards profileAwards) {
         return new AwardsResponse(
-                awards.getId(),
-                awards.getAwardsName(),
-                awards.getRanking(),
-                awards.getOrganizer(),
-                awards.getAwardsYear(),
-                awards.getAwardsMonth(),
-                awards.getAwardsDescription()
+                profileAwards.getId(),
+                profileAwards.getAwardsName(),
+                profileAwards.getRanking(),
+                profileAwards.getOrganizer(),
+                profileAwards.getAwardsYear(),
+                profileAwards.getAwardsMonth(),
+                profileAwards.getAwardsDescription()
         );
     }
 
-    public static AwardsResponse personalAwards(final Awards awards) {
+    public static AwardsResponse personalAwards(final ProfileAwards profileAwards) {
         return new AwardsResponse(
-                awards.getId(),
-                awards.getAwardsName(),
-                awards.getRanking(),
-                awards.getOrganizer(),
-                awards.getAwardsYear(),
-                awards.getAwardsMonth(),
-                awards.getAwardsDescription()
+                profileAwards.getId(),
+                profileAwards.getAwardsName(),
+                profileAwards.getRanking(),
+                profileAwards.getOrganizer(),
+                profileAwards.getAwardsYear(),
+                profileAwards.getAwardsMonth(),
+                profileAwards.getAwardsDescription()
         );
     }
 }

@@ -22,22 +22,13 @@ public class QPrivateWish extends EntityPathBase<PrivateWish> {
 
     public static final QPrivateWish privateWish = new QPrivateWish("privateWish");
 
-    public final liaison.linkit.global.QBaseEntity _super = new liaison.linkit.global.QBaseEntity(this);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
     public final liaison.linkit.member.domain.QMember member;
 
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
-
     public final liaison.linkit.profile.domain.QProfile profile;
-
-    //inherited
-    public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
 
     public QPrivateWish(String variable) {
         this(PrivateWish.class, forVariable(variable), INITS);

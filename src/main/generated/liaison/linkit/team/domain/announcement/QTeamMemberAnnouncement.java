@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,8 +16,6 @@ import com.querydsl.core.types.dsl.PathInits;
 public class QTeamMemberAnnouncement extends EntityPathBase<TeamMemberAnnouncement> {
 
     private static final long serialVersionUID = 1264434084L;
-
-    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QTeamMemberAnnouncement teamMemberAnnouncement = new QTeamMemberAnnouncement("teamMemberAnnouncement");
 
@@ -39,27 +36,16 @@ public class QTeamMemberAnnouncement extends EntityPathBase<TeamMemberAnnounceme
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
 
-    public final liaison.linkit.team.domain.QTeamProfile teamProfile;
-
     public QTeamMemberAnnouncement(String variable) {
-        this(TeamMemberAnnouncement.class, forVariable(variable), INITS);
+        super(TeamMemberAnnouncement.class, forVariable(variable));
     }
 
     public QTeamMemberAnnouncement(Path<? extends TeamMemberAnnouncement> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QTeamMemberAnnouncement(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QTeamMemberAnnouncement(PathMetadata metadata, PathInits inits) {
-        this(TeamMemberAnnouncement.class, metadata, inits);
-    }
-
-    public QTeamMemberAnnouncement(Class<? extends TeamMemberAnnouncement> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.teamProfile = inits.isInitialized("teamProfile") ? new liaison.linkit.team.domain.QTeamProfile(forProperty("teamProfile"), inits.get("teamProfile")) : null;
+        super(TeamMemberAnnouncement.class, metadata);
     }
 
 }

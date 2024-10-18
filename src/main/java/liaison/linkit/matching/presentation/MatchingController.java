@@ -1,12 +1,14 @@
 package liaison.linkit.matching.presentation;
 
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
+import java.util.List;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.matching.CheckMatchingToPrivateProfileAccess;
-import liaison.linkit.matching.CheckMatchingToTeamProfileAccess;
 import liaison.linkit.matching.dto.request.AllowMatchingRequest;
 import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
@@ -23,12 +25,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,7 +49,6 @@ public class MatchingController {
     // 이메일 발송 자동화 추가 필요
     @PostMapping("/private/profile/matching/private/{profileId}")
     @MemberOnly
-    @CheckMatchingToPrivateProfileAccess
     public ResponseEntity<Void> createPrivateProfileMatchingToPrivate(
             @Auth final Accessor accessor,
             @PathVariable final Long profileId,
@@ -61,7 +63,6 @@ public class MatchingController {
     // 이메일 발송 자동화 추가 필요
     @PostMapping("/team/profile/matching/private/{profileId}")
     @MemberOnly
-    @CheckMatchingToPrivateProfileAccess
     public ResponseEntity<Void> createTeamProfileMatchingToPrivate(
             @Auth final Accessor accessor,
             @PathVariable final Long profileId,
@@ -75,7 +76,6 @@ public class MatchingController {
     // 이메일 발송 자동화 추가 필요
     @PostMapping("/team/profile/matching/team/{teamMemberAnnouncementId}")
     @MemberOnly
-    @CheckMatchingToTeamProfileAccess
     public ResponseEntity<Void> createTeamProfileMatchingToTeam(
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberAnnouncementId,
@@ -89,7 +89,6 @@ public class MatchingController {
     // 이메일 발송 자동화 추가 필요
     @PostMapping("/private/profile/matching/team/{teamMemberAnnouncementId}")
     @MemberOnly
-    @CheckMatchingToTeamProfileAccess
     public ResponseEntity<Void> createPrivateProfileMatchingToTeam(
             @Auth final Accessor accessor,
             @PathVariable final Long teamMemberAnnouncementId,
@@ -272,7 +271,6 @@ public class MatchingController {
         final SuccessContactResponse successContactResponse = matchingService.getTeamSuccessContactResponse(accessor.getMemberId(), teamMatchingId);
         return ResponseEntity.status(HttpStatus.OK).body(successContactResponse);
     }
-
 
     // 내가 보낸 매칭을 삭제한다. -> 발신자의 입장에서 삭제
     // 성사된 매칭을 삭제한다 -> 발신자 또는 수신자의 입장에서 삭제

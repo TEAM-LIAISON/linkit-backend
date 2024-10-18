@@ -17,7 +17,7 @@ public enum AuthErrorCode implements BaseErrorCode {
     INVALID_TOKEN(UNAUTHORIZED, "AUTH_401_2", "유효하지 않은 AccessToken입니다. 재로그인 해주세요"),
     REFRESH_TOKEN_EXPIRED(FORBIDDEN, "AUTH_403_1", "RefreshToken 인증 시간이 만료되었습니다. 재로그인 해주세요."),
     ACCESS_TOKEN_NOT_EXIST(FORBIDDEN, "AUTH_403_2", "올바른 AccessToken을 넣어주세요.");
-
+    
     private final Integer status;
     private final String code;
     private final String reason;

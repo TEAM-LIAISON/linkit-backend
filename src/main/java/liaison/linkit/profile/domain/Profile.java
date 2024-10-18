@@ -1,7 +1,7 @@
 package liaison.linkit.profile.domain;
 
 import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.CascadeType.REMOVE;
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -10,165 +10,57 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import liaison.linkit.common.domain.ProfileState;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.profile.domain.awards.Awards;
-import liaison.linkit.profile.domain.miniProfile.MiniProfile;
-import liaison.linkit.profile.domain.role.ProfileJobRole;
+import liaison.linkit.profile.domain.region.Region;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.SQLRestriction;
 
+// [2.0.0] 내 프로필
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 @SQLRestriction("status = 'USABLE'")
-@Slf4j
 public class Profile extends BaseEntity {
+
+    // 13% * 4 + 16% * 3
+    private static final int LOW_COMPLETION = 13;
+    private static final int HIGH_COMPLETION = 16;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "region_id", nullable = false)
+    private Region region;
+
+    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
-    // 3.1. 미니 프로필
-    @OneToOne(mappedBy = "profile", cascade = ALL)
-    private MiniProfile miniProfile;
+    // 프로필 이미지 경로
+    private String profileImagePath;
 
-    // 3.10. 수상
-    @OneToMany(mappedBy = "profile", cascade = REMOVE)
-    private List<Awards> awardsList = new ArrayList<>();
+    // 프로필 공개 여부
+    private boolean isProfilePublic;
 
-    @OneToMany(mappedBy = "profile", cascade = REMOVE)
-    private List<ProfileJobRole> profileJobRoleList = new ArrayList<>();
-
-    // 3.3. 프로필 완성도
-    // 전체 프로필 완성도 값 (%) - 소수점 가능 (double 자료형)
-    @Column(nullable = false)
-    private double completion;
-
-    // 3.4. 자기소개
-    @Column(name = "introduction", length = 300)
-    private String introduction;
-
-    // 3.4. 자기소개 기입 여부
-    @Column(nullable = false)
-    private boolean isIntroduction;
-
-    // 3.5. 직무/역할 및 보유 기술 기입 여부
-    @Column(nullable = false)
-    private boolean isJobAndSkill;
-
-    // 3.5.1. 직무/역할 기입 여부
-    @Column(nullable = false)
-    private boolean isProfileJobRole;
-
-    // 3.5.2. 보유 기술 기입 여부
-    @Column(nullable = false)
     private boolean isProfileSkill;
-
-    // 3.6. 희망 팀빌딩 분야 기입 여부
-    @Column(nullable = false)
-    private boolean isProfileTeamBuildingField;
-
-    // 3.7. 활동 지역 및 위치 기입 여부
-    @Column(nullable = false)
-    private boolean isProfileRegion;
-
-    // 3.8. 이력 기입 여부
-    @Column(nullable = false)
-    private boolean isAntecedents;
-
-    // 3.9. 학력 기입 여부
-    @Column(nullable = false)
-    private boolean isEducation;
-
-    // 3.10. 수상 기입 여부
-    @Column(nullable = false)
-    private boolean isAwards;
-
-    // 3.11. 첨부 링크(URL) 기입 여부
-    @Column(nullable = false)
-    private boolean isAttachUrl;
-
-
-    // 3.1. 미니 프로필 기입 여부
-    @Column(nullable = false)
-    private boolean isMiniProfile;
-
-    public Profile(
-            final Long id,
-            final Member member,
-            final double completion
-    ) {
-        this.id = id;
-        this.member = member;
-        this.completion = completion;
-        this.introduction = null;
-        this.isIntroduction = false;
-        this.isJobAndSkill = false;
-        this.isProfileJobRole = false;
-        this.isProfileSkill = false;
-        this.isProfileTeamBuildingField = false;
-        this.isProfileRegion = false;
-        this.isAntecedents = false;
-        this.isEducation = false;
-        this.isAwards = false;
-//        this.isAttach = false;
-        this.isAttachUrl = false;
-//        this.isAttachFile = false;
-        this.isMiniProfile = false;
-    }
-
-    public Profile(
-            final Member member,
-            final int completion
-    ) {
-        this(null, member, completion);
-    }
-
-    // 기본 입력 항목 (희망 역할 및 기술 / 활동 지역 및 위치 / 희망 팀빌딩 분야 / 이력 / 학력 ) -> 각 10% 총합 50%
-    // 자기소개 30%
-    // 수상 10%
-    // 첨부 10%
-
-    // 디폴트 항목 관리 메서드
-    public void addPerfectionDefault() {
-        this.completion += 10.0;
-    }
-
-    public void cancelPerfectionDefault() {
-        this.completion -= 10.0;
-    }
-
-    // 수상 및 첨부 관리 메서드
-    public void addPerfectionTen() {
-        this.completion += 10.0;
-    }
-
-    public void cancelPerfectionTen() {
-        this.completion -= 10.0;
-    }
-
-    // 자기소개 관리 메서드
-    public void addPerfectionThirty() {
-        this.completion += 30.0;
-    }
-
-    public void cancelPerfectionThirty() {
-        this.completion -= 30.0;
-    }
+    private boolean isProfileActivity;
+    private boolean isProfilePortfolio;
+    private boolean isProfileEducation;
+    private boolean isProfileAwards;
+    private boolean isProfileLicense;
+    private boolean isProfileLink;
 
     // 3.1. 미니 프로필 업데이트
     public void updateIsMiniProfile(final Boolean isMiniProfile) {
@@ -193,21 +85,8 @@ public class Profile extends BaseEntity {
         }
     }
 
-    // 3.4. 자기소개 업데이트
-    public void updateIsIntroduction(final boolean isIntroduction) {
-        this.isIntroduction = isIntroduction;
-    }
-
-    // 3.5.1. 내 이력서 직무/역할
-    public void updateIsProfileJobRole(final boolean isProfileJobRole) {
-        log.info("isProfileJobRole={}", isProfileJobRole);
-        this.isProfileJobRole = isProfileJobRole;
-
-    }
-
     // 3.5.2. 내 이력서 보유 기술
     public void updateIsProfileSkill(final boolean isProfileSkill) {
-        log.info("isProfileSkill={}", isProfileSkill);
         this.isProfileSkill = isProfileSkill;
 
         // 모두 true인 경우
@@ -223,7 +102,6 @@ public class Profile extends BaseEntity {
 
     // 3.6. 희망 팀빌딩 분야 업데이트
     public void updateIsProfileTeamBuildingField(final boolean isProfileTeamBuildingField) {
-        log.info("isProfileTeamBuildingField={}", isProfileTeamBuildingField);
         this.isProfileTeamBuildingField = isProfileTeamBuildingField;
         if (isProfileTeamBuildingField) {
             addPerfectionDefault();
@@ -234,7 +112,6 @@ public class Profile extends BaseEntity {
 
     // 3.7. 활동 지역 및 위치 업데이트
     public void updateIsProfileRegion(final boolean isProfileRegion) {
-        log.info("isProfileRegion={}", isProfileRegion);
         this.isProfileRegion = isProfileRegion;
         if (isProfileRegion) {
             addPerfectionDefault();
@@ -245,9 +122,7 @@ public class Profile extends BaseEntity {
 
     // 3.8. 이력 업데이트
     public void updateIsAntecedents(final boolean isAntecedents) {
-        log.info("isAntecedents={}", isAntecedents);
         this.isAntecedents = isAntecedents;
-        log.info("this.Antecedents={}", this.isAntecedents);
         if (isAntecedents) {
             addPerfectionDefault();
         } else {
@@ -257,7 +132,6 @@ public class Profile extends BaseEntity {
 
     // 3.9. 학력 업데이트
     public void updateIsEducation(final boolean isEducation) {
-        log.info("isEducation={}", isEducation);
         this.isEducation = isEducation;
         if (isEducation) {
             addPerfectionDefault();
@@ -268,7 +142,6 @@ public class Profile extends BaseEntity {
 
     // 3.10. 수상 업데이트
     public void updateIsAwards(final boolean isAwards) {
-        log.info("isAwards={}", isAwards);
         this.isAwards = isAwards;
         if (isAwards) {
             addPerfectionTen();
@@ -277,68 +150,9 @@ public class Profile extends BaseEntity {
         }
     }
 
-    // 3.11.1 첨부 링크 업데이트
-    public void updateIsAttachUrl(final boolean isAttachUrl) {
-        this.isAttachUrl = isAttachUrl;
-        if (this.isAttachUrl) {
-            addPerfectionTen();
-        } else {
-            cancelPerfectionTen();
-        }
-    }
-
-    // 내 이력서의 각 항목들 기입 여부 조회 개별 메서드
-    public boolean getIsMiniProfile() {
-        return isMiniProfile;
-    }
-
-    public boolean getIsIntroduction() {
-        return isIntroduction;
-    }
 
     public boolean getIsProfileSkill() {
         return isProfileSkill;
     }
 
-    public boolean getIsJobAndSkill() {
-        return isJobAndSkill;
-    }
-
-    public boolean getIsProfileTeamBuildingField() {
-        return isProfileTeamBuildingField;
-    }
-
-    public boolean getIsProfileRegion() {
-        return isProfileRegion;
-    }
-
-    public boolean getIsAntecedents() {
-        return isAntecedents;
-    }
-
-    public boolean getIsEducation() {
-        return isEducation;
-    }
-
-    public boolean getIsAwards() {
-        return isAwards;
-    }
-
-    public boolean getIsAttachUrl() {
-        return isAttachUrl;
-    }
-
-
-    // 3.4. 자기소개 초기화 및 삭제 메서드
-    public void deleteIntroduction() {
-        this.introduction = null;
-    }
-
-    public boolean getExistDefaultPrivateProfile() {
-        if (this.isProfileTeamBuildingField && this.isProfileRegion && this.isMiniProfile) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

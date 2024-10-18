@@ -1,7 +1,6 @@
 package liaison.linkit.team.domain.memberIntroduction;
 
 import jakarta.persistence.*;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.dto.request.memberIntroduction.TeamMemberIntroductionCreateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

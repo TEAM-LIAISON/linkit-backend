@@ -11,8 +11,7 @@ import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.education.Degree;
-import liaison.linkit.profile.domain.education.Education;
+import liaison.linkit.profile.domain.ProfileEducation;
 import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
@@ -40,7 +39,7 @@ public class EducationService {
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
     }
 
-    private Education getEducation(final Long educationId) {
+    private ProfileEducation getEducation(final Long educationId) {
         return educationRepository.findById(educationId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_EDUCATION_ID));
     }
@@ -77,7 +76,7 @@ public class EducationService {
             final Degree degree = degreeRepository.findByDegreeName(request.getDegreeName())
                     .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
 
-            final Education newEducation = Education.of(
+            final ProfileEducation newProfileEducation = ProfileEducation.of(
                     profile,
                     request.getAdmissionYear(),
                     request.getGraduationYear(),
@@ -86,8 +85,8 @@ public class EducationService {
                     degree
             );
 
-            Education savedEducation = educationRepository.save(newEducation);
-            responses.add(getEducationResponse(savedEducation));
+            ProfileEducation savedProfileEducation = educationRepository.save(newProfileEducation);
+            responses.add(getEducationResponse(savedProfileEducation));
         }
 
         // 반복문 종료 후에 프로필의 상태를 업데이트한다.
@@ -97,8 +96,8 @@ public class EducationService {
     @Transactional(readOnly = true)
     public List<EducationResponse> getAllEducations(final Long memberId) {
         final Profile profile = getProfile(memberId);
-        final List<Education> educations = educationRepository.findAllByProfileId(profile.getId());
-        return educations.stream()
+        final List<ProfileEducation> profileEducations = educationRepository.findAllByProfileId(profile.getId());
+        return profileEducations.stream()
                 .map(this::getEducationResponse)
                 .toList();
     }
@@ -108,23 +107,23 @@ public class EducationService {
         final Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
 
-        final List<Education> educations = educationRepository.findAllByProfileId(profile.getId());
-        return educations.stream()
+        final List<ProfileEducation> profileEducations = educationRepository.findAllByProfileId(profile.getId());
+        return profileEducations.stream()
                 .map(this::getEducationResponse)
                 .toList();
     }
 
-    private EducationResponse getEducationResponse(final Education education) {
-        return EducationResponse.of(education);
+    private EducationResponse getEducationResponse(final ProfileEducation profileEducation) {
+        return EducationResponse.of(profileEducation);
     }
 
     public void delete(final Long memberId, final Long educationId) {
         log.info("삭제 메서드 실행");
         final Profile profile = getProfile(memberId);
-        final Education education = getEducation(educationId);
+        final ProfileEducation profileEducation = getEducation(educationId);
 
         // 해당 학력 삭제
-        educationRepository.deleteById(education.getId());
+        educationRepository.deleteById(profileEducation.getId());
 
         log.info("삭제 완료");
         if (!educationRepository.existsByProfileId(profile.getId())) {
@@ -153,14 +152,14 @@ public class EducationService {
             final Long educationId,
             final EducationCreateRequest educationCreateRequest
     ) {
-        final Education education = getEducation(educationId);
+        final ProfileEducation profileEducation = getEducation(educationId);
 
         final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
 
-        education.update(educationCreateRequest, educationCreateRequest.getUniversityName(),
+        profileEducation.update(educationCreateRequest, educationCreateRequest.getUniversityName(),
                 educationCreateRequest.getMajorName(), degree);
-        return education.getId();
+        return profileEducation.getId();
     }
 
     private Long makeNewEducation(
@@ -170,7 +169,7 @@ public class EducationService {
         final Degree degree = degreeRepository.findByDegreeName(educationCreateRequest.getDegreeName())
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_DEGREE_NAME));
 
-        final Education newEducation = Education.of(
+        final ProfileEducation newProfileEducation = ProfileEducation.of(
                 profile,
                 educationCreateRequest.getAdmissionYear(),
                 educationCreateRequest.getGraduationYear(),
@@ -179,6 +178,6 @@ public class EducationService {
                 degree
         );
 
-        return educationRepository.save(newEducation).getId();
+        return educationRepository.save(newProfileEducation).getId();
     }
 }

@@ -9,7 +9,6 @@ import java.util.Optional;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.region.Region;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.activity.ActivityMethod;
 import liaison.linkit.team.domain.activity.ActivityMethodTag;
 import liaison.linkit.team.domain.activity.ActivityRegion;
@@ -17,7 +16,6 @@ import liaison.linkit.team.domain.repository.activity.method.ActivityMethodRepos
 import liaison.linkit.team.domain.repository.activity.method.ActivityMethodTagRepository;
 import liaison.linkit.team.domain.repository.activity.region.ActivityRegionRepository;
 import liaison.linkit.team.domain.repository.activity.region.RegionRepository;
-import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.request.activity.ActivityCreateRequest;
 import liaison.linkit.team.dto.response.activity.ActivityMethodResponse;
 import liaison.linkit.team.dto.response.activity.ActivityRegionResponse;
@@ -34,30 +32,12 @@ import org.springframework.transaction.annotation.Transactional;
 // 활동 방식 및 활동 지역 다루는 서비스 계층
 public class ActivityService {
 
-    final TeamProfileRepository teamProfileRepository;
-
     final ActivityMethodRepository activityMethodRepository;
     final ActivityMethodTagRepository activityMethodTagRepository;
 
     final ActivityRegionRepository activityRegionRepository;
     final RegionRepository regionRepository;
 
-    private TeamProfile getTeamProfile(final Long memberId) {
-        return teamProfileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
-    }
-
-    public void validateActivityMethodByMember(final Long memberId) {
-        if (!activityMethodRepository.existsByTeamProfileId(getTeamProfile(memberId).getId())) {
-            throw new AuthException(NOT_FOUND_ACTIVITY_METHOD_BY_TEAM_PROFILE_ID);
-        }
-    }
-
-    public void validateActivityRegionByMember(final Long memberId) {
-        if (!activityRegionRepository.existsByTeamProfileId(getTeamProfile(memberId).getId())) {
-            throw new AuthException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID);
-        }
-    }
 
     // 활동 방식 저장
     public void saveActivityMethod(

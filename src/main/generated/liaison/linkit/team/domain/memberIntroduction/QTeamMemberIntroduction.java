@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,8 +16,6 @@ import com.querydsl.core.types.dsl.PathInits;
 public class QTeamMemberIntroduction extends EntityPathBase<TeamMemberIntroduction> {
 
     private static final long serialVersionUID = 722835978L;
-
-    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QTeamMemberIntroduction teamMemberIntroduction = new QTeamMemberIntroduction("teamMemberIntroduction");
 
@@ -30,27 +27,18 @@ public class QTeamMemberIntroduction extends EntityPathBase<TeamMemberIntroducti
 
     public final StringPath teamMemberRole = createString("teamMemberRole");
 
-    public final liaison.linkit.team.domain.QTeamProfile teamProfile;
+    public final NumberPath<TeamProfile> teamProfile = createNumber("teamProfile", TeamProfile.class);
 
     public QTeamMemberIntroduction(String variable) {
-        this(TeamMemberIntroduction.class, forVariable(variable), INITS);
+        super(TeamMemberIntroduction.class, forVariable(variable));
     }
 
     public QTeamMemberIntroduction(Path<? extends TeamMemberIntroduction> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QTeamMemberIntroduction(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QTeamMemberIntroduction(PathMetadata metadata, PathInits inits) {
-        this(TeamMemberIntroduction.class, metadata, inits);
-    }
-
-    public QTeamMemberIntroduction(Class<? extends TeamMemberIntroduction> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.teamProfile = inits.isInitialized("teamProfile") ? new liaison.linkit.team.domain.QTeamProfile(forProperty("teamProfile"), inits.get("teamProfile")) : null;
+        super(TeamMemberIntroduction.class, metadata);
     }
 
 }

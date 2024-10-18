@@ -1,6 +1,5 @@
 package liaison.linkit.profile.domain.repository.miniProfile;
 
-import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.repository.query.Param;

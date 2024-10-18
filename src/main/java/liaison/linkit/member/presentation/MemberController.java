@@ -3,64 +3,51 @@ package liaison.linkit.member.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.common.annotation.ApiErrorCodeExample;
-import liaison.linkit.common.exception.AuthErrorCode;
-import liaison.linkit.common.exception.GlobalErrorCode;
-import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformCreateRequest;
-import liaison.linkit.member.dto.request.memberBasicInform.MemberBasicInformUpdateRequest;
-import liaison.linkit.member.dto.response.MemberBasicInformResponse;
-import liaison.linkit.member.exception.member.MemberErrorCode;
+import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.member.business.MemberService;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.memberBasicInformRequest;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.RequestMemberBasicInform;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members")
-@Slf4j
+@RequestMapping("/api/v1/member")
 public class MemberController {
 
     public final MemberService memberService;
 
-    // 회원 기본 정보 등록 API
     @PostMapping("/basic-inform")
     @MemberOnly
-    public ResponseEntity<Void> createMemberBasicInform(
+    public CommonResponse<RequestMemberBasicInform> createMemberBasicInform(
             @Auth final Accessor accessor,
-            @RequestBody MemberBasicInformCreateRequest memberBasicInformCreateRequest
+            @RequestBody final memberBasicInformRequest request
     ) {
-        memberService.save(accessor.getMemberId(), memberBasicInformCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return CommonResponse.onSuccess(memberService.save(accessor.getMemberId(), request));
     }
 
-    @ApiErrorCodeExample(
-            value = {MemberErrorCode.class, AuthErrorCode.class, GlobalErrorCode.class}
-    )
     @GetMapping("/basic-inform")
     @MemberOnly
-    public ResponseEntity<MemberBasicInformResponse> getMemberBasicInform(
-            @Auth final Accessor accessor
-    ) {
+    public CommonResponse<MemberBasicInformResponseDTO.MemberBasicInformDetail> getMemberBasicInform(@Auth final Accessor accessor) {
         memberService.validateMemberBasicInformByMember(accessor.getMemberId());
-        final MemberBasicInformResponse memberBasicInformResponse
-                = memberService.getPersonalMemberBasicInform(accessor.getMemberId());
-        return ResponseEntity.ok().body(memberBasicInformResponse);
+        return CommonResponse.onSuccess(memberService.getPersonalMemberBasicInform(accessor.getMemberId()));
     }
 
     // 회원 기본 정보 수정 API
     @PutMapping("/basic-inform")
     @MemberOnly
-    public ResponseEntity<Void> updateMemberBasicInform(
+    public CommonResponse<RequestMemberBasicInform> updateMemberBasicInform(
             @Auth final Accessor accessor,
-            @RequestBody MemberBasicInformUpdateRequest memberBasicInformUpdateRequest
+            @RequestBody final MemberBasicInformRequestDTO.memberBasicInformRequest request
     ) {
-        memberService.update(accessor.getMemberId(), memberBasicInformUpdateRequest);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return CommonResponse.onSuccess(memberService.update(accessor.getMemberId(), request));
     }
-
-
 }
 

@@ -1,40 +1,5 @@
 package liaison.linkit.profile.presentation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import groovy.util.logging.Slf4j;
-import jakarta.servlet.http.Cookie;
-import liaison.linkit.global.ControllerTest;
-import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.member.business.MemberService;
-import liaison.linkit.profile.dto.request.IntroductionRequest;
-import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
-import liaison.linkit.profile.dto.response.ProfileResponse;
-import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
-import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
-import liaison.linkit.profile.dto.response.awards.AwardsResponse;
-import liaison.linkit.profile.dto.response.completion.CompletionResponse;
-import liaison.linkit.profile.dto.response.education.EducationResponse;
-import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
-import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
-import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
-import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.profile.service.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.Arrays;
-import java.util.List;
-
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -45,9 +10,53 @@ import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWit
 import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import groovy.util.logging.Slf4j;
+import jakarta.servlet.http.Cookie;
+import java.util.Arrays;
+import java.util.List;
+import liaison.linkit.global.ControllerTest;
+import liaison.linkit.login.domain.MemberTokens;
+import liaison.linkit.profile.dto.request.IntroductionRequest;
+import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
+import liaison.linkit.profile.dto.response.ProfileResponse;
+import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
+import liaison.linkit.profile.dto.response.awards.AwardsResponse;
+import liaison.linkit.profile.dto.response.completion.CompletionResponse;
+import liaison.linkit.profile.dto.response.education.EducationResponse;
+import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
+import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
+import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
+import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
+import liaison.linkit.profile.service.AntecedentsService;
+import liaison.linkit.profile.service.AwardsService;
+import liaison.linkit.profile.service.CompletionService;
+import liaison.linkit.profile.service.EducationService;
+import liaison.linkit.profile.service.MiniProfileService;
+import liaison.linkit.profile.service.ProfileOnBoardingService;
+import liaison.linkit.profile.service.ProfileRegionService;
+import liaison.linkit.profile.service.ProfileService;
+import liaison.linkit.profile.service.TeamBuildingFieldService;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.ResultActions;
 
 @WebMvcTest(ProfileController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -61,8 +70,6 @@ class ProfileControllerTest extends ControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
-    private MemberService memberService;
-    @MockBean
     private ProfileService profileService;
     @MockBean
     private ProfileOnBoardingService profileOnBoardingService;
@@ -71,8 +78,6 @@ class ProfileControllerTest extends ControllerTest {
     @MockBean
     private CompletionService completionService;
     @MockBean
-    private ProfileSkillService profileSkillService;
-    @MockBean
     private TeamBuildingFieldService teamBuildingFieldService;
     @MockBean
     private AntecedentsService antecedentsService;
@@ -80,8 +85,6 @@ class ProfileControllerTest extends ControllerTest {
     private EducationService educationService;
     @MockBean
     private AwardsService awardsService;
-    @MockBean
-    private AttachService attachService;
     @MockBean
     private ProfileRegionService profileRegionService;
 
@@ -296,35 +299,6 @@ class ProfileControllerTest extends ControllerTest {
         final List<AwardsResponse> awardsResponses = Arrays.asList(firstAwardsResponse, secondAwardsResponse);
         given(awardsService.getAllAwards(1L)).willReturn(awardsResponses);
 
-        // 10. 첨부
-        final AttachUrlResponse firstAttachUrlResponse = new AttachUrlResponse(
-                1L,
-                "깃허브",
-                "https://github.com/TEAM-LIAISON"
-        );
-
-        final AttachUrlResponse secondAttachUrlResponse = new AttachUrlResponse(
-                2L,
-                "노션",
-                "https://www.notion.so/ko-kr"
-        );
-
-//        final AttachFileResponse firstAttachFileResponse = new AttachFileResponse(
-//                1L,
-//                "A4+-=1.pdf",
-//                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
-//        );
-
-        final List<AttachUrlResponse> attachUrlResponseList = Arrays.asList(firstAttachUrlResponse,
-                secondAttachUrlResponse);
-//        final List<AttachFileResponse> attachFileResponseList = Arrays.asList(firstAttachFileResponse);
-        final AttachResponse attachResponses = new AttachResponse(
-                attachUrlResponseList
-//                attachFileResponseList
-        );
-
-        given(attachService.getAttachList(1L)).willReturn(attachResponses);
-
         final ProfileResponse profileResponse = new ProfileResponse(
                 isPrivateProfileEssential,
                 miniProfileResponse,
@@ -335,8 +309,7 @@ class ProfileControllerTest extends ControllerTest {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses,
-                attachResponses
+                awardsResponses
         );
 
         given(profileService.getProfileResponse(
@@ -349,8 +322,7 @@ class ProfileControllerTest extends ControllerTest {
                 profileRegionResponse,
                 antecedentsResponses,
                 educationResponses,
-                awardsResponses,
-                attachResponses
+                awardsResponses
         )).willReturn(profileResponse);
 
         // when
