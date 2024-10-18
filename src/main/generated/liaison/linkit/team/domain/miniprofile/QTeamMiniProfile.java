@@ -34,7 +34,7 @@ public class QTeamMiniProfile extends EntityPathBase<TeamMiniProfile> {
 
     public final StringPath teamName = createString("teamName");
 
-    public final liaison.linkit.team.domain.QTeamProfile teamProfile;
+    public final NumberPath<TeamProfile> teamProfile = createNumber("teamProfile", TeamProfile.class);
 
     public final StringPath teamProfileTitle = createString("teamProfileTitle");
 
@@ -59,7 +59,6 @@ public class QTeamMiniProfile extends EntityPathBase<TeamMiniProfile> {
     public QTeamMiniProfile(Class<? extends TeamMiniProfile> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.industrySector = inits.isInitialized("industrySector") ? new QIndustrySector(forProperty("industrySector")) : null;
-        this.teamProfile = inits.isInitialized("teamProfile") ? new liaison.linkit.team.domain.QTeamProfile(forProperty("teamProfile"), inits.get("teamProfile")) : null;
         this.teamScale = inits.isInitialized("teamScale") ? new QTeamScale(forProperty("teamScale")) : null;
     }
 

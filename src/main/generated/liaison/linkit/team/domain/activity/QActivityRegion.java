@@ -26,7 +26,7 @@ public class QActivityRegion extends EntityPathBase<ActivityRegion> {
 
     public final liaison.linkit.profile.domain.region.QRegion region;
 
-    public final liaison.linkit.team.domain.QTeamProfile teamProfile;
+    public final NumberPath<TeamProfile> teamProfile = createNumber("teamProfile", TeamProfile.class);
 
     public QActivityRegion(String variable) {
         this(ActivityRegion.class, forVariable(variable), INITS);
@@ -47,7 +47,6 @@ public class QActivityRegion extends EntityPathBase<ActivityRegion> {
     public QActivityRegion(Class<? extends ActivityRegion> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.region = inits.isInitialized("region") ? new liaison.linkit.profile.domain.region.QRegion(forProperty("region")) : null;
-        this.teamProfile = inits.isInitialized("teamProfile") ? new liaison.linkit.team.domain.QTeamProfile(forProperty("teamProfile"), inits.get("teamProfile")) : null;
     }
 
 }

@@ -6,7 +6,6 @@ import liaison.linkit.global.exception.ImageException;
 import liaison.linkit.image.domain.ImageFile;
 import liaison.linkit.image.domain.S3ImageEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.miniprofile.IndustrySector;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
@@ -89,7 +88,6 @@ public class TeamMiniProfileService {
 
         // TeamScale 찾기
         final TeamScale teamScale = teamScaleRepository.findBySizeType(onBoardingFieldTeamInformRequest.getSizeType());
-
 
         final TeamMiniProfile teamMiniProfile = TeamMiniProfile.of(
                 teamProfile,
@@ -359,10 +357,9 @@ public class TeamMiniProfileService {
                 industrySector,
                 teamScale
         );
-        
+
         log.info("memberId={}의 팀 미니 프로필 온보딩 항목 수정이 완료되었습니다.", memberId);
     }
-
 
 //    private final TeamProfileRepository teamProfileRepository;
 //    private final TeamMiniProfileRepository teamMiniProfileRepository;

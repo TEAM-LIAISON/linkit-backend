@@ -5,6 +5,7 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MEMBE
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MINI_PROFILE_BY_TEAM_PROFILE_ID;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_ID;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import liaison.linkit.global.exception.BadRequestException;
@@ -13,7 +14,6 @@ import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
@@ -21,7 +21,6 @@ import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementSkill;
@@ -87,23 +86,23 @@ public class WishService {
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
 
-    private TeamProfile getTeamProfile(final Long memberId) {
+    @Transactional(readOnly = true)
+    public TeamProfile getTeamProfile(final Long memberId) {
         return teamProfileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
     }
 
-    @Transactional
+    // 내 프로필 찜하기 메서드
     public PrivateWishResponseDTO.AddPrivateWish createWishToPrivateProfile(final Long memberId, final Long profileId) {
         final Member member = memberQueryAdapter.findById(memberId);
         final Profile profile = profileQueryAdapter.findById(profileId);
         if (Objects.equals(profileQueryAdapter.findByMemberId(memberId).getId(), profile.getId())) {
             throw ForbiddenPrivateWishException.EXCEPTION;
         }
-        privateWishCommandAdapter.create(new PrivateWish(null, member, profile));
+        final PrivateWish createdPrivateWish = privateWishCommandAdapter.create(new PrivateWish(null, member, profile, LocalDateTime.now()));
         member.addPrivateWishCount();
-        return privateWishMapper.toAddPrivateWish();
+        return privateWishMapper.toAddPrivateWish(createdPrivateWish);
     }
-
 
     // 팀원 공고 찜하기 메서드
     public TeamWishResponseDTO.AddTeamWish createWishToTeamProfile(final Long memberId, final Long teamMemberAnnouncementId) {

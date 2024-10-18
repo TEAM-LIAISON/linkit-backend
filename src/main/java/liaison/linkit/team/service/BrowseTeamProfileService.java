@@ -10,7 +10,6 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;

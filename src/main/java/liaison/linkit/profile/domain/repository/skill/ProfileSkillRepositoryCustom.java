@@ -1,7 +1,5 @@
 package liaison.linkit.profile.domain.repository.skill;
 
-import liaison.linkit.profile.domain.skill.ProfileSkill;
-
 import java.util.List;
 import java.util.Optional;
 

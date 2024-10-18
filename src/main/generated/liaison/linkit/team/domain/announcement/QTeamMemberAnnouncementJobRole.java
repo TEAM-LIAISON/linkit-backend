@@ -47,7 +47,7 @@ public class QTeamMemberAnnouncementJobRole extends EntityPathBase<TeamMemberAnn
     public QTeamMemberAnnouncementJobRole(Class<? extends TeamMemberAnnouncementJobRole> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.jobRole = inits.isInitialized("jobRole") ? new liaison.linkit.profile.domain.role.QJobRole(forProperty("jobRole")) : null;
-        this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement"), inits.get("teamMemberAnnouncement")) : null;
+        this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement")) : null;
     }
 
 }

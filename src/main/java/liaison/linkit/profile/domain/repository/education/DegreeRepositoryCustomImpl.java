@@ -1,7 +1,6 @@
 package liaison.linkit.profile.domain.repository.education;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import liaison.linkit.profile.domain.education.Degree;
 import liaison.linkit.profile.domain.education.QDegree;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

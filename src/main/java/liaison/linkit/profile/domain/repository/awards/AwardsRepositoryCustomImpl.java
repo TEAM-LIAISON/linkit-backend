@@ -1,7 +1,7 @@
 package liaison.linkit.profile.domain.repository.awards;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import liaison.linkit.profile.domain.awards.Awards;
+import liaison.linkit.profile.domain.ProfileAwards;
 import liaison.linkit.profile.domain.awards.QAwards;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ public class AwardsRepositoryCustomImpl implements AwardsRepositoryCustom {
     }
 
     @Override
-    public List<Awards> findAllByProfileId(Long profileId) {
+    public List<ProfileAwards> findAllByProfileId(Long profileId) {
         QAwards awards = QAwards.awards;
 
         return jpaQueryFactory
@@ -37,7 +37,7 @@ public class AwardsRepositoryCustomImpl implements AwardsRepositoryCustom {
     }
 
     @Override
-    public Awards findByProfileId(Long profileId) {
+    public ProfileAwards findByProfileId(Long profileId) {
         QAwards awards = QAwards.awards;
 
         return jpaQueryFactory

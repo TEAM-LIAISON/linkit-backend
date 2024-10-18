@@ -7,7 +7,6 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFI
 import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.memberIntroduction.TeamMemberIntroduction;
 import liaison.linkit.team.domain.repository.memberIntroduction.TeamMemberIntroductionRepository;
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;

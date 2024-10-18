@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -17,8 +16,6 @@ import com.querydsl.core.types.dsl.PathInits;
 public class QHistory extends EntityPathBase<History> {
 
     private static final long serialVersionUID = 497217369L;
-
-    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QHistory history = new QHistory("history");
 
@@ -34,27 +31,18 @@ public class QHistory extends EntityPathBase<History> {
 
     public final NumberPath<Integer> startYear = createNumber("startYear", Integer.class);
 
-    public final liaison.linkit.team.domain.QTeamProfile teamProfile;
+    public final NumberPath<TeamProfile> teamProfile = createNumber("teamProfile", TeamProfile.class);
 
     public QHistory(String variable) {
-        this(History.class, forVariable(variable), INITS);
+        super(History.class, forVariable(variable));
     }
 
     public QHistory(Path<? extends History> path) {
-        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
+        super(path.getType(), path.getMetadata());
     }
 
     public QHistory(PathMetadata metadata) {
-        this(metadata, PathInits.getFor(metadata, INITS));
-    }
-
-    public QHistory(PathMetadata metadata, PathInits inits) {
-        this(History.class, metadata, inits);
-    }
-
-    public QHistory(Class<? extends History> type, PathMetadata metadata, PathInits inits) {
-        super(type, metadata, inits);
-        this.teamProfile = inits.isInitialized("teamProfile") ? new liaison.linkit.team.domain.QTeamProfile(forProperty("teamProfile"), inits.get("teamProfile")) : null;
+        super(History.class, metadata);
     }
 
 }

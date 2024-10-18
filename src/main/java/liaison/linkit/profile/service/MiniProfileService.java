@@ -9,7 +9,6 @@ import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
@@ -19,6 +18,8 @@ import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
+import liaison.linkit.profile.implement.MiniProfileQueryAdapter;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
 import liaison.linkit.wish.domain.repository.privateWish.PrivateWishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,7 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Slf4j
 public class MiniProfileService {
 
+    private final MiniProfileQueryAdapter miniProfileQueryAdapter;
     private final ProfileRepository profileRepository;
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final MiniProfileRepository miniProfileRepository;
@@ -51,12 +53,6 @@ public class MiniProfileService {
     private Profile getProfile(final Long memberId) {
         return profileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
-    }
-
-    // "내 이력서"에 1대 1로 매핑되어 있는 미니 프로필 조회 메서드
-    private MiniProfile getMiniProfile(final Long profileId) {
-        return miniProfileRepository.findByProfileId(profileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_PROFILE_ID));
     }
 
     // 회원 기본 정보를 가져오는 메서드
@@ -175,7 +171,13 @@ public class MiniProfileService {
 
     // 내 이력서 미니 프로필 조회 메서드
     @Transactional(readOnly = true)
-    public MiniProfileResponse getPersonalMiniProfile(final Long memberId) {
+    public MiniProfileResponseDTO.MiniProfileDetail getMiniProfileDetail(final Long memberId) {
+        return miniProfileQueryAdapter.getMiniProfileDetail(memberId);
+    }
+
+
+    @Transactional(readOnly = true)
+    public MiniProfileResponseDTO getPersonalMiniProfile(final Long memberId) {
         // 대상 객체의 내 이력서 조회
         final Profile profile = getProfile(memberId);
 

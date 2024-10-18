@@ -10,7 +10,7 @@ import java.util.List;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.awards.Awards;
+import liaison.linkit.profile.domain.ProfileAwards;
 import liaison.linkit.profile.domain.repository.awards.AwardsRepository;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.dto.request.awards.AwardsCreateRequest;
@@ -34,7 +34,7 @@ public class AwardsService {
     }
 
     // 어떤 보유 기술 및 역할 1개만 조회할 때
-    private Awards getAwards(final Long awardsId) {
+    private ProfileAwards getAwards(final Long awardsId) {
         return awardsRepository.findById(awardsId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_AWARDS_BY_ID));
     }
@@ -72,9 +72,9 @@ public class AwardsService {
             final Long awardsId,
             final AwardsCreateRequest awardsCreateRequest
     ) {
-        final Awards awards = getAwards(awardsId);
-        awards.update(awardsCreateRequest);
-        return awards.getId();
+        final ProfileAwards profileAwards = getAwards(awardsId);
+        profileAwards.update(awardsCreateRequest);
+        return profileAwards.getId();
     }
 
     // 회원에 대해서 수상 항목 리스트를 저장하는 메서드
@@ -95,7 +95,7 @@ public class AwardsService {
     }
 
     private Long saveAwards(final Profile profile, final AwardsCreateRequest awardsCreateRequest) {
-        final Awards newAwards = Awards.of(
+        final ProfileAwards newProfileAwards = ProfileAwards.of(
                 profile,
                 awardsCreateRequest.getAwardsName(),
                 awardsCreateRequest.getRanking(),
@@ -104,14 +104,14 @@ public class AwardsService {
                 awardsCreateRequest.getAwardsMonth(),
                 awardsCreateRequest.getAwardsDescription()
         );
-        return awardsRepository.save(newAwards).getId();
+        return awardsRepository.save(newProfileAwards).getId();
     }
 
     // 해당 회원의 모든 수상 항목을 조회하는 메서드 / 수정 이전 화면에서 필요
     @Transactional(readOnly = true)
     public List<AwardsResponse> getAllAwards(final Long memberId) {
         final Profile profile = getProfile(memberId);
-        final List<Awards> awards = awardsRepository.findAllByProfileId(profile.getId());
+        final List<ProfileAwards> awards = awardsRepository.findAllByProfileId(profile.getId());
         return awards.stream()
                 .map(this::getAwardsResponse)
                 .toList();
@@ -123,31 +123,31 @@ public class AwardsService {
         final Profile profile = profileRepository.findById(profileId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
 
-        final List<Awards> awards = awardsRepository.findAllByProfileId(profile.getId());
+        final List<ProfileAwards> awards = awardsRepository.findAllByProfileId(profile.getId());
         return awards.stream()
                 .map(this::getAwardsResponse)
                 .toList();
     }
 
 
-    private AwardsResponse getAwardsResponse(final Awards awards) {
-        return AwardsResponse.of(awards);
+    private AwardsResponse getAwardsResponse(final ProfileAwards profileAwards) {
+        return AwardsResponse.of(profileAwards);
     }
 
     // 수상 항목 1개 조회 (비공개 처리 로직 추가 필요)
     @Transactional(readOnly = true)
     public AwardsResponse getAwardsDetail(final Long awardsId) {
-        final Awards awards = awardsRepository.findById(awardsId)
+        final ProfileAwards profileAwards = awardsRepository.findById(awardsId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_AWARDS_ID));
-        return AwardsResponse.personalAwards(awards);
+        return AwardsResponse.personalAwards(profileAwards);
     }
 
     public void deleteAwards(final Long memberId, final Long awardsId) {
         final Profile profile = getProfile(memberId);
-        final Awards awards = getAwards(awardsId);
+        final ProfileAwards profileAwards = getAwards(awardsId);
 
         // 해당 수상 정보 삭제
-        awardsRepository.deleteById(awards.getId());
+        awardsRepository.deleteById(profileAwards.getId());
 
         if (!awardsRepository.existsByProfileId(profile.getId())) {
             // 존재하지 않는 경우

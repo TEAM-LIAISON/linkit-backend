@@ -9,7 +9,7 @@ import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_RE
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.region.ProfileRegion;
+import liaison.linkit.profile.domain.ProfileRegion;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.region.ProfileRegionRepository;

@@ -37,18 +37,16 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<liaison.linkit.member.domain.type.MemberState> memberState = createEnum("memberState", liaison.linkit.member.domain.type.MemberState.class);
 
+    //inherited
+    public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
+
     public final NumberPath<Integer> privateWishCount = createNumber("privateWishCount", Integer.class);
 
     public final liaison.linkit.profile.domain.QProfile profile;
 
     public final StringPath socialLoginId = createString("socialLoginId");
 
-    public final liaison.linkit.team.domain.QTeamProfile teamProfile;
-
     public final NumberPath<Integer> teamWishCount = createNumber("teamWishCount", Integer.class);
-
-    //inherited
-    public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
     public QMember(String variable) {
         this(Member.class, forVariable(variable), INITS);
@@ -70,7 +68,6 @@ public class QMember extends EntityPathBase<Member> {
         super(type, metadata, inits);
         this.memberBasicInform = inits.isInitialized("memberBasicInform") ? new QMemberBasicInform(forProperty("memberBasicInform"), inits.get("memberBasicInform")) : null;
         this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
-        this.teamProfile = inits.isInitialized("teamProfile") ? new liaison.linkit.team.domain.QTeamProfile(forProperty("teamProfile"), inits.get("teamProfile")) : null;
     }
 
 }

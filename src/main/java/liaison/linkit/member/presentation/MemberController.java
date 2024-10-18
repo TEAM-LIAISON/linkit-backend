@@ -10,7 +10,6 @@ import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBa
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.RequestMemberBasicInform;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,8 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/members")
-@Slf4j
+@RequestMapping("/api/v1/member")
 public class MemberController {
 
     public final MemberService memberService;

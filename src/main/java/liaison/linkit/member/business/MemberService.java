@@ -2,15 +2,14 @@ package liaison.linkit.member.business;
 
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.memberBasicInformRequest;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.memberBasicInformRequest;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.RequestMemberBasicInform;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Slf4j
 public class MemberService {
     private final MemberQueryAdapter memberQueryAdapter;
     private final MemberBasicInformQueryAdapter memberBasicInformQueryAdapter;
@@ -47,7 +45,6 @@ public class MemberService {
 
     // 회원 기본 정보 수정 (UPDATE)
     public RequestMemberBasicInform update(final Long memberId, final MemberBasicInformRequestDTO.memberBasicInformRequest request) {
-        final Member member = memberQueryAdapter.findById(memberId);
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.update(memberId, request);
         return memberBasicInformMapper.toRequestMemberBasicInform(updatedMemberBasicInform);
     }

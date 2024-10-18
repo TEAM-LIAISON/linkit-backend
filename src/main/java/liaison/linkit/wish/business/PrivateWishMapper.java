@@ -12,8 +12,11 @@ public class PrivateWishMapper {
         return PrivateWish.builder().profile(profile).member(member).build();
     }
 
-    public PrivateWishResponseDTO.AddPrivateWish toAddPrivateWish() {
-        return PrivateWishResponseDTO.AddPrivateWish.builder().build();
+    public PrivateWishResponseDTO.AddPrivateWish toAddPrivateWish(final PrivateWish privateWish) {
+
+        return PrivateWishResponseDTO.AddPrivateWish.builder()
+                .createdAt(privateWish.getCreatedAt())
+                .build();
     }
 
     public PrivateWishResponseDTO.RemovePrivateWish toRemovePrivateWish() {

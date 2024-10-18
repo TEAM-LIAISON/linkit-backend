@@ -26,7 +26,7 @@ public class QActivityMethod extends EntityPathBase<ActivityMethod> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final liaison.linkit.team.domain.QTeamProfile teamProfile;
+    public final NumberPath<TeamProfile> teamProfile = createNumber("teamProfile", TeamProfile.class);
 
     public QActivityMethod(String variable) {
         this(ActivityMethod.class, forVariable(variable), INITS);
@@ -47,7 +47,6 @@ public class QActivityMethod extends EntityPathBase<ActivityMethod> {
     public QActivityMethod(Class<? extends ActivityMethod> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.activityMethodTag = inits.isInitialized("activityMethodTag") ? new QActivityMethodTag(forProperty("activityMethodTag")) : null;
-        this.teamProfile = inits.isInitialized("teamProfile") ? new liaison.linkit.team.domain.QTeamProfile(forProperty("teamProfile"), inits.get("teamProfile")) : null;
     }
 
 }

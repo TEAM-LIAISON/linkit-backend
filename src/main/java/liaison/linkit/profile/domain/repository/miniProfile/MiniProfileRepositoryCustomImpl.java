@@ -4,7 +4,6 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.QProfile;
-import liaison.linkit.profile.domain.miniProfile.MiniProfile;
 import liaison.linkit.profile.domain.miniProfile.QMiniProfile;
 import liaison.linkit.profile.domain.region.QProfileRegion;
 import liaison.linkit.profile.domain.region.QRegion;

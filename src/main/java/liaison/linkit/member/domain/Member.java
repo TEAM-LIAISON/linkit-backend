@@ -16,7 +16,6 @@ import jakarta.persistence.OneToOne;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.member.domain.type.MemberState;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.team.domain.TeamProfile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
@@ -36,9 +35,6 @@ public class Member extends BaseDateTimeEntity {
 
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = LAZY)
     private Profile profile;
-
-    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = LAZY)
-    private TeamProfile teamProfile;
 
     @Column(nullable = false, length = 100)
     private String socialLoginId;

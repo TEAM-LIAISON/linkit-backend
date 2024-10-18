@@ -9,7 +9,6 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.teambuilding.TeamBuildingField;
-import liaison.linkit.team.domain.TeamProfile;
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.teambuilding.TeamProfileTeamBuildingFieldRepository;
 import liaison.linkit.team.domain.teambuilding.TeamProfileTeamBuildingField;
