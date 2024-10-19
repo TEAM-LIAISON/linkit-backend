@@ -1,6 +1,7 @@
-package liaison.linkit.wish.presentation.dto.teamWish;
+package liaison.linkit.wish.presentation.dto.teamScrap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TeamWishResponseDTO {
+public class TeamScrapResponseDTO {
 
     @Builder
     @Getter
@@ -18,6 +19,8 @@ public class TeamWishResponseDTO {
         @Builder.Default
         @JsonProperty("isTeamWish")
         private boolean like = true;
+
+        private LocalDateTime createdAt;
     }
 
     @Builder

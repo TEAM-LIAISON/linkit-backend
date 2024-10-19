@@ -11,10 +11,10 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QTeamMemberAnnouncementWish is a Querydsl query type for TeamMemberAnnouncementWish
+ * QTeamMemberAnnouncementWish is a Querydsl query type for TeamMemberAnnouncementScrap
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QTeamMemberAnnouncementWish extends EntityPathBase<TeamMemberAnnouncementWish> {
+public class QTeamMemberAnnouncementWish extends EntityPathBase<TeamMemberAnnouncementScrap> {
 
     private static final long serialVersionUID = -223411120L;
 
@@ -31,10 +31,10 @@ public class QTeamMemberAnnouncementWish extends EntityPathBase<TeamMemberAnnoun
     public final liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement teamMemberAnnouncement;
 
     public QTeamMemberAnnouncementWish(String variable) {
-        this(TeamMemberAnnouncementWish.class, forVariable(variable), INITS);
+        this(TeamMemberAnnouncementScrap.class, forVariable(variable), INITS);
     }
 
-    public QTeamMemberAnnouncementWish(Path<? extends TeamMemberAnnouncementWish> path) {
+    public QTeamMemberAnnouncementWish(Path<? extends TeamMemberAnnouncementScrap> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
@@ -43,10 +43,10 @@ public class QTeamMemberAnnouncementWish extends EntityPathBase<TeamMemberAnnoun
     }
 
     public QTeamMemberAnnouncementWish(PathMetadata metadata, PathInits inits) {
-        this(TeamMemberAnnouncementWish.class, metadata, inits);
+        this(TeamMemberAnnouncementScrap.class, metadata, inits);
     }
 
-    public QTeamMemberAnnouncementWish(Class<? extends TeamMemberAnnouncementWish> type, PathMetadata metadata, PathInits inits) {
+    public QTeamMemberAnnouncementWish(Class<? extends TeamMemberAnnouncementScrap> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new liaison.linkit.member.domain.QMember(forProperty("member"), inits.get("member")) : null;
         this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement")) : null;

@@ -8,7 +8,7 @@ import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResp
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
 import liaison.linkit.wish.presentation.dto.response.WishTeamProfileResponse;
-import liaison.linkit.wish.business.WishService;
+import liaison.linkit.wish.business.ScrapService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,10 +38,10 @@ import static org.springframework.restdocs.request.RequestDocumentation.pathPara
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(WishController.class)
+@WebMvcTest(ScrapController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
-public class WishControllerTest extends ControllerTest {
+public class ScrapControllerTest extends ControllerTest {
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
 
@@ -49,7 +49,7 @@ public class WishControllerTest extends ControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private WishService wishService;
+    private ScrapService scrapService;
 
     @BeforeEach
     void setUp() {
@@ -132,7 +132,7 @@ public class WishControllerTest extends ControllerTest {
         final ResultActions resultActions = performCreateWishToPrivateProfile(1);
 
         // then
-        verify(wishService).createWishToPrivateProfile(eq(1L), eq(1L));
+        verify(scrapService).createWishToPrivateProfile(eq(1L), eq(1L));
 
         resultActions.andExpect(status().isCreated())
                 .andDo(restDocs.document(
@@ -150,7 +150,7 @@ public class WishControllerTest extends ControllerTest {
         final ResultActions resultActions = performCreateWishToTeamProfile(1);
 
         // then
-        verify(wishService).createWishToTeamProfile(eq(1L), eq(1L));
+        verify(scrapService).createWishToTeamProfile(eq(1L), eq(1L));
 
         resultActions.andExpect(status().isCreated())
                 .andDo(restDocs.document(
@@ -168,7 +168,7 @@ public class WishControllerTest extends ControllerTest {
         final ResultActions resultActions = performDeleteWishToPrivateProfile(1);
 
         // then
-        verify(wishService).cancelWishToPrivateProfile(eq(1L), eq(1L));
+        verify(scrapService).cancelWishToPrivateProfile(eq(1L), eq(1L));
 
         resultActions.andExpect(status().isNoContent())
                 .andDo(restDocs.document(
@@ -186,7 +186,7 @@ public class WishControllerTest extends ControllerTest {
         final ResultActions resultActions = performDeleteWishToTeamProfile(1);
 
         // then
-        verify(wishService).cancelWishToTeamProfile(eq(1L), eq(1L));
+        verify(scrapService).cancelWishToTeamProfile(eq(1L), eq(1L));
 
         resultActions.andExpect(status().isNoContent())
                 .andDo(restDocs.document(
@@ -226,7 +226,7 @@ public class WishControllerTest extends ControllerTest {
         final List<BrowseMiniProfileResponse> browseMiniProfileResponseList = Arrays.asList(
                 firstBrowseMiniProfileResponse, secondBrowseMiniProfileResponse);
 
-        given(wishService.getPrivateProfileWishList(1L)).willReturn(browseMiniProfileResponseList);
+        given(scrapService.getPrivateProfileWishList(1L)).willReturn(browseMiniProfileResponseList);
 
         // when
         final ResultActions resultActions = performGetPrivateProfileWishList();
@@ -305,7 +305,7 @@ public class WishControllerTest extends ControllerTest {
         final List<WishTeamProfileResponse> wishTeamProfileResponseList = Arrays.asList(firstWishTeamProfileResponse,
                 secondWishTeamProfileResponse);
 
-        given(wishService.getTeamProfileWishList(1L)).willReturn(wishTeamProfileResponseList);
+        given(scrapService.getTeamProfileWishList(1L)).willReturn(wishTeamProfileResponseList);
         // when
         final ResultActions resultActions = performGetTeamProfileWishList();
 

@@ -1,9 +1,7 @@
 package liaison.linkit.wish.business;
 
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE;
 import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_MINI_PROFILE_BY_TEAM_PROFILE_ID;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_ID;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +19,7 @@ import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
 import liaison.linkit.search.dto.response.browseAfterLogin.BrowseMiniProfileResponse;
+import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementSkill;
@@ -34,21 +33,22 @@ import liaison.linkit.team.domain.repository.miniprofile.teamMiniProfileKeyword.
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
+import liaison.linkit.team.implement.TeamQueryAdapter;
 import liaison.linkit.wish.domain.PrivateWish;
 import liaison.linkit.wish.domain.TeamWish;
 import liaison.linkit.wish.domain.repository.privateWish.PrivateWishRepository;
 import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
 import liaison.linkit.wish.exception.privateWish.ForbiddenPrivateWishException;
 import liaison.linkit.wish.exception.privateWish.PrivateWishManyRequestException;
-import liaison.linkit.wish.exception.teamWish.ForbiddenTeamWishException;
 import liaison.linkit.wish.exception.teamWish.TeamWishManyRequestException;
-import liaison.linkit.wish.implement.privateWish.PrivateWishCommandAdapter;
-import liaison.linkit.wish.implement.privateWish.PrivateWishQueryAdapter;
-import liaison.linkit.wish.implement.teamWish.TeamWishCommandAdapter;
-import liaison.linkit.wish.implement.teamWish.TeamWishQueryAdapter;
-import liaison.linkit.wish.presentation.dto.privateWish.PrivateWishResponseDTO;
+import liaison.linkit.wish.implement.privateScrap.PrivateScrapCommandAdapter;
+import liaison.linkit.wish.implement.privateScrap.PrivateScrapQueryAdapter;
+import liaison.linkit.wish.implement.teamScrap.TeamScrapCommandAdapter;
+import liaison.linkit.wish.implement.teamScrap.TeamScrapQueryAdapter;
+import liaison.linkit.wish.presentation.dto.privateScrap.PrivateScrapResponseDTO.AddPrivateScrap;
+import liaison.linkit.wish.presentation.dto.privateScrap.PrivateScrapResponseDTO.RemovePrivateScrap;
 import liaison.linkit.wish.presentation.dto.response.WishTeamProfileResponse;
-import liaison.linkit.wish.presentation.dto.teamWish.TeamWishResponseDTO;
+import liaison.linkit.wish.presentation.dto.teamScrap.TeamScrapResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,21 +58,23 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class WishService {
+public class ScrapService {
 
     private final MemberQueryAdapter memberQueryAdapter;
 
     private final MemberBasicInformQueryAdapter memberBasicInformQueryAdapter;
 
     private final PrivateWishMapper privateWishMapper;
-    private final PrivateWishQueryAdapter privateWishQueryAdapter;
-    private final PrivateWishCommandAdapter privateWishCommandAdapter;
+    private final PrivateScrapQueryAdapter privateScrapQueryAdapter;
+    private final PrivateScrapCommandAdapter privateScrapCommandAdapter;
 
     private final TeamWishMapper teamWishMapper;
-    private final TeamWishQueryAdapter teamWishQueryAdapter;
-    private final TeamWishCommandAdapter teamWishCommandAdapter;
+    private final TeamScrapQueryAdapter teamScrapQueryAdapter;
+    private final TeamScrapCommandAdapter teamScrapCommandAdapter;
 
     private final ProfileQueryAdapter profileQueryAdapter;
+
+    private final TeamQueryAdapter teamQueryAdapter;
 
     private final TeamMiniProfileRepository teamMiniProfileRepository;
     private final PrivateWishRepository privateWishRepository;
@@ -80,64 +82,65 @@ public class WishService {
     private final ProfileJobRoleRepository profileJobRoleRepository;
     private final MiniProfileKeywordRepository miniProfileKeywordRepository;
     private final TeamMiniProfileKeywordRepository teamMiniProfileKeywordRepository;
-    private final TeamProfileRepository teamProfileRepository;
+
 
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
 
-    @Transactional(readOnly = true)
-    public TeamProfile getTeamProfile(final Long memberId) {
-        return teamProfileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
-    }
+    // 프로필 스크랩 메서드
+    public AddPrivateScrap createWishToPrivateProfile(final Long memberId, final Long profileId) {
 
-    // 내 프로필 찜하기 메서드
-    public PrivateWishResponseDTO.AddPrivateWish createWishToPrivateProfile(final Long memberId, final Long profileId) {
         final Member member = memberQueryAdapter.findById(memberId);
         final Profile profile = profileQueryAdapter.findById(profileId);
+
         if (Objects.equals(profileQueryAdapter.findByMemberId(memberId).getId(), profile.getId())) {
             throw ForbiddenPrivateWishException.EXCEPTION;
         }
-        final PrivateWish createdPrivateWish = privateWishCommandAdapter.create(new PrivateWish(null, member, profile, LocalDateTime.now()));
+
+        final PrivateWish createdPrivateWish = privateScrapCommandAdapter.create(new PrivateWish(null, member, profile, LocalDateTime.now()));
         member.addPrivateWishCount();
+
         return privateWishMapper.toAddPrivateWish(createdPrivateWish);
+
+    }
+
+    // 팀 스크랩 메서드
+    public TeamScrapResponseDTO.AddTeamWish createWishToTeam(final Long memberId, final Long teamId) {
+
+        final Member member = memberQueryAdapter.findById(memberId);
+        final Team team = teamQueryAdapter.findById(teamId);
+
+        final TeamWish createdTeamWish = teamScrapCommandAdapter.create(new TeamWish(null, member, team, LocalDateTime.now()));
+        member.addTeamWishCount();
+
+        return teamWishMapper.toAddTeamWish(createdTeamWish);
+
     }
 
     // 팀원 공고 찜하기 메서드
-    public TeamWishResponseDTO.AddTeamWish createWishToTeamProfile(final Long memberId, final Long teamMemberAnnouncementId) {
-        final Member member = memberQueryAdapter.findById(memberId);
-        final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementRepository.findById(
-                        teamMemberAnnouncementId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID));
+    public TeamScrapResponseDTO.AddTeamWish createWishToTeamProfile(final Long memberId, final Long teamMemberAnnouncementId) {
 
-        // 나의 팀 프로필의 ID -> 내가 찜한 팀원 공고의 팀 프로필과 같은지
-        if (Objects.equals(getTeamProfile(memberId).getId(), teamMemberAnnouncement.getTeamProfile().getId())) {
-            throw ForbiddenTeamWishException.EXCEPTION;
-        }
-        teamWishCommandAdapter.create(new TeamWish(null, member, teamMemberAnnouncement));
-        member.addTeamWishCount();
-        return teamWishMapper.toAddTeamWish();
     }
 
     // 찜하기 취소 메서드
-    public PrivateWishResponseDTO.RemovePrivateWish cancelWishToPrivateProfile(final Long memberId, final Long profileId) {
-        privateWishCommandAdapter.deleteByMemberIdAndProfileId(memberId, profileId);
+    public RemovePrivateScrap cancelWishToPrivateProfile(final Long memberId, final Long profileId) {
+        privateScrapCommandAdapter.deleteByMemberIdAndProfileId(memberId, profileId);
         final Member member = memberQueryAdapter.findById(memberId);
         member.subPrivateWishCount();
         return privateWishMapper.toRemovePrivateWish();
     }
 
     // 팀원 공고 찜하기 취소 메서드
-    public TeamWishResponseDTO.RemoveTeamWish cancelWishToTeamProfile(final Long memberId, final Long teamMemberAnnouncementId) {
-        teamWishCommandAdapter.deleteByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
+    public TeamScrapResponseDTO.RemoveTeamWish cancelWishToTeamProfile(final Long memberId, final Long teamMemberAnnouncementId) {
+        teamScrapCommandAdapter.deleteByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
         final Member member = memberQueryAdapter.findById(memberId);
         member.subTeamWishCount();
         return teamWishMapper.toRemoveTeamWish();
     }
 
     public List<BrowseMiniProfileResponse> getPrivateProfileWishList(final Long memberId) {
-        final List<PrivateWish> privateWishList = privateWishQueryAdapter.findAllPrivateWish(memberId);
+        final List<PrivateWish> privateWishList = privateScrapQueryAdapter.findAllPrivateWish(memberId);
         return privateWishList.stream()
                 .map(privateWish -> {
                     // 상대의 미니 프로필 객체를 가져온다.

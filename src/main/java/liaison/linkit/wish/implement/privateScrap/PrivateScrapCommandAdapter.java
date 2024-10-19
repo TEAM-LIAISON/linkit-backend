@@ -1,4 +1,4 @@
-package liaison.linkit.wish.implement.privateWish;
+package liaison.linkit.wish.implement.privateScrap;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.wish.domain.PrivateWish;
@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Adapter
 @RequiredArgsConstructor
-public class PrivateWishCommandAdapter {
+public class PrivateScrapCommandAdapter {
     private final PrivateWishRepository privateWishRepository;
 
     public PrivateWish create(final PrivateWish privateWish) {

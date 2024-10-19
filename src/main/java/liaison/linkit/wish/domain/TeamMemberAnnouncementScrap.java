@@ -24,7 +24,7 @@ import org.springframework.data.annotation.CreatedDate;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class TeamMemberAnnouncementWish {
+public class TeamMemberAnnouncementScrap {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

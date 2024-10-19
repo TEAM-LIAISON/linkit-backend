@@ -1,4 +1,4 @@
-package liaison.linkit.wish.implement.privateWish;
+package liaison.linkit.wish.implement.privateScrap;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 
 @Adapter
 @RequiredArgsConstructor
-public class PrivateWishQueryAdapter {
+public class PrivateScrapQueryAdapter {
     private final PrivateWishRepository privateWishRepository;
 
     public List<PrivateWish> findAllPrivateWish(final Long memberId) {

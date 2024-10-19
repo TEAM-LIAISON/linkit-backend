@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 public class ProfileLicenseQueryAdapter {
     private final ProfileLicenseRepository profileLicenseRepository;
 
-    public ProfileLicenseItems findProfileLicenseListDTO(final Long memberId) {
-        return profileLicenseRepository.findProfileLicenseListDTO(memberId);
+    public ProfileLicenseItems findProfileLicenseItemsDTO(final Long memberId) {
+        return profileLicenseRepository.findProfileLicenseItemsDTO(memberId);
     }
 }

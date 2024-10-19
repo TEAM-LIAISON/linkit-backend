@@ -16,7 +16,7 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public ProfileLicenseItems findProfileLicenseListDTO(final Long memberId) {
+    public ProfileLicenseItems findProfileLicenseItemsDTO(final Long memberId) {
         QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
 
         List<ProfileLicenseItem> profileLicenseItems =

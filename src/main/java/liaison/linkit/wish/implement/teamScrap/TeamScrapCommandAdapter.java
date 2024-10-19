@@ -1,4 +1,4 @@
-package liaison.linkit.wish.implement.teamWish;
+package liaison.linkit.wish.implement.teamScrap;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.wish.domain.TeamWish;
@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Adapter
 @RequiredArgsConstructor
-public class TeamWishCommandAdapter {
+public class TeamScrapCommandAdapter {
     private TeamWishRepository teamWishRepository;
 
     public TeamWish create(final TeamWish teamWish) {

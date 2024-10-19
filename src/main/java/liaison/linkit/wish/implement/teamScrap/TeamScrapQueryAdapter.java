@@ -1,4 +1,4 @@
-package liaison.linkit.wish.implement.teamWish;
+package liaison.linkit.wish.implement.teamScrap;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @Adapter
 @RequiredArgsConstructor
-public class TeamWishQueryAdapter {
+public class TeamScrapQueryAdapter {
     private final TeamWishRepository teamWishRepository;
 
     public List<TeamWish> findAllByMemberId(final Long memberId) {

@@ -20,8 +20,8 @@ public class ProfileLicenseService {
 
     // 프로필 자격증 리스트 조회 메서드
     @Transactional(readOnly = true)
-    public ProfileLicenseItems getProfileLicenseList(final Long memberId) {
-        return profileLicenseQueryAdapter.findProfileLicenseListDTO(memberId);
+    public ProfileLicenseItems getProfileLicenseItems(final Long memberId) {
+        return profileLicenseQueryAdapter.findProfileLicenseItemsDTO(memberId);
     }
 
     // 프로필 자격증 삭제 메서드

@@ -29,8 +29,8 @@ public class ProfileLicenseController {
     // 자격증 리스트 조회 메서드
     @GetMapping
     @MemberOnly
-    public CommonResponse<ProfileLicenseItems> getProfileLicenseList(@Auth final Accessor accessor) {
-        return CommonResponse.onSuccess(profileLicenseService.getProfileLicenseList(accessor.getMemberId()));
+    public CommonResponse<ProfileLicenseItems> getProfileLicenseItems(@Auth final Accessor accessor) {
+        return CommonResponse.onSuccess(profileLicenseService.getProfileLicenseItems(accessor.getMemberId()));
     }
 
     // 자격증 단일 수정 메서드
