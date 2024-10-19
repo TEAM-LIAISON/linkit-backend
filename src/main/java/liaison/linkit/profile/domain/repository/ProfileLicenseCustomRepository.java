@@ -1,7 +1,7 @@
 package liaison.linkit.profile.domain.repository;
 
-import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItems;
 
 public interface ProfileLicenseCustomRepository {
-    ProfileLicenseResponseDTO.ProfileLicenseList findProfileLicenseListDTO(Long memberId);
+    ProfileLicenseItems findProfileLicenseListDTO(Long memberId);
 }

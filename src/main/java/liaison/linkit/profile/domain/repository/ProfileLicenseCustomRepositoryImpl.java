@@ -4,7 +4,8 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import liaison.linkit.profile.domain.QProfileLicense;
-import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItem;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItems;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -15,14 +16,14 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public ProfileLicenseResponseDTO.ProfileLicenseList findProfileLicenseListDTO(final Long memberId) {
+    public ProfileLicenseItems findProfileLicenseListDTO(final Long memberId) {
         QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
 
-        List<ProfileLicenseResponseDTO.ProfileLicenseListItem> profileLicenseListItems =
+        List<ProfileLicenseItem> profileLicenseItems =
                 queryFactory
                         .select(
                                 Projections.constructor(
-                                        ProfileLicenseResponseDTO.ProfileLicenseListItem.class,
+                                        ProfileLicenseItem.class,
                                         qProfileLicense.id,
                                         qProfileLicense.licenseName,
                                         qProfileLicense.licenseInstitution,
@@ -37,9 +38,9 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
                         .where(qProfileLicense.profile.member.id.eq(memberId))
                         .fetch();
 
-        return ProfileLicenseResponseDTO.ProfileLicenseList
+        return ProfileLicenseItems
                 .builder()
-                .profileLicenseList(profileLicenseListItems)
+                .profileLicenseItems(profileLicenseItems)
                 .build();
     }
 }

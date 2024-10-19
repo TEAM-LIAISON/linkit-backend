@@ -6,7 +6,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO;
-import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.RemoveProfileLicense;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItems;
 import liaison.linkit.profile.service.ProfileLicenseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +29,7 @@ public class ProfileLicenseController {
     // 자격증 리스트 조회 메서드
     @GetMapping
     @MemberOnly
-    public CommonResponse<ProfileLicenseResponseDTO.ProfileLicenseList> getProfileLicenseList(@Auth final Accessor accessor) {
+    public CommonResponse<ProfileLicenseItems> getProfileLicenseList(@Auth final Accessor accessor) {
         return CommonResponse.onSuccess(profileLicenseService.getProfileLicenseList(accessor.getMemberId()));
     }
 

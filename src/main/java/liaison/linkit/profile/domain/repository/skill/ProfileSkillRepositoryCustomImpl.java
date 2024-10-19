@@ -1,7 +1,14 @@
 package liaison.linkit.profile.domain.repository.skill;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Collections;
+import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.QProfile;
+import liaison.linkit.profile.domain.QProfileSkill;
 import liaison.linkit.profile.domain.skill.QProfileSkill;
+import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
+import liaison.linkit.profile.presentation.url.dto.ProfileUrlResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,6 +20,37 @@ import java.util.Optional;
 public class ProfileSkillRepositoryCustomImpl implements ProfileSkillRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+
+    @Override
+    public ProfileSkillResponseDTO.ProfileSkillItems findProfileSkillItemsDTO(final Long memberId) {
+        QProfile qProfile = QProfile.profile;
+        Profile profile = jpaQueryFactory
+                .selectFrom(qProfile)
+                .where(qProfile.member.id.eq(memberId))
+                .fetchOne();
+
+        QProfileSkill qProfileSkill = QProfileSkill.profileSkill;
+
+        if (profile == null) {
+            return new ProfileSkillResponseDTO.ProfileSkillItems(Collections.emptyList());
+        }
+
+        List<ProfileSkillResponseDTO.ProfileSkillItem> profileSkillItems =
+                jpaQueryFactory.select(
+                                Projections.constructor(
+                                        ProfileSkillResponseDTO.ProfileSkillItem.class,
+                                        qProfileSkill.id,
+                                        qProfileSkill.skillIconImagePath,
+                                        qProfileSkill.skillName,
+                                        qProfileSkill.skillLevel
+                                ))
+                        .from(qProfileSkill)
+                        .where(qProfileSkill.profile.id.eq(profile.getId()))
+                        .fetch();
+
+        return new ProfileSkillResponseDTO.ProfileSkillItems(profileSkillItems);
+    }
 
     @Override
     public boolean existsByProfileId(Long profileId) {
