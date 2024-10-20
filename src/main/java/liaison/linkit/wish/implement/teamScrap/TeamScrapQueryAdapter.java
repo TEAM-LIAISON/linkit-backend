@@ -4,7 +4,7 @@ import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.wish.domain.TeamWish;
 import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
-import liaison.linkit.wish.exception.teamWish.TeamWishNotFoundException;
+import liaison.linkit.wish.exception.teamScrap.TeamScrapNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Adapter
@@ -18,12 +18,12 @@ public class TeamScrapQueryAdapter {
 
     public TeamWish findByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
         return teamWishRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
-                .orElseThrow(() -> TeamWishNotFoundException.EXCEPTION);
+                .orElseThrow(() -> TeamScrapNotFoundException.EXCEPTION);
     }
 
     public TeamWish findByMemberIdAndTeamMemberAnnouncementId(final Long memberId,
                                                               final Long teamMemberAnnouncementId) {
         return teamWishRepository.findByMemberIdAndTeamMemberAnnouncementId(teamMemberAnnouncementId, memberId)
-                .orElseThrow(() -> TeamWishNotFoundException.EXCEPTION);
+                .orElseThrow(() -> TeamScrapNotFoundException.EXCEPTION);
     }
 }

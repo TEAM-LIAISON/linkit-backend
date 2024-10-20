@@ -38,9 +38,9 @@ import liaison.linkit.wish.domain.PrivateWish;
 import liaison.linkit.wish.domain.TeamWish;
 import liaison.linkit.wish.domain.repository.privateWish.PrivateWishRepository;
 import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
-import liaison.linkit.wish.exception.privateWish.ForbiddenPrivateWishException;
-import liaison.linkit.wish.exception.privateWish.PrivateWishManyRequestException;
-import liaison.linkit.wish.exception.teamWish.TeamWishManyRequestException;
+import liaison.linkit.wish.exception.privateScrap.ForbiddenPrivateScrapException;
+import liaison.linkit.wish.exception.privateScrap.PrivateScrapManyRequestException;
+import liaison.linkit.wish.exception.teamScrap.TeamScrapManyRequestException;
 import liaison.linkit.wish.implement.privateScrap.PrivateScrapCommandAdapter;
 import liaison.linkit.wish.implement.privateScrap.PrivateScrapQueryAdapter;
 import liaison.linkit.wish.implement.teamScrap.TeamScrapCommandAdapter;
@@ -95,7 +95,7 @@ public class ScrapService {
         final Profile profile = profileQueryAdapter.findById(profileId);
 
         if (Objects.equals(profileQueryAdapter.findByMemberId(memberId).getId(), profile.getId())) {
-            throw ForbiddenPrivateWishException.EXCEPTION;
+            throw ForbiddenPrivateScrapException.EXCEPTION;
         }
 
         final PrivateWish createdPrivateWish = privateScrapCommandAdapter.create(new PrivateWish(null, member, profile, LocalDateTime.now()));
@@ -244,7 +244,7 @@ public class ScrapService {
         final Member member = memberQueryAdapter.findById(memberId);
         final int memberPrivateWishCount = member.getPrivateWishCount();
         if (memberPrivateWishCount >= 8) {
-            throw PrivateWishManyRequestException.EXCEPTION;
+            throw PrivateScrapManyRequestException.EXCEPTION;
         }
     }
 
@@ -253,7 +253,7 @@ public class ScrapService {
         final Member member = memberQueryAdapter.findById(memberId);
         final int memberTeamWishCount = member.getTeamWishCount();
         if (memberTeamWishCount >= 8) {
-            throw TeamWishManyRequestException.EXCEPTION;
+            throw TeamScrapManyRequestException.EXCEPTION;
         }
     }
 }
