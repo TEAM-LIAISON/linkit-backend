@@ -33,8 +33,8 @@ import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
-import liaison.linkit.wish.domain.repository.privateWish.PrivateWishRepository;
-import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
+import liaison.linkit.scrap.domain.repository.privateScrap.PrivateScrapRepository;
+import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -62,8 +62,8 @@ public class LoginService {
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final PrivateMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
-    private final PrivateWishRepository privateWishRepository;
-    private final TeamWishRepository teamWishRepository;
+    private final PrivateScrapRepository privateScrapRepository;
+    private final TeamScrapRepository teamScrapRepository;
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
 
     // 내 이력서 조회
@@ -249,22 +249,22 @@ public class LoginService {
         }
 
         // 내가 찜한 팀 소개서
-        if (teamWishRepository.existsByMemberId(memberId)) {
-            teamWishRepository.deleteByMemberId(memberId);
+        if (teamScrapRepository.existsByMemberId(memberId)) {
+            teamScrapRepository.deleteByMemberId(memberId);
         }
 
         // 나의 팀원 공고를 누가 찜한 경우
-        if (teamWishRepository.existsByTeamMemberAnnouncementIds(teamMemberAnnouncementIds)) {
-            teamWishRepository.deleteByTeamMemberAnnouncementIds(teamMemberAnnouncementIds);
+        if (teamScrapRepository.existsByTeamMemberAnnouncementIds(teamMemberAnnouncementIds)) {
+            teamScrapRepository.deleteByTeamMemberAnnouncementIds(teamMemberAnnouncementIds);
         }
 
         // 내가 찜한 내 이력서
-        if (privateWishRepository.existsByMemberId(memberId)) {
-            privateWishRepository.deleteByMemberId(memberId);
+        if (privateScrapRepository.existsByMemberId(memberId)) {
+            privateScrapRepository.deleteByMemberId(memberId);
         }
 
-        if (privateWishRepository.existsByProfileId(profile.getId())) {
-            privateWishRepository.deleteByProfileId(profile.getId());
+        if (privateScrapRepository.existsByProfileId(profile.getId())) {
+            privateScrapRepository.deleteByProfileId(profile.getId());
         }
 
         if (memberBasicInformRepository.existsByMemberId(memberId)) {

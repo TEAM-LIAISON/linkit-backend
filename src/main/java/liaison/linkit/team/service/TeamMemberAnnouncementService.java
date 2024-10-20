@@ -25,7 +25,7 @@ import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncement
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
-import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
+import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -37,21 +37,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class TeamMemberAnnouncementService {
 
-    private final TeamProfileRepository teamProfileRepository;
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
-    private final TeamWishRepository teamWishRepository;
+    private final TeamScrapRepository teamScrapRepository;
 
     private final JobRoleRepository jobRoleRepository;
     private final SkillRepository skillRepository;
 
-
-    // 회원에 대한 팀 소개서 정보를 가져온다. (1개만 저장되어 있음)
-    private TeamProfile getTeamProfile(final Long memberId) {
-        return teamProfileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
-    }
 
     private TeamMemberAnnouncement getTeamMemberAnnouncement(
             final Long teamMemberAnnouncementId
@@ -242,9 +235,9 @@ public class TeamMemberAnnouncementService {
         log.info("팀원 공고 보유 기술 삭제 완료");
 
         // 누군가가 나의 팀원 공고를 찜했다면
-        if (teamWishRepository.existsByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
+        if (teamScrapRepository.existsByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
             // 모든 teamWish 객체를 Usable -> 치환
-            teamWishRepository.deleteByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+            teamScrapRepository.deleteByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
         }
 
         teamMemberAnnouncementRepository.deleteByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());

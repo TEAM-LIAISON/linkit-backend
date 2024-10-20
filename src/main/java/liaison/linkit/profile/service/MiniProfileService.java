@@ -20,7 +20,7 @@ import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.implement.MiniProfileQueryAdapter;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
-import liaison.linkit.wish.domain.repository.privateWish.PrivateWishRepository;
+import liaison.linkit.scrap.domain.repository.privateScrap.PrivateScrapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -47,7 +47,7 @@ public class MiniProfileService {
     private final S3Uploader s3Uploader;
     private final ApplicationEventPublisher publisher;
 
-    private final PrivateWishRepository privateWishRepository;
+    private final PrivateScrapRepository privateScrapRepository;
 
     // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
     private Profile getProfile(final Long memberId) {
@@ -216,7 +216,7 @@ public class MiniProfileService {
         final List<String> jobRoleNames = getJobRoleNames(profile.getMember().getId());
         log.info("대상 객체의 희망 직무 및 역할을 조회하였습니다.");
 
-        final boolean isPrivateSaved = privateWishRepository.existsByMemberIdAndProfileId(memberId,
+        final boolean isPrivateSaved = privateScrapRepository.existsByMemberIdAndProfileId(memberId,
                 miniProfile.getProfile().getId());
 
         return MiniProfileResponse.personalBrowseMiniProfile(miniProfile, miniProfileKeywordList,
@@ -287,7 +287,7 @@ public class MiniProfileService {
 
     public boolean getIsPrivateSaved(final Long memberId, final Long profileId) {
         final MiniProfile miniProfile = getMiniProfile(profileId);
-        return privateWishRepository.existsByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
+        return privateScrapRepository.existsByMemberIdAndProfileId(memberId, miniProfile.getProfile().getId());
     }
 
     // 미니 프로필의 유효성 검증이 끝난 후 수정한다.

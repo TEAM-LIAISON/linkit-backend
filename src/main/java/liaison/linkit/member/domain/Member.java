@@ -51,10 +51,13 @@ public class Member extends BaseDateTimeEntity {
     private boolean existMemberBasicInform;
 
     @Column(nullable = false)
-    private int privateWishCount;
+    private int privateScrapCount;
 
     @Column(nullable = false)
-    private int teamWishCount;
+    private int teamScrapCount;
+
+    @Column(nullable = false)
+    private int teamMemberAnnouncementScrapCount;
 
     public Member(
             final Long id,
@@ -68,8 +71,9 @@ public class Member extends BaseDateTimeEntity {
         this.memberState = ACTIVE;
         this.memberBasicInform = memberBasicInform;
         this.existMemberBasicInform = false;
-        this.privateWishCount = 0;
-        this.teamWishCount = 0;
+        this.privateScrapCount = 0;
+        this.teamScrapCount = 0;
+        this.teamMemberAnnouncementScrapCount = 0;
     }
 
     public Member(
@@ -84,19 +88,28 @@ public class Member extends BaseDateTimeEntity {
         this.existMemberBasicInform = existMemberBasicInform;
     }
 
-    public void addPrivateWishCount() {
-        this.privateWishCount += 1;
+    public void addPrivateScrapCount() {
+        this.privateScrapCount += 1;
     }
 
-    public void addTeamWishCount() {
-        this.teamWishCount += 1;
+    public void addTeamScrapCount() {
+        this.teamScrapCount += 1;
     }
 
-    public void subPrivateWishCount() {
-        this.privateWishCount -= 1;
+    public void subPrivateScrapCount() {
+        this.privateScrapCount -= 1;
     }
 
-    public void subTeamWishCount() {
-        this.teamWishCount -= 1;
+    public void subTeamScrapCount() {
+        this.teamScrapCount -= 1;
     }
+
+    public void addTeamMemberAnnouncementScrapCount() {
+        this.teamMemberAnnouncementScrapCount += 1;
+    }
+
+    public void subTeamMemberAnnouncementScrapCount() {
+        this.teamMemberAnnouncementScrapCount -= 1;
+    }
+
 }

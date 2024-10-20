@@ -40,13 +40,15 @@ public class QMember extends EntityPathBase<Member> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final NumberPath<Integer> privateWishCount = createNumber("privateWishCount", Integer.class);
+    public final NumberPath<Integer> privateScrapCount = createNumber("privateScrapCount", Integer.class);
 
     public final liaison.linkit.profile.domain.QProfile profile;
 
     public final StringPath socialLoginId = createString("socialLoginId");
 
-    public final NumberPath<Integer> teamWishCount = createNumber("teamWishCount", Integer.class);
+    public final NumberPath<Integer> teamMemberAnnouncementScrapCount = createNumber("teamMemberAnnouncementScrapCount", Integer.class);
+
+    public final NumberPath<Integer> teamScrapCount = createNumber("teamScrapCount", Integer.class);
 
     public QMember(String variable) {
         this(Member.class, forVariable(variable), INITS);

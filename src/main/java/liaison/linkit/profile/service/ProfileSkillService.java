@@ -12,10 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ProfileSkillService {
 
-    private final ProfileSkillQueryAdapter profileSkillQueryAdapter;
 
     @Transactional(readOnly = true)
     public ProfileSkillResponseDTO.ProfileSkillItems getProfileSkillItems(final Long memberId) {
-        return
+        return;
     }
 }

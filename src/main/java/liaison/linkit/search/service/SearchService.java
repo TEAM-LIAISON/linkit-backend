@@ -28,8 +28,8 @@ import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileReposito
 import liaison.linkit.team.domain.repository.miniprofile.teamMiniProfileKeyword.TeamMiniProfileKeywordRepository;
 import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
-import liaison.linkit.wish.domain.repository.privateWish.PrivateWishRepository;
-import liaison.linkit.wish.domain.repository.teamWish.TeamWishRepository;
+import liaison.linkit.scrap.domain.repository.privateScrap.PrivateScrapRepository;
+import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -62,8 +62,8 @@ public class SearchService {
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
 
-    private final PrivateWishRepository privateWishRepository;
-    private final TeamWishRepository teamWishRepository;
+    private final PrivateScrapRepository privateScrapRepository;
+    private final TeamScrapRepository teamScrapRepository;
 
     // 회원 정보를 가져오는 메서드
     private Member getMember(final Long memberId) {
@@ -259,7 +259,7 @@ public class SearchService {
         final List<TeamMemberAnnouncementSkill> teamMemberAnnouncementSkillList = getTeamMemberAnnouncementSkills(
                 teamMemberAnnouncement.getId());
         final String teamName = teamMemberAnnouncement.getTeamProfile().getTeamMiniProfile().getTeamName();
-        final boolean isTeamSaved = teamWishRepository.existsByTeamMemberAnnouncementIdAndMemberId(
+        final boolean isTeamSaved = teamScrapRepository.existsByTeamMemberAnnouncementIdAndMemberId(
                 teamMemberAnnouncement.getId(), memberId);
         log.info("isTeamSaved={}", isTeamSaved);
 
@@ -361,7 +361,7 @@ public class SearchService {
                 .toList();
 
         // privateWish -> 찾아야함 (내가 이 해당 미니 프로필을 찜해뒀는지?)
-        final boolean isPrivateWish = privateWishRepository.existsByMemberIdAndProfileId(memberId,
+        final boolean isPrivateWish = privateScrapRepository.existsByMemberIdAndProfileId(memberId,
                 miniProfile.getProfile().getId());
 
         return new BrowseMiniProfileResponse(
