@@ -23,15 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class TeamMemberIntroductionService {
 
-    private final TeamProfileRepository teamProfileRepository;
     private final TeamMemberIntroductionRepository teamMemberIntroductionRepository;
-
-    // 모든 "팀 소개서" 서비스 계층에 필요한 TeamProfile 조회 메서드
-    private TeamProfile getTeamProfile(final Long memberId) {
-        return teamProfileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
-    }
-
+    
     private TeamMemberIntroduction getTeamMemberIntroduction(final Long teamMemberIntroductionId) {
         return teamMemberIntroductionRepository.findById(teamMemberIntroductionId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_INTRODUCTION_ID));

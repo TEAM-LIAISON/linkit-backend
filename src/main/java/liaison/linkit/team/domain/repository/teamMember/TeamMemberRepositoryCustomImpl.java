@@ -11,7 +11,7 @@ public class TeamMemberRepositoryCustomImpl implements TeamMemberRepositoryCusto
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public boolean existsTeamMemberByMemberId(final Long memberId, final Long teamId) {
+    public boolean existsTeamMemberByMemberIdAndTeamId(final Long memberId, final Long teamId) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
 
         return jpaQueryFactory

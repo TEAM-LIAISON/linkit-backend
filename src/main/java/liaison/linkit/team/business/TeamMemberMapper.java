@@ -14,6 +14,5 @@ public class TeamMemberMapper {
                 .team(team)
                 .build();
     }
-
 }
 

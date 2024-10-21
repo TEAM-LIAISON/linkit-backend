@@ -69,7 +69,7 @@ public class ScrapService {
 
         final Member member = memberQueryAdapter.findById(memberId);
         final Profile profile = profileQueryAdapter.findById(profileId);
-        
+
         final PrivateScrap createdPrivateScrap = privateScrapCommandAdapter.create(new PrivateScrap(null, member, profile, LocalDateTime.now()));
         member.addPrivateScrapCount();
 
@@ -84,7 +84,7 @@ public class ScrapService {
         final Team team = teamQueryAdapter.findById(teamId);
 
         // 팀 소속 여부
-        if (teamMemberQueryAdapter.existsTeamMemberByMemberId(memberId, teamId)) {
+        if (teamMemberQueryAdapter.existsTeamMemberByMemberIdAndTeamId(memberId, teamId)) {
             throw ForbiddenTeamScrapException.EXCEPTION;
         }
 

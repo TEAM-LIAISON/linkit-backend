@@ -37,7 +37,7 @@ public class QTeam extends EntityPathBase<Team> {
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
 
-    public final StringPath teamIntroduction = createString("teamIntroduction");
+    public final StringPath teamLogoImagePath = createString("teamLogoImagePath");
 
     public final ListPath<TeamMember, QTeamMember> teamMembers = this.<TeamMember, QTeamMember>createList("teamMembers", TeamMember.class, QTeamMember.class, PathInits.DIRECT2);
 

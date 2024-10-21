@@ -1,5 +1,6 @@
 package liaison.linkit.profile.service;
 
+import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.global.exception.ImageException;
@@ -10,15 +11,17 @@ import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
+import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
-import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
 import liaison.linkit.profile.dto.request.miniProfile.MiniProfileRequest;
 import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
 import liaison.linkit.profile.implement.MiniProfileQueryAdapter;
+import liaison.linkit.profile.implement.ProfileQueryAdapter;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileRequestDTO;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
 import liaison.linkit.scrap.domain.repository.privateScrap.PrivateScrapRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +41,15 @@ import static liaison.linkit.global.exception.ExceptionCode.*;
 @Slf4j
 public class MiniProfileService {
 
+
+    private final ProfileQueryAdapter profileQueryAdapter;
     private final MiniProfileQueryAdapter miniProfileQueryAdapter;
+    private final RegionQueryAdapter regionQueryAdapter;
+
     private final ProfileRepository profileRepository;
     private final MemberBasicInformRepository memberBasicInformRepository;
-    private final MiniProfileRepository miniProfileRepository;
-    private final MiniProfileKeywordRepository miniProfileKeywordRepository;
     private final ProfileJobRoleRepository profileJobRoleRepository;
+
     private final S3Uploader s3Uploader;
     private final ApplicationEventPublisher publisher;
 
@@ -92,7 +98,7 @@ public class MiniProfileService {
                 final MiniProfile miniProfile = getMiniProfile(profile.getId());
 
                 if (miniProfile.getMiniProfileImg() != null) {
-                    s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
+                    s3Uploader.deleteS3Image(miniProfile.getMiniProfileImg());
                 }
 
                 log.info("miniProfileImage != null case : 기존 미니프로필 이미지 삭제 완료");
@@ -169,10 +175,33 @@ public class MiniProfileService {
         }
     }
 
-    // 내 이력서 미니 프로필 조회 메서드
+    // 미니 프로필을 조회한다
     @Transactional(readOnly = true)
     public MiniProfileResponseDTO.MiniProfileDetail getMiniProfileDetail(final Long memberId) {
         return miniProfileQueryAdapter.getMiniProfileDetail(memberId);
+    }
+
+
+    // 미니 프로필을 저장한다
+    public MiniProfileResponseDTO.SaveMiniProfile saveMiniProfile(
+            final Long memberId,
+            final MultipartFile profileImage,
+            final MiniProfileRequestDTO.SaveMiniProfileRequest saveMiniProfileRequest
+    ) {
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
+
+        // 프로필 사진을 업데이트한다
+
+        // 포지션을 업데이트한다
+
+        // 활동 지역을 업데이트한다
+        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(saveMiniProfileRequest.getCityName(), saveMiniProfileRequest.getDivisionName());
+        profile.setRegion(region);
+
+        // 현재 상태를 업데이트한다
+
+        // 프로필 공개 여부를 업데이트한다
+
     }
 
 
@@ -299,7 +328,7 @@ public class MiniProfileService {
 
             // 기존 미니 프로필 이미지가 존재했다면, 기존 미니 프로필 이미지를 삭제한다.
             if (miniProfile.getMiniProfileImg() != null) {
-                s3Uploader.deleteImage(miniProfile.getMiniProfileImg());
+                s3Uploader.deleteS3Image(miniProfile.getMiniProfileImg());
             }
             log.info("miniProfileImage != null case : 기존 미니프로필 이미지 삭제 완료");
 

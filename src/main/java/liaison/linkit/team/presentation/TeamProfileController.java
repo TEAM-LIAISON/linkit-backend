@@ -27,7 +27,6 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Slf4j
 public class TeamProfileController {
 
-    final TeamProfileService teamProfileService;
     // 4.1.
     final TeamMiniProfileService teamMiniProfileService;
     // 4.3.
@@ -49,7 +48,6 @@ public class TeamProfileController {
     public ResponseEntity<?> getTeamProfile(@Auth final Accessor accessor) {
         try {
             log.info("--- 팀 이력서 조회 요청이 들어왔습니다. ---");
-            teamProfileService.validateTeamProfileByMember(accessor.getMemberId());
             log.info("--- 팀 이력서가 유효합니다. ---");
 
             // 팀 소개서에 있는 항목들의 존재 여부 파악

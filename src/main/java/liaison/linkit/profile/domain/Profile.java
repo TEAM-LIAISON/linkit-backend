@@ -155,4 +155,7 @@ public class Profile extends BaseEntity {
         return isProfileSkill;
     }
 
+    public void setRegion(final Region region) {
+        this.region = region;
+    }
 }

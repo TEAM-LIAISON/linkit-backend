@@ -1,6 +1,7 @@
 package liaison.linkit.team.implement.teamMember;
 
 import liaison.linkit.common.annotation.Adapter;
+import liaison.linkit.team.domain.TeamMember;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -9,7 +10,11 @@ import lombok.RequiredArgsConstructor;
 public class TeamMemberQueryAdapter {
     private final TeamMemberRepository teamMemberRepository;
 
-    public boolean existsTeamMemberByMemberId(final Long memberId, final Long teamId) {
-        return teamMemberRepository.existsTeamMemberByMemberId(memberId, teamId);
+    public boolean existsTeamMemberByMemberIdAndTeamId(final Long memberId, final Long teamId) {
+        return teamMemberRepository.existsTeamMemberByMemberIdAndTeamId(memberId, teamId);
+    }
+
+    public TeamMember findByMemberIdAndTeamId(final Long memberId, final Long teamId) {
+        return teamMemberRepository.findByMemberIdAndTeamId(memberId, teamId);
     }
 }

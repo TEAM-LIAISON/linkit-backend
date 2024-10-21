@@ -7,9 +7,6 @@ import liaison.linkit.image.domain.ImageFile;
 import liaison.linkit.image.domain.S3ImageEvent;
 import liaison.linkit.image.infrastructure.S3Uploader;
 import liaison.linkit.team.domain.miniprofile.IndustrySector;
-import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
-import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
-import liaison.linkit.team.domain.miniprofile.TeamScale;
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.domain.repository.miniprofile.industrySector.IndustrySectorRepository;
 import liaison.linkit.team.domain.repository.miniprofile.teamMiniProfileKeyword.TeamMiniProfileKeywordRepository;
@@ -156,7 +153,7 @@ public class TeamMiniProfileService {
                 // case 2.1.1.
                 if (teamMiniProfileImage != null) {
                     // S3 이미지 삭제
-                    s3Uploader.deleteImage(teamMiniProfile.getTeamLogoImageUrl());
+                    s3Uploader.deleteS3Image(teamMiniProfile.getTeamLogoImageUrl());
 
                     // 새로운 이미지를 S3에 저장
                     final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);
@@ -225,7 +222,7 @@ public class TeamMiniProfileService {
             // 팀 미니 프로필 이미지 객체가 실제로 들어온 경우 -> 이미지 수정으로 간주 가능
             if (teamMiniProfileImage != null) {
                 // S3 이미지 삭제
-                s3Uploader.deleteImage(teamMiniProfile.getTeamLogoImageUrl());
+                s3Uploader.deleteS3Image(teamMiniProfile.getTeamLogoImageUrl());
 
                 // 새로운 이미지를 S3에 저장
                 final String teamMiniProfileImageUrl = saveTeamMiniProfileImage(teamMiniProfileImage);

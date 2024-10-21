@@ -54,7 +54,7 @@ public class LoginService {
     private final MemberCommandAdapter memberCommandAdapter;
 
     private final ProfileRepository profileRepository;
-    private final TeamProfileRepository teamProfileRepository;
+
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
@@ -62,20 +62,14 @@ public class LoginService {
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final PrivateMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
-    private final PrivateScrapRepository privateScrapRepository;
-    private final TeamScrapRepository teamScrapRepository;
+
+    
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
 
     // 내 이력서 조회
     private Profile getProfileByMember(final Long memberId) {
         return profileRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
-    }
-
-    // 팀 소개서 정보를 가져온다. (1개만 저장되어 있음)
-    private TeamProfile getTeamProfile(final Long memberId) {
-        return teamProfileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_MEMBER_ID));
     }
 
     public MemberTokensAndOnBoardingStepInform login(final String providerName, final String code) {
@@ -94,8 +88,6 @@ public class LoginService {
 
         log.info("저장된 profile 가져오기 시도");
         final Profile profile = getProfileByMember(member.getId());
-
-        final TeamProfile teamProfile = getTeamProfile(member.getId());
 
         final boolean existDefaultPrivateProfile = profile.getExistDefaultPrivateProfile();
         log.info("existDefaultPrivateProfile={}", existDefaultPrivateProfile);
@@ -138,9 +130,6 @@ public class LoginService {
                 final Profile savedProfile = profileRepository.save(new Profile(member, 0));
                 log.info("savedProfile.ID={}", savedProfile.getId());
 
-                final TeamProfile savedTeamProfile = teamProfileRepository.save(new TeamProfile(member, 0));
-                log.info("savedTeamProfile.ID={}", savedTeamProfile.getId());
-
                 return member;
             } else if (memberQueryAdapter.existsByEmail(email)) {
                 throw new AuthException(DUPLICATED_EMAIL);
@@ -180,13 +169,9 @@ public class LoginService {
 
         log.info("loginService login method memberId={}", member.getId());
         final Profile profile = getProfileByMember(member.getId());
-        final TeamProfile teamProfile = getTeamProfile(member.getId());
 
         final boolean existDefaultPrivateProfile = profile.getExistDefaultPrivateProfile();
         log.info("existDefaultPrivateProfile={}", existDefaultPrivateProfile);
-
-        final boolean existDefaultTeamProfile = teamProfile.getExistDefaultTeamProfile();
-        log.info("existDefaultTeamProfile={}", existDefaultTeamProfile);
 
         final boolean existDefaultProfile = (existDefaultPrivateProfile || existDefaultTeamProfile);
 
@@ -221,7 +206,7 @@ public class LoginService {
     public void deleteAccount(final Long memberId) {
         final Member member = memberQueryAdapter.findById(memberId);
         final Profile profile = getProfileByMember(memberId);
-        final TeamProfile teamProfile = getTeamProfile(memberId);
+
         final List<TeamMemberAnnouncement> teamMemberAnnouncementList = getTeamMemberAnnouncementList(teamProfile);
         final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream()
                 .map(TeamMemberAnnouncement::getId)
@@ -272,7 +257,6 @@ public class LoginService {
         }
 
         // 회원가입하면 무조건 생기는 저장 데이터
-        teamProfileRepository.deleteByMemberId(memberId);
         profileRepository.deleteByMemberId(memberId);
         memberCommandAdapter.deleteByMemberId(memberId);
     }

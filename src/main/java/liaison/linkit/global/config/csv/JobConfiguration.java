@@ -2,8 +2,6 @@ package liaison.linkit.global.config.csv;
 
 import liaison.linkit.global.config.csv.activityMethodTag.CsvActivityMethodTagReader;
 import liaison.linkit.global.config.csv.activityMethodTag.CsvActivityMethodTagWriter;
-import liaison.linkit.global.config.csv.degree.CsvDegreeReader;
-import liaison.linkit.global.config.csv.degree.CsvDegreeWriter;
 import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorReader;
 import liaison.linkit.global.config.csv.industrySector.CsvIndustrySectorWriter;
 import liaison.linkit.global.config.csv.jobRole.CsvJobRoleReader;
@@ -58,9 +56,6 @@ public class JobConfiguration {
     private final CsvSkillReader csvSkillReader;
     private final CsvSkillWriter csvSkillWriter;
 
-    private final CsvDegreeReader csvDegreeReader;
-    private final CsvDegreeWriter csvDegreeWriter;
-
     // Step & Job upload
     @Bean
     public Job simpleDataLoadJob(JobRepository jobRepository,
@@ -70,8 +65,7 @@ public class JobConfiguration {
                                  Step industrySectorDataLoadStep,
                                  Step activityMethodTagDataLoadStep,
                                  Step jobRoleDataLoadStep,
-                                 Step skillDataLoadStep,
-                                 Step degreeDataLoadStep) {
+                                 Step skillDataLoadStep) {
         return new JobBuilder("linkitInformationLoadJob", jobRepository)
                 .start(teamBuildingFieldDataLoadStep)
                 .next(regionDataLoadStep)
@@ -80,7 +74,6 @@ public class JobConfiguration {
                 .next(activityMethodTagDataLoadStep)
                 .next(jobRoleDataLoadStep)
                 .next(skillDataLoadStep)
-                .next(degreeDataLoadStep)
                 .build();
         // 필요 시 listener 추가 가능
     }
@@ -175,16 +168,4 @@ public class JobConfiguration {
                 .build();
     }
 
-    @Bean
-    public Step degreeDataLoadStep(
-            JobRepository jobRepository,
-            PlatformTransactionManager platformTransactionManager
-    ) {
-        return new StepBuilder("degreeDataLoadStep", jobRepository)
-                .<DegreeCsvData, DegreeCsvData>chunk(10, platformTransactionManager)
-                .reader(csvDegreeReader.csvIndustrySectorReader())
-                .writer(csvDegreeWriter)
-                .allowStartIfComplete(true)
-                .build();
-    }
 }

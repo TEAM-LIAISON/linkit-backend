@@ -51,13 +51,11 @@ public class S3Uploader {
         return uploadImage(miniProfileImageFile);
     }
 
-    public void deleteImage(final String imageUrl) {
+    public void deleteS3Image(final String imageUrl) {
         try {
             URL url = new URL(imageUrl);
             String path = url.getPath().substring(1);
-            log.info("Deleting image from S3: {}", path);
             s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
-            log.info("Image deletion successful");
         } catch (AmazonServiceException e) {
             throw new ImageException(INVALID_IMAGE_PATH);
         } catch (Exception e) {

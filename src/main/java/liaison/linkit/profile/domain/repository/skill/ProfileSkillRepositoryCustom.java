@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain.repository.skill;
 
 import java.util.List;
 import java.util.Optional;
+import liaison.linkit.profile.domain.ProfileSkill;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
 
 public interface ProfileSkillRepositoryCustom {

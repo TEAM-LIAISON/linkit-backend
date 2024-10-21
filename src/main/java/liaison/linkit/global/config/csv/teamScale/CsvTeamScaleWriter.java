@@ -1,6 +1,5 @@
 package liaison.linkit.global.config.csv.teamScale;
 
-import liaison.linkit.team.domain.miniprofile.TeamScale;
 import liaison.linkit.team.domain.repository.miniprofile.teamScale.TeamScaleRepository;
 import liaison.linkit.team.dto.csv.TeamScaleCsvData;
 import lombok.RequiredArgsConstructor;

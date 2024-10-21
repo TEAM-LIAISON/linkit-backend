@@ -18,4 +18,13 @@ public class TeamResponseDTO {
         private Long teamId;
         private LocalDateTime createdAt;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SaveTeamBasicInformResponse {
+        private Long teamId;
+        private LocalDateTime modifiedAt;
+    }
 }

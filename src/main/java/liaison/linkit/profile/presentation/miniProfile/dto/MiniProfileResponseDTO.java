@@ -1,5 +1,6 @@
 package liaison.linkit.profile.presentation.miniProfile.dto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MiniProfileResponseDTO {
+
     @Builder
     @Getter
     @NoArgsConstructor
@@ -29,7 +31,7 @@ public class MiniProfileResponseDTO {
 
         private boolean isProfilePublic;
     }
-    
+
     @Builder
     @Getter
     @NoArgsConstructor
@@ -46,4 +48,14 @@ public class MiniProfileResponseDTO {
     public static class ProfileCurrentStateItem {
         private String profileStateName;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SaveMiniProfile {
+        private Long miniProfileId;
+        private LocalDateTime modifiedAt;
+    }
+
 }

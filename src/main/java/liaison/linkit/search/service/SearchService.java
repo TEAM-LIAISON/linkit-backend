@@ -8,7 +8,6 @@ import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInfo
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.miniProfile.MiniProfileKeyword;
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
-import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileKeywordRepository;
 import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.domain.role.JobRole;
 import liaison.linkit.profile.domain.role.ProfileJobRole;
@@ -19,8 +18,6 @@ import liaison.linkit.search.dto.response.browseAfterLogin.SearchBrowseTeamProfi
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementSkill;
-import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
-import liaison.linkit.team.domain.miniprofile.TeamMiniProfileKeyword;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementJobRoleRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementSkillRepository;

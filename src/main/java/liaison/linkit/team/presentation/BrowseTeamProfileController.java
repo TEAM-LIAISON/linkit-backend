@@ -35,7 +35,6 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class BrowseTeamProfileController {
 
     public final BrowseTeamProfileService browseTeamProfileService;
-    public final TeamProfileService teamProfileService;
 
     // 4.1.
     public final TeamMiniProfileService teamMiniProfileService;

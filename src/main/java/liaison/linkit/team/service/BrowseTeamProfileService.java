@@ -10,7 +10,6 @@ import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.BadRequestException;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.team.domain.miniprofile.TeamMiniProfile;
 import liaison.linkit.team.domain.repository.miniprofile.TeamMiniProfileRepository;
 import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import liaison.linkit.team.dto.response.TeamMemberIntroductionResponse;
@@ -33,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class BrowseTeamProfileService {
 
     private final ProfileRepository profileRepository;
-    private final TeamProfileRepository teamProfileRepository;
     private final TeamMiniProfileRepository teamMiniProfileRepository;
 
     // 팀 미니 프로필로 해당 팀 소개서의 유효성 판단

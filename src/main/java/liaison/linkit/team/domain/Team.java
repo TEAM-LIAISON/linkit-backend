@@ -6,6 +6,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -38,10 +39,30 @@ public class Team extends BaseEntity {
     private List<TeamMember> teamMembers = new ArrayList<>();
 
     private String teamLogoImagePath;
+
+    @Column(nullable = false)
     private String teamName;
+
+    @Column(nullable = false)
     private String teamShortDescription;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
+
+    public void setTeamLogoImagePath(final String teamLogoImagePath) {
+        this.teamLogoImagePath = teamLogoImagePath;
+    }
+
+    public void setTeamName(final String teamName) {
+        this.teamName = teamName;
+    }
+
+    public void setTeamShortDescription(final String teamShortDescription) {
+        this.teamShortDescription = teamShortDescription;
+    }
+
+    public void setRegion(final Region region) {
+        this.region = region;
+    }
 }

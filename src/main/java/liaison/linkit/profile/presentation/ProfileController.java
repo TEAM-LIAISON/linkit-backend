@@ -69,7 +69,6 @@ public class ProfileController {
         return ResponseEntity.ok().build();
     }
 
-
     // 내 이력서 전체 조회 GET 메서드
     @GetMapping("/private/profile")
     @MemberOnly

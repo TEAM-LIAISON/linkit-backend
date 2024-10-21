@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 public class MiniProfileQueryAdapter {
 
     private final ProfileRepository profileRepository;
-
+    
     public MiniProfileResponseDTO.MiniProfileDetail getMiniProfileDetail(final Long memberId) {
         return profileRepository.findMiniProfileDTO(memberId);
     }
