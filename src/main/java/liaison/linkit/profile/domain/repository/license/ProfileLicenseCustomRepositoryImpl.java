@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain.repository;
+package liaison.linkit.profile.domain.repository.license;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,7 +16,7 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public ProfileLicenseItems findProfileLicenseItemsDTO(final Long memberId) {
+    public ProfileLicenseItems getProfileLicenseItems(final Long memberId) {
         QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
 
         List<ProfileLicenseItem> profileLicenseItems =
@@ -27,7 +27,7 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
                                         qProfileLicense.id,
                                         qProfileLicense.licenseName,
                                         qProfileLicense.licenseInstitution,
-                                        qProfileLicense.acquisitionDate,
+                                        qProfileLicense.licenseAcquisitionDate,
                                         qProfileLicense.licenseDescription,
                                         qProfileLicense.isLicenseCertified,
                                         qProfileLicense.licenseCertificationAttachFileName,

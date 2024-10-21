@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QTeamMemberAnnouncementScrap extends EntityPathBase<TeamMemberAnnouncementScrap> {
 
-    private static final long serialVersionUID = 1660315976L;
+    private static final long serialVersionUID = 2104000366L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

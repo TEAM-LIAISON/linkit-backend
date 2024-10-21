@@ -29,7 +29,7 @@ public class ScrapController {
     public final ScrapValidator scrapValidator;
 
     // 프로필 스크랩하기
-    @PostMapping("/private/profile/{profileId}")
+    @PostMapping("/profile/{profileId}")
     @MemberOnly
     public CommonResponse<AddPrivateScrap> createScrapToPrivateProfile(@Auth final Accessor accessor, @PathVariable final Long profileId) {
         scrapValidator.validateMemberMaxPrivateScrap(accessor.getMemberId());
@@ -50,7 +50,7 @@ public class ScrapController {
     }
 
     // 팀원 공고 스크랩하기
-    @PostMapping("/teamMember/announcement/{teamMemberAnnouncementId}")
+    @PostMapping("/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementScrapResponseDTO.AddTeamMemberAnnouncementScrap> createScrapToTeamMemberAnnouncement(
             @Auth final Accessor accessor, @PathVariable final Long teamMemberAnnouncementId
@@ -61,25 +61,26 @@ public class ScrapController {
     }
 
     // 프로필 스크랩 취소
-    @DeleteMapping("/private/profile/{profileId}")
+    @DeleteMapping("/profile/{profileId}")
     @MemberOnly
     public CommonResponse<RemovePrivateScrap> removeScrapToPrivateProfile(@Auth final Accessor accessor, @PathVariable final Long profileId) {
         return CommonResponse.onSuccess(scrapService.cancelScrapToPrivateProfile(accessor.getMemberId(), profileId));
     }
 
     // 팀 스크랩 취소
-    @DeleteMapping("/team/profile/{teamId}")
+    @DeleteMapping("/team/{teamId}")
     @MemberOnly
     public CommonResponse<RemoveTeamScrap> cancelScrapToTeamProfile(@Auth final Accessor accessor, @PathVariable final Long teamId) {
         return CommonResponse.onSuccess(scrapService.cancelScrapToTeamProfile(accessor.getMemberId(), teamId));
     }
 
     // 팀원 공고 스크랩 취소
-    @DeleteMapping("/teamMember/announcement/{teamMemberAnnouncementId}")
+    @DeleteMapping("/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementScrapResponseDTO.RemoveTeamMemberAnnouncementScrap> cancelScrapToTeamMemberAnnouncement(
             @Auth final Accessor accessor, @PathVariable final Long teamMemberAnnouncementId
     ) {
         return CommonResponse.onSuccess(scrapService.cancelScrapToTeamMemberAnnouncement(accessor.getMemberId(), teamMemberAnnouncementId));
     }
+
 }

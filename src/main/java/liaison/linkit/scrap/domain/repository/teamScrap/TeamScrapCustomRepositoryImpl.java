@@ -140,6 +140,7 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
                 .where(qTeamScrap.member.id.eq(memberId)
                         .and(qTeamScrap.team.id.eq(teamId)))
                 .execute();
+        
     }
 
     @Override

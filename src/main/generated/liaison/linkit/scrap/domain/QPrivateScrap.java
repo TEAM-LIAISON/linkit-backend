@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QPrivateScrap extends EntityPathBase<PrivateScrap> {
 
-    private static final long serialVersionUID = -623783015L;
+    private static final long serialVersionUID = -487131597L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

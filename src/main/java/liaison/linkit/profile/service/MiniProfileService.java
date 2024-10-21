@@ -261,12 +261,6 @@ public class MiniProfileService {
         }
     }
 
-    private void validateSizeOfImage(final MultipartFile image) {
-        if (image == null || image.isEmpty()) {
-            throw new ImageException(EMPTY_IMAGE);
-        }
-    }
-
     public String getMemberName(final Long memberId) {
         final MemberBasicInform memberBasicInform = getMemberBasicInform(memberId);
         return memberBasicInform.getMemberName();

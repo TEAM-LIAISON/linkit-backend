@@ -20,10 +20,10 @@ public class ProfileUrlController {
 
     @GetMapping
     @MemberOnly
-    public CommonResponse<ProfileUrlResponseDTO.ProfileUrlItems> getProfileUrlDetail(
+    public CommonResponse<ProfileUrlResponseDTO.ProfileUrlItems> getProfileUrlItems(
             @Auth final Accessor accessor
     ) {
-        return CommonResponse.onSuccess(profileUrlService.getProfileUrlDetail(accessor.getMemberId()));
+        return CommonResponse.onSuccess(profileUrlService.getProfileUrlItems(accessor.getMemberId()));
     }
 
     // 자격증 단일 삭제 메서드

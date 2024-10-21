@@ -1,7 +1,7 @@
 package liaison.linkit.profile.implement;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.domain.repository.ProfileLicenseRepository;
+import liaison.linkit.profile.domain.repository.license.ProfileLicenseRepository;
 import lombok.RequiredArgsConstructor;
 
 @Adapter

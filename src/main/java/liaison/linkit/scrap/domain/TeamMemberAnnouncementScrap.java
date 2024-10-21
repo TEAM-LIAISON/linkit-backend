@@ -41,4 +41,5 @@ public class TeamMemberAnnouncementScrap {
     @Column(updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
+    
 }

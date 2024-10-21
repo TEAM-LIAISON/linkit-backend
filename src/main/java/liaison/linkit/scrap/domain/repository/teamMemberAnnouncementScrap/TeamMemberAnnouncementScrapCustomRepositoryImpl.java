@@ -13,15 +13,19 @@ public class TeamMemberAnnouncementScrapCustomRepositoryImpl implements TeamMemb
 
     @Override
     public void deleteByMemberIdAndTeamMemberAnnouncementId(final Long memberId, final Long teamMemberAnnouncementId) {
+
         QTeamMemberAnnouncementScrap qTeamMemberAnnouncementScrap = QTeamMemberAnnouncementScrap.teamMemberAnnouncementScrap;
+
         jpaQueryFactory.delete(qTeamMemberAnnouncementScrap)
                 .where(qTeamMemberAnnouncementScrap.member.id.eq(memberId)
                         .and(qTeamMemberAnnouncementScrap.teamMemberAnnouncement.id.eq(teamMemberAnnouncementId)))
                 .execute();
+
     }
 
     @Override
     public boolean existsByMemberIdAndTeamMemberAnnouncementId(final Long memberId, final Long teamMemberAnnouncementId) {
+
         QTeamMemberAnnouncementScrap qTeamMemberAnnouncementScrap = QTeamMemberAnnouncementScrap.teamMemberAnnouncementScrap;
 
         Integer count = jpaQueryFactory
@@ -32,5 +36,6 @@ public class TeamMemberAnnouncementScrapCustomRepositoryImpl implements TeamMemb
                 .fetchFirst();
 
         return count != null;
+
     }
 }

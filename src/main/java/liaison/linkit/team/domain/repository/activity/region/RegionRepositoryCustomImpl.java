@@ -13,7 +13,7 @@ public class RegionRepositoryCustomImpl implements RegionRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Region findRegionByCityNameAndDivisionName(final String cityName, final String divisionName) {
+    public Region findByCityNameAndDivisionName(final String cityName, final String divisionName) {
         QRegion region = QRegion.region;
 
         return jpaQueryFactory

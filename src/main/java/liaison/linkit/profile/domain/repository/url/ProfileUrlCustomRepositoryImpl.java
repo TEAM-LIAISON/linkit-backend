@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain.repository.profileUrl;
+package liaison.linkit.profile.domain.repository.url;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;

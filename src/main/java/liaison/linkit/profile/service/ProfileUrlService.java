@@ -17,7 +17,7 @@ public class ProfileUrlService {
     private final ProfileUrlMapper profileUrlMapper;
 
     @Transactional(readOnly = true)
-    public ProfileUrlResponseDTO.ProfileUrlItems getProfileUrlDetail(final Long memberId) {
-        return profileUrlQueryAdapter.getProfileUrlDetail(memberId);
+    public ProfileUrlResponseDTO.ProfileUrlItems getProfileUrlItems(final Long memberId) {
+        return profileUrlQueryAdapter.getProfileUrlItems(memberId);
     }
 }

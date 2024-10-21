@@ -49,6 +49,7 @@ public class PrivateScrapCustomRepositoryImpl implements PrivateScrapCustomRepos
     @Override
     @Transactional
     public void deleteByMemberIdAndProfileId(final Long memberId, final Long profileId) {
+
         QPrivateScrap qPrivateScrap = QPrivateScrap.privateScrap;
 
         jpaQueryFactory
@@ -56,6 +57,7 @@ public class PrivateScrapCustomRepositoryImpl implements PrivateScrapCustomRepos
                 .where(qPrivateScrap.member.id.eq(memberId)
                         .and(qPrivateScrap.profile.id.eq(profileId)))
                 .execute();
+
     }
 
     @Override

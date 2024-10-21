@@ -77,7 +77,6 @@ public class MatchingService {
     private final JobRoleRepository jobRoleRepository;
     private final ProfileSkillRepository profileSkillRepository;
     private final SkillRepository skillRepository;
-    private final TeamProfileRepository teamProfileRepository;
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
     private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
     private final ActivityMethodRepository activityMethodRepository;

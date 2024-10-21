@@ -42,4 +42,5 @@ public class PrivateScrap {
     @Column(updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
+    
 }

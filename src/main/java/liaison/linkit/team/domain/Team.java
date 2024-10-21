@@ -17,12 +17,14 @@ import java.util.List;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.profile.domain.region.Region;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 @SQLRestriction("status = 'USABLE'")
@@ -35,12 +37,11 @@ public class Team extends BaseEntity {
     @OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TeamMember> teamMembers = new ArrayList<>();
 
+    private String teamLogoImagePath;
     private String teamName;
     private String teamShortDescription;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
-
-    private String teamIntroduction;
 }

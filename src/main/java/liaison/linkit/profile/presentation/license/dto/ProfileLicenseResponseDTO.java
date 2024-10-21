@@ -20,7 +20,7 @@ public class ProfileLicenseResponseDTO {
         private Long profileLicenseId;
         private String licenseName;
         private String licenseInstitution;
-        private int acquisitionYear;
+        private String licenseAcquisitionDate;
         private String licenseDescription;
         private Boolean isLicenseCertified;
         private String licenseCertificationAttachFileName;
