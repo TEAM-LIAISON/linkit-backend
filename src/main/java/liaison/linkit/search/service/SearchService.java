@@ -5,9 +5,7 @@ import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInfo
 import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
 import liaison.linkit.scrap.domain.repository.privateScrap.PrivateScrapRepository;
 import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
-import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementJobRoleRepository;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
-import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementSkillRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,6 @@ public class SearchService {
     private final ProfileJobRoleRepository profileJobRoleRepository;
 
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
-    private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
-    private final TeamMemberAnnouncementSkillRepository teamMemberAnnouncementSkillRepository;
 
     private final PrivateScrapRepository privateScrapRepository;
     private final TeamScrapRepository teamScrapRepository;

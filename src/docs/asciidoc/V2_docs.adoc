@@ -6,5 +6,32 @@
 :icons: font
 
 == 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
+
 == 링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im
 
+== [ 회원관리 ]
+
+=== - 소셜 로그인
+
+==== · 요청
+
+include::{snippets}/login-controller-test/login/http-request.adoc[]
+include::{snippets}/login-controller-test/login/path-parameters.adoc[]
+include::{snippets}/login-controller-test/login/request-fields.adoc[]
+
+==== · 응답
+
+include::{snippets}/login-controller-test/login/http-response.adoc[]
+include::{snippets}/login-controller-test/login/response-fields.adoc[]
+
+=== - 로그아웃
+
+==== · 요청
+
+include::{snippets}/login-controller-test/logout/http-request.adoc[]
+include::{snippets}/login-controller-test/logout/request-headers.adoc[]
+include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
+
+==== · 응답
+
+include::{snippets}/login-controller-test/logout/http-response.adoc[]

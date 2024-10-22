@@ -64,8 +64,8 @@ public class LoginService {
                 oauthUserInfo.getEmail()
         );
 
-        final boolean isMemberBasicInform = member.isMemberBasicInform();
-        final boolean isServiceUseConsent = member.isServiceUseConsent();
+        final boolean isMemberBasicInform = member.isCreateMemberBasicInform();
+        final boolean isServiceUseConsent = member.isConsentServiceUse();
 
         // 토큰을 생성한다
         final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());

@@ -31,7 +31,7 @@ public class MemberService {
     public RequestMemberBasicInform save(final Long memberId, final memberBasicInformRequest request) {
         final Member member = memberQueryAdapter.findById(memberId);
         final MemberBasicInform savedBasicMemberBasicInform = memberBasicInformCommandAdapter.save(memberBasicInformMapper.toMemberBasicInform(member, request));
-        member.existIsMemberBasicInform(true);
+        member.setCreateMemberBasicInform(true);
         return memberBasicInformMapper.toRequestMemberBasicInform(savedBasicMemberBasicInform);
     }
 

@@ -31,11 +31,17 @@ public class AccountResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginResponse {
+
         private String accessToken;
+
         private String refreshToken;
+
         private String email;
-        private boolean isMemberBasicInform;
-        private boolean isServiceUseConsent;
+
+        private Boolean isMemberBasicInform;
+
+        private Boolean isServiceUseConsent;
+
     }
 
     @Builder

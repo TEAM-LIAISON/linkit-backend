@@ -39,8 +39,6 @@ public class QTeam extends EntityPathBase<Team> {
 
     public final StringPath teamLogoImagePath = createString("teamLogoImagePath");
 
-    public final ListPath<TeamMember, QTeamMember> teamMembers = this.<TeamMember, QTeamMember>createList("teamMembers", TeamMember.class, QTeamMember.class, PathInits.DIRECT2);
-
     public final StringPath teamName = createString("teamName");
 
     public final StringPath teamShortDescription = createString("teamShortDescription");

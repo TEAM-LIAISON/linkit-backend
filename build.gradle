@@ -30,7 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-batch'
-    
+
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.715'
@@ -73,8 +73,8 @@ dependencies {
 
 //    implementation 'com.github.maricn:logback-slack-appender:1.6.1'
 
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.flywaydb:flyway-mysql'
+//    implementation 'org.flywaydb:flyway-core'
+//    implementation 'org.flywaydb:flyway-mysql'
 
     implementation 'org.mindrot:jbcrypt:0.4'
 }
