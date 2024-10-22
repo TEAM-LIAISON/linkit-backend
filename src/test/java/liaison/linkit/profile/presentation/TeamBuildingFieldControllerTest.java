@@ -6,7 +6,6 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.dto.request.teamBuilding.ProfileTeamBuildingCreateRequest;
-import liaison.linkit.profile.service.TeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -67,6 +66,7 @@ public class TeamBuildingFieldControllerTest extends ControllerTest {
                         .content(objectMapper.writeValueAsString(createRequest))
         );
     }
+
     // 1.5.2. 희망 팀빌딩 분야 생성
     @DisplayName("희망 팀빌딩 분야 항목들을 생성할 수 있다.")
     @Test

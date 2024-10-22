@@ -5,7 +5,6 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.dto.request.HistoryCreateRequest;
-import liaison.linkit.team.service.HistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +61,7 @@ public class HistoryControllerTest extends ControllerTest {
         doNothing().when(historyService).validateHistoryByMember(anyLong());
     }
 
-    private void makeHistories() throws Exception{
+    private void makeHistories() throws Exception {
         final HistoryCreateRequest firstHistoryCreateRequest = new HistoryCreateRequest(
                 "Seed 투자 유치",
                 2023,
@@ -188,7 +187,7 @@ public class HistoryControllerTest extends ControllerTest {
 
     @DisplayName("단일 연혁을 생성할 수 있다.")
     @Test
-    void createHistory() throws  Exception {
+    void createHistory() throws Exception {
         // given
         final HistoryCreateRequest historyCreateRequest = new HistoryCreateRequest(
                 "Seed 투자 유치",
@@ -325,7 +324,6 @@ public class HistoryControllerTest extends ControllerTest {
                         )
                 ));
     }
-
 
 
 }

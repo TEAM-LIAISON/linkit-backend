@@ -2,7 +2,7 @@ package liaison.linkit.common.implement;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.region.Region;
-import liaison.linkit.team.domain.repository.activity.region.RegionRepository;
+import liaison.linkit.team.domain.repository.region.RegionRepository;
 import lombok.RequiredArgsConstructor;
 
 @Adapter

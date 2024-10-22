@@ -5,7 +5,6 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
-import liaison.linkit.team.service.TeamMemberAnnouncementService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -122,7 +121,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
 
     private ResultActions performDeleteTeamAttachUrlRequest(
             final int teamMemberAnnouncementId
-    )throws Exception {
+    ) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.delete("/team/members/announcements/{teamMemberAnnouncementId}", teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -227,7 +226,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                         )
                 ));
     }
-
 
 
     @DisplayName("팀원 공고 리스트를 생성/수정할 수 있다.")

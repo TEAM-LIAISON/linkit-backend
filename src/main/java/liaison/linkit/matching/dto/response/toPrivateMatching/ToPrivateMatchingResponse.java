@@ -1,14 +1,10 @@
 package liaison.linkit.matching.dto.response.toPrivateMatching;
 
-import liaison.linkit.matching.domain.PrivateMatching;
+import java.time.LocalDate;
 import liaison.linkit.matching.domain.type.MatchingType;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
@@ -35,45 +31,45 @@ public class ToPrivateMatchingResponse {
     // 내가 열람한 매칭 요청인지 여부
     private final Boolean isReceiverCheck;
 
-    public static List<ToPrivateMatchingResponse> toPrivateMatchingResponse(
-            final List<PrivateMatching> privateMatchingList
-    ) {
-        return privateMatchingList.stream()
-                .map(privateMatching -> {
-                    // 내 이력서로 보낸 사람
-                    // 나의 내 이력서로 매칭 요청을 받음
-                    if (privateMatching.getSenderType() == SenderType.PRIVATE) {
-                        return new ToPrivateMatchingResponse(
-                                privateMatching.getMember().getProfile().getMiniProfile().getId(),
-                                privateMatching.getId(),
-                                privateMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
-                                privateMatching.getMember().getMemberBasicInform().getMemberName(),
-                                privateMatching.getRequestMessage(),
-                                LocalDate.from(privateMatching.getCreatedAt()),
-                                privateMatching.getSenderType(),    // PRIVATE
-                                privateMatching.getMatchingType(),
-                                false,
-                                privateMatching.getIsReceiverCheck()
-                        );
-                    } else {
-                        // 팀 소개서로 보낸 사람
-                        // 나의 내 이력서로 매칭 요청을 받음
-                        // SenderType -> TEAM
-                        return new ToPrivateMatchingResponse(
-                                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getId(),
-                                privateMatching.getId(),
-                                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
-                                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                                privateMatching.getRequestMessage(),
-                                LocalDate.from(privateMatching.getCreatedAt()),
-                                privateMatching.getSenderType(),    // TEAM
-                                privateMatching.getMatchingType(),
-                                true,
-                                privateMatching.getIsReceiverCheck()
-                        );
-                    }
-                })
-                .collect(Collectors.toList());
-    }
+//    public static List<ToPrivateMatchingResponse> toPrivateMatchingResponse(
+//            final List<PrivateMatching> privateMatchingList
+//    ) {
+//        return privateMatchingList.stream()
+//                .map(privateMatching -> {
+//                    // 내 이력서로 보낸 사람
+//                    // 나의 내 이력서로 매칭 요청을 받음
+//                    if (privateMatching.getSenderType() == SenderType.PRIVATE) {
+//                        return new ToPrivateMatchingResponse(
+//                                privateMatching.getMember().getProfile().getMiniProfile().getId(),
+//                                privateMatching.getId(),
+//                                privateMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
+//                                privateMatching.getMember().getMemberBasicInform().getMemberName(),
+//                                privateMatching.getRequestMessage(),
+//                                LocalDate.from(privateMatching.getCreatedAt()),
+//                                privateMatching.getSenderType(),    // PRIVATE
+//                                privateMatching.getMatchingType(),
+//                                false,
+//                                privateMatching.getIsReceiverCheck()
+//                        );
+//                    } else {
+//                        // 팀 소개서로 보낸 사람
+//                        // 나의 내 이력서로 매칭 요청을 받음
+//                        // SenderType -> TEAM
+//                        return new ToPrivateMatchingResponse(
+//                                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getId(),
+//                                privateMatching.getId(),
+//                                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
+//                                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+//                                privateMatching.getRequestMessage(),
+//                                LocalDate.from(privateMatching.getCreatedAt()),
+//                                privateMatching.getSenderType(),    // TEAM
+//                                privateMatching.getMatchingType(),
+//                                true,
+//                                privateMatching.getIsReceiverCheck()
+//                        );
+//                    }
+//                })
+//                .collect(Collectors.toList());
+//    }
 
 }

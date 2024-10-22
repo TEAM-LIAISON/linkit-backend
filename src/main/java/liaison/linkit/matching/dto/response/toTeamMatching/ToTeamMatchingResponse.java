@@ -1,14 +1,10 @@
 package liaison.linkit.matching.dto.response.toTeamMatching;
 
-import liaison.linkit.matching.domain.TeamMatching;
+import java.time.LocalDate;
 import liaison.linkit.matching.domain.type.MatchingType;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
@@ -36,39 +32,39 @@ public class ToTeamMatchingResponse {
     // 내가 열람한 매칭 요청인지 여부
     private final Boolean isReceiverCheck;
 
-    public static List<ToTeamMatchingResponse> toTeamMatchingResponse(final List<TeamMatching> teamMatchingList) {
-        return teamMatchingList.stream()
-                .map(teamMatching -> {
-                    if (teamMatching.getSenderType() == SenderType.PRIVATE) {
-                        // 내 이력서로 나의 팀 소개서에 보낸 경우
-                        return new ToTeamMatchingResponse(
-                                teamMatching.getMember().getProfile().getId(),
-                                teamMatching.getId(),
-                                teamMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
-                                teamMatching.getMember().getMemberBasicInform().getMemberName(),
-                                teamMatching.getRequestMessage(),
-                                LocalDate.from(teamMatching.getCreatedAt()),
-                                teamMatching.getSenderType(),
-                                teamMatching.getMatchingType(),
-                                true,
-                                teamMatching.getIsReceiverCheck()
-                        );
-                    } else {
-                        // 팀 소개서로 내 팀 소개서에 보낸 경우
-                        return new ToTeamMatchingResponse(
-                                teamMatching.getMember().getTeamProfile().getId(),
-                                teamMatching.getId(),
-                                teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
-                                teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                                teamMatching.getRequestMessage(),
-                                LocalDate.from(teamMatching.getCreatedAt()),
-                                teamMatching.getSenderType(),
-                                teamMatching.getMatchingType(),
-                                true,
-                                teamMatching.getIsReceiverCheck()
-                        );
-                    }
-                })
-                .collect(Collectors.toList());
-    }
+//    public static List<ToTeamMatchingResponse> toTeamMatchingResponse(final List<TeamMatching> teamMatchingList) {
+//        return teamMatchingList.stream()
+//                .map(teamMatching -> {
+//                    if (teamMatching.getSenderType() == SenderType.PRIVATE) {
+//                        // 내 이력서로 나의 팀 소개서에 보낸 경우
+//                        return new ToTeamMatchingResponse(
+//                                teamMatching.getMember().getProfile().getId(),
+//                                teamMatching.getId(),
+//                                teamMatching.getMember().getProfile().getMiniProfile().getMiniProfileImg(),
+//                                teamMatching.getMember().getMemberBasicInform().getMemberName(),
+//                                teamMatching.getRequestMessage(),
+//                                LocalDate.from(teamMatching.getCreatedAt()),
+//                                teamMatching.getSenderType(),
+//                                teamMatching.getMatchingType(),
+//                                true,
+//                                teamMatching.getIsReceiverCheck()
+//                        );
+//                    } else {
+//                        // 팀 소개서로 내 팀 소개서에 보낸 경우
+//                        return new ToTeamMatchingResponse(
+//                                teamMatching.getMember().getTeamProfile().getId(),
+//                                teamMatching.getId(),
+//                                teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
+//                                teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
+//                                teamMatching.getRequestMessage(),
+//                                LocalDate.from(teamMatching.getCreatedAt()),
+//                                teamMatching.getSenderType(),
+//                                teamMatching.getMatchingType(),
+//                                true,
+//                                teamMatching.getIsReceiverCheck()
+//                        );
+//                    }
+//                })
+//                .collect(Collectors.toList());
+//    }
 }

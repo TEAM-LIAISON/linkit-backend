@@ -5,7 +5,6 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.dto.request.memberIntroduction.TeamMemberIntroductionCreateRequest;
-import liaison.linkit.team.service.TeamMemberIntroductionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -80,7 +79,7 @@ class TeamMemberIntroductionControllerTest extends ControllerTest {
         performPostTeamMemberIntroductionRequest(teamMemberIntroductionCreateRequestList);
     }
 
-    private ResultActions performUpdateTeamMemberIntroduction(final int teamMemberIntroductionId, final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest) throws Exception{
+    private ResultActions performUpdateTeamMemberIntroduction(final int teamMemberIntroductionId, final TeamMemberIntroductionCreateRequest teamMemberIntroductionCreateRequest) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/team/member/{teamMemberIntroductionId}", teamMemberIntroductionId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())

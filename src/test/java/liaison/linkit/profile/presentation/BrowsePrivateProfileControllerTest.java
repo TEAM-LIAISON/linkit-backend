@@ -32,13 +32,9 @@ import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingField
 import liaison.linkit.profile.service.AntecedentsService;
 import liaison.linkit.profile.service.AwardsService;
 import liaison.linkit.profile.service.BrowsePrivateProfileService;
-import liaison.linkit.profile.service.CompletionService;
 import liaison.linkit.profile.service.EducationService;
 import liaison.linkit.profile.service.MiniProfileService;
-import liaison.linkit.profile.service.ProfileOnBoardingService;
-import liaison.linkit.profile.service.ProfileRegionService;
 import liaison.linkit.profile.service.ProfileService;
-import liaison.linkit.profile.service.TeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

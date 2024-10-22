@@ -1,14 +1,10 @@
 package liaison.linkit.matching.dto.response.requestTeamMatching;
 
-import liaison.linkit.matching.domain.TeamMatching;
+import java.time.LocalDate;
 import liaison.linkit.matching.domain.type.MatchingType;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
@@ -30,18 +26,4 @@ public class MyTeamMatchingResponse {
     private final MatchingType matchingType;
     // 어떤 이력/소개서에 매칭 요청을 보냈는지
     private final boolean isRequestTeamProfile;
-
-    public static List<MyTeamMatchingResponse> myTeamMatchingResponses(final List<TeamMatching> teamMatchingList) {
-        return teamMatchingList.stream()
-                .map(teamMatching -> new MyTeamMatchingResponse(
-                        teamMatching.getId(),
-                        teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamLogoImageUrl(),
-                        teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                        teamMatching.getRequestMessage(),
-                        LocalDate.from(teamMatching.getCreatedAt()),
-                        teamMatching.getSenderType(),
-                        teamMatching.getMatchingType(),
-                        true
-                )).collect(Collectors.toList());
-    }
 }

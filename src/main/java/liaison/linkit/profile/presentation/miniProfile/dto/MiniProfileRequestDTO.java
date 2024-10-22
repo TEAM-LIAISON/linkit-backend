@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MiniProfileRequestDTO {
+
     @Builder
     @Getter
     @NoArgsConstructor
@@ -18,7 +19,7 @@ public class MiniProfileRequestDTO {
         private List<String> positionNames;
         private String cityName;
         private String divisionName;
-        private SaveProfileStateRequest saveProfileStateRequest;
+        private List<String> profileStateNames;
         private boolean isProfilePublic;
     }
 }

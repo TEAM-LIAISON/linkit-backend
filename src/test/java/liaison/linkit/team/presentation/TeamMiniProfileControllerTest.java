@@ -5,7 +5,6 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.dto.request.miniprofile.TeamMiniProfileCreateRequest;
-import liaison.linkit.team.service.TeamMiniProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -96,10 +95,9 @@ public class TeamMiniProfileControllerTest extends ControllerTest {
 //        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
 //                RestDocumentationRequestBuilders.multipart("/team/mini-profile", teamMiniProfileImage, createRequest);
 
-
         // when
 
-        final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST,"/team/mini-profile")
+        final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/team/mini-profile")
                 .file(teamMiniProfileImage)
                 .file(createRequest)
                 .accept(APPLICATION_JSON)

@@ -1,8 +1,8 @@
 package liaison.linkit.global.config.csv.region;
 
-import liaison.linkit.profile.dto.csv.RegionCsvData;
+import liaison.linkit.profile.csv.RegionCsvData;
 import liaison.linkit.profile.domain.region.Region;
-import liaison.linkit.team.domain.repository.activity.region.RegionRepository;
+import liaison.linkit.team.domain.repository.region.RegionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.Chunk;

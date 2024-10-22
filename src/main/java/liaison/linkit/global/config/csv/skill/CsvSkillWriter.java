@@ -2,7 +2,7 @@ package liaison.linkit.global.config.csv.skill;
 
 import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.skill.Skill;
-import liaison.linkit.profile.dto.csv.SkillCsvData;
+import liaison.linkit.profile.csv.SkillCsvData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.Chunk;

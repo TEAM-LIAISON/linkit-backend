@@ -12,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.dto.request.antecedents.AntecedentsCreateRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,34 +54,4 @@ public class Antecedents {
     // 경력 설명
     @Column
     private String antecedentsDescription;
-
-    public static Antecedents of(
-            final Profile profile,
-            final String projectName,
-            final String projectRole,
-            final String startDate,
-            final String endDate,
-            final boolean retirement,
-            final String antecedentsDescription
-    ) {
-        return new Antecedents(
-                null,
-                profile,
-                projectName,
-                projectRole,
-                startDate,
-                endDate,
-                retirement,
-                antecedentsDescription
-        );
-    }
-
-    public void update(final AntecedentsCreateRequest antecedentsCreateRequest) {
-        this.projectName = antecedentsCreateRequest.getProjectName();
-        this.projectRole = antecedentsCreateRequest.getProjectRole();
-        this.startDate = antecedentsCreateRequest.getStartDate();
-        this.endDate = antecedentsCreateRequest.getEndDate();
-        this.retirement = antecedentsCreateRequest.isRetirement();
-        this.antecedentsDescription = antecedentsCreateRequest.getAntecedentsDescription();
-    }
 }

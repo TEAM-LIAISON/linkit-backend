@@ -8,7 +8,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import liaison.linkit.global.BaseEntity;
-import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,22 +30,4 @@ public class TeamMemberAnnouncement extends BaseEntity {
     // 4. 지원 절차
     @Column(name = "application_process")
     private String applicationProcess;
-
-    public static TeamMemberAnnouncement of(
-            final String mainBusiness,
-            final String applicationProcess
-    ) {
-        return new TeamMemberAnnouncement(
-                null,
-                mainBusiness,
-                applicationProcess
-        );
-    }
-
-    public void update(
-            final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
-    ) {
-        this.mainBusiness = teamMemberAnnouncementRequest.getMainBusiness();
-        this.applicationProcess = teamMemberAnnouncementRequest.getApplicationProcess();
-    }
 }

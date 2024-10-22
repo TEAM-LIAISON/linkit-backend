@@ -42,6 +42,7 @@ public class TeamService {
     private final ImageValidator imageValidator;
     private final S3Uploader s3Uploader;
 
+
     public TeamResponseDTO.AddTeamResponse createTeam(
             final Long memberId,
             final MultipartFile teamLogoImage,
@@ -70,6 +71,7 @@ public class TeamService {
         // 생성된 팀의 정보를 반환
         return teamMapper.toAddTeam(savedTeam);
     }
+
 
     public TeamResponseDTO.SaveTeamBasicInformResponse saveTeamBasicInform(
             final Long memberId,

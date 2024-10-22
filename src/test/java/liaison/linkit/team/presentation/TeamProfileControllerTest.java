@@ -36,13 +36,6 @@ import liaison.linkit.team.dto.response.announcement.TeamMemberAnnouncementRespo
 import liaison.linkit.team.dto.response.completion.TeamCompletionResponse;
 import liaison.linkit.team.dto.response.history.HistoryResponse;
 import liaison.linkit.team.dto.response.miniProfile.TeamMiniProfileResponse;
-import liaison.linkit.team.service.ActivityService;
-import liaison.linkit.team.service.HistoryService;
-import liaison.linkit.team.service.TeamCompletionService;
-import liaison.linkit.team.service.TeamMemberAnnouncementService;
-import liaison.linkit.team.service.TeamMemberIntroductionService;
-import liaison.linkit.team.service.TeamMiniProfileService;
-import liaison.linkit.team.service.TeamProfileTeamBuildingFieldService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
