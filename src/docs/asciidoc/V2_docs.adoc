@@ -1,4 +1,4 @@
-= LINKIT API 명세서 Version 2.0
+= LINKIT API 명세서 Version 1.0
 :toc: left
 :toclevels: 4
 :source-highlighter: highlightjs
@@ -35,3 +35,16 @@ include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
 ==== · 응답
 
 include::{snippets}/login-controller-test/logout/http-response.adoc[]
+
+=== - Access-Token 재발행
+
+==== · 요청
+
+include::{snippets}/login-controller-test/renew-token/http-request.adoc[]
+include::{snippets}/login-controller-test/renew-token/request-headers.adoc[]
+include::{snippets}/login-controller-test/renew-token/request-cookies.adoc[]
+
+==== · 응답
+
+include::{snippets}/login-controller-test/renew-token/http-response.adoc[]
+include::{snippets}/login-controller-test/renew-token/response-fields.adoc[]

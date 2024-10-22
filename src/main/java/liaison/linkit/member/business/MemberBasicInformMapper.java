@@ -27,7 +27,6 @@ public class MemberBasicInformMapper {
         return RequestMemberBasicInform.builder()
                 .memberName(memberBasicInform.getMemberName())
                 .contact(memberBasicInform.getContact())
-                .marketingAgree(memberBasicInform.isMarketingAgree())
                 .build();
     }
 

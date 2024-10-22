@@ -4,7 +4,6 @@ import static liaison.linkit.global.exception.ExceptionCode.DUPLICATED_EMAIL;
 import static liaison.linkit.global.exception.ExceptionCode.FAIL_TO_GENERATE_MEMBER;
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
 
-import jakarta.annotation.Nullable;
 import java.util.Optional;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.login.business.AccountMapper;
@@ -109,8 +108,7 @@ public class LoginService {
         final String accessToken = bearerExtractor.extractAccessToken(authorizationHeader);
         return getRenewalToken(refreshTokenRequest);
     }
-
-    @Nullable
+    
     private AccountResponseDTO.RenewTokenResponse getRenewalToken(final String refreshTokenRequest) {
         final RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenRequest)
                 .orElseThrow(() -> new AuthException(INVALID_REFRESH_TOKEN));

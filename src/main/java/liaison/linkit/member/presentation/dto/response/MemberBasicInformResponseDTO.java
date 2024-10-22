@@ -17,7 +17,6 @@ public class MemberBasicInformResponseDTO {
     public static class RequestMemberBasicInform {
         private String memberName;
         private String contact;
-        private boolean marketingAgree;
     }
 
     @Builder
