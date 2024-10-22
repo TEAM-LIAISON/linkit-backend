@@ -48,3 +48,14 @@ include::{snippets}/login-controller-test/renew-token/request-cookies.adoc[]
 
 include::{snippets}/login-controller-test/renew-token/http-response.adoc[]
 include::{snippets}/login-controller-test/renew-token/response-fields.adoc[]
+
+=== - 회원 탈퇴
+
+==== · 응답
+
+include::{snippets}/login-controller-test/quit-account/http-request.adoc[]
+
+==== · 응답
+
+include::{snippets}/login-controller-test/quit-account/http-response.adoc[]
+include::{snippets}/login-controller-test/quit-account/response-fields.adoc[]

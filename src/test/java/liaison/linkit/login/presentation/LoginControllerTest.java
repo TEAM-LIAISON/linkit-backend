@@ -3,6 +3,7 @@ package liaison.linkit.login.presentation;
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
@@ -33,6 +34,7 @@ import liaison.linkit.login.presentation.dto.AccountRequestDTO;
 import liaison.linkit.login.presentation.dto.AccountRequestDTO.LoginRequest;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO.LoginResponse;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO.QuitAccountResponse;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO.RenewTokenResponse;
 import liaison.linkit.login.service.LoginService;
 import org.junit.jupiter.api.DisplayName;
@@ -149,7 +151,7 @@ public class LoginControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("accessToken 재발급을 통해 로그인을 인정할 수 있다.")
+    @DisplayName("accessToken 만료가 된 경우, 토큰 재발행이 가능하다.")
     @Test
     void renewToken() throws Exception {
         // given
@@ -217,67 +219,6 @@ public class LoginControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    //    @Test
-//    void extendLogin() throws Exception {
-//        // given
-//        final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
-//        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
-//
-//        final RenewTokenResponse renewTokenResponse = new RenewTokenResponse(RENEW_ACCESS_TOKEN, true, true, true);
-//
-//        when(loginService.renewalAccessToken(REFRESH_TOKEN, ACCESS_TOKEN))
-//                .thenReturn(renewTokenResponse);
-//
-//        // when
-//        final ResultActions resultActions = mockMvc.perform(post("/token")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .header(HttpHeaders.AUTHORIZATION, ACCESS_TOKEN)
-//                .cookie(cookie)
-//        );
-//
-//        final MvcResult mvcResult = resultActions.andExpect(status().isCreated())
-//                .andDo(restDocs.document(
-//                        requestCookies(
-//                                cookieWithName("refresh-token")
-//                                        .description("갱신 토큰")
-//                        ),
-//                        requestHeaders(
-//                                headerWithName("Authorization")
-//                                        .description("access token")
-//                                        .attributes(field("constraint", "문자열(jwt)"))
-//                        ),
-//                        responseFields(
-//                                fieldWithPath("accessToken")
-//                                        .type(JsonFieldType.STRING)
-//                                        .description("access token")
-//                                        .attributes(field("constraint", "문자열(jwt)")),
-//                                fieldWithPath("existMemberBasicInform")
-//                                        .type(JsonFieldType.BOOLEAN)
-//                                        .description("기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)")
-//                                        .attributes(field("constraint", "boolean 값")),
-//                                fieldWithPath("existDefaultProfile")
-//                                        .type(JsonFieldType.BOOLEAN)
-//                                        .description("이력서 작성 여부 (false: 내 이력서와 팀 소개서 모두 존재 X | true: 내 이력서나 팀 소개서 중 최소 1개 이상 필수 항목 기입 완료)")
-//                                        .attributes(field("constraint", "boolean 값")),
-//                                fieldWithPath("existNonCheckNotification")
-//                                        .type(JsonFieldType.BOOLEAN)
-//                                        .description("확인하지 않은 알림의 존재 유무")
-//                                        .attributes(field("constraint", "boolean 값"))
-//                        )
-//                ))
-//                .andReturn();
-//
-//        final AccessTokenResponse expected = new AccessTokenResponse(memberTokens.getAccessToken());
-//
-//        final AccessTokenResponse actual = objectMapper.readValue(
-//                mvcResult.getResponse().getContentAsString(),
-//                AccessTokenResponse.class
-//        );
-//
-//        // then
-//        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-//    }
-//
     @DisplayName("회원은 로그아웃 할 수 있다.")
     @Test
     void logout() throws Exception {
@@ -331,7 +272,6 @@ public class LoginControllerTest extends ControllerTest {
                         )
                 )).andReturn();
 
-        // then
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<AccountResponseDTO.LogoutResponse> actual = objectMapper.readValue(
                 jsonResponse,
@@ -345,39 +285,71 @@ public class LoginControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
         verify(loginService).logout(any(), anyString());
     }
-//
-//    @DisplayName("회원을 탈퇴 할 수 있다.")
-//    @Test
-//    void deleteAccount() throws Exception {
-//        // given
-//        given(refreshTokenRepository.existsById(any())).willReturn(true);
-//        doNothing().when(jwtProvider).validateTokens(any());
-//        given(jwtProvider.getSubject(any())).willReturn("1");
-//        doNothing().when(loginService).deleteAccount(anyLong());
-//
-//        final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
-//        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
-//
-//        // when
-//        final ResultActions resultActions = mockMvc.perform(delete("/account")
-//                .header(HttpHeaders.AUTHORIZATION, ACCESS_TOKEN)
-//                .cookie(cookie)
-//        );
-//
-//        resultActions.andExpect(status().isNoContent())
-//                .andDo(restDocs.document(
-//                        requestCookies(
-//                                cookieWithName("refresh-token")
-//                                        .description("갱신 토큰")
-//                        ),
-//                        requestHeaders(
-//                                headerWithName("Authorization")
-//                                        .description("access token")
-//                                        .attributes(field("constraint", "문자열(jwt)"))
-//                        )
-//                ));
-//
-//        // then
-//        verify(loginService).deleteAccount(anyLong());
-//    }
+
+    @DisplayName("회원을 회원탈퇴 할 수 있다.")
+    @Test
+    void quitAccount() throws Exception {
+        // given
+        given(refreshTokenRepository.existsById(any())).willReturn(true);
+        doNothing().when(jwtProvider).validateTokens(any());
+        given(jwtProvider.getSubject(any())).willReturn("1");
+
+        final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
+        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
+
+        final AccountResponseDTO.QuitAccountResponse quitAccountResponse = new QuitAccountResponse(LocalDateTime.now());
+
+        when(loginService.quitAccount(anyLong())).thenReturn(quitAccountResponse);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(delete("/api/v1/quit")
+                .header(HttpHeaders.AUTHORIZATION, ACCESS_TOKEN)
+                .cookie(cookie)
+        );
+
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andDo(restDocs.document(
+                        requestCookies(
+                                cookieWithName("refresh-token")
+                                        .description("갱신 토큰")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization")
+                                        .description("access token")
+                                        .attributes(field("constraint", "문자열(jwt)"))
+                        ),
+                        responseFields(
+                                fieldWithPath("isSuccess")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("요청 성공 여부")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("code")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 코드")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 메시지")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("result.quitAt")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원탈퇴 시간")
+                                        .attributes(field("constraint", "LocalDateTime Type"))
+                        )
+                )).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<AccountResponseDTO.QuitAccountResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<AccountResponseDTO.QuitAccountResponse>>() {
+                }
+        );
+
+        final CommonResponse<AccountResponseDTO.QuitAccountResponse> expected = CommonResponse.onSuccess(quitAccountResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        verify(loginService).quitAccount(anyLong());
+    }
 }

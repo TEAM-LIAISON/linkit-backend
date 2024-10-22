@@ -9,39 +9,6 @@
 
 == 1. 회원관리
 
-=== 1.2.1. 토큰 재발급
-
-==== 요청
-
-include::{snippets}/login-controller-test/extend-login/http-request.adoc[]
-
-요청 쿠키
-
-include::{snippets}/login-controller-test/extend-login/request-cookies.adoc[]
-
-==== 응답
-
-include::{snippets}/login-controller-test/extend-login/http-response.adoc[]
-include::{snippets}/login-controller-test/extend-login/response-fields.adoc[]
-
-=== 1.2.1. 로그아웃
-
-==== 요청
-
-include::{snippets}/login-controller-test/logout/http-request.adoc[]
-
-요청 헤더
-
-include::{snippets}/login-controller-test/logout/request-headers.adoc[]
-
-요청 쿠키
-
-include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
-
-==== 응답
-
-include::{snippets}/login-controller-test/logout/http-response.adoc[]
-
 == 1.4. 정보 기입
 
 === 1.4.1. 개인정보 기입 (기본 정보)
