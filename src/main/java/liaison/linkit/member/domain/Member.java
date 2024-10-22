@@ -48,7 +48,10 @@ public class Member extends BaseDateTimeEntity {
     private MemberState memberState;
 
     @Column(nullable = false)
-    private boolean existMemberBasicInform;
+    private boolean isMemberBasicInform;
+
+    @Column(nullable = false)
+    private boolean isServiceUseConsent;
 
     @Column(nullable = false)
     private int privateScrapCount;
@@ -70,7 +73,8 @@ public class Member extends BaseDateTimeEntity {
         this.email = email;
         this.memberState = ACTIVE;
         this.memberBasicInform = memberBasicInform;
-        this.existMemberBasicInform = false;
+        this.isMemberBasicInform = false;
+        this.isServiceUseConsent = false;
         this.privateScrapCount = 0;
         this.teamScrapCount = 0;
         this.teamMemberAnnouncementScrapCount = 0;
@@ -84,8 +88,12 @@ public class Member extends BaseDateTimeEntity {
         this(null, socialLoginId, email, memberBasicInform);
     }
 
-    public void existIsMemberBasicInform(final Boolean existMemberBasicInform) {
-        this.existMemberBasicInform = existMemberBasicInform;
+    public void setIsMemberBasicInform(final boolean isMemberBasicInform) {
+        this.isMemberBasicInform = isMemberBasicInform;
+    }
+
+    public void setIsServiceUseConsent(final boolean isServiceUseConsent) {
+        this.isServiceUseConsent = isServiceUseConsent;
     }
 
     public void addPrivateScrapCount() {

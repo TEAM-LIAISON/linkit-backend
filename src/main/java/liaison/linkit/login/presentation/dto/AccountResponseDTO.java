@@ -17,4 +17,32 @@ public class AccountResponseDTO {
     public static class LogoutResponse {
         private LocalDateTime logoutAt;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class QuitAccountResponse {
+        private LocalDateTime quitAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LoginResponse {
+        private String accessToken;
+        private String refreshToken;
+        private String email;
+        private boolean isMemberBasicInform;
+        private boolean isServiceUseConsent;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RenewTokenResponse {
+        private String accessToken;
+    }
 }

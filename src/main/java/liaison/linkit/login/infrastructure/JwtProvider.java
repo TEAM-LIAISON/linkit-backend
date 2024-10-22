@@ -1,18 +1,26 @@
 package liaison.linkit.login.infrastructure;
 
-import io.jsonwebtoken.*;
+import static liaison.linkit.global.exception.ExceptionCode.EXPIRED_PERIOD_ACCESS_TOKEN;
+import static liaison.linkit.global.exception.ExceptionCode.EXPIRED_PERIOD_REFRESH_TOKEN;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_ACCESS_TOKEN;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import javax.crypto.SecretKey;
 import liaison.linkit.global.exception.ExpiredPeriodJwtException;
 import liaison.linkit.global.exception.InvalidJwtException;
 import liaison.linkit.login.domain.MemberTokens;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Component
 public class JwtProvider {
@@ -38,11 +46,10 @@ public class JwtProvider {
         }
     }
 
-
     public MemberTokens generateLoginToken(final String subject) {
-        final String refreshToken = createToken(EMPTY_SUBJECT, refreshExpirationTime);
         final String accessToken = createToken(subject, accessExpirationTime);
-        return new MemberTokens(refreshToken, accessToken);
+        final String refreshToken = createToken(EMPTY_SUBJECT, refreshExpirationTime);
+        return new MemberTokens(accessToken, refreshToken);
     }
 
     private String createToken(final String subject, final Long validityInMilliseconds) {

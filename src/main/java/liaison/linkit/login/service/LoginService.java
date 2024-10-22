@@ -2,23 +2,18 @@ package liaison.linkit.login.service;
 
 import static liaison.linkit.global.exception.ExceptionCode.DUPLICATED_EMAIL;
 import static liaison.linkit.global.exception.ExceptionCode.FAIL_TO_GENERATE_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.FAIL_TO_VALIDATE_TOKEN;
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_MEMBER_ID;
 
 import jakarta.annotation.Nullable;
 import java.util.Optional;
 import liaison.linkit.global.exception.AuthException;
-import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.login.business.LoginMapper;
+import liaison.linkit.login.business.AccountMapper;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.login.domain.OauthProvider;
 import liaison.linkit.login.domain.OauthProviders;
 import liaison.linkit.login.domain.OauthUserInfo;
 import liaison.linkit.login.domain.RefreshToken;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
-import liaison.linkit.login.dto.MemberTokensAndOnBoardingStepInform;
-import liaison.linkit.login.dto.RenewTokenResponse;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
@@ -30,7 +25,7 @@ import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
+import liaison.linkit.profile.implement.ProfileQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,59 +36,49 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class LoginService {
-
     private static final int MAX_TRY_COUNT = 5;
-
-    private final LoginMapper loginMapper;
-
-    private final RefreshTokenRepository refreshTokenRepository;
-
-    private final MemberQueryAdapter memberQueryAdapter;
-    private final MemberCommandAdapter memberCommandAdapter;
-
-    private final ProfileRepository profileRepository;
 
     private final OauthProviders oauthProviders;
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor bearerExtractor;
 
+    private final AccountMapper accountMapper;
+
+    private final MemberQueryAdapter memberQueryAdapter;
+    private final MemberCommandAdapter memberCommandAdapter;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final ProfileRepository profileRepository;
+    private final ProfileQueryAdapter profileQueryAdapter;
+
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final PrivateMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
 
-
-    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
-
-    // 내 이력서 조회
-    private Profile getProfileByMember(final Long memberId) {
-        return profileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
-    }
-
-    public MemberTokensAndOnBoardingStepInform login(final String providerName, final String code) {
+    // 회원이 로그인한다
+    public AccountResponseDTO.LoginResponse login(final String providerName, final String code) {
         final OauthProvider provider = oauthProviders.mapping(providerName);
         final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
 
-        // 소셜로그인 ID와 이메일 정보는 해당 플랫폼으로부터 가져옴
         final Member member = findOrCreateMember(
                 oauthUserInfo.getSocialLoginId(),
                 oauthUserInfo.getEmail()
         );
 
-        // 멤버 테이블에서 기본 정보 입력 여부를 조회함
-        final boolean existMemberBasicInform = member.isExistMemberBasicInform();
+        final boolean isMemberBasicInform = member.isMemberBasicInform();
+        final boolean isServiceUseConsent = member.isServiceUseConsent();
 
+        // 토큰을 생성한다
         final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
 
-        // 리프레시 토큰 저장
+        // 생성한 토큰 중 refresh-token을 레디스에 저장한다
         final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
         refreshTokenRepository.save(savedRefreshToken);
 
-        return new MemberTokensAndOnBoardingStepInform(
-                memberTokens.getAccessToken(),
-                memberTokens.getRefreshToken(),
+        return accountMapper.toLogin(
+                memberTokens,
                 oauthUserInfo.getEmail(),
-                existMemberBasicInform
+                isMemberBasicInform,
+                isServiceUseConsent
         );
     }
 
@@ -104,15 +89,10 @@ public class LoginService {
 
     @Transactional
     public Member createMember(final String socialLoginId, final String email) {
-        log.info("createMember 정상 실행");
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberQueryAdapter.existsByEmail(email)) {
-                // 만약 이메일에 의해서 존재하지 않는 회원임이 판단된다면
                 final Member member = memberCommandAdapter.create(new Member(socialLoginId, email, null));
-                log.info("memberId={}", member.getId());
-
-                // 내 이력서는 자동으로 생성된다. -> 미니 프로필도 함께 생성되어야 한다.
                 return member;
             } else if (memberQueryAdapter.existsByEmail(email)) {
                 throw new AuthException(DUPLICATED_EMAIL);
@@ -122,61 +102,25 @@ public class LoginService {
         throw new AuthException(FAIL_TO_GENERATE_MEMBER);
     }
 
-    public RenewTokenResponse renewalAccessToken(
+    public AccountResponseDTO.RenewTokenResponse renewalAccessToken(
             final String refreshTokenRequest, final String authorizationHeader
     ) {
-        // 기존의 엑세스 토큰 추출
+        // 기존에 사용하던 accessToken을 추출한다
         final String accessToken = bearerExtractor.extractAccessToken(authorizationHeader);
-
-        if (jwtProvider.isValidRefreshAndInvalidAccess(refreshTokenRequest, accessToken)) {
-            return getRenewTokenResponse(refreshTokenRequest);
-        }
-
-        if (jwtProvider.isValidRefreshAndValidAccess(refreshTokenRequest, accessToken)) {
-            return getRenewTokenResponse(refreshTokenRequest);
-        }
-        throw new AuthException(FAIL_TO_VALIDATE_TOKEN);
+        return getRenewalToken(refreshTokenRequest);
     }
 
     @Nullable
-    private RenewTokenResponse getRenewTokenResponse(String refreshTokenRequest) {
+    private AccountResponseDTO.RenewTokenResponse getRenewalToken(final String refreshTokenRequest) {
         final RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenRequest)
                 .orElseThrow(() -> new AuthException(INVALID_REFRESH_TOKEN));
-
-        final Member member = memberQueryAdapter.findById(refreshToken.getMemberId());
-        final boolean existMemberBasicInform = member.isExistMemberBasicInform();
-
-        log.info("loginService login method memberId={}", member.getId());
-        final Profile profile = getProfileByMember(member.getId());
-
-//        final List<TeamMemberAnnouncement> teamMemberAnnouncementList = getTeamMemberAnnouncementList(teamProfile);
-//        final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream()
-//                .map(TeamMemberAnnouncement::getId)
-//                .toList();
-
-        // 2개 모두 false -> existNonCheckNotification -> true -> 알림 기능 형태 제공
-        // 내가 보내거나 받은 내 이력서 관련 매칭 요청에서 check -> false인 것이 존재하는지
-
-        // 내가 보내거나 받은 팀 소개서 관련 매칭 요청에서 check -> false인 것이 존재하는지
-//        final boolean existNonCheckNotification = (
-//                (privateMatchingRepository.existsNonCheckByMemberId(member.getId(), profile.getId()))
-//                        || (teamMatchingRepository.existsNonCheckByMemberId(member.getId(),
-//                        teamMemberAnnouncementIds)));
-
-//        if (existMemberBasicInform) {
-//            return new RenewTokenResponse(jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()),
-//                    existMemberBasicInform, existNonCheckNotification);
-//        } else {
-//            return new RenewTokenResponse(null, existMemberBasicInform, existNonCheckNotification);
-//        }
-
-        return null;
+        return accountMapper.toRenewTokenResponse(jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()));
     }
 
     // 회원이 로그아웃한다
     public AccountResponseDTO.LogoutResponse logout(final Long memberId, final String refreshToken) {
         removeRefreshToken(refreshToken);
-        return loginMapper.toLogout();
+        return accountMapper.toLogout();
     }
 
     // 리프레시 토큰을 삭제한다
@@ -184,10 +128,17 @@ public class LoginService {
         refreshTokenRepository.deleteById(refreshToken);
     }
 
+    // 회원이 서비스를 탈퇴한다
+    public AccountResponseDTO.QuitAccountResponse quitAccount(final Long memberId) {
+        final Member member = memberQueryAdapter.findById(memberId);
+
+        return accountMapper.toQuitAccount();
+    }
+
     // 수정 필요
     public void deleteAccount(final Long memberId) {
         final Member member = memberQueryAdapter.findById(memberId);
-        final Profile profile = getProfileByMember(memberId);
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
 //        final List<TeamMemberAnnouncement> teamMemberAnnouncementList = getTeamMemberAnnouncementList(teamProfile);
 //        final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream()
