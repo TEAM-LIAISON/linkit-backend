@@ -19,7 +19,9 @@ import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
 import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
+import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.domain.Profile;
@@ -45,6 +47,9 @@ public class LoginService {
 
     private final MemberQueryAdapter memberQueryAdapter;
     private final MemberCommandAdapter memberCommandAdapter;
+    private final MemberBasicInformCommandAdapter memberBasicInformCommandAdapter;
+
+
     private final RefreshTokenRepository refreshTokenRepository;
     private final ProfileRepository profileRepository;
     private final ProfileQueryAdapter profileQueryAdapter;
@@ -92,6 +97,9 @@ public class LoginService {
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberQueryAdapter.existsByEmail(email)) {
                 final Member member = memberCommandAdapter.create(new Member(socialLoginId, email, null));
+                memberBasicInformCommandAdapter.create(new MemberBasicInform(
+                        null, member, null, null, false, false, false, false
+                ));
                 return member;
             } else if (memberQueryAdapter.existsByEmail(email)) {
                 throw new AuthException(DUPLICATED_EMAIL);
@@ -108,7 +116,7 @@ public class LoginService {
         final String accessToken = bearerExtractor.extractAccessToken(authorizationHeader);
         return getRenewalToken(refreshTokenRequest);
     }
-    
+
     private AccountResponseDTO.RenewTokenResponse getRenewalToken(final String refreshTokenRequest) {
         final RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenRequest)
                 .orElseThrow(() -> new AuthException(INVALID_REFRESH_TOKEN));
@@ -183,9 +191,9 @@ public class LoginService {
 //            privateScrapRepository.deleteByProfileId(profile.getId());
 //        }
 
-        if (memberBasicInformRepository.existsByMemberId(memberId)) {
-            memberBasicInformRepository.deleteByMemberId(memberId);
-        }
+//        if (memberBasicInformRepository.existsByMemberId(memberId)) {
+//            memberBasicInformRepository.deleteByMemberId(memberId);
+//        }
 
         // 회원가입하면 무조건 생기는 저장 데이터
         profileRepository.deleteByMemberId(memberId);

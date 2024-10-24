@@ -5,10 +5,9 @@ import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.memberBasicInformRequest;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.RequestMemberBasicInform;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,12 +26,23 @@ public class MemberService {
         memberBasicInformQueryAdapter.existsByMemberId(memberId);
     }
 
-    // 회원 기본 정보 생성 메서드 (CREATE)
-    public RequestMemberBasicInform save(final Long memberId, final memberBasicInformRequest request) {
+    // 회원 기본 정보 요청 (UPDATE)
+    public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
+        final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberBasicInform(memberId, request);
+
         final Member member = memberQueryAdapter.findById(memberId);
-        final MemberBasicInform savedBasicMemberBasicInform = memberBasicInformCommandAdapter.save(memberBasicInformMapper.toMemberBasicInform(member, request));
-        member.setCreateMemberBasicInform(true);
-        return memberBasicInformMapper.toRequestMemberBasicInform(savedBasicMemberBasicInform);
+        if (!member.isCreateMemberBasicInform()) {
+            member.setCreateMemberBasicInform(true);
+        }
+
+        final String email = memberQueryAdapter.findEmailById(memberId);
+        return memberBasicInformMapper.toMemberBasicInformResponse(updatedMemberBasicInform, email);
+    }
+
+    // 서비스 이용 동의 요청 (UPDATE)
+    public MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse updateConsentServiceUse(final Long memberId, final UpdateConsentServiceUseRequest request) {
+        final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateConsentServiceUse(memberId, request);
+        return memberBasicInformMapper.toUpdateConsentServiceUseResponse(updatedMemberBasicInform);
     }
 
     // 회원 기본 정보 조회 (READ)
@@ -43,9 +53,5 @@ public class MemberService {
         return memberBasicInformMapper.toMemberBasicInformDetail(memberBasicInform, email);
     }
 
-    // 회원 기본 정보 수정 (UPDATE)
-    public RequestMemberBasicInform update(final Long memberId, final MemberBasicInformRequestDTO.memberBasicInformRequest request) {
-        final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.update(memberId, request);
-        return memberBasicInformMapper.toRequestMemberBasicInform(updatedMemberBasicInform);
-    }
+
 }

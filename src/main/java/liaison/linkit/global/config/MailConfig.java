@@ -11,7 +11,7 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
-    @Value("${google.id}")
+    @Value("linkit@linkit.im")
     private String id;
 
     @Value("${google.password}")

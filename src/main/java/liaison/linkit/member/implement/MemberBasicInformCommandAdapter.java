@@ -12,23 +12,27 @@ import lombok.RequiredArgsConstructor;
 public class MemberBasicInformCommandAdapter {
     private final MemberBasicInformRepository memberBasicInformRepository;
 
-    public MemberBasicInform save(final MemberBasicInform memberBasicInform) {
+    public MemberBasicInform create(final MemberBasicInform memberBasicInform) {
         return memberBasicInformRepository.save(memberBasicInform);
-    }
-
-    public MemberBasicInform update(
-            final Long memberId,
-            final MemberBasicInformRequestDTO.memberBasicInformRequest request
-    ) {
-        return memberBasicInformRepository.update(memberId, request)
-                .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
 
     public void delete(final MemberBasicInform memberBasicInform) {
         memberBasicInformRepository.delete(memberBasicInform);
     }
 
-    public void deleteByMemberId(final Long memberId) {
-        memberBasicInformRepository.deleteByMemberId(memberId);
+    public MemberBasicInform updateMemberBasicInform(
+            final Long memberId,
+            final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest request
+    ) {
+        return memberBasicInformRepository.updateMemberBasicInform(memberId, request)
+                .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
+    }
+
+    public MemberBasicInform updateConsentServiceUse(
+            final Long memberId,
+            final MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest request
+    ) {
+        return memberBasicInformRepository.updateConsentServiceUse(memberId, request)
+                .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
 }

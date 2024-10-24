@@ -21,7 +21,7 @@ public class TeamRequestDTO {
 
         @NotNull
         private String teamShortDescription;
-
+        
         @NotNull
         private String cityName;
 
