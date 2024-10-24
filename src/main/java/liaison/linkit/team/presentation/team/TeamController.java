@@ -36,6 +36,7 @@ public class TeamController {
         return CommonResponse.onSuccess(teamService.createTeam(accessor.getMemberId(), teamLogoImage, saveTeamBasicInformRequest));
     }
 
+
     @PostMapping("/{teamId}")
     @MemberOnly
     public CommonResponse<TeamResponseDTO.SaveTeamBasicInformResponse> saveTeamBasicInform(

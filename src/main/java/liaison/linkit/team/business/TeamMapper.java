@@ -3,17 +3,24 @@ package liaison.linkit.team.business;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.team.domain.Team;
+import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.SaveTeamBasicInformRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 
 @Mapper
 public class TeamMapper {
 
-    public Team toTeam(final String teamLogoImagePath, final SaveTeamBasicInformRequest request, final Region region) {
+    public Team toTeam(
+            final String teamLogoImagePath,
+            final SaveTeamBasicInformRequest request,
+            final TeamScale teamScale,
+            final Region region
+    ) {
         return Team.builder()
                 .teamLogoImagePath(teamLogoImagePath)
                 .teamName(request.getTeamName())
                 .teamShortDescription(request.getTeamShortDescription())
+                .teamScale(teamScale)
                 .region(region)
                 .build();
     }

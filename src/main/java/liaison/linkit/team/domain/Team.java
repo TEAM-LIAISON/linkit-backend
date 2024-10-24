@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.profile.domain.region.Region;
+import liaison.linkit.team.domain.scale.TeamScale;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class Team extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
-    
+
     private String teamLogoImagePath;
 
     @Column(nullable = false)
@@ -38,6 +39,10 @@ public class Team extends BaseEntity {
 
     @Column(nullable = false)
     private String teamShortDescription;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "team_scale_id", nullable = false)
+    private TeamScale teamScale;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "region_id", nullable = false)

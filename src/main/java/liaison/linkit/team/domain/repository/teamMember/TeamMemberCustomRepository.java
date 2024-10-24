@@ -1,5 +1,5 @@
 package liaison.linkit.team.domain.repository.teamMember;
 
-public interface TeamMemberRepositoryCustom {
+public interface TeamMemberCustomRepository {
     boolean existsTeamMemberByMemberIdAndTeamId(final Long memberId, final Long teamId);
 }

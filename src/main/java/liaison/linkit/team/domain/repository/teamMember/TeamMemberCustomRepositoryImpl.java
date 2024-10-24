@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-public class TeamMemberRepositoryCustomImpl implements TeamMemberRepositoryCustom {
+public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
