@@ -88,4 +88,17 @@ include::{snippets}/member-controller-test/update-consent-service-use-response/r
 
 == #[스크랩]#
 
+== #[팀]#
 
+=== *_팀 생성_*
+
+==== · 요청
+
+include::{snippets}/team-controller-test/create-team/http-request.adoc[]
+include::{snippets}/team-controller-test/create-team/request-parts.adoc[]
+include::{snippets}/team-controller-test/create-team/request-part-saveTeamBasicInformRequest-fields.adoc[]
+
+==== · 응답
+
+include::{snippets}/team-controller-test/create-team/http-response.adoc[]
+include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
