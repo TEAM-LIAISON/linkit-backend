@@ -135,7 +135,7 @@ public class TeamControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("cityName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("활동 지역 시/군 이름")
+                                                .description("활동 지역 시/도 이름")
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("divisionName")
                                                 .type(JsonFieldType.STRING)
