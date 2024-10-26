@@ -5,7 +5,7 @@
 //import liaison.linkit.global.ControllerTest;
 //import liaison.linkit.login.domain.MemberTokens;
 //import liaison.linkit.profile.dto.request.awards.AwardsCreateRequest;
-//import liaison.linkit.profile.service.AwardsService;
+//import liaison.linkit.profile.service.ProfileAwardsService;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
-//@WebMvcTest(AwardsController.class)
+//@WebMvcTest(ProfileAwardsController.class)
 //@MockBean(JpaMetamodelMappingContext.class)
 //@AutoConfigureRestDocs
 //class ProfileAwardsControllerTest extends ControllerTest {
@@ -51,7 +51,7 @@
 //    private ObjectMapper objectMapper;
 //
 //    @MockBean
-//    private AwardsService awardsService;
+//    private ProfileAwardsService awardsService;
 //
 //    @BeforeEach
 //    void setUp() {

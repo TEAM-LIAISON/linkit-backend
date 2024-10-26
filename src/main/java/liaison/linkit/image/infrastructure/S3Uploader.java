@@ -8,6 +8,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -36,7 +37,8 @@ public class S3Uploader {
     private String imageFolder;
 
 
-    private String teamBasicLogoFolder;
+    private String teamBasicLogoImageFolder;
+    private String profileImageFolder;
 
 //    @Value("${cloud.aws.s3.file-folder}")
 //    private String fileFolder;
@@ -46,11 +48,7 @@ public class S3Uploader {
 
 //    @Value("${cloud.aws.s3.cloud-front-file-domain}")
 //    private String cloudFrontFileDomain;
-
-    public String uploadMiniProfileImage(final ImageFile miniProfileImageFile) {
-        return uploadImage(miniProfileImageFile);
-    }
-
+    
     public void deleteS3Image(final String imageUrl) {
         try {
             URL url = new URL(imageUrl);
@@ -109,7 +107,16 @@ public class S3Uploader {
     }
 
     public String uploadTeamBasicLogoImage(final ImageFile imageFile) {
-        final String teamLogoImagePath = teamBasicLogoFolder + imageFile.getHashedName();
+        return getImagePath(imageFile, teamBasicLogoImageFolder);
+    }
+
+    public String uploadProfileImage(final ImageFile imageFile) {
+        return getImagePath(imageFile, profileImageFolder);
+    }
+
+    @NotNull
+    private String getImagePath(ImageFile imageFile, String imageFolderName) {
+        final String uploadedImagePath = imageFolderName + imageFile.getHashedName();
 
         final ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(imageFile.getContentType());
@@ -117,8 +124,8 @@ public class S3Uploader {
         metadata.setCacheControl(CACHE_CONTROL_VALUE);
 
         try (final InputStream inputStream = imageFile.getInputStream()) {
-            s3Client.putObject(bucket, teamLogoImagePath, inputStream, metadata);
-            String objectUrl = "https://" + cloudFrontImageDomain + "/" + teamLogoImagePath;
+            s3Client.putObject(bucket, uploadedImagePath, inputStream, metadata);
+            String objectUrl = "https://" + cloudFrontImageDomain + "/" + uploadedImagePath;
             return objectUrl;
         } catch (final AmazonServiceException e) {
             throw new ImageException(INVALID_IMAGE_PATH);

@@ -18,12 +18,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/profile/miniProfile")
+@RequestMapping("/api/v1/miniProfile")
 public class MiniProfileController {
 
     public final MiniProfileService miniProfileService;
 
-    // 미니 프로필을 조회한다
+    // 미니 프로필 조회
     @GetMapping
     @MemberOnly
     public CommonResponse<MiniProfileResponseDTO.MiniProfileDetail> getMiniProfileDetail(
@@ -32,13 +32,14 @@ public class MiniProfileController {
         return CommonResponse.onSuccess(miniProfileService.getMiniProfileDetail(accessor.getMemberId()));
     }
 
+    // 미니 프로필 업데이트
     @PostMapping
     @MemberOnly
-    public CommonResponse<MiniProfileResponseDTO.SaveMiniProfile> saveMiniProfile(
+    public CommonResponse<MiniProfileResponseDTO.UpdateMiniProfileResponse> updateMiniProfile(
             @Auth final Accessor accessor,
             @RequestPart(required = false) MultipartFile profileImage,
-            @RequestPart @Valid MiniProfileRequestDTO.SaveMiniProfileRequest saveMiniProfileRequest
+            @RequestPart @Valid MiniProfileRequestDTO.UpdateMiniProfileRequest updateMiniProfileRequest
     ) {
-        return CommonResponse.onSuccess(miniProfileService.saveMiniProfile(accessor.getMemberId(), profileImage, saveMiniProfileRequest));
+        return CommonResponse.onSuccess(miniProfileService.updateMiniProfile(accessor.getMemberId(), profileImage, updateMiniProfileRequest));
     }
 }

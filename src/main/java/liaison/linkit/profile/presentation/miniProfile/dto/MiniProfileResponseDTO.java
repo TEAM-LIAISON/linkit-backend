@@ -17,19 +17,22 @@ public class MiniProfileResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MiniProfileDetail {
+
         private String profileImagePath;
+
         private String memberName;
 
         @Builder.Default
-        private List<ProfilePositionItem> profilePositionList = new ArrayList<>();
+        private List<ProfilePositionItem> profilePositions = new ArrayList<>();
 
         private String cityName;
         private String divisionName;
 
         @Builder.Default
-        private List<ProfileCurrentStateItem> profileCurrentStateList = new ArrayList<>();
+        private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
 
-        private boolean isProfilePublic;
+        private Boolean isProfilePublic;
+
     }
 
     @Builder
@@ -53,8 +56,8 @@ public class MiniProfileResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SaveMiniProfile {
-        private Long miniProfileId;
+    public static class UpdateMiniProfileResponse {
+        private Long profileId;
         private LocalDateTime modifiedAt;
     }
 

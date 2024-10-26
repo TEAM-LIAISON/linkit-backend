@@ -1,7 +1,7 @@
 package liaison.linkit.profile.presentation;
 
 import liaison.linkit.profile.service.AntecedentsService;
-import liaison.linkit.profile.service.AwardsService;
+import liaison.linkit.profile.service.ProfileAwardsService;
 import liaison.linkit.profile.service.BrowsePrivateProfileService;
 import liaison.linkit.profile.service.EducationService;
 import liaison.linkit.profile.service.MiniProfileService;
@@ -23,7 +23,7 @@ public class BrowsePrivateProfileController {
 
     public final AntecedentsService antecedentsService;
     public final EducationService educationService;
-    public final AwardsService awardsService;
+    public final ProfileAwardsService profileAwardsService;
 
     public final BrowsePrivateProfileService browsePrivateProfileService;
 }

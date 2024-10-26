@@ -17,14 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class MemberService {
+
     private final MemberQueryAdapter memberQueryAdapter;
     private final MemberBasicInformQueryAdapter memberBasicInformQueryAdapter;
     private final MemberBasicInformCommandAdapter memberBasicInformCommandAdapter;
     private final MemberBasicInformMapper memberBasicInformMapper;
-
-    public void validateMemberBasicInformByMember(final Long memberId) {
-        memberBasicInformQueryAdapter.existsByMemberId(memberId);
-    }
 
     // 회원 기본 정보 요청 (UPDATE)
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
@@ -44,14 +41,5 @@ public class MemberService {
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateConsentServiceUse(memberId, request);
         return memberBasicInformMapper.toUpdateConsentServiceUseResponse(updatedMemberBasicInform);
     }
-
-    // 회원 기본 정보 조회 (READ)
-    @Transactional(readOnly = true)
-    public MemberBasicInformResponseDTO.MemberBasicInformDetail getPersonalMemberBasicInform(final Long memberId) {
-        final MemberBasicInform memberBasicInform = memberBasicInformQueryAdapter.findByMemberId(memberId);
-        final String email = memberQueryAdapter.findEmailById(memberId);
-        return memberBasicInformMapper.toMemberBasicInformDetail(memberBasicInform, email);
-    }
-
-
+    
 }

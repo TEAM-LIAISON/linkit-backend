@@ -19,11 +19,16 @@ public class ProfileUrlResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileUrlItem {
+
         @JsonProperty("profileUrlId")
         private String Id;
+
         private String urlIconImagePath;
+
         private String urlName;
+
         private String urlPath;
+
         private ProfileUrlType profileUrlType;
     }
 

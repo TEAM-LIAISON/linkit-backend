@@ -39,7 +39,7 @@
 //import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
 //import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 //import liaison.linkit.profile.service.AntecedentsService;
-//import liaison.linkit.profile.service.AwardsService;
+//import liaison.linkit.profile.service.ProfileAwardsService;
 //import liaison.linkit.profile.service.EducationService;
 //import liaison.linkit.profile.service.MiniProfileService;
 //import liaison.linkit.profile.service.ProfileService;
@@ -80,7 +80,7 @@
 //    @MockBean
 //    private EducationService educationService;
 //    @MockBean
-//    private AwardsService awardsService;
+//    private ProfileAwardsService awardsService;
 //    @MockBean
 //    private ProfileRegionService profileRegionService;
 //

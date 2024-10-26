@@ -14,12 +14,12 @@ public class MiniProfileRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SaveMiniProfileRequest {
+    public static class UpdateMiniProfileRequest {
         // 미확정
         private List<String> positionNames;
         private String cityName;
         private String divisionName;
         private List<String> profileStateNames;
-        private boolean isProfilePublic;
+        private Boolean isProfilePublic;
     }
 }

@@ -67,4 +67,8 @@ public class Profile extends BaseEntity {
     public void setRegion(final Region region) {
         this.region = region;
     }
+
+    public void setIsProfilePublic(final boolean isProfilePublic) {
+        this.isProfilePublic = isProfilePublic;
+    }
 }

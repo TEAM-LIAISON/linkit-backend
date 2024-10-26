@@ -1,6 +1,5 @@
-package liaison.linkit.profile.presentation;
+package liaison.linkit.profile.presentation.log;
 
-import liaison.linkit.profile.service.AwardsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping
 @Slf4j
-public class AwardsController {
-    private final AwardsService awardsService;
+public class ProfileLogController {
+
 }

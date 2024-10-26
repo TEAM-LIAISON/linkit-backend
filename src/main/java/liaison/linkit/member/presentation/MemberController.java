@@ -39,14 +39,5 @@ public class MemberController {
     ) {
         return CommonResponse.onSuccess(memberService.updateConsentServiceUse(accessor.getMemberId(), updateConsentServiceUseRequest));
     }
-
-//    @GetMapping("/basic-inform")
-//    @MemberOnly
-//    public CommonResponse<MemberBasicInformResponseDTO.MemberBasicInformDetail> getMemberBasicInform(@Auth final Accessor accessor) {
-//        memberService.validateMemberBasicInformByMember(accessor.getMemberId());
-//        return CommonResponse.onSuccess(memberService.getPersonalMemberBasicInform(accessor.getMemberId()));
-//    }
-
-
 }
 
