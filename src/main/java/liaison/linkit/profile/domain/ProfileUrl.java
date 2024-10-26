@@ -45,4 +45,5 @@ public class ProfileUrl extends BaseDateTimeEntity {
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private ProfileUrlType profileUrlType;
+    
 }

@@ -53,7 +53,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         .fetch();
 
         return MiniProfileResponseDTO.MiniProfileDetail.builder()
-                .profilePositionList(profilePositionItems)
+                .profilePositions(profilePositionItems)
                 .build();
     }
 

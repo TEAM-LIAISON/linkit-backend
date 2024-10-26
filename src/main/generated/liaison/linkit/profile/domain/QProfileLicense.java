@@ -24,8 +24,6 @@ public class QProfileLicense extends EntityPathBase<ProfileLicense> {
 
     public final liaison.linkit.common.domain.QBaseDateTimeEntity _super = new liaison.linkit.common.domain.QBaseDateTimeEntity(this);
 
-    public final StringPath acquisitionDate = createString("acquisitionDate");
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -34,6 +32,8 @@ public class QProfileLicense extends EntityPathBase<ProfileLicense> {
     public final BooleanPath isLicenseCertified = createBoolean("isLicenseCertified");
 
     public final BooleanPath isLicenseVerified = createBoolean("isLicenseVerified");
+
+    public final StringPath licenseAcquisitionDate = createString("licenseAcquisitionDate");
 
     public final StringPath licenseCertificationAttachFileName = createString("licenseCertificationAttachFileName");
 

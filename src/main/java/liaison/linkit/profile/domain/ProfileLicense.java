@@ -41,7 +41,7 @@ public class ProfileLicense extends BaseDateTimeEntity {
 
     // 취득시기
     @Column(nullable = false)
-    private String acquisitionDate;
+    private String licenseAcquisitionDate;
 
     // 자격 설명
     private String licenseDescription;
@@ -60,4 +60,5 @@ public class ProfileLicense extends BaseDateTimeEntity {
 
     // 자격증 증명서 설명 내용
     private String licenseCertificationDescription;
+
 }

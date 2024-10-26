@@ -1,38 +1,13 @@
 package liaison.linkit.profile.service;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_MINI_PROFILE_WITH_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MEMBER_BY_MEMBER_ID;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_MINI_PROFILE_BY_ID;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_PROFILE_BY_ID;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_TEAM_PROFILE_BY_ID;
-
-import java.util.List;
-import liaison.linkit.global.exception.AuthException;
-import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.member.MemberRepository;
-import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.antecedents.AntecedentsRepository;
-import liaison.linkit.profile.domain.repository.education.DegreeRepository;
 import liaison.linkit.profile.domain.repository.education.EducationRepository;
-import liaison.linkit.profile.domain.repository.miniProfile.MiniProfileRepository;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
 import liaison.linkit.profile.domain.repository.skill.SkillRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
 import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
-import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
-import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.awards.AwardsResponse;
-import liaison.linkit.profile.dto.response.browse.BrowsePrivateProfileResponse;
-import liaison.linkit.profile.dto.response.completion.CompletionResponse;
-import liaison.linkit.profile.dto.response.education.EducationResponse;
-import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
-import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
-import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
-import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,95 +21,10 @@ public class BrowsePrivateProfileService {
 
     private final MemberRepository memberRepository;
     private final ProfileRepository profileRepository;
-    private final TeamProfileRepository teamProfileRepository;
-    private final MiniProfileRepository miniProfileRepository;
     private final ProfileSkillRepository profileSkillRepository;
     private final SkillRepository skillRepository;
     private final ProfileTeamBuildingFieldRepository profileTeamBuildingFieldRepository;
     private final TeamBuildingFieldRepository teamBuildingFieldRepository;
     private final AntecedentsRepository antecedentsRepository;
     private final EducationRepository educationRepository;
-    private final DegreeRepository degreeRepository;
-
-    // 회원 조회
-    private Member getMember(final Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BY_MEMBER_ID));
-    }
-
-    // 미니 프로필로 해당 내 이력서의 유효성 판단
-    public void validatePrivateProfileByMiniProfile(final Long miniProfileId) {
-
-        final MiniProfile miniProfile = miniProfileRepository.findById(miniProfileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_ID));
-        log.info("validatePrivateProfileByMiniProfile 내에서 미니 프로필 객체를 조회하였습니다.");
-        if (!profileRepository.existsById(miniProfile.getProfile().getId())) {
-            throw new AuthException(INVALID_MINI_PROFILE_WITH_MEMBER);
-        }
-    }
-
-    // 미니 프로필 ID로 해당 내 이력서 ID 조회
-    public Long getTargetPrivateProfileIdByMiniProfileId(final Long miniProfileId) {
-        final Profile profile = getProfileByMiniProfileId(miniProfileId);
-        log.info("열람하고자 하는 내 이력서의 ID는 profileI={}입니다.", profile.getId());
-        return profile.getId();
-    }
-
-    // 미니 프로필로 해당 내 이력서 조회
-    private Profile getProfileByMiniProfileId(final Long miniProfileId) {
-        final MiniProfile miniProfile = miniProfileRepository.findById(miniProfileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MINI_PROFILE_BY_ID));
-        return miniProfile.getProfile();
-    }
-
-    // 프로필 (내 이력서) 1개 조회
-    private Profile getProfile(final Long browseTargetPrivateProfileId) {
-        return profileRepository.findById(browseTargetPrivateProfileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
-    }
-
-    @Transactional(readOnly = true)
-    public ProfileIsValueResponse getProfileIsValue(final Long browseTargetPrivateProfileId) {
-        final Profile profile = getProfile(browseTargetPrivateProfileId);
-        return ProfileIsValueResponse.profileIsValue(profile);
-    }
-
-    public BrowsePrivateProfileResponse getProfileResponse(
-            final Long profileId,
-            final MiniProfileResponse miniProfileResponse,
-            final CompletionResponse completionResponse,
-            final ProfileIntroductionResponse profileIntroductionResponse,
-            final JobAndSkillResponse jobAndSkillResponse,
-            final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse,
-            final ProfileRegionResponse profileRegionResponse,
-            final List<AntecedentsResponse> antecedentsResponses,
-            final List<EducationResponse> educationResponses,
-            final List<AwardsResponse> awardsResponses
-    ) {
-        return BrowsePrivateProfileResponse.privateProfile(
-                profileId,
-                miniProfileResponse,
-                completionResponse,
-                profileIntroductionResponse,
-                jobAndSkillResponse,
-                profileTeamBuildingFieldResponse,
-                profileRegionResponse,
-                antecedentsResponses,
-                educationResponses,
-                awardsResponses
-        );
-    }
-
-    public boolean checkBrowseAuthority(final Long memberId) {
-        final Profile profile = profileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
-        final TeamProfile teamProfile = teamProfileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_BY_ID));
-
-        if (profile.getCompletion() < 50 && teamProfile.getTeamProfileCompletion() < 50) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }

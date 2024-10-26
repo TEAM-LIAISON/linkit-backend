@@ -1,9 +1,19 @@
 package liaison.linkit.login.infrastructure;
 
+import static liaison.linkit.global.exception.ExceptionCode.EXPIRED_PERIOD_ACCESS_TOKEN;
+import static liaison.linkit.global.exception.ExceptionCode.EXPIRED_PERIOD_REFRESH_TOKEN;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_ACCESS_TOKEN;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.global.exception.ExpiredPeriodJwtException;
 import liaison.linkit.global.exception.InvalidJwtException;
@@ -14,14 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
 @Transactional
@@ -35,18 +37,13 @@ class JwtProviderTest {
     @Value("${jwt.secret}")
     private String realSecretKey;
 
-//    @Autowired
-//    ProfileBrowseAccessInterceptor profileBrowseAccessInterceptor;
-//
-//    @Autowired
-//    MatchingAccessInterceptor matchingAccessInterceptor;
-
     @Autowired
     JwtProvider jwtProvider;
 
     private MemberTokens makeTestMemberTokens() {
         return jwtProvider.generateLoginToken(SAMPLE_SUBJECT);
     }
+
     private String makeTestJwt(final Long expirationTime, final String subject, final String secretKey) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + expirationTime);
@@ -90,7 +87,7 @@ class JwtProviderTest {
         // given
         final String refreshToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, realSecretKey);
         final String accessToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
-        final MemberTokens memberTokens = new MemberTokens(refreshToken, accessToken);
+        final MemberTokens memberTokens = new MemberTokens(accessToken, refreshToken);
 
         // when & then
         assertThatThrownBy(() -> jwtProvider.validateTokens(memberTokens))
@@ -102,9 +99,9 @@ class JwtProviderTest {
     @Test
     void validateToken_InvalidRefreshToken() {
         // given
-        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
         final String accessToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
-        final MemberTokens memberTokens = new MemberTokens(refreshToken, accessToken);
+        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
+        final MemberTokens memberTokens = new MemberTokens(accessToken, refreshToken);
 
         // when & then
         assertThatThrownBy(() -> jwtProvider.validateTokens(memberTokens))
@@ -118,7 +115,7 @@ class JwtProviderTest {
         // given
         final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
         final String accessToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, realSecretKey);
-        final MemberTokens memberTokens = new MemberTokens(refreshToken, accessToken);
+        final MemberTokens memberTokens = new MemberTokens(accessToken, refreshToken);
 
         // when & then
         assertThatThrownBy(() -> jwtProvider.validateTokens(memberTokens))
@@ -130,9 +127,9 @@ class JwtProviderTest {
     @Test
     void validateToken_InvalidAccessToken() {
         // given
-        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
         final String accessToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
-        final MemberTokens memberTokens = new MemberTokens(refreshToken, accessToken);
+        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
+        final MemberTokens memberTokens = new MemberTokens(accessToken, refreshToken);
 
         // when & then
         assertThatThrownBy(() -> jwtProvider.validateTokens(memberTokens))
@@ -155,8 +152,8 @@ class JwtProviderTest {
     @Test
     void isValidRefreshAndInvalidAccess_InvalidRefreshToken() {
         // given
-        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
         final String accessToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, realSecretKey);
+        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
 
         // when & then
         assertThatThrownBy(() -> jwtProvider.isValidRefreshAndInvalidAccess(refreshToken, accessToken))
@@ -167,6 +164,7 @@ class JwtProviderTest {
     @DisplayName("accessToken이 올바르지 않은 형태이면 예외 처리한다.")
     @Test
     void isValidRefreshAndInvalidAccess_InvalidAccessToken() {
+
         // given
         final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
         final String accessToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
@@ -175,6 +173,7 @@ class JwtProviderTest {
         assertThatThrownBy(() -> jwtProvider.isValidRefreshAndInvalidAccess(refreshToken, accessToken))
                 .isInstanceOf(AuthException.class)
                 .hasMessage(INVALID_ACCESS_TOKEN.getMessage());
+
     }
 
     @DisplayName("refreshToken이 만료되어 있으면 예외 처리한다.")

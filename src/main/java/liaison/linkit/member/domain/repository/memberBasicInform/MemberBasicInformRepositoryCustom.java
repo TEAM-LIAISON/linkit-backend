@@ -1,8 +1,7 @@
 package liaison.linkit.member.domain.repository.memberBasicInform;
 
-import liaison.linkit.member.domain.MemberBasicInform;
-
 import java.util.Optional;
+import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
 
 public interface MemberBasicInformRepositoryCustom {
@@ -10,7 +9,7 @@ public interface MemberBasicInformRepositoryCustom {
 
     Optional<MemberBasicInform> findByMemberId(final Long memberId);
 
-    void deleteByMemberId(final Long memberId);
+    Optional<MemberBasicInform> updateMemberBasicInform(final Long memberId, MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest updateMemberBasicInformRequest);
 
-    Optional<MemberBasicInform> update(final Long memberId, final MemberBasicInformRequestDTO.memberBasicInformRequest request);
+    Optional<MemberBasicInform> updateConsentServiceUse(final Long memberId, MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest updateConsentServiceUseRequest);
 }

@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${database.url}
+    url: jdbc:mysql://localhost:3306/linkit_test_sql_db
     username: ${database.username}
     password: ${database.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -74,7 +74,7 @@ spring:
         format_sql: true
         use_sql_comments: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
   batch:
     jdbc:
       initialize-schema: always

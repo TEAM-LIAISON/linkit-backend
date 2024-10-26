@@ -1,7 +1,8 @@
 package liaison.linkit.global.config.csv.teamScale;
 
-import liaison.linkit.team.dto.csv.TeamScaleCsvData;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
@@ -12,17 +13,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class CsvTeamScaleReader {
     @Value("${teamScale.csv-path}")
-    private String teamScaleCsv;
+    private String teamBuildingFieldCsv;
 
     @Bean(name = "teamScaleCsvReader")
-    public FlatFileItemReader<TeamScaleCsvData> csvTeamScaleReader() {
-        // 파일 경로 지정 및 인코딩
+    public FlatFileItemReader<TeamScaleCsvData> csvTeamBuildingFieldReader() {
+
         FlatFileItemReader<TeamScaleCsvData> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(new ClassPathResource(teamScaleCsv));
+        flatFileItemReader.setResource(new ClassPathResource(teamBuildingFieldCsv));
         flatFileItemReader.setEncoding("UTF-8");
 
         // 데이터 내부에 개행이 있으면 꼭! 추가해주세요
@@ -43,7 +45,6 @@ public class CsvTeamScaleReader {
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
         flatFileItemReader.setLineMapper(defaultLineMapper);
-
         return flatFileItemReader;
     }
 }

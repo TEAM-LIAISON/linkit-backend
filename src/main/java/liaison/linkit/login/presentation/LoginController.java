@@ -1,38 +1,46 @@
 package liaison.linkit.login.presentation;
 
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+
 import jakarta.servlet.http.HttpServletResponse;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.login.dto.*;
+import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.login.presentation.dto.AccountRequestDTO;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 import liaison.linkit.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
-import static org.springframework.http.HttpStatus.CREATED;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
+@Slf4j
 public class LoginController {
 
     public static final int COOKIE_AGE_SECONDS = 604800;
 
     private final LoginService loginService;
 
-    // 로그인
+    // 회원이 로그인한다
     @PostMapping("/login/{provider}")
-    public ResponseEntity<LoginResponse> login(
+    public CommonResponse<AccountResponseDTO.LoginResponse> login(
             @PathVariable final String provider,
-            @RequestBody final LoginRequest loginRequest,
+            @RequestBody final AccountRequestDTO.LoginRequest loginRequest,
             final HttpServletResponse response
-    ){
-        final MemberTokensAndOnBoardingStepInform memberTokensAndOnBoardingStepInform
-                = loginService.login(provider, loginRequest.getCode());
-
-        final ResponseCookie cookie = ResponseCookie.from("refresh-token", memberTokensAndOnBoardingStepInform.getRefreshToken())
+    ) {
+        final AccountResponseDTO.LoginResponse loginResponse = loginService.login(provider, loginRequest.getCode());
+        final ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
                 .maxAge(COOKIE_AGE_SECONDS)
                 .secure(true)
                 .sameSite("None")
@@ -42,43 +50,33 @@ public class LoginController {
 
         response.addHeader(SET_COOKIE, cookie.toString());
 
-        return ResponseEntity.status(CREATED).body(
-                new LoginResponse(
-                        memberTokensAndOnBoardingStepInform.getAccessToken(),
-                        memberTokensAndOnBoardingStepInform.getEmail(),
-                        memberTokensAndOnBoardingStepInform.isExistMemberBasicInform(),
-                        memberTokensAndOnBoardingStepInform.isExistDefaultProfile()
-                )
-        );
+        return CommonResponse.onSuccess(loginResponse);
     }
 
-    // 토큰 재발행
-    @PostMapping("/token")
-    public ResponseEntity<RenewTokenResponse> extendLogin(
+    // access-token을 재발행한다
+    @PostMapping("/renew/token")
+    public CommonResponse<AccountResponseDTO.RenewTokenResponse> renewToken(
             @CookieValue("refresh-token") final String refreshToken,
             @RequestHeader("Authorization") final String authorizationHeader
     ) {
-        final RenewTokenResponse renewTokenResponse = loginService.renewalAccessToken(refreshToken, authorizationHeader);
-        return ResponseEntity.status(CREATED).body(renewTokenResponse);
+        return CommonResponse.onSuccess(loginService.renewalAccessToken(refreshToken, authorizationHeader));
     }
 
-    // 로그아웃
     @DeleteMapping("/logout")
     @MemberOnly
-    public ResponseEntity<Void> logout(
+    public CommonResponse<AccountResponseDTO.LogoutResponse> logout(
             @Auth final Accessor accessor,
-            @CookieValue("refresh-token") final String refreshToken) {
-        loginService.removeRefreshToken(refreshToken);
-        return ResponseEntity.noContent().build();
+            @CookieValue("refresh-token") final String refreshToken
+    ) {
+        return CommonResponse.onSuccess(loginService.logout(accessor.getMemberId(), refreshToken));
     }
 
     // 회원 탈퇴
-    @DeleteMapping("/account")
+    @DeleteMapping("/quit")
     @MemberOnly
-    public ResponseEntity<Void> deleteAccount(
+    public CommonResponse<AccountResponseDTO.QuitAccountResponse> quitAccount(
             @Auth final Accessor accessor
     ) {
-        loginService.deleteAccount(accessor.getMemberId());
-        return ResponseEntity.noContent().build();
+        return CommonResponse.onSuccess(loginService.quitAccount(accessor.getMemberId()));
     }
 }

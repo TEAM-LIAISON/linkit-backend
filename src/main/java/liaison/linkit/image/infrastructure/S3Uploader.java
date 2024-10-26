@@ -1,21 +1,23 @@
 package liaison.linkit.image.infrastructure;
 
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_FILE_PATH;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_IMAGE;
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_IMAGE_PATH;
+
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import jakarta.validation.constraints.NotNull;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import liaison.linkit.global.exception.ImageException;
 import liaison.linkit.image.domain.ImageFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
 
 @Component
 @RequiredArgsConstructor
@@ -34,6 +36,10 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.image-folder}")
     private String imageFolder;
 
+
+    private String teamBasicLogoImageFolder;
+    private String profileImageFolder;
+
 //    @Value("${cloud.aws.s3.file-folder}")
 //    private String fileFolder;
 
@@ -42,18 +48,12 @@ public class S3Uploader {
 
 //    @Value("${cloud.aws.s3.cloud-front-file-domain}")
 //    private String cloudFrontFileDomain;
-
-    public String uploadMiniProfileImage(final ImageFile miniProfileImageFile) {
-        return uploadImage(miniProfileImageFile);
-    }
-
-    public void deleteImage(final String imageUrl) {
+    
+    public void deleteS3Image(final String imageUrl) {
         try {
             URL url = new URL(imageUrl);
             String path = url.getPath().substring(1);
-            log.info("Deleting image from S3: {}", path);
             s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
-            log.info("Image deletion successful");
         } catch (AmazonServiceException e) {
             throw new ImageException(INVALID_IMAGE_PATH);
         } catch (Exception e) {
@@ -94,13 +94,40 @@ public class S3Uploader {
 
             String objectUrl = "https://" + cloudFrontImageDomain + "/" + path;
 
-
             log.info("Object URL = {}", objectUrl);
 
             return objectUrl;
 
         } catch (final AmazonServiceException e) {
             log.info("e={}", e);
+            throw new ImageException(INVALID_IMAGE_PATH);
+        } catch (final IOException e) {
+            throw new ImageException(INVALID_IMAGE);
+        }
+    }
+
+    public String uploadTeamBasicLogoImage(final ImageFile imageFile) {
+        return getImagePath(imageFile, teamBasicLogoImageFolder);
+    }
+
+    public String uploadProfileImage(final ImageFile imageFile) {
+        return getImagePath(imageFile, profileImageFolder);
+    }
+
+    @NotNull
+    private String getImagePath(ImageFile imageFile, String imageFolderName) {
+        final String uploadedImagePath = imageFolderName + imageFile.getHashedName();
+
+        final ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentType(imageFile.getContentType());
+        metadata.setContentLength(imageFile.getSize());
+        metadata.setCacheControl(CACHE_CONTROL_VALUE);
+
+        try (final InputStream inputStream = imageFile.getInputStream()) {
+            s3Client.putObject(bucket, uploadedImagePath, inputStream, metadata);
+            String objectUrl = "https://" + cloudFrontImageDomain + "/" + uploadedImagePath;
+            return objectUrl;
+        } catch (final AmazonServiceException e) {
             throw new ImageException(INVALID_IMAGE_PATH);
         } catch (final IOException e) {
             throw new ImageException(INVALID_IMAGE);

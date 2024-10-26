@@ -16,11 +16,11 @@ public class ProfileLicenseResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileLicenseListItem {
+    public static class ProfileLicenseItem {
         private Long profileLicenseId;
         private String licenseName;
         private String licenseInstitution;
-        private int acquisitionYear;
+        private String licenseAcquisitionDate;
         private String licenseDescription;
         private Boolean isLicenseCertified;
         private String licenseCertificationAttachFileName;
@@ -32,9 +32,9 @@ public class ProfileLicenseResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileLicenseList {
+    public static class ProfileLicenseItems {
         @Builder.Default
-        private List<ProfileLicenseListItem> profileLicenseList = new ArrayList<>();
+        private List<ProfileLicenseItem> profileLicenseItems = new ArrayList<>();
     }
 
     @Builder

@@ -1,12 +1,34 @@
 package liaison.linkit.member.presentation;
 
+import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
+import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import liaison.linkit.member.business.MemberService;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,21 +39,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-
-import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
-import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -53,132 +62,296 @@ class MemberControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-        doNothing().when(memberService).validateMemberBasicInformByMember(1L);
     }
 
-    private ResultActions performPostRequest(final MemberBasicInformCreateRequest memberBasicInformCreateRequest)
-            throws Exception {
+    private ResultActions performUpdateMemberBasicInform(
+            final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest request
+    ) throws Exception {
         return mockMvc.perform(
-                post("/members/basic-inform")
+                post("/api/v1/member/basic-inform")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(memberBasicInformCreateRequest))
+                        .content(objectMapper.writeValueAsString(request))
         );
     }
 
-    private ResultActions performGetRequest() throws Exception {
+    private ResultActions performUpdateConsentServiceUse(
+            final MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest request
+    ) throws Exception {
         return mockMvc.perform(
-                get("/members/basic-inform")
+                post("/api/v1/member/consent")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
         );
     }
 
-    private ResultActions performGetEmailRequest() throws Exception {
-        return mockMvc.perform(
-                get("/members/email")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-        );
-    }
-
-    @DisplayName("사용자 기본 정보를 조회할 수 있다.")
+    @DisplayName("회원 기본 정보를 수정 요청할 수 있다.")
     @Test
-    void getMemberBasicInform() throws Exception {
+    void updateMemberBasicInform() throws Exception {
         // given
-        final MemberBasicInformResponseDTO response = new MemberBasicInformResponseDTO(
-                1L,
-                "권동민",
-                "010-3661-4067",
-                "kwondm7@naver.com",
-                true
-        );
+        final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest updateMemberBasicInformRequest
+                = new UpdateMemberBasicInformRequest("권동민", "01036614067");
 
-        given(memberService.getPersonalMemberBasicInform(1L)).willReturn(response);
+        final MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInformResponse
+                = new UpdateMemberBasicInformResponse(1L, "권동민", "01036614067", "kwondm7@gmail.com");
 
         // when
-        final ResultActions resultActions = performGetRequest();
+        when(memberService.updateMemberBasicInform(anyLong(), any())).thenReturn(updateMemberBasicInformResponse);
+
+        final ResultActions resultActions = performUpdateMemberBasicInform(updateMemberBasicInformRequest);
 
         // then
-        resultActions.andExpect(status().isOk())
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
                         restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
-                                responseFields(
-                                        fieldWithPath("id")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("멤버 기본 정보 ID")
-                                                .attributes(field("constraint", "양의 정수")),
-                                        fieldWithPath("memberName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("성함")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("contact")
-                                                .type(JsonFieldType.STRING)
-                                                .description("연락처")
-                                                .attributes(field("constraint", "010-xxxx-xxxx 형태")),
-                                        fieldWithPath("email")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이메일"),
-                                        fieldWithPath("marketingAgree")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("마케팅 수신 동의 여부")
-                                                .attributes(field("constraint", "Boolean & Default FALSE"))
-                                )
-                        )
-                );
-    }
-
-    @DisplayName("사용자 기본 정보를 생성할 수 있다.")
-    @Test
-    void createMemberBasicInform() throws Exception {
-        // given
-        final MemberBasicInformCreateRequest createRequest = new MemberBasicInformCreateRequest(
-                "권동민",
-                "010-3661-4067",
-                true
-        );
-
-        // when
-        final ResultActions resultActions = performPostRequest(createRequest);
-
-        // then
-        resultActions.andExpect(status().isCreated())
-                .andDo(
-                        restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
                                 requestFields(
                                         fieldWithPath("memberName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("성함")
+                                                .description("회원 이름")
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("contact")
                                                 .type(JsonFieldType.STRING)
-                                                .description("연락처")
-                                                .attributes(field("constraint", "010-xxxx-xxxx 형태")),
-                                        fieldWithPath("marketingAgree")
+                                                .description("회원 연락처")
+                                                .attributes(field("constraint", "문자열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("마케팅 수신 동의 여부")
-                                                .attributes(field("constraint", "Boolean & Default FALSE"))
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.memberBasicInformId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("회원 기본 정보 ID"),
+                                        fieldWithPath("result.memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이름")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.contact")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 연락처")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.email")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이메일")
+                                                .attributes(field("constraint", "문자열"))
                                 )
-                        )
-                );
+                        )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse>>() {
+                }
+        );
+
+        final CommonResponse<MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse> expected = CommonResponse.onSuccess(updateMemberBasicInformResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
+
+    @DisplayName("서비스 이용 동의 관련 항목 수정 요청할 수 있다.")
+    @Test
+    void updateConsentServiceUseResponse() throws Exception {
+        // given
+        final MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest updateConsentServiceUseRequest
+                = new UpdateConsentServiceUseRequest(true, true, true, true);
+
+        final MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse updateConsentServiceUseResponse
+                = new UpdateConsentServiceUseResponse(1L, true, true, true, true);
+
+        // when
+        when(memberService.updateConsentServiceUse(anyLong(), any())).thenReturn(updateConsentServiceUseResponse);
+
+        final ResultActions resultActions = performUpdateConsentServiceUse(updateConsentServiceUseRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("isServiceUseAgree")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("서비스 이용약관 동의")
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("isPrivateInformAgree")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("개인정보 수집 및 이용 동의")
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("isAgeCheck")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("만 14세 이상 여부")
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("isMarketingAgree")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("광고성 정보 수신 동의")
+                                                .attributes(field("constraint", "boolean"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.memberBasicInformId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("회원 기본 정보 ID"),
+                                        fieldWithPath("result.isServiceUseAgree")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("서비스 이용약관 동의")
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("result.isPrivateInformAgree")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("개인정보 수집 및 이용 동의")
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("result.isAgeCheck")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("만 14세 이상 여부")
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("result.isMarketingAgree")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("광고성 정보 수신 동의")
+                                                .attributes(field("constraint", "boolean"))
+                                )
+                        )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse>>() {
+                }
+        );
+
+        final CommonResponse<MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse> expected = CommonResponse.onSuccess(updateConsentServiceUseResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+    
+//    @DisplayName("사용자 기본 정보를 조회할 수 있다.")
+//    @Test
+//    void getMemberBasicInform() throws Exception {
+//        // given
+//        final MemberBasicInformResponseDTO response = new MemberBasicInformResponseDTO(
+//                1L,
+//                "권동민",
+//                "010-3661-4067",
+//                "kwondm7@naver.com",
+//                true
+//        );
+//
+//        given(memberService.getPersonalMemberBasicInform(1L)).willReturn(response);
+//
+//        // when
+//        final ResultActions resultActions = performGetRequest();
+//
+//        // then
+//        resultActions.andExpect(status().isOk())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                responseFields(
+//                                        fieldWithPath("id")
+//                                                .type(JsonFieldType.NUMBER)
+//                                                .description("멤버 기본 정보 ID")
+//                                                .attributes(field("constraint", "양의 정수")),
+//                                        fieldWithPath("memberName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("성함")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("contact")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("연락처")
+//                                                .attributes(field("constraint", "010-xxxx-xxxx 형태")),
+//                                        fieldWithPath("email")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("이메일"),
+//                                        fieldWithPath("marketingAgree")
+//                                                .type(JsonFieldType.BOOLEAN)
+//                                                .description("마케팅 수신 동의 여부")
+//                                                .attributes(field("constraint", "Boolean & Default FALSE"))
+//                                )
+//                        )
+//                );
+//    }
+
+//    @DisplayName("사용자 기본 정보를 생성할 수 있다.")
+//    @Test
+//    void createMemberBasicInform() throws Exception {
+//        // given
+//        final MemberBasicInformCreateRequest createRequest = new MemberBasicInformCreateRequest(
+//                "권동민",
+//                "010-3661-4067",
+//                true
+//        );
+//
+//        // when
+//        final ResultActions resultActions = performPostRequest(createRequest);
+//
+//        // then
+//        resultActions.andExpect(status().isCreated())
+//                .andDo(
+//                        restDocs.document(
+//                                requestCookies(
+//                                        cookieWithName("refresh-token")
+//                                                .description("갱신 토큰")
+//                                ),
+//                                requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("access token")
+//                                                .attributes(field("constraint", "문자열(jwt)"))
+//                                ),
+//                                requestFields(
+//                                        fieldWithPath("memberName")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("성함")
+//                                                .attributes(field("constraint", "문자열")),
+//                                        fieldWithPath("contact")
+//                                                .type(JsonFieldType.STRING)
+//                                                .description("연락처")
+//                                                .attributes(field("constraint", "010-xxxx-xxxx 형태")),
+//                                        fieldWithPath("marketingAgree")
+//                                                .type(JsonFieldType.BOOLEAN)
+//                                                .description("마케팅 수신 동의 여부")
+//                                                .attributes(field("constraint", "Boolean & Default FALSE"))
+//                                )
+//                        )
+//                );
+//    }
 }

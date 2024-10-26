@@ -24,12 +24,14 @@ public class QMember extends EntityPathBase<Member> {
 
     public final liaison.linkit.common.domain.QBaseDateTimeEntity _super = new liaison.linkit.common.domain.QBaseDateTimeEntity(this);
 
+    public final BooleanPath consentServiceUse = createBoolean("consentServiceUse");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final StringPath email = createString("email");
+    public final BooleanPath createMemberBasicInform = createBoolean("createMemberBasicInform");
 
-    public final BooleanPath existMemberBasicInform = createBoolean("existMemberBasicInform");
+    public final StringPath email = createString("email");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -40,13 +42,15 @@ public class QMember extends EntityPathBase<Member> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final NumberPath<Integer> privateWishCount = createNumber("privateWishCount", Integer.class);
+    public final NumberPath<Integer> privateScrapCount = createNumber("privateScrapCount", Integer.class);
 
     public final liaison.linkit.profile.domain.QProfile profile;
 
     public final StringPath socialLoginId = createString("socialLoginId");
 
-    public final NumberPath<Integer> teamWishCount = createNumber("teamWishCount", Integer.class);
+    public final NumberPath<Integer> teamMemberAnnouncementScrapCount = createNumber("teamMemberAnnouncementScrapCount", Integer.class);
+
+    public final NumberPath<Integer> teamScrapCount = createNumber("teamScrapCount", Integer.class);
 
     public QMember(String variable) {
         this(Member.class, forVariable(variable), INITS);
