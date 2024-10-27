@@ -38,4 +38,10 @@ public class AccountMapper {
                 .accessToken(regeneratedAccessToken)
                 .build();
     }
+
+    public AccountResponseDTO.ReAuthenticationResponse toReAuthenticationResponse() {
+        return AccountResponseDTO.ReAuthenticationResponse.builder()
+                .reAuthenticationEmailSendAt(LocalDateTime.now())
+                .build();
+    }
 }
