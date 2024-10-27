@@ -51,4 +51,14 @@ public class MemberBasicInform extends BaseDateTimeEntity {
 
     // 광고성 정보 수신 동의
     private boolean marketingAgree;
+
+    public boolean isMemberBasicInform() {
+        if (this.memberName == null || this.contact == null) {
+            // member.isMemberBasicInform false로 설정
+            return false;
+        } else {
+            // member.isMemberBasicInform true로 설정
+            return true;
+        }
+    }
 }

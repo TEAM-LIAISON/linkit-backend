@@ -25,14 +25,14 @@ public class MemberService {
 
     // 회원 기본 정보 요청 (UPDATE)
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
+
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberBasicInform(memberId, request);
 
         final Member member = memberQueryAdapter.findById(memberId);
-        if (!member.isCreateMemberBasicInform()) {
-            member.setCreateMemberBasicInform(true);
-        }
-
+        member.setCreateMemberBasicInform(updatedMemberBasicInform.isMemberBasicInform());
+        
         final String email = memberQueryAdapter.findEmailById(memberId);
+
         return memberBasicInformMapper.toMemberBasicInformResponse(updatedMemberBasicInform, email);
     }
 
@@ -43,8 +43,12 @@ public class MemberService {
     }
 
     // 회원 기본 정보 조회 (READ)
-//    public MemberBasicInformResponseDTO.MemberBasicInformDetail getMemberBasicInform(final Long memberId) {
-//        final MemberBasicInform
-//    }
+    public MemberBasicInformResponseDTO.MemberBasicInformDetail getMemberBasicInform(final Long memberId) {
+
+        final MemberBasicInform memberBasicInform = memberBasicInformQueryAdapter.findByMemberId(memberId);
+        final String email = memberQueryAdapter.findEmailById(memberId);
+
+        return memberBasicInformMapper.toMemberBasicInformDetail(memberBasicInform, email);
+    }
 
 }
