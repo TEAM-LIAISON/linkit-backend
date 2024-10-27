@@ -41,5 +41,10 @@ public class MemberService {
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateConsentServiceUse(memberId, request);
         return memberBasicInformMapper.toUpdateConsentServiceUseResponse(updatedMemberBasicInform);
     }
-    
+
+    // 회원 기본 정보 조회 (READ)
+//    public MemberBasicInformResponseDTO.MemberBasicInformDetail getMemberBasicInform(final Long memberId) {
+//        final MemberBasicInform
+//    }
+
 }

@@ -8,18 +8,16 @@ import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 @Mapper
 public class AccountMapper {
 
-    public AccountResponseDTO.LoginResponse toLogin(
+    public AccountResponseDTO.LoginServiceResponse toLogin(
             final MemberTokens memberTokens,
             final String email,
-            final boolean isMemberBasicInform,
-            final boolean isServiceUseConsent
+            final boolean isMemberBasicInform
     ) {
-        return AccountResponseDTO.LoginResponse.builder()
+        return AccountResponseDTO.LoginServiceResponse.builder()
                 .accessToken(memberTokens.getAccessToken())
                 .refreshToken(memberTokens.getRefreshToken())
                 .email(email)
                 .isMemberBasicInform(isMemberBasicInform)
-                .isServiceUseConsent(isServiceUseConsent)
                 .build();
     }
 

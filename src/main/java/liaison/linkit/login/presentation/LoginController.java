@@ -39,7 +39,7 @@ public class LoginController {
             @RequestBody final AccountRequestDTO.LoginRequest loginRequest,
             final HttpServletResponse response
     ) {
-        final AccountResponseDTO.LoginResponse loginResponse = loginService.login(provider, loginRequest.getCode());
+        final AccountResponseDTO.LoginServiceResponse loginResponse = loginService.login(provider, loginRequest.getCode());
         final ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
                 .maxAge(COOKIE_AGE_SECONDS)
                 .secure(true)
@@ -50,9 +50,9 @@ public class LoginController {
 
         response.addHeader(SET_COOKIE, cookie.toString());
 
-        return CommonResponse.onSuccess(loginResponse);
+        return CommonResponse.onSuccess(new AccountResponseDTO.LoginResponse(loginResponse.getAccessToken(), loginResponse.getEmail(), loginResponse.getIsMemberBasicInform()));
     }
-
+    
     // access-token을 재발행한다
     @PostMapping("/renew/token")
     public CommonResponse<AccountResponseDTO.RenewTokenResponse> renewToken(

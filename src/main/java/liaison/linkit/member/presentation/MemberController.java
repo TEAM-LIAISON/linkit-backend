@@ -39,5 +39,13 @@ public class MemberController {
     ) {
         return CommonResponse.onSuccess(memberService.updateConsentServiceUse(accessor.getMemberId(), updateConsentServiceUseRequest));
     }
+
+//    @PostMapping("/basic-inform")
+//    @MemberOnly
+//    public CommonResponse<MemberBasicInformResponseDTO.MemberBasicInformDetail> getMemberBasicInform(
+//            @Auth final Accessor accessor
+//    ) {
+//        return CommonResponse.onSuccess(memberService.getMemberBasicInform(accessor.getMemberId()));
+//    }
 }
 

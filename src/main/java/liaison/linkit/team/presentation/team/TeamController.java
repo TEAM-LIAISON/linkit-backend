@@ -19,14 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/team")
+@RequestMapping("/api/v1")
 @Slf4j
 public class TeamController {
 
     private final TeamService teamService;
 
     // 팀 생성하기
-    @PostMapping
+    @PostMapping("/team")
     @MemberOnly
     public CommonResponse<TeamResponseDTO.AddTeamResponse> createTeam(
             @Auth final Accessor accessor,
@@ -47,4 +47,8 @@ public class TeamController {
     ) {
         return CommonResponse.onSuccess(teamService.saveTeamBasicInform(accessor.getMemberId(), teamId, teamLogoImage, saveTeamBasicInformRequest));
     }
+
+//    @GetMapping("/teams")
+//    @MemberOnly
+//    public CommonResponse<>
 }

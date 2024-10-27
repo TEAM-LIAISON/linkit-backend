@@ -11,77 +11,77 @@
 
 == #[ 회원관리 ]#
 
-=== *_소셜 로그인_*
+=== 1. 소셜 로그인
 
-==== · 요청
+요청
 
 include::{snippets}/login-controller-test/login/http-request.adoc[]
 include::{snippets}/login-controller-test/login/path-parameters.adoc[]
 include::{snippets}/login-controller-test/login/request-fields.adoc[]
 
-==== · 응답
+응답
 
 include::{snippets}/login-controller-test/login/http-response.adoc[]
 include::{snippets}/login-controller-test/login/response-fields.adoc[]
 
-=== *_로그아웃_*
+=== 2. 로그아웃
 
-==== · 요청
+요청
 
 include::{snippets}/login-controller-test/logout/http-request.adoc[]
 include::{snippets}/login-controller-test/logout/request-headers.adoc[]
 include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
 
-==== · 응답
+응답
 
 include::{snippets}/login-controller-test/logout/http-response.adoc[]
 
-=== *_Access-Token 재발행_*
+=== 3. Access-Token 재발행
 
-==== · 요청
+요청
 
 include::{snippets}/login-controller-test/renew-token/http-request.adoc[]
 include::{snippets}/login-controller-test/renew-token/request-headers.adoc[]
 include::{snippets}/login-controller-test/renew-token/request-cookies.adoc[]
 
-==== · 응답
+응답
 
 include::{snippets}/login-controller-test/renew-token/http-response.adoc[]
 include::{snippets}/login-controller-test/renew-token/response-fields.adoc[]
 
-=== *_회원 탈퇴_*
+=== 4. 회원 탈퇴
 
-==== · 요청
+요청
 
 include::{snippets}/login-controller-test/quit-account/http-request.adoc[]
 
-==== · 응답
+응답
 
 include::{snippets}/login-controller-test/quit-account/http-response.adoc[]
 include::{snippets}/login-controller-test/quit-account/response-fields.adoc[]
 
 == #[회원 기본 정보]#
 
-=== *_회원 기본 정보 (이름, 연락처, 이메일) 수정_*
+=== 1. [이름, 연락처] 수정
 
-==== · 요청
+요청
 
 include::{snippets}/member-controller-test/update-member-basic-inform/http-request.adoc[]
 include::{snippets}/member-controller-test/update-member-basic-inform/request-fields.adoc[]
 
-==== · 응답
+응답
 
 include::{snippets}/member-controller-test/update-member-basic-inform/http-response.adoc[]
 include::{snippets}/member-controller-test/update-member-basic-inform/response-fields.adoc[]
 
-=== *_회원 기본 정보 (서비스 이용 약관 동의) 수정_*
+=== 2. [서비스 이용 약관 동의] 수정
 
-==== · 요청
+요청
 
 include::{snippets}/member-controller-test/update-consent-service-use-response/http-request.adoc[]
 include::{snippets}/member-controller-test/update-consent-service-use-response/request-fields.adoc[]
 
-==== · 응답
+응답
 
 include::{snippets}/member-controller-test/update-consent-service-use-response/http-response.adoc[]
 include::{snippets}/member-controller-test/update-consent-service-use-response/response-fields.adoc[]
@@ -90,15 +90,15 @@ include::{snippets}/member-controller-test/update-consent-service-use-response/r
 
 == #[팀]#
 
-=== *_팀 생성_*
+=== 1. 팀 생성
 
-==== · 요청
+요청
 
 include::{snippets}/team-controller-test/create-team/http-request.adoc[]
 include::{snippets}/team-controller-test/create-team/request-parts.adoc[]
 include::{snippets}/team-controller-test/create-team/request-part-saveTeamBasicInformRequest-fields.adoc[]
 
-==== · 응답
+응답
 
 include::{snippets}/team-controller-test/create-team/http-response.adoc[]
 include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
