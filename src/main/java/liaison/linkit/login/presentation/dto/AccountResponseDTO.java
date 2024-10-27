@@ -62,4 +62,12 @@ public class AccountResponseDTO {
 
         private Boolean isMemberBasicInform;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReAuthenticationResponse {
+        private LocalDateTime reAuthenticationEmailSendAt;
+    }
 }

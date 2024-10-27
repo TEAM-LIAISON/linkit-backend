@@ -52,7 +52,7 @@ public class LoginController {
 
         return CommonResponse.onSuccess(new AccountResponseDTO.LoginResponse(loginResponse.getAccessToken(), loginResponse.getEmail(), loginResponse.getIsMemberBasicInform()));
     }
-    
+
     // access-token을 재발행한다
     @PostMapping("/renew/token")
     public CommonResponse<AccountResponseDTO.RenewTokenResponse> renewToken(
@@ -62,6 +62,7 @@ public class LoginController {
         return CommonResponse.onSuccess(loginService.renewalAccessToken(refreshToken, authorizationHeader));
     }
 
+    // 회원이 로그아웃을 한다
     @DeleteMapping("/logout")
     @MemberOnly
     public CommonResponse<AccountResponseDTO.LogoutResponse> logout(
@@ -71,7 +72,7 @@ public class LoginController {
         return CommonResponse.onSuccess(loginService.logout(accessor.getMemberId(), refreshToken));
     }
 
-    // 회원 탈퇴
+    // 회원이 회원 탈퇴를 한다
     @DeleteMapping("/quit")
     @MemberOnly
     public CommonResponse<AccountResponseDTO.QuitAccountResponse> quitAccount(
@@ -79,4 +80,16 @@ public class LoginController {
     ) {
         return CommonResponse.onSuccess(loginService.quitAccount(accessor.getMemberId()));
     }
+
+    // 회원이 이메일 재인증을 한다
+    @PostMapping("/email/re-authentication")
+    @MemberOnly
+    public CommonResponse<AccountResponseDTO.ReAuthenticationResponse> reAuthenticationEmail(
+            @Auth final Accessor accessor,
+            @RequestBody final AccountRequestDTO.ReAuthenticationEmailRequest reAuthenticationEmailRequest
+    ) throws Exception {
+        return CommonResponse.onSuccess(loginService.reAuthenticationEmail(accessor.getMemberId(), reAuthenticationEmailRequest));
+    }
+
+    
 }

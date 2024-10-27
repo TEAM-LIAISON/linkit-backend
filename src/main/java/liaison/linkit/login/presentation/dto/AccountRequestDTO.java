@@ -16,5 +16,12 @@ public class AccountRequestDTO {
     public static class LoginRequest {
         private String code;
     }
-    
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReAuthenticationEmailRequest {
+        private String email;
+    }
 }

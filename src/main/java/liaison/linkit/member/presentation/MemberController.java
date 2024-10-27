@@ -49,5 +49,7 @@ public class MemberController {
     ) {
         return CommonResponse.onSuccess(memberService.getMemberBasicInform(accessor.getMemberId()));
     }
+
+    
 }
 
