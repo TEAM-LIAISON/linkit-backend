@@ -34,6 +34,7 @@ import liaison.linkit.login.presentation.dto.AccountRequestDTO;
 import liaison.linkit.login.presentation.dto.AccountRequestDTO.LoginRequest;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO.LoginResponse;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO.LoginServiceResponse;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO.QuitAccountResponse;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO.RenewTokenResponse;
 import liaison.linkit.login.service.LoginService;
@@ -73,10 +74,13 @@ public class LoginControllerTest extends ControllerTest {
     void login() throws Exception {
         // given
         final AccountRequestDTO.LoginRequest loginRequest = new LoginRequest("code");
-        final AccountResponseDTO.LoginResponse loginResponse
-                = new LoginResponse(ACCESS_TOKEN, REFRESH_TOKEN, EMAIL, false, false);
+        final AccountResponseDTO.LoginServiceResponse loginServiceResponse
+                = new LoginServiceResponse(ACCESS_TOKEN, REFRESH_TOKEN, EMAIL, false);
 
-        when(loginService.login(anyString(), anyString())).thenReturn(loginResponse);
+        final AccountResponseDTO.LoginResponse loginResponse
+                = new LoginResponse(ACCESS_TOKEN, EMAIL, false);
+
+        when(loginService.login(anyString(), anyString())).thenReturn(loginServiceResponse);
 
         final ResultActions resultActions = mockMvc.perform(post("/api/v1/login/{provider}", GOOGLE_PROVIDER)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -118,10 +122,6 @@ public class LoginControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("access token")
                                                 .attributes(field("constraint", "문자열(jwt)")),
-                                        fieldWithPath("result.refreshToken")
-                                                .type(JsonFieldType.STRING)
-                                                .description("refresh token")
-                                                .attributes(field("constraint", "문자열(jwt)")),
                                         fieldWithPath("result.email")
                                                 .type(JsonFieldType.STRING)
                                                 .description("소셜 로그인 이메일")
@@ -129,10 +129,6 @@ public class LoginControllerTest extends ControllerTest {
                                         fieldWithPath("result.isMemberBasicInform")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("result.isServiceUseConsent")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("서비스 이용 약관 동의 여부 (false: 필수 항목 동의하지 않음)")
                                                 .attributes(field("constraint", "boolean 값"))
                                 )
                         ))

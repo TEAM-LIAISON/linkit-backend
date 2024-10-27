@@ -8,6 +8,7 @@ import liaison.linkit.member.business.MemberService;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +39,15 @@ public class MemberController {
             @RequestBody final MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest updateConsentServiceUseRequest
     ) {
         return CommonResponse.onSuccess(memberService.updateConsentServiceUse(accessor.getMemberId(), updateConsentServiceUseRequest));
+    }
+
+    // 회원 기본 정보 조회
+    @GetMapping("/basic-inform")
+    @MemberOnly
+    public CommonResponse<MemberBasicInformResponseDTO.MemberBasicInformDetail> getMemberBasicInform(
+            @Auth final Accessor accessor
+    ) {
+        return CommonResponse.onSuccess(memberService.getMemberBasicInform(accessor.getMemberId()));
     }
 }
 

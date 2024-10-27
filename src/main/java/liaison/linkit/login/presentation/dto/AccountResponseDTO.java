@@ -34,13 +34,9 @@ public class AccountResponseDTO {
 
         private String accessToken;
 
-        private String refreshToken;
-
         private String email;
 
         private Boolean isMemberBasicInform;
-
-        private Boolean isServiceUseConsent;
 
     }
 
@@ -50,5 +46,20 @@ public class AccountResponseDTO {
     @AllArgsConstructor
     public static class RenewTokenResponse {
         private String accessToken;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LoginServiceResponse {
+
+        private String accessToken;
+
+        private String refreshToken;
+
+        private String email;
+
+        private Boolean isMemberBasicInform;
     }
 }

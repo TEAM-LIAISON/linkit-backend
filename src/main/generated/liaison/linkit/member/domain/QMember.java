@@ -24,8 +24,6 @@ public class QMember extends EntityPathBase<Member> {
 
     public final liaison.linkit.common.domain.QBaseDateTimeEntity _super = new liaison.linkit.common.domain.QBaseDateTimeEntity(this);
 
-    public final BooleanPath consentServiceUse = createBoolean("consentServiceUse");
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 

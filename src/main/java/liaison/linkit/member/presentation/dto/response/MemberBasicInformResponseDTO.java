@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MemberBasicInformResponseDTO {
-    
+
     @Builder
     @Getter
     @NoArgsConstructor
@@ -18,6 +18,10 @@ public class MemberBasicInformResponseDTO {
         private String memberName;
         private String contact;
         private String email;
+        private Boolean isServiceUseAgree;
+        private Boolean isPrivateInformAgree;
+        private Boolean isAgeCheck;
+        private Boolean isMarketingAgree;
     }
 
     @Builder

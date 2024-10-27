@@ -59,7 +59,7 @@ public class LoginService {
     private final TeamMatchingRepository teamMatchingRepository;
 
     // 회원이 로그인한다
-    public AccountResponseDTO.LoginResponse login(final String providerName, final String code) {
+    public AccountResponseDTO.LoginServiceResponse login(final String providerName, final String code) {
         final OauthProvider provider = oauthProviders.mapping(providerName);
         final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
 
@@ -69,7 +69,6 @@ public class LoginService {
         );
 
         final boolean isMemberBasicInform = member.isCreateMemberBasicInform();
-        final boolean isServiceUseConsent = member.isConsentServiceUse();
 
         // 토큰을 생성한다
         final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
@@ -81,8 +80,7 @@ public class LoginService {
         return accountMapper.toLogin(
                 memberTokens,
                 oauthUserInfo.getEmail(),
-                isMemberBasicInform,
-                isServiceUseConsent
+                isMemberBasicInform
         );
     }
 
