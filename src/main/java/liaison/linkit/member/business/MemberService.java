@@ -30,7 +30,7 @@ public class MemberService {
 
         final Member member = memberQueryAdapter.findById(memberId);
         member.setCreateMemberBasicInform(updatedMemberBasicInform.isMemberBasicInform());
-        
+
         final String email = memberQueryAdapter.findEmailById(memberId);
 
         return memberBasicInformMapper.toMemberBasicInformResponse(updatedMemberBasicInform, email);
