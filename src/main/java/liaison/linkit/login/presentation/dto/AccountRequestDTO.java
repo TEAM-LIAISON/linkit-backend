@@ -21,7 +21,7 @@ public class AccountRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ReAuthenticationEmailRequest {
+    public static class EmailReAuthenticationRequest {
         private String email;
     }
 }
