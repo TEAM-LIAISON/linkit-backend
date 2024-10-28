@@ -4,7 +4,6 @@ import static liaison.linkit.global.exception.ExceptionCode.DUPLICATED_EMAIL;
 import static liaison.linkit.global.exception.ExceptionCode.FAIL_TO_GENERATE_MEMBER;
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
 
-import jakarta.mail.MessagingException;
 import java.util.Optional;
 import java.util.Random;
 import liaison.linkit.global.exception.AuthException;
@@ -16,9 +15,7 @@ import liaison.linkit.login.domain.OauthUserInfo;
 import liaison.linkit.login.domain.RefreshToken;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
-import liaison.linkit.login.infrastructure.EmailReAuthenticationRedisUtil;
 import liaison.linkit.login.infrastructure.JwtProvider;
-import liaison.linkit.login.presentation.dto.AccountRequestDTO;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 import liaison.linkit.mail.service.MailService;
 import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
@@ -63,7 +60,7 @@ public class LoginService {
     private final PrivateMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
 
-    private final EmailReAuthenticationRedisUtil emailReAuthenticationRedisUtil;
+    //    private final EmailReAuthenticationRedisUtil emailReAuthenticationRedisUtil;
     private final MailService mailService;
 
     // 회원이 로그인한다
@@ -143,29 +140,28 @@ public class LoginService {
     // 회원이 서비스를 탈퇴한다
     public AccountResponseDTO.QuitAccountResponse quitAccount(final Long memberId) {
         final Member member = memberQueryAdapter.findById(memberId);
-
         return accountMapper.toQuitAccount();
     }
 
-    public AccountResponseDTO.ReAuthenticationResponse reAuthenticationEmail(
-            final Long memberId,
-            final AccountRequestDTO.ReAuthenticationEmailRequest reAuthenticationEmailRequest
-    ) throws MessagingException {
-
-        // 레디스에서 이메일 해시키가 존재한다면 데이터를 삭제한다. (5분 만료 이전에 다시 요청 보내는 경우 대비)
-        if (emailReAuthenticationRedisUtil.existData(reAuthenticationEmailRequest.getEmail())) {
-            emailReAuthenticationRedisUtil.deleteData(reAuthenticationEmailRequest.getEmail());
-        }
-
-        // 재인증 코드를 생성한다
-        final String authCode = createCode();
-
-        // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
-        mailService.sendEmailReAuthenticationMail(reAuthenticationEmailRequest.getEmail(), authCode);
-
-        // 재인증 코드를 발송한 시간 발행
-        return accountMapper.toReAuthenticationResponse();
-    }
+//    public EmailReAuthenticationResponse reAuthenticationEmail(
+//            final Long memberId,
+//            final EmailReAuthenticationRequest emailReAuthenticationRequest
+//    ) throws MessagingException {
+//
+//        // 레디스에서 이메일 해시키가 존재한다면 데이터를 삭제한다. (5분 만료 이전에 다시 요청 보내는 경우 대비)
+//        if (emailReAuthenticationRedisUtil.existData(emailReAuthenticationRequest.getEmail())) {
+//            emailReAuthenticationRedisUtil.deleteData(emailReAuthenticationRequest.getEmail());
+//        }
+//
+//        // 재인증 코드를 생성한다
+//        final String authCode = createCode();
+//
+//        // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
+//        mailService.sendEmailReAuthenticationMail(emailReAuthenticationRequest.getEmail(), authCode);
+//
+//        // 재인증 코드를 발송한 시간 발행
+//        return accountMapper.toReAuthenticationResponse();
+//    }
 
     private String createCode() {
         int leftLimit = 48; // number '0'
@@ -180,14 +176,14 @@ public class LoginService {
     }
 
     // 코드 검증
-    public Boolean verifyEmailCode(String email, String code) {
-        String codeFoundByEmail = emailReAuthenticationRedisUtil.getData(email);
-        log.info("code found by email: " + codeFoundByEmail);
-        if (codeFoundByEmail == null) {
-            return false;
-        }
-        return codeFoundByEmail.equals(code);
-    }
+//    public Boolean verifyEmailCode(String email, String code) {
+//        String codeFoundByEmail = emailReAuthenticationRedisUtil.getData(email);
+//        log.info("code found by email: " + codeFoundByEmail);
+//        if (codeFoundByEmail == null) {
+//            return false;
+//        }
+//        return codeFoundByEmail.equals(code);
+//    }
 
 
     // 수정 필요

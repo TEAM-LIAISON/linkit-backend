@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO.EmailReAuthenticationResponse;
 
 @Mapper
 public class AccountMapper {
@@ -39,8 +40,8 @@ public class AccountMapper {
                 .build();
     }
 
-    public AccountResponseDTO.ReAuthenticationResponse toReAuthenticationResponse() {
-        return AccountResponseDTO.ReAuthenticationResponse.builder()
+    public EmailReAuthenticationResponse toReAuthenticationResponse() {
+        return EmailReAuthenticationResponse.builder()
                 .reAuthenticationEmailSendAt(LocalDateTime.now())
                 .build();
     }

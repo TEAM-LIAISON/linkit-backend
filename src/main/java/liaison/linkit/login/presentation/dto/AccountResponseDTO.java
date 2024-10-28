@@ -67,7 +67,7 @@ public class AccountResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ReAuthenticationResponse {
+    public static class EmailReAuthenticationResponse {
         private LocalDateTime reAuthenticationEmailSendAt;
     }
 }

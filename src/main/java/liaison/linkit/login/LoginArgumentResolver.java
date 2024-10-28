@@ -1,7 +1,12 @@
 package liaison.linkit.login;
 
+import static liaison.linkit.global.exception.ExceptionCode.INVALID_REQUEST;
+import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.global.exception.BadRequestException;
@@ -18,12 +23,6 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-
-import java.util.Arrays;
-
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_REQUEST;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Component
@@ -56,8 +55,11 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         try {
             final String refreshToken = extractRefreshToken(request.getCookies());
             final String accessToken = extractor.extractAccessToken(webRequest.getHeader(AUTHORIZATION));
+
             jwtProvider.validateTokens(new MemberTokens(refreshToken, accessToken));
+
             final Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
+
             return Accessor.member(memberId);
         } catch (final RefreshTokenException e) {
             log.info("게스트로 처리됩니다.");

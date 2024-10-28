@@ -82,14 +82,17 @@ public class LoginController {
     }
 
     // 회원이 이메일 재인증을 한다
-    @PostMapping("/email/re-authentication")
-    @MemberOnly
-    public CommonResponse<AccountResponseDTO.ReAuthenticationResponse> reAuthenticationEmail(
-            @Auth final Accessor accessor,
-            @RequestBody final AccountRequestDTO.ReAuthenticationEmailRequest reAuthenticationEmailRequest
-    ) throws Exception {
-        return CommonResponse.onSuccess(loginService.reAuthenticationEmail(accessor.getMemberId(), reAuthenticationEmailRequest));
-    }
+//    @PostMapping("/email/re-authentication")
+//    @MemberOnly
+//    public CommonResponse<EmailReAuthenticationResponse> reAuthenticationEmail(
+//            @Auth final Accessor accessor,
+//            @RequestBody final EmailReAuthenticationRequest emailReAuthenticationRequest
+//    ) throws Exception {
+//        return CommonResponse.onSuccess(loginService.reAuthenticationEmail(accessor.getMemberId(), emailReAuthenticationRequest));
+//    }
 
-    
+    // 회원이 수신한 재인증 코드를 입력한다.
+    //    @PostMapping("/email/verification")
+    //    @MemberOnly
+    //    public CommonResponse<AccountResponseDTO.EmailVerificationResponse>
 }
