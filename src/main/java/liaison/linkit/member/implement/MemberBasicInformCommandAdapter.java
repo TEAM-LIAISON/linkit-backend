@@ -6,9 +6,11 @@ import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInfo
 import liaison.linkit.member.exception.memberBasicInform.MemberBasicInformBadRequestException;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Adapter
 @RequiredArgsConstructor
+@Slf4j
 public class MemberBasicInformCommandAdapter {
     private final MemberBasicInformRepository memberBasicInformRepository;
 
@@ -24,6 +26,7 @@ public class MemberBasicInformCommandAdapter {
             final Long memberId,
             final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest request
     ) {
+        log.info("memberId = {}의 회원 기본 정보 수정을 진행합니다.", memberId);
         return memberBasicInformRepository.updateMemberBasicInform(memberId, request)
                 .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
