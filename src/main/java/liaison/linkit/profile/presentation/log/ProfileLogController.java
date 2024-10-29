@@ -21,6 +21,8 @@ public class ProfileLogController {
 
     private final ProfileLogService profileLogService;
 
+    // 잘가 API..
+
     @GetMapping
     @MemberOnly
     public CommonResponse<ProfileLogResponseDTO.ProfileLogItems> getProfileLogItems(
@@ -39,4 +41,5 @@ public class ProfileLogController {
         log.info("memberId = {}의 프로필 로그 ID = {}에 대한 단일 조회 요청이 발생했습니다.", accessor.getMemberId(), profileLogId);
         return CommonResponse.onSuccess(profileLogService.getProfileLogItem(accessor.getMemberId(), profileLogId));
     }
+
 }

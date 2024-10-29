@@ -1,4 +1,4 @@
-package liaison.linkit.profile.presentation;
+package liaison.linkit.profile.presentation.profile;
 
 import liaison.linkit.member.business.MemberService;
 import liaison.linkit.profile.service.AntecedentsService;

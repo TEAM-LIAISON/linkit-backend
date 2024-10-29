@@ -1,4 +1,4 @@
-package liaison.linkit.profile.implement;
+package liaison.linkit.profile.implement.log;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;

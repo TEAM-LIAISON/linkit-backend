@@ -1,4 +1,4 @@
-package liaison.linkit.profile.implement;
+package liaison.linkit.profile.implement.log;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.repository.log.ProfileLogRepository;
