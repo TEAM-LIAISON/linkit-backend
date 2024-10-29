@@ -548,56 +548,57 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 }
 </style>
 </head>
-<body class="article toc2 toc-left">
+<body class="book toc2 toc-left">
 <div id="header">
 <h1>LINKIT API 명세서 Version 1.0</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_링킷_개발용_api_서버_도메인_네임_httpsdev_linkit_im">링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im</a></li>
-<li><a href="#_링킷_운영용_api_서버_도메인_네임_httpsapi_linkit_im">링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im</a></li>
-<li><a href="#_회원관리"><mark>[ 회원관리 ]</mark></a>
+<li><a href="#_회원관리">1. <mark>[ 회원관리 ]</mark></a>
 <ul class="sectlevel2">
-<li><a href="#_1_소셜_로그인">1. 소셜 로그인</a></li>
-<li><a href="#_2_로그아웃">2. 로그아웃</a></li>
-<li><a href="#_3_access_token_재발행">3. Access-Token 재발행</a></li>
-<li><a href="#_4_회원_탈퇴">4. 회원 탈퇴</a></li>
+<li><a href="#_소셜_로그인">1.1. 소셜 로그인</a></li>
+<li><a href="#_로그아웃">1.2. 로그아웃</a></li>
+<li><a href="#_access_token_재발행">1.3. Access-Token 재발행</a></li>
+<li><a href="#_회원_탈퇴">1.4. 회원 탈퇴</a></li>
 </ul>
 </li>
-<li><a href="#_회원_기본_정보"><mark>[회원 기본 정보]</mark></a>
+<li><a href="#_회원_기본_정보">2. <mark>[회원 기본 정보]</mark></a>
 <ul class="sectlevel2">
-<li><a href="#_1_회원_기본_정보_전체_조회">1. 회원 기본 정보 전체 조회</a></li>
-<li><a href="#_2_이름_연락처_수정">2. [이름, 연락처] 수정</a></li>
-<li><a href="#_3_서비스_이용_약관_동의_수정">3. [서비스 이용 약관 동의] 수정</a></li>
+<li><a href="#_회원_기본_정보_전체_조회">2.1. 회원 기본 정보 전체 조회</a></li>
+<li><a href="#_이름_연락처_수정">2.2. [이름, 연락처] 수정</a></li>
+<li><a href="#_서비스_이용_약관_동의_수정">2.3. [서비스 이용 약관 동의] 수정</a></li>
 </ul>
 </li>
-<li><a href="#_스크랩"><mark>[스크랩]</mark></a></li>
-<li><a href="#_팀"><mark>[팀]</mark></a>
+<li><a href="#_내_프로필">3. <mark>[내 프로필]</mark></a></li>
+<li><a href="#_스크랩">4. <mark>[스크랩]</mark></a></li>
+<li><a href="#_팀">5. <mark>[팀]</mark></a>
 <ul class="sectlevel2">
-<li><a href="#_1_팀_생성">1. 팀 생성</a></li>
+<li><a href="#_팀_생성">5.1. 팀 생성</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_링킷_개발용_api_서버_도메인_네임_httpsdev_linkit_im"><a class="link" href="#_링킷_개발용_api_서버_도메인_네임_httpsdev_linkit_im">링킷 개발용 API 서버 도메인 네임 = <a href="https://dev.linkit.im" class="bare">https://dev.linkit.im</a></a></h2>
+<div id="preamble">
 <div class="sectionbody">
-
+<div class="ulist">
+<ul>
+<li>
+<p>링킷 개발용 API 서버 도메인 네임 = <a href="https://dev.linkit.im" class="bare">https://dev.linkit.im</a></p>
+</li>
+<li>
+<p>링킷 운영용 API 서버 도메인 네임 = <a href="https://api.linkit.im" class="bare">https://api.linkit.im</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_링킷_운영용_api_서버_도메인_네임_httpsapi_linkit_im"><a class="link" href="#_링킷_운영용_api_서버_도메인_네임_httpsapi_linkit_im">링킷 운영용 API 서버 도메인 네임 = <a href="https://api.linkit.im" class="bare">https://api.linkit.im</a></a></h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_회원관리"><a class="link" href="#_회원관리"><mark>[ 회원관리 ]</mark></a></h2>
+<h2 id="_회원관리"><a class="link" href="#_회원관리">1. <mark>[ 회원관리 ]</mark></a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_1_소셜_로그인"><a class="link" href="#_1_소셜_로그인">1. 소셜 로그인</a></h3>
+<h3 id="_소셜_로그인"><a class="link" href="#_소셜_로그인">1.1. 소셜 로그인</a></h3>
 <div class="paragraph">
 <p>요청</p>
 </div>
@@ -727,7 +728,7 @@ Content-Length: 216
 </table>
 </div>
 <div class="sect2">
-<h3 id="_2_로그아웃"><a class="link" href="#_2_로그아웃">2. 로그아웃</a></h3>
+<h3 id="_로그아웃"><a class="link" href="#_로그아웃">1.2. 로그아웃</a></h3>
 <div class="paragraph">
 <p>요청</p>
 </div>
@@ -801,7 +802,7 @@ Content-Length: 159
 </div>
 </div>
 <div class="sect2">
-<h3 id="_3_access_token_재발행"><a class="link" href="#_3_access_token_재발행">3. Access-Token 재발행</a></h3>
+<h3 id="_access_token_재발행"><a class="link" href="#_access_token_재발행">1.3. Access-Token 재발행</a></h3>
 <div class="paragraph">
 <p>요청</p>
 </div>
@@ -912,7 +913,7 @@ Content-Length: 154
 </table>
 </div>
 <div class="sect2">
-<h3 id="_4_회원_탈퇴"><a class="link" href="#_4_회원_탈퇴">4. 회원 탈퇴</a></h3>
+<h3 id="_회원_탈퇴"><a class="link" href="#_회원_탈퇴">1.4. 회원 탈퇴</a></h3>
 <div class="paragraph">
 <p>요청</p>
 </div>
@@ -985,10 +986,10 @@ Content-Length: 157
 </div>
 </div>
 <div class="sect1">
-<h2 id="_회원_기본_정보"><a class="link" href="#_회원_기본_정보"><mark>[회원 기본 정보]</mark></a></h2>
+<h2 id="_회원_기본_정보"><a class="link" href="#_회원_기본_정보">2. <mark>[회원 기본 정보]</mark></a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_1_회원_기본_정보_전체_조회"><a class="link" href="#_1_회원_기본_정보_전체_조회">1. 회원 기본 정보 전체 조회</a></h3>
+<h3 id="_회원_기본_정보_전체_조회"><a class="link" href="#_회원_기본_정보_전체_조회">2.1. 회원 기본 정보 전체 조회</a></h3>
 <div class="paragraph">
 <p>요청</p>
 </div>
@@ -1101,7 +1102,7 @@ Content-Length: 364
 </table>
 </div>
 <div class="sect2">
-<h3 id="_2_이름_연락처_수정"><a class="link" href="#_2_이름_연락처_수정">2. [이름, 연락처] 수정</a></h3>
+<h3 id="_이름_연락처_수정"><a class="link" href="#_이름_연락처_수정">2.2. [이름, 연락처] 수정</a></h3>
 <div class="paragraph">
 <p>요청</p>
 </div>
@@ -1226,7 +1227,7 @@ Content-Length: 241
 </table>
 </div>
 <div class="sect2">
-<h3 id="_3_서비스_이용_약관_동의_수정"><a class="link" href="#_3_서비스_이용_약관_동의_수정">3. [서비스 이용 약관 동의] 수정</a></h3>
+<h3 id="_서비스_이용_약관_동의_수정"><a class="link" href="#_서비스_이용_약관_동의_수정">2.3. [서비스 이용 약관 동의] 수정</a></h3>
 <div class="paragraph">
 <p>요청</p>
 </div>
@@ -1373,16 +1374,22 @@ Content-Length: 266
 </div>
 </div>
 <div class="sect1">
-<h2 id="_스크랩"><a class="link" href="#_스크랩"><mark>[스크랩]</mark></a></h2>
+<h2 id="_내_프로필"><a class="link" href="#_내_프로필">3. <mark>[내 프로필]</mark></a></h2>
 <div class="sectionbody">
 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_팀"><a class="link" href="#_팀"><mark>[팀]</mark></a></h2>
+<h2 id="_스크랩"><a class="link" href="#_스크랩">4. <mark>[스크랩]</mark></a></h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_팀"><a class="link" href="#_팀">5. <mark>[팀]</mark></a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_1_팀_생성"><a class="link" href="#_1_팀_생성">1. 팀 생성</a></h3>
+<h3 id="_팀_생성"><a class="link" href="#_팀_생성">5.1. 팀 생성</a></h3>
 <div class="paragraph">
 <p>요청</p>
 </div>
@@ -1540,7 +1547,7 @@ Content-Length: 178
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-27 16:28:08 +0900
+Last updated 2024-10-28 21:29:35 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

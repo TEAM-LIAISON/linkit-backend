@@ -1,17 +1,18 @@
 = LINKIT API 명세서 Version 1.0
+:doctype: book
 :toc: left
-:toclevels: 4
-:source-highlighter: highlightjs
+:sectnums:
 :sectlinks:
+:source-highlighter: highlightjs
 :icons: font
 
-== 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
+- 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
 
-== 링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im
+- 링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im
 
 == #[ 회원관리 ]#
 
-=== 1. 소셜 로그인
+=== 소셜 로그인
 
 요청
 
@@ -24,7 +25,7 @@ include::{snippets}/login-controller-test/login/request-fields.adoc[]
 include::{snippets}/login-controller-test/login/http-response.adoc[]
 include::{snippets}/login-controller-test/login/response-fields.adoc[]
 
-=== 2. 로그아웃
+=== 로그아웃
 
 요청
 
@@ -36,7 +37,7 @@ include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
 
 include::{snippets}/login-controller-test/logout/http-response.adoc[]
 
-=== 3. Access-Token 재발행
+=== Access-Token 재발행
 
 요청
 
@@ -49,7 +50,7 @@ include::{snippets}/login-controller-test/renew-token/request-cookies.adoc[]
 include::{snippets}/login-controller-test/renew-token/http-response.adoc[]
 include::{snippets}/login-controller-test/renew-token/response-fields.adoc[]
 
-=== 4. 회원 탈퇴
+=== 회원 탈퇴
 
 요청
 
@@ -62,7 +63,7 @@ include::{snippets}/login-controller-test/quit-account/response-fields.adoc[]
 
 == #[회원 기본 정보]#
 
-=== 1. 회원 기본 정보 전체 조회
+=== 회원 기본 정보 전체 조회
 
 요청
 
@@ -73,7 +74,7 @@ include::{snippets}/member-controller-test/get-member-basic-inform/http-request.
 include::{snippets}/member-controller-test/get-member-basic-inform/http-response.adoc[]
 include::{snippets}/member-controller-test/get-member-basic-inform/response-fields.adoc[]
 
-=== 2. [이름, 연락처] 수정
+=== [이름, 연락처] 수정
 
 요청
 
@@ -85,7 +86,7 @@ include::{snippets}/member-controller-test/update-member-basic-inform/request-fi
 include::{snippets}/member-controller-test/update-member-basic-inform/http-response.adoc[]
 include::{snippets}/member-controller-test/update-member-basic-inform/response-fields.adoc[]
 
-=== 3. [서비스 이용 약관 동의] 수정
+=== [서비스 이용 약관 동의] 수정
 
 요청
 
@@ -97,11 +98,13 @@ include::{snippets}/member-controller-test/update-consent-service-use-response/r
 include::{snippets}/member-controller-test/update-consent-service-use-response/http-response.adoc[]
 include::{snippets}/member-controller-test/update-consent-service-use-response/response-fields.adoc[]
 
+== #[내 프로필]#
+
 == #[스크랩]#
 
 == #[팀]#
 
-=== 1. 팀 생성
+=== 팀 생성
 
 요청
 
