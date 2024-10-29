@@ -13,7 +13,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ProfileLogErrorCode implements BaseErrorCode {
-    PROFILE_LOG_NOT_FOUND(NOT_FOUND, "PROFILE_LOG_404_1", "내 로그를 찾을 수 없습니다.");
+    PROFILE_LOG_NOT_FOUND(NOT_FOUND, "PROFILE_LOG_404_1", "해당 로그를 찾을 수 없습니다.");
 
     private final Integer status;
     private final String code;

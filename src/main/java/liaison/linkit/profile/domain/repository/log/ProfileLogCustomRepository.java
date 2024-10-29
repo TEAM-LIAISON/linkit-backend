@@ -1,13 +1,9 @@
 package liaison.linkit.profile.domain.repository.log;
 
-import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
-import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItems;
+import java.util.List;
+import liaison.linkit.profile.domain.ProfileLog;
 
 public interface ProfileLogCustomRepository {
 
-    boolean existsByMemberIdAndProfileLogId(final Long memberId, final Long profileLogId);
-
-    ProfileLogItems getProfileLogItems(final Long memberId);
-
-    ProfileLogItem getProfileLogItem(final Long profileLogId);
+    List<ProfileLog> getProfileLogs(final Long memberId);
 }

@@ -18,7 +18,6 @@ public class ProfileLogResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileLogItems {
-
         @Builder.Default
         private List<ProfileLogItem> profileLogItems = new ArrayList<>();
     }

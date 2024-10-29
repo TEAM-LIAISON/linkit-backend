@@ -34,7 +34,10 @@ public class ProfileLog extends BaseDateTimeEntity {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
+    @Column(nullable = false)
     private String logTitle;
+
+    @Column(nullable = false)
     private String logContent;
 
     private boolean isLogPublic;
