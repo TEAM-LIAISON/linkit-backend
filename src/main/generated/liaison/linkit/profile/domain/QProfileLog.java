@@ -29,14 +29,18 @@ public class QProfileLog extends EntityPathBase<ProfileLog> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath LogContent = createString("LogContent");
+    public final BooleanPath isLogPublic = createBoolean("isLogPublic");
 
-    public final StringPath LogTitle = createString("LogTitle");
+    public final StringPath logContent = createString("logContent");
+
+    public final StringPath logTitle = createString("logTitle");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
     public final QProfile profile;
+
+    public final EnumPath<liaison.linkit.global.type.ProfileLogType> profileLogType = createEnum("profileLogType", liaison.linkit.global.type.ProfileLogType.class);
 
     public QProfileLog(String variable) {
         this(ProfileLog.class, forVariable(variable), INITS);

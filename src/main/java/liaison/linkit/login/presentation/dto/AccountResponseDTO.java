@@ -70,4 +70,13 @@ public class AccountResponseDTO {
     public static class EmailReAuthenticationResponse {
         private LocalDateTime reAuthenticationEmailSendAt;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EmailVerificationResponse {
+        private String changedEmail;
+        private LocalDateTime verificationSuccessAt;
+    }
 }

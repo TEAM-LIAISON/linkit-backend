@@ -1,0 +1,18 @@
+package liaison.linkit.profile.implement.activity;
+
+import java.util.List;
+import liaison.linkit.common.annotation.Adapter;
+import liaison.linkit.profile.domain.ProfileActivity;
+import liaison.linkit.profile.domain.repository.activity.ProfileActivityRepository;
+import lombok.RequiredArgsConstructor;
+
+@Adapter
+@RequiredArgsConstructor
+public class ProfileActivityQueryAdapter {
+
+    private final ProfileActivityRepository profileActivityRepository;
+
+    public List<ProfileActivity> getProfileActivities(final Long memberId) {
+        return profileActivityRepository.getProfileActivities(memberId);
+    }
+}

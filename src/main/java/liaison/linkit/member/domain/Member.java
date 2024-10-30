@@ -112,4 +112,7 @@ public class Member extends BaseDateTimeEntity {
         this.teamMemberAnnouncementScrapCount -= 1;
     }
 
+    public void updateEmail(final String email) {
+        this.email = email;
+    }
 }

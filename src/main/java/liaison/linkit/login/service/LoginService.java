@@ -4,6 +4,7 @@ import static liaison.linkit.global.exception.ExceptionCode.DUPLICATED_EMAIL;
 import static liaison.linkit.global.exception.ExceptionCode.FAIL_TO_GENERATE_MEMBER;
 import static liaison.linkit.global.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
 
+import jakarta.mail.MessagingException;
 import java.util.Optional;
 import java.util.Random;
 import liaison.linkit.global.exception.AuthException;
@@ -14,9 +15,15 @@ import liaison.linkit.login.domain.OauthProviders;
 import liaison.linkit.login.domain.OauthUserInfo;
 import liaison.linkit.login.domain.RefreshToken;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
+import liaison.linkit.login.exception.LoginBadRequestException;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
+import liaison.linkit.login.infrastructure.EmailReAuthenticationRedisUtil;
 import liaison.linkit.login.infrastructure.JwtProvider;
+import liaison.linkit.login.presentation.dto.AccountRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.login.presentation.dto.AccountRequestDTO.EmailReAuthenticationRequest;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO.EmailReAuthenticationResponse;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO.EmailVerificationResponse;
 import liaison.linkit.mail.service.MailService;
 import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
 import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
@@ -60,7 +67,7 @@ public class LoginService {
     private final PrivateMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
 
-    //    private final EmailReAuthenticationRedisUtil emailReAuthenticationRedisUtil;
+    private final EmailReAuthenticationRedisUtil emailReAuthenticationRedisUtil;
     private final MailService mailService;
 
     // 회원이 로그인한다
@@ -84,7 +91,7 @@ public class LoginService {
 
         return accountMapper.toLogin(
                 memberTokens,
-                oauthUserInfo.getEmail(),
+                member.getEmail(),
                 isMemberBasicInform
         );
     }
@@ -143,25 +150,28 @@ public class LoginService {
         return accountMapper.toQuitAccount();
     }
 
-//    public EmailReAuthenticationResponse reAuthenticationEmail(
-//            final Long memberId,
-//            final EmailReAuthenticationRequest emailReAuthenticationRequest
-//    ) throws MessagingException {
-//
-//        // 레디스에서 이메일 해시키가 존재한다면 데이터를 삭제한다. (5분 만료 이전에 다시 요청 보내는 경우 대비)
-//        if (emailReAuthenticationRedisUtil.existData(emailReAuthenticationRequest.getEmail())) {
-//            emailReAuthenticationRedisUtil.deleteData(emailReAuthenticationRequest.getEmail());
-//        }
-//
-//        // 재인증 코드를 생성한다
-//        final String authCode = createCode();
-//
-//        // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
-//        mailService.sendEmailReAuthenticationMail(emailReAuthenticationRequest.getEmail(), authCode);
-//
-//        // 재인증 코드를 발송한 시간 발행
-//        return accountMapper.toReAuthenticationResponse();
-//    }
+    public EmailReAuthenticationResponse reAuthenticationEmail(
+            final Long memberId,
+            final EmailReAuthenticationRequest emailReAuthenticationRequest
+    ) throws MessagingException {
+
+        // 레디스에서 이메일 해시키가 존재한다면 데이터를 삭제한다. (5분 만료 이전에 다시 요청 보내는 경우 대비)
+        if (emailReAuthenticationRedisUtil.existData(emailReAuthenticationRequest.getEmail())) {
+            emailReAuthenticationRedisUtil.deleteData(emailReAuthenticationRequest.getEmail());
+        }
+
+        // 재인증 코드를 생성한다
+        final String authCode = createCode();
+
+        // Redis 에 해당 인증코드 인증 시간 설정
+        emailReAuthenticationRedisUtil.setDataExpire(emailReAuthenticationRequest.getEmail(), authCode, 60 * 10L);
+
+        // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
+        mailService.sendEmailReAuthenticationMail(emailReAuthenticationRequest.getEmail(), authCode);
+
+        // 재인증 코드를 발송한 시간 발행
+        return accountMapper.toReAuthenticationResponse();
+    }
 
     private String createCode() {
         int leftLimit = 48; // number '0'
@@ -175,16 +185,31 @@ public class LoginService {
                 .toString();
     }
 
-    // 코드 검증
-//    public Boolean verifyEmailCode(String email, String code) {
-//        String codeFoundByEmail = emailReAuthenticationRedisUtil.getData(email);
-//        log.info("code found by email: " + codeFoundByEmail);
-//        if (codeFoundByEmail == null) {
-//            return false;
-//        }
-//        return codeFoundByEmail.equals(code);
-//    }
 
+    public EmailVerificationResponse verifyAuthCodeAndChangeAccountEmail(final Long memberId, final AuthCodeVerificationRequest authCodeVerificationRequest) {
+        final String authCode = authCodeVerificationRequest.getAuthCode();
+        final String changeRequestEmail = authCodeVerificationRequest.getChangeRequestEmail();
+
+        // 인증 코드가 잘못 입력된 경우
+        if (!verifyEmailCode(changeRequestEmail, authCode)) {
+            throw LoginBadRequestException.EXCEPTION;
+        }
+
+        final Member member = memberQueryAdapter.findById(memberId);
+        member.updateEmail(changeRequestEmail);
+
+        return accountMapper.toEmailVerificationResponse(changeRequestEmail);
+    }
+
+    // 코드 검증
+    public Boolean verifyEmailCode(String email, String code) {
+        String codeFoundByEmail = emailReAuthenticationRedisUtil.getData(email);
+        log.info("code found by email: " + codeFoundByEmail);
+        if (codeFoundByEmail == null) {
+            return false;
+        }
+        return codeFoundByEmail.equals(code);
+    }
 
     // 수정 필요
     public void deleteAccount(final Long memberId) {
