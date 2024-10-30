@@ -5,6 +5,7 @@ import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO.EmailReAuthenticationResponse;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO.EmailVerificationResponse;
 
 @Mapper
 public class AccountMapper {
@@ -43,6 +44,13 @@ public class AccountMapper {
     public EmailReAuthenticationResponse toReAuthenticationResponse() {
         return EmailReAuthenticationResponse.builder()
                 .reAuthenticationEmailSendAt(LocalDateTime.now())
+                .build();
+    }
+
+    public EmailVerificationResponse toEmailVerificationResponse(final String email) {
+        return EmailVerificationResponse
+                .builder()
+                .changedEmail(email)
                 .build();
     }
 }

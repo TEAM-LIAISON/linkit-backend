@@ -8,7 +8,10 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.login.presentation.dto.AccountRequestDTO;
+import liaison.linkit.login.presentation.dto.AccountRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.login.presentation.dto.AccountRequestDTO.EmailReAuthenticationRequest;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO.EmailReAuthenticationResponse;
 import liaison.linkit.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,17 +85,22 @@ public class LoginController {
     }
 
     // 회원이 이메일 재인증을 한다
-//    @PostMapping("/email/re-authentication")
-//    @MemberOnly
-//    public CommonResponse<EmailReAuthenticationResponse> reAuthenticationEmail(
-//            @Auth final Accessor accessor,
-//            @RequestBody final EmailReAuthenticationRequest emailReAuthenticationRequest
-//    ) throws Exception {
-//        return CommonResponse.onSuccess(loginService.reAuthenticationEmail(accessor.getMemberId(), emailReAuthenticationRequest));
-//    }
+    @PostMapping("/email/re-authentication")
+    @MemberOnly
+    public CommonResponse<EmailReAuthenticationResponse> reAuthenticationEmail(
+            @Auth final Accessor accessor,
+            @RequestBody final EmailReAuthenticationRequest emailReAuthenticationRequest
+    ) throws Exception {
+        return CommonResponse.onSuccess(loginService.reAuthenticationEmail(accessor.getMemberId(), emailReAuthenticationRequest));
+    }
 
     // 회원이 수신한 재인증 코드를 입력한다.
-    //    @PostMapping("/email/verification")
-    //    @MemberOnly
-    //    public CommonResponse<AccountResponseDTO.EmailVerificationResponse>
+    @PostMapping("/email/verification")
+    @MemberOnly
+    public CommonResponse<AccountResponseDTO.EmailVerificationResponse> verificationAuthCode(
+            @Auth final Accessor accessor,
+            @RequestBody final AuthCodeVerificationRequest authCodeVerificationRequest
+    ) {
+        return CommonResponse.onSuccess(loginService.verifyAuthCodeAndChangeAccountEmail(accessor.getMemberId(), authCodeVerificationRequest));
+    }
 }

@@ -24,4 +24,13 @@ public class AccountRequestDTO {
     public static class EmailReAuthenticationRequest {
         private String email;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AuthCodeVerificationRequest {
+        private String changeRequestEmail;
+        private String authCode;
+    }
 }
