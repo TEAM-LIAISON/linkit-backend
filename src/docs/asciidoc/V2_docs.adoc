@@ -69,6 +69,33 @@ include::{snippets}/login-controller-test/quit-account/http-response.adoc[]
 include::{snippets}/login-controller-test/quit-account/response-fields.adoc[]
 ====
 
+=== 이메일 변경 인증 요청
+
+====
+*요청*
+
+include::{snippets}/login-controller-test/re-authentication-email/http-request.adoc[]
+
+*응답*
+include::{snippets}/login-controller-test/re-authentication-email/http-response.adoc[]
+include::{snippets}/login-controller-test/re-authentication-email/response-fields.adoc[]
+
+====
+
+=== 이메일 변경 인증 코드 입력
+
+====
+
+*요청*
+
+include::{snippets}/login-controller-test/verification-auth-code/http-request.adoc[]
+
+*응답*
+include::{snippets}/login-controller-test/verification-auth-code/http-response.adoc[]
+include::{snippets}/login-controller-test/verification-auth-code/response-fields.adoc[]
+
+====
+
 == #[회원 기본 정보]#
 
 === 회원 기본 정보 전체 조회

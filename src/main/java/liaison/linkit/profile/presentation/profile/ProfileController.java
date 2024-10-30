@@ -3,7 +3,7 @@ package liaison.linkit.profile.presentation.profile;
 import liaison.linkit.member.business.MemberService;
 import liaison.linkit.profile.service.AntecedentsService;
 import liaison.linkit.profile.service.ProfileAwardsService;
-import liaison.linkit.profile.service.EducationService;
+import liaison.linkit.profile.service.ProfileEducationService;
 import liaison.linkit.profile.service.MiniProfileService;
 import liaison.linkit.profile.service.ProfileService;
 import liaison.linkit.profile.service.ProfileSkillService;
@@ -26,7 +26,7 @@ public class ProfileController {
     public final ProfileSkillService profileSkillService;
 
     public final AntecedentsService antecedentsService;
-    public final EducationService educationService;
+    public final ProfileEducationService profileEducationService;
     public final ProfileAwardsService profileAwardsService;
 
 }

@@ -6,7 +6,7 @@
 //import liaison.linkit.login.domain.MemberTokens;
 //import liaison.linkit.profile.dto.request.education.EducationCreateRequest;
 //import liaison.linkit.profile.dto.request.education.EducationListCreateRequest;
-//import liaison.linkit.profile.service.EducationService;
+//import liaison.linkit.profile.service.ProfileEducationService;
 //import org.junit.jupiter.api.BeforeEach;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //
-//@WebMvcTest(EducationController.class)
+//@WebMvcTest(ProfileEducationController.class)
 //@MockBean(JpaMetamodelMappingContext.class)
 //@AutoConfigureRestDocs
 //public class ProfileEducationControllerTest extends ControllerTest {
@@ -49,7 +49,7 @@
 //    private ObjectMapper objectMapper;
 //
 //    @MockBean
-//    private EducationService educationService;
+//    private ProfileEducationService educationService;
 //
 //    @BeforeEach
 //    void setUp() {

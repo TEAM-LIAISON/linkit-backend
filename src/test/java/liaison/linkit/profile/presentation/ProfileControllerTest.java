@@ -40,7 +40,7 @@
 //import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
 //import liaison.linkit.profile.service.AntecedentsService;
 //import liaison.linkit.profile.service.ProfileAwardsService;
-//import liaison.linkit.profile.service.EducationService;
+//import liaison.linkit.profile.service.ProfileEducationService;
 //import liaison.linkit.profile.service.MiniProfileService;
 //import liaison.linkit.profile.service.ProfileService;
 //import org.junit.jupiter.api.BeforeEach;
@@ -78,7 +78,7 @@
 //    @MockBean
 //    private AntecedentsService antecedentsService;
 //    @MockBean
-//    private EducationService educationService;
+//    private ProfileEducationService educationService;
 //    @MockBean
 //    private ProfileAwardsService awardsService;
 //    @MockBean

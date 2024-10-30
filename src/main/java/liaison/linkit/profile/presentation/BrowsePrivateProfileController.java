@@ -3,7 +3,7 @@ package liaison.linkit.profile.presentation;
 import liaison.linkit.profile.service.AntecedentsService;
 import liaison.linkit.profile.service.ProfileAwardsService;
 import liaison.linkit.profile.service.BrowsePrivateProfileService;
-import liaison.linkit.profile.service.EducationService;
+import liaison.linkit.profile.service.ProfileEducationService;
 import liaison.linkit.profile.service.MiniProfileService;
 import liaison.linkit.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ public class BrowsePrivateProfileController {
     public final MiniProfileService miniProfileService;
 
     public final AntecedentsService antecedentsService;
-    public final EducationService educationService;
+    public final ProfileEducationService profileEducationService;
     public final ProfileAwardsService profileAwardsService;
 
     public final BrowsePrivateProfileService browsePrivateProfileService;

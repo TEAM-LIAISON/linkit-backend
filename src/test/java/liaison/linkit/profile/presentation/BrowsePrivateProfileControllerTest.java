@@ -32,7 +32,7 @@
 //import liaison.linkit.profile.service.AntecedentsService;
 //import liaison.linkit.profile.service.ProfileAwardsService;
 //import liaison.linkit.profile.service.BrowsePrivateProfileService;
-//import liaison.linkit.profile.service.EducationService;
+//import liaison.linkit.profile.service.ProfileEducationService;
 //import liaison.linkit.profile.service.MiniProfileService;
 //import liaison.linkit.profile.service.ProfileService;
 //import org.junit.jupiter.api.BeforeEach;
@@ -70,7 +70,7 @@
 //    @MockBean
 //    public AntecedentsService antecedentsService;
 //    @MockBean
-//    public EducationService educationService;
+//    public ProfileEducationService educationService;
 //    @MockBean
 //    public ProfileAwardsService awardsService;
 //    @MockBean

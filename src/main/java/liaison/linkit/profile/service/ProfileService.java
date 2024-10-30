@@ -1,7 +1,7 @@
 package liaison.linkit.profile.service;
 
 import liaison.linkit.profile.domain.repository.antecedents.AntecedentsRepository;
-import liaison.linkit.profile.domain.repository.education.EducationRepository;
+import liaison.linkit.profile.domain.repository.education.ProfileEducationRepository;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
 import liaison.linkit.profile.domain.repository.skill.SkillRepository;
@@ -30,6 +30,6 @@ public class ProfileService {
     private final AntecedentsRepository antecedentsRepository;
 
     // 학력 정보 담당
-    private final EducationRepository educationRepository;
+    private final ProfileEducationRepository profileEducationRepository;
 
 }
