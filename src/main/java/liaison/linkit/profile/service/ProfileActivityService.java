@@ -29,4 +29,13 @@ public class ProfileActivityService {
         return profileActivityMapper.toProfileActivityItems(profileActivities);
     }
 
+    @Transactional(readOnly = true)
+    public ProfileActivityResponseDTO.ProfileActivityItem getProfileActivityItem(final Long memberId, final Long profileActivityId) {
+        log.info("memberId = {}의 내 로그 DTO 조회 요청 발생했습니다.", memberId);
+
+        final ProfileActivity profileActivity = profileActivityQueryAdapter.getProfileActivity(profileActivityId);
+        log.info("profileLog = {}가 성공적으로 조회되었습니다.", profileActivity);
+
+        return profileActivityMapper.toProfileActivityItem(profileActivity);
+    }
 }

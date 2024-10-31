@@ -9,6 +9,7 @@ import liaison.linkit.profile.service.ProfileActivityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,4 +29,16 @@ public class ProfileActivityController {
         log.info("memberId = {}의 프로필 활동 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityItems(accessor.getMemberId()));
     }
+
+    @GetMapping("/{profileActivityId}")
+    @MemberOnly
+    public CommonResponse<ProfileActivityResponseDTO.ProfileActivityItem> getProfileActivityItem(
+            @Auth final Accessor accessor,
+            @PathVariable final Long profileActivityId
+    ) {
+        log.info("memberId = {}의 프로필 로그 ID = {}에 대한 단일 조회 요청이 발생했습니다.", accessor.getMemberId(), profileActivityId);
+        return CommonResponse.onSuccess(profileActivityService.getProfileActivityItem(accessor.getMemberId(), profileActivityId));
+    }
+
+    
 }
