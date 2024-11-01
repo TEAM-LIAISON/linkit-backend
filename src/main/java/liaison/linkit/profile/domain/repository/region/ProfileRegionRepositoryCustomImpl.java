@@ -1,6 +1,9 @@
 package liaison.linkit.profile.domain.repository.region;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Optional;
+import liaison.linkit.profile.domain.ProfileRegion;
+import liaison.linkit.profile.domain.QProfileRegion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,4 +13,29 @@ public class ProfileRegionRepositoryCustomImpl implements ProfileRegionRepositor
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    @Override
+    public Optional<ProfileRegion> findProfileRegionByProfileId(final Long profileId) {
+        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+
+        ProfileRegion profileRegion = jpaQueryFactory
+                .selectFrom(qProfileRegion)
+                .where(
+                        qProfileRegion.profile.id.eq(profileId)
+                ).fetchOne();
+
+        return Optional.ofNullable(profileRegion);
+    }
+
+    @Override
+    public boolean existsProfileRegionByProfileId(final Long profileId) {
+        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+
+        Integer count = jpaQueryFactory
+                .selectOne()
+                .from(qProfileRegion)
+                .where(qProfileRegion.profile.id.eq(profileId))
+                .fetchFirst();
+
+        return count != null;
+    }
 }

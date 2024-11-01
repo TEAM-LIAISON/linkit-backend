@@ -3,16 +3,17 @@ package liaison.linkit.profile.domain.repository.profile;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import liaison.linkit.common.domain.QPosition;
 import liaison.linkit.global.type.StatusType;
+import liaison.linkit.member.domain.QMemberBasicInform;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.QProfile;
 import liaison.linkit.profile.domain.QProfileCurrentState;
 import liaison.linkit.profile.domain.QProfilePosition;
+import liaison.linkit.profile.domain.region.QRegion;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
 import lombok.RequiredArgsConstructor;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
@@ -33,11 +34,13 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
     // 수정 및 보완 필요
     @Override
-    public MiniProfileResponseDTO.MiniProfileDetail findMiniProfileDTO(final Long memberId) {
+    public MiniProfileResponseDTO.MiniProfileDetail findMiniProfileDetail(final Long memberId) {
         QProfile qProfile = QProfile.profile;
         QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
         QPosition qPosition = QPosition.position;
         QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform; // 멤버 기본 정보에 대한 Querydsl 메타 모델
+        QRegion qRegion = QRegion.region;
 
         List<MiniProfileResponseDTO.ProfilePositionItem> profilePositionItems =
                 jpaQueryFactory
@@ -52,9 +55,20 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         .where(qProfilePosition.profile.member.id.eq(memberId))
                         .fetch();
 
-        return MiniProfileResponseDTO.MiniProfileDetail.builder()
-                .profilePositions(profilePositionItems)
-                .build();
+        List<MiniProfileResponseDTO.ProfileCurrentStateItem> profileCurrentStateItems =
+                jpaQueryFactory
+                        .select(
+                                Projections.constructor(
+                                        MiniProfileResponseDTO.ProfileCurrentStateItem.class,
+                                        qProfileCurrentState.profileState.profileStateName
+                                ))
+                        .from(qProfileCurrentState)
+                        .leftJoin(qProfileCurrentState)
+                        .on(qProfileCurrentState.profileState.id.eq(qProfileCurrentState.id))
+                        .where(qProfileCurrentState.profile.member.id.eq(memberId))
+                        .fetch();
+
+        return null;
     }
 
 

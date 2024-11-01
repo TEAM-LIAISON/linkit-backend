@@ -8,9 +8,11 @@ public interface ProfileCustomRepository {
 
     Optional<Profile> findByMemberId(final Long memberId);
 
-    MiniProfileResponseDTO.MiniProfileDetail findMiniProfileDTO(final Long memberId);
+    MiniProfileResponseDTO.MiniProfileDetail findMiniProfileDetail(final Long memberId);
 
     boolean existsByMemberId(final Long memberId);
 
     void deleteByMemberId(final Long memberId);
+
+
 }

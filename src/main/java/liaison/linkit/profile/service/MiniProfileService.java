@@ -75,7 +75,6 @@ public class MiniProfileService {
 
         // 활동 지역을 업데이트한다
         final Region region = regionQueryAdapter.findByCityNameAndDivisionName(updateMiniProfileRequest.getCityName(), updateMiniProfileRequest.getDivisionName());
-        profile.setRegion(region);
 
         // 현재 상태를 업데이트한다
 

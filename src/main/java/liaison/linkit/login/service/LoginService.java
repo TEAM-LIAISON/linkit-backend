@@ -35,6 +35,7 @@ import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
+import liaison.linkit.profile.implement.ProfileCommandAdapter;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +63,7 @@ public class LoginService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final ProfileRepository profileRepository;
     private final ProfileQueryAdapter profileQueryAdapter;
+    private final ProfileCommandAdapter profileCommandAdapter;
 
     private final MemberBasicInformRepository memberBasicInformRepository;
     private final PrivateMatchingRepository privateMatchingRepository;
@@ -106,10 +108,17 @@ public class LoginService {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberQueryAdapter.existsByEmail(email)) {
+
                 final Member member = memberCommandAdapter.create(new Member(socialLoginId, email, null));
+
                 memberBasicInformCommandAdapter.create(new MemberBasicInform(
                         null, member, null, null, false, false, false, false
                 ));
+
+                profileCommandAdapter.create(new Profile(
+                        null, member, null, false, 0, false, false, false, false, false, false, false, false
+                ));
+
                 return member;
             } else if (memberQueryAdapter.existsByEmail(email)) {
                 throw new AuthException(DUPLICATED_EMAIL);
