@@ -48,7 +48,6 @@ public class ProfileService {
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
 
-        // profileImagePath null 가능성
         final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
         final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
 

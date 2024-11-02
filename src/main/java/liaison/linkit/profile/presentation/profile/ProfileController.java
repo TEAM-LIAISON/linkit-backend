@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/profile")
+@RequestMapping("/api/v1")
 @Slf4j
 public class ProfileController {
 
@@ -35,7 +35,7 @@ public class ProfileController {
     public final ProfileEducationService profileEducationService;
     public final ProfileAwardsService profileAwardsService;
 
-    @GetMapping("/left/menu")
+    @GetMapping("/profile/left/menu")
     @MemberOnly
     public CommonResponse<ProfileResponseDTO.ProfileLeftMenu> getProfileLeftMenu(
             @Auth final Accessor accessor

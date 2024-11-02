@@ -51,6 +51,14 @@ public class MiniProfileService {
     // 미니 프로필을 조회한다
     @Transactional(readOnly = true)
     public MiniProfileResponseDTO.MiniProfileDetail getMiniProfileDetail(final Long memberId) {
+
+        // 필요 객체
+        // profile
+        // profile_current_state
+        // 
+
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
+
         return miniProfileQueryAdapter.getMiniProfileDetail(memberId);
     }
 
