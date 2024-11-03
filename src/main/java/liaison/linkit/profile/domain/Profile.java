@@ -9,11 +9,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.profile.domain.region.Region;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,10 +35,6 @@ public class Profile extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "region_id", nullable = false)
-    private Region region;
-
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
@@ -51,6 +45,10 @@ public class Profile extends BaseEntity {
     // 프로필 공개 여부
     private boolean isProfilePublic;
 
+    // 프로필 완성도
+    private int profileCompletion;
+
+    private boolean isProfileMiniProfile;
     private boolean isProfileSkill;
     private boolean isProfileActivity;
     private boolean isProfilePortfolio;
@@ -58,15 +56,6 @@ public class Profile extends BaseEntity {
     private boolean isProfileAwards;
     private boolean isProfileLicense;
     private boolean isProfileLink;
-
-
-    public boolean getIsProfileSkill() {
-        return isProfileSkill;
-    }
-
-    public void setRegion(final Region region) {
-        this.region = region;
-    }
 
     public void setIsProfilePublic(final boolean isProfilePublic) {
         this.isProfilePublic = isProfilePublic;

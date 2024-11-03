@@ -39,6 +39,8 @@ public class QProfile extends EntityPathBase<Profile> {
 
     public final BooleanPath isProfileLink = createBoolean("isProfileLink");
 
+    public final BooleanPath isProfileMiniProfile = createBoolean("isProfileMiniProfile");
+
     public final BooleanPath isProfilePortfolio = createBoolean("isProfilePortfolio");
 
     public final BooleanPath isProfilePublic = createBoolean("isProfilePublic");
@@ -50,9 +52,9 @@ public class QProfile extends EntityPathBase<Profile> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final StringPath profileImagePath = createString("profileImagePath");
+    public final NumberPath<Integer> profileCompletion = createNumber("profileCompletion", Integer.class);
 
-    public final liaison.linkit.profile.domain.region.QRegion region;
+    public final StringPath profileImagePath = createString("profileImagePath");
 
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
@@ -76,7 +78,6 @@ public class QProfile extends EntityPathBase<Profile> {
     public QProfile(Class<? extends Profile> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new liaison.linkit.member.domain.QMember(forProperty("member"), inits.get("member")) : null;
-        this.region = inits.isInitialized("region") ? new liaison.linkit.profile.domain.region.QRegion(forProperty("region")) : null;
     }
 
 }

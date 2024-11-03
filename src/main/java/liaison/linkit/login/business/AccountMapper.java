@@ -51,6 +51,7 @@ public class AccountMapper {
         return EmailVerificationResponse
                 .builder()
                 .changedEmail(email)
+                .verificationSuccessAt(LocalDateTime.now())
                 .build();
     }
 }

@@ -31,8 +31,12 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.login.presentation.dto.AccountRequestDTO;
+import liaison.linkit.login.presentation.dto.AccountRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.login.presentation.dto.AccountRequestDTO.EmailReAuthenticationRequest;
 import liaison.linkit.login.presentation.dto.AccountRequestDTO.LoginRequest;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO.EmailReAuthenticationResponse;
+import liaison.linkit.login.presentation.dto.AccountResponseDTO.EmailVerificationResponse;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO.LoginResponse;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO.LoginServiceResponse;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO.QuitAccountResponse;
@@ -80,6 +84,7 @@ public class LoginControllerTest extends ControllerTest {
         final AccountResponseDTO.LoginResponse loginResponse
                 = new LoginResponse(ACCESS_TOKEN, EMAIL, false);
 
+        // when
         when(loginService.login(anyString(), anyString())).thenReturn(loginServiceResponse);
 
         final ResultActions resultActions = mockMvc.perform(post("/api/v1/login/{provider}", GOOGLE_PROVIDER)
@@ -87,7 +92,6 @@ public class LoginControllerTest extends ControllerTest {
                 .content(objectMapper.writeValueAsString(loginRequest))
         );
 
-        // when
         final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value("true"))
@@ -282,7 +286,7 @@ public class LoginControllerTest extends ControllerTest {
         verify(loginService).logout(any(), anyString());
     }
 
-    @DisplayName("회원을 회원탈퇴 할 수 있다.")
+    @DisplayName("회원은 회원탈퇴 할 수 있다.")
     @Test
     void quitAccount() throws Exception {
         // given
@@ -347,5 +351,152 @@ public class LoginControllerTest extends ControllerTest {
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
         verify(loginService).quitAccount(anyLong());
+    }
+
+    @DisplayName("회원은 이메일 재인증을 할 수 있다.")
+    @Test
+    void reAuthenticationEmail() throws Exception {
+        // given
+        given(refreshTokenRepository.existsById(any())).willReturn(true);
+        doNothing().when(jwtProvider).validateTokens(any());
+        given(jwtProvider.getSubject(any())).willReturn("1");
+
+        final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
+        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
+
+        final EmailReAuthenticationRequest emailReAuthenticationRequest = new EmailReAuthenticationRequest("kwondm7@gmail.com");
+
+        final AccountResponseDTO.EmailReAuthenticationResponse emailReAuthenticationResponse = new EmailReAuthenticationResponse(LocalDateTime.now());
+
+        // when
+        when(loginService.reAuthenticationEmail(anyLong(), any())).thenReturn(emailReAuthenticationResponse);
+
+        final ResultActions resultActions = mockMvc.perform(post("/api/v1/email/re-authentication")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(emailReAuthenticationRequest)));
+
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("email")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경하고자 하는 타겟 이메일")
+                                                .attributes(field("constraint", "문자열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.reAuthenticationEmailSendAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("재인증 이메일 발송 시각")
+                                                .attributes(field("constraint", "LocalDateTime"))
+                                )
+                        ))
+                .andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<AccountResponseDTO.EmailReAuthenticationResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<AccountResponseDTO.EmailReAuthenticationResponse>>() {
+                }
+        );
+
+        final CommonResponse<AccountResponseDTO.EmailReAuthenticationResponse> expected = CommonResponse.onSuccess(emailReAuthenticationResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        verify(loginService).reAuthenticationEmail(anyLong(), any());
+    }
+
+    @DisplayName("회원은 인증코드를 입력하여 이메일 변경을 진행할 수 있다.")
+    @Test
+    void verificationAuthCode() throws Exception {
+        // given
+        given(refreshTokenRepository.existsById(any())).willReturn(true);
+        doNothing().when(jwtProvider).validateTokens(any());
+        given(jwtProvider.getSubject(any())).willReturn("1");
+
+        final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
+        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
+
+        final AuthCodeVerificationRequest authCodeVerificationRequest = new AuthCodeVerificationRequest("kwondm7@gmail.com", "123456");
+        final AccountResponseDTO.EmailVerificationResponse emailVerificationResponse = new EmailVerificationResponse("kwondm7@gmail.com", LocalDateTime.now());
+
+        // when
+        when(loginService.verifyAuthCodeAndChangeAccountEmail(anyLong(), any())).thenReturn(emailVerificationResponse);
+
+        final ResultActions resultActions = mockMvc.perform(post("/api/v1/email/verification")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(authCodeVerificationRequest)));
+
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("changeRequestEmail")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경하고자 하는 타겟 이메일")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("authCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("인증 코드")
+                                                .attributes(field("constraint", "문자열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.changedEmail")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경된 이메일")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.verificationSuccessAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경 성공 시각")
+                                                .attributes(field("constraint", "LocalDateTime"))
+                                )
+                        )
+                ).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<AccountResponseDTO.EmailVerificationResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<AccountResponseDTO.EmailVerificationResponse>>() {
+                }
+        );
+
+        final CommonResponse<AccountResponseDTO.EmailVerificationResponse> expected = CommonResponse.onSuccess(emailVerificationResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        verify(loginService).verifyAuthCodeAndChangeAccountEmail(anyLong(), any());
     }
 }

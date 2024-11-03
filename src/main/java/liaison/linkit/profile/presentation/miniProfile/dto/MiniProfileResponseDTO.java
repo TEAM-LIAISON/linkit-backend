@@ -51,7 +51,7 @@ public class MiniProfileResponseDTO {
     public static class ProfileCurrentStateItem {
         private String profileStateName;
     }
-
+    
     @Builder
     @Getter
     @NoArgsConstructor

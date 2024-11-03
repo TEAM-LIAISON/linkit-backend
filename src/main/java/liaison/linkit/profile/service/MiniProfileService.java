@@ -51,6 +51,14 @@ public class MiniProfileService {
     // 미니 프로필을 조회한다
     @Transactional(readOnly = true)
     public MiniProfileResponseDTO.MiniProfileDetail getMiniProfileDetail(final Long memberId) {
+
+        // 필요 객체
+        // profile
+        // profile_current_state
+        // 
+
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
+
         return miniProfileQueryAdapter.getMiniProfileDetail(memberId);
     }
 
@@ -75,7 +83,6 @@ public class MiniProfileService {
 
         // 활동 지역을 업데이트한다
         final Region region = regionQueryAdapter.findByCityNameAndDivisionName(updateMiniProfileRequest.getCityName(), updateMiniProfileRequest.getDivisionName());
-        profile.setRegion(region);
 
         // 현재 상태를 업데이트한다
 

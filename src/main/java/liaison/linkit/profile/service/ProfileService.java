@@ -1,35 +1,60 @@
 package liaison.linkit.profile.service;
 
-import liaison.linkit.profile.domain.repository.antecedents.AntecedentsRepository;
-import liaison.linkit.profile.domain.repository.education.EducationRepository;
-import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
-import liaison.linkit.profile.domain.repository.skill.SkillRepository;
-import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
-import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
+import java.util.List;
+import liaison.linkit.common.business.RegionMapper;
+import liaison.linkit.common.implement.RegionQueryAdapter;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.profile.business.ProfileCurrentStateMapper;
+import liaison.linkit.profile.business.ProfileMapper;
+import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.ProfileCurrentState;
+import liaison.linkit.profile.domain.ProfileRegion;
+import liaison.linkit.profile.implement.ProfileCommandAdapter;
+import liaison.linkit.profile.implement.ProfileQueryAdapter;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class ProfileService {
-    // 프로필 리포지토리 -> 자기소개, 회원 정보 담당
-    private final ProfileRepository profileRepository;
-    // 미니 프로필 정보 담당
 
-    // 보유 기술 정보 담당
-    private final ProfileSkillRepository profileSkillRepository;
-    private final SkillRepository skillRepository;
-    // 희망 팀빌딩 분야 정보 담당
-    private final ProfileTeamBuildingFieldRepository profileTeamBuildingFieldRepository;
-    private final TeamBuildingFieldRepository teamBuildingFieldRepository;
+    private final ProfileQueryAdapter profileQueryAdapter;
+    private final ProfileCommandAdapter profileCommandAdapter;
+    private final ProfileMapper profileMapper;
 
-    // 이력 정보 담당
-    private final AntecedentsRepository antecedentsRepository;
+    private final RegionQueryAdapter regionQueryAdapter;
+    private final RegionMapper regionMapper;
 
-    // 학력 정보 담당
-    private final EducationRepository educationRepository;
+    private final ProfileCurrentStateMapper profileCurrentStateMapper;
 
+    public ProfileLeftMenu getProfileLeftMenu(final Long memberId) {
+        log.info("memberId = {}의 프로필 왼쪽 메뉴 DTO 조회 요청 발생했습니다.", memberId);
+
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
+        log.info("profile = {}가 성공적으로 조회되었습니다.", profile);
+
+        RegionDetail regionDetail = new RegionDetail();
+        if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
+            final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+        }
+
+        final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
+        final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
+
+        final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(profile);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, regionDetail);
+        final ProfileBooleanMenu profileBooleanMenu = profileMapper.toProfileBooleanMenu(profile);
+
+        return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu);
+    }
 }

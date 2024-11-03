@@ -4,6 +4,7 @@ import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.ProfileActivity;
 import liaison.linkit.profile.domain.repository.activity.ProfileActivityRepository;
+import liaison.linkit.profile.exception.activity.ProfileActivityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Adapter
@@ -14,5 +15,10 @@ public class ProfileActivityQueryAdapter {
 
     public List<ProfileActivity> getProfileActivities(final Long memberId) {
         return profileActivityRepository.getProfileActivities(memberId);
+    }
+
+    public ProfileActivity getProfileActivity(final Long profileActivityId) {
+        return profileActivityRepository.findById(profileActivityId)
+                .orElseThrow(() -> ProfileActivityNotFoundException.EXCEPTION);
     }
 }

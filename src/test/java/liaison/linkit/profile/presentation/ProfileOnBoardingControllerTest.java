@@ -70,7 +70,7 @@
 //    @MockBean
 //    public ProfileSkillService profileSkillService;
 //    @MockBean
-//    public EducationService educationService;
+//    public ProfileEducationService educationService;
 //    @MockBean
 //    public AntecedentsService antecedentsService;
 //    @MockBean

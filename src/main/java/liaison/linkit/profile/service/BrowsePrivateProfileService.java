@@ -2,7 +2,7 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.profile.domain.repository.antecedents.AntecedentsRepository;
-import liaison.linkit.profile.domain.repository.education.EducationRepository;
+import liaison.linkit.profile.domain.repository.education.ProfileEducationRepository;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
 import liaison.linkit.profile.domain.repository.skill.SkillRepository;
@@ -26,5 +26,5 @@ public class BrowsePrivateProfileService {
     private final ProfileTeamBuildingFieldRepository profileTeamBuildingFieldRepository;
     private final TeamBuildingFieldRepository teamBuildingFieldRepository;
     private final AntecedentsRepository antecedentsRepository;
-    private final EducationRepository educationRepository;
+    private final ProfileEducationRepository profileEducationRepository;
 }
