@@ -16,7 +16,6 @@ public class CorsConfig implements WebMvcConfigurer {
                         "https://www.linkit.im",
                         "https://linkit.im",
                         "https://dev-linkit.vercel.app",
-                        "https://liaison-dev.site",
                         "https://www.liaison-dev.site",
                         "https://dev.liaison-dev.site")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
