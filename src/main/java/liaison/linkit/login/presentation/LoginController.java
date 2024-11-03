@@ -43,6 +43,7 @@ public class LoginController {
             final HttpServletResponse response
     ) {
         final AccountResponseDTO.LoginServiceResponse loginResponse = loginService.login(provider, loginRequest.getCode());
+        log.info("loginResponse = {}", loginResponse);
         final ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
                 .maxAge(COOKIE_AGE_SECONDS)
                 .secure(true)
@@ -51,8 +52,10 @@ public class LoginController {
                 .httpOnly(true)
                 .build();
 
+        log.info("cookie 설정 = {}", cookie);
         response.addHeader(SET_COOKIE, cookie.toString());
 
+        log.info("response 설정 = {}", response);
         return CommonResponse.onSuccess(new AccountResponseDTO.LoginResponse(loginResponse.getAccessToken(), loginResponse.getEmail(), loginResponse.getIsMemberBasicInform()));
     }
 
