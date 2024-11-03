@@ -176,3 +176,7 @@ cors-allowed-origins:
   https://www.linkit.im,
   https://liaison-dev.site,
   https://www.liaison-dev.site
+
+logging:
+  level:
+    root: debug
