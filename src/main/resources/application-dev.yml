@@ -181,3 +181,7 @@ cors-allowed-origins:
   https://liaison-dev.site,
   https://www.liaison-dev.site,
   https://dev.liaison-dev.site
+
+logging:
+  level:
+    root: debug
