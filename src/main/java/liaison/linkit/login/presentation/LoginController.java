@@ -50,7 +50,7 @@ public class LoginController {
                 .secure(false)
                 .sameSite("None")
                 .path("/")
-                .httpOnly(false)
+                .httpOnly(true)
                 .build();
 
         log.info("cookie 설정 = {}", cookie);
