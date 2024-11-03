@@ -47,10 +47,10 @@ public class LoginController {
 
         final ResponseCookie cookie = ResponseCookie.from("refresh-token", loginResponse.getRefreshToken())
                 .maxAge(COOKIE_AGE_SECONDS)
-                .secure(true)
+                .secure(false)
                 .sameSite("None")
                 .path("/")
-                .httpOnly(true)
+                .httpOnly(false)
                 .build();
 
         log.info("cookie 설정 = {}", cookie);
