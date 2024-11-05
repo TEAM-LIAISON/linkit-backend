@@ -70,7 +70,7 @@ public class ProfileLogService {
     }
 
     public UpdateProfileLogTypeResponse updateProfileLogType(final Long memberId, final Long profileLogId, final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType) {
-        log.info("memberId = {}의 프로필 로그 = {}에 대한 공개/비공개 수정 요청 발생했습니다.", memberId, profileLogId);
+        log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청 발생했습니다.", memberId, profileLogId);
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
         final ProfileLog updatedProfileLog = profileLogCommandAdapter.updateProfileLogType(profileLog, updateProfileLogType);
         return profileLogMapper.toUpdateProfileLogType(updatedProfileLog);

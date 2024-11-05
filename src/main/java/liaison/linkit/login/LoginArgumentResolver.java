@@ -29,7 +29,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @Slf4j
 public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final String REFRESH_TOKEN = "refresh-token";
+    private static final String REFRESH_TOKEN = "refreshToken";
     private final JwtProvider jwtProvider;
     private final BearerAuthorizationExtractor extractor;
     private final RefreshTokenRepository refreshTokenRepository;

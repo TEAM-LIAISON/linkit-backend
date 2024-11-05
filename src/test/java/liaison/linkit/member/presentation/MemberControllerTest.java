@@ -51,7 +51,7 @@ import org.springframework.test.web.servlet.ResultActions;
 class MemberControllerTest extends ControllerTest {
 
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
-    private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
+    private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
     @Autowired
     private ObjectMapper objectMapper;

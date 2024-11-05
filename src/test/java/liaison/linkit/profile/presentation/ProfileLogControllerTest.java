@@ -15,7 +15,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,11 +33,13 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.presentation.log.ProfileLogController;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.AddProfileLogRequest;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItems;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveProfileLogResponse;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogTypeResponse;
 import liaison.linkit.profile.service.ProfileLogService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +50,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -57,7 +61,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @Slf4j
 public class ProfileLogControllerTest extends ControllerTest {
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
-    private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
+    private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -90,11 +94,21 @@ public class ProfileLogControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performDeleteProfileLog(final Long memberId, final Long profileLogId) throws Exception {
+    private ResultActions performDeleteProfileLog(final Long profileLogId) throws Exception {
         return mockMvc.perform(
-                delete("/api/v1/profile/log/{profileLogId}", profileLogId)
+                RestDocumentationRequestBuilders.delete("/api/v1/profile/log/{profileLogId}", profileLogId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performUpdateProfileLogType(final Long profileLogId, final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType) throws Exception {
+        return mockMvc.perform(
+                post("/api/v1/profile/log/{profileLogId}", profileLogId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateProfileLogType))
         );
     }
 
@@ -175,7 +189,7 @@ public class ProfileLogControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 나의 로그를 전체 조회할 수 있다.")
+    @DisplayName("회원이 로그를 추가할 수 있다.")
     @Test
     void addProfileLog() throws Exception {
         // given
@@ -256,10 +270,9 @@ public class ProfileLogControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 나의 로그를 전체 조회할 수 있다.")
+    @DisplayName("회원이 나의 로그를 단일 삭제할 수 있다.")
     @Test
     void removeProfileLog() throws Exception {
-
         // given
         final ProfileLogResponseDTO.RemoveProfileLogResponse removeProfileLogResponse
                 = new ProfileLogResponseDTO.RemoveProfileLogResponse(1L);
@@ -267,7 +280,7 @@ public class ProfileLogControllerTest extends ControllerTest {
         // when
         when(profileLogService.removeProfileLog(anyLong(), anyLong())).thenReturn(removeProfileLogResponse);
 
-        final ResultActions resultActions = performDeleteProfileLog(1L, 1L);
+        final ResultActions resultActions = performDeleteProfileLog(1L);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -277,7 +290,10 @@ public class ProfileLogControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
                         restDocs.document(
-
+                                pathParameters(
+                                        parameterWithName("profileLogId")
+                                                .description("프로필 로그 ID")
+                                ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
                                                 .type(JsonFieldType.BOOLEAN)
@@ -309,4 +325,72 @@ public class ProfileLogControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
+    @DisplayName("회원이 나의 로그를 대표글 설정을 변경할 수 있다.")
+    @Test
+    void updateProfileLogType() throws Exception {
+        // given
+        final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType
+                = new UpdateProfileLogType(GENERAL_LOG);
+
+        final ProfileLogResponseDTO.UpdateProfileLogTypeResponse updateProfileLogTypeResponse
+                = new UpdateProfileLogTypeResponse(1L, GENERAL_LOG);
+
+        // when
+        when(profileLogService.updateProfileLogType(anyLong(), anyLong(), any())).thenReturn(updateProfileLogTypeResponse);
+
+        final ResultActions resultActions = performUpdateProfileLogType(1L, updateProfileLogType);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("profileLogId")
+                                                .description("프로필 로그 ID")
+                                ),
+                                requestFields(
+                                        fieldWithPath("profileLogType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 대표글 설정")
+                                                .attributes(field("constraint", "GENERAL_LOG 또는 REPRESENTATIVE_LOG"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.profileLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("해당 로그 ID"),
+                                        fieldWithPath("result.profileLogType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("해당 로그 대표글 설정 여부")
+                                )
+                        )).andReturn();
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<ProfileLogResponseDTO.UpdateProfileLogTypeResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<UpdateProfileLogTypeResponse>>() {
+                }
+        );
+
+        final CommonResponse<UpdateProfileLogTypeResponse> expected = CommonResponse.onSuccess(updateProfileLogTypeResponse);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+
+
+    }
 }

@@ -87,7 +87,7 @@ public class LoginService {
         // 토큰을 생성한다
         final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
 
-        // 생성한 토큰 중 refresh-token을 레디스에 저장한다
+        // 생성한 토큰 중 refreshToken을 레디스에 저장한다
         final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
         refreshTokenRepository.save(savedRefreshToken);
 
