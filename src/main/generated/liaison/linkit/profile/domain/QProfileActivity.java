@@ -28,8 +28,6 @@ public class QProfileActivity extends EntityPathBase<ProfileActivity> {
 
     public final StringPath activityCertificationAttachFilePath = createString("activityCertificationAttachFilePath");
 
-    public final StringPath activityCertificationDescription = createString("activityCertificationDescription");
-
     public final StringPath activityDescription = createString("activityDescription");
 
     public final StringPath activityEndDate = createString("activityEndDate");

@@ -5,6 +5,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
 import java.util.List;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.ProfileSkill;
 import liaison.linkit.profile.domain.QProfile;
 import liaison.linkit.profile.domain.QProfileSkill;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
@@ -61,16 +62,16 @@ public class ProfileSkillRepositoryCustomImpl implements ProfileSkillRepositoryC
         return count != null;
     }
 
-//    @Override
-//    public List<ProfileSkill> findAllByProfileId(Long profileId) {
-//        QProfileSkill profileSkill = QProfileSkill.profileSkill;
-//
-//        return jpaQueryFactory
-//                .selectFrom(profileSkill)
-//                .where(profileSkill.profile.id.eq(profileId))
-//                .fetch();
-//    }
-//
+    @Override
+    public List<ProfileSkill> getProfileSkills(final Long memberId) {
+        QProfileSkill qProfileSkill = QProfileSkill.profileSkill;
+
+        return jpaQueryFactory
+                .selectFrom(qProfileSkill)
+                .where(qProfileSkill.profile.member.id.eq(memberId))
+                .fetch();
+    }
+
 //    @Override
 //    public Optional<ProfileSkill> findByProfileId(Long profileId) {
 //        QProfileSkill profileSkill = QProfileSkill.profileSkill;

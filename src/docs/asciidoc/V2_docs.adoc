@@ -154,6 +154,21 @@ include::{snippets}/profile-log-controller-test/get-profile-log-items/response-f
 
 ====
 
+== #[프로필 - 보유 스킬]#
+
+=== 보유 스킬 전체 조회
+
+====
+요청
+
+include::{snippets}/profile-skill-controller-test/get-profile-skill-items/http-request.adoc[]
+
+응답
+include::{snippets}/profile-skill-controller-test/get-profile-skill-items/http-response.adoc[]
+include::{snippets}/profile-skill-controller-test/get-profile-skill-items/response-fields.adoc[]
+
+====
+
 == #[프로필 - 나의 이력]#
 
 === 나의 이력 전체 조회
