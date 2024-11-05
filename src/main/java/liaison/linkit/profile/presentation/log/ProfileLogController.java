@@ -70,7 +70,7 @@ public class ProfileLogController {
         return CommonResponse.onSuccess(profileLogService.removeProfileLog(accessor.getMemberId(), profileLogId));
     }
 
-    // 로그 공개/비공개 변경
+    // 로그 대표글/일반글 변경
     @PostMapping("/{profileLogId}")
     @MemberOnly
     public CommonResponse<UpdateProfileLogTypeResponse> updateProfileLogPublicState(
@@ -78,7 +78,7 @@ public class ProfileLogController {
             @PathVariable final Long profileLogId,
             @RequestBody final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType
     ) {
-        log.info("memberId = {}의 프로필 로그 = {}에 대한 공개/비공개 수정 요청이 발생했습니다.", accessor.getMemberId(), profileLogId);
+        log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청이 발생했습니다.", accessor.getMemberId(), profileLogId);
         return CommonResponse.onSuccess(profileLogService.updateProfileLogType(accessor.getMemberId(), profileLogId, updateProfileLogType));
     }
 }

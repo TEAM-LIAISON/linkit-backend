@@ -156,7 +156,7 @@ public class LoginControllerTest extends ControllerTest {
     void renewToken() throws Exception {
         // given
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, ACCESS_TOKEN);
-        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
+        final Cookie cookie = new Cookie("refreshToken", memberTokens.getRefreshToken());
         final AccountResponseDTO.RenewTokenResponse renewTokenResponse = new AccountResponseDTO.RenewTokenResponse(RENEW_ACCESS_TOKEN);
 
         // when
@@ -176,7 +176,7 @@ public class LoginControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 requestCookies(
-                                        cookieWithName("refresh-token")
+                                        cookieWithName("refreshToken")
                                                 .description("갱신 토큰")
                                 ),
                                 requestHeaders(
@@ -229,7 +229,7 @@ public class LoginControllerTest extends ControllerTest {
         doNothing().when(loginService).removeRefreshToken(anyString());
 
         final MemberTokens memberTokens = new MemberTokens(RENEW_ACCESS_TOKEN, REFRESH_TOKEN);
-        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
+        final Cookie cookie = new Cookie("refreshToken", memberTokens.getRefreshToken());
 
         final AccountResponseDTO.LogoutResponse logoutResponse = new AccountResponseDTO.LogoutResponse(LocalDateTime.now());
         when(loginService.logout(any(), anyString())).thenReturn(logoutResponse);
@@ -244,7 +244,7 @@ public class LoginControllerTest extends ControllerTest {
                 .andExpect(status().isOk())
                 .andDo(restDocs.document(
                         requestCookies(
-                                cookieWithName("refresh-token")
+                                cookieWithName("refreshToken")
                                         .description("갱신 토큰")
                         ),
                         requestHeaders(
@@ -295,7 +295,7 @@ public class LoginControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
 
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
-        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
+        final Cookie cookie = new Cookie("refreshToken", memberTokens.getRefreshToken());
 
         final AccountResponseDTO.QuitAccountResponse quitAccountResponse = new QuitAccountResponse(LocalDateTime.now());
 
@@ -311,7 +311,7 @@ public class LoginControllerTest extends ControllerTest {
                 .andExpect(status().isOk())
                 .andDo(restDocs.document(
                         requestCookies(
-                                cookieWithName("refresh-token")
+                                cookieWithName("refreshToken")
                                         .description("갱신 토큰")
                         ),
                         requestHeaders(
@@ -362,7 +362,7 @@ public class LoginControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
 
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
-        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
+        final Cookie cookie = new Cookie("refreshToken", memberTokens.getRefreshToken());
 
         final EmailReAuthenticationRequest emailReAuthenticationRequest = new EmailReAuthenticationRequest("kwondm7@gmail.com");
 
@@ -432,7 +432,7 @@ public class LoginControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
 
         final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
-        final Cookie cookie = new Cookie("refresh-token", memberTokens.getRefreshToken());
+        final Cookie cookie = new Cookie("refreshToken", memberTokens.getRefreshToken());
 
         final AuthCodeVerificationRequest authCodeVerificationRequest = new AuthCodeVerificationRequest("kwondm7@gmail.com", "123456");
         final AccountResponseDTO.EmailVerificationResponse emailVerificationResponse = new EmailVerificationResponse("kwondm7@gmail.com", LocalDateTime.now());

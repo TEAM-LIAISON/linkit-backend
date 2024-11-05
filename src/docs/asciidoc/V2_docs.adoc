@@ -41,7 +41,7 @@ include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
 include::{snippets}/login-controller-test/logout/http-response.adoc[]
 ====
 
-=== Access-Token 재발행
+=== AccessToken 재발행
 
 ====
 *요청*
@@ -176,6 +176,19 @@ include::{snippets}/profile-log-controller-test/remove-profile-log/http-request.
 응답
 include::{snippets}/profile-log-controller-test/remove-profile-log/http-response.adoc[]
 include::{snippets}/profile-log-controller-test/remove-profile-log/response-fields.adoc[]
+====
+
+=== 나의 로그 대표글 설정 여부 수정
+
+====
+요청
+
+include::{snippets}/profile-log-controller-test/update-profile-log-type/http-request.adoc[]
+
+응답
+include::{snippets}/profile-log-controller-test/update-profile-log-type/http-response.adoc[]
+include::{snippets}/profile-log-controller-test/update-profile-log-type/response-fields.adoc[]
+
 ====
 
 == #[프로필 - 보유 스킬]#

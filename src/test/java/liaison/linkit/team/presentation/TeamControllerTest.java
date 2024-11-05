@@ -48,7 +48,7 @@ import org.springframework.test.web.servlet.ResultActions;
 public class TeamControllerTest extends ControllerTest {
 
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
-    private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
+    private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -107,7 +107,7 @@ public class TeamControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 requestCookies(
-                                        cookieWithName("refresh-token")
+                                        cookieWithName("refreshToken")
                                                 .description("갱신 토큰")
                                 ),
                                 requestHeaders(
