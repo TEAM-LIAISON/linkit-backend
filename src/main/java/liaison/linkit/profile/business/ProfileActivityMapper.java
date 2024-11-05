@@ -30,4 +30,21 @@ public class ProfileActivityMapper {
                 .profileActivityItems(items)
                 .build();
     }
+
+    public ProfileActivityResponseDTO.ProfileActivityDetail toProfileActivityDetail(final ProfileActivity profileActivity) {
+        return ProfileActivityResponseDTO.ProfileActivityDetail
+                .builder()
+                .profileActivityId(profileActivity.getId())
+                .activityName(profileActivity.getActivityName())
+                .activityRole(profileActivity.getActivityRole())
+                .activityStartDate(profileActivity.getActivityStartDate())
+                .activityEndDate(profileActivity.getActivityEndDate())
+                .isActivityInProgress(profileActivity.isActivityInProgress())
+                .activityDescription(profileActivity.getActivityDescription())
+                .isActivityCertified(profileActivity.isActivityCertified())
+                .isActivityVerified(profileActivity.isActivityVerified())
+                .activityCertificationAttachFileName(profileActivity.getActivityCertificationAttachFileName())
+                .activityCertificationAttachFilePath(profileActivity.getActivityCertificationAttachFilePath())
+                .build();
+    }
 }

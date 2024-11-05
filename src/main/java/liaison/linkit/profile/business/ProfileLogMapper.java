@@ -6,6 +6,7 @@ import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveProfileLogResponse;
 
 @Mapper
 public class ProfileLogMapper {
@@ -28,6 +29,28 @@ public class ProfileLogMapper {
 
         return ProfileLogResponseDTO.ProfileLogItems.builder()
                 .profileLogItems(items)
+                .build();
+    }
+
+    public ProfileLogResponseDTO.AddProfileLogResponse toAddProfileLogResponse(final ProfileLog profileLog) {
+        return ProfileLogResponseDTO.AddProfileLogResponse
+                .builder()
+                .profileLogId(profileLog.getId())
+                .build();
+    }
+
+    public RemoveProfileLogResponse toRemoveProfileLog(final Long memberId, final Long profileLogId) {
+        return ProfileLogResponseDTO.RemoveProfileLogResponse
+                .builder()
+                .profileLogId(profileLogId)
+                .build();
+    }
+
+    public ProfileLogResponseDTO.UpdateProfileLogTypeResponse toUpdateProfileLogType(final ProfileLog profileLog) {
+        return ProfileLogResponseDTO.UpdateProfileLogTypeResponse
+                .builder()
+                .profileLogId(profileLog.getId())
+                .profileLogType(profileLog.getProfileLogType())
                 .build();
     }
 

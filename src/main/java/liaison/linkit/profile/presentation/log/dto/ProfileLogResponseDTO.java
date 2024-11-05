@@ -27,13 +27,41 @@ public class ProfileLogResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileLogItem {
-
         private Long profileLogId;
         private Boolean isLogPublic;
         private ProfileLogType profileLogType;
         private LocalDateTime modifiedAt;
         private String logTitle;
         private String logContent;
+    }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddProfileLogResponse {
+        private Long profileLogId;
+        private String logTitle;
+        private String logContent;
+        private LocalDateTime createdAt;
+        private ProfileLogType profileLogType;
+        private Boolean isLogPublic;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveProfileLogResponse {
+        private Long profileLogId;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateProfileLogTypeResponse {
+        private Long profileLogId;
+        private ProfileLogType profileLogType;
     }
 }

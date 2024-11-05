@@ -4,6 +4,7 @@ import java.util.List;
 import liaison.linkit.profile.business.ProfileActivityMapper;
 import liaison.linkit.profile.domain.ProfileActivity;
 import liaison.linkit.profile.implement.activity.ProfileActivityQueryAdapter;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,12 +31,18 @@ public class ProfileActivityService {
     }
 
     @Transactional(readOnly = true)
-    public ProfileActivityResponseDTO.ProfileActivityItem getProfileActivityItem(final Long memberId, final Long profileActivityId) {
-        log.info("memberId = {}의 내 로그 DTO 조회 요청 발생했습니다.", memberId);
+    public ProfileActivityResponseDTO.ProfileActivityDetail getProfileActivityDetail(final Long memberId, final Long profileActivityId) {
+        log.info("memberId = {}의 내 이력 Detail 조회 요청 발생했습니다.", memberId);
 
         final ProfileActivity profileActivity = profileActivityQueryAdapter.getProfileActivity(profileActivityId);
-        log.info("profileLog = {}가 성공적으로 조회되었습니다.", profileActivity);
+        log.info("profileActivity = {}가 성공적으로 조회되었습니다.", profileActivity);
 
-        return profileActivityMapper.toProfileActivityItem(profileActivity);
+        return profileActivityMapper.toProfileActivityDetail(profileActivity);
+    }
+
+    public ProfileActivityResponseDTO.ProfileActivityResponse addProfileActivity(final Long memberId, final ProfileActivityRequestDTO.AddProfileActivityRequest request) {
+        log.info("memberId = {}의 프로필 이력 추가 요청 발생했습니다.", memberId);
+
+        return null;
     }
 }

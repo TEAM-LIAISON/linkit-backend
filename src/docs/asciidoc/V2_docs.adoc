@@ -154,6 +154,45 @@ include::{snippets}/profile-log-controller-test/get-profile-log-items/response-f
 
 ====
 
+=== 나의 로그 단일 생성
+
+====
+요청
+
+include::{snippets}/profile-log-controller-test/add-profile-log/http-request.adoc[]
+
+응답
+include::{snippets}/profile-log-controller-test/add-profile-log/http-response.adoc[]
+include::{snippets}/profile-log-controller-test/add-profile-log/response-fields.adoc[]
+====
+
+=== 나의 로그 단일 삭제
+
+====
+요청
+
+include::{snippets}/profile-log-controller-test/remove-profile-log/http-request.adoc[]
+
+응답
+include::{snippets}/profile-log-controller-test/remove-profile-log/http-response.adoc[]
+include::{snippets}/profile-log-controller-test/remove-profile-log/response-fields.adoc[]
+====
+
+== #[프로필 - 보유 스킬]#
+
+=== 보유 스킬 전체 조회
+
+====
+요청
+
+include::{snippets}/profile-skill-controller-test/get-profile-skill-items/http-request.adoc[]
+
+응답
+include::{snippets}/profile-skill-controller-test/get-profile-skill-items/http-response.adoc[]
+include::{snippets}/profile-skill-controller-test/get-profile-skill-items/response-fields.adoc[]
+
+====
+
 == #[프로필 - 나의 이력]#
 
 === 나의 이력 전체 조회

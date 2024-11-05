@@ -23,11 +23,11 @@ import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.presentation.activity.ProfileActivityController;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItems;
-import liaison.linkit.profile.service.ProfileActivityService;
+import liaison.linkit.profile.presentation.skill.ProfileSkillController;
+import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
+import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
+import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItems;
+import liaison.linkit.profile.service.ProfileSkillService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,11 +40,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-@WebMvcTest(ProfileActivityController.class)
+@WebMvcTest(ProfileSkillController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 @Slf4j
-public class ProfileActivityControllerTest extends ControllerTest {
+public class ProfileSkillControllerTest extends ControllerTest {
 
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
@@ -53,7 +53,7 @@ public class ProfileActivityControllerTest extends ControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ProfileActivityService profileActivityService;
+    private ProfileSkillService profileSkillService;
 
     @BeforeEach
     void setUp() {
@@ -62,31 +62,31 @@ public class ProfileActivityControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
-    private ResultActions performGetProfileActivityItems() throws Exception {
+    private ResultActions performGetProfileSkillItems() throws Exception {
         return mockMvc.perform(
-                get("/api/v1/profile/activity")
+                get("/api/v1/profile/skill")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    @DisplayName("회원이 나의 로그를 전체 조회할 수 있다.")
+    @DisplayName("회원이 나의 스킬을 전체 조회할 수 있다.")
     @Test
-    void getProfileActivityItems() throws Exception {
+    void getProfileSkillItems() throws Exception {
         // given
-        final ProfileActivityResponseDTO.ProfileActivityItem firstProfileActivityItem
-                = new ProfileActivityItem(1L, "리에종", "PO", "2022.06", "2026.06");
+        final ProfileSkillResponseDTO.ProfileSkillItem firstProfileSkillItem
+                = new ProfileSkillItem(1L, "아이콘 경로", "Figma", "상");
 
-        final ProfileActivityResponseDTO.ProfileActivityItem secondProfileActivityItem
-                = new ProfileActivityItem(2L, "리에종", "디자이너", "2024.10", "2024.12");
+        final ProfileSkillResponseDTO.ProfileSkillItem secondProfileSkillItem
+                = new ProfileSkillItem(2L, "아이콘 경로", "Notion", "중상");
 
-        final ProfileActivityResponseDTO.ProfileActivityItems profileActivityItems
-                = new ProfileActivityItems(Arrays.asList(firstProfileActivityItem, secondProfileActivityItem));
+        final ProfileSkillResponseDTO.ProfileSkillItems profileSkillItems
+                = new ProfileSkillItems(Arrays.asList(firstProfileSkillItem, secondProfileSkillItem));
 
         // when
-        when(profileActivityService.getProfileActivityItems(anyLong())).thenReturn(profileActivityItems);
+        when(profileSkillService.getProfileSkillItems(anyLong())).thenReturn(profileSkillItems);
 
-        final ResultActions resultActions = performGetProfileActivityItems();
+        final ResultActions resultActions = performGetProfileSkillItems();
 
         // then
         final MvcResult mvcResult = resultActions
@@ -109,36 +109,33 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
-                                        subsectionWithPath("result.profileActivityItems[]")
+                                        subsectionWithPath("result.profileSkillItems[]")
                                                 .type(JsonFieldType.ARRAY)
-                                                .description("프로필 이력 아이템 배열"),
-                                        fieldWithPath("result.profileActivityItems[].profileActivityId")
+                                                .description("프로필 스킬 아이템 배열"),
+                                        fieldWithPath("result.profileSkillItems[].profileSkillId")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("내 이력 ID"),
-                                        fieldWithPath("result.profileActivityItems[].activityName")
+                                                .description("스킬 ID"),
+                                        fieldWithPath("result.profileSkillItems[].skillIconImagePath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 활동명"),
-                                        fieldWithPath("result.profileActivityItems[].activityRole")
+                                                .description("스킬 아이콘 이미지 경로"),
+                                        fieldWithPath("result.profileSkillItems[].skillName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 역할"),
-                                        fieldWithPath("result.profileActivityItems[].activityStartDate")
+                                                .description("스킬 이름"),
+                                        fieldWithPath("result.profileSkillItems[].skillLevel")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 시작 기간"),
-                                        fieldWithPath("result.profileActivityItems[].activityEndDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 종료 기간")
+                                                .description("스킬 숙련도 선택")
                                 )
                         )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<ProfileActivityItems> actual = objectMapper.readValue(
+        final CommonResponse<ProfileSkillItems> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<ProfileActivityItems>>() {
+                new TypeReference<CommonResponse<ProfileSkillItems>>() {
                 }
         );
 
-        final CommonResponse<ProfileActivityItems> expected = CommonResponse.onSuccess(profileActivityItems);
+        final CommonResponse<ProfileSkillItems> expected = CommonResponse.onSuccess(profileSkillItems);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
