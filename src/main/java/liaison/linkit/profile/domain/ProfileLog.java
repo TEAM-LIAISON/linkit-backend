@@ -45,4 +45,8 @@ public class ProfileLog extends BaseDateTimeEntity {
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private ProfileLogType profileLogType;
+
+    public void setProfileLogType(final ProfileLogType profileLogType) {
+        this.profileLogType = profileLogType;
+    }
 }
