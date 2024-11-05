@@ -147,3 +147,11 @@ naver:
 google:
   id: linkit@linkit.im
   password: ${google.workspace.password}
+
+cors-allowed-origins:
+  http://localhost:8080,
+  http://localhost:3000,
+  https://linkit.im,
+  https://www.linkit.im,
+  https://liaison-dev.site,
+  https://www.liaison-dev.site

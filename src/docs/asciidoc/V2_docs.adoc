@@ -6,7 +6,7 @@
 :source-highlighter: highlightjs
 :icons: font
 
-- 링킷 개발용 API 서버 도메인 네임 = https://dev.linkit.im
+- 링킷 개발용 API 서버 도메인 네임 = https://dev.liaison-dev.site
 
 - 링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im
 
@@ -151,6 +151,21 @@ include::{snippets}/profile-log-controller-test/get-profile-log-items/http-reque
 응답
 include::{snippets}/profile-log-controller-test/get-profile-log-items/http-response.adoc[]
 include::{snippets}/profile-log-controller-test/get-profile-log-items/response-fields.adoc[]
+
+====
+
+== #[프로필 - 나의 이력]#
+
+=== 나의 이력 전체 조회
+
+====
+요청
+
+include::{snippets}/profile-activity-controller-test/get-profile-activity-items/http-request.adoc[]
+
+응답
+include::{snippets}/profile-activity-controller-test/get-profile-activity-items/http-response.adoc[]
+include::{snippets}/profile-activity-controller-test/get-profile-activity-items/response-fields.adoc[]
 
 ====
 
