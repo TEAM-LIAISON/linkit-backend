@@ -2,8 +2,8 @@ package liaison.linkit.profile.service;
 
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.validator.ImageValidator;
-import liaison.linkit.image.domain.ImageFile;
-import liaison.linkit.image.infrastructure.S3Uploader;
+import liaison.linkit.file.domain.ImageFile;
+import liaison.linkit.file.infrastructure.S3Uploader;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 import liaison.linkit.profile.business.ProfileMapper;
 import liaison.linkit.profile.domain.Profile;

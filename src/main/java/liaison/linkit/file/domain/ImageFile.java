@@ -1,8 +1,8 @@
-package liaison.linkit.image.domain;
+package liaison.linkit.file.domain;
 
-import liaison.linkit.global.exception.ImageException;
-import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
+import static liaison.linkit.global.exception.ExceptionCode.FAIL_IMAGE_NAME_HASH;
+import static liaison.linkit.global.exception.ExceptionCode.NULL_IMAGE;
+import static org.springframework.util.StringUtils.getFilenameExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,10 +12,9 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static liaison.linkit.global.exception.ExceptionCode.FAIL_IMAGE_NAME_HASH;
-import static liaison.linkit.global.exception.ExceptionCode.NULL_IMAGE;
-import static org.springframework.util.StringUtils.getFilenameExtension;
+import liaison.linkit.global.exception.ImageException;
+import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 public class ImageFile {

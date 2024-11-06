@@ -221,6 +221,19 @@ include::{snippets}/profile-activity-controller-test/get-profile-activity-items/
 
 ====
 
+=== 나의 이력 생성
+
+====
+요청
+
+include::{snippets}/profile-activity-controller-test/add-profile-activity/http-request.adoc[]
+
+응답
+include::{snippets}/profile-activity-controller-test/add-profile-activity/http-response.adoc[]
+include::{snippets}/profile-activity-controller-test/add-profile-activity/response-fields.adoc[]
+
+====
+
 == #[스크랩]#
 
 == #[팀]#

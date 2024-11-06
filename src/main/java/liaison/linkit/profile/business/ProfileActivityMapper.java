@@ -3,12 +3,44 @@ package liaison.linkit.profile.business;
 import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.profile.domain.ProfileActivity;
+import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.activity.ProfileActivity;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
 
 @Mapper
 public class ProfileActivityMapper {
+
+    public ProfileActivity toAddProfileActivity(final Profile profile, final ProfileActivityRequestDTO.AddProfileActivityRequest request) {
+        return ProfileActivity
+                .builder()
+                .id(null)
+                .profile(profile)
+                .activityName(request.getActivityName())
+                .activityRole(request.getActivityRole())
+                .activityStartDate(request.getActivityStartDate())
+                .activityEndDate(request.getActivityEndDate())
+                .isActivityInProgress(request.getIsActivityInProgress())
+                .activityDescription(request.getActivityDescription())
+                .isActivityCertified(false)
+                .isActivityVerified(false)
+                .activityCertificationAttachFileName(null)
+                .activityCertificationAttachFilePath(null)
+                .build();
+    }
+
+    public ProfileActivityResponseDTO.ProfileActivityResponse toAddProfileActivityResponse(final ProfileActivity profileActivity) {
+        return ProfileActivityResponseDTO.ProfileActivityResponse
+                .builder()
+                .activityName(profileActivity.getActivityName())
+                .activityRole(profileActivity.getActivityRole())
+                .activityStartDate(profileActivity.getActivityStartDate())
+                .activityEndDate(profileActivity.getActivityEndDate())
+                .isActivityInProgress(profileActivity.isActivityInProgress())
+                .activityDescription(profileActivity.getActivityDescription())
+                .build();
+    }
 
     public ProfileActivityResponseDTO.ProfileActivityItem toProfileActivityItem(final ProfileActivity profileActivity) {
         return ProfileActivityResponseDTO.ProfileActivityItem.builder()
@@ -47,4 +79,15 @@ public class ProfileActivityMapper {
                 .activityCertificationAttachFilePath(profileActivity.getActivityCertificationAttachFilePath())
                 .build();
     }
+
+    public ProfileActivityResponseDTO.ProfileActivityCertificationResponse toAddProfileActivityCertification(final ProfileActivity profileActivity) {
+        return ProfileActivityResponseDTO.ProfileActivityCertificationResponse
+                .builder()
+                .isActivityCertified(profileActivity.isActivityCertified())
+                .isActivityVerified(profileActivity.isActivityVerified())
+                .activityCertificationAttachFileName(profileActivity.getActivityCertificationAttachFileName())
+                .activityCertificationAttachFilePath(profileActivity.getActivityCertificationAttachFilePath())
+                .build();
+    }
+
 }

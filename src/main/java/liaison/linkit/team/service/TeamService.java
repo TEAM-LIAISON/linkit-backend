@@ -2,8 +2,8 @@ package liaison.linkit.team.service;
 
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.validator.ImageValidator;
-import liaison.linkit.image.domain.ImageFile;
-import liaison.linkit.image.infrastructure.S3Uploader;
+import liaison.linkit.file.domain.ImageFile;
+import liaison.linkit.file.infrastructure.S3Uploader;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.domain.region.Region;

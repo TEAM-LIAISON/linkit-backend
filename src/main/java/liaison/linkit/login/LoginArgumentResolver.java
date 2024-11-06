@@ -68,7 +68,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private String extractRefreshToken(final Cookie... cookies) {
-        System.out.println("cookies = " + cookies);
+        log.info("cookies = {}", cookies);
         if (cookies == null) {
             throw new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN);
         }

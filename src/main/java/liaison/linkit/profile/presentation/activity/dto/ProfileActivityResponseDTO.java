@@ -42,7 +42,7 @@ public class ProfileActivityResponseDTO {
         private String activityRole;
         private String activityStartDate;
         private String activityEndDate;
-        private boolean isActivityInProgress;
+        private Boolean isActivityInProgress;
         private String activityDescription;
 
         // 증명서 및 인증 정보 변수 추가
@@ -61,7 +61,18 @@ public class ProfileActivityResponseDTO {
         private String activityRole;
         private String activityStartDate;
         private String activityEndDate;
-        private boolean isActivityInProgress;
+        private Boolean isActivityInProgress;
         private String activityDescription;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileActivityCertificationResponse {
+        private Boolean isActivityCertified;
+        private Boolean isActivityVerified;
+        private String activityCertificationAttachFileName;
+        private String activityCertificationAttachFilePath;
     }
 }
