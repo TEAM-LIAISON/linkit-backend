@@ -1,4 +1,4 @@
-package liaison.linkit.image.domain;
+package liaison.linkit.file.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

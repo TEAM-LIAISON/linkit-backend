@@ -18,10 +18,7 @@ public class ProfileActivityRequestDTO {
         private String activityRole;
         private String activityStartDate;
         private String activityEndDate;
-        private boolean isActivityInProgress;
+        private Boolean isActivityInProgress;
         private String activityDescription;
-        
-        private String activityCertificationAttachFileName;
-        private String activityCertificationAttachFilePath;
     }
 }

@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.activity;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QProfileActivity extends EntityPathBase<ProfileActivity> {
 
-    private static final long serialVersionUID = -1365399365L;
+    private static final long serialVersionUID = 337141046L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -52,7 +52,7 @@ public class QProfileActivity extends EntityPathBase<ProfileActivity> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final QProfile profile;
+    public final liaison.linkit.profile.domain.QProfile profile;
 
     public QProfileActivity(String variable) {
         this(ProfileActivity.class, forVariable(variable), INITS);
@@ -72,7 +72,7 @@ public class QProfileActivity extends EntityPathBase<ProfileActivity> {
 
     public QProfileActivity(Class<? extends ProfileActivity> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.profile = inits.isInitialized("profile") ? new QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }

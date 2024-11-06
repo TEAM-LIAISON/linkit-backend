@@ -21,7 +21,7 @@ public class ImageValidator {
         return false;
     }
 
-    public void validateSizeOfImage(final MultipartFile image) {
+    private void validateSizeOfImage(final MultipartFile image) {
         if (image == null || image.isEmpty()) {
             throw new ImageException(EMPTY_IMAGE);
         }

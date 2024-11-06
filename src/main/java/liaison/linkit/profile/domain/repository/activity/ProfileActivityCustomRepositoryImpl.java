@@ -2,8 +2,8 @@ package liaison.linkit.profile.domain.repository.activity;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import liaison.linkit.profile.domain.ProfileActivity;
-import liaison.linkit.profile.domain.QProfileActivity;
+import liaison.linkit.profile.domain.activity.ProfileActivity;
+import liaison.linkit.profile.domain.activity.QProfileActivity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

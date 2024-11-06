@@ -1,5 +1,6 @@
 package liaison.linkit.profile.presentation.activity;
 
+import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,6 +48,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityDetail(accessor.getMemberId(), profileActivityId));
     }
 
+    // 이력 생성
     @PostMapping
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityResponse> addProfileActivity(
@@ -53,5 +57,16 @@ public class ProfileActivityController {
     ) {
         log.info("memberId = {}의 프로필 이력 추가 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(profileActivityService.addProfileActivity(accessor.getMemberId(), addProfileActivityRequest));
+    }
+
+    // 이력 인증 생성
+    @PostMapping("/{profileActivityId}")
+    @MemberOnly
+    public CommonResponse<ProfileActivityResponseDTO.ProfileActivityCertificationResponse> addProfileActivityCertification(
+            @Auth final Accessor accessor,
+            @PathVariable final Long profileActivityId,
+            @RequestPart @Valid final MultipartFile profileActivityCertificationFile
+    ) {
+        return CommonResponse.onSuccess(profileActivityService.addProfileActivityCertification(accessor.getMemberId(), profileActivityId, profileActivityCertificationFile));
     }
 }

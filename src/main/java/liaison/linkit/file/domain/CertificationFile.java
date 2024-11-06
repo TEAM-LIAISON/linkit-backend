@@ -1,9 +1,8 @@
-package liaison.linkit.image.domain;
+package liaison.linkit.file.domain;
 
-import liaison.linkit.global.exception.FileException;
-import liaison.linkit.global.exception.ImageException;
-import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
+import static liaison.linkit.global.exception.ExceptionCode.FAIL_FILE_NAME_HASH;
+import static liaison.linkit.global.exception.ExceptionCode.NULL_ATTACH_FILE;
+import static org.springframework.util.StringUtils.getFilenameExtension;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,19 +12,20 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
-import static org.springframework.util.StringUtils.getFilenameExtension;
+import liaison.linkit.global.exception.FileException;
+import liaison.linkit.global.exception.ImageException;
+import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
-public class PortfolioFile {
+public class CertificationFile {
 
     private static final String EXTENSION_DELIMITER = ".";
 
     private final MultipartFile file;
     private final String hashedName;
 
-    public PortfolioFile(final MultipartFile file) {
+    public CertificationFile(final MultipartFile file) {
         validateNullFile(file);
         this.file = file;
         this.hashedName = hashName(file);
@@ -59,9 +59,11 @@ public class PortfolioFile {
     public String getContentType() {
         return this.file.getContentType();
     }
+
     public long getSize() {
         return this.file.getSize();
     }
+
     public InputStream getInputStream() throws IOException {
         return this.file.getInputStream();
     }

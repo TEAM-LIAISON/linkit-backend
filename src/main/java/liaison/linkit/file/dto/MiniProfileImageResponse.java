@@ -1,4 +1,4 @@
-package liaison.linkit.image.dto;
+package liaison.linkit.file.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

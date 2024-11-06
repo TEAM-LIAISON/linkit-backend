@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.activity;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
+import liaison.linkit.profile.domain.Profile;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,4 +46,17 @@ public class ProfileActivity extends BaseDateTimeEntity {
     private String activityCertificationAttachFileName;
     // 파일 경로
     private String activityCertificationAttachFilePath;
+
+    // 인증서
+    public void setProfileActivityCertification(
+            final boolean isActivityCertified,
+            final boolean isActivityVerified,
+            final String activityCertificationAttachFileName,
+            final String activityCertificationAttachFilePath
+    ) {
+        this.isActivityCertified = isActivityCertified;
+        this.isActivityVerified = isActivityVerified;
+        this.activityCertificationAttachFileName = activityCertificationAttachFileName;
+        this.activityCertificationAttachFilePath = activityCertificationAttachFilePath;
+    }
 }
