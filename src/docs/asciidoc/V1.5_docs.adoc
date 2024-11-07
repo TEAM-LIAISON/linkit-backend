@@ -221,6 +221,19 @@ include::{snippets}/profile-activity-controller-test/get-profile-activity-items/
 
 ====
 
+=== 나의 이력 상세 조회
+
+====
+요청
+include::{snippets}/profile-activity-controller-test/get-profile-activity-detail/http-request.adoc[]
+
+응답
+include::{snippets}/profile-activity-controller-test/get-profile-activity-detail/http-response.adoc[]
+include::{snippets}/profile-activity-controller-test/get-profile-activity-detail/response-fields.adoc[]
+
+
+====
+
 === 나의 이력 생성
 
 ====
@@ -243,6 +256,7 @@ include::{snippets}/profile-activity-controller-test/add-profile-activity-certif
 
 응답
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/http-response.adoc[]
+include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/response-fields.adoc[]
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/request-parts.adoc[]
 
 ====

@@ -37,7 +37,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityItems(accessor.getMemberId()));
     }
 
-    // 이력 상세 조회
+    // 이력 상세 조회 (명세 완료)
     @GetMapping("/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityDetail> getProfileActivityDetail(
@@ -48,7 +48,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityDetail(accessor.getMemberId(), profileActivityId));
     }
 
-    // 이력 생성 (명세 완료)
+    // 이력 생성 (명세 완료) -> 업데이트로 변경 필요
     @PostMapping
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityResponse> addProfileActivity(
@@ -58,6 +58,8 @@ public class ProfileActivityController {
         log.info("memberId = {}의 프로필 이력 추가 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(profileActivityService.addProfileActivity(accessor.getMemberId(), addProfileActivityRequest));
     }
+
+    // 이력 삭제
 
     // 이력 인증 생성 (명세 완료)
     @PostMapping("/{profileActivityId}")
@@ -69,4 +71,6 @@ public class ProfileActivityController {
     ) {
         return CommonResponse.onSuccess(profileActivityService.addProfileActivityCertification(accessor.getMemberId(), profileActivityId, profileActivityCertificationFile));
     }
+    
+    // 이력 인증 삭제
 }
