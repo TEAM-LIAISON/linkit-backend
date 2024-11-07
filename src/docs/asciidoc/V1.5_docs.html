@@ -588,6 +588,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_나의_이력_전체_조회">5.1. 나의 이력 전체 조회</a></li>
 <li><a href="#_나의_이력_생성">5.2. 나의 이력 생성</a></li>
+<li><a href="#_이력_증명서_생성">5.3. 이력 증명서 생성</a></li>
 </ul>
 </li>
 <li><a href="#_스크랩">6. <mark>[스크랩]</mark></a></li>
@@ -686,7 +687,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Wed, 13 Nov 2024 00:27:41 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Thu, 14 Nov 2024 01:49:51 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 216
 
@@ -821,7 +822,7 @@ Content-Length: 159
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2024-11-06T09:27:41.117442"
+    "logoutAt" : "2024-11-07T10:49:51.439462"
   }
 }</code></pre>
 </div>
@@ -975,7 +976,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2024-11-06T09:27:41.170536"
+    "quitAt" : "2024-11-07T10:49:51.488976"
   }
 }</code></pre>
 </div>
@@ -1046,14 +1047,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 177
+Content-Length: 178
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2024-11-06T09:27:41.07309"
+    "reAuthenticationEmailSendAt" : "2024-11-07T10:49:51.394196"
   }
 }</code></pre>
 </div>
@@ -1125,7 +1126,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 213
+Content-Length: 214
 
 {
   "isSuccess" : true,
@@ -1133,7 +1134,7 @@ Content-Length: 213
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2024-11-06T09:27:40.91141"
+    "verificationSuccessAt" : "2024-11-07T10:49:51.239418"
   }
 }</code></pre>
 </div>
@@ -1597,8 +1598,8 @@ Content-Length: 266
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/profile/log HTTP/1.1
-Authorization: refreshToken
-Cookie: refreshToken=accessToken</code></pre>
+Authorization: accessToken
+Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1622,14 +1623,14 @@ Content-Length: 601
       "profileLogId" : 1,
       "isLogPublic" : true,
       "profileLogType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2024-11-06T09:27:42.570677",
+      "modifiedAt" : "2024-11-07T10:49:52.625084",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
       "profileLogType" : "GENERAL_LOG",
-      "modifiedAt" : "2024-11-06T09:27:42.570727",
+      "modifiedAt" : "2024-11-07T10:49:52.625132",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -1717,8 +1718,8 @@ Content-Length: 601
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/profile/log HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: refreshToken
-Cookie: refreshToken=accessToken
+Authorization: accessToken
+Cookie: refreshToken=refreshToken
 
 {
   "logTitle" : "제목제목제목",
@@ -1747,7 +1748,7 @@ Content-Length: 328
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2024-11-06T09:27:42.533249",
+    "createdAt" : "2024-11-07T10:49:52.591855",
     "profileLogType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -1828,8 +1829,8 @@ Content-Length: 328
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">DELETE /api/v1/profile/log/1 HTTP/1.1
-Authorization: refreshToken
-Cookie: refreshToken=accessToken</code></pre>
+Authorization: accessToken
+Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1904,8 +1905,8 @@ Content-Length: 136
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/profile/log/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: refreshToken
-Cookie: refreshToken=accessToken
+Authorization: accessToken
+Cookie: refreshToken=refreshToken
 
 {
   "profileLogType" : "GENERAL_LOG"
@@ -2104,8 +2105,8 @@ Content-Length: 430
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/profile/activity HTTP/1.1
-Authorization: refreshToken
-Cookie: refreshToken=accessToken</code></pre>
+Authorization: accessToken
+Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2217,8 +2218,8 @@ Content-Length: 515
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/profile/activity HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: refreshToken
-Cookie: refreshToken=accessToken
+Authorization: accessToken
+Cookie: refreshToken=refreshToken
 
 {
   "activityName" : "리에종",
@@ -2315,6 +2316,75 @@ Content-Length: 326
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.activityDescription</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이력 설명</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_이력_증명서_생성"><a class="link" href="#_이력_증명서_생성">5.3. 이력 증명서 생성</a></h3>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>요청</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/profile/activity/1 HTTP/1.1
+Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Accept: application/json
+Authorization: accessToken
+Cookie: refreshToken=refreshToken
+
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=profileActivityCertificationFile; filename=증명서.pdf
+Content-Type: multipart/form-data
+
+./src/test/resources/static/증명서.pdf
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>응답</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 325
+
+{
+  "isSuccess" : true,
+  "code" : "1000",
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "isActivityCertified" : true,
+    "isActivityVerified" : false,
+    "activityCertificationAttachFileName" : "증명서.pdf",
+    "activityCertificationAttachFilePath" : "https://file.linkit.im/해시값.pdf"
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Part</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileActivityCertificationFile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력 증명 파일</p></td>
 </tr>
 </tbody>
 </table>
@@ -2441,7 +2511,7 @@ Content-Length: 178
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "teamId" : 1,
-    "createdAt" : "2024-11-06T09:27:43.231015"
+    "createdAt" : "2024-11-07T10:49:53.219455"
   }
 }</code></pre>
 </div>
@@ -2495,7 +2565,7 @@ Content-Length: 178
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-11-06 09:29:54 +0900
+Last updated 2024-11-07 10:47:11 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

@@ -234,6 +234,19 @@ include::{snippets}/profile-activity-controller-test/add-profile-activity/respon
 
 ====
 
+=== 이력 증명서 생성
+
+====
+요청
+
+include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/http-request.adoc[]
+
+응답
+include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/http-response.adoc[]
+include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/request-parts.adoc[]
+
+====
+
 == #[스크랩]#
 
 == #[팀]#

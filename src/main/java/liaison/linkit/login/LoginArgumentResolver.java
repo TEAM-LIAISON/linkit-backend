@@ -53,10 +53,10 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
         }
 
         try {
-            final String refreshToken = extractRefreshToken(request.getCookies());
             final String accessToken = extractor.extractAccessToken(webRequest.getHeader(AUTHORIZATION));
+            final String refreshToken = extractRefreshToken(request.getCookies());
 
-            jwtProvider.validateTokens(new MemberTokens(refreshToken, accessToken));
+            jwtProvider.validateTokens(new MemberTokens(accessToken, refreshToken));
 
             final Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
 
@@ -68,7 +68,6 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private String extractRefreshToken(final Cookie... cookies) {
-        log.info("cookies = {}", cookies);
         if (cookies == null) {
             throw new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN);
         }

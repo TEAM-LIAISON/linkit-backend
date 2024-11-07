@@ -13,6 +13,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +33,7 @@ import liaison.linkit.profile.presentation.activity.ProfileActivityController;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO.AddProfileActivityRequest;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityCertificationResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItems;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityResponse;
@@ -42,6 +47,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -52,7 +59,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @Slf4j
 public class ProfileActivityControllerTest extends ControllerTest {
 
-    private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
+    private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
     private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
     @Autowired
@@ -248,5 +255,49 @@ public class ProfileActivityControllerTest extends ControllerTest {
         final CommonResponse<ProfileActivityResponse> expected = CommonResponse.onSuccess(profileActivityResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 나의 이력 증명서를 추가할 수 있다.")
+    @Test
+    void addProfileActivityCertification() throws Exception {
+        // given
+        final ProfileActivityCertificationResponse profileActivityCertificationResponse
+                = new ProfileActivityCertificationResponse(true, false, "증명서.pdf", "https://file.linkit.im/해시값.pdf");
+
+        final MockMultipartFile profileActivityCertificationFile = new MockMultipartFile(
+                "profileActivityCertificationFile",
+                "증명서.pdf",
+                "multipart/form-data",
+                "./src/test/resources/static/증명서.pdf".getBytes()
+        );
+
+        final Long profileActivityId = 1L;
+
+        // when
+        when(profileActivityService.addProfileActivityCertification(anyLong(), anyLong(), any())).thenReturn(profileActivityCertificationResponse);
+
+        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/v1/profile/activity/{profileActivityId}", profileActivityId)
+                .file(profileActivityCertificationFile)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .characterEncoding("UTF-8")
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE));
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("profileActivityId")
+                                        .description("프로필 이력 ID")
+                        ),
+                        requestParts(
+                                partWithName("profileActivityCertificationFile").description("이력 증명 파일")
+                        )
+                )).andReturn();
     }
 }

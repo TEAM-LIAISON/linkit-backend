@@ -27,7 +27,7 @@ public class ProfileActivityController {
 
     private final ProfileActivityService profileActivityService;
 
-    // 이력 전체 조회
+    // 이력 전체 조회 (명세 완료)
     @GetMapping
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityItems> getProfileActivityItems(
@@ -48,7 +48,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityDetail(accessor.getMemberId(), profileActivityId));
     }
 
-    // 이력 생성
+    // 이력 생성 (명세 완료)
     @PostMapping
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityResponse> addProfileActivity(
@@ -59,7 +59,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.addProfileActivity(accessor.getMemberId(), addProfileActivityRequest));
     }
 
-    // 이력 인증 생성
+    // 이력 인증 생성 (명세 완료)
     @PostMapping("/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityCertificationResponse> addProfileActivityCertification(
