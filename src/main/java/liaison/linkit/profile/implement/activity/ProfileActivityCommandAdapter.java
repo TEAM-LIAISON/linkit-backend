@@ -14,4 +14,8 @@ public class ProfileActivityCommandAdapter {
     public ProfileActivity addProfileActivity(final ProfileActivity profileActivity) {
         return profileActivityRepository.save(profileActivity);
     }
+
+    public void removeProfileActivity(final ProfileActivity profileActivity) {
+        profileActivityRepository.delete(profileActivity);
+    }
 }

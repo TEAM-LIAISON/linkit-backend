@@ -37,7 +37,7 @@ import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseD
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityDetail;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItems;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityResponse;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
 import liaison.linkit.profile.service.ProfileActivityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -258,11 +258,11 @@ public class ProfileActivityControllerTest extends ControllerTest {
         final ProfileActivityRequestDTO.AddProfileActivityRequest addProfileActivityRequest
                 = new AddProfileActivityRequest("리에종", "PO", "2022.06", "2026.06", false, "이력 설명");
 
-        final ProfileActivityResponseDTO.ProfileActivityResponse profileActivityResponse
-                = new ProfileActivityResponse("리에종", "PO", "2022.06", "2026.06", false, "이력 설명");
+        final AddProfileActivityResponse addProfileActivityResponse
+                = new AddProfileActivityResponse("리에종", "PO", "2022.06", "2026.06", false, "이력 설명");
 
         // when
-        when(profileActivityService.addProfileActivity(anyLong(), any())).thenReturn(profileActivityResponse);
+        when(profileActivityService.addProfileActivity(anyLong(), any())).thenReturn(addProfileActivityResponse);
 
         final ResultActions resultActions = performAddProfileActivity(addProfileActivityRequest);
 
@@ -330,13 +330,13 @@ public class ProfileActivityControllerTest extends ControllerTest {
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<ProfileActivityResponse> actual = objectMapper.readValue(
+        final CommonResponse<AddProfileActivityResponse> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<ProfileActivityResponse>>() {
+                new TypeReference<CommonResponse<AddProfileActivityResponse>>() {
                 }
         );
 
-        final CommonResponse<ProfileActivityResponse> expected = CommonResponse.onSuccess(profileActivityResponse);
+        final CommonResponse<AddProfileActivityResponse> expected = CommonResponse.onSuccess(addProfileActivityResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
