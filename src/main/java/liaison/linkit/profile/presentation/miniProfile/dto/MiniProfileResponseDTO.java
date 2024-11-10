@@ -40,7 +40,8 @@ public class MiniProfileResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfilePositionItem {
-        private String positionName;
+        private String majorPosition;
+        private String subPosition;
     }
 
 
@@ -51,7 +52,7 @@ public class MiniProfileResponseDTO {
     public static class ProfileCurrentStateItem {
         private String profileStateName;
     }
-    
+
     @Builder
     @Getter
     @NoArgsConstructor

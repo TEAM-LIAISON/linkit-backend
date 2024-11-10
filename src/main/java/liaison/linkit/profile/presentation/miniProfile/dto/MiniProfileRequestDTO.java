@@ -15,7 +15,8 @@ public class MiniProfileRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateMiniProfileRequest {
-        private List<String> positionNames;
+        private String majorPosition;
+        private String subPosition;
         private String cityName;
         private String divisionName;
         private List<String> profileStateNames;

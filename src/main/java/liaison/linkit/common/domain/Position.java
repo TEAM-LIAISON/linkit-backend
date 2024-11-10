@@ -23,6 +23,9 @@ public class Position {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(name = "position_name", nullable = false)
-    private String positionName;
+    @Column(name = "major_position", nullable = false)
+    private String majorPosition;
+
+    @Column(name = "sub_position", nullable = false)
+    private String subPosition;
 }

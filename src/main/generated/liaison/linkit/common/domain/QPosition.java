@@ -21,7 +21,9 @@ public class QPosition extends EntityPathBase<Position> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath positionName = createString("positionName");
+    public final StringPath majorPosition = createString("majorPosition");
+
+    public final StringPath subPosition = createString("subPosition");
 
     public QPosition(String variable) {
         super(Position.class, forVariable(variable));

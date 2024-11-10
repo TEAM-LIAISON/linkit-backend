@@ -72,7 +72,7 @@ public class ProfileActivityController {
     }
 
     // 이력 인증 생성 (명세 완료)
-    @PostMapping("/{profileActivityId}")
+    @PostMapping("/certification/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityCertificationResponse> addProfileActivityCertification(
             @Auth final Accessor accessor,
@@ -83,7 +83,7 @@ public class ProfileActivityController {
     }
 
     // 이력 인증 삭제
-    @DeleteMapping("/{profileActivityId}")
+    @DeleteMapping("/certification/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse> removeProfileActivityCertification(
             @Auth final Accessor accessor,

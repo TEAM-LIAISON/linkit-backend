@@ -47,14 +47,15 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         .select(
                                 Projections.constructor(
                                         MiniProfileResponseDTO.ProfilePositionItem.class,
-                                        qProfilePosition.position.positionName
+                                        qProfilePosition.position.majorPosition,
+                                        qProfilePosition.position.subPosition
                                 ))
                         .from(qProfilePosition)
                         .leftJoin(qPosition)
                         .on(qProfilePosition.position.id.eq(qPosition.id))
                         .where(qProfilePosition.profile.member.id.eq(memberId))
                         .fetch();
-
+        
         List<MiniProfileResponseDTO.ProfileCurrentStateItem> profileCurrentStateItems =
                 jpaQueryFactory
                         .select(

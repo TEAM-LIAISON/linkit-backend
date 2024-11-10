@@ -360,7 +360,7 @@ public class ProfileActivityControllerTest extends ControllerTest {
         // when
         when(profileActivityService.addProfileActivityCertification(anyLong(), anyLong(), any())).thenReturn(profileActivityCertificationResponse);
 
-        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/v1/profile/activity/{profileActivityId}", profileActivityId)
+        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/v1/profile/activity/certification/{profileActivityId}", profileActivityId)
                 .file(profileActivityCertificationFile)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.MULTIPART_FORM_DATA)

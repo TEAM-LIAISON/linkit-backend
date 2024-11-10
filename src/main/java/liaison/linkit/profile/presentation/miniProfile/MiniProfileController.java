@@ -42,4 +42,5 @@ public class MiniProfileController {
     ) {
         return CommonResponse.onSuccess(miniProfileService.updateMiniProfile(accessor.getMemberId(), profileImage, updateMiniProfileRequest));
     }
+
 }
