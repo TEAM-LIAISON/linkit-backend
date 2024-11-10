@@ -13,6 +13,7 @@ import liaison.linkit.profile.domain.QProfileCurrentState;
 import liaison.linkit.profile.domain.QProfilePosition;
 import liaison.linkit.profile.domain.region.QRegion;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
     // 수정 및 보완 필요
     @Override
-    public MiniProfileResponseDTO.MiniProfileDetail findMiniProfileDetail(final Long memberId) {
+    public MiniProfileDetailResponse findMiniProfileDetail(final Long memberId) {
         QProfile qProfile = QProfile.profile;
         QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
         QPosition qPosition = QPosition.position;
@@ -55,7 +56,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         .on(qProfilePosition.position.id.eq(qPosition.id))
                         .where(qProfilePosition.profile.member.id.eq(memberId))
                         .fetch();
-        
+
         List<MiniProfileResponseDTO.ProfileCurrentStateItem> profileCurrentStateItems =
                 jpaQueryFactory
                         .select(

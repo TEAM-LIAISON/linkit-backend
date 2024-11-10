@@ -26,6 +26,6 @@ public class ProfileQueryAdapter {
     }
 
     public List<ProfileCurrentState> findProfileCurrentStatesByProfileId(final Long profileId) {
-        return profileCurrentStateRepository.findByProfileId(profileId);
+        return profileCurrentStateRepository.findProfileCurrentStatesByProfileId(profileId);
     }
 }
