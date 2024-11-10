@@ -22,6 +22,7 @@ import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileRequestDTO.UpdateMiniProfileRequest;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItems;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfilePositionItem;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.UpdateMiniProfileResponse;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +74,7 @@ public class MiniProfileService {
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
 
-        List<ProfileCurrentStateItem> profileCurrentStateItems = new ArrayList<>();
+        ProfileCurrentStateItems profileCurrentStateItems = new ProfileCurrentStateItems();
         if (profileCurrentStateQueryAdapter.existsProfileCurrentStateByProfileId(profile.getId())) {
             List<ProfileCurrentState> profileCurrentStates = profileCurrentStateQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
             profileCurrentStateItems = miniProfileMapper.toProfileCurrentStateItems(profileCurrentStates);

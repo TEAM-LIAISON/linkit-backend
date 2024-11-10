@@ -11,6 +11,7 @@ import liaison.linkit.profile.domain.ProfilePosition;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItems;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfilePositionItem;
 
 @Mapper
@@ -21,7 +22,7 @@ public class MiniProfileMapper {
             final String memberName,
             final ProfilePositionItem profilePositionItem,
             final RegionDetail regionDetail,
-            final List<ProfileCurrentStateItem> profileCurrentStateItems
+            final ProfileCurrentStateItems profileCurrentStateItems
     ) {
         return MiniProfileDetailResponse
                 .builder()
@@ -31,7 +32,7 @@ public class MiniProfileMapper {
                 .profilePositionItem(profilePositionItem)
                 .cityName(regionDetail.getCityName())
                 .divisionName(regionDetail.getDivisionName())
-                .profileCurrentStates(profileCurrentStateItems)
+                .profileCurrentStateItems(profileCurrentStateItems)
                 .isProfilePublic(profile.isProfilePublic())
                 .build();
     }
@@ -51,8 +52,8 @@ public class MiniProfileMapper {
                 .build();
     }
 
-    public List<ProfileCurrentStateItem> toProfileCurrentStateItems(final List<ProfileCurrentState> profileCurrentStates) {
-        return profileCurrentStates.stream()
+    public ProfileCurrentStateItems toProfileCurrentStateItems(final List<ProfileCurrentState> profileCurrentStates) {
+        List<ProfileCurrentStateItem> profileCurrentStateItemList = profileCurrentStates.stream()
                 .map(profileCurrentState -> {
                     ProfileState profileState = profileCurrentState.getProfileState();
                     return ProfileCurrentStateItem.builder()
@@ -60,5 +61,10 @@ public class MiniProfileMapper {
                             .build();
                 })
                 .collect(Collectors.toList());
+
+        return ProfileCurrentStateItems.builder()
+                .profileCurrentStates(profileCurrentStateItemList)
+                .build();
     }
+
 }

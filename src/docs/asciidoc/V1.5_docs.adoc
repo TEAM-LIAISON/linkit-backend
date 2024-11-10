@@ -152,6 +152,20 @@ include::{snippets}/profile-controller-test/get-profile-left-menu/http-response.
 include::{snippets}/profile-controller-test/get-profile-left-menu/response-fields.adoc[]
 ====
 
+== #[프로필 - 미니 프로필]#
+
+=== 미니 프로필 전체 조회
+
+====
+요청
+include::{snippets}/mini-profile-controller-test/get-mini-profile-detail/http-request.adoc[]
+
+응답
+include::{snippets}/mini-profile-controller-test/get-mini-profile-detail/http-response.adoc[]
+include::{snippets}/mini-profile-controller-test/get-mini-profile-detail/response-fields.adoc[]
+
+====
+
 == #[프로필 - 나의 로그]#
 
 === 나의 로그 본문 이미지 첨부

@@ -19,18 +19,14 @@ public class MiniProfileResponseDTO {
     public static class MiniProfileDetailResponse {
 
         private Long profileId;
-
         private String profileImagePath;
-
         private String memberName;
-        
         private ProfilePositionItem profilePositionItem;
 
         private String cityName;
         private String divisionName;
 
-        @Builder.Default
-        private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
+        private ProfileCurrentStateItems profileCurrentStateItems;
 
         private Boolean isProfilePublic;
 
@@ -52,6 +48,15 @@ public class MiniProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfileCurrentStateItem {
         private String profileStateName;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileCurrentStateItems {
+        @Builder.Default
+        private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
     }
 
     @Builder
