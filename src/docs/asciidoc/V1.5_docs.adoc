@@ -154,6 +154,18 @@ include::{snippets}/profile-controller-test/get-profile-left-menu/response-field
 
 == #[프로필 - 나의 로그]#
 
+=== 나의 로그 본문 이미지 첨부
+
+====
+요청
+include::{snippets}/profile-log-controller-test/add-profile-log-body-image/http-request.adoc[]
+include::{snippets}/profile-log-controller-test/add-profile-log-body-image/request-parts.adoc[]
+
+응답
+include::{snippets}/profile-log-controller-test/add-profile-log-body-image/http-response.adoc[]
+include::{snippets}/profile-log-controller-test/add-profile-log-body-image/response-fields.adoc[]
+====
+
 === 나의 로그 전체 조회
 
 ====
@@ -189,6 +201,7 @@ include::{snippets}/profile-log-controller-test/remove-profile-log/http-request.
 응답
 include::{snippets}/profile-log-controller-test/remove-profile-log/http-response.adoc[]
 include::{snippets}/profile-log-controller-test/remove-profile-log/response-fields.adoc[]
+
 ====
 
 === 나의 로그 대표글 설정 여부 수정

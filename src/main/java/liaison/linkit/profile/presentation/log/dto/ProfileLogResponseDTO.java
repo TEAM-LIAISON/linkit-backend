@@ -64,4 +64,12 @@ public class ProfileLogResponseDTO {
         private Long profileLogId;
         private ProfileLogType profileLogType;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddProfileLogBodyImageResponse {
+        private String profileLogBodyImagePath;
+    }
 }
