@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveProfileLogResponse;
 
@@ -54,4 +55,11 @@ public class ProfileLogMapper {
                 .build();
     }
 
+
+    public AddProfileLogBodyImageResponse toAddProfileLogBodyImageResponse(final String profileLogBodyImagePath) {
+        return AddProfileLogBodyImageResponse
+                .builder()
+                .profileLogBodyImagePath(profileLogBodyImagePath)
+                .build();
+    }
 }

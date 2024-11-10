@@ -16,7 +16,9 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +37,7 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.AddProfileLogRequest;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItems;
@@ -50,6 +53,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -110,6 +114,73 @@ public class ProfileLogControllerTest extends ControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateProfileLogType))
         );
+    }
+
+    @DisplayName("회원이 로그 본문에 들어가는 이미지 첨부를 할 수 있다.")
+    @Test
+    void addProfileLogBodyImage() throws Exception {
+        // given
+        final ProfileLogResponseDTO.AddProfileLogBodyImageResponse addProfileLogBodyImageResponse
+                = new AddProfileLogBodyImageResponse("https://image.linkit.im/logo.png");
+
+        final MockMultipartFile profileLogBodyImage = new MockMultipartFile(
+                "profileLogBodyImage",
+                "logo.png",
+                "multipart/form-data",
+                "./src/test/resources/static/images/logo.png".getBytes()
+        );
+
+        // when
+        when(profileLogService.addProfileLogBodyImage(anyLong(), any())).thenReturn(addProfileLogBodyImageResponse);
+
+        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/v1/profile/log/body/image")
+                .file(profileLogBodyImage)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .characterEncoding("UTF-8")
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE));
+
+        // then
+
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(restDocs.document(
+                        requestParts(
+                                partWithName("profileLogBodyImage").description("프로필 본문 이미지")
+                        ),
+                        responseFields(fieldWithPath("isSuccess")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("요청 성공 여부")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("code")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 코드")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 메시지")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("result.profileLogBodyImagePath")
+                                        .type(JsonFieldType.STRING)
+                                        .description("프로필 로그 본문 이미지 경로")
+                        )
+                )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<AddProfileLogBodyImageResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<AddProfileLogBodyImageResponse>>() {
+                }
+        );
+
+        final CommonResponse<AddProfileLogBodyImageResponse> expected = CommonResponse.onSuccess(addProfileLogBodyImageResponse);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
     @DisplayName("회원이 나의 로그를 전체 조회할 수 있다.")

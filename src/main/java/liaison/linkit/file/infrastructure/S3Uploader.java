@@ -48,6 +48,7 @@ public class S3Uploader {
     private String teamBasicLogoImageFolder;
     private String profileImageFolder;
     private String profileActivityCertificationFileFolder;
+    private String profileLogBodyImageFolder;
 
     public void deleteS3Image(final String imageUrl) {
         try {
@@ -72,13 +73,17 @@ public class S3Uploader {
             throw new RuntimeException("Error processing URL", e);
         }
     }
-    
+
     public String uploadTeamBasicLogoImage(final ImageFile imageFile) {
         return getImagePath(imageFile, teamBasicLogoImageFolder);
     }
 
     public String uploadProfileImage(final ImageFile imageFile) {
         return getImagePath(imageFile, profileImageFolder);
+    }
+
+    public String uploadProfileLogBodyImage(final ImageFile imageFile) {
+        return getImagePath(imageFile, profileLogBodyImageFolder);
     }
 
     @NotNull

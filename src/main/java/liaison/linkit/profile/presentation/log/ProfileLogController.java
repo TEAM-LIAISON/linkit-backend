@@ -1,11 +1,13 @@
 package liaison.linkit.profile.presentation.log;
 
+import jakarta.validation.Valid;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogTypeResponse;
 import liaison.linkit.profile.service.ProfileLogService;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +30,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProfileLogController {
 
     private final ProfileLogService profileLogService;
+
+    // 로그 첨부 이미지 저장
+    @PostMapping("/body/image")
+    @MemberOnly
+    public CommonResponse<AddProfileLogBodyImageResponse> addProfileLogBodyImage(
+            @Auth final Accessor accessor,
+            @RequestPart @Valid final MultipartFile profileLogBodyImage
+    ) {
+        return CommonResponse.onSuccess(profileLogService.addProfileLogBodyImage(accessor.getMemberId(), profileLogBodyImage));
+    }
 
     // 로그 전체 조회
     @GetMapping

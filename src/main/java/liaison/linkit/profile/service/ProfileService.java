@@ -43,6 +43,7 @@ public class ProfileService {
         log.info("profile = {}가 성공적으로 조회되었습니다.", profile);
 
         RegionDetail regionDetail = new RegionDetail();
+
         if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
             final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());

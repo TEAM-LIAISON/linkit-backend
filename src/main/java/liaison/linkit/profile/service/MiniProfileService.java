@@ -1,24 +1,32 @@
 package liaison.linkit.profile.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.common.validator.ImageValidator;
 import liaison.linkit.file.domain.ImageFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
-import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
-import liaison.linkit.profile.business.ProfileMapper;
+import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.profile.business.MiniProfileMapper;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.ProfileCurrentState;
+import liaison.linkit.profile.domain.ProfilePosition;
+import liaison.linkit.profile.domain.ProfileRegion;
 import liaison.linkit.profile.domain.region.Region;
-import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
-import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.implement.MiniProfileQueryAdapter;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
+import liaison.linkit.profile.implement.currentState.ProfileCurrentStateQueryAdapter;
+import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileRequestDTO.UpdateMiniProfileRequest;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItems;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfilePositionItem;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.UpdateMiniProfileResponse;
-import liaison.linkit.scrap.domain.repository.privateScrap.PrivateScrapRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,43 +37,57 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class MiniProfileService {
 
+    private final MemberQueryAdapter memberQueryAdapter;
 
     private final ProfileQueryAdapter profileQueryAdapter;
     private final MiniProfileQueryAdapter miniProfileQueryAdapter;
+
+    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
+    private final ProfileCurrentStateQueryAdapter profileCurrentStateQueryAdapter;
     private final RegionQueryAdapter regionQueryAdapter;
 
-    private final ProfileRepository profileRepository;
-    private final MemberBasicInformRepository memberBasicInformRepository;
-    private final ProfileJobRoleRepository profileJobRoleRepository;
+    private final MiniProfileMapper miniProfileMapper;
 
-    private final ProfileMapper profileMapper;
+    private final RegionMapper regionMapper;
 
     private final ImageValidator imageValidator;
 
     private final S3Uploader s3Uploader;
-    private final ApplicationEventPublisher publisher;
-
-    private final PrivateScrapRepository privateScrapRepository;
 
 
     // 미니 프로필을 조회한다
     @Transactional(readOnly = true)
-    public MiniProfileResponseDTO.MiniProfileDetail getMiniProfileDetail(final Long memberId) {
-
-        // 필요 객체
-        // profile
-        // profile_current_state
-        // 
-
+    public MiniProfileDetailResponse getMiniProfileDetail(final Long memberId) {
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
-        return miniProfileQueryAdapter.getMiniProfileDetail(memberId);
+        final String memberName = memberQueryAdapter.findById(memberId).getMemberBasicInform().getMemberName();
+
+        ProfilePositionItem profilePositionItem = new ProfilePositionItem();
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+            ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+            profilePositionItem = miniProfileMapper.toProfilePositionItem(profilePosition);
+        }
+
+        RegionDetail regionDetail = new RegionDetail();
+        if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
+            final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+        }
+
+        ProfileCurrentStateItems profileCurrentStateItems = new ProfileCurrentStateItems();
+        if (profileCurrentStateQueryAdapter.existsProfileCurrentStateByProfileId(profile.getId())) {
+            List<ProfileCurrentState> profileCurrentStates = profileCurrentStateQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
+            profileCurrentStateItems = miniProfileMapper.toProfileCurrentStateItems(profileCurrentStates);
+        }
+
+        return miniProfileMapper.toMiniProfileDetailResponse(profile, memberName, profilePositionItem, regionDetail, profileCurrentStateItems);
     }
 
 
     // 미니 프로필을 저장한다
     public UpdateMiniProfileResponse updateMiniProfile(
             final Long memberId,
+            final Long profileId,
             final MultipartFile profileImage,
             final UpdateMiniProfileRequest updateMiniProfileRequest
     ) {
@@ -89,6 +111,6 @@ public class MiniProfileService {
         // 프로필 공개 여부를 업데이트한다
         profile.setIsProfilePublic(updateMiniProfileRequest.getIsProfilePublic());
 
-        return profileMapper.toUpdateProfile(profile);
+        return miniProfileMapper.toUpdateProfile(profile);
     }
 }

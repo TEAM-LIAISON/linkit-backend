@@ -4,7 +4,6 @@ import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
@@ -14,12 +13,6 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 @Mapper
 public class ProfileMapper {
 
-    public MiniProfileResponseDTO.UpdateMiniProfileResponse toUpdateProfile(final Profile profile) {
-        return MiniProfileResponseDTO.UpdateMiniProfileResponse.builder()
-                .profileId(profile.getId())
-                .modifiedAt(profile.getModifiedAt())
-                .build();
-    }
 
     public ProfileResponseDTO.ProfileLeftMenu toProfileLeftMenu(
             final ProfileCompletionMenu profileCompletionMenu,

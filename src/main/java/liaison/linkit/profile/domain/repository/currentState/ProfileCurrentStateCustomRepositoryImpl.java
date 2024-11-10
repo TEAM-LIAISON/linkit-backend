@@ -14,12 +14,25 @@ public class ProfileCurrentStateCustomRepositoryImpl implements ProfileCurrentSt
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ProfileCurrentState> findByProfileId(final Long profileId) {
+    public List<ProfileCurrentState> findProfileCurrentStatesByProfileId(final Long profileId) {
         QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
 
         return jpaQueryFactory
                 .selectFrom(qProfileCurrentState)
                 .where(qProfileCurrentState.profile.id.eq(profileId))
                 .fetch();
+    }
+
+    @Override
+    public boolean existsProfileCurrentStateByProfileId(final Long profileId) {
+        QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+
+        Integer count = jpaQueryFactory
+                .selectOne()
+                .from(qProfileCurrentState)
+                .where(qProfileCurrentState.profile.id.eq(profileId))
+                .fetchFirst();
+
+        return count != null;
     }
 }
