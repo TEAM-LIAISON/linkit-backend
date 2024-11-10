@@ -60,7 +60,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @AutoConfigureRestDocs
 @Slf4j
 public class ProfileLogControllerTest extends ControllerTest {
-    private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
+    private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
     private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
     @Autowired

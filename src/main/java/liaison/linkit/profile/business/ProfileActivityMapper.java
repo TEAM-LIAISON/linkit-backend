@@ -7,6 +7,7 @@ import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.activity.ProfileActivity;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
 
 @Mapper
@@ -30,8 +31,8 @@ public class ProfileActivityMapper {
                 .build();
     }
 
-    public ProfileActivityResponseDTO.ProfileActivityResponse toAddProfileActivityResponse(final ProfileActivity profileActivity) {
-        return ProfileActivityResponseDTO.ProfileActivityResponse
+    public AddProfileActivityResponse toAddProfileActivityResponse(final ProfileActivity profileActivity) {
+        return AddProfileActivityResponse
                 .builder()
                 .activityName(profileActivity.getActivityName())
                 .activityRole(profileActivity.getActivityRole())
@@ -90,4 +91,19 @@ public class ProfileActivityMapper {
                 .build();
     }
 
+
+    public ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse toRemoveProfileActivityCertification(final Long profileActivityId) {
+        return ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse
+                .builder()
+                .profileActivityId(profileActivityId)
+                .build();
+    }
+
+
+    public ProfileActivityResponseDTO.RemoveProfileActivityResponse toRemoveProfileActivity(final Long profileActivityId) {
+        return ProfileActivityResponseDTO.RemoveProfileActivityResponse
+                .builder()
+                .profileActivityId(profileActivityId)
+                .build();
+    }
 }

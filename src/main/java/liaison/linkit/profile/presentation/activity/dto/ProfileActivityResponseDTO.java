@@ -56,7 +56,7 @@ public class ProfileActivityResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileActivityResponse {
+    public static class AddProfileActivityResponse {
         private String activityName;
         private String activityRole;
         private String activityStartDate;
@@ -74,5 +74,21 @@ public class ProfileActivityResponseDTO {
         private Boolean isActivityVerified;
         private String activityCertificationAttachFileName;
         private String activityCertificationAttachFilePath;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveProfileActivityCertificationResponse {
+        private Long profileActivityId;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveProfileActivityResponse {
+        private Long profileActivityId;
     }
 }

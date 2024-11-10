@@ -72,40 +72,39 @@
 //    @Test
 //    void createTeamMiniProfile() throws Exception {
 //        // given
-//        final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest = new TeamMiniProfileCreateRequest(
-//                "사이드 프로젝트 함께 할 개발자를 찾고 있어요",
-//                Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공"),
-//                true
-//        );
 //
-//        final MockMultipartFile teamMiniProfileImage = new MockMultipartFile(
-//                "teamMiniProfileImage",
-//                "logo.png",
-//                "multipart/form-data",
-//                "./src/test/resources/static/images/logo.png".getBytes()
-//        );
+//final TeamMiniProfileCreateRequest teamMiniProfileCreateRequest = new TeamMiniProfileCreateRequest(
+//        "사이드 프로젝트 함께 할 개발자를 찾고 있어요",
+//        Arrays.asList("재택 가능", "Pre-A", "사수 있음", "스톡 제공"),
+//        true
+//);
 //
-//        final MockMultipartFile createRequest = new MockMultipartFile(
-//                "teamMiniProfileCreateRequest",
-//                null,
-//                "application/json",
-//                objectMapper.writeValueAsString(teamMiniProfileCreateRequest).getBytes(StandardCharsets.UTF_8)
-//        );
+//final MockMultipartFile teamMiniProfileImage = new MockMultipartFile(
+//        "teamMiniProfileImage",
+//        "logo.png",
+//        "multipart/form-data",
+//        "./src/test/resources/static/images/logo.png".getBytes()
+//);
 //
+//final MockMultipartFile createRequest = new MockMultipartFile(
+//        "teamMiniProfileCreateRequest",
+//        null,
+//        "application/json",
+//        objectMapper.writeValueAsString(teamMiniProfileCreateRequest).getBytes(StandardCharsets.UTF_8)
 ////        MockMultipartHttpServletRequestBuilder customRestDocumentationRequestBuilder =
 ////                RestDocumentationRequestBuilders.multipart("/team/mini-profile", teamMiniProfileImage, createRequest);
 //
 //        // when
 //
-//        final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/team/mini-profile")
-//                .file(teamMiniProfileImage)
-//                .file(createRequest)
-//                .accept(APPLICATION_JSON)
-//                .contentType(MediaType.MULTIPART_FORM_DATA)
+//final ResultActions resultActions = mockMvc.perform(multipart(HttpMethod.POST, "/team/mini-profile")
+//        .file(teamMiniProfileImage)
+//        .file(createRequest)
+//        .accept(APPLICATION_JSON)
+//        .contentType(MediaType.MULTIPART_FORM_DATA)
 ////                .content(objectMapper.writeValueAsString(miniProfileCreateRequest))
-//                .characterEncoding("UTF-8")
-//                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-//                .cookie(COOKIE));
+//        .characterEncoding("UTF-8")
+//        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+//        .cookie(COOKIE));
 //
 //        // then
 //        resultActions.andExpect(status().isCreated())

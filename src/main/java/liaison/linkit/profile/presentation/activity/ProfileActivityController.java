@@ -7,9 +7,11 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
 import liaison.linkit.profile.service.ProfileActivityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +29,7 @@ public class ProfileActivityController {
 
     private final ProfileActivityService profileActivityService;
 
-    // 이력 전체 조회
+    // 이력 전체 조회 (명세 완료)
     @GetMapping
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityItems> getProfileActivityItems(
@@ -37,7 +39,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityItems(accessor.getMemberId()));
     }
 
-    // 이력 상세 조회
+    // 이력 상세 조회 (명세 완료)
     @GetMapping("/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityDetail> getProfileActivityDetail(
@@ -48,10 +50,10 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityDetail(accessor.getMemberId(), profileActivityId));
     }
 
-    // 이력 생성
+    // 이력 생성 (명세 완료) -> 업데이트로 변경 필요
     @PostMapping
     @MemberOnly
-    public CommonResponse<ProfileActivityResponseDTO.ProfileActivityResponse> addProfileActivity(
+    public CommonResponse<AddProfileActivityResponse> addProfileActivity(
             @Auth final Accessor accessor,
             @RequestBody final ProfileActivityRequestDTO.AddProfileActivityRequest addProfileActivityRequest
     ) {
@@ -59,8 +61,18 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.addProfileActivity(accessor.getMemberId(), addProfileActivityRequest));
     }
 
-    // 이력 인증 생성
-    @PostMapping("/{profileActivityId}")
+    // 이력 삭제
+    @DeleteMapping("/{profileActivityId}")
+    @MemberOnly
+    public CommonResponse<ProfileActivityResponseDTO.RemoveProfileActivityResponse> removeProfileActivity(
+            @Auth final Accessor accessor,
+            @PathVariable final Long profileActivityId
+    ) {
+        return CommonResponse.onSuccess(profileActivityService.removeProfileActivity(accessor.getMemberId(), profileActivityId));
+    }
+
+    // 이력 인증 생성 (명세 완료)
+    @PostMapping("/certification/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityCertificationResponse> addProfileActivityCertification(
             @Auth final Accessor accessor,
@@ -68,5 +80,15 @@ public class ProfileActivityController {
             @RequestPart @Valid final MultipartFile profileActivityCertificationFile
     ) {
         return CommonResponse.onSuccess(profileActivityService.addProfileActivityCertification(accessor.getMemberId(), profileActivityId, profileActivityCertificationFile));
+    }
+
+    // 이력 인증 삭제
+    @DeleteMapping("/certification/{profileActivityId}")
+    @MemberOnly
+    public CommonResponse<ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse> removeProfileActivityCertification(
+            @Auth final Accessor accessor,
+            @PathVariable final Long profileActivityId
+    ) {
+        return CommonResponse.onSuccess(profileActivityService.removeProfileActivityCertification(accessor.getMemberId(), profileActivityId));
     }
 }
