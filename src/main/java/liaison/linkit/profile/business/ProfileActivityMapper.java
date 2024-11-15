@@ -9,6 +9,7 @@ import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDT
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.UpdateProfileActivityResponse;
 
 @Mapper
 public class ProfileActivityMapper {
@@ -33,6 +34,18 @@ public class ProfileActivityMapper {
 
     public AddProfileActivityResponse toAddProfileActivityResponse(final ProfileActivity profileActivity) {
         return AddProfileActivityResponse
+                .builder()
+                .activityName(profileActivity.getActivityName())
+                .activityRole(profileActivity.getActivityRole())
+                .activityStartDate(profileActivity.getActivityStartDate())
+                .activityEndDate(profileActivity.getActivityEndDate())
+                .isActivityInProgress(profileActivity.isActivityInProgress())
+                .activityDescription(profileActivity.getActivityDescription())
+                .build();
+    }
+
+    public UpdateProfileActivityResponse toUpdateProfileActivityResponse(final ProfileActivity profileActivity) {
+        return UpdateProfileActivityResponse
                 .builder()
                 .activityName(profileActivity.getActivityName())
                 .activityRole(profileActivity.getActivityRole())

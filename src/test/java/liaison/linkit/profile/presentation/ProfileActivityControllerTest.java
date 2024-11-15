@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -32,12 +33,16 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.presentation.activity.ProfileActivityController;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO.AddProfileActivityRequest;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO.UpdateProfileActivityRequest;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityCertificationResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityDetail;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItems;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.RemoveProfileActivityResponse;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.UpdateProfileActivityResponse;
 import liaison.linkit.profile.service.ProfileActivityService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -99,6 +104,29 @@ public class ProfileActivityControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
+    }
+
+    private ResultActions performUpdateProfileActivity(final Long profileActivityId, final UpdateProfileActivityRequest request) throws Exception {
+        return mockMvc.perform(
+                post("/api/v1/profile/activity/{profileActivityId}", profileActivityId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)));
+    }
+
+    private ResultActions performRemoveProfileActivity(final Long profileActivityId) throws Exception {
+        return mockMvc.perform(
+                delete("/api/v1/profile/activity/{profileActivityId}", profileActivityId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE));
+    }
+
+    private ResultActions performRemoveActivityCertification(final Long profileActivityId) throws Exception {
+        return mockMvc.perform(
+                delete("/api/v1/profile/activity/certification/{profileActivityId}", profileActivityId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE));
     }
 
     @DisplayName("회원이 나의 이력을 전체 조회할 수 있다.")
@@ -254,7 +282,6 @@ public class ProfileActivityControllerTest extends ControllerTest {
     @Test
     void addProfileActivity() throws Exception {
         // given
-
         final ProfileActivityRequestDTO.AddProfileActivityRequest addProfileActivityRequest
                 = new AddProfileActivityRequest("리에종", "PO", "2022.06", "2026.06", false, "이력 설명");
 
@@ -341,6 +368,153 @@ public class ProfileActivityControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
+    @DisplayName("회원이 나의 이력을 수정할 수 있다.")
+    @Test
+    void updateProfileActivity() throws Exception {
+        // given
+
+        final ProfileActivityRequestDTO.UpdateProfileActivityRequest updateProfileActivityRequest
+                = new UpdateProfileActivityRequest("리에종2", "BE", "2023.09", "2024.08", false, "이력 설명2");
+
+        final UpdateProfileActivityResponse updateProfileActivityResponse
+                = new UpdateProfileActivityResponse("리에종2", "BE", "2023.09", "2024.08", false, "이력 설명2");
+
+        // when
+        when(profileActivityService.updateProfileActivity(anyLong(), anyLong(), any())).thenReturn(updateProfileActivityResponse);
+
+        final ResultActions resultActions = performUpdateProfileActivity(1L, updateProfileActivityRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("profileActivityId")
+                                        .description("프로필 이력 ID")
+                        ),
+                        requestFields(
+                                fieldWithPath("activityName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 활동명"),
+                                fieldWithPath("activityRole")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 역할"),
+                                fieldWithPath("activityStartDate")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 시작 기간"),
+                                fieldWithPath("activityEndDate")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 종료 기간"),
+                                fieldWithPath("isActivityInProgress")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("이력 진행 여부"),
+                                fieldWithPath("activityDescription")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 설명")
+                        ),
+                        responseFields(
+                                fieldWithPath("isSuccess")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("요청 성공 여부")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("code")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 코드")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 메시지")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("result.activityName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 활동명"),
+                                fieldWithPath("result.activityRole")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 역할"),
+                                fieldWithPath("result.activityStartDate")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 시작 기간"),
+                                fieldWithPath("result.activityEndDate")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 종료 기간"),
+                                fieldWithPath("result.isActivityInProgress")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("이력 진행 여부"),
+                                fieldWithPath("result.activityDescription")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이력 설명")
+                        )
+                )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<UpdateProfileActivityResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<UpdateProfileActivityResponse>>() {
+                }
+        );
+
+        final CommonResponse<UpdateProfileActivityResponse> expected = CommonResponse.onSuccess(updateProfileActivityResponse);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 나의 이력을 삭제할 수 있다.")
+    @Test
+    void removeProfileActivity() throws Exception {
+        // given
+        final ProfileActivityResponseDTO.RemoveProfileActivityResponse removeProfileActivityResponse
+                = new RemoveProfileActivityResponse(1L);
+        // when
+        when(profileActivityService.removeProfileActivity(anyLong(), anyLong())).thenReturn(removeProfileActivityResponse);
+
+        final ResultActions resultActions = performRemoveProfileActivity(1L);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("profileActivityId")
+                                        .description("프로필 이력 ID")
+                        ),
+                        responseFields(fieldWithPath("isSuccess")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("요청 성공 여부")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("code")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 코드")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 메시지")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("result.profileActivityId")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("프로필 이력 ID")
+                        )
+                )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<RemoveProfileActivityResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<RemoveProfileActivityResponse>>() {
+                }
+        );
+
+        final CommonResponse<RemoveProfileActivityResponse> expected = CommonResponse.onSuccess(removeProfileActivityResponse);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
     @DisplayName("회원이 나의 이력 증명서를 추가할 수 있다.")
     @Test
     void addProfileActivityCertification() throws Exception {
@@ -420,6 +594,59 @@ public class ProfileActivityControllerTest extends ControllerTest {
         final CommonResponse<ProfileActivityCertificationResponse> expected = CommonResponse.onSuccess(profileActivityCertificationResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
 
+    @DisplayName("회원이 나의 이력 증명서를 추가할 수 있다.")
+    @Test
+    void removeProfileActivityCertification() throws Exception {
+        // given
+        final ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse removeProfileActivityCertificationResponse
+                = new RemoveProfileActivityCertificationResponse(1L);
+
+        // when
+        when(profileActivityService.removeProfileActivityCertification(anyLong(), anyLong())).thenReturn(removeProfileActivityCertificationResponse);
+
+        final ResultActions resultActions = performRemoveActivityCertification(1L);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("profileActivityId")
+                                        .description("프로필 이력 ID")
+                        ),
+                        responseFields(fieldWithPath("isSuccess")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("요청 성공 여부")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("code")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 코드")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 메시지")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("result.profileActivityId")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("프로필 이력 ID")
+                        )
+                )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<RemoveProfileActivityCertificationResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<RemoveProfileActivityCertificationResponse>>() {
+                }
+        );
+
+        final CommonResponse<RemoveProfileActivityCertificationResponse> expected = CommonResponse.onSuccess(removeProfileActivityCertificationResponse);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }
