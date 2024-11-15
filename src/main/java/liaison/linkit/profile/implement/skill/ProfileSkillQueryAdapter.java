@@ -1,4 +1,4 @@
-package liaison.linkit.profile.implement;
+package liaison.linkit.profile.implement.skill;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
@@ -18,5 +18,9 @@ public class ProfileSkillQueryAdapter {
 
     public List<ProfileSkill> getProfileSkills(final Long memberId) {
         return profileSkillRepository.getProfileSkills(memberId);
+    }
+
+    public boolean existsByProfileId(final Long profileId) {
+        return profileSkillRepository.existsByProfileId(profileId);
     }
 }

@@ -72,18 +72,6 @@ public class ProfileSkillRepositoryCustomImpl implements ProfileSkillRepositoryC
                 .fetch();
     }
 
-//    @Override
-//    public Optional<ProfileSkill> findByProfileId(Long profileId) {
-//        QProfileSkill profileSkill = QProfileSkill.profileSkill;
-//
-//        ProfileSkill result = jpaQueryFactory
-//                .selectFrom(profileSkill)
-//                .where(profileSkill.profile.id.eq(profileId))
-//                .fetchOne();
-//
-//        return Optional.ofNullable(result);
-//    }
-
     @Override
     public void deleteAllByProfileId(Long profileId) {
         QProfileSkill profileSkill = QProfileSkill.profileSkill;

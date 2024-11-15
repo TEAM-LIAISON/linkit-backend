@@ -61,7 +61,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.addProfileActivity(accessor.getMemberId(), addProfileActivityRequest));
     }
 
-    // 이력 수정
+    // 이력 수정 (명세 완료)
     @PostMapping("/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.UpdateProfileActivityResponse> updateProfileActivity(

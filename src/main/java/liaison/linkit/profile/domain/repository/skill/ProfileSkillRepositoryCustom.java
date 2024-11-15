@@ -10,8 +10,6 @@ public interface ProfileSkillRepositoryCustom {
     ProfileSkillResponseDTO.ProfileSkillItems findProfileSkillItemsDTO(final Long memberId);
 
     List<ProfileSkill> getProfileSkills(final Long memberId);
-//
-//    Optional<ProfileSkill> findByProfileId(final Long profileId);
 
     void deleteAllByProfileId(final Long profileId);
 }

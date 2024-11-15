@@ -1,6 +1,5 @@
 package liaison.linkit.profile.presentation.skill.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,6 @@ public class ProfileSkillResponseDTO {
     @AllArgsConstructor
     public static class ProfileSkillItem {
         private Long profileSkillId;
-        private String skillIconImagePath;
         private String skillName;
         private String skillLevel;
     }
@@ -27,6 +25,6 @@ public class ProfileSkillResponseDTO {
     @AllArgsConstructor
     public static class ProfileSkillItems {
         @Builder.Default
-        private List<ProfileSkillItem> profileSkillItems = new ArrayList<>();
+        private List<ProfileSkillItem> profileSkillItems = List.of();
     }
 }
