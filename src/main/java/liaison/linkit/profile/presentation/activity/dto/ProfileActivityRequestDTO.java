@@ -21,4 +21,18 @@ public class ProfileActivityRequestDTO {
         private Boolean isActivityInProgress;
         private String activityDescription;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateProfileActivityRequest {
+        private String activityName;
+        private String activityRole;
+        private String activityStartDate;
+        private String activityEndDate;
+        private Boolean isActivityInProgress;
+        private String activityDescription;
+    }
+
 }

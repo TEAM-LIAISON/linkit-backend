@@ -69,6 +69,19 @@ public class ProfileActivityResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class UpdateProfileActivityResponse {
+        private String activityName;
+        private String activityRole;
+        private String activityStartDate;
+        private String activityEndDate;
+        private Boolean isActivityInProgress;
+        private String activityDescription;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ProfileActivityCertificationResponse {
         private Boolean isActivityCertified;
         private Boolean isActivityVerified;

@@ -287,6 +287,33 @@ include::{snippets}/profile-activity-controller-test/add-profile-activity/respon
 
 ====
 
+=== 나의 이력 수정
+
+====
+요청
+include::{snippets}/profile-activity-controller-test/update-profile-activity/http-request.adoc[]
+include::{snippets}/profile-activity-controller-test/update-profile-activity/path-parameters.adoc[]
+include::{snippets}/profile-activity-controller-test/update-profile-activity/request-fields.adoc[]
+
+응답
+include::{snippets}/profile-activity-controller-test/update-profile-activity/http-response.adoc[]
+include::{snippets}/profile-activity-controller-test/update-profile-activity/response-fields.adoc[]
+
+====
+
+=== 나의 이력 삭제
+
+====
+요청
+include::{snippets}/profile-activity-controller-test/remove-profile-activity/http-request.adoc[]
+include::{snippets}/profile-activity-controller-test/remove-profile-activity/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-activity-controller-test/remove-profile-activity/http-response.adoc[]
+include::{snippets}/profile-activity-controller-test/remove-profile-activity/response-fields.adoc[]
+
+====
+
 === 이력 증명서 생성
 
 ====
@@ -298,6 +325,19 @@ include::{snippets}/profile-activity-controller-test/add-profile-activity-certif
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/http-response.adoc[]
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/response-fields.adoc[]
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/request-parts.adoc[]
+
+====
+
+=== 이력 증명서 삭제
+
+====
+요청
+include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/http-request.adoc[]
+include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/http-response.adoc[]
+include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/response-fields.adoc[]
 
 ====
 

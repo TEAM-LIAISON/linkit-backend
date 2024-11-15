@@ -50,7 +50,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityDetail(accessor.getMemberId(), profileActivityId));
     }
 
-    // 이력 생성 (명세 완료) -> 업데이트로 변경 필요
+    // 이력 생성 (명세 완료)
     @PostMapping
     @MemberOnly
     public CommonResponse<AddProfileActivityResponse> addProfileActivity(
@@ -61,7 +61,19 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.addProfileActivity(accessor.getMemberId(), addProfileActivityRequest));
     }
 
-    // 이력 삭제
+    // 이력 수정
+    @PostMapping("/{profileActivityId}")
+    @MemberOnly
+    public CommonResponse<ProfileActivityResponseDTO.UpdateProfileActivityResponse> updateProfileActivity(
+            @Auth final Accessor accessor,
+            @PathVariable final Long profileActivityId,
+            @RequestBody final ProfileActivityRequestDTO.UpdateProfileActivityRequest updateProfileActivityRequest
+    ) {
+        log.info("memberId = {}의 프로필 이력 수정 요청이 발생했습니다.", accessor.getMemberId());
+        return CommonResponse.onSuccess(profileActivityService.updateProfileActivity(accessor.getMemberId(), profileActivityId, updateProfileActivityRequest));
+    }
+
+    // 이력 삭제 (명세 완료)
     @DeleteMapping("/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.RemoveProfileActivityResponse> removeProfileActivity(

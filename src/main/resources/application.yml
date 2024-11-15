@@ -177,3 +177,7 @@ cors-allowed-origins:
   https://liaison-dev.site,
   https://www.liaison-dev.site,
   https://linkit-dev.vercel.app
+
+logging:
+  level:
+    root: debug

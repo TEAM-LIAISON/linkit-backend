@@ -14,9 +14,11 @@ import liaison.linkit.profile.implement.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.activity.ProfileActivityCommandAdapter;
 import liaison.linkit.profile.implement.activity.ProfileActivityQueryAdapter;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO.UpdateProfileActivityRequest;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.RemoveProfileActivityResponse;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.UpdateProfileActivityResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,11 +71,18 @@ public class ProfileActivityService {
         return profileActivityMapper.toAddProfileActivityResponse(savedProfileActivity);
     }
 
+    public UpdateProfileActivityResponse updateProfileActivity(final Long memberId, final Long profileActivityId, final UpdateProfileActivityRequest updateProfileActivityRequest) {
+        log.info("memberId = {}의 프로필 이력 수정 요청 발생했습니다.", memberId);
+        final ProfileActivity updatedProfileActivity = profileActivityCommandAdapter.updateProfileActivity(profileActivityId, updateProfileActivityRequest);
+        return profileActivityMapper.toUpdateProfileActivityResponse(updatedProfileActivity);
+    }
+
     public RemoveProfileActivityResponse removeProfileActivity(final Long memberId, final Long profileActivityId) {
         final ProfileActivity profileActivity = profileActivityQueryAdapter.getProfileActivity(profileActivityId);
 
         if (profileActivity.getActivityCertificationAttachFilePath() != null) {
             s3Uploader.deleteFile(profileActivity.getActivityCertificationAttachFilePath());
+            profileActivity.setProfileActivityCertification(false, false, null, null);
         }
 
         profileActivityCommandAdapter.removeProfileActivity(profileActivity);
@@ -105,7 +114,12 @@ public class ProfileActivityService {
             final Long profileActivityId
     ) {
         final ProfileActivity profileActivity = profileActivityQueryAdapter.getProfileActivity(profileActivityId);
+
+        // 업로드 파일 삭제
         s3Uploader.deleteFile(profileActivity.getActivityCertificationAttachFilePath());
+
+        // 프로필 이력 인증 정보 업데이트
+        profileActivity.setProfileActivityCertification(false, false, null, null);
 
         return profileActivityMapper.toRemoveProfileActivityCertification(profileActivityId);
     }
