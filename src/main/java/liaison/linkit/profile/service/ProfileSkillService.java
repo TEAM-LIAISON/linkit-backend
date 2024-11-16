@@ -36,7 +36,7 @@ public class ProfileSkillService {
         return profileSkillMapper.toProfileSkillItems(profileSkills);
     }
 
-    public ProfileSkillResponseDTO.ProfileSkillItems addProfileSkillItems(final Long memberId, final ProfileSkillRequestDTO.AddProfileSkillRequest addProfileSkillRequest) {
+    public ProfileSkillResponseDTO.ProfileSkillItems updateProfileSkillItems(final Long memberId, final ProfileSkillRequestDTO.AddProfileSkillRequest addProfileSkillRequest) {
         log.info("memberId = {}의 내 스킬 Items 수정 요청이 발생했습니다.", memberId);
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
@@ -51,7 +51,7 @@ public class ProfileSkillService {
                 .toList();
 
         profileSkillCommandAdapter.addProfileSkills(profileSkills);
-        
+
         return profileSkillMapper.toProfileSkillItems(profileSkills);
     }
 }

@@ -40,6 +40,6 @@ public class ProfileSkillController {
             @RequestBody final ProfileSkillRequestDTO.AddProfileSkillRequest profileSkillRequest
     ) {
         log.info("memberId = {}의 프로필 스킬 전체 수정 요청이 발생했습니다.", accessor.getMemberId());
-        return CommonResponse.onSuccess(profileSkillService.addProfileSkillItems(accessor.getMemberId(), profileSkillRequest));
+        return CommonResponse.onSuccess(profileSkillService.updateProfileSkillItems(accessor.getMemberId(), profileSkillRequest));
     }
 }
