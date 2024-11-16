@@ -2,7 +2,9 @@ package liaison.linkit.profile.business;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileSkill;
+import liaison.linkit.profile.presentation.skill.dto.ProfileSkillRequestDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
 
@@ -13,7 +15,6 @@ public class ProfileSkillMapper {
         return ProfileSkillResponseDTO.ProfileSkillItem
                 .builder()
                 .profileSkillId(profileSkill.getId())
-                .skillIconImagePath(profileSkill.getSkillIconImagePath())
                 .skillName(profileSkill.getSkillName())
                 .skillLevel(profileSkill.getSkillLevel())
                 .build();
@@ -30,5 +31,12 @@ public class ProfileSkillMapper {
                 .build();
     }
 
+    public ProfileSkill toProfileSkill(Profile profile, ProfileSkillRequestDTO.AddProfileSkillItem requestItem) {
+        return ProfileSkill.builder()
+                .profile(profile)
+                .skillName(requestItem.getSkillName())
+                .skillLevel(requestItem.getSkillLevel())
+                .build();
+    }
 
 }

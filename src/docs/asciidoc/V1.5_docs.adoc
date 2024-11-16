@@ -246,6 +246,20 @@ include::{snippets}/profile-skill-controller-test/get-profile-skill-items/respon
 
 ====
 
+=== 보유 스킬 전체 업데이트
+
+====
+요청
+include::{snippets}/profile-skill-controller-test/update-profile-skill-items/http-request.adoc[]
+include::{snippets}/profile-skill-controller-test/update-profile-skill-items/request-fields.adoc[]
+
+응답
+include::{snippets}/profile-skill-controller-test/update-profile-skill-items/http-response.adoc[]
+include::{snippets}/profile-skill-controller-test/update-profile-skill-items/response-fields.adoc[]
+
+
+====
+
 == #[프로필 - 나의 이력]#
 
 === 나의 이력 전체 조회
