@@ -1,8 +1,6 @@
 package liaison.linkit.common.validator;
 
-import static liaison.linkit.global.exception.ExceptionCode.EMPTY_IMAGE;
-
-import liaison.linkit.global.exception.ImageException;
+import liaison.linkit.file.exception.image.InvalidImageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,7 @@ public class ImageValidator {
 
     private void validateSizeOfImage(final MultipartFile image) {
         if (image == null || image.isEmpty()) {
-            throw new ImageException(EMPTY_IMAGE);
+            throw InvalidImageException.EXCEPTION;
         }
     }
 }

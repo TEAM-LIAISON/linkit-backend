@@ -1,7 +1,6 @@
 package liaison.linkit.exception;
 
 import liaison.linkit.global.exception.ExceptionCode;
-import liaison.linkit.global.exception.ExceptionResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

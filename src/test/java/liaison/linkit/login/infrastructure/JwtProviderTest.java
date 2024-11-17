@@ -1,9 +1,5 @@
 package liaison.linkit.login.infrastructure;
 
-import static liaison.linkit.global.exception.ExceptionCode.EXPIRED_PERIOD_ACCESS_TOKEN;
-import static liaison.linkit.global.exception.ExceptionCode.EXPIRED_PERIOD_REFRESH_TOKEN;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_ACCESS_TOKEN;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -14,9 +10,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import liaison.linkit.global.exception.AuthException;
-import liaison.linkit.global.exception.ExpiredPeriodJwtException;
-import liaison.linkit.global.exception.InvalidJwtException;
 import liaison.linkit.login.domain.MemberTokens;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,5 @@
 package liaison.linkit.login;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_REQUEST;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_FOUND_REFRESH_TOKEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 import jakarta.servlet.http.Cookie;
@@ -9,8 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.global.exception.RefreshTokenException;
+import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
@@ -48,10 +45,6 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             final WebDataBinderFactory binderFactory
     ) {
         final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
-        if (request == null) {
-            throw new BadRequestException(INVALID_REQUEST);
-        }
-
         try {
             final String accessToken = extractor.extractAccessToken(webRequest.getHeader(AUTHORIZATION));
             final String refreshToken = extractRefreshToken(request.getCookies());
@@ -61,7 +54,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             final Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
 
             return Accessor.member(memberId);
-        } catch (final RefreshTokenException e) {
+        } catch (final RefreshTokenExpiredException e) {
             log.info("게스트로 처리됩니다.");
             return Accessor.guest();
         }
@@ -69,12 +62,12 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     private String extractRefreshToken(final Cookie... cookies) {
         if (cookies == null) {
-            throw new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN);
+            throw RefreshTokenExpiredException.EXCEPTION;
         }
         return Arrays.stream(cookies)
                 .filter(this::isValidRefreshToken)
                 .findFirst()
-                .orElseThrow(() -> new RefreshTokenException(NOT_FOUND_REFRESH_TOKEN))
+                .orElseThrow(() -> RefreshTokenExpiredException.EXCEPTION)
                 .getValue();
     }
 

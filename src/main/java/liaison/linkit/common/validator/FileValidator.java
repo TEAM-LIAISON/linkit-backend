@@ -1,8 +1,6 @@
 package liaison.linkit.common.validator;
 
-import static liaison.linkit.global.exception.ExceptionCode.EMPTY_FILE;
-
-import liaison.linkit.global.exception.FileException;
+import liaison.linkit.file.exception.file.EmptyFileRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +22,7 @@ public class FileValidator {
 
     private void validateSizeOfFile(final MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            throw new FileException(EMPTY_FILE);
+            throw EmptyFileRequestException.EXCEPTION;
         }
     }
 }

@@ -1,23 +1,25 @@
 package liaison.linkit.login.infrastructure.oauthprovider;
 
-import liaison.linkit.global.exception.AuthException;
-import liaison.linkit.login.domain.OauthAccessToken;
-import liaison.linkit.login.domain.OauthProvider;
-import liaison.linkit.login.domain.OauthUserInfo;
-import liaison.linkit.login.infrastructure.oauthUserInfo.KakaoUserInfo;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import static java.lang.Boolean.TRUE;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.lang.Boolean.TRUE;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_AUTHORIZATION_CODE;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
+import liaison.linkit.common.exception.NotSupportedOauthServiceException;
+import liaison.linkit.login.domain.OauthAccessToken;
+import liaison.linkit.login.domain.OauthProvider;
+import liaison.linkit.login.domain.OauthUserInfo;
+import liaison.linkit.login.exception.AuthCodeBadRequestException;
+import liaison.linkit.login.infrastructure.oauthUserInfo.KakaoUserInfo;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 @Component
 public class KakaoOauthProvider implements OauthProvider {
@@ -71,7 +73,7 @@ public class KakaoOauthProvider implements OauthProvider {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         }
-        throw new AuthException(NOT_SUPPORTED_OAUTH_SERVICE);
+        throw NotSupportedOauthServiceException.EXCEPTION;
     }
 
     private String requestAccessToken(final String code) {
@@ -93,7 +95,7 @@ public class KakaoOauthProvider implements OauthProvider {
         );
 
         return Optional.ofNullable(accessTokenResponse.getBody())
-                .orElseThrow(() -> new AuthException(INVALID_AUTHORIZATION_CODE))
+                .orElseThrow(() -> AuthCodeBadRequestException.EXCEPTION)
                 .getAccessToken();
     }
 }

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.global.exception.ExceptionCode;
-import liaison.linkit.global.exception.ExceptionResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,5 @@
 package liaison.linkit.file.domain;
 
-import static liaison.linkit.global.exception.ExceptionCode.FAIL_IMAGE_NAME_HASH;
-import static liaison.linkit.global.exception.ExceptionCode.NULL_IMAGE;
 import static org.springframework.util.StringUtils.getFilenameExtension;
 
 import java.io.IOException;
@@ -12,7 +10,8 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import liaison.linkit.global.exception.ImageException;
+import liaison.linkit.file.exception.image.EmptyImageRequestException;
+import liaison.linkit.file.exception.image.ImageNameHashErrorException;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +31,7 @@ public class ImageFile {
 
     private void validateNullImage(final MultipartFile file) {
         if (file.isEmpty()) {
-            throw new ImageException(NULL_IMAGE);
+            throw EmptyImageRequestException.EXCEPTION;
         }
     }
 
@@ -45,7 +44,7 @@ public class ImageFile {
             final byte[] hashBytes = hashAlgorithm.digest(nameAndDate.getBytes(StandardCharsets.UTF_8));
             return bytesToHex(hashBytes) + filenameExtension;
         } catch (final NoSuchAlgorithmException e) {
-            throw new ImageException(FAIL_IMAGE_NAME_HASH);
+            throw ImageNameHashErrorException.EXCEPTION;
         }
     }
 

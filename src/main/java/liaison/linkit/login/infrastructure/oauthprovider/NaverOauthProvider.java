@@ -2,10 +2,10 @@ package liaison.linkit.login.infrastructure.oauthprovider;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import liaison.linkit.global.exception.AuthException;
 import liaison.linkit.login.domain.OauthAccessToken;
 import liaison.linkit.login.domain.OauthProvider;
 import liaison.linkit.login.domain.OauthUserInfo;
+import liaison.linkit.login.exception.AuthCodeBadRequestException;
 import liaison.linkit.login.infrastructure.oauthUserInfo.NaverUserInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -17,8 +17,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_AUTHORIZATION_CODE;
-
 @Component
 public class NaverOauthProvider implements OauthProvider {
     private static final String PROVIDER_NAME = "naver";
@@ -29,7 +27,7 @@ public class NaverOauthProvider implements OauthProvider {
     protected final String tokenUri;
     protected final String userUri;
 
-    public NaverOauthProvider (
+    public NaverOauthProvider(
             @Value("${NAVER_CLIENT_ID}") final String clientId,
             @Value("${NAVER_CLIENT_SECRET}") final String clientSecret,
             @Value("${NAVER_REDIRECT_URL}") String redirectUri,
@@ -44,7 +42,9 @@ public class NaverOauthProvider implements OauthProvider {
     }
 
     @Override
-    public boolean is(final String name) { return PROVIDER_NAME.equals(name); }
+    public boolean is(final String name) {
+        return PROVIDER_NAME.equals(name);
+    }
 
     @Override
     public OauthUserInfo getUserInfo(final String code) {
@@ -102,7 +102,7 @@ public class NaverOauthProvider implements OauthProvider {
         );
 
         return Optional.ofNullable(accessTokenResponse.getBody())
-                .orElseThrow(() -> new AuthException(INVALID_AUTHORIZATION_CODE))
+                .orElseThrow(() -> AuthCodeBadRequestException.EXCEPTION)
                 .getAccessToken();
     }
 }
