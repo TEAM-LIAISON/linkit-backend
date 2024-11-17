@@ -35,6 +35,7 @@ public class ProfileActivityMapper {
     public AddProfileActivityResponse toAddProfileActivityResponse(final ProfileActivity profileActivity) {
         return AddProfileActivityResponse
                 .builder()
+                .profileActivityId(profileActivity.getId())
                 .activityName(profileActivity.getActivityName())
                 .activityRole(profileActivity.getActivityRole())
                 .activityStartDate(profileActivity.getActivityStartDate())
@@ -47,6 +48,7 @@ public class ProfileActivityMapper {
     public UpdateProfileActivityResponse toUpdateProfileActivityResponse(final ProfileActivity profileActivity) {
         return UpdateProfileActivityResponse
                 .builder()
+                .profileActivityId(profileActivity.getId())
                 .activityName(profileActivity.getActivityName())
                 .activityRole(profileActivity.getActivityRole())
                 .activityStartDate(profileActivity.getActivityStartDate())

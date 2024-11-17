@@ -1,6 +1,7 @@
 package liaison.linkit.login.exception;
 
 import static liaison.linkit.common.consts.LinkitStatic.BAD_REQUEST;
+import static liaison.linkit.common.consts.LinkitStatic.DUPLICATE;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -13,7 +14,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum LoginErrorCode implements BaseErrorCode {
-    AUTH_CODE_BAD_REQUEST(BAD_REQUEST, "AUTH_CODE_400_1", "잘못된 인증 코드 요청입니다.");
+    AUTH_CODE_BAD_REQUEST(BAD_REQUEST, "AUTH_CODE_400_1", "잘못된 인증 코드 요청입니다."),
+    DUPLICATE_EMAIL_REQUEST(DUPLICATE, "DUPLICATE_EMAIL_409_1", "중복된 이메일에 대한 로그인 요청입니다.");
 
     private final Integer status;
     private final String code;

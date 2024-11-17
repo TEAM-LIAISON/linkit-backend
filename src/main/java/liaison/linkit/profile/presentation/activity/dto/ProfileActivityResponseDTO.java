@@ -57,6 +57,7 @@ public class ProfileActivityResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddProfileActivityResponse {
+        private Long profileActivityId;
         private String activityName;
         private String activityRole;
         private String activityStartDate;
@@ -70,6 +71,7 @@ public class ProfileActivityResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateProfileActivityResponse {
+        private Long profileActivityId;
         private String activityName;
         private String activityRole;
         private String activityStartDate;

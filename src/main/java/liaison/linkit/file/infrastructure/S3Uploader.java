@@ -1,10 +1,5 @@
 package liaison.linkit.file.infrastructure;
 
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_FILE;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_FILE_PATH;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_IMAGE;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_IMAGE_PATH;
-
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -14,8 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import liaison.linkit.file.domain.CertificationFile;
-import liaison.linkit.global.exception.ImageException;
 import liaison.linkit.file.domain.ImageFile;
+import liaison.linkit.file.exception.file.InvalidFileException;
+import liaison.linkit.file.exception.file.InvalidFilePathException;
+import liaison.linkit.file.exception.image.InvalidImageException;
+import liaison.linkit.file.exception.image.InvalidImagePathException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,7 +54,7 @@ public class S3Uploader {
             String path = url.getPath().substring(1);
             s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
         } catch (AmazonServiceException e) {
-            throw new ImageException(INVALID_IMAGE_PATH);
+            throw InvalidImagePathException.EXCEPTION;
         } catch (Exception e) {
             throw new RuntimeException("Error processing URL", e);
         }
@@ -68,7 +66,7 @@ public class S3Uploader {
             String path = url.getPath().substring(1);
             s3Client.deleteObject(new DeleteObjectRequest(bucket, path));
         } catch (AmazonServiceException e) {
-            throw new ImageException(INVALID_FILE_PATH);
+            throw InvalidFilePathException.EXCEPTION;
         } catch (Exception e) {
             throw new RuntimeException("Error processing URL", e);
         }
@@ -100,9 +98,9 @@ public class S3Uploader {
             String objectUrl = "https://" + cloudFrontImageDomain + "/" + uploadedImagePath;
             return objectUrl;
         } catch (final AmazonServiceException e) {
-            throw new ImageException(INVALID_IMAGE_PATH);
+            throw InvalidImagePathException.EXCEPTION;
         } catch (final IOException e) {
-            throw new ImageException(INVALID_IMAGE);
+            throw InvalidImageException.EXCEPTION;
         }
     }
 
@@ -124,9 +122,9 @@ public class S3Uploader {
             String objectUrl = "https://" + cloudFrontFileDomain + "/" + uploadedFilePath;
             return objectUrl;
         } catch (final AmazonServiceException e) {
-            throw new ImageException(INVALID_FILE_PATH);
+            throw InvalidFilePathException.EXCEPTION;
         } catch (final IOException e) {
-            throw new ImageException(INVALID_FILE);
+            throw InvalidFileException.EXCEPTION;
         }
     }
 }

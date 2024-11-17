@@ -1,9 +1,10 @@
 package liaison.linkit.login.infrastructure.oauthprovider;
 
-import liaison.linkit.global.exception.AuthException;
+import liaison.linkit.common.exception.NotSupportedOauthServiceException;
 import liaison.linkit.login.domain.OauthAccessToken;
 import liaison.linkit.login.domain.OauthProvider;
 import liaison.linkit.login.domain.OauthUserInfo;
+import liaison.linkit.login.exception.AuthCodeBadRequestException;
 import liaison.linkit.login.infrastructure.oauthUserInfo.GoogleUserInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -12,9 +13,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Optional;
-
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_AUTHORIZATION_CODE;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
 
 @Component
 public class GoogleOauthProvider implements OauthProvider {
@@ -41,7 +39,9 @@ public class GoogleOauthProvider implements OauthProvider {
     }
 
     @Override
-    public boolean is(final String name) { return PROVIDER_NAME.equals(name); }
+    public boolean is(final String name) {
+        return PROVIDER_NAME.equals(name);
+    }
 
     @Override
     public OauthUserInfo getUserInfo(final String code) {
@@ -60,9 +60,9 @@ public class GoogleOauthProvider implements OauthProvider {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         }
-        throw new AuthException(NOT_SUPPORTED_OAUTH_SERVICE);
+        throw NotSupportedOauthServiceException.EXCEPTION;
     }
-
+    
     private String requestAccessToken(final String code) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         final HttpHeaders httpHeaders = new HttpHeaders();
@@ -84,7 +84,7 @@ public class GoogleOauthProvider implements OauthProvider {
         );
 
         return Optional.ofNullable(accessTokenResponse.getBody())
-                .orElseThrow(() -> new AuthException(INVALID_AUTHORIZATION_CODE))
+                .orElseThrow(() -> AuthCodeBadRequestException.EXCEPTION)
                 .getAccessToken();
     }
 }

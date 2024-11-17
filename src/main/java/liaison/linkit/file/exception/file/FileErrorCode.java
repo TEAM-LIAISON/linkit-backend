@@ -1,7 +1,8 @@
-package liaison.linkit.member.exception.member;
+package liaison.linkit.file.exception.file;
 
+import static liaison.linkit.common.consts.LinkitStatic.BAD_REQUEST;
+import static liaison.linkit.common.consts.LinkitStatic.INTERNAL_SERVER;
 import static liaison.linkit.common.consts.LinkitStatic.NOT_FOUND;
-import static liaison.linkit.common.consts.LinkitStatic.UNAUTHORIZED;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -13,9 +14,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum MemberErrorCode implements BaseErrorCode {
-    FAIL_MEMBER_GENERATE(UNAUTHORIZED, "MEMBER_403_1", "회원 생성 과정에서 문제가 발생했습니다."),
-    MEMBER_NOT_FOUND(NOT_FOUND, "MEMBER_404_1", "회원을 찾을 수 없습니다.");
+public enum FileErrorCode implements BaseErrorCode {
+    EMPTY_FILE_REQUEST(BAD_REQUEST, "FILE_400_1", "요청한 파일이 없습니다."),
+    INVALID_FILE_REQUEST(BAD_REQUEST, "FILE_400_2", "유효하지 않은 파일입니다."),
+    INVALID_FILE_PATH(NOT_FOUND, "FILE_404_1", "유효하지 않은 파일 경로입니다."),
+    FILE_NAME_HASH_ERROR(INTERNAL_SERVER, "FILE_500_1", "유효하지 않은 파일 경로입니다.");
 
     private final Integer status;
     private final String code;

@@ -1,10 +1,5 @@
 package liaison.linkit.login.infrastructure;
 
-import static liaison.linkit.global.exception.ExceptionCode.EXPIRED_PERIOD_ACCESS_TOKEN;
-import static liaison.linkit.global.exception.ExceptionCode.EXPIRED_PERIOD_REFRESH_TOKEN;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_ACCESS_TOKEN;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
-
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
@@ -16,8 +11,10 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
-import liaison.linkit.global.exception.ExpiredPeriodJwtException;
-import liaison.linkit.global.exception.InvalidJwtException;
+import liaison.linkit.common.exception.ExpiredAccessTokenException;
+import liaison.linkit.common.exception.InvalidAccessTokenException;
+import liaison.linkit.common.exception.InvalidRefreshTokenException;
+import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.domain.MemberTokens;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -74,19 +71,19 @@ public class JwtProvider {
         try {
             parseToken(refreshToken);
         } catch (final ExpiredJwtException e) {
-            throw new ExpiredPeriodJwtException(EXPIRED_PERIOD_REFRESH_TOKEN);
+            throw RefreshTokenExpiredException.EXCEPTION;
         } catch (final JwtException | IllegalArgumentException e) {
-            throw new InvalidJwtException(INVALID_REFRESH_TOKEN);
+            throw InvalidRefreshTokenException.EXCEPTION;
         }
     }
 
     private void validateAccessToken(final String accessToken) {
         try {
-            parseToken(accessToken);
+            parseToken(accessToken);  // JWT 토큰을 파싱
         } catch (final ExpiredJwtException e) {
-            throw new ExpiredPeriodJwtException(EXPIRED_PERIOD_ACCESS_TOKEN);
+            throw ExpiredAccessTokenException.EXCEPTION;
         } catch (final JwtException | IllegalArgumentException e) {
-            throw new InvalidJwtException(INVALID_ACCESS_TOKEN);
+            throw InvalidAccessTokenException.EXCEPTION;
         }
     }
 
@@ -107,7 +104,7 @@ public class JwtProvider {
         validateRefreshToken(refreshToken);
         try {
             validateAccessToken(accessToken);
-        } catch (final ExpiredPeriodJwtException e) {
+        } catch (final InvalidAccessTokenException e) {
             return true;
         }
         return false;

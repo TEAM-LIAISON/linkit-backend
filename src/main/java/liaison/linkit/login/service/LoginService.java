@@ -1,13 +1,9 @@
 package liaison.linkit.login.service;
 
-import static liaison.linkit.global.exception.ExceptionCode.DUPLICATED_EMAIL;
-import static liaison.linkit.global.exception.ExceptionCode.FAIL_TO_GENERATE_MEMBER;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_REFRESH_TOKEN;
-
 import jakarta.mail.MessagingException;
 import java.util.Optional;
 import java.util.Random;
-import liaison.linkit.global.exception.AuthException;
+import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.business.AccountMapper;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.login.domain.OauthProvider;
@@ -15,7 +11,8 @@ import liaison.linkit.login.domain.OauthProviders;
 import liaison.linkit.login.domain.OauthUserInfo;
 import liaison.linkit.login.domain.RefreshToken;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
-import liaison.linkit.login.exception.LoginBadRequestException;
+import liaison.linkit.login.exception.AuthCodeBadRequestException;
+import liaison.linkit.login.exception.DuplicateEmailRequestException;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.EmailReAuthenticationRedisUtil;
 import liaison.linkit.login.infrastructure.JwtProvider;
@@ -30,6 +27,7 @@ import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingReposi
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
+import liaison.linkit.member.exception.member.FailMemberGenerateException;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
@@ -121,13 +119,13 @@ public class LoginService {
 
                 return member;
             } else if (memberQueryAdapter.existsByEmail(email)) {
-                throw new AuthException(DUPLICATED_EMAIL);
+                throw DuplicateEmailRequestException.EXCEPTION;
             }
             tryCount += 1;
         }
-        throw new AuthException(FAIL_TO_GENERATE_MEMBER);
+        throw FailMemberGenerateException.EXCEPTION;
     }
-
+    
     public AccountResponseDTO.RenewTokenResponse renewalAccessToken(
             final String refreshTokenRequest, final String authorizationHeader
     ) {
@@ -138,7 +136,7 @@ public class LoginService {
 
     private AccountResponseDTO.RenewTokenResponse getRenewalToken(final String refreshTokenRequest) {
         final RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenRequest)
-                .orElseThrow(() -> new AuthException(INVALID_REFRESH_TOKEN));
+                .orElseThrow(() -> RefreshTokenExpiredException.EXCEPTION);
         return accountMapper.toRenewTokenResponse(jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()));
     }
 
@@ -201,7 +199,7 @@ public class LoginService {
 
         // 인증 코드가 잘못 입력된 경우
         if (!verifyEmailCode(changeRequestEmail, authCode)) {
-            throw LoginBadRequestException.EXCEPTION;
+            throw AuthCodeBadRequestException.EXCEPTION;
         }
 
         final Member member = memberQueryAdapter.findById(memberId);
