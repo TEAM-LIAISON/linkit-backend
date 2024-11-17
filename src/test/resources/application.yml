@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/linkit_test_sql_db
+    url: jdbc:mysql://localhost:3306/linkit
     username: ${database.username}
     password: ${database.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,7 +10,7 @@ spring:
       port: ${redis.port}
   sql:
     init:
-      mode: never
+      mode: always
   security:
     oauth2:
       client:

@@ -79,7 +79,7 @@ public class JwtProvider {
 
     private void validateAccessToken(final String accessToken) {
         try {
-            parseToken(accessToken);
+            parseToken(accessToken);  // JWT 토큰을 파싱
         } catch (final ExpiredJwtException e) {
             throw ExpiredAccessTokenException.EXCEPTION;
         } catch (final JwtException | IllegalArgumentException e) {
@@ -104,7 +104,7 @@ public class JwtProvider {
         validateRefreshToken(refreshToken);
         try {
             validateAccessToken(accessToken);
-        } catch (final ExpiredAccessTokenException e) {
+        } catch (final InvalidAccessTokenException e) {
             return true;
         }
         return false;

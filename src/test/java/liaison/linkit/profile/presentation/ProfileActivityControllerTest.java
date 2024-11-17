@@ -286,7 +286,7 @@ public class ProfileActivityControllerTest extends ControllerTest {
                 = new AddProfileActivityRequest("리에종", "PO", "2022.06", "2026.06", false, "이력 설명");
 
         final AddProfileActivityResponse addProfileActivityResponse
-                = new AddProfileActivityResponse("리에종", "PO", "2022.06", "2026.06", false, "이력 설명");
+                = new AddProfileActivityResponse(1L, "리에종", "PO", "2022.06", "2026.06", false, "이력 설명");
 
         // when
         when(profileActivityService.addProfileActivity(anyLong(), any())).thenReturn(addProfileActivityResponse);
@@ -334,6 +334,9 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.profileActivityId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 이력 ID"),
                                         fieldWithPath("result.activityName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("이력 활동명"),
@@ -377,7 +380,7 @@ public class ProfileActivityControllerTest extends ControllerTest {
                 = new UpdateProfileActivityRequest("리에종2", "BE", "2023.09", "2024.08", false, "이력 설명2");
 
         final UpdateProfileActivityResponse updateProfileActivityResponse
-                = new UpdateProfileActivityResponse("리에종2", "BE", "2023.09", "2024.08", false, "이력 설명2");
+                = new UpdateProfileActivityResponse(2L, "리에종2", "BE", "2023.09", "2024.08", false, "이력 설명2");
 
         // when
         when(profileActivityService.updateProfileActivity(anyLong(), anyLong(), any())).thenReturn(updateProfileActivityResponse);
@@ -428,6 +431,9 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                         .type(JsonFieldType.STRING)
                                         .description("요청 성공 메시지")
                                         .attributes(field("constraint", "문자열")),
+                                fieldWithPath("result.profileActivityId")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("프로필 이력 ID"),
                                 fieldWithPath("result.activityName")
                                         .type(JsonFieldType.STRING)
                                         .description("이력 활동명"),
