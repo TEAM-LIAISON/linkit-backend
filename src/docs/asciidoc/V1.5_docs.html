@@ -703,7 +703,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 24 Nov 2024 05:48:12 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 24 Nov 2024 06:26:06 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 216
 
@@ -838,7 +838,7 @@ Content-Length: 159
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2024-11-17T14:48:12.012315"
+    "logoutAt" : "2024-11-17T15:26:06.140268"
   }
 }</code></pre>
 </div>
@@ -992,7 +992,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2024-11-17T14:48:12.069457"
+    "quitAt" : "2024-11-17T15:26:06.202528"
   }
 }</code></pre>
 </div>
@@ -1070,7 +1070,7 @@ Content-Length: 178
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2024-11-17T14:48:11.960151"
+    "reAuthenticationEmailSendAt" : "2024-11-17T15:26:06.082683"
   }
 }</code></pre>
 </div>
@@ -1150,7 +1150,7 @@ Content-Length: 214
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2024-11-17T14:48:11.651316"
+    "verificationSuccessAt" : "2024-11-17T15:26:05.781363"
   }
 }</code></pre>
 </div>
@@ -2068,7 +2068,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 600
+Content-Length: 601
 
 {
   "isSuccess" : true,
@@ -2079,14 +2079,14 @@ Content-Length: 600
       "profileLogId" : 1,
       "isLogPublic" : true,
       "profileLogType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2024-11-17T14:48:13.89283",
+      "modifiedAt" : "2024-11-17T15:26:08.046585",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
       "profileLogType" : "GENERAL_LOG",
-      "modifiedAt" : "2024-11-17T14:48:13.892878",
+      "modifiedAt" : "2024-11-17T15:26:08.046642",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -2204,7 +2204,7 @@ Content-Length: 328
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2024-11-17T14:48:13.850213",
+    "createdAt" : "2024-11-17T15:26:07.999821",
     "profileLogType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -2970,13 +2970,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 326
+Content-Length: 355
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
+    "profileActivityId" : 1,
     "activityName" : "리에종",
     "activityRole" : "PO",
     "activityStartDate" : "2022.06",
@@ -3015,6 +3016,11 @@ Content-Length: 326
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이력 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.activityName</code></p></td>
@@ -3158,13 +3164,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 328
+Content-Length: 357
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
+    "profileActivityId" : 2,
     "activityName" : "리에종2",
     "activityRole" : "BE",
     "activityStartDate" : "2023.09",
@@ -3203,6 +3210,11 @@ Content-Length: 328
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이력 ID</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.activityName</code></p></td>
@@ -3659,7 +3671,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 177
+Content-Length: 178
 
 {
   "isSuccess" : true,
@@ -3667,7 +3679,7 @@ Content-Length: 177
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "teamId" : 1,
-    "createdAt" : "2024-11-17T14:48:14.43656"
+    "createdAt" : "2024-11-17T15:26:08.596094"
   }
 }</code></pre>
 </div>

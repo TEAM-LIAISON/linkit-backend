@@ -16,10 +16,12 @@ import liaison.linkit.common.exception.InvalidAccessTokenException;
 import liaison.linkit.common.exception.InvalidRefreshTokenException;
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.domain.MemberTokens;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class JwtProvider {
 
     public static final String EMPTY_SUBJECT = "";
@@ -63,16 +65,27 @@ public class JwtProvider {
     }
 
     public void validateTokens(final MemberTokens memberTokens) {
-        validateRefreshToken(memberTokens.getRefreshToken());
-        validateAccessToken(memberTokens.getAccessToken());
+        final String refreshToken = memberTokens.getRefreshToken();
+        final String accessToken = memberTokens.getAccessToken();
+
+        try {
+            validateRefreshToken(refreshToken);
+            validateAccessToken(accessToken);
+        } catch (RefreshTokenExpiredException e) {
+            throw e;
+        } catch (InvalidAccessTokenException e) {
+            throw e;
+        }
     }
 
     private void validateRefreshToken(final String refreshToken) {
         try {
             parseToken(refreshToken);
         } catch (final ExpiredJwtException e) {
+            log.info("RefreshToken 만료 = {}", e.getMessage());
             throw RefreshTokenExpiredException.EXCEPTION;
         } catch (final JwtException | IllegalArgumentException e) {
+            log.info("유효하지 않은 RefreshToken = {}", e.getMessage());
             throw InvalidRefreshTokenException.EXCEPTION;
         }
     }
@@ -81,8 +94,10 @@ public class JwtProvider {
         try {
             parseToken(accessToken);  // JWT 토큰을 파싱
         } catch (final ExpiredJwtException e) {
+            log.info("AccessToken 만료 = {}", e.getMessage());
             throw ExpiredAccessTokenException.EXCEPTION;
         } catch (final JwtException | IllegalArgumentException e) {
+            log.info("유효하지 않은 AccessToken = {}", e.getMessage());
             throw InvalidAccessTokenException.EXCEPTION;
         }
     }
