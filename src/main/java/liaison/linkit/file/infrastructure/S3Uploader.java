@@ -46,6 +46,7 @@ public class S3Uploader {
     private String teamBasicLogoImageFolder;
     private String profileImageFolder;
     private String profileActivityCertificationFileFolder;
+    private String profileAwardsCertificationFileFolder;
     private String profileLogBodyImageFolder;
 
     public void deleteS3Image(final String imageUrl) {
@@ -106,6 +107,10 @@ public class S3Uploader {
 
     public String uploadProfileActivityFile(final CertificationFile certificationFile) {
         return getFilePath(certificationFile, profileActivityCertificationFileFolder);
+    }
+
+    public String uploadProfileAwardsFile(final CertificationFile certificationFile) {
+        return getFilePath(certificationFile, profileAwardsCertificationFileFolder);
     }
 
     @NotNull

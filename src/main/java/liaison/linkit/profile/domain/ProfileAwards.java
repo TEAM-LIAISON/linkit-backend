@@ -46,14 +46,26 @@ public class ProfileAwards extends BaseDateTimeEntity {
     // 주최 및 주관
     @Column(nullable = false)
     private String awardsOrganizer;
-    
+
     // 수상 설명
     @Column(nullable = false)
     private String awardsDescription;
 
-    private Boolean isAwardsCertified;
-    private Boolean isAwardsVerified;
+    private boolean isAwardsCertified;
+    private boolean isAwardsVerified;
     private String awardsCertificationAttachFileName;
     private String awardsCertificationAttachFilePath;
-    private String awardsCertificationDescription;
+
+    // 수상 인증서 세팅 메서드
+    public void setProfileAwardsCertification(
+            final boolean isAwardsCertified,
+            final boolean isAwardsVerified,
+            final String awardsCertificationAttachFileName,
+            final String awardsCertificationAttachFilePath
+    ) {
+        this.isAwardsCertified = isAwardsCertified;
+        this.isAwardsVerified = isAwardsVerified;
+        this.awardsCertificationAttachFileName = awardsCertificationAttachFileName;
+        this.awardsCertificationAttachFilePath = awardsCertificationAttachFilePath;
+    }
 }
