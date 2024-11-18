@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.license;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QProfileLicense extends EntityPathBase<ProfileLicense> {
 
-    private static final long serialVersionUID = -100964075L;
+    private static final long serialVersionUID = -1497963166L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -39,8 +39,6 @@ public class QProfileLicense extends EntityPathBase<ProfileLicense> {
 
     public final StringPath licenseCertificationAttachFilePath = createString("licenseCertificationAttachFilePath");
 
-    public final StringPath licenseCertificationDescription = createString("licenseCertificationDescription");
-
     public final StringPath licenseDescription = createString("licenseDescription");
 
     public final StringPath licenseInstitution = createString("licenseInstitution");
@@ -50,7 +48,7 @@ public class QProfileLicense extends EntityPathBase<ProfileLicense> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final QProfile profile;
+    public final liaison.linkit.profile.domain.QProfile profile;
 
     public QProfileLicense(String variable) {
         this(ProfileLicense.class, forVariable(variable), INITS);
@@ -70,7 +68,7 @@ public class QProfileLicense extends EntityPathBase<ProfileLicense> {
 
     public QProfileLicense(Class<? extends ProfileLicense> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.profile = inits.isInitialized("profile") ? new QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }

@@ -1,15 +1,15 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.awards;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
+import liaison.linkit.profile.domain.Profile;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,23 +32,18 @@ public class ProfileAwards extends BaseDateTimeEntity {
     private Profile profile;
 
     // 대회 이름
-    @Column(nullable = false)
     private String awardsName;
 
     // 훈격(순위)
-    @Column(nullable = false)
     private String awardsRanking;
 
     // 수상 시기
-    @Column(nullable = false)
     private String awardsDate;
 
     // 주최 및 주관
-    @Column(nullable = false)
     private String awardsOrganizer;
 
     // 수상 설명
-    @Column(nullable = false)
     private String awardsDescription;
 
     private boolean isAwardsCertified;

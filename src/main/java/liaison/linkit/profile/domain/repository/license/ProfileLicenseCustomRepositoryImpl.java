@@ -1,11 +1,10 @@
 package liaison.linkit.profile.domain.repository.license;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import liaison.linkit.profile.domain.QProfileLicense;
-import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItem;
-import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItems;
+import liaison.linkit.profile.domain.license.ProfileLicense;
+import liaison.linkit.profile.domain.license.QProfileLicense;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO.UpdateProfileLicenseRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -13,34 +12,41 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomRepository {
 
-    private final JPAQueryFactory queryFactory;
+    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public ProfileLicenseItems getProfileLicenseItems(final Long memberId) {
+    public List<ProfileLicense> getProfileLicenses(final Long memberId) {
         QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
 
-        List<ProfileLicenseItem> profileLicenseItems =
-                queryFactory
-                        .select(
-                                Projections.constructor(
-                                        ProfileLicenseItem.class,
-                                        qProfileLicense.id,
-                                        qProfileLicense.licenseName,
-                                        qProfileLicense.licenseInstitution,
-                                        qProfileLicense.licenseAcquisitionDate,
-                                        qProfileLicense.licenseDescription,
-                                        qProfileLicense.isLicenseCertified,
-                                        qProfileLicense.licenseCertificationAttachFileName,
-                                        qProfileLicense.licenseCertificationAttachFilePath,
-                                        qProfileLicense.licenseCertificationDescription
-                                ))
-                        .from(qProfileLicense)
-                        .where(qProfileLicense.profile.member.id.eq(memberId))
-                        .fetch();
+        return jpaQueryFactory
+                .selectFrom(qProfileLicense)
+                .where(qProfileLicense.profile.member.id.eq(memberId))
+                .fetch();
+    }
 
-        return ProfileLicenseItems
-                .builder()
-                .profileLicenseItems(profileLicenseItems)
-                .build();
+    @Override
+    public ProfileLicense updateProfileLicense(final Long profileLicenseId, final UpdateProfileLicenseRequest updateProfileLicense) {
+        QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
+
+        // 프로필 활동 업데이트
+        long updatedCount = jpaQueryFactory
+                .update(qProfileLicense)
+                .set(qProfileLicense.licenseName, updateProfileLicense.getLicenseName())
+                .set(qProfileLicense.licenseInstitution, updateProfileLicense.getLicenseInstitution())
+                .set(qProfileLicense.licenseAcquisitionDate, updateProfileLicense.getLicenseAcquisitionDate())
+                .set(qProfileLicense.licenseDescription, updateProfileLicense.getLicenseDescription())
+                .where(qProfileLicense.id.eq(profileLicenseId))
+                .execute();
+
+        if (updatedCount > 0) {
+            // 업데이트된 ProfileLicense 조회 및 반환
+            return jpaQueryFactory
+                    .selectFrom(qProfileLicense)
+                    .where(qProfileLicense.id.eq(profileLicenseId))
+                    .fetchOne();
+        } else {
+            // 업데이트된 행이 없다면 null 또는 예외 처리
+            return null;
+        }
     }
 }

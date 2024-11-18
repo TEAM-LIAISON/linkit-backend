@@ -30,20 +30,20 @@ import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.presentation.activity.ProfileActivityController;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO.AddProfileActivityRequest;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO.UpdateProfileActivityRequest;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityCertificationResponse;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityDetail;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItems;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.RemoveProfileActivityResponse;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.UpdateProfileActivityResponse;
-import liaison.linkit.profile.service.ProfileActivityService;
+import liaison.linkit.profile.presentation.license.ProfileLicenseController;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO.AddProfileLicenseRequest;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO.UpdateProfileLicenseRequest;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.AddProfileLicenseResponse;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseCertificationResponse;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseDetail;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItem;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItems;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.RemoveProfileLicenseCertificationResponse;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.RemoveProfileLicenseResponse;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.UpdateProfileLicenseResponse;
+import liaison.linkit.profile.service.ProfileLicenseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -59,12 +59,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-@WebMvcTest(ProfileActivityController.class)
+@WebMvcTest(ProfileLicenseController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 @Slf4j
-public class ProfileActivityControllerTest extends ControllerTest {
-
+public class ProfileLicenseControllerTest extends ControllerTest {
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
     private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
@@ -72,7 +71,7 @@ public class ProfileActivityControllerTest extends ControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ProfileActivityService profileActivityService;
+    private ProfileLicenseService profileLicenseService;
 
     @BeforeEach
     void setUp() {
@@ -81,71 +80,71 @@ public class ProfileActivityControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
-    private ResultActions performGetProfileActivityItems() throws Exception {
+    private ResultActions performGetProfileLicenseItems() throws Exception {
         return mockMvc.perform(
-                get("/api/v1/profile/activity")
+                get("/api/v1/profile/license")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performGetProfileActivityDetail(final Long profileActivityId) throws Exception {
+    private ResultActions performGetProfileLicenseDetail(final Long profileLicenseId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/profile/activity/{profileActivityId}", profileActivityId)
+                RestDocumentationRequestBuilders.get("/api/v1/profile/license/{profileLicenseId}", profileLicenseId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performAddProfileActivity(final AddProfileActivityRequest request) throws Exception {
+    private ResultActions performAddProfileLicense(final AddProfileLicenseRequest request) throws Exception {
         return mockMvc.perform(
-                post("/api/v1/profile/activity")
+                post("/api/v1/profile/license")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
     }
 
-    private ResultActions performUpdateProfileActivity(final Long profileActivityId, final UpdateProfileActivityRequest request) throws Exception {
+    private ResultActions performUpdateProfileLicense(final Long profileLicenseId, final UpdateProfileLicenseRequest request) throws Exception {
         return mockMvc.perform(
-                post("/api/v1/profile/activity/{profileActivityId}", profileActivityId)
+                post("/api/v1/profile/license/{profileLicenseId}", profileLicenseId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
     }
 
-    private ResultActions performRemoveProfileActivity(final Long profileActivityId) throws Exception {
+    private ResultActions performRemoveProfileLicense(final Long profileLicenseId) throws Exception {
         return mockMvc.perform(
-                delete("/api/v1/profile/activity/{profileActivityId}", profileActivityId)
+                delete("/api/v1/profile/license/{profileLicenseId}", profileLicenseId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
 
-    private ResultActions performRemoveActivityCertification(final Long profileActivityId) throws Exception {
+    private ResultActions performRemoveLicenseCertification(final Long profileLicenseId) throws Exception {
         return mockMvc.perform(
-                delete("/api/v1/profile/activity/certification/{profileActivityId}", profileActivityId)
+                delete("/api/v1/profile/license/certification/{profileLicenseId}", profileLicenseId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
 
-    @DisplayName("회원이 나의 이력을 전체 조회할 수 있다.")
+    @DisplayName("회원이 나의 자격증을 전체 조회할 수 있다.")
     @Test
-    void getProfileActivityItems() throws Exception {
+    void getProfileLicenseItems() throws Exception {
         // given
-        final ProfileActivityResponseDTO.ProfileActivityItem firstProfileActivityItem
-                = new ProfileActivityItem(1L, "리에종", "PO", "2022.06", "2026.06", true);
+        final ProfileLicenseResponseDTO.ProfileLicenseItem firstProfileLicenseItem
+                = new ProfileLicenseItem(1L, "자격증 자격명 1", "자격증 관련 부처 1", "자격증 취득 시기 1", true);
 
-        final ProfileActivityResponseDTO.ProfileActivityItem secondProfileActivityItem
-                = new ProfileActivityItem(2L, "리에종", "디자이너", "2024.10", "2024.12", true);
+        final ProfileLicenseResponseDTO.ProfileLicenseItem secondProfileLicenseItem
+                = new ProfileLicenseItem(2L, "자격증 자격명 2", "자격증 관련 부처 2", "자격증 취득 시기 2", true);
 
-        final ProfileActivityResponseDTO.ProfileActivityItems profileActivityItems
-                = new ProfileActivityItems(Arrays.asList(firstProfileActivityItem, secondProfileActivityItem));
+        final ProfileLicenseResponseDTO.ProfileLicenseItems profileLicenseItems
+                = new ProfileLicenseItems(Arrays.asList(firstProfileLicenseItem, secondProfileLicenseItem));
 
         // when
-        when(profileActivityService.getProfileActivityItems(anyLong())).thenReturn(profileActivityItems);
+        when(profileLicenseService.getProfileLicenseItems(anyLong())).thenReturn(profileLicenseItems);
 
-        final ResultActions resultActions = performGetProfileActivityItems();
+        final ResultActions resultActions = performGetProfileLicenseItems();
 
         // then
         final MvcResult mvcResult = resultActions
@@ -168,55 +167,52 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
-                                        subsectionWithPath("result.profileActivityItems[]")
+                                        subsectionWithPath("result.profileLicenseItems[]")
                                                 .type(JsonFieldType.ARRAY)
-                                                .description("프로필 이력 아이템 배열"),
-                                        fieldWithPath("result.profileActivityItems[].profileActivityId")
+                                                .description("프로필 자격증 아이템 배열"),
+                                        fieldWithPath("result.profileLicenseItems[].profileLicenseId")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("내 이력 ID"),
-                                        fieldWithPath("result.profileActivityItems[].activityName")
+                                                .description("내 자격증 ID"),
+                                        fieldWithPath("result.profileLicenseItems[].licenseName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 활동명"),
-                                        fieldWithPath("result.profileActivityItems[].activityRole")
+                                                .description("자격증 자격명"),
+                                        fieldWithPath("result.profileLicenseItems[].licenseInstitution")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 역할"),
-                                        fieldWithPath("result.profileActivityItems[].activityStartDate")
+                                                .description("자격증 관련 부처"),
+                                        fieldWithPath("result.profileLicenseItems[].licenseAcquisitionDate")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 시작 기간"),
-                                        fieldWithPath("result.profileActivityItems[].activityEndDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 종료 기간"),
-                                        fieldWithPath("result.profileActivityItems[].isActivityVerified")
+                                                .description("자격증 취득 시기"),
+                                        fieldWithPath("result.profileLicenseItems[].isLicenseVerified")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("이력 증명서 인증 완료 여부")
+                                                .description("자격증 증명서 인증 완료 여부")
                                 )
                         )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<ProfileActivityItems> actual = objectMapper.readValue(
+        final CommonResponse<ProfileLicenseItems> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<ProfileActivityItems>>() {
+                new TypeReference<CommonResponse<ProfileLicenseItems>>() {
                 }
         );
 
-        final CommonResponse<ProfileActivityItems> expected = CommonResponse.onSuccess(profileActivityItems);
+        final CommonResponse<ProfileLicenseItems> expected = CommonResponse.onSuccess(profileLicenseItems);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 나의 이력을 상세 조회할 수 있다.")
+    @DisplayName("회원이 나의 자격증을 상세 조회할 수 있다.")
     @Test
-    void getProfileActivityDetail() throws Exception {
+    void getProfileLicenseDetail() throws Exception {
         // given
-        final ProfileActivityResponseDTO.ProfileActivityDetail profileActivityDetail
-                = new ProfileActivityDetail(1L, "리에종", "PO", "2022.06", "2026.06", false, "이력 설명", true, false, "증명서.pdf", "https://file.linkit.im/해시값.pdf");
+        final ProfileLicenseResponseDTO.ProfileLicenseDetail profileLicenseDetail
+                = new ProfileLicenseDetail(1L, "자격증 자격이름", "자격증 관련 부처", "자격증 취득 시기", "자격증 설명", true, false, "증명서.pdf", "https://file.linkit.im/해시값.pdf");
 
         // when
-        when(profileActivityService.getProfileActivityDetail(anyLong(), anyLong())).thenReturn(profileActivityDetail);
+        when(profileLicenseService.getProfileLicenseDetail(anyLong(), anyLong())).thenReturn(profileLicenseDetail);
 
-        final ResultActions resultActions = performGetProfileActivityDetail(1L);
+        final ResultActions resultActions = performGetProfileLicenseDetail(1L);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -227,8 +223,8 @@ public class ProfileActivityControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("profileActivityId")
-                                                .description("프로필 이력 ID")
+                                        parameterWithName("profileLicenseId")
+                                                .description("프로필 자격증 ID")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -243,37 +239,31 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.profileActivityId")
+                                        fieldWithPath("result.profileLicenseId")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("프로필 이력 ID"),
-                                        fieldWithPath("result.activityName")
+                                                .description("프로필 자격증 ID"),
+                                        fieldWithPath("result.licenseName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 활동명"),
-                                        fieldWithPath("result.activityRole")
+                                                .description("자격증 활동명"),
+                                        fieldWithPath("result.licenseInstitution")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 역할"),
-                                        fieldWithPath("result.activityStartDate")
+                                                .description("자격증 관련 부처"),
+                                        fieldWithPath("result.licenseAcquisitionDate")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 시작 기간"),
-                                        fieldWithPath("result.activityEndDate")
+                                                .description("자격증 취득 시기"),
+                                        fieldWithPath("result.licenseDescription")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 종료 기간"),
-                                        fieldWithPath("result.isActivityInProgress")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("이력 진행 여부"),
-                                        fieldWithPath("result.activityDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 설명"),
-                                        fieldWithPath("result.isActivityCertified")
+                                                .description("자격증 설명"),
+                                        fieldWithPath("result.isLicenseCertified")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("증명서 존재 여부"),
-                                        fieldWithPath("result.isActivityVerified")
+                                        fieldWithPath("result.isLicenseVerified")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("증명서 인증 여부"),
-                                        fieldWithPath("result.activityCertificationAttachFileName")
+                                        fieldWithPath("result.licenseCertificationAttachFileName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("증명서 파일 이름"),
-                                        fieldWithPath("result.activityCertificationAttachFilePath")
+                                        fieldWithPath("result.licenseCertificationAttachFilePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("증명서 파일 경로")
                                 )
@@ -281,20 +271,20 @@ public class ProfileActivityControllerTest extends ControllerTest {
 
     }
 
-    @DisplayName("회원이 나의 이력을 생성할 수 있다.")
+    @DisplayName("회원이 나의 자격증을 생성할 수 있다.")
     @Test
-    void addProfileActivity() throws Exception {
+    void addProfileLicense() throws Exception {
         // given
-        final ProfileActivityRequestDTO.AddProfileActivityRequest addProfileActivityRequest
-                = new AddProfileActivityRequest("리에종", "PO", "2022.06", "2026.06", false, "이력 설명");
+        final ProfileLicenseRequestDTO.AddProfileLicenseRequest addProfileLicenseRequest
+                = new AddProfileLicenseRequest("자격증 자격명", "자격증 관련 부처", "자격증 취득 시기", "자격증 설명");
 
-        final AddProfileActivityResponse addProfileActivityResponse
-                = new AddProfileActivityResponse(1L, "리에종", "PO", "2022.06", "2026.06", false, "이력 설명");
+        final AddProfileLicenseResponse addProfileLicenseResponse
+                = new AddProfileLicenseResponse(1L, "자격증 자격명", "자격증 관련 부처", "자격증 취득 시기", "자격증 설명");
 
         // when
-        when(profileActivityService.addProfileActivity(anyLong(), any())).thenReturn(addProfileActivityResponse);
+        when(profileLicenseService.addProfileLicense(anyLong(), any())).thenReturn(addProfileLicenseResponse);
 
-        final ResultActions resultActions = performAddProfileActivity(addProfileActivityRequest);
+        final ResultActions resultActions = performAddProfileLicense(addProfileLicenseRequest);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -305,24 +295,18 @@ public class ProfileActivityControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 requestFields(
-                                        fieldWithPath("activityName")
+                                        fieldWithPath("licenseName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 활동명"),
-                                        fieldWithPath("activityRole")
+                                                .description("자격증 자격명"),
+                                        fieldWithPath("licenseInstitution")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 역할"),
-                                        fieldWithPath("activityStartDate")
+                                                .description("자격증 관련 부처"),
+                                        fieldWithPath("licenseAcquisitionDate")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 시작 기간"),
-                                        fieldWithPath("activityEndDate")
+                                                .description("자격증 취득 시기"),
+                                        fieldWithPath("licenseDescription")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 종료 기간"),
-                                        fieldWithPath("isActivityInProgress")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("이력 진행 여부"),
-                                        fieldWithPath("activityDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
+                                                .description("자격증 설명")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -337,58 +321,52 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.profileActivityId")
+                                        fieldWithPath("result.profileLicenseId")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("프로필 이력 ID"),
-                                        fieldWithPath("result.activityName")
+                                                .description("프로필 자격증 ID"),
+                                        fieldWithPath("result.licenseName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 활동명"),
-                                        fieldWithPath("result.activityRole")
+                                                .description("자격증 활동명"),
+                                        fieldWithPath("result.licenseInstitution")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 역할"),
-                                        fieldWithPath("result.activityStartDate")
+                                                .description("자격증 관련 부처"),
+                                        fieldWithPath("result.licenseAcquisitionDate")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 시작 기간"),
-                                        fieldWithPath("result.activityEndDate")
+                                                .description("자격증 취득 시기"),
+                                        fieldWithPath("result.licenseDescription")
                                                 .type(JsonFieldType.STRING)
-                                                .description("이력 종료 기간"),
-                                        fieldWithPath("result.isActivityInProgress")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("이력 진행 여부"),
-                                        fieldWithPath("result.activityDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이력 설명")
+                                                .description("자격증 설명")
                                 )
                         )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<AddProfileActivityResponse> actual = objectMapper.readValue(
+        final CommonResponse<AddProfileLicenseResponse> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<AddProfileActivityResponse>>() {
+                new TypeReference<CommonResponse<AddProfileLicenseResponse>>() {
                 }
         );
 
-        final CommonResponse<AddProfileActivityResponse> expected = CommonResponse.onSuccess(addProfileActivityResponse);
+        final CommonResponse<AddProfileLicenseResponse> expected = CommonResponse.onSuccess(addProfileLicenseResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 나의 이력을 수정할 수 있다.")
+    @DisplayName("회원이 나의 자격증을 수정할 수 있다.")
     @Test
-    void updateProfileActivity() throws Exception {
+    void updateProfileLicense() throws Exception {
         // given
 
-        final ProfileActivityRequestDTO.UpdateProfileActivityRequest updateProfileActivityRequest
-                = new UpdateProfileActivityRequest("리에종2", "BE", "2023.09", "2024.08", false, "이력 설명2");
+        final ProfileLicenseRequestDTO.UpdateProfileLicenseRequest updateProfileLicenseRequest
+                = new UpdateProfileLicenseRequest("자격증 자격명 2", "자격증 관련 부처 2", "자격증 취득 시기 2", "자격증 설명 2");
 
-        final UpdateProfileActivityResponse updateProfileActivityResponse
-                = new UpdateProfileActivityResponse(2L, "리에종2", "BE", "2023.09", "2024.08", false, "이력 설명2");
+        final UpdateProfileLicenseResponse updateProfileLicenseResponse
+                = new UpdateProfileLicenseResponse(2L, "자격증 자격명 2", "자격증 관련 부처 2", "자격증 취득 시기 2", "자격증 설명 2");
 
         // when
-        when(profileActivityService.updateProfileActivity(anyLong(), anyLong(), any())).thenReturn(updateProfileActivityResponse);
+        when(profileLicenseService.updateProfileLicense(anyLong(), anyLong(), any())).thenReturn(updateProfileLicenseResponse);
 
-        final ResultActions resultActions = performUpdateProfileActivity(1L, updateProfileActivityRequest);
+        final ResultActions resultActions = performUpdateProfileLicense(1L, updateProfileLicenseRequest);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -398,28 +376,22 @@ public class ProfileActivityControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("profileActivityId")
-                                        .description("프로필 이력 ID")
+                                parameterWithName("profileLicenseId")
+                                        .description("프로필 자격증 ID")
                         ),
                         requestFields(
-                                fieldWithPath("activityName")
+                                fieldWithPath("licenseName")
                                         .type(JsonFieldType.STRING)
-                                        .description("이력 활동명"),
-                                fieldWithPath("activityRole")
+                                        .description("자격증 자격명"),
+                                fieldWithPath("licenseInstitution")
                                         .type(JsonFieldType.STRING)
-                                        .description("이력 역할"),
-                                fieldWithPath("activityStartDate")
+                                        .description("자격증 관련 부처"),
+                                fieldWithPath("licenseAcquisitionDate")
                                         .type(JsonFieldType.STRING)
-                                        .description("이력 시작 기간"),
-                                fieldWithPath("activityEndDate")
+                                        .description("자격증 취득 시기"),
+                                fieldWithPath("licenseDescription")
                                         .type(JsonFieldType.STRING)
-                                        .description("이력 종료 기간"),
-                                fieldWithPath("isActivityInProgress")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("이력 진행 여부"),
-                                fieldWithPath("activityDescription")
-                                        .type(JsonFieldType.STRING)
-                                        .description("이력 설명")
+                                        .description("자격증 설명")
                         ),
                         responseFields(
                                 fieldWithPath("isSuccess")
@@ -434,53 +406,47 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                         .type(JsonFieldType.STRING)
                                         .description("요청 성공 메시지")
                                         .attributes(field("constraint", "문자열")),
-                                fieldWithPath("result.profileActivityId")
+                                fieldWithPath("result.profileLicenseId")
                                         .type(JsonFieldType.NUMBER)
-                                        .description("프로필 이력 ID"),
-                                fieldWithPath("result.activityName")
+                                        .description("프로필 자격증 ID"),
+                                fieldWithPath("result.licenseName")
                                         .type(JsonFieldType.STRING)
-                                        .description("이력 활동명"),
-                                fieldWithPath("result.activityRole")
+                                        .description("자격증 활동명"),
+                                fieldWithPath("result.licenseInstitution")
                                         .type(JsonFieldType.STRING)
-                                        .description("이력 역할"),
-                                fieldWithPath("result.activityStartDate")
+                                        .description("자격증 관련 부처"),
+                                fieldWithPath("result.licenseAcquisitionDate")
                                         .type(JsonFieldType.STRING)
-                                        .description("이력 시작 기간"),
-                                fieldWithPath("result.activityEndDate")
+                                        .description("자격증 취득 시기"),
+                                fieldWithPath("result.licenseDescription")
                                         .type(JsonFieldType.STRING)
-                                        .description("이력 종료 기간"),
-                                fieldWithPath("result.isActivityInProgress")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("이력 진행 여부"),
-                                fieldWithPath("result.activityDescription")
-                                        .type(JsonFieldType.STRING)
-                                        .description("이력 설명")
+                                        .description("자격증 설명")
                         )
                 )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<UpdateProfileActivityResponse> actual = objectMapper.readValue(
+        final CommonResponse<UpdateProfileLicenseResponse> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<UpdateProfileActivityResponse>>() {
+                new TypeReference<CommonResponse<UpdateProfileLicenseResponse>>() {
                 }
         );
 
-        final CommonResponse<UpdateProfileActivityResponse> expected = CommonResponse.onSuccess(updateProfileActivityResponse);
+        final CommonResponse<UpdateProfileLicenseResponse> expected = CommonResponse.onSuccess(updateProfileLicenseResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 나의 이력을 삭제할 수 있다.")
+    @DisplayName("회원이 나의 자격증을 삭제할 수 있다.")
     @Test
-    void removeProfileActivity() throws Exception {
+    void removeProfileLicense() throws Exception {
         // given
-        final ProfileActivityResponseDTO.RemoveProfileActivityResponse removeProfileActivityResponse
-                = new RemoveProfileActivityResponse(1L);
+        final ProfileLicenseResponseDTO.RemoveProfileLicenseResponse removeProfileLicenseResponse
+                = new RemoveProfileLicenseResponse(1L);
         // when
-        when(profileActivityService.removeProfileActivity(anyLong(), anyLong())).thenReturn(removeProfileActivityResponse);
+        when(profileLicenseService.removeProfileLicense(anyLong(), anyLong())).thenReturn(removeProfileLicenseResponse);
 
-        final ResultActions resultActions = performRemoveProfileActivity(1L);
+        final ResultActions resultActions = performRemoveProfileLicense(1L);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -490,8 +456,8 @@ public class ProfileActivityControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("profileActivityId")
-                                        .description("프로필 이력 ID")
+                                parameterWithName("profileLicenseId")
+                                        .description("프로필 자격증 ID")
                         ),
                         responseFields(fieldWithPath("isSuccess")
                                         .type(JsonFieldType.BOOLEAN)
@@ -505,46 +471,46 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                         .type(JsonFieldType.STRING)
                                         .description("요청 성공 메시지")
                                         .attributes(field("constraint", "문자열")),
-                                fieldWithPath("result.profileActivityId")
+                                fieldWithPath("result.profileLicenseId")
                                         .type(JsonFieldType.NUMBER)
-                                        .description("프로필 이력 ID")
+                                        .description("프로필 자격증 ID")
                         )
                 )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<RemoveProfileActivityResponse> actual = objectMapper.readValue(
+        final CommonResponse<RemoveProfileLicenseResponse> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<RemoveProfileActivityResponse>>() {
+                new TypeReference<CommonResponse<RemoveProfileLicenseResponse>>() {
                 }
         );
 
-        final CommonResponse<RemoveProfileActivityResponse> expected = CommonResponse.onSuccess(removeProfileActivityResponse);
+        final CommonResponse<RemoveProfileLicenseResponse> expected = CommonResponse.onSuccess(removeProfileLicenseResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 나의 이력 증명서를 추가할 수 있다.")
+    @DisplayName("회원이 나의 자격증 증명서를 추가할 수 있다.")
     @Test
-    void addProfileActivityCertification() throws Exception {
+    void addProfileLicenseCertification() throws Exception {
         // given
-        final ProfileActivityCertificationResponse profileActivityCertificationResponse
-                = new ProfileActivityCertificationResponse(true, false, "증명서.pdf", "https://file.linkit.im/해시값.pdf");
+        final ProfileLicenseCertificationResponse profileLicenseCertificationResponse
+                = new ProfileLicenseCertificationResponse(true, false, "증명서.pdf", "https://file.linkit.im/해시값.pdf");
 
-        final MockMultipartFile profileActivityCertificationFile = new MockMultipartFile(
-                "profileActivityCertificationFile",
+        final MockMultipartFile profileLicenseCertificationFile = new MockMultipartFile(
+                "profileLicenseCertificationFile",
                 "증명서.pdf",
                 "multipart/form-data",
                 "./src/test/resources/static/증명서.pdf".getBytes()
         );
 
-        final Long profileActivityId = 1L;
+        final Long profileLicenseId = 1L;
 
         // when
-        when(profileActivityService.addProfileActivityCertification(anyLong(), anyLong(), any())).thenReturn(profileActivityCertificationResponse);
+        when(profileLicenseService.addProfileLicenseCertification(anyLong(), anyLong(), any())).thenReturn(profileLicenseCertificationResponse);
 
-        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/v1/profile/activity/certification/{profileActivityId}", profileActivityId)
-                .file(profileActivityCertificationFile)
+        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/v1/profile/license/certification/{profileLicenseId}", profileLicenseId)
+                .file(profileLicenseCertificationFile)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .characterEncoding("UTF-8")
@@ -559,11 +525,11 @@ public class ProfileActivityControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("profileActivityId")
-                                        .description("프로필 이력 ID")
+                                parameterWithName("profileLicenseId")
+                                        .description("프로필 자격증 ID")
                         ),
                         requestParts(
-                                partWithName("profileActivityCertificationFile").description("이력 증명 파일")
+                                partWithName("profileLicenseCertificationFile").description("자격증 증명 파일")
                         ),
                         responseFields(fieldWithPath("isSuccess")
                                         .type(JsonFieldType.BOOLEAN)
@@ -577,16 +543,16 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                         .type(JsonFieldType.STRING)
                                         .description("요청 성공 메시지")
                                         .attributes(field("constraint", "문자열")),
-                                fieldWithPath("result.isActivityCertified")
+                                fieldWithPath("result.isLicenseCertified")
                                         .type(JsonFieldType.BOOLEAN)
                                         .description("증명서 존재 여부"),
-                                fieldWithPath("result.isActivityVerified")
+                                fieldWithPath("result.isLicenseVerified")
                                         .type(JsonFieldType.BOOLEAN)
                                         .description("증명서 인증 여부"),
-                                fieldWithPath("result.activityCertificationAttachFileName")
+                                fieldWithPath("result.licenseCertificationAttachFileName")
                                         .type(JsonFieldType.STRING)
                                         .description("증명서 파일 이름"),
-                                fieldWithPath("result.activityCertificationAttachFilePath")
+                                fieldWithPath("result.licenseCertificationAttachFilePath")
                                         .type(JsonFieldType.STRING)
                                         .description("증명서 파일 경로")
                         )
@@ -594,28 +560,28 @@ public class ProfileActivityControllerTest extends ControllerTest {
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<ProfileActivityCertificationResponse> actual = objectMapper.readValue(
+        final CommonResponse<ProfileLicenseCertificationResponse> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<ProfileActivityCertificationResponse>>() {
+                new TypeReference<CommonResponse<ProfileLicenseCertificationResponse>>() {
                 }
         );
 
-        final CommonResponse<ProfileActivityCertificationResponse> expected = CommonResponse.onSuccess(profileActivityCertificationResponse);
+        final CommonResponse<ProfileLicenseCertificationResponse> expected = CommonResponse.onSuccess(profileLicenseCertificationResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 나의 이력 증명서를 추가할 수 있다.")
+    @DisplayName("회원이 나의 자격증 증명서를 추가할 수 있다.")
     @Test
-    void removeProfileActivityCertification() throws Exception {
+    void removeProfileLicenseCertification() throws Exception {
         // given
-        final ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse removeProfileActivityCertificationResponse
-                = new RemoveProfileActivityCertificationResponse(1L);
+        final ProfileLicenseResponseDTO.RemoveProfileLicenseCertificationResponse removeProfileLicenseCertificationResponse
+                = new RemoveProfileLicenseCertificationResponse(1L);
 
         // when
-        when(profileActivityService.removeProfileActivityCertification(anyLong(), anyLong())).thenReturn(removeProfileActivityCertificationResponse);
+        when(profileLicenseService.removeProfileLicenseCertification(anyLong(), anyLong())).thenReturn(removeProfileLicenseCertificationResponse);
 
-        final ResultActions resultActions = performRemoveActivityCertification(1L);
+        final ResultActions resultActions = performRemoveLicenseCertification(1L);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -625,8 +591,8 @@ public class ProfileActivityControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("profileActivityId")
-                                        .description("프로필 이력 ID")
+                                parameterWithName("profileLicenseId")
+                                        .description("프로필 자격증 ID")
                         ),
                         responseFields(fieldWithPath("isSuccess")
                                         .type(JsonFieldType.BOOLEAN)
@@ -640,21 +606,21 @@ public class ProfileActivityControllerTest extends ControllerTest {
                                         .type(JsonFieldType.STRING)
                                         .description("요청 성공 메시지")
                                         .attributes(field("constraint", "문자열")),
-                                fieldWithPath("result.profileActivityId")
+                                fieldWithPath("result.profileLicenseId")
                                         .type(JsonFieldType.NUMBER)
-                                        .description("프로필 이력 ID")
+                                        .description("프로필 자격증 ID")
                         )
                 )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<RemoveProfileActivityCertificationResponse> actual = objectMapper.readValue(
+        final CommonResponse<RemoveProfileLicenseCertificationResponse> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<RemoveProfileActivityCertificationResponse>>() {
+                new TypeReference<CommonResponse<RemoveProfileLicenseCertificationResponse>>() {
                 }
         );
 
-        final CommonResponse<RemoveProfileActivityCertificationResponse> expected = CommonResponse.onSuccess(removeProfileActivityCertificationResponse);
+        final CommonResponse<RemoveProfileLicenseCertificationResponse> expected = CommonResponse.onSuccess(removeProfileLicenseCertificationResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
