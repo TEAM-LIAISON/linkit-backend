@@ -1,10 +1,8 @@
 package liaison.linkit.profile.implement.awards;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.domain.ProfileAwards;
-import liaison.linkit.profile.domain.activity.ProfileActivity;
+import liaison.linkit.profile.domain.awards.ProfileAwards;
 import liaison.linkit.profile.domain.repository.awards.ProfileAwardsRepository;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO.UpdateProfileActivityRequest;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsRequestDTO.UpdateProfileAwardsRequest;
 import lombok.RequiredArgsConstructor;
 

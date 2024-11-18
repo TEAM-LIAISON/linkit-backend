@@ -2,8 +2,8 @@ package liaison.linkit.profile.domain.repository.awards;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import liaison.linkit.profile.domain.ProfileAwards;
-import liaison.linkit.profile.domain.QProfileAwards;
+import liaison.linkit.profile.domain.awards.ProfileAwards;
+import liaison.linkit.profile.domain.awards.QProfileAwards;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsRequestDTO.UpdateProfileAwardsRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.ProfileAwards;
+import liaison.linkit.profile.domain.awards.ProfileAwards;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsRequestDTO;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.AddProfileAwardsResponse;
@@ -61,6 +61,7 @@ public class ProfileAwardsMapper {
                 .awardsName(profileAwards.getAwardsName())
                 .awardsRanking(profileAwards.getAwardsRanking())
                 .awardsDate(profileAwards.getAwardsDate())
+                .isAwardsVerified(profileAwards.isAwardsVerified())
                 .build();
     }
 

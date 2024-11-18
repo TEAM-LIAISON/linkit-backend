@@ -30,6 +30,7 @@ public class ProfileAwardsResponseDTO {
         private String awardsName;
         private String awardsRanking;
         private String awardsDate;
+        private Boolean isAwardsVerified;
     }
 
     @Builder

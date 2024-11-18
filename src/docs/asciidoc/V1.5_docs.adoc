@@ -401,8 +401,8 @@ include::{snippets}/profile-awards-controller-test/update-profile-awards/path-pa
 include::{snippets}/profile-awards-controller-test/update-profile-awards/request-fields.adoc[]
 
 응답
-include::{snippets}/profile-awards-controller-test/add-profile-awards/http-response.adoc[]
-include::{snippets}/profile-awards-controller-test/add-profile-awards/response-fields.adoc[]
+include::{snippets}/profile-awards-controller-test/update-profile-awards/http-response.adoc[]
+include::{snippets}/profile-awards-controller-test/update-profile-awards/response-fields.adoc[]
 
 ====
 
@@ -418,31 +418,123 @@ include::{snippets}/profile-awards-controller-test/remove-profile-awards/http-re
 include::{snippets}/profile-awards-controller-test/remove-profile-awards/response-fields.adoc[]
 ====
 
-=== 이력 증명서 단일 생성
+=== 수상 증명서 단일 생성
 
 ====
 요청
 include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/http-request.adoc[]
 include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/path-parameters.adoc[]
+include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/request-parts.adoc[]
 
 응답
 include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/http-response.adoc[]
 include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/response-fields.adoc[]
-include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/request-parts.adoc[]
+
 
 ====
 
-=== 이력 증명서 단일 삭제
+=== 수상 증명서 단일 삭제
 
 ====
 요청
-include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/http-request.adoc[]
-include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/path-parameters.adoc[]
+include::{snippets}/profile-awards-controller-test/remove-profile-awards-certification/http-request.adoc[]
+include::{snippets}/profile-awards-controller-test/remove-profile-awards-certification/path-parameters.adoc[]
 
 응답
-include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/http-response.adoc[]
-include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/response-fields.adoc[]
+include::{snippets}/profile-awards-controller-test/remove-profile-awards-certification/http-response.adoc[]
+include::{snippets}/profile-awards-controller-test/remove-profile-awards-certification/response-fields.adoc[]
 
+====
+
+== #[프로필 - 나의 자격증]#
+
+=== 나의 자격증 전체 조회
+
+====
+요청
+include::{snippets}/profile-license-controller-test/get-profile-license-items/http-request.adoc[]
+
+응답
+include::{snippets}/profile-license-controller-test/get-profile-license-items/http-response.adoc[]
+include::{snippets}/profile-license-controller-test/get-profile-license-items/response-fields.adoc[]
+====
+
+=== 나의 자격증 단일 조회
+
+====
+요청
+include::{snippets}/profile-license-controller-test/get-profile-license-detail/http-request.adoc[]
+
+응답
+include::{snippets}/profile-license-controller-test/get-profile-license-detail/http-response.adoc[]
+include::{snippets}/profile-license-controller-test/get-profile-license-detail/response-fields.adoc[]
+
+====
+
+=== 나의 자격증 단일 생성
+
+====
+요청
+include::{snippets}/profile-license-controller-test/add-profile-license/http-request.adoc[]
+include::{snippets}/profile-license-controller-test/add-profile-license/request-fields.adoc[]
+
+응답
+include::{snippets}/profile-license-controller-test/add-profile-license/http-request.adoc[]
+include::{snippets}/profile-license-controller-test/add-profile-license/response-fields.adoc[]
+
+====
+
+=== 나의 자격증 단일 수정
+
+====
+요청
+include::{snippets}/profile-license-controller-test/update-profile-license/http-request.adoc[]
+include::{snippets}/profile-license-controller-test/update-profile-license/path-parameters.adoc[]
+include::{snippets}/profile-license-controller-test/update-profile-license/request-fields.adoc[]
+
+응답
+include::{snippets}/profile-license-controller-test/update-profile-license/http-response.adoc[]
+include::{snippets}/profile-license-controller-test/update-profile-license/response-fields.adoc[]
+
+====
+
+=== 나의 자격증 단일 삭제
+
+====
+요청
+include::{snippets}/profile-license-controller-test/remove-profile-license/http-request.adoc[]
+include::{snippets}/profile-license-controller-test/remove-profile-license/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-license-controller-test/remove-profile-license/http-response.adoc[]
+include::{snippets}/profile-license-controller-test/remove-profile-license/response-fields.adoc[]
+
+====
+
+=== 자격증 증명서 단일 생성
+
+====
+요청
+include::{snippets}/profile-license-controller-test/add-profile-license-certification/http-request.adoc[]
+include::{snippets}/profile-license-controller-test/add-profile-license-certification/path-parameters.adoc[]
+include::{snippets}/profile-license-controller-test/add-profile-license-certification/request-parts.adoc[]
+
+응답
+include::{snippets}/profile-license-controller-test/add-profile-license-certification/http-response.adoc[]
+include::{snippets}/profile-license-controller-test/add-profile-license-certification/response-fields.adoc[]
+
+====
+
+=== 자격증 증명서 단일 삭제
+
+====
+요청
+include::{snippets}/profile-license-controller-test/remove-profile-license-certification/http-request.adoc[]
+include::{snippets}/profile-license-controller-test/remove-profile-license-certification/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-license-controller-test/remove-profile-license-certification/http-response.adoc[]
+include::{snippets}/profile-license-controller-test/remove-profile-license-certification/response-fields.adoc[]
 ====
 
 == #[스크랩]#

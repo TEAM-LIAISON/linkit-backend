@@ -131,10 +131,10 @@ class ProfileAwardsControllerTest extends ControllerTest {
     void getProfileAwardsItems() throws Exception {
         // given
         final ProfileAwardsResponseDTO.ProfileAwardsItem firstProfileAwardsItem
-                = new ProfileAwardsItem(1L, "수상 이름 1", "훈격 1", "수상 날짜 1");
+                = new ProfileAwardsItem(1L, "수상 이름 1", "훈격 1", "수상 날짜 1", true);
 
         final ProfileAwardsResponseDTO.ProfileAwardsItem secondProfileAwardsItem
-                = new ProfileAwardsItem(2L, "수상 이름 2", "훈격 2", "수상 날짜 2");
+                = new ProfileAwardsItem(2L, "수상 이름 2", "훈격 2", "수상 날짜 2", true);
 
         final ProfileAwardsResponseDTO.ProfileAwardsItems profileAwardsItems
                 = new ProfileAwardsItems(Arrays.asList(firstProfileAwardsItem, secondProfileAwardsItem));
@@ -179,7 +179,10 @@ class ProfileAwardsControllerTest extends ControllerTest {
                                                 .description("수상 훈격"),
                                         fieldWithPath("result.profileAwardsItems[].awardsDate")
                                                 .type(JsonFieldType.STRING)
-                                                .description("수상 시기")
+                                                .description("수상 시기"),
+                                        fieldWithPath("result.profileAwardsItems[].isAwardsVerified")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("수상 증명서 인증 완료 여부")
                                 )
                         )).andReturn();
 

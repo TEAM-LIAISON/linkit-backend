@@ -1,7 +1,13 @@
 package liaison.linkit.profile.domain.repository.license;
 
-import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItems;
+
+import java.util.List;
+import liaison.linkit.profile.domain.license.ProfileLicense;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO.UpdateProfileLicenseRequest;
 
 public interface ProfileLicenseCustomRepository {
-    ProfileLicenseItems getProfileLicenseItems(Long memberId);
+    List<ProfileLicense> getProfileLicenses(final Long memberId);
+
+    ProfileLicense updateProfileLicense(final Long profileLicenseId, final UpdateProfileLicenseRequest updateProfileLicenseRequest);
+
 }
