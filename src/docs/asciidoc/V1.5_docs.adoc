@@ -266,7 +266,6 @@ include::{snippets}/profile-skill-controller-test/update-profile-skill-items/res
 
 ====
 요청
-
 include::{snippets}/profile-activity-controller-test/get-profile-activity-items/http-request.adoc[]
 
 응답
@@ -275,7 +274,7 @@ include::{snippets}/profile-activity-controller-test/get-profile-activity-items/
 
 ====
 
-=== 나의 이력 상세 조회
+=== 나의 이력 단일 조회
 
 ====
 요청
@@ -285,15 +284,15 @@ include::{snippets}/profile-activity-controller-test/get-profile-activity-detail
 include::{snippets}/profile-activity-controller-test/get-profile-activity-detail/http-response.adoc[]
 include::{snippets}/profile-activity-controller-test/get-profile-activity-detail/response-fields.adoc[]
 
-
 ====
 
-=== 나의 이력 생성
+=== 나의 이력 단일 생성
 
 ====
 요청
 
 include::{snippets}/profile-activity-controller-test/add-profile-activity/http-request.adoc[]
+include::{snippets}/profile-activity-controller-test/add-profile-activity/request-fields.adoc[]
 
 응답
 include::{snippets}/profile-activity-controller-test/add-profile-activity/http-response.adoc[]
@@ -301,7 +300,7 @@ include::{snippets}/profile-activity-controller-test/add-profile-activity/respon
 
 ====
 
-=== 나의 이력 수정
+=== 나의 이력 단일 수정
 
 ====
 요청
@@ -315,7 +314,7 @@ include::{snippets}/profile-activity-controller-test/update-profile-activity/res
 
 ====
 
-=== 나의 이력 삭제
+=== 나의 이력 단일 삭제
 
 ====
 요청
@@ -328,12 +327,13 @@ include::{snippets}/profile-activity-controller-test/remove-profile-activity/res
 
 ====
 
-=== 이력 증명서 생성
+=== 이력 증명서 단일 생성
 
 ====
 요청
 
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/http-request.adoc[]
+include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/path-parameters.adoc[]
 
 응답
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/http-response.adoc[]
@@ -342,7 +342,97 @@ include::{snippets}/profile-activity-controller-test/add-profile-activity-certif
 
 ====
 
-=== 이력 증명서 삭제
+=== 이력 증명서 단일 삭제
+
+====
+요청
+include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/http-request.adoc[]
+include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/http-response.adoc[]
+include::{snippets}/profile-activity-controller-test/remove-profile-activity-certification/response-fields.adoc[]
+
+====
+
+== #[프로필 - 나의 수상]#
+
+=== 나의 수상 전체 조회
+
+====
+요청
+include::{snippets}/profile-awards-controller-test/get-profile-awards-items/http-request.adoc[]
+
+응답
+include::{snippets}/profile-awards-controller-test/get-profile-awards-items/http-response.adoc[]
+include::{snippets}/profile-awards-controller-test/get-profile-awards-items/response-fields.adoc[]
+====
+
+=== 나의 수상 단일 조회
+
+====
+요청
+include::{snippets}/profile-awards-controller-test/get-profile-awards-detail/http-request.adoc[]
+
+응답
+include::{snippets}/profile-awards-controller-test/get-profile-awards-detail/http-response.adoc[]
+include::{snippets}/profile-awards-controller-test/get-profile-awards-detail/response-fields.adoc[]
+====
+
+=== 나의 수상 단일 생성
+
+====
+요청
+include::{snippets}/profile-awards-controller-test/add-profile-awards/http-request.adoc[]
+include::{snippets}/profile-awards-controller-test/add-profile-awards/request-fields.adoc[]
+
+응답
+include::{snippets}/profile-awards-controller-test/add-profile-awards/http-response.adoc[]
+include::{snippets}/profile-awards-controller-test/add-profile-awards/response-fields.adoc[]
+
+====
+
+=== 나의 수상 단일 수정
+
+====
+요청
+include::{snippets}/profile-awards-controller-test/update-profile-awards/http-request.adoc[]
+include::{snippets}/profile-awards-controller-test/update-profile-awards/path-parameters.adoc[]
+include::{snippets}/profile-awards-controller-test/update-profile-awards/request-fields.adoc[]
+
+응답
+include::{snippets}/profile-awards-controller-test/add-profile-awards/http-response.adoc[]
+include::{snippets}/profile-awards-controller-test/add-profile-awards/response-fields.adoc[]
+
+====
+
+=== 나의 수상 단일 삭제
+
+====
+요청
+include::{snippets}/profile-awards-controller-test/remove-profile-awards/http-request.adoc[]
+include::{snippets}/profile-awards-controller-test/remove-profile-awards/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-awards-controller-test/remove-profile-awards/http-response.adoc[]
+include::{snippets}/profile-awards-controller-test/remove-profile-awards/response-fields.adoc[]
+====
+
+=== 이력 증명서 단일 생성
+
+====
+요청
+include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/http-request.adoc[]
+include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/http-response.adoc[]
+include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/response-fields.adoc[]
+include::{snippets}/profile-awards-controller-test/add-profile-awards-certification/request-parts.adoc[]
+
+====
+
+=== 이력 증명서 단일 삭제
 
 ====
 요청

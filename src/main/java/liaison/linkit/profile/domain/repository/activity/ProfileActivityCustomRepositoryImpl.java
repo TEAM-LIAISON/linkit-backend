@@ -39,7 +39,7 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
                 .set(qProfileActivity.activityDescription, updateProfileActivity.getActivityDescription())
                 .where(qProfileActivity.id.eq(profileActivityId))
                 .execute();
-        
+
         if (updatedCount > 0) {
             // 업데이트된 ProfileActivity 조회 및 반환
             return queryFactory
@@ -51,6 +51,4 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
             return null;
         }
     }
-
-
 }

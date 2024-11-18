@@ -47,7 +47,7 @@ public class ProfileActivity extends BaseDateTimeEntity {
     // 파일 경로
     private String activityCertificationAttachFilePath;
 
-    // 인증서
+    // 이력 인증서 세팅 메서드
     public void setProfileActivityCertification(
             final boolean isActivityCertified,
             final boolean isActivityVerified,

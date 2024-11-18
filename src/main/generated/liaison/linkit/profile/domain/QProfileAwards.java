@@ -28,8 +28,6 @@ public class QProfileAwards extends EntityPathBase<ProfileAwards> {
 
     public final StringPath awardsCertificationAttachFilePath = createString("awardsCertificationAttachFilePath");
 
-    public final StringPath awardsCertificationDescription = createString("awardsCertificationDescription");
-
     public final StringPath awardsDate = createString("awardsDate");
 
     public final StringPath awardsDescription = createString("awardsDescription");

@@ -39,18 +39,18 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityItems(accessor.getMemberId()));
     }
 
-    // 이력 상세 조회 (명세 완료)
+    // 이력 단일 조회 (명세 완료)
     @GetMapping("/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityDetail> getProfileActivityDetail(
             @Auth final Accessor accessor,
             @PathVariable final Long profileActivityId
     ) {
-        log.info("memberId = {}의 프로필 로그 ID = {}에 대한 단일 조회 요청이 발생했습니다.", accessor.getMemberId(), profileActivityId);
+        log.info("memberId = {}의 프로필 이력 ID = {}에 대한 단일 조회 요청이 발생했습니다.", accessor.getMemberId(), profileActivityId);
         return CommonResponse.onSuccess(profileActivityService.getProfileActivityDetail(accessor.getMemberId(), profileActivityId));
     }
 
-    // 이력 생성 (명세 완료)
+    // 이력 단일 생성 (명세 완료)
     @PostMapping
     @MemberOnly
     public CommonResponse<AddProfileActivityResponse> addProfileActivity(
@@ -61,7 +61,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.addProfileActivity(accessor.getMemberId(), addProfileActivityRequest));
     }
 
-    // 이력 수정 (명세 완료)
+    // 이력 단일 수정 (명세 완료)
     @PostMapping("/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.UpdateProfileActivityResponse> updateProfileActivity(
@@ -73,7 +73,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.updateProfileActivity(accessor.getMemberId(), profileActivityId, updateProfileActivityRequest));
     }
 
-    // 이력 삭제 (명세 완료)
+    // 이력 단일 삭제 (명세 완료)
     @DeleteMapping("/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.RemoveProfileActivityResponse> removeProfileActivity(
@@ -83,7 +83,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.removeProfileActivity(accessor.getMemberId(), profileActivityId));
     }
 
-    // 이력 인증 생성 (명세 완료)
+    // 이력 인증 단일 생성 (명세 완료)
     @PostMapping("/certification/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityCertificationResponse> addProfileActivityCertification(
@@ -94,7 +94,7 @@ public class ProfileActivityController {
         return CommonResponse.onSuccess(profileActivityService.addProfileActivityCertification(accessor.getMemberId(), profileActivityId, profileActivityCertificationFile));
     }
 
-    // 이력 인증 삭제
+    // 이력 인증 단일 삭제 (명세 완료)
     @DeleteMapping("/certification/{profileActivityId}")
     @MemberOnly
     public CommonResponse<ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse> removeProfileActivityCertification(
