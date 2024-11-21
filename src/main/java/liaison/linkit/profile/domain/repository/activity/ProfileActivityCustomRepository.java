@@ -8,4 +8,6 @@ public interface ProfileActivityCustomRepository {
     List<ProfileActivity> getProfileActivities(final Long memberId);
 
     ProfileActivity updateProfileActivity(final Long profileActivityId, final UpdateProfileActivityRequest updateProfileActivityRequest);
+
+    void deleteAllByProfileId(final Long profileId);
 }

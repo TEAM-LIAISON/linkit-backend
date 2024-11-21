@@ -7,4 +7,6 @@ public interface ProfileRegionRepositoryCustom {
     Optional<ProfileRegion> findProfileRegionByProfileId(final Long profileId);
 
     boolean existsProfileRegionByProfileId(final Long profileId);
+
+    void deleteByProfileId(final Long profileId);
 }

@@ -51,4 +51,14 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
             return null;
         }
     }
+
+    @Override
+    public void deleteAllByProfileId(Long profileId) {
+        final QProfileActivity qProfileActivity = QProfileActivity.profileActivity;
+
+        queryFactory
+                .delete(qProfileActivity)
+                .where(qProfileActivity.profile.id.eq(profileId))
+                .execute();
+    }
 }

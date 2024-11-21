@@ -60,4 +60,8 @@ public class Profile extends BaseEntity {
     public void setIsProfilePublic(final boolean isProfilePublic) {
         this.isProfilePublic = isProfilePublic;
     }
+
+    public void updateProfileImagePath(final String profileImagePath) {
+        this.profileImagePath = profileImagePath;
+    }
 }
