@@ -164,6 +164,9 @@ degree:
 jobRole:
   csv-path: ${jobRole.path}
 
+position:
+  csv-path: ${position.path}
+
 naver:
   id: linkit@linkit.im
   password: ${mail.password}

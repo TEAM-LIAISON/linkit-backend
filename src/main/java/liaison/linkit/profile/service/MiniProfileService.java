@@ -3,6 +3,8 @@ package liaison.linkit.profile.service;
 import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.common.business.RegionMapper;
+import liaison.linkit.common.domain.Position;
+import liaison.linkit.common.domain.ProfileState;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.common.validator.ImageValidator;
@@ -17,11 +19,16 @@ import liaison.linkit.profile.domain.ProfileRegion;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.profile.implement.MiniProfileQueryAdapter;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
+import liaison.linkit.profile.implement.currentState.ProfileCurrentStateCommandAdapter;
 import liaison.linkit.profile.implement.currentState.ProfileCurrentStateQueryAdapter;
+import liaison.linkit.profile.implement.currentState.ProfileStateQueryAdapter;
+import liaison.linkit.profile.implement.position.PositionQueryAdapter;
+import liaison.linkit.profile.implement.position.ProfilePositionCommandAdapter;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
+import liaison.linkit.profile.implement.region.ProfileRegionCommandAdapter;
+import liaison.linkit.profile.implement.region.ProfileRegionQueryAdapter;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileRequestDTO.UpdateMiniProfileRequest;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItems;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfilePositionItem;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.UpdateMiniProfileResponse;
@@ -42,8 +49,18 @@ public class MiniProfileService {
     private final ProfileQueryAdapter profileQueryAdapter;
     private final MiniProfileQueryAdapter miniProfileQueryAdapter;
 
+
     private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
+    private final ProfilePositionCommandAdapter profilePositionCommandAdapter;
+    private final PositionQueryAdapter positionQueryAdapter;
+
     private final ProfileCurrentStateQueryAdapter profileCurrentStateQueryAdapter;
+    private final ProfileCurrentStateCommandAdapter profileCurrentStateCommandAdapter;
+    private final ProfileStateQueryAdapter profileStateQueryAdapter;
+
+    private final ProfileRegionQueryAdapter profileRegionQueryAdapter;
+    private final ProfileRegionCommandAdapter profileRegionCommandAdapter;
+
     private final RegionQueryAdapter regionQueryAdapter;
 
     private final MiniProfileMapper miniProfileMapper;
@@ -99,14 +116,46 @@ public class MiniProfileService {
         // 프로필 사진을 업데이트한다
         if (imageValidator.validatingImageUpload(profileImage)) {
             profileImagePath = s3Uploader.uploadProfileImage(new ImageFile(profileImage));
+            profile.updateProfileImagePath(profileImagePath);
         }
 
         // 포지션을 업데이트한다
+        final Position position = positionQueryAdapter.findByMajorPositionAndSubPosition(updateMiniProfileRequest.getMajorPosition(), updateMiniProfileRequest.getSubPosition());
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+            profilePositionCommandAdapter.deleteAllByProfileId(profile.getId());
+        }
+
+        ProfilePosition profilePosition = new ProfilePosition(null, profile, position);
+        profilePositionCommandAdapter.save(profilePosition);
 
         // 활동 지역을 업데이트한다
         final Region region = regionQueryAdapter.findByCityNameAndDivisionName(updateMiniProfileRequest.getCityName(), updateMiniProfileRequest.getDivisionName());
+        if (profileRegionQueryAdapter.existsProfileRegionByProfileId(profile.getId())) {
+            profileRegionCommandAdapter.deleteByProfileId(profile.getId());
+        }
+
+        ProfileRegion profileRegion = new ProfileRegion(null, profile, region);
 
         // 현재 상태를 업데이트한다
+        if (profileCurrentStateQueryAdapter.existsProfileCurrentStateByProfileId(profile.getId())) {
+            profileCurrentStateCommandAdapter.deleteAllByProfileId(profile.getId());
+        }
+
+        // 새로운 프로필 현재 상태 저장
+        List<String> profileStateNames = updateMiniProfileRequest.getProfileStateNames();
+        List<ProfileCurrentState> profileCurrentStates = new ArrayList<>();
+
+        for (String stateName : profileStateNames) {
+            // ProfileState 엔티티 조회
+            ProfileState profileState = profileStateQueryAdapter.findByStateName(stateName);
+
+            // ProfileCurrentState 엔티티 생성
+            ProfileCurrentState profileCurrentState = new ProfileCurrentState(null, profile, profileState);
+            profileCurrentStates.add(profileCurrentState);
+        }
+
+        // ProfileCurrentState 저장
+        profileCurrentStateCommandAdapter.saveAll(profileCurrentStates);
 
         // 프로필 공개 여부를 업데이트한다
         profile.setIsProfilePublic(updateMiniProfileRequest.getIsProfilePublic());

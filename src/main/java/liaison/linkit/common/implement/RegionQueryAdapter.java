@@ -14,8 +14,7 @@ public class RegionQueryAdapter {
     private final ProfileRegionRepository profileRegionRepository;
 
     private final RegionRepository regionRepository;
-
-
+    
     public Region findByCityNameAndDivisionName(final String cityName, final String divisionName) {
         return regionRepository.findByCityNameAndDivisionName(cityName, divisionName);
     }

@@ -17,7 +17,7 @@ spring:
         use_sql_comments: true
         show_sql: false
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
 
   datasource:
     url: jdbc:mysql://localhost:3306/linkit
@@ -41,9 +41,9 @@ spring:
 
   batch:
     job:
-      enabled: false
+      enabled: true
     jdbc:
-      initialize-schema: never
+      initialize-schema: always
 
   security:
     oauth2:
@@ -160,6 +160,9 @@ degree:
 
 jobRole:
   csv-path: ${jobRole.path}
+
+position:
+  csv-path: ${position.path}
 
 naver:
   id: linkit@linkit.im

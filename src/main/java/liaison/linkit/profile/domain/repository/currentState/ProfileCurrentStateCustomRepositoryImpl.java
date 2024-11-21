@@ -35,4 +35,14 @@ public class ProfileCurrentStateCustomRepositoryImpl implements ProfileCurrentSt
 
         return count != null;
     }
+
+    @Override
+    public void deleteAllByProfileId(final Long profileId) {
+        QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+
+        jpaQueryFactory
+                .delete(qProfileCurrentState)
+                .where(qProfileCurrentState.profile.id.eq(profileId))
+                .execute();
+    }
 }

@@ -7,4 +7,6 @@ public interface ProfilePositionCustomRepository {
     boolean existsProfilePositionByProfileId(final Long profileId);
 
     ProfilePosition findProfilePositionByProfileId(final Long profileId);
+
+    void deleteAllByProfileId(final Long profileId);
 }

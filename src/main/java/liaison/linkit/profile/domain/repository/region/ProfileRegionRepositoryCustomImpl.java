@@ -38,4 +38,14 @@ public class ProfileRegionRepositoryCustomImpl implements ProfileRegionRepositor
 
         return count != null;
     }
+
+    @Override
+    public void deleteByProfileId(Long profileId) {
+        final QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+
+        jpaQueryFactory
+                .delete(qProfileRegion)
+                .where(qProfileRegion.profile.id.eq(profileId))
+                .execute();
+    }
 }

@@ -7,4 +7,6 @@ public interface ProfileCurrentStateCustomRepository {
     List<ProfileCurrentState> findProfileCurrentStatesByProfileId(final Long profileId);
 
     boolean existsProfileCurrentStateByProfileId(final Long profileId);
+
+    void deleteAllByProfileId(final Long profileId);
 }

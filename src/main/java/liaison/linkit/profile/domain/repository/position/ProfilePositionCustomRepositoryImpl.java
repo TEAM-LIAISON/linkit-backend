@@ -33,5 +33,15 @@ public class ProfilePositionCustomRepositoryImpl implements ProfilePositionCusto
                 .where(qProfilePosition.profile.id.eq(profileId))
                 .fetchOne();
     }
+
+    @Override
+    public void deleteAllByProfileId(final Long profileId) {
+        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+
+        jpaQueryFactory
+                .delete(qProfilePosition)
+                .where(qProfilePosition.profile.id.eq(profileId))
+                .execute();
+    }
 }
 
