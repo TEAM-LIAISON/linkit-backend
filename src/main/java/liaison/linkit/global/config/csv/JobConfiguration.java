@@ -5,6 +5,9 @@ import liaison.linkit.global.config.csv.jobRole.CsvJobRoleWriter;
 import liaison.linkit.global.config.csv.position.CsvPositionReader;
 import liaison.linkit.global.config.csv.position.CsvPositionWriter;
 import liaison.linkit.global.config.csv.position.PositionCsvData;
+import liaison.linkit.global.config.csv.profileState.CsvProfileStateReader;
+import liaison.linkit.global.config.csv.profileState.CsvProfileStateWriter;
+import liaison.linkit.global.config.csv.profileState.ProfileStateCsvData;
 import liaison.linkit.global.config.csv.region.CsvRegionReader;
 import liaison.linkit.global.config.csv.region.CsvRegionWriter;
 import liaison.linkit.global.config.csv.skill.CsvSkillReader;
@@ -18,7 +21,6 @@ import liaison.linkit.profile.csv.JobRoleCsvData;
 import liaison.linkit.profile.csv.RegionCsvData;
 import liaison.linkit.profile.csv.SkillCsvData;
 import liaison.linkit.profile.csv.TeamBuildingFieldCsvData;
-import liaison.linkit.profile.domain.repository.position.PositionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
@@ -53,6 +55,9 @@ public class JobConfiguration {
     private final CsvPositionReader csvPositionReader;
     private final CsvPositionWriter csvPositionWriter;
 
+    private final CsvProfileStateReader csvProfileStateReader;
+    private final CsvProfileStateWriter csvProfileStateWriter;
+
     // Step & Job upload
     @Bean
     public Job simpleDataLoadJob(JobRepository jobRepository,
@@ -61,6 +66,7 @@ public class JobConfiguration {
                                  Step regionDataLoadStep,
                                  Step jobRoleDataLoadStep,
                                  Step positionDataLoadStep,
+                                 Step profileStateDataLoadStep,
                                  Step skillDataLoadStep) {
         return new JobBuilder("linkitInformationLoadJob", jobRepository)
                 .start(teamBuildingFieldDataLoadStep)
@@ -68,6 +74,7 @@ public class JobConfiguration {
                 .next(regionDataLoadStep)
                 .next(jobRoleDataLoadStep)
                 .next(positionDataLoadStep)
+                .next(profileStateDataLoadStep)
                 .next(skillDataLoadStep)
                 .build();
     }
@@ -133,6 +140,19 @@ public class JobConfiguration {
                 .<PositionCsvData, PositionCsvData>chunk(10, platformTransactionManager)
                 .reader(csvPositionReader.csvPositionReader())
                 .writer(csvPositionWriter)
+                .allowStartIfComplete(true)
+                .build();
+    }
+
+    @Bean
+    public Step profileStateDataLoadStep(
+            JobRepository jobRepository,
+            PlatformTransactionManager platformTransactionManager
+    ) {
+        return new StepBuilder("profileStateDataLoadStep", jobRepository)
+                .<ProfileStateCsvData, ProfileStateCsvData>chunk(10, platformTransactionManager)
+                .reader(csvProfileStateReader.csvProfileStateReader())
+                .writer(csvProfileStateWriter)
                 .allowStartIfComplete(true)
                 .build();
     }
