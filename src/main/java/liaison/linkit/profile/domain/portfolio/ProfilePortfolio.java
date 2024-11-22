@@ -51,4 +51,8 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     private String projectDescription; // 설명
 
     private String projectRepresentImagePath; // 대표 이미지
+
+    public void updateProjectRepresentImagePath(final String projectRepresentImagePath) {
+        this.projectRepresentImagePath = projectRepresentImagePath;
+    }
 }

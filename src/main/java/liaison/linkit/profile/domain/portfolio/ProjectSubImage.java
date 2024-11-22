@@ -28,7 +28,7 @@ public class ProjectSubImage extends BaseDateTimeEntity {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "profile_portfolio_id")
-    private ProfilePortfolio portfolio;
-    
+    private ProfilePortfolio profilePortfolio;
+
     private String projectSubImagePath;
 }
