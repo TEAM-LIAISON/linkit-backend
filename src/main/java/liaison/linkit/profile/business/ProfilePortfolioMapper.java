@@ -10,7 +10,7 @@ import liaison.linkit.profile.domain.portfolio.ProjectRoleContribution;
 import liaison.linkit.profile.domain.portfolio.ProjectSkill;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.PortfolioImages;
-import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.PortfolioSubImages;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.PortfolioSubImage;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectRoleAndContribution;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectSkillName;
@@ -81,15 +81,18 @@ public class ProfilePortfolioMapper {
     }
 
     public PortfolioImages toPortfolioImages(final String projectRepresentImagePath, final List<String> projectSubImagePaths) {
-        PortfolioSubImages portfolioSubImages = PortfolioSubImages.builder()
-                .projectSubImagePath(projectSubImagePaths)
-                .build();
+        List<PortfolioSubImage> portfolioSubImages = projectSubImagePaths.stream()
+                .map(path -> PortfolioSubImage.builder()
+                        .projectSubImagePath(path)
+                        .build())
+                .collect(Collectors.toList());
 
         return PortfolioImages.builder()
                 .projectRepresentImagePath(projectRepresentImagePath)
                 .portfolioSubImages(portfolioSubImages)
                 .build();
     }
+
 
     public List<ProjectSkillName> toProjectSkillNames(final List<ProjectSkill> projectSkills) {
         return projectSkills.stream()

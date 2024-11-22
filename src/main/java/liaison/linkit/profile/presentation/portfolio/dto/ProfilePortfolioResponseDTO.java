@@ -87,7 +87,7 @@ public class ProfilePortfolioResponseDTO {
         private String projectRepresentImagePath; // 대표 이미지
 
         @Builder.Default
-        private PortfolioSubImages portfolioSubImages = new PortfolioSubImages();
+        private List<PortfolioSubImage> portfolioSubImages = new ArrayList<>();
     }
 
     @Builder
@@ -102,7 +102,7 @@ public class ProfilePortfolioResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class PortfolioSubImages {
-        private List<String> projectSubImagePath;
+    public static class PortfolioSubImage {
+        private String projectSubImagePath;
     }
 }
