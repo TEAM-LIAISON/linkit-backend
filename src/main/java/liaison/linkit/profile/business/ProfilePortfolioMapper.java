@@ -5,18 +5,103 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.portfolio.ProfilePortfolio;
 import liaison.linkit.profile.domain.portfolio.ProjectRoleContribution;
 import liaison.linkit.profile.domain.portfolio.ProjectSkill;
+import liaison.linkit.profile.domain.skill.Skill;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO.AddProfilePortfolioRequest;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.AddProfilePortfolioResponse;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.PortfolioImages;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.PortfolioSubImage;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectRoleAndContribution;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectSkillName;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse;
 
 @Mapper
 public class ProfilePortfolioMapper {
+
+    public ProfilePortfolio toAddProfilePortfolio(final Profile profile, final AddProfilePortfolioRequest addProfilePortfolioRequest) {
+        return ProfilePortfolio
+                .builder()
+                .id(null)
+                .profile(profile)
+                .projectName(addProfilePortfolioRequest.getProjectName())
+                .projectLineDescription(addProfilePortfolioRequest.getProjectLineDescription())
+                .projectSize(addProfilePortfolioRequest.getProjectSize())
+                .projectHeadCount(addProfilePortfolioRequest.getProjectHeadCount())
+                .projectTeamComposition(addProfilePortfolioRequest.getProjectTeamComposition())
+                .projectStartDate(addProfilePortfolioRequest.getProjectStartDate())
+                .projectEndDate(addProfilePortfolioRequest.getProjectEndDate())
+                .isProjectInProgress(addProfilePortfolioRequest.getIsProjectInProgress())
+                .projectLink(addProfilePortfolioRequest.getProjectLink())
+                .projectDescription(addProfilePortfolioRequest.getProjectDescription())
+                .build();
+    }
+
+    public List<ProjectRoleContribution> toAddProjectRoleContributions(
+            final ProfilePortfolio profilePortfolio,
+            final List<ProfilePortfolioRequestDTO.ProjectRoleAndContribution> projectRoleAndContributions
+    ) {
+        return projectRoleAndContributions.stream()
+                .map(projectRoleContribution -> ProjectRoleContribution.builder()
+                        .portfolio(profilePortfolio)
+                        .projectRole(projectRoleContribution.getProjectRole())
+                        .projectContribution(projectRoleContribution.getProjectContribution())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public ProfilePortfolioResponseDTO.AddProfilePortfolioResponse toAddProfilePortfolioResponse(
+            final ProfilePortfolio profilePortfolio,
+            final List<ProjectRoleAndContribution> projectRoleAndContributions,
+            final List<ProjectSkillName> projectSkillNames,
+            final PortfolioImages portfolioImages
+    ) {
+        return AddProfilePortfolioResponse
+                .builder()
+                .projectName(profilePortfolio.getProjectName())
+                .projectLineDescription(profilePortfolio.getProjectLineDescription())
+                .projectSize(profilePortfolio.getProjectSize())
+                .projectHeadCount(profilePortfolio.getProjectHeadCount())
+                .projectTeamComposition(profilePortfolio.getProjectTeamComposition())
+                .projectStartDate(profilePortfolio.getProjectStartDate())
+                .projectEndDate(profilePortfolio.getProjectEndDate())
+                .isProjectInProgress(profilePortfolio.isProjectInProgress())
+                .projectRoleAndContributions(projectRoleAndContributions)
+                .projectSkillNames(projectSkillNames)
+                .projectLink(profilePortfolio.getProjectLink())
+                .projectDescription(profilePortfolio.getProjectDescription())
+                .portfolioImages(portfolioImages)
+                .build();
+    }
+
+    public ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse toUpdateProfilePortfolioResponse(
+            final ProfilePortfolio profilePortfolio,
+            final List<ProjectRoleAndContribution> projectRoleAndContributions,
+            final List<ProjectSkillName> projectSkillNames,
+            final PortfolioImages portfolioImages
+    ) {
+        return UpdateProfilePortfolioResponse
+                .builder()
+                .projectName(profilePortfolio.getProjectName())
+                .projectLineDescription(profilePortfolio.getProjectLineDescription())
+                .projectSize(profilePortfolio.getProjectSize())
+                .projectHeadCount(profilePortfolio.getProjectHeadCount())
+                .projectTeamComposition(profilePortfolio.getProjectTeamComposition())
+                .projectStartDate(profilePortfolio.getProjectStartDate())
+                .projectEndDate(profilePortfolio.getProjectEndDate())
+                .isProjectInProgress(profilePortfolio.isProjectInProgress())
+                .projectRoleAndContributions(projectRoleAndContributions)
+                .projectSkillNames(projectSkillNames)
+                .projectLink(profilePortfolio.getProjectLink())
+                .projectDescription(profilePortfolio.getProjectDescription())
+                .portfolioImages(portfolioImages)
+                .build();
+    }
 
     public ProfilePortfolioResponseDTO.ProfilePortfolioDetail toProfilePortfolioDetail(
             final ProfilePortfolio profilePortfolio,
@@ -102,4 +187,17 @@ public class ProfilePortfolioMapper {
                 ).collect(Collectors.toList());
     }
 
+
+    public List<ProjectSkill> toAddProjectSkills(
+            final ProfilePortfolio profilePortfolio,
+            final List<Skill> skills
+    ) {
+        return skills.stream()
+                .map(skill -> ProjectSkill.builder()
+                        .id(null)
+                        .portfolio(profilePortfolio)
+                        .skill(skill)
+                        .build())
+                .collect(Collectors.toList());
+    }
 }

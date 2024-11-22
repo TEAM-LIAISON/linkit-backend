@@ -12,6 +12,64 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfilePortfolioResponseDTO {
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddProfilePortfolioResponse {
+        private String projectName;
+        private String projectLineDescription;
+        private ProjectSize projectSize;
+        private int projectHeadCount;
+        private String projectTeamComposition;
+
+        private String projectStartDate;
+        private String projectEndDate;
+        private Boolean isProjectInProgress;
+
+        @Builder.Default
+        private List<ProjectRoleAndContribution> projectRoleAndContributions = new ArrayList<>();
+
+        @Builder.Default
+        private List<ProjectSkillName> projectSkillNames = new ArrayList<>();
+
+        private String projectLink;
+        private String projectDescription;
+
+        @Builder.Default
+        private PortfolioImages portfolioImages = new PortfolioImages();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateProfilePortfolioResponse {
+        private Long profilePortfolioId;
+        private String projectName;
+        private String projectLineDescription;
+        private ProjectSize projectSize;
+        private int projectHeadCount;
+        private String projectTeamComposition;
+
+        private String projectStartDate;
+        private String projectEndDate;
+        private Boolean isProjectInProgress;
+
+        @Builder.Default
+        private List<ProjectRoleAndContribution> projectRoleAndContributions = new ArrayList<>();
+
+        @Builder.Default
+        private List<ProjectSkillName> projectSkillNames = new ArrayList<>();
+
+        private String projectLink;
+        private String projectDescription;
+
+        @Builder.Default
+        private PortfolioImages portfolioImages = new PortfolioImages();
+    }
+
     @Builder
     @Getter
     @NoArgsConstructor

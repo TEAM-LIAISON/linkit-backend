@@ -32,7 +32,7 @@ public class QProjectSubImage extends EntityPathBase<ProjectSubImage> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final QProfilePortfolio portfolio;
+    public final QProfilePortfolio profilePortfolio;
 
     public final StringPath projectSubImagePath = createString("projectSubImagePath");
 
@@ -54,7 +54,7 @@ public class QProjectSubImage extends EntityPathBase<ProjectSubImage> {
 
     public QProjectSubImage(Class<? extends ProjectSubImage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.portfolio = inits.isInitialized("portfolio") ? new QProfilePortfolio(forProperty("portfolio"), inits.get("portfolio")) : null;
+        this.profilePortfolio = inits.isInitialized("profilePortfolio") ? new QProfilePortfolio(forProperty("profilePortfolio"), inits.get("profilePortfolio")) : null;
     }
 
 }

@@ -24,4 +24,29 @@ public class ProjectSkillCustomRepositoryImpl implements ProjectSkillCustomRepos
                 .where(qProfilePortfolio.id.eq(profilePortfolioId))
                 .fetch();
     }
+
+//    @Override
+//    public void deleteAll(final List<ProjectSkill> projectSkills) {
+//        if (projectSkills == null || projectSkills.isEmpty()) {
+//            return; // 삭제할 대상이 없으므로 메서드 종료
+//        }
+//
+//        // ProjectSkill의 ID 리스트 추출
+//        List<Long> ids = projectSkills.stream()
+//                .map(ProjectSkill::getId)
+//                .filter(Objects::nonNull) // null ID 필터링
+//                .collect(Collectors.toList());
+//
+//        if (ids.isEmpty()) {
+//            return; // 유효한 ID가 없으므로 삭제할 대상이 없음
+//        }
+//
+//        QProjectSkill qProjectSkill = QProjectSkill.projectSkill;
+//
+//        // QueryDSL을 사용한 Bulk Delete
+//        jpaQueryFactory
+//                .delete(qProjectSkill)
+//                .where(qProjectSkill.id.in(ids))
+//                .execute();
+//    }
 }

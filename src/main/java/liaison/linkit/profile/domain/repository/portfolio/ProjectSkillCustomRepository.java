@@ -5,4 +5,6 @@ import liaison.linkit.profile.domain.portfolio.ProjectSkill;
 
 public interface ProjectSkillCustomRepository {
     List<ProjectSkill> getProjectSkills(final Long profilePortfolioId);
+
+//    void deleteAll(final List<ProjectSkill> projectSkills);
 }
