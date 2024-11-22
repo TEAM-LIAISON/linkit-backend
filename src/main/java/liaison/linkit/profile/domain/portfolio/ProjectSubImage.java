@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.portfolio;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -20,34 +20,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProfilePortfolio extends BaseDateTimeEntity {
+public class ProjectSubImage extends BaseDateTimeEntity {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
-
-    // 프로젝트명
-    // 한줄소개
-    // 규모
-    // 인원
-    // 팀 구성
-
-    // 기간
-
-    // 진행 중 여부
-
-    // 역할 및 기여도
-
-    // 사용 스킬
-
-    // 링크
-
-    // 설명
-
-    // 대표 이미지
-
-    // 보조 이미지 (최대 4장)
+    @JoinColumn(name = "profile_portfolio_id")
+    private ProfilePortfolio portfolio;
+    
+    private String projectSubImagePath;
 }

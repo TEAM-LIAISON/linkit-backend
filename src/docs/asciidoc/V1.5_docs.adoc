@@ -166,6 +166,18 @@ include::{snippets}/mini-profile-controller-test/get-mini-profile-detail/respons
 
 ====
 
+=== 미니 프로필 단일 수정
+
+====
+요청
+include::{snippets}/mini-profile-controller-test/update-mini-profile/http-request.adoc[]
+include::{snippets}/mini-profile-controller-test/update-mini-profile/request-parts.adoc[]
+
+응답
+include::{snippets}/mini-profile-controller-test/update-mini-profile/http-response.adoc[]
+include::{snippets}/mini-profile-controller-test/update-mini-profile/response-fields.adoc[]
+====
+
 == #[프로필 - 나의 로그]#
 
 === 나의 로그 본문 이미지 첨부

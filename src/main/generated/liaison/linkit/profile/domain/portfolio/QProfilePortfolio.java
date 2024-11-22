@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.portfolio;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QProfilePortfolio extends EntityPathBase<ProfilePortfolio> {
 
-    private static final long serialVersionUID = 1539441948L;
+    private static final long serialVersionUID = 1452362946L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -29,10 +29,32 @@ public class QProfilePortfolio extends EntityPathBase<ProfilePortfolio> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isProjectInProgress = createBoolean("isProjectInProgress");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final QProfile profile;
+    public final liaison.linkit.profile.domain.QProfile profile;
+
+    public final StringPath projectDescription = createString("projectDescription");
+
+    public final StringPath projectEndDate = createString("projectEndDate");
+
+    public final NumberPath<Integer> projectHeadCount = createNumber("projectHeadCount", Integer.class);
+
+    public final StringPath projectLineDescription = createString("projectLineDescription");
+
+    public final StringPath projectLink = createString("projectLink");
+
+    public final StringPath projectName = createString("projectName");
+
+    public final StringPath projectRepresentImagePath = createString("projectRepresentImagePath");
+
+    public final EnumPath<ProjectSize> projectSize = createEnum("projectSize", ProjectSize.class);
+
+    public final StringPath projectStartDate = createString("projectStartDate");
+
+    public final StringPath projectTeamComposition = createString("projectTeamComposition");
 
     public QProfilePortfolio(String variable) {
         this(ProfilePortfolio.class, forVariable(variable), INITS);
@@ -52,7 +74,7 @@ public class QProfilePortfolio extends EntityPathBase<ProfilePortfolio> {
 
     public QProfilePortfolio(Class<? extends ProfilePortfolio> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.profile = inits.isInitialized("profile") ? new QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }

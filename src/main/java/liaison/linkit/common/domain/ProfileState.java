@@ -25,4 +25,13 @@ public class ProfileState {
 
     @Column(name = "profile_state_name", nullable = false)
     private String profileStateName;
+
+    public static ProfileState of(
+            final String profileStateName
+    ) {
+        return new ProfileState(
+                null,
+                profileStateName
+        );
+    }
 }

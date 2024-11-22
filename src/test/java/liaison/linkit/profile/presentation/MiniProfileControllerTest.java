@@ -10,7 +10,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,16 +21,20 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.presentation.miniProfile.MiniProfileController;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileRequestDTO.UpdateMiniProfileRequest;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItems;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfilePositionItem;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.UpdateMiniProfileResponse;
 import liaison.linkit.profile.service.MiniProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +44,10 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -172,5 +183,97 @@ class MiniProfileControllerTest extends ControllerTest {
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 나의 미니 프로필을 수정할 수 있다.")
+    @Test
+    void updateMiniProfile() throws Exception {
+        // given
+        final Long profileId = 1L;
+
+        final UpdateMiniProfileResponse updateMiniProfileResponse
+                = new UpdateMiniProfileResponse(1L, LocalDateTime.now(), "대분류 포지션", "소분류 포지션", "활동지역 시/도", "활동지역 시/군/구", Arrays.asList("팀 찾는 중", "아이디어 찾는 중"), true);
+
+        final MockMultipartFile profileImage = new MockMultipartFile(
+                "profileImage",
+                "logo.png",
+                "multipart/form-data",
+                "./src/test/resources/static/images/logo.png".getBytes()
+        );
+
+        final UpdateMiniProfileRequest updateMiniProfileRequest
+                = new UpdateMiniProfileRequest("대분류 포지션", "소분류 포지션", "시/도", "시/군/구", Arrays.asList("팀 찾는 중", "팀원 찾는 중"), true);
+
+        final MockMultipartFile createRequest = new MockMultipartFile(
+                "updateMiniProfileRequest",
+                null,
+                "application/json",
+                objectMapper.writeValueAsString(updateMiniProfileRequest).getBytes(StandardCharsets.UTF_8)
+        );
+
+        // when
+        when(miniProfileService.updateMiniProfile(anyLong(), any(), any())).thenReturn(updateMiniProfileResponse);
+
+        // when
+        final ResultActions resultActions = mockMvc.perform(
+                multipart(HttpMethod.POST, "/api/v1/miniProfile")
+                        .file(profileImage)
+                        .file(createRequest)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .characterEncoding("UTF-8")
+                        .header(HttpHeaders.AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(restDocs.document(
+                        requestParts(
+                                partWithName("profileImage").description("프로필 본문 이미지"),
+                                partWithName("updateMiniProfileRequest").description("미니 프로필 수정 정보 객체")
+                        ),
+                        responseFields(fieldWithPath("isSuccess")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("요청 성공 여부")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("code")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 코드")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 메시지")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("result.profileId")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("프로필 ID"),
+                                fieldWithPath("result.modifiedAt")
+                                        .type(JsonFieldType.STRING)
+                                        .description("미니 프로필 수정 시간"),
+                                fieldWithPath("result.majorPosition")
+                                        .type(JsonFieldType.STRING)
+                                        .description("대분류 포지션"),
+                                fieldWithPath("result.subPosition")
+                                        .type(JsonFieldType.STRING)
+                                        .description("소분류 포지션"),
+                                fieldWithPath("result.cityName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("활동지역 시/도"),
+                                fieldWithPath("result.divisionName")
+                                        .type(JsonFieldType.STRING)
+                                        .description("활동지역 시/군/구"),
+                                fieldWithPath("result.profileStateNames")
+                                        .type(JsonFieldType.ARRAY)
+                                        .description("현재 상태 배열"),
+                                fieldWithPath("result.isProfilePublic")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("프로필 공개 여부")
+                        )
+                )).andReturn();
     }
 }

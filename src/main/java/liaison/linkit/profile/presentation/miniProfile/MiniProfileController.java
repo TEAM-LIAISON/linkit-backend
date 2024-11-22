@@ -12,7 +12,6 @@ import liaison.linkit.profile.service.MiniProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -38,16 +37,15 @@ public class MiniProfileController {
     }
 
     // 미니 프로필 업데이트
-    @PostMapping("/miniProfile/{profileId}")
+    @PostMapping("/miniProfile")
     @MemberOnly
     public CommonResponse<MiniProfileResponseDTO.UpdateMiniProfileResponse> updateMiniProfile(
             @Auth final Accessor accessor,
-            @PathVariable final Long profileId,
             @RequestPart(required = false) MultipartFile profileImage,
             @RequestPart @Valid MiniProfileRequestDTO.UpdateMiniProfileRequest updateMiniProfileRequest
     ) {
-        log.info("memberId = {}의 profileId = {}에 대한 미니프로필 수정 요청이 발생했습니다.", accessor.getMemberId(), profileId);
-        return CommonResponse.onSuccess(miniProfileService.updateMiniProfile(accessor.getMemberId(), profileId, profileImage, updateMiniProfileRequest));
+        log.info("memberId = {}의 미니프로필 수정 요청이 발생했습니다.", accessor.getMemberId());
+        return CommonResponse.onSuccess(miniProfileService.updateMiniProfile(accessor.getMemberId(), profileImage, updateMiniProfileRequest));
     }
 
 }
