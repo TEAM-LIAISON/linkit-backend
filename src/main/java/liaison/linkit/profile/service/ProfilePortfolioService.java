@@ -177,7 +177,7 @@ public class ProfilePortfolioService {
 
         // 1. 기존 포트폴리오 조회
         final ProfilePortfolio existingProfilePortfolio = profilePortfolioQueryAdapter.getProfilePortfolio(profilePortfolioId);
-        
+
         // 2. DTO를 통해 포트폴리오 업데이트
         final ProfilePortfolio updatedProfilePortfolio = profilePortfolioCommandAdapter.updateProfilePortfolio(existingProfilePortfolio, updateProfilePortfolioRequest);
 
@@ -275,5 +275,37 @@ public class ProfilePortfolioService {
                 projectSkillNames,
                 portfolioImages
         );
+    }
+
+    public ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse removeProfilePortfolio(final Long memberId, final Long profilePortfolioId) {
+        final ProfilePortfolio profilePortfolio = profilePortfolioQueryAdapter.getProfilePortfolio(profilePortfolioId);
+        // 기존 역할 및 기여도 삭제
+        List<ProjectRoleContribution> existingRoleContributions = projectRoleContributionQueryAdapter.getProjectRoleContributions(profilePortfolioId);
+        if (existingRoleContributions != null && !existingRoleContributions.isEmpty()) {
+            projectRoleContributionCommandAdapter.deleteAll(existingRoleContributions);
+        }
+
+        // 기존 스킬 삭제
+        List<ProjectSkill> existingProjectSkills = projectSkillQueryAdapter.getProjectSkills(profilePortfolioId);
+        if (existingProjectSkills != null && !existingProjectSkills.isEmpty()) {
+            projectSkillCommandAdapter.deleteAll(existingProjectSkills);
+        }
+
+        // 기존 대표 이미지 삭제 (선택 사항)
+        if (profilePortfolio.getProjectRepresentImagePath() != null) {
+            s3Uploader.deleteFile(profilePortfolio.getProjectRepresentImagePath());
+        }
+
+        // 기존 보조 이미지 삭제 (선택 사항)
+        List<ProjectSubImage> existingSubImages = projectSubImageQueryAdapter.getProjectSubImages(profilePortfolioId);
+        if (existingSubImages != null && !existingSubImages.isEmpty()) {
+            for (ProjectSubImage subImage : existingSubImages) {
+                s3Uploader.deleteFile(subImage.getProjectSubImagePath());
+            }
+            projectSubImageCommandAdapter.deleteAll(existingSubImages);
+        }
+
+        profilePortfolioCommandAdapter.removeProfilePortfolio(profilePortfolio);
+        return profilePortfolioMapper.toRemoveProfilePortfolio(profilePortfolioId);
     }
 }

@@ -421,6 +421,18 @@ include::{snippets}/profile-portfolio-controller-test/update-profile-portfolio/h
 include::{snippets}/profile-portfolio-controller-test/update-profile-portfolio/response-fields.adoc[]
 ====
 
+=== 나의 포트폴리오 단일 삭제
+
+====
+요청
+include::{snippets}/profile-portfolio-controller-test/remove-profile-portfolio/http-request.adoc[]
+include::{snippets}/profile-portfolio-controller-test/remove-profile-portfolio/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-portfolio-controller-test/remove-profile-portfolio/http-response.adoc[]
+
+====
+
 == #[프로필 - 나의 수상]#
 
 === 나의 수상 전체 조회

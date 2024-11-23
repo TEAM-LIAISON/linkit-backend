@@ -46,6 +46,7 @@ import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRespons
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItems;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectRoleAndContribution;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectSkillName;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse;
 import liaison.linkit.profile.service.ProfilePortfolioService;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,6 +98,14 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
     private ResultActions performGetProfilePortfolioDetail(final Long profilePortfolioId) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/profile/portfolio/{profilePortfolioId}", profilePortfolioId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performRemoveProfilePortfolio(final Long profilePortfolioId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/api/v1/profile/portfolio/{profilePortfolioId}", profilePortfolioId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -824,6 +833,60 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
         final CommonResponse<UpdateProfilePortfolioResponse> expected = CommonResponse.onSuccess(updateProfilePortfolioResponse);
 
         // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 나의 포트폴리오를 삭제할 수 있다.")
+    @Test
+    void removeProfilePortfolio() throws Exception {
+        // given
+        final ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse removeProfilePortfolioResponse
+                = new RemoveProfilePortfolioResponse(1L);
+
+        // when
+        when(profilePortfolioService.removeProfilePortfolio(anyLong(), anyLong())).thenReturn(removeProfilePortfolioResponse);
+
+        final ResultActions resultActions = performRemoveProfilePortfolio(1L);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(restDocs.document(
+                        pathParameters(
+                                parameterWithName("profilePortfolioId")
+                                        .description("프로필 포트폴리오 ID")
+                        ),
+                        responseFields(fieldWithPath("isSuccess")
+                                        .type(JsonFieldType.BOOLEAN)
+                                        .description("요청 성공 여부")
+                                        .attributes(field("constraint", "boolean 값")),
+                                fieldWithPath("code")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 코드")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("요청 성공 메시지")
+                                        .attributes(field("constraint", "문자열")),
+                                fieldWithPath("result.profilePortfolioId")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("삭제된 포트폴리오 ID")
+                        )
+                )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<RemoveProfilePortfolioResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<RemoveProfilePortfolioResponse>>() {
+                }
+        );
+
+        final CommonResponse<RemoveProfilePortfolioResponse> expected = CommonResponse.onSuccess(removeProfilePortfolioResponse);
+
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }
