@@ -1,6 +1,6 @@
 package liaison.linkit.profile.service;
 
-import static liaison.linkit.global.type.ProfileLogType.GENERAL_LOG;
+import static liaison.linkit.profile.domain.type.ProfileLogType.GENERAL_LOG;
 
 import java.util.List;
 import liaison.linkit.common.validator.ImageValidator;

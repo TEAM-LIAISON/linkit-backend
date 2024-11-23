@@ -1,8 +1,8 @@
 package liaison.linkit.profile.presentation;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
-import static liaison.linkit.global.type.ProfileLogType.GENERAL_LOG;
-import static liaison.linkit.global.type.ProfileLogType.REPRESENTATIVE_LOG;
+import static liaison.linkit.profile.domain.type.ProfileLogType.GENERAL_LOG;
+import static liaison.linkit.profile.domain.type.ProfileLogType.REPRESENTATIVE_LOG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
