@@ -1,4 +1,4 @@
-package liaison.linkit.global.type;
+package liaison.linkit.profile.domain.type;
 
 public enum ProfileLogType {
     REPRESENTATIVE_LOG,

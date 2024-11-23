@@ -1,6 +1,6 @@
 package liaison.linkit.profile.presentation.log.dto;
 
-import liaison.linkit.global.type.ProfileLogType;
+import liaison.linkit.profile.domain.type.ProfileLogType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

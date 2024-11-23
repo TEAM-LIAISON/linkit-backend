@@ -3,7 +3,7 @@ package liaison.linkit.profile.presentation.log.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.global.type.ProfileLogType;
+import liaison.linkit.profile.domain.type.ProfileLogType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -615,6 +615,31 @@ include::{snippets}/profile-license-controller-test/remove-profile-license-certi
 include::{snippets}/profile-license-controller-test/remove-profile-license-certification/response-fields.adoc[]
 ====
 
+== #[프로필 - 나의 링크]#
+
+=== 나의 링크 전체 조회
+
+====
+요청
+include::{snippets}/profile-link-controller-test/get-profile-link-items/http-request.adoc[]
+
+응답
+include::{snippets}/profile-link-controller-test/get-profile-link-items/http-response.adoc[]
+include::{snippets}/profile-link-controller-test/get-profile-link-items/response-fields.adoc[]
+====
+
+=== 나의 링크 전체 수정
+
+====
+요청
+include::{snippets}/profile-link-controller-test/update-profile-link-items/http-request.adoc[]
+include::{snippets}/profile-link-controller-test/update-profile-link-items/request-fields.adoc[]
+
+응답
+include::{snippets}/profile-link-controller-test/update-profile-link-items/http-response.adoc[]
+include::{snippets}/profile-link-controller-test/update-profile-link-items/response-fields.adoc[]
+====
+
 == #[스크랩]#
 
 == #[팀]#

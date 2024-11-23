@@ -12,7 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
-import liaison.linkit.global.type.ProfileUrlType;
+import liaison.linkit.profile.domain.type.LinkType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProfileUrl extends BaseDateTimeEntity {
+public class ProfileLink extends BaseDateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,16 +34,13 @@ public class ProfileUrl extends BaseDateTimeEntity {
     @JoinColumn(nullable = false)
     private Profile profile;
 
-    private String urlIconImagePath;
+    @Column(nullable = false)
+    private String linkName;
 
     @Column(nullable = false)
-    private String urlName;
-
-    @Column(nullable = false)
-    private String urlPath;
+    private String linkPath;
 
     @Column(nullable = false)
     @Enumerated(value = STRING)
-    private ProfileUrlType profileUrlType;
-    
+    private LinkType linkType;
 }
