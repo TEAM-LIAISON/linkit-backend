@@ -1,9 +1,10 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.education;
 
 import static jakarta.persistence.FetchType.LAZY;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.common.domain.University;
+import liaison.linkit.profile.domain.Profile;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,39 +34,37 @@ public class ProfileEducation extends BaseDateTimeEntity {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    // 대학명
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "university_name")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "university_id")
     private University university;
 
     // 전공명
     @Column(nullable = false)
     private String majorName;
 
-    // 입학년도
     @Column(nullable = false)
-    private int admissionYear;
-
-    // 졸업년도
-    private Integer graduationYear;
-
-    // 학적 상태 (보류)
+    private String admissionYear; // 입학년도
+    private String graduationYear; // 졸업년도
+    private boolean isAttendUniversity; // 학적 상태
 
     // 학력 설명
     private String educationDescription;
 
-    // 학력 증명서 존재 유무
-    private Boolean isEducationCertified;
-
-    // 학력 증명서 인증 여부
-    private Boolean isEducationVerified;
-
-    // 학력 증명서 첨부 파일 이름
+    private boolean isEducationCertified;
+    private boolean isEducationVerified;
     private String educationCertificationAttachFileName;
-
-    // 학력 증명서 파일 경로
     private String educationCertificationAttachFilePath;
 
-    // 학력 증명서 설명 내용
-    private String educationCertificationDescription;
+    // 수상 인증서 세팅 메서드
+    public void setProfileEducationCertification(
+            final boolean isEducationCertified,
+            final boolean isEducationVerified,
+            final String educationCertificationAttachFileName,
+            final String educationCertificationAttachFilePath
+    ) {
+        this.isEducationCertified = isEducationCertified;
+        this.isEducationVerified = isEducationVerified;
+        this.educationCertificationAttachFileName = educationCertificationAttachFileName;
+        this.educationCertificationAttachFilePath = educationCertificationAttachFilePath;
+    }
 }

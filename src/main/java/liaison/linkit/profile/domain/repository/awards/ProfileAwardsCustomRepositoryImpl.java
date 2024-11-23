@@ -1,6 +1,8 @@
 package liaison.linkit.profile.domain.repository.awards;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import liaison.linkit.profile.domain.awards.ProfileAwards;
 import liaison.linkit.profile.domain.awards.QProfileAwards;
@@ -12,6 +14,9 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class ProfileAwardsCustomRepositoryImpl implements ProfileAwardsCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<ProfileAwards> getProfileAwardsGroup(final Long memberId) {
@@ -37,6 +42,9 @@ public class ProfileAwardsCustomRepositoryImpl implements ProfileAwardsCustomRep
                 .set(qProfileAwards.awardsDescription, updateProfileAwardsRequest.getAwardsDescription())
                 .where(qProfileAwards.id.eq(profileAwardsId))
                 .execute();
+
+        entityManager.flush();
+        entityManager.clear();
 
         if (updatedCount > 0) {
             // 업데이트된 ProfileActivity 조회 및 반환

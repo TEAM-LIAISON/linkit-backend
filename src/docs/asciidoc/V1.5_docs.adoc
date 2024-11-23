@@ -346,11 +346,12 @@ include::{snippets}/profile-activity-controller-test/remove-profile-activity/res
 
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/http-request.adoc[]
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/path-parameters.adoc[]
+include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/request-parts.adoc[]
 
 응답
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/http-response.adoc[]
 include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/response-fields.adoc[]
-include::{snippets}/profile-activity-controller-test/add-profile-activity-certification/request-parts.adoc[]
+
 
 ====
 
@@ -431,6 +432,91 @@ include::{snippets}/profile-portfolio-controller-test/remove-profile-portfolio/p
 응답
 include::{snippets}/profile-portfolio-controller-test/remove-profile-portfolio/http-response.adoc[]
 
+====
+
+== #[프로필 - 나의 학력]#
+
+=== 나의 학력 전체 조회
+
+====
+요청
+include::{snippets}/profile-education-controller-test/get-profile-education-items/http-request.adoc[]
+
+응답
+include::{snippets}/profile-education-controller-test/get-profile-education-items/http-response.adoc[]
+include::{snippets}/profile-education-controller-test/get-profile-education-items/response-fields.adoc[]
+====
+
+=== 나의 학력 단일 조회
+
+====
+요청
+include::{snippets}/profile-education-controller-test/get-profile-education-detail/http-request.adoc[]
+
+응답
+include::{snippets}/profile-education-controller-test/get-profile-education-detail/http-response.adoc[]
+include::{snippets}/profile-education-controller-test/get-profile-education-detail/response-fields.adoc[]
+
+====
+
+=== 나의 학력 단일 생성
+
+====
+요청
+include::{snippets}/profile-education-controller-test/add-profile-education/http-request.adoc[]
+include::{snippets}/profile-education-controller-test/add-profile-education/request-fields.adoc[]
+
+응답
+include::{snippets}/profile-education-controller-test/add-profile-education/http-response.adoc[]
+include::{snippets}/profile-education-controller-test/add-profile-education/response-fields.adoc[]
+
+====
+
+=== 나의 학력 단일 수정
+
+====
+요청
+include::{snippets}/profile-education-controller-test/update-profile-education/http-request.adoc[]
+include::{snippets}/profile-education-controller-test/update-profile-education/path-parameters.adoc[]
+include::{snippets}/profile-education-controller-test/update-profile-education/response-fields.adoc[]
+
+응답
+include::{snippets}/profile-education-controller-test/update-profile-education/http-response.adoc[]
+include::{snippets}/profile-education-controller-test/update-profile-education/response-fields.adoc[]
+
+====
+
+=== 나의 학력 단일 삭제
+
+====
+요청
+include::{snippets}/profile-education-controller-test/remove-profile-education/http-request.adoc[]
+include::{snippets}/profile-education-controller-test/remove-profile-education/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-education-controller-test/remove-profile-education/http-response.adoc[]
+include::{snippets}/profile-education-controller-test/remove-profile-education/response-fields.adoc[]
+
+====
+
+=== 학력 증명서 단일 생성
+
+====
+요청
+include::{snippets}/profile-education-controller-test/add-profile-education-certification/http-request.adoc[]
+include::{snippets}/profile-education-controller-test/add-profile-education-certification/path-parameters.adoc[]
+include::{snippets}/profile-education-controller-test/add-profile-education-certification/request-parts.adoc[]
+
+응답
+include::{snippets}/profile-education-controller-test/add-profile-education-certification/http-response.adoc[]
+include::{snippets}/profile-education-controller-test/add-profile-education-certification/response-fields.adoc[]
+
+====
+
+=== 학력 증명서 단일 삭제
+
+====
+요청 응답
 ====
 
 == #[프로필 - 나의 수상]#
