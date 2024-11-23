@@ -394,6 +394,33 @@ include::{snippets}/profile-portfolio-controller-test/get-profile-portfolio-deta
 
 ====
 
+=== 나의 포트폴리오 단일 생성
+
+====
+요청
+include::{snippets}/profile-portfolio-controller-test/add-profile-portfolio/http-request.adoc[]
+include::{snippets}/profile-portfolio-controller-test/add-profile-portfolio/request-parts.adoc[]
+include::{snippets}/profile-portfolio-controller-test/add-profile-portfolio/request-part-addProfilePortfolioRequest-fields.adoc[]
+
+응답
+include::{snippets}/profile-portfolio-controller-test/add-profile-portfolio/http-response.adoc[]
+include::{snippets}/profile-portfolio-controller-test/add-profile-portfolio/response-fields.adoc[]
+====
+
+=== 나의 포트폴리오 단일 수정
+
+====
+요청
+include::{snippets}/profile-portfolio-controller-test/update-profile-portfolio/http-request.adoc[]
+include::{snippets}/profile-portfolio-controller-test/update-profile-portfolio/path-parameters.adoc[]
+include::{snippets}/profile-portfolio-controller-test/update-profile-portfolio/request-parts.adoc[]
+include::{snippets}/profile-portfolio-controller-test/update-profile-portfolio/request-part-updateProfilePortfolioRequest-fields.adoc[]
+
+응답
+include::{snippets}/profile-portfolio-controller-test/update-profile-portfolio/http-response.adoc[]
+include::{snippets}/profile-portfolio-controller-test/update-profile-portfolio/response-fields.adoc[]
+====
+
 == #[프로필 - 나의 수상]#
 
 === 나의 수상 전체 조회
