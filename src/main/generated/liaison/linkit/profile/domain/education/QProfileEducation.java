@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.education;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QProfileEducation extends EntityPathBase<ProfileEducation> {
 
-    private static final long serialVersionUID = 126904188L;
+    private static final long serialVersionUID = 999708866L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
@@ -24,7 +24,7 @@ public class QProfileEducation extends EntityPathBase<ProfileEducation> {
 
     public final liaison.linkit.common.domain.QBaseDateTimeEntity _super = new liaison.linkit.common.domain.QBaseDateTimeEntity(this);
 
-    public final NumberPath<Integer> admissionYear = createNumber("admissionYear", Integer.class);
+    public final StringPath admissionYear = createString("admissionYear");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
@@ -33,13 +33,13 @@ public class QProfileEducation extends EntityPathBase<ProfileEducation> {
 
     public final StringPath educationCertificationAttachFilePath = createString("educationCertificationAttachFilePath");
 
-    public final StringPath educationCertificationDescription = createString("educationCertificationDescription");
-
     public final StringPath educationDescription = createString("educationDescription");
 
-    public final NumberPath<Integer> graduationYear = createNumber("graduationYear", Integer.class);
+    public final StringPath graduationYear = createString("graduationYear");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final BooleanPath isAttendUniversity = createBoolean("isAttendUniversity");
 
     public final BooleanPath isEducationCertified = createBoolean("isEducationCertified");
 
@@ -50,7 +50,7 @@ public class QProfileEducation extends EntityPathBase<ProfileEducation> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final QProfile profile;
+    public final liaison.linkit.profile.domain.QProfile profile;
 
     public final liaison.linkit.common.domain.QUniversity university;
 
@@ -72,7 +72,7 @@ public class QProfileEducation extends EntityPathBase<ProfileEducation> {
 
     public QProfileEducation(Class<? extends ProfileEducation> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.profile = inits.isInitialized("profile") ? new QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
         this.university = inits.isInitialized("university") ? new liaison.linkit.common.domain.QUniversity(forProperty("university")) : null;
     }
 

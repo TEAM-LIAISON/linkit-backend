@@ -1,9 +1,12 @@
 package liaison.linkit.profile.domain.repository.education;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
-import liaison.linkit.profile.domain.ProfileEducation;
-import liaison.linkit.profile.domain.QProfileEducation;
+import liaison.linkit.profile.domain.education.ProfileEducation;
+import liaison.linkit.profile.domain.education.QProfileEducation;
+import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO.UpdateProfileEducationRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,13 +18,41 @@ public class ProfileEducationCustomRepositoryImpl implements ProfileEducationCus
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
+
     @Override
-    public List<ProfileEducation> getProfileEducations(final Long memberId) {
+    public List<ProfileEducation> getProfileEducations(final Long profileId) {
         QProfileEducation qProfileEducation = QProfileEducation.profileEducation;
 
         return jpaQueryFactory
                 .selectFrom(qProfileEducation)
-                .where(qProfileEducation.profile.member.id.eq(memberId))
+                .where(qProfileEducation.profile.id.eq(profileId))
                 .fetch();
+    }
+
+    @Override
+    public ProfileEducation updateProfileEducation(final Long profileEducationId, final UpdateProfileEducationRequest updateProfileEducationRequest) {
+        QProfileEducation qProfileEducation = QProfileEducation.profileEducation;
+
+        // 프로필 활동 업데이트
+        long updatedCount = jpaQueryFactory
+                .update(qProfileEducation)
+                .set(qProfileEducation.admissionYear, updateProfileEducationRequest.getAdmissionYear())
+                .where(qProfileEducation.id.eq(profileEducationId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) {
+            // 업데이트된 ProfileActivity 조회 및 반환
+            return jpaQueryFactory
+                    .selectFrom(qProfileEducation)
+                    .where(qProfileEducation.id.eq(profileEducationId))
+                    .fetchOne();
+        } else {
+            return null;
+        }
     }
 }
