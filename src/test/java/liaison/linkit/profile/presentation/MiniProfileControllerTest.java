@@ -189,8 +189,6 @@ class MiniProfileControllerTest extends ControllerTest {
     @Test
     void updateMiniProfile() throws Exception {
         // given
-        final Long profileId = 1L;
-
         final UpdateMiniProfileResponse updateMiniProfileResponse
                 = new UpdateMiniProfileResponse(1L, LocalDateTime.now(), "대분류 포지션", "소분류 포지션", "활동지역 시/도", "활동지역 시/군/구", Arrays.asList("팀 찾는 중", "아이디어 찾는 중"), true);
 
@@ -214,7 +212,6 @@ class MiniProfileControllerTest extends ControllerTest {
         // when
         when(miniProfileService.updateMiniProfile(anyLong(), any(), any())).thenReturn(updateMiniProfileResponse);
 
-        // when
         final ResultActions resultActions = mockMvc.perform(
                 multipart(HttpMethod.POST, "/api/v1/miniProfile")
                         .file(profileImage)

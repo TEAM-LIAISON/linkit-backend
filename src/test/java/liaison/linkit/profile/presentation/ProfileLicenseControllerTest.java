@@ -509,13 +509,14 @@ public class ProfileLicenseControllerTest extends ControllerTest {
         // when
         when(profileLicenseService.addProfileLicenseCertification(anyLong(), anyLong(), any())).thenReturn(profileLicenseCertificationResponse);
 
-        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/v1/profile/license/certification/{profileLicenseId}", profileLicenseId)
-                .file(profileLicenseCertificationFile)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .characterEncoding("UTF-8")
-                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                .cookie(COOKIE));
+        final ResultActions resultActions = mockMvc.perform(
+                RestDocumentationRequestBuilders.multipart("/api/v1/profile/license/certification/{profileLicenseId}", profileLicenseId)
+                        .file(profileLicenseCertificationFile)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.MULTIPART_FORM_DATA)
+                        .characterEncoding("UTF-8")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE));
 
         // then
         final MvcResult mvcResult = resultActions
@@ -571,7 +572,7 @@ public class ProfileLicenseControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 나의 자격증 증명서를 추가할 수 있다.")
+    @DisplayName("회원이 나의 자격증 증명서를 제거할 수 있다.")
     @Test
     void removeProfileLicenseCertification() throws Exception {
         // given

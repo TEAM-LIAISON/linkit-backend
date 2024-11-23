@@ -12,6 +12,7 @@ import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRespons
 import liaison.linkit.profile.service.ProfilePortfolioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,14 +77,14 @@ public class ProfilePortfolioController {
                 profilePortfolioService.updateProfilePortfolio(accessor.getMemberId(), profilePortfolioId, updateProfilePortfolioRequest, projectRepresentImage, projectSubImages));
     }
 
-    // 수상 단일 삭제
-//    @DeleteMapping("/{profilePortfolioId}")
-//    @MemberOnly
-//    public CommonResponse<ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse> removeProfilePortfolio(
-//            @Auth final Accessor accessor,
-//            @PathVariable final Long profilePortfolioId
-//    ) {
-//        log.info("memberId = {}의 profilePortfolioId = {}에 대한 수상 단일 삭제 요청이 컨트롤러 계층에 발생했습니다.", accessor.getMemberId(), profilePortfolioId);
-//        return CommonResponse.onSuccess(profilePortfolioService.removeProfilePortfolio(accessor.getMemberId(), profilePortfolioId));
-//    }
+
+    @DeleteMapping("/{profilePortfolioId}")
+    @MemberOnly
+    public CommonResponse<ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse> removeProfilePortfolio(
+            @Auth final Accessor accessor,
+            @PathVariable final Long profilePortfolioId
+    ) {
+        log.info("memberId = {}의 profilePortfolioId = {}에 대한 포트폴리오 단일 삭제 요청이 컨트롤러 계층에 발생했습니다.", accessor.getMemberId(), profilePortfolioId);
+        return CommonResponse.onSuccess(profilePortfolioService.removeProfilePortfolio(accessor.getMemberId(), profilePortfolioId));
+    }
 }

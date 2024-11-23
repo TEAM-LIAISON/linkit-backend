@@ -163,4 +163,12 @@ public class ProfilePortfolioResponseDTO {
     public static class PortfolioSubImage {
         private String projectSubImagePath;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveProfilePortfolioResponse {
+        private Long profilePortfolioId;
+    }
 }

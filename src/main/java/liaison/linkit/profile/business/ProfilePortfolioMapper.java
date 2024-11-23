@@ -19,6 +19,7 @@ import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRespons
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectRoleAndContribution;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectSkillName;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse;
 
 @Mapper
@@ -200,4 +201,13 @@ public class ProfilePortfolioMapper {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    public ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse toRemoveProfilePortfolio(
+            final Long profilePortfolioId
+    ) {
+        return RemoveProfilePortfolioResponse.builder()
+                .profilePortfolioId(profilePortfolioId)
+                .build();
+    }
+    
 }

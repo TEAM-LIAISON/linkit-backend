@@ -19,4 +19,8 @@ public class ProfilePortfolioCommandAdapter {
     public ProfilePortfolio updateProfilePortfolio(final ProfilePortfolio profilePortfolio, final UpdateProfilePortfolioRequest updateProfilePortfolioRequest) {
         return profilePortfolioRepository.updateProfilePortfolio(profilePortfolio, updateProfilePortfolioRequest);
     }
+
+    public void removeProfilePortfolio(final ProfilePortfolio profilePortfolio) {
+        profilePortfolioRepository.delete(profilePortfolio);
+    }
 }
