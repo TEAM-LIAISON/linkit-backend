@@ -5,11 +5,13 @@ import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,4 +68,9 @@ public class MemberService {
         return memberBasicInformMapper.toUpdateMemberContactResponse(updateMemberBasicInform);
     }
 
+    // 회원 마케팅 수신 동의 수정 요청 (UPDATE)
+    public UpdateConsentMarketingResponse updateConsentMarketing(final Long memberId, final UpdateConsentMarketingRequest updateConsentMarketingRequest) {
+        final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateConsentMarketing(memberId, updateConsentMarketingRequest);
+        return memberBasicInformMapper.toUpdateConsentMarketingResponse(updatedMemberBasicInform);
+    }
 }

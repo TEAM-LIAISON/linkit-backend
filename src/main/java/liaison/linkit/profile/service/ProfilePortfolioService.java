@@ -73,7 +73,8 @@ public class ProfilePortfolioService {
         log.info("profilePortfolios = {}가 성공적으로 조회되었습니다.", profilePortfolios);
 
         final Map<Long, List<String>> projectRolesMap = projectRoleContributionQueryAdapter.getProjectRolesByProfileId(profile.getId());
-
+        log.info("projectRoleMap 조회에 성공했습니다. = {}", projectRolesMap);
+        
         return profilePortfolioMapper.toProfilePortfolioItems(profilePortfolios, projectRolesMap);
     }
 

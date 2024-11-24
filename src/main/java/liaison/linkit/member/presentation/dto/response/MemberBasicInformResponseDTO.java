@@ -63,4 +63,13 @@ public class MemberBasicInformResponseDTO {
     public static class UpdateMemberContactResponse {
         private String contact;
     }
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateConsentMarketingResponse {
+        private Boolean isMarketingAgree;
+    }
 }

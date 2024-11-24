@@ -16,13 +16,11 @@ public class ProjectSubImageCustomRepositoryImpl implements ProjectSubImageCusto
     @Override
     public List<String> getProjectSubImagePaths(final Long profilePortfolioId) {
         QProjectSubImage qProjectSubImage = QProjectSubImage.projectSubImage;
-        QProfilePortfolio qProfilePortfolio = QProfilePortfolio.profilePortfolio;
 
         return jpaQueryFactory
                 .select(qProjectSubImage.projectSubImagePath)
                 .from(qProjectSubImage)
-                .join(qProjectSubImage.profilePortfolio, qProfilePortfolio)
-                .where(qProfilePortfolio.id.eq(profilePortfolioId))
+                .where(qProjectSubImage.profilePortfolio.id.eq(profilePortfolioId))
                 .fetch();
     }
 

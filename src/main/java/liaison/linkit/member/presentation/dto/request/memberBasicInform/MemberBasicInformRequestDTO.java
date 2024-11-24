@@ -61,4 +61,13 @@ public class MemberBasicInformRequestDTO {
         @NotNull(message = "변경하려는 전화번호를 입력해주세요")
         private String contact;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateConsentMarketingRequest {
+        @NotNull(message = "광고성 정보 수신 동의를 선택해주세요")
+        private Boolean isMarketingAgree;
+    }
 }

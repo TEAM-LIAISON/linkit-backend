@@ -50,6 +50,8 @@ public class QProfilePortfolio extends EntityPathBase<ProfilePortfolio> {
 
     public final StringPath projectRepresentImagePath = createString("projectRepresentImagePath");
 
+    public final ListPath<ProjectRoleContribution, QProjectRoleContribution> projectRoleContributions = this.<ProjectRoleContribution, QProjectRoleContribution>createList("projectRoleContributions", ProjectRoleContribution.class, QProjectRoleContribution.class, PathInits.DIRECT2);
+
     public final EnumPath<ProjectSize> projectSize = createEnum("projectSize", ProjectSize.class);
 
     public final StringPath projectStartDate = createString("projectStartDate");

@@ -69,7 +69,7 @@ public class ProfilePortfolioController {
             @Auth final Accessor accessor,
             @PathVariable final Long profilePortfolioId,
             @RequestPart @Valid final ProfilePortfolioRequestDTO.UpdateProfilePortfolioRequest updateProfilePortfolioRequest,
-            @RequestPart(required = true) MultipartFile projectRepresentImage,
+            @RequestPart(required = false) MultipartFile projectRepresentImage,
             @RequestPart(required = false) List<MultipartFile> projectSubImages
     ) {
         log.info("memberId = {}의 profilePortfolioId = {}에 대한 프로필 포트폴리오 수정 요청이 발생했습니다.", accessor.getMemberId(), profilePortfolioId);
