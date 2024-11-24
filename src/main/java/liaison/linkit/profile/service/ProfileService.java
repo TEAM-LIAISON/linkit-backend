@@ -8,9 +8,10 @@ import liaison.linkit.profile.business.ProfileCurrentStateMapper;
 import liaison.linkit.profile.business.ProfileMapper;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileCurrentState;
+import liaison.linkit.profile.domain.ProfilePosition;
 import liaison.linkit.profile.domain.ProfileRegion;
-import liaison.linkit.profile.implement.ProfileCommandAdapter;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
+import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
@@ -28,11 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileService {
 
     private final ProfileQueryAdapter profileQueryAdapter;
-    private final ProfileCommandAdapter profileCommandAdapter;
     private final ProfileMapper profileMapper;
 
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
+
+    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
 
     private final ProfileCurrentStateMapper profileCurrentStateMapper;
 
@@ -52,8 +54,10 @@ public class ProfileService {
         final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
         final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
 
+        final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(profile);
-        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, regionDetail);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePosition, regionDetail);
         final ProfileBooleanMenu profileBooleanMenu = profileMapper.toProfileBooleanMenu(profile);
 
         return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu);
