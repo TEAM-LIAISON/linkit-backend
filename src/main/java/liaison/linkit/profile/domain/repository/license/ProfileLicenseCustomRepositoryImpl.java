@@ -1,6 +1,8 @@
 package liaison.linkit.profile.domain.repository.license;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import liaison.linkit.profile.domain.license.ProfileLicense;
 import liaison.linkit.profile.domain.license.QProfileLicense;
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Repository;
 public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<ProfileLicense> getProfileLicenses(final Long memberId) {
@@ -37,6 +42,9 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
                 .set(qProfileLicense.licenseDescription, updateProfileLicense.getLicenseDescription())
                 .where(qProfileLicense.id.eq(profileLicenseId))
                 .execute();
+
+        entityManager.flush();
+        entityManager.clear();
 
         if (updatedCount > 0) {
             // 업데이트된 ProfileLicense 조회 및 반환

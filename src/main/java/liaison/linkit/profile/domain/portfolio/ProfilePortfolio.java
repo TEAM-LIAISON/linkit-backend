@@ -7,10 +7,14 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.profile.domain.Profile;
 import lombok.AccessLevel;
@@ -39,13 +43,16 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private ProjectSize projectSize; // 규모
-
+    
     private int projectHeadCount; // 인원
     private String projectTeamComposition; // 팀 구성
 
     private String projectStartDate;
     private String projectEndDate;
     private boolean isProjectInProgress;
+
+    @OneToMany(mappedBy = "portfolio", fetch = FetchType.LAZY)
+    private List<ProjectRoleContribution> projectRoleContributions = new ArrayList<>();
 
     private String projectLink; // 링크
     private String projectDescription; // 설명

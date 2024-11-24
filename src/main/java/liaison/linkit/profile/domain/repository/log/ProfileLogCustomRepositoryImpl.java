@@ -1,6 +1,8 @@
 package liaison.linkit.profile.domain.repository.log;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.domain.QProfileLog;
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Repository;
 public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<ProfileLog> getProfileLogs(final Long memberId) {
@@ -34,6 +39,9 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                 .set(qProfileLog.profileLogType, updateProfileLogType.getProfileLogType())
                 .where(qProfileLog.id.eq(profileLog.getId()))
                 .execute();
+
+        entityManager.flush();
+        entityManager.clear();
 
         if (updatedCount > 0) { // 업데이트 성공 확인
             profileLog.setProfileLogType(updateProfileLogType.getProfileLogType()); // 메모리 내 객체 업데이트

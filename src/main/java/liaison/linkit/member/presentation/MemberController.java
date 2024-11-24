@@ -6,7 +6,9 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.member.business.MemberService;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,6 +57,7 @@ public class MemberController {
         return CommonResponse.onSuccess(memberService.getMemberBasicInform(accessor.getMemberId()));
     }
 
+    // 회원 이름 정보 수정
     @PostMapping("/name")
     @MemberOnly
     public CommonResponse<MemberBasicInformResponseDTO.UpdateMemberNameResponse> updateMemberName(
@@ -65,14 +68,26 @@ public class MemberController {
         return CommonResponse.onSuccess(memberService.updateMemberName(accessor.getMemberId(), updateMemberNameRequest));
     }
 
+    // 회원 연락처 정보 수정
     @PostMapping("/contact")
     @MemberOnly
-    public CommonResponse<MemberBasicInformResponseDTO.UpdateMemberContactResponse> updateMemberContactResponseCommonResponse(
+    public CommonResponse<MemberBasicInformResponseDTO.UpdateMemberContactResponse> updateMemberContact(
             @Auth final Accessor accessor,
             @RequestBody final MemberBasicInformRequestDTO.UpdateMemberContactRequest updateMemberContactRequest
     ) {
         log.info("memberId = {}의 회원 연락처 정보 수정 요청 발생", accessor.getMemberId());
         return CommonResponse.onSuccess(memberService.updateMemberContact(accessor.getMemberId(), updateMemberContactRequest));
+    }
+
+    // 회원 광고성 정보 수신 동의 수정
+    @PostMapping("/consent/marketing")
+    @MemberOnly
+    public CommonResponse<UpdateConsentMarketingResponse> updateConsentMarketing(
+            @Auth final Accessor accessor,
+            @RequestBody final UpdateConsentMarketingRequest updateConsentMarketingRequest
+    ) {
+        log.info("memberId = {}의 회원 마케팅 수신 동의 정보 수정 요청 발생", accessor.getMemberId());
+        return CommonResponse.onSuccess(memberService.updateConsentMarketing(accessor.getMemberId(), updateConsentMarketingRequest));
     }
 }
 

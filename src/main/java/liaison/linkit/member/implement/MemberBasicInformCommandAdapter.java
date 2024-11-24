@@ -5,6 +5,7 @@ import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 import liaison.linkit.member.exception.memberBasicInform.MemberBasicInformBadRequestException;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +55,14 @@ public class MemberBasicInformCommandAdapter {
             final UpdateMemberContactRequest request
     ) {
         return memberBasicInformRepository.updateMemberContact(memberId, request)
+                .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
+    }
+
+    public MemberBasicInform updateConsentMarketing(
+            final Long memberId,
+            final UpdateConsentMarketingRequest updateConsentServiceUseRequest
+    ) {
+        return memberBasicInformRepository.updateConsentMarketing(memberId, updateConsentServiceUseRequest)
                 .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
 }

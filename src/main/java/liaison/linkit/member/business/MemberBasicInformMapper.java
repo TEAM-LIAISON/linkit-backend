@@ -64,4 +64,10 @@ public class MemberBasicInformMapper {
                 .build();
     }
 
+    public MemberBasicInformResponseDTO.UpdateConsentMarketingResponse toUpdateConsentMarketingResponse(
+            final MemberBasicInform memberBasicInform
+    ) {
+        return MemberBasicInformResponseDTO.UpdateConsentMarketingResponse.builder()
+                .isMarketingAgree(memberBasicInform.isMarketingAgree()).build();
+    }
 }

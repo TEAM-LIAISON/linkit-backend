@@ -1,6 +1,8 @@
 package liaison.linkit.profile.domain.repository.activity;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import liaison.linkit.profile.domain.activity.ProfileActivity;
 import liaison.linkit.profile.domain.activity.QProfileActivity;
@@ -13,6 +15,9 @@ import org.springframework.stereotype.Repository;
 public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCustomRepository {
 
     private final JPAQueryFactory queryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<ProfileActivity> getProfileActivities(final Long memberId) {
@@ -39,6 +44,9 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
                 .set(qProfileActivity.activityDescription, updateProfileActivity.getActivityDescription())
                 .where(qProfileActivity.id.eq(profileActivityId))
                 .execute();
+
+        entityManager.flush();
+        entityManager.clear();
 
         if (updatedCount > 0) {
             // 업데이트된 ProfileActivity 조회 및 반환

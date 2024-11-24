@@ -3,6 +3,7 @@ package liaison.linkit.member.domain.repository.memberBasicInform;
 import java.util.Optional;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 
 public interface MemberBasicInformRepositoryCustom {
     boolean existsByMemberId(final Long memberId);
@@ -17,5 +18,5 @@ public interface MemberBasicInformRepositoryCustom {
 
     Optional<MemberBasicInform> updateMemberContact(final Long memberId, MemberBasicInformRequestDTO.UpdateMemberContactRequest updateMemberContactRequest);
 
-
+    Optional<MemberBasicInform> updateConsentMarketing(final Long memberId, UpdateConsentMarketingRequest updateConsentMarketingRequest);
 }
