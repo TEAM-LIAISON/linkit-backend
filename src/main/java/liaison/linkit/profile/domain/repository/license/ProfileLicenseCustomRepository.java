@@ -10,4 +10,5 @@ public interface ProfileLicenseCustomRepository {
 
     ProfileLicense updateProfileLicense(final Long profileLicenseId, final UpdateProfileLicenseRequest updateProfileLicenseRequest);
 
+    boolean existsByProfileId(final Long profileId);
 }

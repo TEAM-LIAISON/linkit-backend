@@ -10,4 +10,6 @@ public interface ProfileActivityCustomRepository {
     ProfileActivity updateProfileActivity(final Long profileActivityId, final UpdateProfileActivityRequest updateProfileActivityRequest);
 
     void deleteAllByProfileId(final Long profileId);
+
+    boolean existsByProfileId(final Long profileId);
 }

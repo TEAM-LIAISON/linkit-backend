@@ -20,4 +20,8 @@ public class ProfileLicenseQueryAdapter {
         return profileLicenseRepository.findById(profileLicenseId)
                 .orElseThrow(() -> ProfileLicenseNotFoundException.EXCEPTION);
     }
+
+    public boolean existsByProfileId(final Long profileId) {
+        return profileLicenseRepository.existsByProfileId(profileId);
+    }
 }

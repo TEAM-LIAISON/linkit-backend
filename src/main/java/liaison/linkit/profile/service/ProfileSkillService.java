@@ -44,6 +44,7 @@ public class ProfileSkillService {
         if (profileSkillQueryAdapter.existsByProfileId(profile.getId())) {
             // 기존 이력을 모두 삭제한다.
             profileSkillCommandAdapter.removeProfileSkillsByProfileId(profile.getId());
+            profile.setIsProfileSkill(false);
         }
 
         List<ProfileSkill> profileSkills = addProfileSkillRequest.getProfileSkillItems().stream()
@@ -51,6 +52,10 @@ public class ProfileSkillService {
                 .toList();
 
         profileSkillCommandAdapter.addProfileSkills(profileSkills);
+
+        if (profileSkillQueryAdapter.existsByProfileId(profile.getId())) {
+            profile.setIsProfileLicense(true);
+        }
 
         return profileSkillMapper.toProfileSkillItems(profileSkills);
     }

@@ -67,6 +67,11 @@ public class ProfileEducationService {
         final ProfileEducation profileEducation = profileEducationMapper.toAddProfileEducation(profile, request);
         final ProfileEducation savedProfileEducation = profileEducationCommandAdapter.addProfileEducation(profileEducation);
 
+        // 만약 존재하지 않았다가 생긴 경우라면 true 변환 필요
+        if (!profile.isProfileEducation()) {
+            profile.setIsProfileEducation(true);
+        }
+
         return profileEducationMapper.toAddProfileEducationResponse(savedProfileEducation);
     }
 
@@ -77,6 +82,7 @@ public class ProfileEducationService {
     }
 
     public RemoveProfileEducationResponse removeProfileEducation(final Long memberId, final Long profileEducationId) {
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
         final ProfileEducation profileEducation = profileEducationQueryAdapter.getProfileEducation(profileEducationId);
 
         if (profileEducation.getEducationCertificationAttachFilePath() != null) {
@@ -85,6 +91,11 @@ public class ProfileEducationService {
         }
 
         profileEducationCommandAdapter.removeProfileEducation(profileEducation);
+
+        if (!profileEducationQueryAdapter.existsByProfileId(profile.getId())) {
+            profile.setIsProfileEducation(false);
+        }
+
         return profileEducationMapper.toRemoveProfileEducation(profileEducationId);
     }
 

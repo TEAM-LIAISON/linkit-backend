@@ -21,4 +21,8 @@ public class ProfileAwardsQueryAdapter {
         return profileAwardsRepository.findById(profileAwardsId)
                 .orElseThrow(() -> ProfileAwardsNotFoundException.EXCEPTION);
     }
+
+    public boolean existsByProfileId(final Long profileId) {
+        return profileAwardsRepository.existsByProfileId(profileId);
+    }
 }

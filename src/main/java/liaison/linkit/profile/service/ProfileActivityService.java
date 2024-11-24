@@ -67,6 +67,10 @@ public class ProfileActivityService {
         final ProfileActivity profileActivity = profileActivityMapper.toAddProfileActivity(profile, request);
         final ProfileActivity savedProfileActivity = profileActivityCommandAdapter.addProfileActivity(profileActivity);
 
+        if (!profile.isProfileActivity()) {
+            profile.setIsProfileActivity(true);
+        }
+
         return profileActivityMapper.toAddProfileActivityResponse(savedProfileActivity);
     }
 
@@ -77,6 +81,7 @@ public class ProfileActivityService {
     }
 
     public RemoveProfileActivityResponse removeProfileActivity(final Long memberId, final Long profileActivityId) {
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
         final ProfileActivity profileActivity = profileActivityQueryAdapter.getProfileActivity(profileActivityId);
 
         if (profileActivity.getActivityCertificationAttachFilePath() != null) {
@@ -85,6 +90,10 @@ public class ProfileActivityService {
         }
 
         profileActivityCommandAdapter.removeProfileActivity(profileActivity);
+        if (!profileActivityQueryAdapter.existsByProfileId(profile.getId())) {
+            profile.setIsProfileActivity(false);
+        }
+
         return profileActivityMapper.toRemoveProfileActivity(profileActivityId);
     }
 

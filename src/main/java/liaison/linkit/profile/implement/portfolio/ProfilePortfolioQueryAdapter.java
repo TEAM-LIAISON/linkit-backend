@@ -22,4 +22,7 @@ public class ProfilePortfolioQueryAdapter {
         return profilePortfolioRepository.getProfilePortfolios(profileId);
     }
 
+    public boolean existsByProfileId(final Long profileId) {
+        return profilePortfolioRepository.existsByProfileId(profileId);
+    }
 }

@@ -21,4 +21,8 @@ public class ProfileEducationQueryAdapter {
         return profileEducationRepository.findById(profileEducationId)
                 .orElseThrow(() -> ProfileEducationNotFoundException.EXCEPTION);
     }
+
+    public boolean existsByProfileId(final Long profileId) {
+        return profileEducationRepository.existsByProfileId(profileId);
+    }
 }

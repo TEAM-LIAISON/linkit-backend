@@ -8,4 +8,6 @@ public interface ProfileEducationCustomRepository {
     List<ProfileEducation> getProfileEducations(final Long profileId);
 
     ProfileEducation updateProfileEducation(final Long profileEducationId, final UpdateProfileEducationRequest updateProfileEducationRequest);
+
+    boolean existsByProfileId(final Long profileId);
 }

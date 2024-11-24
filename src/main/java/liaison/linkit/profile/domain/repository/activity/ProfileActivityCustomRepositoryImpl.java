@@ -61,4 +61,15 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
                 .where(qProfileActivity.profile.id.eq(profileId))
                 .execute();
     }
+
+    @Override
+    public boolean existsByProfileId(final Long profileId) {
+        QProfileActivity qProfileActivity = QProfileActivity.profileActivity;
+
+        return queryFactory
+                .selectOne()
+                .from(qProfileActivity)
+                .where(qProfileActivity.profile.id.eq(profileId))
+                .fetchFirst() != null;
+    }
 }

@@ -168,6 +168,10 @@ public class MiniProfileService {
         // 프로필 공개 여부를 업데이트한다
         profile.setIsProfilePublic(updateMiniProfileRequest.getIsProfilePublic());
 
+        if (!profile.isProfileMiniProfile()) {
+            profile.setIsProfileMiniProfile(true);
+        }
+
         return miniProfileMapper.toUpdateProfile(profile);
     }
 }

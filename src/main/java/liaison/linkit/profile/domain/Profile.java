@@ -61,6 +61,38 @@ public class Profile extends BaseEntity {
         this.isProfilePublic = isProfilePublic;
     }
 
+    public void setIsProfileMiniProfile(final boolean isProfileMiniProfile) {
+        this.isProfileMiniProfile = isProfileMiniProfile;
+    }
+
+    public void setIsProfileSkill(final boolean isProfileSkill) {
+        this.isProfileSkill = isProfileSkill;
+    }
+
+    public void setIsProfileActivity(final boolean isProfileActivity) {
+        this.isProfileActivity = isProfileActivity;
+    }
+
+    public void setIsProfilePortfolio(final boolean isProfilePortfolio) {
+        this.isProfilePortfolio = isProfilePortfolio;
+    }
+
+    public void setIsProfileEducation(final boolean isProfileAwards) {
+        this.isProfileAwards = isProfileAwards;
+    }
+
+    public void setIsProfileAwards(final boolean isProfileAwards) {
+        this.isProfileAwards = isProfileAwards;
+    }
+
+    public void setIsProfileLicense(final boolean isProfileLicense) {
+        this.isProfileLicense = isProfileLicense;
+    }
+
+    public void setIsProfileLink(final boolean isProfileLink) {
+        this.isProfileLink = isProfileLink;
+    }
+
     public void updateProfileImagePath(final String profileImagePath) {
         this.profileImagePath = profileImagePath;
     }

@@ -11,4 +11,6 @@ public interface ProfilePortfolioCustomRepository {
     Optional<ProfilePortfolio> getProfilePortfolio(final Long profilePortfolioId);
 
     ProfilePortfolio updateProfilePortfolio(final ProfilePortfolio profilePortfolio, final UpdateProfilePortfolioRequest updateProfilePortfolioRequest);
+
+    boolean existsByProfileId(final Long profileId);
 }
