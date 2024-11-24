@@ -80,4 +80,12 @@ public class ProfileResponseDTO {
         private Boolean isProfileLicense;
         private Boolean isProfileLink;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfilePositionDetail {
+        private String majorPosition;
+    }
 }

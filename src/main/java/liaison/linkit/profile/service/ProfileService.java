@@ -6,6 +6,7 @@ import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.business.ProfileCurrentStateMapper;
 import liaison.linkit.profile.business.ProfileMapper;
+import liaison.linkit.profile.business.ProfilePositionMapper;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileCurrentState;
 import liaison.linkit.profile.domain.ProfilePosition;
@@ -17,6 +18,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,8 @@ public class ProfileService {
 
     private final ProfileCurrentStateMapper profileCurrentStateMapper;
 
+    private final ProfilePositionMapper profilePositionMapper;
+
     public ProfileLeftMenu getProfileLeftMenu(final Long memberId) {
         log.info("memberId = {}의 프로필 왼쪽 메뉴 DTO 조회 요청 발생했습니다.", memberId);
 
@@ -50,15 +54,26 @@ public class ProfileService {
             final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
-
+        log.info("지역 정보 조회 성공");
         final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
         final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
+        log.info("상태 정보 조회 성공");
 
-        final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+        ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+            profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+
+        log.info("대분류 포지션 정보 조회 성공");
 
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(profile);
-        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePosition, regionDetail);
+        log.info("profileCompletionMenu = {}", profileCompletionMenu);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail);
+        log.info("profileInformMenu = {}", profileInformMenu);
         final ProfileBooleanMenu profileBooleanMenu = profileMapper.toProfileBooleanMenu(profile);
+        log.info("profileBooleanMenu = {}", profileBooleanMenu);
 
         return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu);
     }
