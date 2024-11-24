@@ -139,6 +139,33 @@ include::{snippets}/member-controller-test/update-consent-service-use-response/h
 include::{snippets}/member-controller-test/update-consent-service-use-response/response-fields.adoc[]
 ====
 
+== #[회원 - 계정 설정]#
+
+=== 회원 이름 정보 변경
+
+====
+요청
+include::{snippets}/member-controller-test/update-member-name/http-request.adoc[]
+include::{snippets}/member-controller-test/update-member-name/request-fields.adoc[]
+
+응답
+include::{snippets}/member-controller-test/update-member-name/http-response.adoc[]
+include::{snippets}/member-controller-test/update-member-name/response-fields.adoc[]
+====
+
+=== 회원 연락처 정보 변경
+
+====
+요청
+include::{snippets}/member-controller-test/update-member-contact/http-request.adoc[]
+include::{snippets}/member-controller-test/update-member-contact/request-fields.adoc[]
+
+응답
+include::{snippets}/member-controller-test/update-member-contact/http-response.adoc[]
+include::{snippets}/member-controller-test/update-member-contact/response-fields.adoc[]
+
+====
+
 == #[프로필 - 왼쪽 메뉴]#
 
 === 프로필 왼쪽 메뉴 조회

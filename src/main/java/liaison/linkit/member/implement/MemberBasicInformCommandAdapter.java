@@ -5,6 +5,8 @@ import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 import liaison.linkit.member.exception.memberBasicInform.MemberBasicInformBadRequestException;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,6 +38,22 @@ public class MemberBasicInformCommandAdapter {
             final MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest request
     ) {
         return memberBasicInformRepository.updateConsentServiceUse(memberId, request)
+                .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
+    }
+
+    public MemberBasicInform updateMemberName(
+            final Long memberId,
+            final UpdateMemberNameRequest request
+    ) {
+        return memberBasicInformRepository.updateMemberName(memberId, request)
+                .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
+    }
+
+    public MemberBasicInform updateMemberContact(
+            final Long memberId,
+            final UpdateMemberContactRequest request
+    ) {
+        return memberBasicInformRepository.updateMemberContact(memberId, request)
                 .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
 }

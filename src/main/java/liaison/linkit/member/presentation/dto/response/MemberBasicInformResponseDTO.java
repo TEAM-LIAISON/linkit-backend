@@ -47,4 +47,20 @@ public class MemberBasicInformResponseDTO {
         private Boolean isMarketingAgree;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateMemberNameResponse {
+        private String memberName;
+    }
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateMemberContactResponse {
+        private String contact;
+    }
 }

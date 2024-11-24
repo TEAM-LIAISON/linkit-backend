@@ -55,6 +55,24 @@ public class MemberController {
         return CommonResponse.onSuccess(memberService.getMemberBasicInform(accessor.getMemberId()));
     }
 
+    @PostMapping("/name")
+    @MemberOnly
+    public CommonResponse<MemberBasicInformResponseDTO.UpdateMemberNameResponse> updateMemberName(
+            @Auth final Accessor accessor,
+            @RequestBody final MemberBasicInformRequestDTO.UpdateMemberNameRequest updateMemberNameRequest
+    ) {
+        log.info("memberId = {}의 회원 이름 정보 수정 요청 발생", accessor.getMemberId());
+        return CommonResponse.onSuccess(memberService.updateMemberName(accessor.getMemberId(), updateMemberNameRequest));
+    }
 
+    @PostMapping("/contact")
+    @MemberOnly
+    public CommonResponse<MemberBasicInformResponseDTO.UpdateMemberContactResponse> updateMemberContactResponseCommonResponse(
+            @Auth final Accessor accessor,
+            @RequestBody final MemberBasicInformRequestDTO.UpdateMemberContactRequest updateMemberContactRequest
+    ) {
+        log.info("memberId = {}의 회원 연락처 정보 수정 요청 발생", accessor.getMemberId());
+        return CommonResponse.onSuccess(memberService.updateMemberContact(accessor.getMemberId(), updateMemberContactRequest));
+    }
 }
 

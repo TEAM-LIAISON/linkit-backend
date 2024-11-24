@@ -23,7 +23,7 @@ public class MemberBasicInformMapper {
                 .isMarketingAgree(memberBasicInform.isMarketingAgree())
                 .build();
     }
-    
+
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse toMemberBasicInformResponse(
             final MemberBasicInform memberBasicInform,
             final String email
@@ -47,4 +47,21 @@ public class MemberBasicInformMapper {
                 .isMarketingAgree(memberBasicInform.isMarketingAgree())
                 .build();
     }
+
+    public MemberBasicInformResponseDTO.UpdateMemberNameResponse toUpdateMemberNameResponse(
+            final MemberBasicInform memberBasicInform
+    ) {
+        return MemberBasicInformResponseDTO.UpdateMemberNameResponse.builder()
+                .memberName(memberBasicInform.getMemberName())
+                .build();
+    }
+
+    public MemberBasicInformResponseDTO.UpdateMemberContactResponse toUpdateMemberContactResponse(
+            final MemberBasicInform memberBasicInform
+    ) {
+        return MemberBasicInformResponseDTO.UpdateMemberContactResponse.builder()
+                .contact(memberBasicInform.getContact())
+                .build();
+    }
+
 }
