@@ -67,6 +67,11 @@ public class ProfileLicenseService {
         final ProfileLicense profileLicense = profileLicenseMapper.toAddProfileLicense(profile, request);
         final ProfileLicense savedProfileLicense = profileLicenseCommandAdapter.addProfileLicense(profileLicense);
 
+        // 만약 존재하지 않았다가 생긴 경우라면 true 변환 필요
+        if (!profile.isProfileLicense()) {
+            profile.setIsProfileLicense(true);
+        }
+
         return profileLicenseMapper.toAddProfileLicenseResponse(savedProfileLicense);
     }
 
@@ -77,6 +82,8 @@ public class ProfileLicenseService {
     }
 
     public RemoveProfileLicenseResponse removeProfileLicense(final Long memberId, final Long profileLicenseId) {
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
+
         final ProfileLicense profileLicense = profileLicenseQueryAdapter.getProfileLicense(profileLicenseId);
 
         if (profileLicense.getLicenseCertificationAttachFilePath() != null) {
@@ -85,6 +92,11 @@ public class ProfileLicenseService {
         }
 
         profileLicenseCommandAdapter.removeProfileLicense(profileLicense);
+
+        if (!profileLicenseQueryAdapter.existsByProfileId(profile.getId())) {
+            profile.setIsProfileLicense(false);
+        }
+
         return profileLicenseMapper.toRemoveProfileLicense(profileLicenseId);
     }
 

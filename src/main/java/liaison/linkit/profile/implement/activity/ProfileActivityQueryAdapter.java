@@ -21,4 +21,8 @@ public class ProfileActivityQueryAdapter {
         return profileActivityRepository.findById(profileActivityId)
                 .orElseThrow(() -> ProfileActivityNotFoundException.EXCEPTION);
     }
+
+    public boolean existsByProfileId(final Long profileId) {
+        return profileActivityRepository.existsByProfileId(profileId);
+    }
 }

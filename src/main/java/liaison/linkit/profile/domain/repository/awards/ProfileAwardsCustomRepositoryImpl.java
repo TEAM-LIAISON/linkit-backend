@@ -57,4 +57,14 @@ public class ProfileAwardsCustomRepositoryImpl implements ProfileAwardsCustomRep
         }
     }
 
+    @Override
+    public boolean existsByProfileId(final Long profileId) {
+        QProfileAwards qProfileAwards = QProfileAwards.profileAwards;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qProfileAwards)
+                .where(qProfileAwards.profile.id.eq(profileId))
+                .fetchFirst() != null;
+    }
 }

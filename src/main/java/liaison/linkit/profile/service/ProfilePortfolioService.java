@@ -163,6 +163,10 @@ public class ProfilePortfolioService {
         projectSkillCommandAdapter.saveAll(projectSkills);
         final List<ProjectSkillName> projectSkillNames = profilePortfolioMapper.toProjectSkillNames(projectSkills);
 
+        if (!profile.isProfilePortfolio()) {
+            profile.setIsProfilePortfolio(true);
+        }
+
         return profilePortfolioMapper.toAddProfilePortfolioResponse(savedProfilePortfolio, projectRoleAndContributions, projectSkillNames, portfolioImages);
     }
 
@@ -278,6 +282,7 @@ public class ProfilePortfolioService {
     }
 
     public ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse removeProfilePortfolio(final Long memberId, final Long profilePortfolioId) {
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
         final ProfilePortfolio profilePortfolio = profilePortfolioQueryAdapter.getProfilePortfolio(profilePortfolioId);
         // 기존 역할 및 기여도 삭제
         List<ProjectRoleContribution> existingRoleContributions = projectRoleContributionQueryAdapter.getProjectRoleContributions(profilePortfolioId);
@@ -306,6 +311,11 @@ public class ProfilePortfolioService {
         }
 
         profilePortfolioCommandAdapter.removeProfilePortfolio(profilePortfolio);
+
+        if (!profilePortfolioQueryAdapter.existsByProfileId(profile.getId())) {
+            profile.setIsProfilePortfolio(false);
+        }
+
         return profilePortfolioMapper.toRemoveProfilePortfolio(profilePortfolioId);
     }
 }

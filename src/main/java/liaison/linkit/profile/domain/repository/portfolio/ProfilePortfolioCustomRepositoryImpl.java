@@ -75,4 +75,15 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
             return null;
         }
     }
+
+    @Override
+    public boolean existsByProfileId(final Long profileId) {
+        QProfilePortfolio qProfilePortfolio = QProfilePortfolio.profilePortfolio;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qProfilePortfolio)
+                .where(qProfilePortfolio.profile.id.eq(profileId))
+                .fetchFirst() != null;
+    }
 }

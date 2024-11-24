@@ -66,6 +66,10 @@ public class ProfileAwardsService {
         final ProfileAwards profileAwards = profileAwardsMapper.toAddProfileAwards(profile, request);
         final ProfileAwards savedProfileAwards = profileAwardsCommandAdapter.addProfileAwards(profileAwards);
 
+        if (!profile.isProfileAwards()) {
+            profile.setIsProfileAwards(true);
+        }
+
         return profileAwardsMapper.toAddProfileAwardsResponse(savedProfileAwards);
     }
 
@@ -76,6 +80,7 @@ public class ProfileAwardsService {
     }
 
     public RemoveProfileAwardsResponse removeProfileAwards(final Long memberId, final Long profileAwardsId) {
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
         final ProfileAwards profileAwards = profileAwardsQueryAdapter.getProfileAwards(profileAwardsId);
 
         if (profileAwards.getAwardsCertificationAttachFilePath() != null) {
@@ -84,6 +89,10 @@ public class ProfileAwardsService {
         }
 
         profileAwardsCommandAdapter.removeProfileAwards(profileAwards);
+        if (!profileAwardsQueryAdapter.existsByProfileId(profile.getId())) {
+            profile.setIsProfileLicense(false);
+        }
+
         return profileAwardsMapper.toRemoveProfileAwards(profileAwardsId);
     }
 

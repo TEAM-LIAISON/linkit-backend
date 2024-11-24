@@ -55,4 +55,15 @@ public class ProfileEducationCustomRepositoryImpl implements ProfileEducationCus
             return null;
         }
     }
+
+    @Override
+    public boolean existsByProfileId(final Long profileId) {
+        QProfileEducation qProfileEducation = QProfileEducation.profileEducation;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qProfileEducation)
+                .where(qProfileEducation.profile.id.eq(profileId))
+                .fetchFirst() != null;
+    }
 }

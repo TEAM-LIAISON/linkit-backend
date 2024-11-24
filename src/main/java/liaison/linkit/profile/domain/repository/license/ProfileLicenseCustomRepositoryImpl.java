@@ -49,4 +49,15 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
             return null;
         }
     }
+
+    @Override
+    public boolean existsByProfileId(final Long profileId) {
+        QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qProfileLicense)
+                .where(qProfileLicense.profile.id.eq(profileId))
+                .fetchFirst() != null;
+    }
 }
