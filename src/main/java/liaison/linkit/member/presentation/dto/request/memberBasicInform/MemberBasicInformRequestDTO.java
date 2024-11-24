@@ -43,4 +43,13 @@ public class MemberBasicInformRequestDTO {
         private Boolean isMarketingAgree;
 
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateMemberNameRequest {
+        @NotNull(message = "변경하려는 이름을 입력해주세요")
+        private String memberName;
+    }
 }

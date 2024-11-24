@@ -89,4 +89,28 @@ public class MemberBasicInformRepositoryCustomImpl implements MemberBasicInformR
 
         return Optional.empty();  // 업데이트가 실패한 경우
     }
+
+    @Override
+    public Optional<MemberBasicInform> updateMemberName(
+            final Long memberId,
+            final MemberBasicInformRequestDTO.UpdateMemberNameRequest updateMemberNameRequest
+    ) {
+        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform;
+
+        long affectedRows = jpaQueryFactory.update(qMemberBasicInform)
+                .set(qMemberBasicInform.memberName, updateMemberNameRequest.getMemberName())
+                .where(qMemberBasicInform.member.id.eq(memberId))
+                .execute();
+
+        if (affectedRows > 0) {
+            // 업데이트된 엔티티를 다시 조회하여 반환
+            MemberBasicInform updatedEntity = jpaQueryFactory
+                    .selectFrom(qMemberBasicInform)
+                    .where(qMemberBasicInform.member.id.eq(memberId))
+                    .fetchOne();
+            return Optional.ofNullable(updatedEntity);
+        }
+
+        return Optional.empty();  // 업데이트가 실패한 경우
+    }
 }

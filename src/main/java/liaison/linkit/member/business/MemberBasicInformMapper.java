@@ -23,7 +23,7 @@ public class MemberBasicInformMapper {
                 .isMarketingAgree(memberBasicInform.isMarketingAgree())
                 .build();
     }
-    
+
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse toMemberBasicInformResponse(
             final MemberBasicInform memberBasicInform,
             final String email
@@ -45,6 +45,14 @@ public class MemberBasicInformMapper {
                 .isPrivateInformAgree(memberBasicInform.isPrivateInformAgree())
                 .isAgeCheck(memberBasicInform.isAgeCheck())
                 .isMarketingAgree(memberBasicInform.isMarketingAgree())
+                .build();
+    }
+
+    public MemberBasicInformResponseDTO.UpdateMemberNameResponse toUpdateMemberNameResponse(
+            final MemberBasicInform memberBasicInform
+    ) {
+        return MemberBasicInformResponseDTO.UpdateMemberNameResponse.builder()
+                .memberName(memberBasicInform.getMemberName())
                 .build();
     }
 }

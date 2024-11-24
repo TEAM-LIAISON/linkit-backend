@@ -7,6 +7,7 @@ import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,13 @@ public class MemberService {
         final String email = memberQueryAdapter.findEmailById(memberId);
 
         return memberBasicInformMapper.toMemberBasicInformDetail(memberBasicInform, email);
+    }
+
+
+    // 회원 이름 수정 요청 (UPDATE)
+    public MemberBasicInformResponseDTO.UpdateMemberNameResponse updateMemberName(final Long memberId, final UpdateMemberNameRequest updateMemberNameRequest) {
+        final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberName(memberId, updateMemberNameRequest);
+        return memberBasicInformMapper.toUpdateMemberNameResponse(updatedMemberBasicInform);
     }
 
 }
