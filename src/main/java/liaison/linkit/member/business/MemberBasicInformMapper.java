@@ -55,4 +55,13 @@ public class MemberBasicInformMapper {
                 .memberName(memberBasicInform.getMemberName())
                 .build();
     }
+
+    public MemberBasicInformResponseDTO.UpdateMemberContactResponse toUpdateMemberContactResponse(
+            final MemberBasicInform memberBasicInform
+    ) {
+        return MemberBasicInformResponseDTO.UpdateMemberContactResponse.builder()
+                .contact(memberBasicInform.getContact())
+                .build();
+    }
+
 }

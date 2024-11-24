@@ -52,4 +52,13 @@ public class MemberBasicInformRequestDTO {
         @NotNull(message = "변경하려는 이름을 입력해주세요")
         private String memberName;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateMemberContactRequest {
+        @NotNull(message = "변경하려는 전화번호를 입력해주세요")
+        private String contact;
+    }
 }

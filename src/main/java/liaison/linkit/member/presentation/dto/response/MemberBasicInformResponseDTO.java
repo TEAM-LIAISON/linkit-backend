@@ -55,4 +55,12 @@ public class MemberBasicInformResponseDTO {
         private String memberName;
     }
 
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateMemberContactResponse {
+        private String contact;
+    }
 }

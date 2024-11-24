@@ -14,4 +14,8 @@ public interface MemberBasicInformRepositoryCustom {
     Optional<MemberBasicInform> updateConsentServiceUse(final Long memberId, MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest updateConsentServiceUseRequest);
 
     Optional<MemberBasicInform> updateMemberName(final Long memberId, MemberBasicInformRequestDTO.UpdateMemberNameRequest updateMemberNameRequest);
+
+    Optional<MemberBasicInform> updateMemberContact(final Long memberId, MemberBasicInformRequestDTO.UpdateMemberContactRequest updateMemberContactRequest);
+
+
 }
