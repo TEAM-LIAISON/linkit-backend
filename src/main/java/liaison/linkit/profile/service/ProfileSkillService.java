@@ -54,7 +54,7 @@ public class ProfileSkillService {
         profileSkillCommandAdapter.addProfileSkills(profileSkills);
 
         if (profileSkillQueryAdapter.existsByProfileId(profile.getId())) {
-            profile.setIsProfileLicense(true);
+            profile.setIsProfileSkill(true);
         }
 
         return profileSkillMapper.toProfileSkillItems(profileSkills);

@@ -24,7 +24,4 @@ public class University {
 
     @Column(nullable = false)
     private String universityName;
-
-    @Column(nullable = false)
-    private String universityLogoImagePath;
 }

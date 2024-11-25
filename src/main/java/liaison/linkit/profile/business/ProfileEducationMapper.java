@@ -35,7 +35,6 @@ public class ProfileEducationMapper {
                 .builder()
                 .profileEducationId(profileEducation.getId())
                 .universityName(profileEducation.getUniversity().getUniversityName())
-                .universityLogoImagePath(profileEducation.getUniversity().getUniversityLogoImagePath())
                 .majorName(profileEducation.getMajorName())
                 .admissionYear(profileEducation.getAdmissionYear())
                 .graduationYear(profileEducation.getGraduationYear())
@@ -49,7 +48,6 @@ public class ProfileEducationMapper {
                 .builder()
                 .profileEducationId(profileEducation.getId())
                 .universityName(profileEducation.getUniversity().getUniversityName())
-                .universityLogoImagePath(profileEducation.getUniversity().getUniversityLogoImagePath())
                 .majorName(profileEducation.getMajorName())
                 .admissionYear(profileEducation.getAdmissionYear())
                 .graduationYear(profileEducation.getGraduationYear())
@@ -57,12 +55,11 @@ public class ProfileEducationMapper {
                 .educationDescription(profileEducation.getEducationDescription())
                 .build();
     }
-    
+
     public ProfileEducationResponseDTO.ProfileEducationItem toProfileEducationItem(final ProfileEducation profileEducation) {
         return ProfileEducationResponseDTO.ProfileEducationItem.builder()
                 .profileEducationId(profileEducation.getId())
                 .universityName(profileEducation.getUniversity().getUniversityName())
-                .universityLogoImagePath(profileEducation.getUniversity().getUniversityLogoImagePath())
                 .majorName(profileEducation.getMajorName())
                 .admissionYear(profileEducation.getAdmissionYear())
                 .graduationYear(profileEducation.getGraduationYear())
@@ -87,7 +84,6 @@ public class ProfileEducationMapper {
                 .builder()
                 .profileEducationId(profileEducation.getId())
                 .universityName(profileEducation.getUniversity().getUniversityName())
-                .universityLogoImagePath(profileEducation.getUniversity().getUniversityLogoImagePath())
                 .majorName(profileEducation.getMajorName())
                 .admissionYear(profileEducation.getAdmissionYear())
                 .graduationYear(profileEducation.getGraduationYear())

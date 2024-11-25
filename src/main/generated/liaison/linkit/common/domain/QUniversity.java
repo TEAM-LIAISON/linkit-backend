@@ -21,8 +21,6 @@ public class QUniversity extends EntityPathBase<University> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath universityLogoImagePath = createString("universityLogoImagePath");
-
     public final StringPath universityName = createString("universityName");
 
     public QUniversity(String variable) {
