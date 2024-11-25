@@ -2,6 +2,7 @@ package liaison.linkit.member.business;
 
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.member.domain.MemberBasicInform;
+import liaison.linkit.member.domain.type.Platform;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 
 @Mapper
@@ -10,7 +11,8 @@ public class MemberBasicInformMapper {
     // 회원 기본 정보 조회 DTO
     public MemberBasicInformResponseDTO.MemberBasicInformDetail toMemberBasicInformDetail(
             final MemberBasicInform memberBasicInform,
-            final String email
+            final String email,
+            final Platform platform
     ) {
         return MemberBasicInformResponseDTO.MemberBasicInformDetail.builder()
                 .memberBasicInformId(memberBasicInform.getId())
@@ -21,9 +23,10 @@ public class MemberBasicInformMapper {
                 .isPrivateInformAgree(memberBasicInform.isPrivateInformAgree())
                 .isAgeCheck(memberBasicInform.isAgeCheck())
                 .isMarketingAgree(memberBasicInform.isMarketingAgree())
+                .platform(platform)
                 .build();
     }
-
+    
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse toMemberBasicInformResponse(
             final MemberBasicInform memberBasicInform,
             final String email

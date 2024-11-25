@@ -6,6 +6,7 @@ import liaison.linkit.login.domain.OauthProvider;
 import liaison.linkit.login.domain.OauthUserInfo;
 import liaison.linkit.login.exception.AuthCodeBadRequestException;
 import liaison.linkit.login.infrastructure.oauthUserInfo.GoogleUserInfo;
+import liaison.linkit.member.domain.type.Platform;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,11 @@ public class GoogleOauthProvider implements OauthProvider {
     }
 
     @Override
+    public Platform getPlatform(final String providerName) {
+        return Platform.GOOGLE;
+    }
+
+    @Override
     public boolean is(final String name) {
         return PROVIDER_NAME.equals(name);
     }
@@ -62,7 +68,7 @@ public class GoogleOauthProvider implements OauthProvider {
         }
         throw NotSupportedOauthServiceException.EXCEPTION;
     }
-    
+
     private String requestAccessToken(final String code) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         final HttpHeaders httpHeaders = new HttpHeaders();

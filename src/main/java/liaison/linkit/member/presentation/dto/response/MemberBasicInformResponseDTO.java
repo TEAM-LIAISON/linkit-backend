@@ -1,5 +1,6 @@
 package liaison.linkit.member.presentation.dto.response;
 
+import liaison.linkit.member.domain.type.Platform;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class MemberBasicInformResponseDTO {
         private Boolean isPrivateInformAgree;
         private Boolean isAgeCheck;
         private Boolean isMarketingAgree;
+        private Platform platform;
     }
 
     @Builder

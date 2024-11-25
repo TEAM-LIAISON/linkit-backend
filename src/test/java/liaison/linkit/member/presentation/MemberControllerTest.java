@@ -24,13 +24,16 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.member.business.MemberService;
+import liaison.linkit.member.domain.type.Platform;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MemberBasicInformDetail;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateMemberContactResponse;
@@ -123,6 +126,18 @@ class MemberControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateMemberContactRequest))
+        );
+    }
+
+    private ResultActions performUpdateConsentMarketing(
+            final MemberBasicInformRequestDTO.UpdateConsentMarketingRequest updateConsentMarketingRequest
+    ) throws Exception {
+        return mockMvc.perform(
+                post("/api/v1/member/consent/marketing")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateConsentMarketingRequest))
         );
     }
 
@@ -299,7 +314,7 @@ class MemberControllerTest extends ControllerTest {
     void getMemberBasicInform() throws Exception {
         // given
         final MemberBasicInformResponseDTO.MemberBasicInformDetail memberBasicInformDetail =
-                new MemberBasicInformDetail(1L, "권동민", "01036614067", "kwondm7@naver.com", true, true, true, true);
+                new MemberBasicInformDetail(1L, "권동민", "01036614067", "kwondm7@naver.com", true, true, true, true, Platform.KAKAO);
 
         // when
         when(memberService.getMemberBasicInform(anyLong())).thenReturn(memberBasicInformDetail);
@@ -355,7 +370,11 @@ class MemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.isMarketingAgree")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("광고성 정보 수신 동의")
-                                                .attributes(field("constraint", "boolean"))
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("result.platform")
+                                                .type(JsonFieldType.STRING)
+                                                .description("플랫폼 이름")
+                                                .attributes(field("constraint", "문자열"))
                                 )
                         )).andReturn();
 
@@ -495,6 +514,69 @@ class MemberControllerTest extends ControllerTest {
         );
 
         final CommonResponse<MemberBasicInformResponseDTO.UpdateMemberContactResponse> expected = CommonResponse.onSuccess(updateMemberContactResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원 마케팅 동의 정보를 수정 요청할 수 있다.")
+    @Test
+    void updateConsentMarketing() throws Exception {
+        // given
+        final MemberBasicInformRequestDTO.UpdateConsentMarketingRequest updateConsentMarketingRequest
+                = new UpdateConsentMarketingRequest(true);
+
+        final MemberBasicInformResponseDTO.UpdateConsentMarketingResponse updateConsentMarketingResponse
+                = new UpdateConsentMarketingResponse(true);
+
+        // when
+        when(memberService.updateConsentMarketing(anyLong(), any())).thenReturn(updateConsentMarketingResponse);
+
+        final ResultActions resultActions = performUpdateConsentMarketing(updateConsentMarketingRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("isMarketingAgree")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("광고성 정보 수신 동의")
+                                                .attributes(field("constraint", "boolean"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.isMarketingAgree")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("광고성 정보 수신 동의")
+                                                .attributes(field("constraint", "boolean"))
+                                )
+                        )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<MemberBasicInformResponseDTO.UpdateConsentMarketingResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<MemberBasicInformResponseDTO.UpdateConsentMarketingResponse>>() {
+                }
+        );
+
+        final CommonResponse<MemberBasicInformResponseDTO.UpdateConsentMarketingResponse> expected = CommonResponse.onSuccess(updateConsentMarketingResponse);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
