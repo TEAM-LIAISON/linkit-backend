@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.education;
 
 import liaison.linkit.common.annotation.Adapter;
+import liaison.linkit.common.domain.University;
 import liaison.linkit.profile.domain.education.ProfileEducation;
 import liaison.linkit.profile.domain.repository.education.ProfileEducationRepository;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO.UpdateProfileEducationRequest;
@@ -19,7 +20,7 @@ public class ProfileEducationCommandAdapter {
         profileEducationRepository.delete(profileEducation);
     }
 
-    public ProfileEducation updateProfileEducation(final Long profileEducationId, final UpdateProfileEducationRequest updateProfileEducationRequest) {
-        return profileEducationRepository.updateProfileEducation(profileEducationId, updateProfileEducationRequest);
+    public ProfileEducation updateProfileEducation(final Long profileEducationId, final University university, final UpdateProfileEducationRequest updateProfileEducationRequest) {
+        return profileEducationRepository.updateProfileEducation(profileEducationId, university, updateProfileEducationRequest);
     }
 }

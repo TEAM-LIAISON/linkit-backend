@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
+import liaison.linkit.common.domain.University;
 import liaison.linkit.profile.domain.education.ProfileEducation;
 import liaison.linkit.profile.domain.education.QProfileEducation;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO.UpdateProfileEducationRequest;
@@ -32,16 +33,25 @@ public class ProfileEducationCustomRepositoryImpl implements ProfileEducationCus
     }
 
     @Override
-    public ProfileEducation updateProfileEducation(final Long profileEducationId, final UpdateProfileEducationRequest updateProfileEducationRequest) {
+    public ProfileEducation updateProfileEducation(
+            final Long profileEducationId,
+            final University university,
+            final UpdateProfileEducationRequest updateProfileEducationRequest
+    ) {
         QProfileEducation qProfileEducation = QProfileEducation.profileEducation;
 
         // 프로필 활동 업데이트
         long updatedCount = jpaQueryFactory
                 .update(qProfileEducation)
+                .set(qProfileEducation.university, university)
+                .set(qProfileEducation.majorName, updateProfileEducationRequest.getMajorName())
                 .set(qProfileEducation.admissionYear, updateProfileEducationRequest.getAdmissionYear())
+                .set(qProfileEducation.graduationYear, updateProfileEducationRequest.getGraduationYear())
+                .set(qProfileEducation.isAttendUniversity, updateProfileEducationRequest.getIsAttendUniversity())
+                .set(qProfileEducation.educationDescription, updateProfileEducationRequest.getEducationDescription())
                 .where(qProfileEducation.id.eq(profileEducationId))
                 .execute();
-
+        
         entityManager.flush();
         entityManager.clear();
 

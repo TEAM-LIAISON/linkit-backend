@@ -4,6 +4,7 @@ import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.List;
 import java.util.Objects;
+import liaison.linkit.common.domain.University;
 import liaison.linkit.common.validator.FileValidator;
 import liaison.linkit.file.domain.CertificationFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
@@ -13,6 +14,7 @@ import liaison.linkit.profile.domain.education.ProfileEducation;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.education.ProfileEducationCommandAdapter;
 import liaison.linkit.profile.implement.education.ProfileEducationQueryAdapter;
+import liaison.linkit.profile.implement.education.UniversityQueryAdapter;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO.UpdateProfileEducationRequest;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO;
@@ -35,6 +37,8 @@ public class ProfileEducationService {
     private final ProfileEducationQueryAdapter profileEducationQueryAdapter;
     private final ProfileEducationCommandAdapter profileEducationCommandAdapter;
     private final ProfileEducationMapper profileEducationMapper;
+
+    private final UniversityQueryAdapter universityQueryAdapter;
 
     private final FileValidator fileValidator;
     private final S3Uploader s3Uploader;
@@ -64,11 +68,14 @@ public class ProfileEducationService {
         log.info("memberId = {}의 프로필 학력 추가 요청이 서비스 계층에 발생했습니다.", memberId);
 
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
-        final ProfileEducation profileEducation = profileEducationMapper.toAddProfileEducation(profile, request);
+
+        final University university = universityQueryAdapter.findUniversityByUniversityName(request.getUniversityName());
+
+        final ProfileEducation profileEducation = profileEducationMapper.toAddProfileEducation(profile, university, request);
         log.info("profileEducation ={}", profileEducation);
         final ProfileEducation savedProfileEducation = profileEducationCommandAdapter.addProfileEducation(profileEducation);
         log.info("savedProfileEducation ={}", savedProfileEducation);
-        
+
         // 만약 존재하지 않았다가 생긴 경우라면 true 변환 필요
         if (!profile.isProfileEducation()) {
             profile.setIsProfileEducation(true);
@@ -79,7 +86,8 @@ public class ProfileEducationService {
 
     public UpdateProfileEducationResponse updateProfileEducation(final Long memberId, final Long profileEducationId, final UpdateProfileEducationRequest updateProfileEducationRequest) {
         log.info("memberId = {}의 프로필 학력 수정 요청이 서비스 계층에 발생했습니다.", memberId);
-        final ProfileEducation updatedProfileEducation = profileEducationCommandAdapter.updateProfileEducation(profileEducationId, updateProfileEducationRequest);
+        final University university = universityQueryAdapter.findUniversityByUniversityName(updateProfileEducationRequest.getUniversityName());
+        final ProfileEducation updatedProfileEducation = profileEducationCommandAdapter.updateProfileEducation(profileEducationId, university, updateProfileEducationRequest);
         return profileEducationMapper.toUpdateProfileEducationResponse(updatedProfileEducation);
     }
 
