@@ -130,10 +130,10 @@ public class ProfileEducationControllerTest extends ControllerTest {
     void getProfileEducationItems() throws Exception {
         // given
         final ProfileEducationResponseDTO.ProfileEducationItem firstProfileEducationItem
-                = new ProfileEducationItem(1L, "대학 이름 1", "대학 로고 경로 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, true);
+                = new ProfileEducationItem(1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, true);
 
         final ProfileEducationResponseDTO.ProfileEducationItem secondProfileEducationItem
-                = new ProfileEducationItem(2L, "대학 이름 2", "대학 로고 경로 2", "전공 이름 2", "입학 연도 2", "졸업 연도 2", false, true);
+                = new ProfileEducationItem(2L, "대학 이름 2", "전공 이름 2", "입학 연도 2", "졸업 연도 2", false, true);
 
         final ProfileEducationResponseDTO.ProfileEducationItems profileEducationItems
                 = new ProfileEducationResponseDTO.ProfileEducationItems(Arrays.asList(firstProfileEducationItem, secondProfileEducationItem));
@@ -174,9 +174,6 @@ public class ProfileEducationControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileEducationItems[].universityName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("대학교 이름"),
-                                        fieldWithPath("result.profileEducationItems[].universityLogoImagePath")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학교 로고"),
                                         fieldWithPath("result.profileEducationItems[].majorName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("전공 이름"),
@@ -214,7 +211,7 @@ public class ProfileEducationControllerTest extends ControllerTest {
     void getProfileEducationDetail() throws Exception {
         // given
         final ProfileEducationResponseDTO.ProfileEducationDetail profileEducationDetail
-                = new ProfileEducationResponseDTO.ProfileEducationDetail(1L, "대학 이름 1", "대학 로고 경로 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, "학력 설명", true, true, "증명서 파일 이름", "증명서 파일 경로");
+                = new ProfileEducationResponseDTO.ProfileEducationDetail(1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, "학력 설명", true, true, "증명서 파일 이름", "증명서 파일 경로");
 
         // when
         when(profileEducationService.getProfileEducationDetail(anyLong(), anyLong())).thenReturn(profileEducationDetail);
@@ -252,9 +249,6 @@ public class ProfileEducationControllerTest extends ControllerTest {
                                         fieldWithPath("result.universityName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("대학교 이름"),
-                                        fieldWithPath("result.universityLogoImagePath")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학교 로고"),
                                         fieldWithPath("result.majorName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("전공 이름"),
@@ -308,7 +302,7 @@ public class ProfileEducationControllerTest extends ControllerTest {
                 = new AddProfileEducationRequest("대학 이름", "전공 이름", "입학 연도", "졸업 연도", false, "학력 설명");
 
         final AddProfileEducationResponse addProfileEducationResponse
-                = new AddProfileEducationResponse(1L, "대학 이름", "대학 로고", "전공 이름", "입학 연도", "졸업 연도", false, "학력 설명");
+                = new AddProfileEducationResponse(1L, "대학 이름", "전공 이름", "입학 연도", "졸업 연도", false, "학력 설명");
 
         // when
         when(profileEducationService.addProfileEducation(anyLong(), any())).thenReturn(addProfileEducationResponse);
@@ -362,9 +356,6 @@ public class ProfileEducationControllerTest extends ControllerTest {
                                         fieldWithPath("result.universityName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("대학교 이름"),
-                                        fieldWithPath("result.universityLogoImagePath")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학교 로고"),
                                         fieldWithPath("result.majorName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("전공 이름"),
@@ -404,7 +395,7 @@ public class ProfileEducationControllerTest extends ControllerTest {
                 = new UpdateProfileEducationRequest("수정 대학 이름", "수정 전공 이름", "수정 입학 연도", "수정 졸업 연도", false, "수정 학력 설명");
 
         final UpdateProfileEducationResponse updateProfileActivityResponse
-                = new UpdateProfileEducationResponse(1L, "수정 대학 이름", "수정 대학 로고", "수정 전공 이름", "수정 입학 연도", "수정 졸업 연도", false, "수정 학력 설명");
+                = new UpdateProfileEducationResponse(1L, "수정 대학 이름", "수정 전공 이름", "수정 입학 연도", "수정 졸업 연도", false, "수정 학력 설명");
 
         // when
         when(profileEducationService.updateProfileEducation(anyLong(), anyLong(), any())).thenReturn(updateProfileActivityResponse);
@@ -461,9 +452,6 @@ public class ProfileEducationControllerTest extends ControllerTest {
                                 fieldWithPath("result.universityName")
                                         .type(JsonFieldType.STRING)
                                         .description("대학교 이름"),
-                                fieldWithPath("result.universityLogoImagePath")
-                                        .type(JsonFieldType.STRING)
-                                        .description("대학교 로고"),
                                 fieldWithPath("result.majorName")
                                         .type(JsonFieldType.STRING)
                                         .description("전공 이름"),

@@ -28,7 +28,6 @@ public class ProfileEducationResponseDTO {
     public static class ProfileEducationItem {
         private Long profileEducationId;
         private String universityName;
-        private String universityLogoImagePath;
         private String majorName;
         private String admissionYear;
         private String graduationYear;
@@ -43,7 +42,6 @@ public class ProfileEducationResponseDTO {
     public static class ProfileEducationDetail {
         private Long profileEducationId;
         private String universityName;
-        private String universityLogoImagePath;
         private String majorName;
         private String admissionYear;
         private String graduationYear;
@@ -64,7 +62,6 @@ public class ProfileEducationResponseDTO {
     public static class AddProfileEducationResponse {
         private Long profileEducationId;
         private String universityName;
-        private String universityLogoImagePath;
         private String majorName;
         private String admissionYear;
         private String graduationYear;
@@ -79,7 +76,6 @@ public class ProfileEducationResponseDTO {
     public static class UpdateProfileEducationResponse {
         private Long profileEducationId;
         private String universityName;
-        private String universityLogoImagePath;
         private String majorName;
         private String admissionYear;
         private String graduationYear;

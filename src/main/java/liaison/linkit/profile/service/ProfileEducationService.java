@@ -65,8 +65,10 @@ public class ProfileEducationService {
 
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
         final ProfileEducation profileEducation = profileEducationMapper.toAddProfileEducation(profile, request);
+        log.info("profileEducation ={}", profileEducation);
         final ProfileEducation savedProfileEducation = profileEducationCommandAdapter.addProfileEducation(profileEducation);
-
+        log.info("savedProfileEducation ={}", savedProfileEducation);
+        
         // 만약 존재하지 않았다가 생긴 경우라면 true 변환 필요
         if (!profile.isProfileEducation()) {
             profile.setIsProfileEducation(true);
