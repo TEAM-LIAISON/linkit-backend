@@ -166,6 +166,18 @@ include::{snippets}/member-controller-test/update-member-contact/response-fields
 
 ====
 
+=== 회원 광고성 정보 수신 동의 정보 변경
+
+====
+요청
+include::{snippets}/member-controller-test/update-consent-marketing/http-request.adoc[]
+include::{snippets}/member-controller-test/update-consent-marketing/request-fields.adoc[]
+
+응답
+include::{snippets}/member-controller-test/update-consent-marketing/http-response.adoc[]
+include::{snippets}/member-controller-test/update-consent-marketing/response-fields.adoc[]
+====
+
 == #[프로필 - 왼쪽 메뉴]#
 
 === 프로필 왼쪽 메뉴 조회

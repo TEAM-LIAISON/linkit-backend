@@ -52,7 +52,7 @@ public class MemberService {
         final MemberBasicInform memberBasicInform = memberBasicInformQueryAdapter.findByMemberId(memberId);
         final String email = memberQueryAdapter.findEmailById(memberId);
 
-        return memberBasicInformMapper.toMemberBasicInformDetail(memberBasicInform, email);
+        return memberBasicInformMapper.toMemberBasicInformDetail(memberBasicInform, email, memberBasicInform.getMember().getPlatform());
     }
 
 

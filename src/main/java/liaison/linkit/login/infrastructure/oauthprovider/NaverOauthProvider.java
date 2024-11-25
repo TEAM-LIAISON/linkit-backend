@@ -7,6 +7,7 @@ import liaison.linkit.login.domain.OauthProvider;
 import liaison.linkit.login.domain.OauthUserInfo;
 import liaison.linkit.login.exception.AuthCodeBadRequestException;
 import liaison.linkit.login.infrastructure.oauthUserInfo.NaverUserInfo;
+import liaison.linkit.member.domain.type.Platform;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -39,6 +40,11 @@ public class NaverOauthProvider implements OauthProvider {
         this.redirectUri = redirectUri;
         this.tokenUri = tokenUri;
         this.userUri = userUri;
+    }
+
+    @Override
+    public Platform getPlatform(final String providerName) {
+        return Platform.NAVER;
     }
 
     @Override

@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.member.domain.type.MemberState;
+import liaison.linkit.member.domain.type.Platform;
 import liaison.linkit.profile.domain.Profile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -59,11 +60,16 @@ public class Member extends BaseDateTimeEntity {
     @Column(nullable = false)
     private int teamMemberAnnouncementScrapCount;
 
+    @Column(nullable = false)
+    @Enumerated(value = STRING)
+    private Platform platform;
+
     public Member(
             final Long id,
             final String socialLoginId,
             final String email,
-            final MemberBasicInform memberBasicInform
+            final MemberBasicInform memberBasicInform,
+            final Platform platform
     ) {
         this.id = id;
         this.socialLoginId = socialLoginId;
@@ -74,14 +80,16 @@ public class Member extends BaseDateTimeEntity {
         this.privateScrapCount = 0;
         this.teamScrapCount = 0;
         this.teamMemberAnnouncementScrapCount = 0;
+        this.platform = platform;
     }
 
     public Member(
             final String socialLoginId,
             final String email,
-            final MemberBasicInform memberBasicInform
+            final MemberBasicInform memberBasicInform,
+            final Platform platform
     ) {
-        this(null, socialLoginId, email, memberBasicInform);
+        this(null, socialLoginId, email, memberBasicInform, platform);
     }
 
     public void setCreateMemberBasicInform(final boolean createMemberBasicInform) {

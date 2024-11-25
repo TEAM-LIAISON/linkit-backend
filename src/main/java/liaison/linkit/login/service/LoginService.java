@@ -27,6 +27,7 @@ import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingReposi
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
+import liaison.linkit.member.domain.type.Platform;
 import liaison.linkit.member.exception.member.FailMemberGenerateException;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
@@ -73,11 +74,13 @@ public class LoginService {
     // 회원이 로그인한다
     public AccountResponseDTO.LoginServiceResponse login(final String providerName, final String code) {
         final OauthProvider provider = oauthProviders.mapping(providerName);
+
         final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
 
         final Member member = findOrCreateMember(
                 oauthUserInfo.getSocialLoginId(),
-                oauthUserInfo.getEmail()
+                oauthUserInfo.getEmail(),
+                provider.getPlatform(providerName)
         );
 
         final boolean isMemberBasicInform = member.isCreateMemberBasicInform();
@@ -96,18 +99,18 @@ public class LoginService {
         );
     }
 
-    private Member findOrCreateMember(final String socialLoginId, final String email) {
+    private Member findOrCreateMember(final String socialLoginId, final String email, final Platform platform) {
         final Optional<Member> member = memberQueryAdapter.findBySocialLoginId(socialLoginId);
-        return member.orElseGet(() -> createMember(socialLoginId, email));
+        return member.orElseGet(() -> createMember(socialLoginId, email, platform));
     }
 
     @Transactional
-    public Member createMember(final String socialLoginId, final String email) {
+    public Member createMember(final String socialLoginId, final String email, final Platform platform) {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberQueryAdapter.existsByEmail(email)) {
 
-                final Member member = memberCommandAdapter.create(new Member(socialLoginId, email, null));
+                final Member member = memberCommandAdapter.create(new Member(socialLoginId, email, null, platform));
 
                 memberBasicInformCommandAdapter.create(new MemberBasicInform(
                         null, member, null, null, false, false, false, false
@@ -125,7 +128,7 @@ public class LoginService {
         }
         throw FailMemberGenerateException.EXCEPTION;
     }
-    
+
     public AccountResponseDTO.RenewTokenResponse renewalAccessToken(
             final String refreshTokenRequest, final String authorizationHeader
     ) {
