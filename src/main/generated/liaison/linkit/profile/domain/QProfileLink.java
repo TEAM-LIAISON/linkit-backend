@@ -33,8 +33,6 @@ public class QProfileLink extends EntityPathBase<ProfileLink> {
 
     public final StringPath linkPath = createString("linkPath");
 
-    public final EnumPath<liaison.linkit.profile.domain.type.LinkType> linkType = createEnum("linkType", liaison.linkit.profile.domain.type.LinkType.class);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
