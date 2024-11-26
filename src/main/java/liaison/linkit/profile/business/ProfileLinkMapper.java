@@ -16,7 +16,6 @@ public class ProfileLinkMapper {
                 .profileLinkId(profileLink.getId())
                 .linkName(profileLink.getLinkName())
                 .linkPath(profileLink.getLinkPath())
-                .linkType(profileLink.getLinkType())
                 .build();
     }
 
@@ -36,8 +35,7 @@ public class ProfileLinkMapper {
                 .profile(profile)
                 .linkName(requestItem.getLinkName())
                 .linkPath(requestItem.getLinkPath())
-                .linkType(requestItem.getLinkType())
                 .build();
     }
-    
+
 }

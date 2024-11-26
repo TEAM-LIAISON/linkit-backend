@@ -25,7 +25,6 @@ import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.domain.type.LinkType;
 import liaison.linkit.profile.presentation.link.ProfileLinkController;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkRequestDTO;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkRequestDTO.AddProfileLinkRequest;
@@ -90,10 +89,10 @@ public class ProfileLinkControllerTest extends ControllerTest {
     void getProfileLinkItems() throws Exception {
         // given
         final ProfileLinkResponseDTO.ProfileLinkItem firstProfileLinkItem
-                = new ProfileLinkItem(1L, "링크 이름", "링크 경로", LinkType.ETC);
+                = new ProfileLinkItem(1L, "링크 이름", "링크 경로");
 
         final ProfileLinkResponseDTO.ProfileLinkItem secondProfileLinkItem
-                = new ProfileLinkItem(2L, "링크 이름", "링크 경로", LinkType.NOTION);
+                = new ProfileLinkItem(2L, "링크 이름", "링크 경로");
 
         final ProfileLinkResponseDTO.ProfileLinkItems profileLinkItems
                 = new ProfileLinkResponseDTO.ProfileLinkItems(Arrays.asList(firstProfileLinkItem, secondProfileLinkItem));
@@ -135,10 +134,7 @@ public class ProfileLinkControllerTest extends ControllerTest {
                                                 .description("링크 이름"),
                                         fieldWithPath("result.profileLinkItems[].linkPath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("링크 경로"),
-                                        fieldWithPath("result.profileLinkItems[].linkType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("링크 타입")
+                                                .description("링크 경로")
                                 )
                         )).andReturn();
 
@@ -162,10 +158,10 @@ public class ProfileLinkControllerTest extends ControllerTest {
         // given
         // request
         final ProfileLinkRequestDTO.AddProfileLinkItem firstProfileLinkItem
-                = new ProfileLinkRequestDTO.AddProfileLinkItem("링크 이름", "링크 경로", LinkType.ETC);
+                = new ProfileLinkRequestDTO.AddProfileLinkItem("링크 이름", "링크 경로");
 
         final ProfileLinkRequestDTO.AddProfileLinkItem secondProfileLinkItem
-                = new ProfileLinkRequestDTO.AddProfileLinkItem("링크 이름", "링크 경로", LinkType.NOTION);
+                = new ProfileLinkRequestDTO.AddProfileLinkItem("링크 이름", "링크 경로");
 
         final ProfileLinkRequestDTO.AddProfileLinkRequest addProfileLinkRequest
                 = AddProfileLinkRequest.builder()
@@ -174,10 +170,10 @@ public class ProfileLinkControllerTest extends ControllerTest {
 
         // response
         final ProfileLinkResponseDTO.ProfileLinkItem firstProfileLinkItemRequest
-                = new ProfileLinkItem(1L, "링크 이름", "링크 경로", LinkType.ETC);
+                = new ProfileLinkItem(1L, "링크 이름", "링크 경로");
 
         final ProfileLinkResponseDTO.ProfileLinkItem secondProfileLinkItemRequest
-                = new ProfileLinkItem(2L, "링크 이름", "링크 경로", LinkType.NOTION);
+                = new ProfileLinkItem(2L, "링크 이름", "링크 경로");
 
         final ProfileLinkResponseDTO.ProfileLinkItems profileLinkItems
                 = ProfileLinkResponseDTO.ProfileLinkItems.builder()
@@ -207,10 +203,7 @@ public class ProfileLinkControllerTest extends ControllerTest {
                                                 .description("링크 이름"),
                                         fieldWithPath("profileLinkItems[].linkPath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("링크 경로"),
-                                        fieldWithPath("profileLinkItems[].linkType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("링크 타입 (예: ETC, NOTION, LINKEDIN ...)")
+                                                .description("링크 경로")
                                 ),
                                 responseFields(
                                         // 응답 필드 문서화
@@ -238,10 +231,7 @@ public class ProfileLinkControllerTest extends ControllerTest {
                                                 .description("링크 이름"),
                                         fieldWithPath("result.profileLinkItems[].linkPath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("링크 경로"),
-                                        fieldWithPath("result.profileLinkItems[].linkType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("링크 타입")
+                                                .description("링크 경로")
                                 )
                         )).andReturn();
 

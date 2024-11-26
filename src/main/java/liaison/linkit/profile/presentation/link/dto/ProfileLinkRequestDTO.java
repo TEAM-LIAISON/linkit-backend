@@ -2,7 +2,6 @@ package liaison.linkit.profile.presentation.link.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.profile.domain.type.LinkType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +27,5 @@ public class ProfileLinkRequestDTO {
     public static class AddProfileLinkItem {
         private String linkName;
         private String linkPath;
-        private LinkType linkType;
     }
 }
