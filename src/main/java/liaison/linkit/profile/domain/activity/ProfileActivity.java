@@ -37,15 +37,11 @@ public class ProfileActivity extends BaseDateTimeEntity {
     private String activityEndDate;
     private boolean isActivityInProgress;
     private String activityDescription;
-
-    // 인증하지 않은 사람 false
-    private boolean isActivityCertified;
-    // 인증하고 인증 대기 중
-    private boolean isActivityVerified;
-    // 파일 이름
-    private String activityCertificationAttachFileName;
-    // 파일 경로
-    private String activityCertificationAttachFilePath;
+    
+    private boolean isActivityCertified; // 인증하지 않은 사람 false
+    private boolean isActivityVerified; // 인증하고 인증 대기 중
+    private String activityCertificationAttachFileName; // 파일 이름
+    private String activityCertificationAttachFilePath; // 파일 경로
 
     // 이력 인증서 세팅 메서드
     public void setProfileActivityCertification(

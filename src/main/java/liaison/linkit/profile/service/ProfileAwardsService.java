@@ -68,6 +68,7 @@ public class ProfileAwardsService {
 
         if (!profile.isProfileAwards()) {
             profile.setIsProfileAwards(true);
+            profile.addProfileAwardsCompletion();
         }
 
         return profileAwardsMapper.toAddProfileAwardsResponse(savedProfileAwards);
@@ -90,7 +91,8 @@ public class ProfileAwardsService {
 
         profileAwardsCommandAdapter.removeProfileAwards(profileAwards);
         if (!profileAwardsQueryAdapter.existsByProfileId(profile.getId())) {
-            profile.setIsProfileLicense(false);
+            profile.setIsProfileAwards(false);
+            profile.removeProfileAwardsCompletion();
         }
 
         return profileAwardsMapper.toRemoveProfileAwards(profileAwardsId);

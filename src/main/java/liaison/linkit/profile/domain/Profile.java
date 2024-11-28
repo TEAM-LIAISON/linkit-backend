@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import liaison.linkit.common.consts.ProfileStatic;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
 import lombok.AllArgsConstructor;
@@ -77,8 +78,8 @@ public class Profile extends BaseEntity {
         this.isProfilePortfolio = isProfilePortfolio;
     }
 
-    public void setIsProfileEducation(final boolean isProfileAwards) {
-        this.isProfileAwards = isProfileAwards;
+    public void setIsProfileEducation(final boolean isProfileEducation) {
+        this.isProfileEducation = isProfileEducation;
     }
 
     public void setIsProfileAwards(final boolean isProfileAwards) {
@@ -95,5 +96,75 @@ public class Profile extends BaseEntity {
 
     public void updateProfileImagePath(final String profileImagePath) {
         this.profileImagePath = profileImagePath;
+    }
+
+    // 보유 스킬
+
+    public void addProfileSkillCompletion() {
+        this.profileCompletion += ProfileStatic.SKILL_COMPLETION;
+    }
+
+    public void removeProfileSkillCompletion() {
+        this.profileCompletion -= ProfileStatic.SKILL_COMPLETION;
+    }
+
+    // 이력
+
+    public void addProfileActivityCompletion() {
+        this.profileCompletion += ProfileStatic.ACTIVITY_COMPLETION;
+    }
+
+    public void removeProfileActivityCompletion() {
+        this.profileCompletion -= ProfileStatic.ACTIVITY_COMPLETION;
+    }
+
+    // 포트폴리오
+
+    public void addProfilePortfolioCompletion() {
+        this.profileCompletion += ProfileStatic.PORTFOLIO_COMPLETION;
+    }
+
+    public void removeProfilePortfolioCompletion() {
+        this.profileCompletion -= ProfileStatic.PORTFOLIO_COMPLETION;
+    }
+
+    // 학력
+
+    public void addProfileEducationCompletion() {
+        this.profileCompletion += ProfileStatic.EDUCATION_COMPLETION;
+    }
+
+    public void removeProfileEducationCompletion() {
+        this.profileCompletion -= ProfileStatic.EDUCATION_COMPLETION;
+    }
+
+    // 수상
+
+    public void addProfileAwardsCompletion() {
+        this.profileCompletion += ProfileStatic.AWARDS_COMPLETION;
+    }
+
+    public void removeProfileAwardsCompletion() {
+        this.profileCompletion -= ProfileStatic.AWARDS_COMPLETION;
+    }
+
+    // 자격증
+
+    public void addProfileLicenseCompletion() {
+        this.profileCompletion += ProfileStatic.LICENSE_COMPLETION;
+    }
+
+    public void removeProfileLicenseCompletion() {
+        this.profileCompletion -= ProfileStatic.LICENSE_COMPLETION;
+    }
+
+    // 링크
+
+    public void addProfileLinkCompletion() {
+        this.profileCompletion += ProfileStatic.LINK_COMPLETION;
+    }
+
+    public void removeProfileLinkCompletion() {
+        this.profileCompletion -= ProfileStatic.LINK_COMPLETION;
     }
 }

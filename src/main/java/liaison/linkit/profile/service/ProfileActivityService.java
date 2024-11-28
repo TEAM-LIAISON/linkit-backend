@@ -69,6 +69,7 @@ public class ProfileActivityService {
 
         if (!profile.isProfileActivity()) {
             profile.setIsProfileActivity(true);
+            profile.addProfileActivityCompletion();
         }
 
         return profileActivityMapper.toAddProfileActivityResponse(savedProfileActivity);
@@ -92,6 +93,7 @@ public class ProfileActivityService {
         profileActivityCommandAdapter.removeProfileActivity(profileActivity);
         if (!profileActivityQueryAdapter.existsByProfileId(profile.getId())) {
             profile.setIsProfileActivity(false);
+            profile.removeProfileActivityCompletion();
         }
 
         return profileActivityMapper.toRemoveProfileActivity(profileActivityId);

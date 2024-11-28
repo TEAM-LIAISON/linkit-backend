@@ -74,7 +74,7 @@ public class ProfilePortfolioService {
 
         final Map<Long, List<String>> projectRolesMap = projectRoleContributionQueryAdapter.getProjectRolesByProfileId(profile.getId());
         log.info("projectRoleMap 조회에 성공했습니다. = {}", projectRolesMap);
-        
+
         return profilePortfolioMapper.toProfilePortfolioItems(profilePortfolios, projectRolesMap);
     }
 
@@ -166,6 +166,7 @@ public class ProfilePortfolioService {
 
         if (!profile.isProfilePortfolio()) {
             profile.setIsProfilePortfolio(true);
+            profile.addProfilePortfolioCompletion();
         }
 
         return profilePortfolioMapper.toAddProfilePortfolioResponse(savedProfilePortfolio, projectRoleAndContributions, projectSkillNames, portfolioImages);
@@ -315,6 +316,7 @@ public class ProfilePortfolioService {
 
         if (!profilePortfolioQueryAdapter.existsByProfileId(profile.getId())) {
             profile.setIsProfilePortfolio(false);
+            profile.removeProfilePortfolioCompletion();
         }
 
         return profilePortfolioMapper.toRemoveProfilePortfolio(profilePortfolioId);
