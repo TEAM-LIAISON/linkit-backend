@@ -46,6 +46,7 @@ public class ProfileLinkService {
             // 기존 이력을 모두 삭제한다.
             profileLinkCommandAdapter.removeProfileLinksByProfileId(profile.getId());
             profile.setIsProfileLink(false);
+            profile.removeProfileLicenseCompletion();
         }
 
         List<ProfileLink> profileLinks = addProfileLinkRequest.getProfileLinkItems().stream()
@@ -56,6 +57,7 @@ public class ProfileLinkService {
 
         if (profileLinkQueryAdapter.existsByProfileId(profile.getId())) {
             profile.setIsProfileLicense(true);
+            profile.addProfileLinkCompletion();
         }
 
         return profileLinkMapper.toProfileLinkItems(profileLinks);

@@ -70,6 +70,7 @@ public class ProfileLicenseService {
         // 만약 존재하지 않았다가 생긴 경우라면 true 변환 필요
         if (!profile.isProfileLicense()) {
             profile.setIsProfileLicense(true);
+            profile.addProfileLicenseCompletion();
         }
 
         return profileLicenseMapper.toAddProfileLicenseResponse(savedProfileLicense);
@@ -95,6 +96,7 @@ public class ProfileLicenseService {
 
         if (!profileLicenseQueryAdapter.existsByProfileId(profile.getId())) {
             profile.setIsProfileLicense(false);
+            profile.removeProfileLicenseCompletion();
         }
 
         return profileLicenseMapper.toRemoveProfileLicense(profileLicenseId);
@@ -134,5 +136,4 @@ public class ProfileLicenseService {
 
         return profileLicenseMapper.toRemoveProfileLicenseCertification(profileLicenseId);
     }
-
 }
