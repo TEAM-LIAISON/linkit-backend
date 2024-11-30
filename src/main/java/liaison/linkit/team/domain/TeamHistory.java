@@ -28,16 +28,10 @@ public class TeamHistory {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
-    
+
     private String historyName;
     private String historyStartDate;
     private String historyEndDate;
     private boolean isHistoryInProgress;
     private String historyDescription;
-    private Boolean isHistoryCertified;
-    private Boolean isHistoryVerified;
-    private String historyCertificationAttachFileName;
-    private String historyCertificationAttachFilePath;
-    private String historyCertificationDescription;
-
 }
