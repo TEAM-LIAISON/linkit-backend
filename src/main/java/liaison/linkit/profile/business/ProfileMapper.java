@@ -79,6 +79,9 @@ public class ProfileMapper {
     }
 
     public ProfileResponseDTO.ProfileDetail toProfileDetail(
+            final ProfileCompletionMenu profileCompletionMenu,
+            final ProfileInformMenu profileInformMenu,
+            final int profileScrapCount,
             final List<ProfileSkillItem> profileSkillItems,
             final List<ProfileActivityItem> profileActivityItems,
             final List<ProfilePortfolioItem> profilePortfolioItems,
@@ -89,6 +92,9 @@ public class ProfileMapper {
     ) {
         return ProfileResponseDTO.ProfileDetail
                 .builder()
+                .profileCompletionMenu(profileCompletionMenu)
+                .profileInformMenu(profileInformMenu)
+                .profileScrapCount(profileScrapCount)
                 .profileSkillItems(profileSkillItems)
                 .profileActivityItems(profileActivityItems)
                 .profilePortfolioItems(profilePortfolioItems)

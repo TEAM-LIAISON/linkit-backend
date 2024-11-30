@@ -581,6 +581,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_프로필_내_프로필_조회">4. <mark>[프로필 - 내 프로필 조회]</mark></a>
 <ul class="sectlevel2">
 <li><a href="#_내_프로필_내가_보는_조회">4.1. 내 프로필_내가 보는 조회</a></li>
+<li><a href="#_내_프로필_남이_보는_조회">4.2. 내 프로필_남이 보는 조회</a></li>
 </ul>
 </li>
 <li><a href="#_프로필_왼쪽_메뉴">5. <mark>[프로필 - 왼쪽 메뉴]</mark></a>
@@ -764,7 +765,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 7 Dec 2024 08:33:43 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 7 Dec 2024 11:35:12 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 216
 
@@ -899,7 +900,7 @@ Content-Length: 159
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2024-11-30T17:33:42.988687"
+    "logoutAt" : "2024-11-30T20:35:12.204441"
   }
 }</code></pre>
 </div>
@@ -1053,7 +1054,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2024-11-30T17:33:43.047256"
+    "quitAt" : "2024-11-30T20:35:12.260227"
   }
 }</code></pre>
 </div>
@@ -1124,14 +1125,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 178
+Content-Length: 177
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2024-11-30T17:33:42.937404"
+    "reAuthenticationEmailSendAt" : "2024-11-30T20:35:12.14872"
   }
 }</code></pre>
 </div>
@@ -1211,7 +1212,7 @@ Content-Length: 214
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2024-11-30T17:33:42.602586"
+    "verificationSuccessAt" : "2024-11-30T20:35:11.836521"
   }
 }</code></pre>
 </div>
@@ -1997,13 +1998,11 @@ Content-Length: 143
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/my/profile/1 HTTP/1.1
-Authorization: accessToken
-Cookie: refreshToken=refreshToken</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/profile/1 HTTP/1.1</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. /api/v1/my/profile/{profileId}</caption>
+<caption class="title">Table 2. /api/v1/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2031,7 +2030,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 4456
+Content-Length: 4253
 
 {
   "isSuccess" : true,
@@ -2056,21 +2055,15 @@ Content-Length: 4456
         "divisionName" : "강남구"
       }
     },
-    "profileLogItems" : [ {
+    "profileScrapCount" : 0,
+    "profileLogItem" : {
       "profileLogId" : 1,
       "isLogPublic" : true,
       "profileLogType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2024-11-30T17:33:45.789227",
+      "modifiedAt" : "2024-11-30T20:35:14.693811",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
-    }, {
-      "profileLogId" : 2,
-      "isLogPublic" : true,
-      "profileLogType" : "GENERAL_LOG",
-      "modifiedAt" : "2024-11-30T17:33:45.789315",
-      "logTitle" : "로그 제목",
-      "logContent" : "로그 내용"
-    } ],
+    },
     "profileSkillItems" : [ {
       "profileSkillId" : 1,
       "skillName" : "Figma",
@@ -2267,37 +2260,587 @@ Content-Length: 4456
 <td class="tableblock halign-left valign-top"><p class="tableblock">지역 시/군/구</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItems</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 로그 항목 배열</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileScrapCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스크랩 수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItems[].profileLogId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 로그 객체</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.profileLogId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 로그 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItems[].isLogPublic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.isLogPublic</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 공개 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItems[].profileLogType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.profileLogType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 로그 타입</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItems[].modifiedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.modifiedAt</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 수정 시간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItems[].logTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.logTitle</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 제목</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItems[].logContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.logContent</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileSkillItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스킬 항목 배열</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileSkillItems[].profileSkillId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스킬 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileSkillItems[].skillName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스킬 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileSkillItems[].skillLevel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">스킬 수준</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 활동 항목 배열</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityItems[].profileActivityId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 활동 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityItems[].activityName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityItems[].activityRole</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 역할</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityItems[].activityStartDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 시작 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityItems[].activityEndDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 종료 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityItems[].isActivityVerified</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 인증 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 포트폴리오 항목 배열</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].profilePortfolioId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 포트폴리오 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].projectName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].projectLineDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 한 줄 소개</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].projectSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 규모</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].projectStartDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 시작 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].projectEndDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 종료 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].isProjectInProgress</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 진행 중 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].projectRoles</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 역할 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].projectRoles[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 역할</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems[].projectRepresentImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 대표 이미지 경로</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileEducationItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 학력 항목 배열</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileEducationItems[].profileEducationId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 학력 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileEducationItems[].universityName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대학교 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileEducationItems[].majorName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전공 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileEducationItems[].admissionYear</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">입학 연도</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileEducationItems[].graduationYear</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">졸업 연도</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileEducationItems[].isAttendUniversity</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">재학 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileEducationItems[].isEducationVerified</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">학력 인증 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileAwardsItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 수상 항목 배열</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileAwardsItems[].profileAwardsId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 수상 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileAwardsItems[].awardsName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">수상 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileAwardsItems[].awardsRanking</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">수상 훈격</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileAwardsItems[].awardsDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">수상 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileAwardsItems[].isAwardsVerified</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">수상 인증 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLicenseItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 자격증 항목 배열</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLicenseItems[].profileLicenseId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 자격증 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLicenseItems[].licenseName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">자격증 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLicenseItems[].licenseInstitution</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">자격증 기관</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLicenseItems[].licenseAcquisitionDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">자격증 취득 날짜</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLicenseItems[].isLicenseVerified</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">자격증 인증 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLinkItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 링크 항목 배열</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLinkItems[].profileLinkId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 링크 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLinkItems[].linkName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">링크 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLinkItems[].linkPath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">링크 경로</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_내_프로필_남이_보는_조회"><a class="link" href="#_내_프로필_남이_보는_조회">4.2. 내 프로필_남이 보는 조회</a></h3>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>요청</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/profile/1 HTTP/1.1</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. /api/v1/profile/{profileId}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 ID</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>응답</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 4253
+
+{
+  "isSuccess" : true,
+  "code" : "1000",
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "profileCompletionMenu" : {
+      "profileCompletion" : 100
+    },
+    "profileInformMenu" : {
+      "profileCurrentStates" : [ {
+        "profileStateName" : "팀 찾는 중"
+      }, {
+        "profileStateName" : "공모전 준비 중"
+      } ],
+      "profileImagePath" : "프로필 이미지 경로",
+      "memberName" : "권동민",
+      "isProfilePublic" : true,
+      "majorPosition" : "포지션 대분류",
+      "regionDetail" : {
+        "cityName" : "서울특별시",
+        "divisionName" : "강남구"
+      }
+    },
+    "profileScrapCount" : 0,
+    "profileLogItem" : {
+      "profileLogId" : 1,
+      "isLogPublic" : true,
+      "profileLogType" : "REPRESENTATIVE_LOG",
+      "modifiedAt" : "2024-11-30T20:35:14.693811",
+      "logTitle" : "로그 제목",
+      "logContent" : "로그 내용"
+    },
+    "profileSkillItems" : [ {
+      "profileSkillId" : 1,
+      "skillName" : "Figma",
+      "skillLevel" : "상"
+    }, {
+      "profileSkillId" : 2,
+      "skillName" : "Notion",
+      "skillLevel" : "중상"
+    } ],
+    "profileActivityItems" : [ {
+      "profileActivityId" : 1,
+      "activityName" : "리에종",
+      "activityRole" : "PO",
+      "activityStartDate" : "2022.06",
+      "activityEndDate" : "2026.06",
+      "isActivityVerified" : true
+    }, {
+      "profileActivityId" : 2,
+      "activityName" : "리에종",
+      "activityRole" : "디자이너",
+      "activityStartDate" : "2024.10",
+      "activityEndDate" : "2024.12",
+      "isActivityVerified" : true
+    } ],
+    "profilePortfolioItems" : [ {
+      "profilePortfolioId" : 1,
+      "projectName" : "프로젝트 이름",
+      "projectLineDescription" : "프로젝트 한 줄 소개",
+      "projectSize" : "PERSONAL",
+      "projectStartDate" : "2023.02",
+      "projectEndDate" : "2023.04",
+      "isProjectInProgress" : false,
+      "projectRoles" : [ "컨텐츠 제작", "브랜딩", "계정 관리" ],
+      "projectRepresentImagePath" : "logo.png"
+    }, {
+      "profilePortfolioId" : 2,
+      "projectName" : "프로젝트 이름",
+      "projectLineDescription" : "프로젝트 한 줄 소개",
+      "projectSize" : "TEAM",
+      "projectStartDate" : "2023.03",
+      "projectEndDate" : "2023.06",
+      "isProjectInProgress" : true,
+      "projectRoles" : [ "컨텐츠 제작", "브랜딩", "계정 관리" ],
+      "projectRepresentImagePath" : "logo.png"
+    } ],
+    "profileEducationItems" : [ {
+      "profileEducationId" : 1,
+      "universityName" : "대학 이름 1",
+      "majorName" : "전공 이름 1",
+      "admissionYear" : "입학 연도 1",
+      "graduationYear" : "졸업 연도 1",
+      "isAttendUniversity" : false,
+      "isEducationVerified" : true
+    }, {
+      "profileEducationId" : 2,
+      "universityName" : "대학 이름 2",
+      "majorName" : "전공 이름 2",
+      "admissionYear" : "입학 연도 2",
+      "graduationYear" : "졸업 연도 2",
+      "isAttendUniversity" : false,
+      "isEducationVerified" : true
+    } ],
+    "profileAwardsItems" : [ {
+      "profileAwardsId" : 1,
+      "awardsName" : "수상 이름 1",
+      "awardsRanking" : "훈격 1",
+      "awardsDate" : "수상 날짜 1",
+      "isAwardsVerified" : true
+    }, {
+      "profileAwardsId" : 2,
+      "awardsName" : "수상 이름 2",
+      "awardsRanking" : "훈격 2",
+      "awardsDate" : "수상 날짜 2",
+      "isAwardsVerified" : true
+    } ],
+    "profileLicenseItems" : [ {
+      "profileLicenseId" : 1,
+      "licenseName" : "자격증 자격명 1",
+      "licenseInstitution" : "자격증 관련 부처 1",
+      "licenseAcquisitionDate" : "자격증 취득 시기 1",
+      "isLicenseVerified" : true
+    }, {
+      "profileLicenseId" : 2,
+      "licenseName" : "자격증 자격명 2",
+      "licenseInstitution" : "자격증 관련 부처 2",
+      "licenseAcquisitionDate" : "자격증 취득 시기 2",
+      "isLicenseVerified" : true
+    } ],
+    "profileLinkItems" : [ {
+      "profileLinkId" : 1,
+      "linkName" : "링크 이름",
+      "linkPath" : "링크 경로"
+    }, {
+      "profileLinkId" : 2,
+      "linkName" : "링크 이름",
+      "linkPath" : "링크 경로"
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 결과 객체</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileCompletionMenu</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 완성도 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileCompletionMenu.profileCompletion</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 완성도 퍼센트</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 정보 메뉴</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.profileCurrentStates</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 프로필 상태 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.profileCurrentStates[].profileStateName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 상태 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.profileImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이미지 경로</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.memberName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.isProfilePublic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 공개 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.majorPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">대분류 포지션</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.regionDetail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지역 상세 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.regionDetail.cityName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지역 시/도</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.regionDetail.divisionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지역 시/군/구</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileScrapCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스크랩 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 로그 객체</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.profileLogId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 로그 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.isLogPublic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그 공개 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.profileLogType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 로그 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.modifiedAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그 수정 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.logTitle</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.logContent</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 내용</p></td>
 </tr>
@@ -2934,7 +3477,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 464
+Content-Length: 465
 
 {
   "isSuccess" : true,
@@ -2942,7 +3485,7 @@ Content-Length: 464
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "profileId" : 1,
-    "modifiedAt" : "2024-11-30T17:33:43.99957",
+    "modifiedAt" : "2024-11-30T20:35:13.249299",
     "majorPosition" : "대분류 포지션",
     "subPosition" : "소분류 포지션",
     "cityName" : "활동지역 시/도",
@@ -3158,7 +3701,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 600
+Content-Length: 601
 
 {
   "isSuccess" : true,
@@ -3169,14 +3712,14 @@ Content-Length: 600
       "profileLogId" : 1,
       "isLogPublic" : true,
       "profileLogType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2024-11-30T17:33:47.425909",
+      "modifiedAt" : "2024-11-30T20:35:16.042466",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
       "profileLogType" : "GENERAL_LOG",
-      "modifiedAt" : "2024-11-30T17:33:47.42592",
+      "modifiedAt" : "2024-11-30T20:35:16.042469",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -3284,7 +3827,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 328
+Content-Length: 327
 
 {
   "isSuccess" : true,
@@ -3294,7 +3837,7 @@ Content-Length: 328
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2024-11-30T17:33:47.383914",
+    "createdAt" : "2024-11-30T20:35:16.01635",
     "profileLogType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -4233,7 +4776,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. /api/v1/profile/activity/{profileActivityId}</caption>
+<caption class="title">Table 4. /api/v1/profile/activity/{profileActivityId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -4417,7 +4960,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. /api/v1/profile/activity/{profileActivityId}</caption>
+<caption class="title">Table 5. /api/v1/profile/activity/{profileActivityId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -4520,7 +5063,7 @@ Content-Type: multipart/form-data
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. /api/v1/profile/activity/certification/{profileActivityId}</caption>
+<caption class="title">Table 6. /api/v1/profile/activity/certification/{profileActivityId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -4650,7 +5193,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. /api/v1/profile/activity/certification/{profileActivityId}</caption>
+<caption class="title">Table 7. /api/v1/profile/activity/certification/{profileActivityId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -4889,7 +5432,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
+<caption class="title">Table 8. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5467,7 +6010,7 @@ Content-Type: application/json
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
+<caption class="title">Table 9. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5803,7 +6346,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
+<caption class="title">Table 10. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6312,7 +6855,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. /api/v1/profile/education/{profileEducationId}</caption>
+<caption class="title">Table 11. /api/v1/profile/education/{profileEducationId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6508,7 +7051,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. /api/v1/profile/education/{profileEducationId}</caption>
+<caption class="title">Table 12. /api/v1/profile/education/{profileEducationId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6611,7 +7154,7 @@ Content-Type: multipart/form-data
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. /api/v1/profile/education/certification/{profileEducationId}</caption>
+<caption class="title">Table 13. /api/v1/profile/education/certification/{profileEducationId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7168,7 +7711,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. /api/v1/profile/awards/{profileAwardsId}</caption>
+<caption class="title">Table 14. /api/v1/profile/awards/{profileAwardsId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7340,7 +7883,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. /api/v1/profile/awards/{profileAwardsId}</caption>
+<caption class="title">Table 15. /api/v1/profile/awards/{profileAwardsId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7443,7 +7986,7 @@ Content-Type: multipart/form-data
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. /api/v1/profile/awards/certification/{profileAwardsId}</caption>
+<caption class="title">Table 16. /api/v1/profile/awards/certification/{profileAwardsId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7573,7 +8116,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. /api/v1/profile/awards/certification/{profileAwardsId}</caption>
+<caption class="title">Table 17. /api/v1/profile/awards/certification/{profileAwardsId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8056,7 +8599,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. /api/v1/profile/license/{profileLicenseId}</caption>
+<caption class="title">Table 18. /api/v1/profile/license/{profileLicenseId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8216,7 +8759,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. /api/v1/profile/license/{profileLicenseId}</caption>
+<caption class="title">Table 19. /api/v1/profile/license/{profileLicenseId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8319,7 +8862,7 @@ Content-Type: multipart/form-data
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. /api/v1/profile/license/certification/{profileLicenseId}</caption>
+<caption class="title">Table 20. /api/v1/profile/license/certification/{profileLicenseId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8449,7 +8992,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. /api/v1/profile/license/certification/{profileLicenseId}</caption>
+<caption class="title">Table 21. /api/v1/profile/license/certification/{profileLicenseId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8896,7 +9439,7 @@ Content-Length: 178
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "teamId" : 1,
-    "createdAt" : "2024-11-30T17:33:48.432372"
+    "createdAt" : "2024-11-30T20:35:16.734685"
   }
 }</code></pre>
 </div>
@@ -8950,7 +9493,7 @@ Content-Length: 178
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-11-30 17:35:39 +0900
+Last updated 2024-11-30 20:36:14 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

@@ -193,6 +193,18 @@ include::{snippets}/profile-controller-test/get-profile-detail/response-fields.a
 
 ====
 
+=== 내 프로필_남이 보는 조회
+
+====
+요청
+include::{snippets}/profile-controller-test/get-profile-detail/http-request.adoc[]
+include::{snippets}/profile-controller-test/get-profile-detail/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-controller-test/get-profile-detail/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-profile-detail/response-fields.adoc[]
+====
+
 == #[프로필 - 왼쪽 메뉴]#
 
 === 프로필 왼쪽 메뉴 조회

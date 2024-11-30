@@ -110,7 +110,8 @@ public class ProfileResponseDTO {
         private ProfileInformMenu profileInformMenu = new ProfileInformMenu(); // 프로필 카드
 
         // 스크랩 수
-        private List<ProfileLogItem> profileLogItems;
+        private int profileScrapCount;
+        private ProfileLogItem profileLogItem; // 대표 로그로 변경
         private List<ProfileSkillItem> profileSkillItems;
         private List<ProfileActivityItem> profileActivityItems;
         private List<ProfilePortfolioItem> profilePortfolioItems;
@@ -118,6 +119,5 @@ public class ProfileResponseDTO {
         private List<ProfileAwardsItem> profileAwardsItems;
         private List<ProfileLicenseItem> profileLicenseItems;
         private List<ProfileLinkItem> profileLinkItems;
-
     }
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.business.ProfileActivityMapper;
 import liaison.linkit.profile.business.ProfileAwardsMapper;
 import liaison.linkit.profile.business.ProfileCurrentStateMapper;
@@ -124,9 +125,32 @@ public class ProfileService {
         return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu);
     }
 
-    public ProfileResponseDTO.ProfileDetail getProfileDetail(final Long memberId, final Long profileId) {
+    public ProfileResponseDTO.ProfileDetail getProfileMyDetail(final Long memberId, final Long profileId) {
         log.info("memberId = {}의 프로필 ID = {}에 대한 상세 조회 요청이 발생했습니다.", memberId, profileId);
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
+
+        RegionDetail regionDetail = new RegionDetail();
+
+        if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
+            final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+        }
+        log.info("지역 정보 조회 성공");
+        final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
+        final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
+        log.info("상태 정보 조회 성공");
+
+        ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+            profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+
+        log.info("대분류 포지션 정보 조회 성공");
+
+        final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(profile);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail);
 
         log.info("보유스킬 DTO 조회");
         final List<ProfileSkill> profileSkills = profileSkillQueryAdapter.getProfileSkills(memberId);
@@ -158,6 +182,81 @@ public class ProfileService {
         final List<ProfileLinkItem> profileLinkItems = profileLinkMapper.profileLinksToProfileLinkItems(profileLinks);
 
         return profileMapper.toProfileDetail(
+                profileCompletionMenu,
+                profileInformMenu,
+                profile.getProfileScrapCount(),
+                profileSkillItems,
+                profileActivityItems,
+                profilePortfolioItems,
+                profileEducationItems,
+                profileAwardsItems,
+                profileLicenseItems,
+                profileLinkItems
+        );
+    }
+
+    public ProfileResponseDTO.ProfileDetail getProfileDetail(final Long profileId) {
+        log.info("프로필 ID = {}에 대한 상세 조회 요청이 발생했습니다.", profileId);
+        final Profile profile = profileQueryAdapter.findById(profileId);
+
+        final Member targetMember = profile.getMember();
+
+        RegionDetail regionDetail = new RegionDetail();
+
+        if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
+            final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+        }
+        log.info("지역 정보 조회 성공");
+        final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
+        final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
+        log.info("상태 정보 조회 성공");
+
+        ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+            profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+
+        log.info("대분류 포지션 정보 조회 성공");
+
+        final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(profile);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail);
+
+        log.info("보유스킬 DTO 조회");
+        final List<ProfileSkill> profileSkills = profileSkillQueryAdapter.getProfileSkills(targetMember.getId());
+        final List<ProfileSkillItem> profileSkillItems = profileSkillMapper.profileSkillsToProfileSkillItems(profileSkills);
+
+        log.info("이력 DTO 조회");
+        final List<ProfileActivity> profileActivities = profileActivityQueryAdapter.getProfileActivities(targetMember.getId());
+        final List<ProfileActivityItem> profileActivityItems = profileActivityMapper.profileActivitiesToProfileActivityItems(profileActivities);
+
+        log.info("포트폴리오 DTO 조회");
+        final List<ProfilePortfolio> profilePortfolios = profilePortfolioQueryAdapter.getProfilePortfolios(profile.getId());
+        final Map<Long, List<String>> projectRolesMap = projectRoleContributionQueryAdapter.getProjectRolesByProfileId(profile.getId());
+        final List<ProfilePortfolioItem> profilePortfolioItems = profilePortfolioMapper.profilePortfoliosToProfileProfilePortfolioItems(profilePortfolios, projectRolesMap);
+
+        log.info("학력 DTO 조회");
+        final List<ProfileEducation> profileEducations = profileEducationQueryAdapter.getProfileEducations(profile.getId());
+        final List<ProfileEducationItem> profileEducationItems = profileEducationMapper.profileEducationsToProfileProfileEducationItems(profileEducations);
+
+        log.info("수상 DTO 조회");
+        final List<ProfileAwards> profileAwards = profileAwardsQueryAdapter.getProfileAwardsGroup(targetMember.getId());
+        final List<ProfileAwardsItem> profileAwardsItems = profileAwardsMapper.profileEducationsToProfileProfileEducationItems(profileAwards);
+
+        log.info("자격증 DTO 조회");
+        final List<ProfileLicense> profileLicenses = profileLicenseQueryAdapter.getProfileLicenses(targetMember.getId());
+        final List<ProfileLicenseItem> profileLicenseItems = profileLicenseMapper.profileLicensesToProfileLicenseItems(profileLicenses);
+
+        log.info("링크 DTO 조회");
+        final List<ProfileLink> profileLinks = profileLinkQueryAdapter.getProfileLinks(profile.getId());
+        final List<ProfileLinkItem> profileLinkItems = profileLinkMapper.profileLinksToProfileLinkItems(profileLinks);
+
+        return profileMapper.toProfileDetail(
+                profileCompletionMenu,
+                profileInformMenu,
+                profile.getProfileScrapCount(),
                 profileSkillItems,
                 profileActivityItems,
                 profilePortfolioItems,

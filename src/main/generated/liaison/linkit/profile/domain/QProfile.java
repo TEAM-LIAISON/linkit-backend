@@ -56,6 +56,8 @@ public class QProfile extends EntityPathBase<Profile> {
 
     public final StringPath profileImagePath = createString("profileImagePath");
 
+    public final NumberPath<Integer> profileScrapCount = createNumber("profileScrapCount", Integer.class);
+
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
 

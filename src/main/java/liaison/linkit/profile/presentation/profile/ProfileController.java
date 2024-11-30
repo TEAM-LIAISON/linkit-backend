@@ -33,14 +33,21 @@ public class ProfileController {
     // 내가 보는 나의 프로필
     @GetMapping("/my/profile/{profileId}")
     @MemberOnly
-    public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileDetail(
+    public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileMyDetail(
             @Auth final Accessor accessor,
             @PathVariable final Long profileId
     ) {
-        log.info("memberId = {}의 프로필 상세 조회 요청이 발생했습니다.", accessor.getMemberId());
-        return CommonResponse.onSuccess(profileService.getProfileDetail(accessor.getMemberId(), profileId));
+        log.info("memberId = {}의 profileId = {}에 대한 프로필 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), profileId);
+        return CommonResponse.onSuccess(profileService.getProfileMyDetail(accessor.getMemberId(), profileId));
     }
 
     // 남이 보는 나의 프로필
-    
+    @GetMapping("/profile/{profileId}")
+    @MemberOnly
+    public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileDetail(
+            @PathVariable final Long profileId
+    ) {
+        log.info("profileId = {}에 대한 프로필 상세 조회 요청이 발생했습니다.", profileId);
+        return CommonResponse.onSuccess(profileService.getProfileDetail(profileId));
+    }
 }
