@@ -15,9 +15,13 @@ public class TeamHistoryResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamHistoryItems {
-        @Builder.Default
-        private List<TeamHistoryItem> teamHistoryItems = new ArrayList<>();
+    public static class TeamHistoryDetail {
+        private Long teamHistoryId;
+        private String historyName;
+        private String historyStartDate;
+        private String historyEndDate;
+        private Boolean isHistoryInProgress;
+        private String historyDescription;
     }
 
     @Builder
@@ -32,17 +36,46 @@ public class TeamHistoryResponseDTO {
         private Boolean isHistoryInProgress;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamHistoryItems {
+        @Builder.Default
+        private List<TeamHistoryItem> teamHistoryItems = new ArrayList<>();
+    }
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamHistoryDetail {
+    public static class AddTeamHistoryResponse {
         private Long teamHistoryId;
         private String historyName;
         private String historyStartDate;
         private String historyEndDate;
         private Boolean isHistoryInProgress;
         private String historyDescription;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateTeamHistoryResponse {
+        private Long teamHistoryId;
+        private String historyName;
+        private String historyStartDate;
+        private String historyEndDate;
+        private Boolean isHistoryInProgress;
+        private String historyDescription;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveTeamHistoryResponse {
+        private Long teamHistoryId;
     }
 }

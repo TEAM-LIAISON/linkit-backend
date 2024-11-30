@@ -21,4 +21,8 @@ public class TeamHistoryQueryAdapter {
         return teamHistoryRepository.findById(teamHistoryId)
                 .orElseThrow(() -> TeamHistoryNotFoundException.EXCEPTION);
     }
+
+    public boolean existsByTeamId(final Long teamId) {
+        return teamHistoryRepository.existsByTeamId(teamId);
+    }
 }
