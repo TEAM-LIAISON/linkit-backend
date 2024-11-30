@@ -1,0 +1,76 @@
+= LINKIT API 명세서 Version 1.5 [팀 API]
+:doctype: book
+:toc: left
+:sectnums:
+:sectlinks:
+:source-highlighter: highlightjs
+:icons: font
+
+- 링킷 개발용 API 서버 도메인 네임 = https://dev.liaison-dev.site
+
+- 링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im
+
+== #[팀 - 팀 연혁]#
+
+=== 팀 연혁 전체 조회
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/get-team-history-items/http-request.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/get-team-history-items/http-response.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-items/response-fields.adoc[]
+====
+
+=== 팀 연혁 단일 조회
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/get-team-history-detail/http-request.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-detail/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/get-team-history-detail/http-response.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-detail/response-fields.adoc[]
+====
+
+=== 팀 연혁 단일 생성
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/add-team-history/http-request.adoc[]
+include::{snippets}/team-history-controller-test/add-team-history/path-parameters.adoc[]
+include::{snippets}/team-history-controller-test/add-team-history/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/add-team-history/http-response.adoc[]
+include::{snippets}/team-history-controller-test/add-team-history/response-fields.adoc[]
+====
+
+=== 팀 연혁 단일 수정
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/update-team-history/http-request.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/path-parameters.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/update-team-history/http-response.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/response-fields.adoc[]
+====
+
+=== 팀 연혁 단일 삭제
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/update-team-history/http-request.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/update-team-history/http-response.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/response-fields.adoc[]
+====
+

@@ -14,7 +14,6 @@ public class TeamHistoryRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddTeamHistoryRequest {
-        private Long teamHistoryId;
         private String historyName;
         private String historyStartDate;
         private String historyEndDate;
@@ -27,7 +26,6 @@ public class TeamHistoryRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateTeamHistoryRequest {
-        private Long teamHistoryId;
         private String historyName;
         private String historyStartDate;
         private String historyEndDate;
