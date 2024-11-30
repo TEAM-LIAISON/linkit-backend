@@ -15,9 +15,19 @@ public class ProfileAwardsResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileAwardsItems {
-        @Builder.Default
-        private List<ProfileAwardsItem> profileAwardsItems = new ArrayList<>();
+    public static class ProfileAwardsDetail {
+        private Long profileAwardsId;
+        private String awardsName;
+        private String awardsRanking;
+        private String awardsDate;
+        private String awardsOrganizer;
+        private String awardsDescription;
+
+        // 증명서 및 인증 정보
+        private Boolean isAwardsCertified;
+        private Boolean isAwardsVerified;
+        private String awardsCertificationAttachFileName;
+        private String awardsCertificationAttachFilePath;
     }
 
     // 전체 조회에 보이는 항목 (이름, 훈격, 수상시기)
@@ -37,21 +47,11 @@ public class ProfileAwardsResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileAwardsDetail {
-        private Long profileAwardsId;
-        private String awardsName;
-        private String awardsRanking;
-        private String awardsDate;
-        private String awardsOrganizer;
-        private String awardsDescription;
-
-        // 증명서 및 인증 정보
-        private Boolean isAwardsCertified;
-        private Boolean isAwardsVerified;
-        private String awardsCertificationAttachFileName;
-        private String awardsCertificationAttachFilePath;
+    public static class ProfileAwardsItems {
+        @Builder.Default
+        private List<ProfileAwardsItem> profileAwardsItems = new ArrayList<>();
     }
-
+    
     @Builder
     @Getter
     @NoArgsConstructor

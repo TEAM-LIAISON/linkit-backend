@@ -9,6 +9,7 @@ import liaison.linkit.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,4 +29,18 @@ public class ProfileController {
         log.info("memberId = {}의 프로필 왼쪽 메뉴 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(profileService.getProfileLeftMenu(accessor.getMemberId()));
     }
+
+    // 내가 보는 나의 프로필
+    @GetMapping("/my/profile/{profileId}")
+    @MemberOnly
+    public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileDetail(
+            @Auth final Accessor accessor,
+            @PathVariable final Long profileId
+    ) {
+        log.info("memberId = {}의 프로필 상세 조회 요청이 발생했습니다.", accessor.getMemberId());
+        return CommonResponse.onSuccess(profileService.getProfileDetail(accessor.getMemberId(), profileId));
+    }
+
+    // 남이 보는 나의 프로필
+    
 }

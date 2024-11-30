@@ -123,4 +123,10 @@ public class ProfileEducationMapper {
                 .profileEducationId(profileEducationId)
                 .build();
     }
+
+    public List<ProfileEducationResponseDTO.ProfileEducationItem> profileEducationsToProfileProfileEducationItems(final List<ProfileEducation> profileEducations) {
+        return profileEducations.stream()
+                .map(this::toProfileEducationItem)
+                .collect(Collectors.toList());
+    }
 }

@@ -157,6 +157,21 @@ public class ProfilePortfolioMapper {
                 .build();
     }
 
+    public List<ProfilePortfolioItem> profilePortfoliosToProfileProfilePortfolioItems(
+            final List<ProfilePortfolio> profilePortfolios,
+            final Map<Long, List<String>> projectRolesMap
+    ) {
+        return profilePortfolios.stream()
+                .map(profilePortfolio -> {
+                    List<String> projectRoles = projectRolesMap.getOrDefault(
+                            profilePortfolio.getId(),
+                            Collections.emptyList()
+                    );
+                    return toProfilePortfolioItem(profilePortfolio, projectRoles);
+                })
+                .collect(Collectors.toList());
+    }
+
     public List<ProjectRoleAndContribution> toProjectRoleAndContributions(final List<ProjectRoleContribution> projectRoleContributions) {
         return projectRoleContributions.stream()
                 .map(prc -> ProjectRoleAndContribution.builder()
@@ -209,5 +224,4 @@ public class ProfilePortfolioMapper {
                 .profilePortfolioId(profilePortfolioId)
                 .build();
     }
-    
 }

@@ -70,14 +70,6 @@ public class ProfilePortfolioResponseDTO {
         private PortfolioImages portfolioImages = new PortfolioImages();
     }
 
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ProfilePortfolioItems {
-        @Builder.Default
-        private List<ProfilePortfolioItem> profilePortfolioItems = new ArrayList<>();
-    }
 
     @Builder
     @Getter
@@ -97,6 +89,15 @@ public class ProfilePortfolioResponseDTO {
         private List<String> projectRoles;
 
         private String projectRepresentImagePath;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfilePortfolioItems {
+        @Builder.Default
+        private List<ProfilePortfolioItem> profilePortfolioItems = new ArrayList<>();
     }
 
     @Builder

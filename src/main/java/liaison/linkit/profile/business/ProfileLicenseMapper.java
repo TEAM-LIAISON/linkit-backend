@@ -113,4 +113,10 @@ public class ProfileLicenseMapper {
                 .profileLicenseId(profileLicenseId)
                 .build();
     }
+
+    public List<ProfileLicenseResponseDTO.ProfileLicenseItem> profileLicensesToProfileLicenseItems(final List<ProfileLicense> profileLicenses) {
+        return profileLicenses.stream()
+                .map(this::toProfileLicenseItem)
+                .collect(Collectors.toList());
+    }
 }

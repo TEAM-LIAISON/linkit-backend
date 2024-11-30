@@ -122,4 +122,10 @@ public class ProfileActivityMapper {
                 .profileActivityId(profileActivityId)
                 .build();
     }
+
+    public List<ProfileActivityResponseDTO.ProfileActivityItem> profileActivitiesToProfileActivityItems(final List<ProfileActivity> profileActivities) {
+        return profileActivities.stream()
+                .map(this::toProfileActivityItem)
+                .collect(Collectors.toList());
+    }
 }
