@@ -96,9 +96,9 @@ class ProfileControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performGetProfileMyDetail(final Long profileId) throws Exception {
+    private ResultActions performGetProfileMyDetail() throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/my/profile/{profileId}", profileId)
+                get("/api/v1/my/profile")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -353,9 +353,9 @@ class ProfileControllerTest extends ControllerTest {
                 );
 
         // when
-        when(profileService.getProfileMyDetail(anyLong(), anyLong())).thenReturn(profileDetail);
+        when(profileService.getProfileMyDetail(anyLong())).thenReturn(profileDetail);
 
-        final ResultActions resultActions = performGetProfileMyDetail(1L);
+        final ResultActions resultActions = performGetProfileMyDetail();
 
         // then
         final MvcResult mvcResult = resultActions
@@ -365,10 +365,6 @@ class ProfileControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
                         restDocs.document(
-                                pathParameters(
-                                        parameterWithName("profileId")
-                                                .description("프로필 ID")
-                                ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
                                                 .type(JsonFieldType.BOOLEAN)

@@ -6,6 +6,7 @@ import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.domain.QProfileLog;
+import liaison.linkit.profile.domain.type.ProfileLogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -49,5 +50,18 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         } else {
             throw new IllegalStateException("프로필 로그 업데이트 실패");
         }
+    }
+
+    @Override
+    public ProfileLog findRepresentativeProfileLog(final Long profileId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        return queryFactory
+                .selectFrom(qProfileLog)
+                .where(
+                        qProfileLog.profile.id.eq(profileId)
+                                .and(qProfileLog.profileLogType.eq(ProfileLogType.REPRESENTATIVE_LOG))
+                )
+                .fetchOne();
     }
 }

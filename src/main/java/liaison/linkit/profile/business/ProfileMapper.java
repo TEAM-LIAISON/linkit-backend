@@ -9,6 +9,7 @@ import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.P
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.ProfileEducationItem;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItem;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO.ProfileLinkItem;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
@@ -82,6 +83,7 @@ public class ProfileMapper {
             final ProfileCompletionMenu profileCompletionMenu,
             final ProfileInformMenu profileInformMenu,
             final int profileScrapCount,
+            final ProfileLogItem profileLogItem,
             final List<ProfileSkillItem> profileSkillItems,
             final List<ProfileActivityItem> profileActivityItems,
             final List<ProfilePortfolioItem> profilePortfolioItems,
@@ -95,6 +97,7 @@ public class ProfileMapper {
                 .profileCompletionMenu(profileCompletionMenu)
                 .profileInformMenu(profileInformMenu)
                 .profileScrapCount(profileScrapCount)
+                .profileLogItem(profileLogItem)
                 .profileSkillItems(profileSkillItems)
                 .profileActivityItems(profileActivityItems)
                 .profilePortfolioItems(profilePortfolioItems)
@@ -104,6 +107,6 @@ public class ProfileMapper {
                 .profileLinkItems(profileLinkItems)  // 수정된 필드 사용
                 .build();
     }
-
+    
 
 }

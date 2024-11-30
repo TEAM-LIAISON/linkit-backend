@@ -184,13 +184,11 @@ include::{snippets}/member-controller-test/update-consent-marketing/response-fie
 
 ====
 요청
-include::{snippets}/profile-controller-test/get-profile-detail/http-request.adoc[]
-include::{snippets}/profile-controller-test/get-profile-detail/path-parameters.adoc[]
+include::{snippets}/profile-controller-test/get-profile-my-detail/http-request.adoc[]
 
 응답
-include::{snippets}/profile-controller-test/get-profile-detail/http-response.adoc[]
-include::{snippets}/profile-controller-test/get-profile-detail/response-fields.adoc[]
-
+include::{snippets}/profile-controller-test/get-profile-my-detail/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-profile-my-detail/response-fields.adoc[]
 ====
 
 === 내 프로필_남이 보는 조회

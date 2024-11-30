@@ -765,7 +765,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 7 Dec 2024 11:35:12 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 7 Dec 2024 12:42:39 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 216
 
@@ -900,7 +900,7 @@ Content-Length: 159
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2024-11-30T20:35:12.204441"
+    "logoutAt" : "2024-11-30T21:42:39.706259"
   }
 }</code></pre>
 </div>
@@ -1054,7 +1054,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2024-11-30T20:35:12.260227"
+    "quitAt" : "2024-11-30T21:42:39.758966"
   }
 }</code></pre>
 </div>
@@ -1125,14 +1125,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 177
+Content-Length: 178
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2024-11-30T20:35:12.14872"
+    "reAuthenticationEmailSendAt" : "2024-11-30T21:42:39.656268"
   }
 }</code></pre>
 </div>
@@ -1212,7 +1212,7 @@ Content-Length: 214
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2024-11-30T20:35:11.836521"
+    "verificationSuccessAt" : "2024-11-30T21:42:39.385642"
   }
 }</code></pre>
 </div>
@@ -1998,28 +1998,11 @@ Content-Length: 143
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/profile/1 HTTP/1.1</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/my/profile HTTP/1.1
+Authorization: accessToken
+Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. /api/v1/profile/{profileId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>profileId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 ID</p></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
 <p>응답</p>
 </div>
@@ -2060,7 +2043,7 @@ Content-Length: 4253
       "profileLogId" : 1,
       "isLogPublic" : true,
       "profileLogType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2024-11-30T20:35:14.693811",
+      "modifiedAt" : "2024-11-30T21:42:41.852112",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     },
@@ -2547,7 +2530,7 @@ Content-Length: 4253
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. /api/v1/profile/{profileId}</caption>
+<caption class="title">Table 2. /api/v1/profile/{profileId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2605,7 +2588,7 @@ Content-Length: 4253
       "profileLogId" : 1,
       "isLogPublic" : true,
       "profileLogType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2024-11-30T20:35:14.693811",
+      "modifiedAt" : "2024-11-30T21:42:41.926438",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     },
@@ -3485,7 +3468,7 @@ Content-Length: 465
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "profileId" : 1,
-    "modifiedAt" : "2024-11-30T20:35:13.249299",
+    "modifiedAt" : "2024-11-30T21:42:40.652032",
     "majorPosition" : "대분류 포지션",
     "subPosition" : "소분류 포지션",
     "cityName" : "활동지역 시/도",
@@ -3701,7 +3684,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 601
+Content-Length: 600
 
 {
   "isSuccess" : true,
@@ -3712,14 +3695,14 @@ Content-Length: 601
       "profileLogId" : 1,
       "isLogPublic" : true,
       "profileLogType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2024-11-30T20:35:16.042466",
+      "modifiedAt" : "2024-11-30T21:42:43.342467",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
       "profileLogType" : "GENERAL_LOG",
-      "modifiedAt" : "2024-11-30T20:35:16.042469",
+      "modifiedAt" : "2024-11-30T21:42:43.34247",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -3827,7 +3810,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 327
+Content-Length: 328
 
 {
   "isSuccess" : true,
@@ -3837,7 +3820,7 @@ Content-Length: 327
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2024-11-30T20:35:16.01635",
+    "createdAt" : "2024-11-30T21:42:43.311891",
     "profileLogType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -4776,7 +4759,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. /api/v1/profile/activity/{profileActivityId}</caption>
+<caption class="title">Table 3. /api/v1/profile/activity/{profileActivityId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -4960,7 +4943,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. /api/v1/profile/activity/{profileActivityId}</caption>
+<caption class="title">Table 4. /api/v1/profile/activity/{profileActivityId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5063,7 +5046,7 @@ Content-Type: multipart/form-data
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. /api/v1/profile/activity/certification/{profileActivityId}</caption>
+<caption class="title">Table 5. /api/v1/profile/activity/certification/{profileActivityId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5193,7 +5176,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. /api/v1/profile/activity/certification/{profileActivityId}</caption>
+<caption class="title">Table 6. /api/v1/profile/activity/certification/{profileActivityId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5432,7 +5415,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
+<caption class="title">Table 7. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6010,7 +5993,7 @@ Content-Type: application/json
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
+<caption class="title">Table 8. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6346,7 +6329,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
+<caption class="title">Table 9. /api/v1/profile/portfolio/{profilePortfolioId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -6855,7 +6838,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. /api/v1/profile/education/{profileEducationId}</caption>
+<caption class="title">Table 10. /api/v1/profile/education/{profileEducationId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7051,7 +7034,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. /api/v1/profile/education/{profileEducationId}</caption>
+<caption class="title">Table 11. /api/v1/profile/education/{profileEducationId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7154,7 +7137,7 @@ Content-Type: multipart/form-data
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. /api/v1/profile/education/certification/{profileEducationId}</caption>
+<caption class="title">Table 12. /api/v1/profile/education/certification/{profileEducationId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7711,7 +7694,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. /api/v1/profile/awards/{profileAwardsId}</caption>
+<caption class="title">Table 13. /api/v1/profile/awards/{profileAwardsId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7883,7 +7866,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. /api/v1/profile/awards/{profileAwardsId}</caption>
+<caption class="title">Table 14. /api/v1/profile/awards/{profileAwardsId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -7986,7 +7969,7 @@ Content-Type: multipart/form-data
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. /api/v1/profile/awards/certification/{profileAwardsId}</caption>
+<caption class="title">Table 15. /api/v1/profile/awards/certification/{profileAwardsId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8116,7 +8099,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. /api/v1/profile/awards/certification/{profileAwardsId}</caption>
+<caption class="title">Table 16. /api/v1/profile/awards/certification/{profileAwardsId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8599,7 +8582,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. /api/v1/profile/license/{profileLicenseId}</caption>
+<caption class="title">Table 17. /api/v1/profile/license/{profileLicenseId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8759,7 +8742,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. /api/v1/profile/license/{profileLicenseId}</caption>
+<caption class="title">Table 18. /api/v1/profile/license/{profileLicenseId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8862,7 +8845,7 @@ Content-Type: multipart/form-data
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. /api/v1/profile/license/certification/{profileLicenseId}</caption>
+<caption class="title">Table 19. /api/v1/profile/license/certification/{profileLicenseId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -8992,7 +8975,7 @@ Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 21. /api/v1/profile/license/certification/{profileLicenseId}</caption>
+<caption class="title">Table 20. /api/v1/profile/license/certification/{profileLicenseId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -9439,7 +9422,7 @@ Content-Length: 178
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "teamId" : 1,
-    "createdAt" : "2024-11-30T20:35:16.734685"
+    "createdAt" : "2024-11-30T21:42:44.064215"
   }
 }</code></pre>
 </div>
@@ -9493,7 +9476,7 @@ Content-Length: 178
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-11-30 20:36:14 +0900
+Last updated 2024-11-30 21:44:03 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

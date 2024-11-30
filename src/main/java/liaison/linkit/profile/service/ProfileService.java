@@ -12,6 +12,7 @@ import liaison.linkit.profile.business.ProfileCurrentStateMapper;
 import liaison.linkit.profile.business.ProfileEducationMapper;
 import liaison.linkit.profile.business.ProfileLicenseMapper;
 import liaison.linkit.profile.business.ProfileLinkMapper;
+import liaison.linkit.profile.business.ProfileLogMapper;
 import liaison.linkit.profile.business.ProfileMapper;
 import liaison.linkit.profile.business.ProfilePortfolioMapper;
 import liaison.linkit.profile.business.ProfilePositionMapper;
@@ -19,6 +20,7 @@ import liaison.linkit.profile.business.ProfileSkillMapper;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileCurrentState;
 import liaison.linkit.profile.domain.ProfileLink;
+import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.domain.ProfilePosition;
 import liaison.linkit.profile.domain.ProfileRegion;
 import liaison.linkit.profile.domain.ProfileSkill;
@@ -33,6 +35,7 @@ import liaison.linkit.profile.implement.activity.ProfileActivityQueryAdapter;
 import liaison.linkit.profile.implement.awards.ProfileAwardsQueryAdapter;
 import liaison.linkit.profile.implement.education.ProfileEducationQueryAdapter;
 import liaison.linkit.profile.implement.license.ProfileLicenseQueryAdapter;
+import liaison.linkit.profile.implement.log.ProfileLogQueryAdapter;
 import liaison.linkit.profile.implement.portfolio.ProfilePortfolioQueryAdapter;
 import liaison.linkit.profile.implement.portfolio.ProjectRoleContributionQueryAdapter;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
@@ -42,6 +45,7 @@ import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.P
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.ProfileEducationItem;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItem;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO.ProfileLinkItem;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
@@ -63,12 +67,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileService {
 
     private final ProfileQueryAdapter profileQueryAdapter;
-    private final ProfileMapper profileMapper;
-
     private final RegionQueryAdapter regionQueryAdapter;
-    private final RegionMapper regionMapper;
-
     private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
+    private final ProfileLogQueryAdapter profileLogQueryAdapter;
     private final ProfileSkillQueryAdapter profileSkillQueryAdapter;
     private final ProfileActivityQueryAdapter profileActivityQueryAdapter;
     private final ProfilePortfolioQueryAdapter profilePortfolioQueryAdapter;
@@ -78,9 +79,11 @@ public class ProfileService {
     private final ProfileLicenseQueryAdapter profileLicenseQueryAdapter;
     private final ProfileLinkQueryAdapter profileLinkQueryAdapter;
 
+    private final ProfileMapper profileMapper;
+    private final RegionMapper regionMapper;
     private final ProfileCurrentStateMapper profileCurrentStateMapper;
-
     private final ProfilePositionMapper profilePositionMapper;
+    private final ProfileLogMapper profileLogMapper;
     private final ProfileSkillMapper profileSkillMapper;
     private final ProfileActivityMapper profileActivityMapper;
     private final ProfilePortfolioMapper profilePortfolioMapper;
@@ -125,8 +128,7 @@ public class ProfileService {
         return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu);
     }
 
-    public ProfileResponseDTO.ProfileDetail getProfileMyDetail(final Long memberId, final Long profileId) {
-        log.info("memberId = {}의 프로필 ID = {}에 대한 상세 조회 요청이 발생했습니다.", memberId, profileId);
+    public ProfileResponseDTO.ProfileDetail getProfileMyDetail(final Long memberId) {
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
         RegionDetail regionDetail = new RegionDetail();
@@ -151,6 +153,10 @@ public class ProfileService {
 
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(profile);
         final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail);
+
+        log.info("대표 로그 DTO 조회");
+        final ProfileLog profileLog = profileLogQueryAdapter.getRepresentativeProfileLog(profile.getId());
+        final ProfileLogItem profileLogItem = profileLogMapper.toProfileLogItem(profileLog);
 
         log.info("보유스킬 DTO 조회");
         final List<ProfileSkill> profileSkills = profileSkillQueryAdapter.getProfileSkills(memberId);
@@ -185,6 +191,7 @@ public class ProfileService {
                 profileCompletionMenu,
                 profileInformMenu,
                 profile.getProfileScrapCount(),
+                profileLogItem,
                 profileSkillItems,
                 profileActivityItems,
                 profilePortfolioItems,
@@ -218,11 +225,14 @@ public class ProfileService {
             final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
             profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
         }
-
         log.info("대분류 포지션 정보 조회 성공");
 
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(profile);
         final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail);
+
+        log.info("대표 로그 DTO 조회");
+        final ProfileLog profileLog = profileLogQueryAdapter.getRepresentativeProfileLog(profile.getId());
+        final ProfileLogItem profileLogItem = profileLogMapper.toProfileLogItem(profileLog);
 
         log.info("보유스킬 DTO 조회");
         final List<ProfileSkill> profileSkills = profileSkillQueryAdapter.getProfileSkills(targetMember.getId());
@@ -257,6 +267,7 @@ public class ProfileService {
                 profileCompletionMenu,
                 profileInformMenu,
                 profile.getProfileScrapCount(),
+                profileLogItem,
                 profileSkillItems,
                 profileActivityItems,
                 profilePortfolioItems,
