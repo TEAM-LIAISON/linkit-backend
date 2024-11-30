@@ -1,6 +1,7 @@
 package liaison.linkit.profile.business;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileSkill;
@@ -29,6 +30,12 @@ public class ProfileSkillMapper {
                 .builder()
                 .profileSkillItems(items)
                 .build();
+    }
+
+    public List<ProfileSkillItem> profileSkillsToProfileSkillItems(final List<ProfileSkill> profileSkills) {
+        return profileSkills.stream()
+                .map(this::toProfileSkillItem)
+                .collect(Collectors.toList());
     }
 
     public ProfileSkill toProfileSkill(Profile profile, ProfileSkillRequestDTO.AddProfileSkillItem requestItem) {

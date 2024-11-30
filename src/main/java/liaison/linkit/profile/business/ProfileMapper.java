@@ -4,12 +4,20 @@ import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
+import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.ProfileAwardsItem;
+import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.ProfileEducationItem;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItem;
+import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO.ProfileLinkItem;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
 
 @Mapper
 public class ProfileMapper {
@@ -70,4 +78,35 @@ public class ProfileMapper {
                 .isProfileLink(profile.isProfileLink())
                 .build();
     }
+
+    public ProfileResponseDTO.ProfileDetail toProfileDetail(
+            final ProfileCompletionMenu profileCompletionMenu,
+            final ProfileInformMenu profileInformMenu,
+            final int profileScrapCount,
+            final ProfileLogItem profileLogItem,
+            final List<ProfileSkillItem> profileSkillItems,
+            final List<ProfileActivityItem> profileActivityItems,
+            final List<ProfilePortfolioItem> profilePortfolioItems,
+            final List<ProfileEducationItem> profileEducationItems,
+            final List<ProfileAwardsItem> profileAwardsItems,
+            final List<ProfileLicenseItem> profileLicenseItems,
+            final List<ProfileLinkItem> profileLinkItems // 타입 변경
+    ) {
+        return ProfileResponseDTO.ProfileDetail
+                .builder()
+                .profileCompletionMenu(profileCompletionMenu)
+                .profileInformMenu(profileInformMenu)
+                .profileScrapCount(profileScrapCount)
+                .profileLogItem(profileLogItem)
+                .profileSkillItems(profileSkillItems)
+                .profileActivityItems(profileActivityItems)
+                .profilePortfolioItems(profilePortfolioItems)
+                .profileEducationItems(profileEducationItems)
+                .profileAwardsItems(profileAwardsItems)
+                .profileLicenseItems(profileLicenseItems)
+                .profileLinkItems(profileLinkItems)  // 수정된 필드 사용
+                .build();
+    }
+    
+
 }

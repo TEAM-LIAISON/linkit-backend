@@ -116,4 +116,10 @@ public class ProfileAwardsMapper {
                 .profileAwardsId(profileAwardsId)
                 .build();
     }
+
+    public List<ProfileAwardsItem> profileEducationsToProfileProfileEducationItems(final List<ProfileAwards> profileAwardsGroup) {
+        return profileAwardsGroup.stream()
+                .map(this::toProfileAwardsItem)
+                .collect(Collectors.toList());
+    }
 }

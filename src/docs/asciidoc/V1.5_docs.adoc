@@ -178,6 +178,31 @@ include::{snippets}/member-controller-test/update-consent-marketing/http-respons
 include::{snippets}/member-controller-test/update-consent-marketing/response-fields.adoc[]
 ====
 
+== #[프로필 - 내 프로필 조회]#
+
+=== 내 프로필_내가 보는 조회
+
+====
+요청
+include::{snippets}/profile-controller-test/get-profile-my-detail/http-request.adoc[]
+
+응답
+include::{snippets}/profile-controller-test/get-profile-my-detail/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-profile-my-detail/response-fields.adoc[]
+====
+
+=== 내 프로필_남이 보는 조회
+
+====
+요청
+include::{snippets}/profile-controller-test/get-profile-detail/http-request.adoc[]
+include::{snippets}/profile-controller-test/get-profile-detail/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-controller-test/get-profile-detail/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-profile-detail/response-fields.adoc[]
+====
+
 == #[프로필 - 왼쪽 메뉴]#
 
 === 프로필 왼쪽 메뉴 조회

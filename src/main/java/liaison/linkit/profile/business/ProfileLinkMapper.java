@@ -1,6 +1,7 @@
 package liaison.linkit.profile.business;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileLink;
@@ -28,6 +29,12 @@ public class ProfileLinkMapper {
                 .builder()
                 .profileLinkItems(items)
                 .build();
+    }
+
+    public List<ProfileLinkResponseDTO.ProfileLinkItem> profileLinksToProfileLinkItems(final List<ProfileLink> profileLinks) {
+        return profileLinks.stream()
+                .map(this::toProfileLinkItem)
+                .collect(Collectors.toList());
     }
 
     public ProfileLink toProfileLink(Profile profile, ProfileLinkRequestDTO.AddProfileLinkItem requestItem) {

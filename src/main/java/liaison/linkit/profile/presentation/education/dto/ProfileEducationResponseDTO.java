@@ -10,16 +10,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProfileEducationResponseDTO {
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ProfileEducationItems {
-        @Builder.Default
-        private List<ProfileEducationResponseDTO.ProfileEducationItem> profileEducationItems = new ArrayList<>();
-    }
-
+    
     // 전체 조회에 보이는 항목 (이름, 훈격, 수상시기)
     @Builder
     @Getter
@@ -33,6 +24,15 @@ public class ProfileEducationResponseDTO {
         private String graduationYear;
         private Boolean isAttendUniversity;
         private Boolean isEducationVerified;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileEducationItems {
+        @Builder.Default
+        private List<ProfileEducationResponseDTO.ProfileEducationItem> profileEducationItems = new ArrayList<>();
     }
 
     @Builder

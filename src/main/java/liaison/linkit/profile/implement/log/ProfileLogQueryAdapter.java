@@ -20,4 +20,8 @@ public class ProfileLogQueryAdapter {
     public List<ProfileLog> getProfileLogs(final Long memberId) {
         return profileLogRepository.getProfileLogs(memberId);
     }
+
+    public ProfileLog getRepresentativeProfileLog(final Long profileId) {
+        return profileLogRepository.findRepresentativeProfileLog(profileId);
+    }
 }

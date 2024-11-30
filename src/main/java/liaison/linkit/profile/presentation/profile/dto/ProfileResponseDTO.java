@@ -3,7 +3,15 @@ package liaison.linkit.profile.presentation.profile.dto;
 import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
+import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.ProfileAwardsItem;
+import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.ProfileEducationItem;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItem;
+import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO.ProfileLinkItem;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
+import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -87,5 +95,29 @@ public class ProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfilePositionDetail {
         private String majorPosition;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileDetail {
+
+        @Builder.Default
+        private ProfileCompletionMenu profileCompletionMenu = new ProfileCompletionMenu(); // 프로필 완성도
+
+        @Builder.Default
+        private ProfileInformMenu profileInformMenu = new ProfileInformMenu(); // 프로필 카드
+
+        // 스크랩 수
+        private int profileScrapCount;
+        private ProfileLogItem profileLogItem; // 대표 로그로 변경
+        private List<ProfileSkillItem> profileSkillItems;
+        private List<ProfileActivityItem> profileActivityItems;
+        private List<ProfilePortfolioItem> profilePortfolioItems;
+        private List<ProfileEducationItem> profileEducationItems;
+        private List<ProfileAwardsItem> profileAwardsItems;
+        private List<ProfileLicenseItem> profileLicenseItems;
+        private List<ProfileLinkItem> profileLinkItems;
     }
 }
