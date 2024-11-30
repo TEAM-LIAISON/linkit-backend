@@ -48,6 +48,12 @@ public class Team extends BaseEntity {
     @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 
+    private boolean isTeamLog;
+    private boolean isTeamMemberAnnouncement;
+    private boolean isTeamMember;
+    private boolean isTeamProduct;
+    private boolean isTeamHistory;
+
     public void setTeamLogoImagePath(final String teamLogoImagePath) {
         this.teamLogoImagePath = teamLogoImagePath;
     }
@@ -62,5 +68,26 @@ public class Team extends BaseEntity {
 
     public void setRegion(final Region region) {
         this.region = region;
+    }
+
+
+    public void setIsTeamLog(final boolean isTeamLog) {
+        this.isTeamLog = isTeamLog;
+    }
+
+    public void setIsTeamMemberAnnouncement(final boolean isTeamMemberAnnouncement) {
+        this.isTeamMemberAnnouncement = isTeamMemberAnnouncement;
+    }
+
+    public void setIsTeamMember(final boolean isTeamMember) {
+        this.isTeamMember = isTeamMember;
+    }
+
+    public void setIsTeamProduct(final boolean isTeamProduct) {
+        this.isTeamProduct = isTeamProduct;
+    }
+
+    public void setIsTeamHistory(final boolean isTeamHistory) {
+        this.isTeamHistory = isTeamHistory;
     }
 }

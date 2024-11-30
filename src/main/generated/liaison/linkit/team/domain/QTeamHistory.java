@@ -22,12 +22,6 @@ public class QTeamHistory extends EntityPathBase<TeamHistory> {
 
     public static final QTeamHistory teamHistory = new QTeamHistory("teamHistory");
 
-    public final StringPath historyCertificationAttachFileName = createString("historyCertificationAttachFileName");
-
-    public final StringPath historyCertificationAttachFilePath = createString("historyCertificationAttachFilePath");
-
-    public final StringPath historyCertificationDescription = createString("historyCertificationDescription");
-
     public final StringPath historyDescription = createString("historyDescription");
 
     public final StringPath historyEndDate = createString("historyEndDate");
@@ -38,11 +32,7 @@ public class QTeamHistory extends EntityPathBase<TeamHistory> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final BooleanPath isHistoryCertified = createBoolean("isHistoryCertified");
-
     public final BooleanPath isHistoryInProgress = createBoolean("isHistoryInProgress");
-
-    public final BooleanPath isHistoryVerified = createBoolean("isHistoryVerified");
 
     public final QTeam team;
 

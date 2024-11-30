@@ -1,0 +1,28 @@
+package liaison.linkit.team.implement.history;
+
+import java.util.List;
+import liaison.linkit.common.annotation.Adapter;
+import liaison.linkit.team.domain.TeamHistory;
+import liaison.linkit.team.domain.repository.history.TeamHistoryRepository;
+import liaison.linkit.team.exception.history.TeamHistoryNotFoundException;
+import lombok.RequiredArgsConstructor;
+
+@Adapter
+@RequiredArgsConstructor
+public class TeamHistoryQueryAdapter {
+
+    private final TeamHistoryRepository teamHistoryRepository;
+
+    public List<TeamHistory> getTeamHistories(final Long teamId) {
+        return teamHistoryRepository.getTeamHistories(teamId);
+    }
+
+    public TeamHistory getTeamHistory(final Long teamHistoryId) {
+        return teamHistoryRepository.findById(teamHistoryId)
+                .orElseThrow(() -> TeamHistoryNotFoundException.EXCEPTION);
+    }
+
+    public boolean existsByTeamId(final Long teamId) {
+        return teamHistoryRepository.existsByTeamId(teamId);
+    }
+}

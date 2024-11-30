@@ -29,6 +29,16 @@ public class QTeam extends EntityPathBase<Team> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isTeamHistory = createBoolean("isTeamHistory");
+
+    public final BooleanPath isTeamLog = createBoolean("isTeamLog");
+
+    public final BooleanPath isTeamMember = createBoolean("isTeamMember");
+
+    public final BooleanPath isTeamMemberAnnouncement = createBoolean("isTeamMemberAnnouncement");
+
+    public final BooleanPath isTeamProduct = createBoolean("isTeamProduct");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
