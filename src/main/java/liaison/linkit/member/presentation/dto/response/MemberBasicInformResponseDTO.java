@@ -19,6 +19,7 @@ public class MemberBasicInformResponseDTO {
         private String memberName;
         private String contact;
         private String email;
+        private String emailId;
         private Boolean isServiceUseAgree;
         private Boolean isPrivateInformAgree;
         private Boolean isAgeCheck;

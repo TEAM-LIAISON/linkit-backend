@@ -103,15 +103,16 @@ public class ProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfileDetail {
 
+        private Boolean isMyProfile;
+
         @Builder.Default
         private ProfileCompletionMenu profileCompletionMenu = new ProfileCompletionMenu(); // 프로필 완성도
 
         @Builder.Default
         private ProfileInformMenu profileInformMenu = new ProfileInformMenu(); // 프로필 카드
 
-        // 스크랩 수
         private int profileScrapCount;
-        private ProfileLogItem profileLogItem; // 대표 로그로 변경
+        private ProfileLogItem profileLogItem;
         private List<ProfileSkillItem> profileSkillItems;
         private List<ProfileActivityItem> profileActivityItems;
         private List<ProfilePortfolioItem> profilePortfolioItems;

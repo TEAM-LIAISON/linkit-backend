@@ -90,7 +90,7 @@ public class JwtProvider {
         }
     }
 
-    private void validateAccessToken(final String accessToken) {
+    public void validateAccessToken(final String accessToken) {
         try {
             parseToken(accessToken);  // JWT 토큰을 파싱
         } catch (final ExpiredJwtException e) {

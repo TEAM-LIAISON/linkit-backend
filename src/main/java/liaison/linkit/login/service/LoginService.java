@@ -109,8 +109,14 @@ public class LoginService {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberQueryAdapter.existsByEmail(email)) {
+                // 이메일에서 '@' 앞의 부분을 추출하여 emailId 변수에 저장
+                int atIndex = email.indexOf('@');
+                if (atIndex == -1) {
+                    throw new IllegalArgumentException("유효한 이메일 주소가 아닙니다.");
+                }
+                String emailId = email.substring(0, atIndex);
 
-                final Member member = memberCommandAdapter.create(new Member(socialLoginId, email, null, platform));
+                final Member member = memberCommandAdapter.create(new Member(socialLoginId, email, emailId, null, platform));
 
                 memberBasicInformCommandAdapter.create(new MemberBasicInform(
                         null, member, null, null, false, false, false, false

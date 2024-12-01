@@ -25,6 +25,11 @@ public class ProfileQueryAdapter {
                 .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
+    public Profile findByEmailId(final String emailId) {
+        return profileRepository.findByEmailId(emailId)
+                .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
+    }
+
     public List<ProfileCurrentState> findProfileCurrentStatesByProfileId(final Long profileId) {
         return profileCurrentStateRepository.findProfileCurrentStatesByProfileId(profileId);
     }

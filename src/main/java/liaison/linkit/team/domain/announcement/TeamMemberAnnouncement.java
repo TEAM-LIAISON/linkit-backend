@@ -23,11 +23,19 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @Column(name = "team_member_announcement_id")
     private Long id;
 
-    // 2. 주요 업무
-    @Column(name = "main_business")
-    private String mainBusiness;
+    private String announcementTitle;
 
-    // 4. 지원 절차
-    @Column(name = "application_process")
-    private String applicationProcess;
+    // 찾는 포지션 (필터 항목)
+
+    // 요구 스킬 (필터 항목)
+    private String announcementStartDate; // 공고 시작 기간
+    private String announcementEndDate; // 공고 마감 기간
+    private boolean isRegionFlexible; // 지역 무관
+    private String detailedAnnouncement; // 세부 공고 작성
+    private String mainTasks; // 주요 업무
+    private String workMethod; // 업무 방식
+    private String idealCandidate; // 이런 분을 찾고 있어요
+    private String preferredQualifications; // 이런 분이면 더 좋아요
+    private String joiningProcess; // 이런 과정으로 합류해요
+    private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
 }

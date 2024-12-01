@@ -22,6 +22,11 @@ public class ProfileLogQueryAdapter {
     }
 
     public ProfileLog getRepresentativeProfileLog(final Long profileId) {
-        return profileLogRepository.findRepresentativeProfileLog(profileId);
+        return profileLogRepository.findRepresentativeProfileLog(profileId)
+                .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
+    }
+
+    public boolean existsProfileLogByProfileId(final Long profileId) {
+        return profileLogRepository.existsProfileLogByProfileId(profileId);
     }
 }

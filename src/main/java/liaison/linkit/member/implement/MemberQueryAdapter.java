@@ -19,6 +19,10 @@ public class MemberQueryAdapter {
                 .orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 
+    public String findEmailIdById(final Long memberId) {
+        return memberRepository.findEmailIdById(memberId);
+    }
+
     public Optional<Member> findBySocialLoginId(final String socialLoginId) {
         return memberRepository.findBySocialLoginId(socialLoginId);
     }

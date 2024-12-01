@@ -12,6 +12,7 @@ public class MemberBasicInformMapper {
     public MemberBasicInformResponseDTO.MemberBasicInformDetail toMemberBasicInformDetail(
             final MemberBasicInform memberBasicInform,
             final String email,
+            final String emailId,
             final Platform platform
     ) {
         return MemberBasicInformResponseDTO.MemberBasicInformDetail.builder()
@@ -19,6 +20,7 @@ public class MemberBasicInformMapper {
                 .memberName(memberBasicInform.getMemberName())
                 .contact(memberBasicInform.getContact())
                 .email(email)
+                .emailId(emailId)
                 .isServiceUseAgree(memberBasicInform.isServiceUseAgree())
                 .isPrivateInformAgree(memberBasicInform.isPrivateInformAgree())
                 .isAgeCheck(memberBasicInform.isAgeCheck())

@@ -80,6 +80,7 @@ public class ProfileMapper {
     }
 
     public ProfileResponseDTO.ProfileDetail toProfileDetail(
+            final boolean isMyProfile,
             final ProfileCompletionMenu profileCompletionMenu,
             final ProfileInformMenu profileInformMenu,
             final int profileScrapCount,
@@ -94,6 +95,7 @@ public class ProfileMapper {
     ) {
         return ProfileResponseDTO.ProfileDetail
                 .builder()
+                .isMyProfile(isMyProfile)
                 .profileCompletionMenu(profileCompletionMenu)
                 .profileInformMenu(profileInformMenu)
                 .profileScrapCount(profileScrapCount)
@@ -107,6 +109,6 @@ public class ProfileMapper {
                 .profileLinkItems(profileLinkItems)  // 수정된 필드 사용
                 .build();
     }
-    
+
 
 }
