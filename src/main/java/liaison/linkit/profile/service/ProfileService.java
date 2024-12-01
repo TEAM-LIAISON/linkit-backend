@@ -155,8 +155,11 @@ public class ProfileService {
         final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail);
 
         log.info("대표 로그 DTO 조회");
-        final ProfileLog profileLog = profileLogQueryAdapter.getRepresentativeProfileLog(profile.getId());
-        final ProfileLogItem profileLogItem = profileLogMapper.toProfileLogItem(profileLog);
+        ProfileLogItem profileLogItem = new ProfileLogItem();
+        if (profileLogQueryAdapter.existsProfileLogByProfileId(profile.getId())) {
+            final ProfileLog profileLog = profileLogQueryAdapter.getRepresentativeProfileLog(profile.getId());
+            profileLogItem = profileLogMapper.toProfileLogItem(profileLog);
+        }
 
         log.info("보유스킬 DTO 조회");
         final List<ProfileSkill> profileSkills = profileSkillQueryAdapter.getProfileSkills(memberId);
@@ -188,6 +191,7 @@ public class ProfileService {
         final List<ProfileLinkItem> profileLinkItems = profileLinkMapper.profileLinksToProfileLinkItems(profileLinks);
 
         return profileMapper.toProfileDetail(
+                true,
                 profileCompletionMenu,
                 profileInformMenu,
                 profile.getProfileScrapCount(),
@@ -202,9 +206,9 @@ public class ProfileService {
         );
     }
 
-    public ProfileResponseDTO.ProfileDetail getProfileDetail(final Long profileId) {
-        log.info("프로필 ID = {}에 대한 상세 조회 요청이 발생했습니다.", profileId);
-        final Profile profile = profileQueryAdapter.findById(profileId);
+    public ProfileResponseDTO.ProfileDetail getProfileDetail(final String emailId) {
+        log.info("이메일 ID = {}에 대한 상세 조회 요청이 발생했습니다.", emailId);
+        final Profile profile = profileQueryAdapter.findByEmailId(emailId);
 
         final Member targetMember = profile.getMember();
 
@@ -231,8 +235,11 @@ public class ProfileService {
         final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail);
 
         log.info("대표 로그 DTO 조회");
-        final ProfileLog profileLog = profileLogQueryAdapter.getRepresentativeProfileLog(profile.getId());
-        final ProfileLogItem profileLogItem = profileLogMapper.toProfileLogItem(profileLog);
+        ProfileLogItem profileLogItem = new ProfileLogItem();
+        if (profileLogQueryAdapter.existsProfileLogByProfileId(profile.getId())) {
+            final ProfileLog profileLog = profileLogQueryAdapter.getRepresentativeProfileLog(profile.getId());
+            profileLogItem = profileLogMapper.toProfileLogItem(profileLog);
+        }
 
         log.info("보유스킬 DTO 조회");
         final List<ProfileSkill> profileSkills = profileSkillQueryAdapter.getProfileSkills(targetMember.getId());
@@ -264,6 +271,7 @@ public class ProfileService {
         final List<ProfileLinkItem> profileLinkItems = profileLinkMapper.profileLinksToProfileLinkItems(profileLinks);
 
         return profileMapper.toProfileDetail(
+                false,
                 profileCompletionMenu,
                 profileInformMenu,
                 profile.getProfileScrapCount(),

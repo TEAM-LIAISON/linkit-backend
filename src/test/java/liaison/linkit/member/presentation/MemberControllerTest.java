@@ -314,7 +314,7 @@ class MemberControllerTest extends ControllerTest {
     void getMemberBasicInform() throws Exception {
         // given
         final MemberBasicInformResponseDTO.MemberBasicInformDetail memberBasicInformDetail =
-                new MemberBasicInformDetail(1L, "권동민", "01036614067", "kwondm7@naver.com", true, true, true, true, Platform.KAKAO);
+                new MemberBasicInformDetail(1L, "권동민", "01036614067", "kwondm7@naver.com", "kwondm7", true, true, true, true, Platform.KAKAO);
 
         // when
         when(memberService.getMemberBasicInform(anyLong())).thenReturn(memberBasicInformDetail);
@@ -355,6 +355,9 @@ class MemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.email")
                                                 .type(JsonFieldType.STRING)
                                                 .description("회원 이메일"),
+                                        fieldWithPath("result.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이메일 아이디"),
                                         fieldWithPath("result.isServiceUseAgree")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("서비스 이용약관 동의")

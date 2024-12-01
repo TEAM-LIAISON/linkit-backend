@@ -1,6 +1,7 @@
 package liaison.linkit.profile.domain.repository.log;
 
 import java.util.List;
+import java.util.Optional;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 
@@ -10,5 +11,7 @@ public interface ProfileLogCustomRepository {
 
     ProfileLog updateProfileLogType(final ProfileLog profileLog, final UpdateProfileLogType updateProfileLogType);
 
-    ProfileLog findRepresentativeProfileLog(final Long profileId);
+    Optional<ProfileLog> findRepresentativeProfileLog(final Long profileId);
+
+    boolean existsProfileLogByProfileId(final Long profileId);
 }

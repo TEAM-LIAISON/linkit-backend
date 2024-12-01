@@ -46,7 +46,13 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     ) {
         final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         try {
-            final String accessToken = extractor.extractAccessToken(webRequest.getHeader(AUTHORIZATION));
+            final String authorizationHeader = webRequest.getHeader(AUTHORIZATION);
+            if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+                log.info("Authorization 헤더가 없거나 형식이 올바르지 않습니다. 게스트로 처리됩니다.");
+                return Accessor.guest();
+            }
+
+            final String accessToken = extractor.extractAccessToken(authorizationHeader);
             final String refreshToken = extractRefreshToken(request.getCookies());
 
             jwtProvider.validateTokens(new MemberTokens(accessToken, refreshToken));

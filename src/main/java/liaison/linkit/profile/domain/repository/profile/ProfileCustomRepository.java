@@ -8,6 +8,8 @@ public interface ProfileCustomRepository {
 
     Optional<Profile> findByMemberId(final Long memberId);
 
+    Optional<Profile> findByEmailId(final String emailId);
+
     MiniProfileDetailResponse findMiniProfileDetail(final Long memberId);
 
     boolean existsByMemberId(final Long memberId);

@@ -14,7 +14,7 @@ import java.util.Optional;
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-    
+
     @Override
     public Optional<Member> findBySocialLoginId(String socialLoginId) {
         QMember member = QMember.member;
@@ -57,5 +57,16 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .set(member.memberState, MemberState.DELETED)
                 .where(member.id.eq(memberId))
                 .execute();
+    }
+
+    @Override
+    public String findEmailIdById(final Long memberId) {
+        QMember member = QMember.member;
+
+        return jpaQueryFactory
+                .select(member.emailId)
+                .from(member)
+                .where(member.id.eq(memberId))
+                .fetchOne();
     }
 }

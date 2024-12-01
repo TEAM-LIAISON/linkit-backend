@@ -51,8 +51,9 @@ public class MemberService {
 
         final MemberBasicInform memberBasicInform = memberBasicInformQueryAdapter.findByMemberId(memberId);
         final String email = memberQueryAdapter.findEmailById(memberId);
+        final String emailId = memberQueryAdapter.findEmailIdById(memberId);
 
-        return memberBasicInformMapper.toMemberBasicInformDetail(memberBasicInform, email, memberBasicInform.getMember().getPlatform());
+        return memberBasicInformMapper.toMemberBasicInformDetail(memberBasicInform, email, emailId, memberBasicInform.getMember().getPlatform());
     }
 
 

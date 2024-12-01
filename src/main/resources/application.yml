@@ -17,7 +17,7 @@ spring:
         use_sql_comments: true
         show_sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
 
   datasource:
     url: jdbc:mysql://localhost:3306/linkit

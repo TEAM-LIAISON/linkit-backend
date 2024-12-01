@@ -32,6 +32,18 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         return Optional.ofNullable(result);
     }
 
+    @Override
+    public Optional<Profile> findByEmailId(final String emailId) {
+        QProfile profile = QProfile.profile;
+
+        Profile result = jpaQueryFactory
+                .selectFrom(profile)
+                .where(profile.member.emailId.eq(emailId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
 
     // 수정 및 보완 필요
     @Override

@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Optional;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.domain.QProfileLog;
 import liaison.linkit.profile.domain.type.ProfileLogType;
@@ -53,15 +54,28 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
     }
 
     @Override
-    public ProfileLog findRepresentativeProfileLog(final Long profileId) {
+    public Optional<ProfileLog> findRepresentativeProfileLog(final Long profileId) {
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
-        return queryFactory
+        ProfileLog profileLog = queryFactory
                 .selectFrom(qProfileLog)
                 .where(
                         qProfileLog.profile.id.eq(profileId)
                                 .and(qProfileLog.profileLogType.eq(ProfileLogType.REPRESENTATIVE_LOG))
                 )
-                .fetchOne();
+                .fetchFirst();
+
+        return Optional.ofNullable(profileLog);
+    }
+
+    @Override
+    public boolean existsProfileLogByProfileId(final Long profileId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        return queryFactory
+                .selectOne()
+                .from(qProfileLog)
+                .where(qProfileLog.profile.id.eq(profileId))
+                .fetchFirst() != null;
     }
 }

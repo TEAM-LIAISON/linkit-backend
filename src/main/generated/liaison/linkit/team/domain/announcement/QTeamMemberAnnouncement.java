@@ -21,20 +21,38 @@ public class QTeamMemberAnnouncement extends EntityPathBase<TeamMemberAnnounceme
 
     public final liaison.linkit.global.QBaseEntity _super = new liaison.linkit.global.QBaseEntity(this);
 
-    public final StringPath applicationProcess = createString("applicationProcess");
+    public final StringPath announcementEndDate = createString("announcementEndDate");
+
+    public final StringPath announcementStartDate = createString("announcementStartDate");
+
+    public final StringPath announcementTitle = createString("announcementTitle");
+
+    public final StringPath benefits = createString("benefits");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
+    public final StringPath detailedAnnouncement = createString("detailedAnnouncement");
+
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath mainBusiness = createString("mainBusiness");
+    public final StringPath idealCandidate = createString("idealCandidate");
+
+    public final BooleanPath isRegionFlexible = createBoolean("isRegionFlexible");
+
+    public final StringPath joiningProcess = createString("joiningProcess");
+
+    public final StringPath mainTasks = createString("mainTasks");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
+    public final StringPath preferredQualifications = createString("preferredQualifications");
+
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
+
+    public final StringPath workMethod = createString("workMethod");
 
     public QTeamMemberAnnouncement(String variable) {
         super(TeamMemberAnnouncement.class, forVariable(variable));

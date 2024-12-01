@@ -43,6 +43,9 @@ public class Member extends BaseDateTimeEntity {
     @Column(nullable = false, length = 50)
     private String email;
 
+    @Column(nullable = false, length = 50)
+    private String emailId;
+
     // 계정 상태 관리 컬럼
     @Column(nullable = false)
     @Enumerated(value = STRING)
@@ -68,12 +71,14 @@ public class Member extends BaseDateTimeEntity {
             final Long id,
             final String socialLoginId,
             final String email,
+            final String emailId,
             final MemberBasicInform memberBasicInform,
             final Platform platform
     ) {
         this.id = id;
         this.socialLoginId = socialLoginId;
         this.email = email;
+        this.emailId = emailId;
         this.memberState = ACTIVE;
         this.memberBasicInform = memberBasicInform;
         this.createMemberBasicInform = false;
@@ -86,10 +91,11 @@ public class Member extends BaseDateTimeEntity {
     public Member(
             final String socialLoginId,
             final String email,
+            final String emailId,
             final MemberBasicInform memberBasicInform,
             final Platform platform
     ) {
-        this(null, socialLoginId, email, memberBasicInform, platform);
+        this(null, socialLoginId, email, emailId, memberBasicInform, platform);
     }
 
     public void setCreateMemberBasicInform(final boolean createMemberBasicInform) {

@@ -30,23 +30,18 @@ public class ProfileController {
         return CommonResponse.onSuccess(profileService.getProfileLeftMenu(accessor.getMemberId()));
     }
 
-    // 내가 보는 나의 프로필
-    @GetMapping("/my/profile")
-    @MemberOnly
-    public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileMyDetail(
+    @GetMapping("/profile/{emailId}")
+    public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileDetail(
+            @PathVariable final String emailId,
             @Auth final Accessor accessor
     ) {
-        log.info("memberId = {}의 프로필 상세 조회 요청이 발생했습니다.", accessor.getMemberId());
-        return CommonResponse.onSuccess(profileService.getProfileMyDetail(accessor.getMemberId()));
-    }
-
-    // 남이 보는 나의 프로필
-    @GetMapping("/profile/{profileId}")
-    @MemberOnly
-    public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileDetail(
-            @PathVariable final Long profileId
-    ) {
-        log.info("profileId = {}에 대한 프로필 상세 조회 요청이 발생했습니다.", profileId);
-        return CommonResponse.onSuccess(profileService.getProfileDetail(profileId));
+        if (accessor.isMember()) {
+            Long memberId = accessor.getMemberId();
+            log.info("memberId = {}의 프로필 상세 조회 요청이 발생했습니다.", memberId);
+            return CommonResponse.onSuccess(profileService.getProfileMyDetail(memberId));
+        } else {
+            log.info("emailId = {}에 대한 프로필 상세 조회 요청이 발생했습니다.", emailId);
+            return CommonResponse.onSuccess(profileService.getProfileDetail(emailId));
+        }
     }
 }

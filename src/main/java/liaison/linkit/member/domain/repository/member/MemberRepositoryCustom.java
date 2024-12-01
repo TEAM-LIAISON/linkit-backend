@@ -12,4 +12,6 @@ public interface MemberRepositoryCustom {
     void deleteByMemberId(final Long memberId);
 
     String findEmailById(final Long memberId);
+
+    String findEmailIdById(final Long memberId);
 }
