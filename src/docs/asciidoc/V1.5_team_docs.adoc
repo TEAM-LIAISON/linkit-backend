@@ -69,6 +69,71 @@ include::{snippets}/team-member-announcement-controller-test/remove-team-member-
 
 ====
 
+== #[팀 - 팀 프로덕트]#
+
+=== 팀 프로덕트 전체 조회
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/get-team-product-items/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/get-team-product-items/http-response.adoc[]
+include::{snippets}/team-product-controller-test/get-team-product-items/response-fields.adoc[]
+====
+
+=== 팀 프로덕트 단일 조회
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/get-team-product-detail/http-request.adoc[]
+include::{snippets}/team-product-controller-test/get-team-product-detail/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/get-team-product-detail/http-response.adoc[]
+include::{snippets}/team-product-controller-test/get-team-product-detail/response-fields.adoc[]
+====
+
+=== 팀 프로덕트 단일 생성
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/add-team-product/http-request.adoc[]
+include::{snippets}/team-product-controller-test/add-team-product/path-parameters.adoc[]
+include::{snippets}/team-product-controller-test/add-team-product/request-parts.adoc[]
+include::{snippets}/team-product-controller-test/add-team-product/request-part-addTeamProductRequest-fields.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/add-team-product/http-response.adoc[]
+include::{snippets}/team-product-controller-test/add-team-product/response-fields.adoc[]
+====
+
+=== 팀 프로덕트 단일 수정
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/update-team-product/http-request.adoc[]
+include::{snippets}/team-product-controller-test/update-team-product/path-parameters.adoc[]
+include::{snippets}/team-product-controller-test/update-team-product/request-parts.adoc[]
+include::{snippets}/team-product-controller-test/update-team-product/request-part-updateTeamProductRequest-fields.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/update-team-product/http-response.adoc[]
+include::{snippets}/team-product-controller-test/update-team-product/response-fields.adoc[]
+====
+
+=== 팀 프로덕트 단일 삭제
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/remove-team-product/http-request.adoc[]
+include::{snippets}/team-product-controller-test/remove-team-product/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/remove-team-product/http-response.adoc[]
+include::{snippets}/team-product-controller-test/remove-team-product/response-fields.adoc[]
+====
+
 == #[팀 - 팀 연혁]#
 
 === 팀 연혁 전체 조회
