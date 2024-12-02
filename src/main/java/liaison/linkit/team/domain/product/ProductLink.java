@@ -1,12 +1,10 @@
-package liaison.linkit.profile.domain.portfolio;
+package liaison.linkit.team.domain.product;
 
-import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -23,19 +21,18 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProjectRoleContribution extends BaseDateTimeEntity {
-
+public class ProductLink extends BaseDateTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_portfolio_id")
-    private ProfilePortfolio profilePortfolio;
-
-    private String projectRole;
+    @JoinColumn(name = "team_product_id")
+    private TeamProduct teamProduct;
 
     @Column(nullable = false)
-    @Enumerated(value = STRING)
-    private ProjectContribution projectContribution;
+    private String productLinkName;
+
+    @Column(nullable = false)
+    private String productLinkPath;
 }

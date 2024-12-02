@@ -49,7 +49,7 @@ public class ProfilePortfolioMapper {
     ) {
         return projectRoleAndContributions.stream()
                 .map(projectRoleContribution -> ProjectRoleContribution.builder()
-                        .portfolio(profilePortfolio)
+                        .profilePortfolio(profilePortfolio)
                         .projectRole(projectRoleContribution.getProjectRole())
                         .projectContribution(projectRoleContribution.getProjectContribution())
                         .build())

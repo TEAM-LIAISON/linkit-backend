@@ -19,7 +19,7 @@
 
 include::{snippets}/team-controller-test/create-team/http-request.adoc[]
 include::{snippets}/team-controller-test/create-team/request-parts.adoc[]
-include::{snippets}/team-controller-test/create-team/request-part-saveTeamBasicInformRequest-fields.adoc[]
+include::{snippets}/team-controller-test/create-team/request-part-addTeamBasicInformRequest-fields.adoc[]
 
 *응답*
 

@@ -51,6 +51,10 @@ public class S3Uploader {
     private String profileLogBodyImageFolder;
     private String profilePortfolioRepresentImageFolder;
     private String profilePortfolioSubImageFolder;
+
+    private String teamProductRepresentImageFolder;
+    private String teamProductSubImageFolder;
+
     private String profileEducationCertificationFileFolder;
 
     public void deleteS3Image(final String imageUrl) {
@@ -95,6 +99,14 @@ public class S3Uploader {
 
     public String uploadProjectSubImage(final ImageFile imageFile) {
         return getImagePath(imageFile, profilePortfolioSubImageFolder);
+    }
+
+    public String uploadTeamProductRepresentImage(final ImageFile imageFile) {
+        return getImagePath(imageFile, profilePortfolioRepresentImageFolder);
+    }
+
+    public String uploadTeamProductSubImage(final ImageFile imageFile) {
+        return getImagePath(imageFile, teamProductSubImageFolder);
     }
 
     @NotNull

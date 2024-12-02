@@ -1,4 +1,4 @@
-package liaison.linkit.team.domain;
+package liaison.linkit.team.domain.product;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -15,7 +16,9 @@ import com.querydsl.core.types.Path;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QTeamProduct extends EntityPathBase<TeamProduct> {
 
-    private static final long serialVersionUID = -1662377615L;
+    private static final long serialVersionUID = 1478133746L;
+
+    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QTeamProduct teamProduct = new QTeamProduct("teamProduct");
 
@@ -39,6 +42,8 @@ public class QTeamProduct extends EntityPathBase<TeamProduct> {
 
     public final StringPath productLineDescription = createString("productLineDescription");
 
+    public final ListPath<ProductLink, QProductLink> productLinks = this.<ProductLink, QProductLink>createList("productLinks", ProductLink.class, QProductLink.class, PathInits.DIRECT2);
+
     public final StringPath productName = createString("productName");
 
     public final StringPath productRepresentImagePath = createString("productRepresentImagePath");
@@ -49,16 +54,27 @@ public class QTeamProduct extends EntityPathBase<TeamProduct> {
 
     public final EnumPath<liaison.linkit.profile.domain.portfolio.ProjectSize> projectSize = createEnum("projectSize", liaison.linkit.profile.domain.portfolio.ProjectSize.class);
 
+    public final liaison.linkit.team.domain.QTeam team;
+
     public QTeamProduct(String variable) {
-        super(TeamProduct.class, forVariable(variable));
+        this(TeamProduct.class, forVariable(variable), INITS);
     }
 
     public QTeamProduct(Path<? extends TeamProduct> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QTeamProduct(PathMetadata metadata) {
-        super(TeamProduct.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QTeamProduct(PathMetadata metadata, PathInits inits) {
+        this(TeamProduct.class, metadata, inits);
+    }
+
+    public QTeamProduct(Class<? extends TeamProduct> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.team = inits.isInitialized("team") ? new liaison.linkit.team.domain.QTeam(forProperty("team"), inits.get("team")) : null;
     }
 
 }

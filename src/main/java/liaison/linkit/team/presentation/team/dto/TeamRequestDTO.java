@@ -14,7 +14,7 @@ public class TeamRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SaveTeamBasicInformRequest {
+    public static class AddTeamBasicInformRequest {
 
         @NotNull
         private String teamName;

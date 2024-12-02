@@ -31,9 +31,9 @@ public class TeamController {
     public CommonResponse<TeamResponseDTO.AddTeamResponse> createTeam(
             @Auth final Accessor accessor,
             @RequestPart(required = false) MultipartFile teamLogoImage,
-            @RequestPart @Valid TeamRequestDTO.SaveTeamBasicInformRequest saveTeamBasicInformRequest
+            @RequestPart @Valid TeamRequestDTO.AddTeamBasicInformRequest addTeamBasicInformRequest
     ) {
-        return CommonResponse.onSuccess(teamService.createTeam(accessor.getMemberId(), teamLogoImage, saveTeamBasicInformRequest));
+        return CommonResponse.onSuccess(teamService.createTeam(accessor.getMemberId(), teamLogoImage, addTeamBasicInformRequest));
     }
 
 
@@ -43,9 +43,9 @@ public class TeamController {
             @Auth final Accessor accessor,
             @RequestParam final Long teamId,
             @RequestPart(required = false) MultipartFile teamLogoImage,
-            @RequestPart @Valid TeamRequestDTO.SaveTeamBasicInformRequest saveTeamBasicInformRequest
+            @RequestPart @Valid TeamRequestDTO.AddTeamBasicInformRequest addTeamBasicInformRequest
     ) {
-        return CommonResponse.onSuccess(teamService.saveTeamBasicInform(accessor.getMemberId(), teamId, teamLogoImage, saveTeamBasicInformRequest));
+        return CommonResponse.onSuccess(teamService.saveTeamBasicInform(accessor.getMemberId(), teamId, teamLogoImage, addTeamBasicInformRequest));
     }
 
 //    @GetMapping("/teams")

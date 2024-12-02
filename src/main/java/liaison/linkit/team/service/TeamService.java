@@ -17,7 +17,7 @@ import liaison.linkit.team.implement.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.implement.teamScale.TeamScaleQueryAdapter;
-import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.SaveTeamBasicInformRequest;
+import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamBasicInformRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -49,17 +49,17 @@ public class TeamService {
     public TeamResponseDTO.AddTeamResponse createTeam(
             final Long memberId,
             final MultipartFile teamLogoImage,
-            final SaveTeamBasicInformRequest saveTeamBasicInformRequest
+            final AddTeamBasicInformRequest addTeamBasicInformRequest
     ) {
         String teamLogoImagePath = null;
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
 
         // 사용자가 입력한 정보에서 팀 규모 객체 조회
-        final TeamScale teamScale = teamScaleQueryAdapter.findByScaleName(saveTeamBasicInformRequest.getScaleName());
+        final TeamScale teamScale = teamScaleQueryAdapter.findByScaleName(addTeamBasicInformRequest.getScaleName());
 
         // 사용자가 입력한 정보에서 지역 객체 조회
-        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(saveTeamBasicInformRequest.getCityName(), saveTeamBasicInformRequest.getDivisionName());
+        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamBasicInformRequest.getCityName(), addTeamBasicInformRequest.getDivisionName());
 
         // 사용자가 첨부한 이미지의 유효성 판단 이후에 이미지 업로드 진행
         if (imageValidator.validatingImageUpload(teamLogoImage)) {
@@ -67,7 +67,7 @@ public class TeamService {
         }
 
         // 팀 생성
-        final Team team = teamMapper.toTeam(teamLogoImagePath, saveTeamBasicInformRequest, teamScale, region);
+        final Team team = teamMapper.toTeam(teamLogoImagePath, addTeamBasicInformRequest, teamScale, region);
         final Team savedTeam = teamCommandAdapter.add(team);
 
         // 팀원에 추가
@@ -83,7 +83,7 @@ public class TeamService {
             final Long memberId,
             final Long teamId,
             final MultipartFile teamLogoImage,
-            final SaveTeamBasicInformRequest saveTeamBasicInformRequest
+            final AddTeamBasicInformRequest addTeamBasicInformRequest
     ) {
         String teamLogoImagePath = null;
 
@@ -91,10 +91,10 @@ public class TeamService {
         final Team team = teamQueryAdapter.findById(teamId);
 
         // 지역 조회
-        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(saveTeamBasicInformRequest.getCityName(), saveTeamBasicInformRequest.getDivisionName());
+        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamBasicInformRequest.getCityName(), addTeamBasicInformRequest.getDivisionName());
 
-        team.setTeamName(saveTeamBasicInformRequest.getTeamName());
-        team.setTeamShortDescription(saveTeamBasicInformRequest.getTeamShortDescription());
+        team.setTeamName(addTeamBasicInformRequest.getTeamName());
+        team.setTeamShortDescription(addTeamBasicInformRequest.getTeamShortDescription());
         team.setRegion(region);
 
         // 사용자가 새로운 이미지를 업로드
