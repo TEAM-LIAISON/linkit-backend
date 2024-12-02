@@ -88,6 +88,14 @@ public class ProfileLogControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performGetProfileLogItem(final Long profileLogId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/profile/log/{profileLogId}", profileLogId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
     private ResultActions performPostProfileLog(final AddProfileLogRequest addProfileLogRequest) throws Exception {
         return mockMvc.perform(
                 post("/api/v1/profile/log")
@@ -255,6 +263,76 @@ public class ProfileLogControllerTest extends ControllerTest {
         );
 
         final CommonResponse<ProfileLogItems> expected = CommonResponse.onSuccess(profileLogItems);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 로그를 상세 조회할 수 있다.")
+    @Test
+    void getProfileLogItem() throws Exception {
+        // given
+        final ProfileLogResponseDTO.ProfileLogItem profileLogItem
+                = new ProfileLogItem(1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+
+        // when
+        when(profileLogService.getProfileLogItem(anyLong(), anyLong())).thenReturn(profileLogItem);
+
+        final ResultActions resultActions = performGetProfileLogItem(1L);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("profileLogId")
+                                                .description("프로필 로그 ID")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.profileLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("내 로그 ID"),
+                                        fieldWithPath("result.isLogPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("로그 공개 여부"),
+                                        fieldWithPath("result.profileLogType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 유형 (대표글 여부)"),
+                                        fieldWithPath("result.modifiedAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 수정 시간"),
+                                        fieldWithPath("result.logTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 제목"),
+                                        fieldWithPath("result.logContent")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 내용")
+                                )
+                        )).andReturn();
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<ProfileLogResponseDTO.ProfileLogItem> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<ProfileLogItem>>() {
+                }
+        );
+
+        final CommonResponse<ProfileLogItem> expected = CommonResponse.onSuccess(profileLogItem);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);

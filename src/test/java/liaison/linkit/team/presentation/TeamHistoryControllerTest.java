@@ -70,43 +70,43 @@ public class TeamHistoryControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
-    private ResultActions performGetTeamHistoryItems(final Long teamId) throws Exception {
+    private ResultActions performGetTeamHistoryItems(final String teamName) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamId}/history", teamId)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/history", teamName)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performGetTeamHistoryDetail(final Long teamId, final Long teamHistoryId) throws Exception {
+    private ResultActions performGetTeamHistoryDetail(final String teamName, final Long teamHistoryId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamId}/history/{teamHistoryId}", teamId, teamHistoryId)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/history/{teamHistoryId}", teamName, teamHistoryId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performAddTeamHistory(final Long teamId, final AddTeamHistoryRequest request) throws Exception {
+    private ResultActions performAddTeamHistory(final String teamName, final AddTeamHistoryRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamId}/history", teamId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/history", teamName)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
     }
 
-    private ResultActions performUpdateTeamHistory(final Long teamId, final Long teamHistoryId, final UpdateTeamHistoryRequest request) throws Exception {
+    private ResultActions performUpdateTeamHistory(final String teamName, final Long teamHistoryId, final UpdateTeamHistoryRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamId}/history/{teamHistoryId}", teamId, teamHistoryId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/history/{teamHistoryId}", teamName, teamHistoryId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)));
     }
 
-    private ResultActions performRemoveTeamHistory(final Long teamId, final Long teamHistoryId) throws Exception {
+    private ResultActions performRemoveTeamHistory(final String teamName, final Long teamHistoryId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamId}/history/{teamHistoryId}", teamId, teamHistoryId)
+                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamName}/history/{teamHistoryId}", teamName, teamHistoryId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
@@ -126,9 +126,9 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 = new TeamHistoryItems(Arrays.asList(firstTeamHistoryItem, secondTeamHistoryItem));
 
         // when
-        when(teamHistoryService.getTeamHistoryItems(anyLong(), anyLong())).thenReturn(teamHistoryItems);
+        when(teamHistoryService.getTeamHistoryItems(anyLong(), any())).thenReturn(teamHistoryItems);
 
-        final ResultActions resultActions = performGetTeamHistoryItems(1L);
+        final ResultActions resultActions = performGetTeamHistoryItems("리에종");
 
         // then
         final MvcResult mvcResult = resultActions
@@ -139,8 +139,8 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamId")
-                                                .description("팀 ID")
+                                        parameterWithName("teamName")
+                                                .description("팀 이름")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -197,9 +197,9 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 = new TeamHistoryDetail(1L, "연혁 이름", "연혁 시작 날짜", "연혁 종료 날짜", false, "연혁 설명");
 
         // when
-        when(teamHistoryService.getTeamHistoryDetail(anyLong(), anyLong(), anyLong())).thenReturn(teamHistoryDetail);
+        when(teamHistoryService.getTeamHistoryDetail(anyLong(), any(), anyLong())).thenReturn(teamHistoryDetail);
 
-        final ResultActions resultActions = performGetTeamHistoryDetail(1L, 1L);
+        final ResultActions resultActions = performGetTeamHistoryDetail("리에종", 1L);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -210,8 +210,8 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamId")
-                                                .description("팀 ID"),
+                                        parameterWithName("teamName")
+                                                .description("팀 이름"),
                                         parameterWithName("teamHistoryId")
                                                 .description("팀 연혁 ID")
                                 ),
@@ -274,9 +274,9 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 = new AddTeamHistoryResponse(1L, "연혁 이름", "연혁 시작 날짜", "연혁 종료 날짜", false, "연혁 설명");
 
         // when
-        when(teamHistoryService.addTeamHistory(anyLong(), anyLong(), any())).thenReturn(addTeamHistoryResponse);
+        when(teamHistoryService.addTeamHistory(anyLong(), any(), any())).thenReturn(addTeamHistoryResponse);
 
-        final ResultActions resultActions = performAddTeamHistory(1L, addTeamHistoryRequest);
+        final ResultActions resultActions = performAddTeamHistory("리에종", addTeamHistoryRequest);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -287,8 +287,8 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamId")
-                                                .description("팀 ID")
+                                        parameterWithName("teamName")
+                                                .description("팀 이름")
                                 ),
                                 requestFields(
                                         fieldWithPath("historyName")
@@ -366,9 +366,9 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 = new UpdateTeamHistoryResponse(1L, "연혁 이름", "연혁 시작 날짜", "연혁 종료 날짜", false, "연혁 설명");
 
         // when
-        when(teamHistoryService.updateTeamHistory(anyLong(), anyLong(), anyLong(), any())).thenReturn(updateTeamHistoryResponse);
+        when(teamHistoryService.updateTeamHistory(anyLong(), any(), anyLong(), any())).thenReturn(updateTeamHistoryResponse);
 
-        final ResultActions resultActions = performUpdateTeamHistory(1L, 1L, updateTeamHistoryRequest);
+        final ResultActions resultActions = performUpdateTeamHistory("리에종", 1L, updateTeamHistoryRequest);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -379,8 +379,8 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamId")
-                                                .description("팀 ID"),
+                                        parameterWithName("teamName")
+                                                .description("팀 이름"),
                                         parameterWithName("teamHistoryId")
                                                 .description("팀 연혁 ID")
                                 ),
@@ -454,9 +454,9 @@ public class TeamHistoryControllerTest extends ControllerTest {
         final TeamHistoryResponseDTO.RemoveTeamHistoryResponse removeTeamHistoryResponse
                 = new RemoveTeamHistoryResponse(1L);
 
-        when(teamHistoryService.removeTeamHistory(anyLong(), anyLong(), anyLong())).thenReturn(removeTeamHistoryResponse);
+        when(teamHistoryService.removeTeamHistory(anyLong(), any(), anyLong())).thenReturn(removeTeamHistoryResponse);
 
-        final ResultActions resultActions = performRemoveTeamHistory(1L, 1L);
+        final ResultActions resultActions = performRemoveTeamHistory("리에종", 1L);
 
         final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())
@@ -465,8 +465,8 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("teamId")
-                                        .description("팀 ID"),
+                                parameterWithName("teamName")
+                                        .description("팀 이름"),
                                 parameterWithName("teamHistoryId")
                                         .description("팀 연혁 ID")
                         ),

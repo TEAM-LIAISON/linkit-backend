@@ -15,4 +15,10 @@ public class TeamQueryAdapter {
     public Team findById(final Long teamId) {
         return teamRepository.findById(teamId).orElseThrow(() -> TeamNotFoundException.EXCEPTION);
     }
+
+    public Team findByTeamName(final String teamName) {
+        return teamRepository.findByTeamName(teamName)
+                .orElseThrow(() -> TeamNotFoundException.EXCEPTION);
+    }
+    
 }

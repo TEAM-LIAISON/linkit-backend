@@ -10,6 +10,23 @@
 
 - 링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im
 
+== #[팀]#
+
+=== 팀 생성
+
+====
+*요청*
+
+include::{snippets}/team-controller-test/create-team/http-request.adoc[]
+include::{snippets}/team-controller-test/create-team/request-parts.adoc[]
+include::{snippets}/team-controller-test/create-team/request-part-saveTeamBasicInformRequest-fields.adoc[]
+
+*응답*
+
+include::{snippets}/team-controller-test/create-team/http-response.adoc[]
+include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
+====
+
 == #[팀 - 팀 연혁]#
 
 === 팀 연혁 전체 조회

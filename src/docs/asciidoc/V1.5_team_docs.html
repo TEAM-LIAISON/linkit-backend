@@ -554,13 +554,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_팀_팀_연혁">1. <mark>[팀 - 팀 연혁]</mark></a>
+<li><a href="#_팀">1. <mark>[팀]</mark></a>
 <ul class="sectlevel2">
-<li><a href="#_팀_연혁_전체_조회">1.1. 팀 연혁 전체 조회</a></li>
-<li><a href="#_팀_연혁_단일_조회">1.2. 팀 연혁 단일 조회</a></li>
-<li><a href="#_팀_연혁_단일_생성">1.3. 팀 연혁 단일 생성</a></li>
-<li><a href="#_팀_연혁_단일_수정">1.4. 팀 연혁 단일 수정</a></li>
-<li><a href="#_팀_연혁_단일_삭제">1.5. 팀 연혁 단일 삭제</a></li>
+<li><a href="#_팀_생성">1.1. 팀 생성</a></li>
+</ul>
+</li>
+<li><a href="#_팀_팀_연혁">2. <mark>[팀 - 팀 연혁]</mark></a>
+<ul class="sectlevel2">
+<li><a href="#_팀_연혁_전체_조회">2.1. 팀 연혁 전체 조회</a></li>
+<li><a href="#_팀_연혁_단일_조회">2.2. 팀 연혁 단일 조회</a></li>
+<li><a href="#_팀_연혁_단일_생성">2.3. 팀 연혁 단일 생성</a></li>
+<li><a href="#_팀_연혁_단일_수정">2.4. 팀 연혁 단일 수정</a></li>
+<li><a href="#_팀_연혁_단일_삭제">2.5. 팀 연혁 단일 삭제</a></li>
 </ul>
 </li>
 </ul>
@@ -582,10 +587,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect1">
-<h2 id="_팀_팀_연혁"><a class="link" href="#_팀_팀_연혁">1. <mark>[팀 - 팀 연혁]</mark></a></h2>
+<h2 id="_팀"><a class="link" href="#_팀">1. <mark>[팀]</mark></a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_팀_연혁_전체_조회"><a class="link" href="#_팀_연혁_전체_조회">1.1. 팀 연혁 전체 조회</a></h3>
+<h3 id="_팀_생성"><a class="link" href="#_팀_생성">1.1. 팀 생성</a></h3>
 <div class="exampleblock">
 <div class="content">
 <div class="paragraph">
@@ -593,13 +598,176 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/team/1/history HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/team HTTP/1.1
+Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Accept: application/json
+Authorization: refreshToken
+Cookie: refreshToken=accessToken
+
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=teamLogoImage; filename=teamLogo.png
+Content-Type: multipart/form-data
+
+./src/test/resources/static/images/logo.png
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=saveTeamBasicInformRequest
+Content-Type: application/json
+
+{"teamName":"리에종","teamShortDescription":"팀 한 줄 소개입니다.","scaleName":"1인","cityName":"서울특별시","divisionName":"강남구"}
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Part</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>saveTeamBasicInformRequest</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 기본 정보 생성 요청 객체</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamLogoImage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 로고 이미지 파일. 지원되는 형식은 .png, .jpg 등이 있습니다.</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamShortDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 한 줄 소개</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scaleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 규모</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cityName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 지역 시/도 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>divisionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">활동 지역 시/군/구 이름</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>응답</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 178
+
+{
+  "isSuccess" : true,
+  "code" : "1000",
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "teamId" : 1,
+    "createdAt" : "2024-12-01T16:04:03.759432"
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.teamId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.createdAt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 생성 시간</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_팀_팀_연혁"><a class="link" href="#_팀_팀_연혁">2. <mark>[팀 - 팀 연혁]</mark></a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_팀_연혁_전체_조회"><a class="link" href="#_팀_연혁_전체_조회">2.1. 팀 연혁 전체 조회</a></h3>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>요청</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/team/%EB%A6%AC%EC%97%90%EC%A2%85/history HTTP/1.1
 Authorization: accessToken
 Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/v1/team/{teamId}/history</caption>
+<caption class="title">Table 1. /api/v1/team/{teamName}/history</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -612,8 +780,8 @@ Cookie: refreshToken=refreshToken</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 </tbody>
 </table>
@@ -716,7 +884,7 @@ Content-Length: 575
 </div>
 </div>
 <div class="sect2">
-<h3 id="_팀_연혁_단일_조회"><a class="link" href="#_팀_연혁_단일_조회">1.2. 팀 연혁 단일 조회</a></h3>
+<h3 id="_팀_연혁_단일_조회"><a class="link" href="#_팀_연혁_단일_조회">2.2. 팀 연혁 단일 조회</a></h3>
 <div class="exampleblock">
 <div class="content">
 <div class="paragraph">
@@ -724,13 +892,13 @@ Content-Length: 575
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/team/1/history/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/team/%EB%A6%AC%EC%97%90%EC%A2%85/history/1 HTTP/1.1
 Authorization: accessToken
 Cookie: refreshToken=refreshToken</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. /api/v1/team/{teamId}/history/{teamHistoryId}</caption>
+<caption class="title">Table 2. /api/v1/team/{teamName}/history/{teamHistoryId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -743,8 +911,8 @@ Cookie: refreshToken=refreshToken</code></pre>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamHistoryId</code></p></td>
@@ -844,7 +1012,7 @@ Content-Length: 349
 </div>
 </div>
 <div class="sect2">
-<h3 id="_팀_연혁_단일_생성"><a class="link" href="#_팀_연혁_단일_생성">1.3. 팀 연혁 단일 생성</a></h3>
+<h3 id="_팀_연혁_단일_생성"><a class="link" href="#_팀_연혁_단일_생성">2.3. 팀 연혁 단일 생성</a></h3>
 <div class="exampleblock">
 <div class="content">
 <div class="paragraph">
@@ -852,7 +1020,7 @@ Content-Length: 349
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/team/1/history HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/team/%EB%A6%AC%EC%97%90%EC%A2%85/history HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refreshToken=refreshToken
@@ -867,7 +1035,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. /api/v1/team/{teamId}/history</caption>
+<caption class="title">Table 3. /api/v1/team/{teamName}/history</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -880,8 +1048,8 @@ Cookie: refreshToken=refreshToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 </tbody>
 </table>
@@ -1025,7 +1193,7 @@ Content-Length: 349
 </div>
 </div>
 <div class="sect2">
-<h3 id="_팀_연혁_단일_수정"><a class="link" href="#_팀_연혁_단일_수정">1.4. 팀 연혁 단일 수정</a></h3>
+<h3 id="_팀_연혁_단일_수정"><a class="link" href="#_팀_연혁_단일_수정">2.4. 팀 연혁 단일 수정</a></h3>
 <div class="exampleblock">
 <div class="content">
 <div class="paragraph">
@@ -1033,7 +1201,7 @@ Content-Length: 349
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/team/1/history/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/team/%EB%A6%AC%EC%97%90%EC%A2%85/history/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refreshToken=refreshToken
@@ -1048,7 +1216,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. /api/v1/team/{teamId}/history/{teamHistoryId}</caption>
+<caption class="title">Table 4. /api/v1/team/{teamName}/history/{teamHistoryId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1061,8 +1229,8 @@ Cookie: refreshToken=refreshToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamHistoryId</code></p></td>
@@ -1210,7 +1378,7 @@ Content-Length: 349
 </div>
 </div>
 <div class="sect2">
-<h3 id="_팀_연혁_단일_삭제"><a class="link" href="#_팀_연혁_단일_삭제">1.5. 팀 연혁 단일 삭제</a></h3>
+<h3 id="_팀_연혁_단일_삭제"><a class="link" href="#_팀_연혁_단일_삭제">2.5. 팀 연혁 단일 삭제</a></h3>
 <div class="exampleblock">
 <div class="content">
 <div class="paragraph">
@@ -1218,7 +1386,7 @@ Content-Length: 349
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/team/1/history/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/team/%EB%A6%AC%EC%97%90%EC%A2%85/history/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refreshToken=refreshToken
@@ -1233,7 +1401,7 @@ Cookie: refreshToken=refreshToken
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. /api/v1/team/{teamId}/history/{teamHistoryId}</caption>
+<caption class="title">Table 5. /api/v1/team/{teamName}/history/{teamHistoryId}</caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1246,8 +1414,8 @@ Cookie: refreshToken=refreshToken
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamHistoryId</code></p></td>
@@ -1351,7 +1519,7 @@ Content-Length: 349
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-12-01 03:04:52 +0900
+Last updated 2024-12-01 16:04:33 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

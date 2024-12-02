@@ -23,7 +23,4 @@ public class TeamProduct extends BaseDateTimeEntity {
     private String productStartDate;
     private String productEndDate;
     private String productLogoImagePath;
-
-    // 이미지 처리 방식 임시 보류
-    
 }

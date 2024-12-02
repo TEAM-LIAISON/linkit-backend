@@ -1,9 +1,10 @@
-package liaison.linkit.team.implement.teamMemberAnnouncement;
+package liaison.linkit.team.implement.announcement;
 
+import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
-import liaison.linkit.team.exception.teamMemberAnnouncement.TeamMemberAnnouncementNotFoundException;
+import liaison.linkit.team.exception.announcement.TeamMemberAnnouncementNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Adapter
@@ -16,5 +17,11 @@ public class TeamMemberAnnouncementQueryAdapter {
                 .orElseThrow(() -> TeamMemberAnnouncementNotFoundException.EXCEPTION);
     }
 
+    public List<TeamMemberAnnouncement> getTeamMemberAnnouncements(final Long teamId) {
+        return teamMemberAnnouncementRepository.getTeamMemberAnnouncements(teamId);
+    }
 
+    public TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementRepository.getTeamMemberAnnouncement(teamMemberAnnouncementId);
+    }
 }

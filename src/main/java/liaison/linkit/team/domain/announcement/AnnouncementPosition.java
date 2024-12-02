@@ -13,21 +13,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
-import liaison.linkit.profile.domain.skill.Skill;
+import liaison.linkit.common.domain.Position;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class AnnouncementSkill extends BaseDateTimeEntity {
+public class AnnouncementPosition extends BaseDateTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "announcement_skill_id")
+    @Column(name = "announcement_position_id")
     private Long id;
 
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
@@ -35,6 +33,6 @@ public class AnnouncementSkill extends BaseDateTimeEntity {
     private TeamMemberAnnouncement teamMemberAnnouncement;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "skill_id")
-    private Skill skill;
+    @JoinColumn(name = "position_id")
+    private Position position;
 }

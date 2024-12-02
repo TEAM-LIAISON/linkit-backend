@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QAnnouncementRegion is a Querydsl query type for AnnouncementRegion
+ * QAnnouncementPosition is a Querydsl query type for AnnouncementPosition
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QAnnouncementRegion extends EntityPathBase<AnnouncementRegion> {
+public class QAnnouncementPosition extends EntityPathBase<AnnouncementPosition> {
 
-    private static final long serialVersionUID = 1393186689L;
+    private static final long serialVersionUID = 260758134L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QAnnouncementRegion announcementRegion = new QAnnouncementRegion("announcementRegion");
+    public static final QAnnouncementPosition announcementPosition = new QAnnouncementPosition("announcementPosition");
 
     public final liaison.linkit.common.domain.QBaseDateTimeEntity _super = new liaison.linkit.common.domain.QBaseDateTimeEntity(this);
 
@@ -32,29 +32,29 @@ public class QAnnouncementRegion extends EntityPathBase<AnnouncementRegion> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final liaison.linkit.profile.domain.region.QRegion region;
+    public final liaison.linkit.common.domain.QPosition position;
 
     public final QTeamMemberAnnouncement teamMemberAnnouncement;
 
-    public QAnnouncementRegion(String variable) {
-        this(AnnouncementRegion.class, forVariable(variable), INITS);
+    public QAnnouncementPosition(String variable) {
+        this(AnnouncementPosition.class, forVariable(variable), INITS);
     }
 
-    public QAnnouncementRegion(Path<? extends AnnouncementRegion> path) {
+    public QAnnouncementPosition(Path<? extends AnnouncementPosition> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QAnnouncementRegion(PathMetadata metadata) {
+    public QAnnouncementPosition(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QAnnouncementRegion(PathMetadata metadata, PathInits inits) {
-        this(AnnouncementRegion.class, metadata, inits);
+    public QAnnouncementPosition(PathMetadata metadata, PathInits inits) {
+        this(AnnouncementPosition.class, metadata, inits);
     }
 
-    public QAnnouncementRegion(Class<? extends AnnouncementRegion> type, PathMetadata metadata, PathInits inits) {
+    public QAnnouncementPosition(Class<? extends AnnouncementPosition> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.region = inits.isInitialized("region") ? new liaison.linkit.profile.domain.region.QRegion(forProperty("region")) : null;
+        this.position = inits.isInitialized("position") ? new liaison.linkit.common.domain.QPosition(forProperty("position")) : null;
         this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement"), inits.get("teamMemberAnnouncement")) : null;
     }
 
