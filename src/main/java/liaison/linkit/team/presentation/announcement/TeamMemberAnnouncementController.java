@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamMemberAnnouncementController {
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
-    // 디자인 확정 이전
+    // 팀원 공고 전체 조회
     @GetMapping
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems> getTeamMemberAnnouncementItems(
@@ -35,7 +35,8 @@ public class TeamMemberAnnouncementController {
         log.info("memberId = {}의 팀 이름 = {}에 대한 팀원 공고 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
         return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementItems(accessor.getMemberId(), teamName));
     }
-
+    
+    // 팀원 공고 단일 조회
     @GetMapping("/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail> getTeamMemberAnnouncementDetail(

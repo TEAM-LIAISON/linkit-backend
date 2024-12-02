@@ -26,18 +26,28 @@ public class QTeamProduct extends EntityPathBase<TeamProduct> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final BooleanPath isProductInProgress = createBoolean("isProductInProgress");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
+    public final StringPath productDescription = createString("productDescription");
+
     public final StringPath productEndDate = createString("productEndDate");
 
-    public final StringPath productLogoImagePath = createString("productLogoImagePath");
+    public final NumberPath<Integer> productHeadCount = createNumber("productHeadCount", Integer.class);
+
+    public final StringPath productLineDescription = createString("productLineDescription");
 
     public final StringPath productName = createString("productName");
 
-    public final StringPath productShortDescription = createString("productShortDescription");
+    public final StringPath productRepresentImagePath = createString("productRepresentImagePath");
 
     public final StringPath productStartDate = createString("productStartDate");
+
+    public final StringPath productTeamComposition = createString("productTeamComposition");
+
+    public final EnumPath<liaison.linkit.profile.domain.portfolio.ProjectSize> projectSize = createEnum("projectSize", liaison.linkit.profile.domain.portfolio.ProjectSize.class);
 
     public QTeamProduct(String variable) {
         super(TeamProduct.class, forVariable(variable));
