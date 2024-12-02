@@ -129,6 +129,10 @@ clean {
 asciidoctor {
     dependsOn test
     configurations 'asciidoctorExt'
+    attributes(
+            'source-highlighter': 'highlightjs',
+            'encoding': 'UTF-8'
+    )
 }
 
 jar {

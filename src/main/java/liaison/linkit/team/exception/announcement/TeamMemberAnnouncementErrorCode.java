@@ -1,4 +1,4 @@
-package liaison.linkit.team.exception.teamMemberAnnouncement;
+package liaison.linkit.team.exception.announcement;
 
 
 import static liaison.linkit.common.consts.LinkitStatic.NOT_FOUND;

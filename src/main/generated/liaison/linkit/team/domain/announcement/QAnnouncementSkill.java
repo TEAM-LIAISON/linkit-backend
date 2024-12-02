@@ -34,6 +34,8 @@ public class QAnnouncementSkill extends EntityPathBase<AnnouncementSkill> {
 
     public final liaison.linkit.profile.domain.skill.QSkill skill;
 
+    public final QTeamMemberAnnouncement teamMemberAnnouncement;
+
     public QAnnouncementSkill(String variable) {
         this(AnnouncementSkill.class, forVariable(variable), INITS);
     }
@@ -53,6 +55,7 @@ public class QAnnouncementSkill extends EntityPathBase<AnnouncementSkill> {
     public QAnnouncementSkill(Class<? extends AnnouncementSkill> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.skill = inits.isInitialized("skill") ? new liaison.linkit.profile.domain.skill.QSkill(forProperty("skill")) : null;
+        this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement"), inits.get("teamMemberAnnouncement")) : null;
     }
 
 }

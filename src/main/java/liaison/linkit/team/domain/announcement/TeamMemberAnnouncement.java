@@ -1,5 +1,6 @@
 package liaison.linkit.team.domain.announcement;
 
+import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -7,13 +8,18 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import liaison.linkit.global.BaseEntity;
+import liaison.linkit.team.domain.Team;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class TeamMemberAnnouncement extends BaseEntity {
@@ -23,15 +29,14 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @Column(name = "team_member_announcement_id")
     private Long id;
 
-    private String announcementTitle;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
-    // 찾는 포지션 (필터 항목)
-
-    // 요구 스킬 (필터 항목)
+    private String announcementTitle; // 공고 제목
     private String announcementStartDate; // 공고 시작 기간
     private String announcementEndDate; // 공고 마감 기간
     private boolean isRegionFlexible; // 지역 무관
-    private String detailedAnnouncement; // 세부 공고 작성
     private String mainTasks; // 주요 업무
     private String workMethod; // 업무 방식
     private String idealCandidate; // 이런 분을 찾고 있어요

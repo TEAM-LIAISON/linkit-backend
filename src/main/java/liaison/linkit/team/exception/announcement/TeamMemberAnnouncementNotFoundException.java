@@ -1,4 +1,4 @@
-package liaison.linkit.team.exception.teamMemberAnnouncement;
+package liaison.linkit.team.exception.announcement;
 
 import liaison.linkit.common.exception.BaseCodeException;
 

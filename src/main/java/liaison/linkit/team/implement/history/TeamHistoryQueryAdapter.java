@@ -13,8 +13,8 @@ public class TeamHistoryQueryAdapter {
 
     private final TeamHistoryRepository teamHistoryRepository;
 
-    public List<TeamHistory> getTeamHistories(final Long teamId) {
-        return teamHistoryRepository.getTeamHistories(teamId);
+    public List<TeamHistory> getTeamHistories(final String teamName) {
+        return teamHistoryRepository.getTeamHistories(teamName);
     }
 
     public TeamHistory getTeamHistory(final Long teamHistoryId) {

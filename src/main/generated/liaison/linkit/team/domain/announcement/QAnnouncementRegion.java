@@ -55,7 +55,7 @@ public class QAnnouncementRegion extends EntityPathBase<AnnouncementRegion> {
     public QAnnouncementRegion(Class<? extends AnnouncementRegion> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.region = inits.isInitialized("region") ? new liaison.linkit.profile.domain.region.QRegion(forProperty("region")) : null;
-        this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement")) : null;
+        this.teamMemberAnnouncement = inits.isInitialized("teamMemberAnnouncement") ? new QTeamMemberAnnouncement(forProperty("teamMemberAnnouncement"), inits.get("teamMemberAnnouncement")) : null;
     }
 
 }

@@ -4,7 +4,6 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
-import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
 import liaison.linkit.team.service.history.TeamHistoryService;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/team/{teamId}/history")
+@RequestMapping("/api/v1/team/{teamName}/history")
 @Slf4j
 public class TeamHistoryController {
 
@@ -30,54 +29,54 @@ public class TeamHistoryController {
     @MemberOnly
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryItems> getTeamHistoryItems(
             @Auth final Accessor accessor,
-            @PathVariable final Long teamId
+            @PathVariable final String teamName
     ) {
-        log.info("memberId = {}의 팀 ID = {}에 대한 팀 연혁 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamId);
-        return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryItems(accessor.getMemberId(), teamId));
+        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 연혁 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
+        return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryItems(accessor.getMemberId(), teamName));
     }
 
     @GetMapping("/{teamHistoryId}")
     @MemberOnly
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryDetail> getTeamHistoryDetail(
             @Auth final Accessor accessor,
-            @PathVariable final Long teamId,
+            @PathVariable final String teamName,
             @PathVariable final Long teamHistoryId
     ) {
-        log.info("memberId = {}의 팀 ID = {}에 대한 팀 연혁 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamId);
-        return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryDetail(accessor.getMemberId(), teamId, teamHistoryId));
+        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 연혁 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
+        return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryDetail(accessor.getMemberId(), teamName, teamHistoryId));
     }
 
     @PostMapping
     @MemberOnly
     public CommonResponse<TeamHistoryResponseDTO.AddTeamHistoryResponse> addTeamHistory(
             @Auth final Accessor accessor,
-            @PathVariable final Long teamId,
+            @PathVariable final String teamName,
             @RequestBody final TeamHistoryRequestDTO.AddTeamHistoryRequest addTeamHistoryRequest
     ) {
-        log.info("memberId = {}의 팀 ID = {}에 대한 팀 연혁 단일 생성 요청이 발생했습니다.", accessor.getMemberId(), teamId);
-        return CommonResponse.onSuccess(teamHistoryService.addTeamHistory(accessor.getMemberId(), teamId, addTeamHistoryRequest));
+        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 연혁 단일 생성 요청이 발생했습니다.", accessor.getMemberId(), teamName);
+        return CommonResponse.onSuccess(teamHistoryService.addTeamHistory(accessor.getMemberId(), teamName, addTeamHistoryRequest));
     }
 
     @PostMapping("/{teamHistoryId}")
     @MemberOnly
     public CommonResponse<TeamHistoryResponseDTO.UpdateTeamHistoryResponse> updateTeamHistory(
             @Auth final Accessor accessor,
-            @PathVariable final Long teamId,
+            @PathVariable final String teamName,
             @PathVariable final Long teamHistoryId,
             @RequestBody final TeamHistoryRequestDTO.UpdateTeamHistoryRequest updateTeamHistoryRequest
     ) {
-        log.info("memberId = {}의 팀 ID = {}에 대한 팀 연혁 단일 수정 요청이 발생했습니다.", accessor.getMemberId(), teamId);
-        return CommonResponse.onSuccess(teamHistoryService.updateTeamHistory(accessor.getMemberId(), teamId, teamHistoryId, updateTeamHistoryRequest));
+        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 연혁 단일 수정 요청이 발생했습니다.", accessor.getMemberId(), teamName);
+        return CommonResponse.onSuccess(teamHistoryService.updateTeamHistory(accessor.getMemberId(), teamName, teamHistoryId, updateTeamHistoryRequest));
     }
 
     @DeleteMapping("/{teamHistoryId}")
     @MemberOnly
     public CommonResponse<TeamHistoryResponseDTO.RemoveTeamHistoryResponse> removeTeamHistory(
             @Auth final Accessor accessor,
-            @PathVariable final Long teamId,
+            @PathVariable final String teamName,
             @PathVariable final Long teamHistoryId
     ) {
-        return CommonResponse.onSuccess(teamHistoryService.removeTeamHistory(accessor.getMemberId(), teamId, teamHistoryId));
+        return CommonResponse.onSuccess(teamHistoryService.removeTeamHistory(accessor.getMemberId(), teamName, teamHistoryId));
     }
 
 }

@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
@@ -16,6 +17,8 @@ import com.querydsl.core.types.Path;
 public class QTeamMemberAnnouncement extends EntityPathBase<TeamMemberAnnouncement> {
 
     private static final long serialVersionUID = 1264434084L;
+
+    private static final PathInits INITS = PathInits.DIRECT2;
 
     public static final QTeamMemberAnnouncement teamMemberAnnouncement = new QTeamMemberAnnouncement("teamMemberAnnouncement");
 
@@ -31,8 +34,6 @@ public class QTeamMemberAnnouncement extends EntityPathBase<TeamMemberAnnounceme
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
-
-    public final StringPath detailedAnnouncement = createString("detailedAnnouncement");
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
@@ -52,18 +53,29 @@ public class QTeamMemberAnnouncement extends EntityPathBase<TeamMemberAnnounceme
     //inherited
     public final EnumPath<liaison.linkit.global.type.StatusType> status = _super.status;
 
+    public final liaison.linkit.team.domain.QTeam team;
+
     public final StringPath workMethod = createString("workMethod");
 
     public QTeamMemberAnnouncement(String variable) {
-        super(TeamMemberAnnouncement.class, forVariable(variable));
+        this(TeamMemberAnnouncement.class, forVariable(variable), INITS);
     }
 
     public QTeamMemberAnnouncement(Path<? extends TeamMemberAnnouncement> path) {
-        super(path.getType(), path.getMetadata());
+        this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
     public QTeamMemberAnnouncement(PathMetadata metadata) {
-        super(TeamMemberAnnouncement.class, metadata);
+        this(metadata, PathInits.getFor(metadata, INITS));
+    }
+
+    public QTeamMemberAnnouncement(PathMetadata metadata, PathInits inits) {
+        this(TeamMemberAnnouncement.class, metadata, inits);
+    }
+
+    public QTeamMemberAnnouncement(Class<? extends TeamMemberAnnouncement> type, PathMetadata metadata, PathInits inits) {
+        super(type, metadata, inits);
+        this.team = inits.isInitialized("team") ? new liaison.linkit.team.domain.QTeam(forProperty("team"), inits.get("team")) : null;
     }
 
 }

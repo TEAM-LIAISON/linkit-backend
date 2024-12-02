@@ -63,7 +63,7 @@ public class ProjectRoleContributionCustomRepositoryImpl implements ProjectRoleC
 
         return jpaQueryFactory
                 .selectFrom(qProjectRoleContribution)
-                .join(qProjectRoleContribution.portfolio, qProfilePortfolio)
+                .join(qProjectRoleContribution.profilePortfolio, qProfilePortfolio)
                 .where(qProfilePortfolio.id.eq(profilePortfolioId))
                 .fetch();
     }

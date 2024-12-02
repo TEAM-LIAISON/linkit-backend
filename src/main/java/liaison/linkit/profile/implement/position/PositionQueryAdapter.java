@@ -4,6 +4,9 @@ import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.common.domain.Position;
 import liaison.linkit.profile.domain.repository.position.PositionRepository;
 import liaison.linkit.profile.exception.position.PositionNotFoundException;
+import liaison.linkit.team.domain.announcement.AnnouncementPosition;
+import liaison.linkit.team.domain.repository.announcement.AnnouncementPositionRepository;
+import liaison.linkit.team.exception.announcement.AnnouncementRegionNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Adapter
@@ -15,4 +18,6 @@ public class PositionQueryAdapter {
         return positionRepository.findByMajorPositionAndSubPosition(majorPosition, subPosition)
                 .orElseThrow(() -> PositionNotFoundException.EXCEPTION);
     }
+
+
 }

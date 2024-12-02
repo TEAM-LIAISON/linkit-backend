@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.presentation.team.TeamController;
-import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.SaveTeamBasicInformRequest;
+import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamBasicInformRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.AddTeamResponse;
 import liaison.linkit.team.service.TeamService;
@@ -60,7 +60,7 @@ public class TeamControllerTest extends ControllerTest {
     @Test
     void createTeam() throws Exception {
         // given
-        final SaveTeamBasicInformRequest saveTeamBasicInformRequest = new SaveTeamBasicInformRequest(
+        final AddTeamBasicInformRequest addTeamBasicInformRequest = new AddTeamBasicInformRequest(
                 "리에종",
                 "팀 한 줄 소개입니다.",
                 "1인",
@@ -76,10 +76,10 @@ public class TeamControllerTest extends ControllerTest {
         );
 
         final MockMultipartFile createRequest = new MockMultipartFile(
-                "saveTeamBasicInformRequest",
+                "addTeamBasicInformRequest",
                 null,
                 "application/json",
-                objectMapper.writeValueAsString(saveTeamBasicInformRequest).getBytes(StandardCharsets.UTF_8)
+                objectMapper.writeValueAsString(addTeamBasicInformRequest).getBytes(StandardCharsets.UTF_8)
         );
 
         final TeamResponseDTO.AddTeamResponse addTeamResponse
@@ -116,11 +116,11 @@ public class TeamControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열(jwt)"))
                                 ),
                                 requestParts(
-                                        partWithName("saveTeamBasicInformRequest").description("팀 기본 정보 생성 요청 객체"),
+                                        partWithName("addTeamBasicInformRequest").description("팀 기본 정보 생성 요청 객체"),
                                         partWithName("teamLogoImage")
                                                 .description("팀 로고 이미지 파일. 지원되는 형식은 .png, .jpg 등이 있습니다.")
                                 ),
-                                requestPartFields("saveTeamBasicInformRequest",
+                                requestPartFields("addTeamBasicInformRequest",
                                         fieldWithPath("teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름")

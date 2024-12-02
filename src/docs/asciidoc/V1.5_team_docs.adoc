@@ -10,6 +10,65 @@
 
 - 링킷 운영용 API 서버 도메인 네임 = https://api.linkit.im
 
+== #[팀]#
+
+=== 팀 생성
+
+====
+*요청*
+
+include::{snippets}/team-controller-test/create-team/http-request.adoc[]
+include::{snippets}/team-controller-test/create-team/request-parts.adoc[]
+include::{snippets}/team-controller-test/create-team/request-part-addTeamBasicInformRequest-fields.adoc[]
+
+*응답*
+
+include::{snippets}/team-controller-test/create-team/http-response.adoc[]
+include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
+====
+
+== #[팀 - 팀원 공고]#
+
+=== 팀원 공고 단일 생성
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/path-parameters.adoc[]
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/response-fields.adoc[]
+
+====
+
+=== 팀원 공고 단일 수정
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/path-parameters.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/response-fields.adoc[]
+====
+
+=== 팀원 공고 단일 삭제
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/response-fields.adoc[]
+
+====
+
 == #[팀 - 팀 연혁]#
 
 === 팀 연혁 전체 조회
@@ -73,4 +132,5 @@ include::{snippets}/team-history-controller-test/update-team-history/path-parame
 include::{snippets}/team-history-controller-test/update-team-history/http-response.adoc[]
 include::{snippets}/team-history-controller-test/update-team-history/response-fields.adoc[]
 ====
+
 

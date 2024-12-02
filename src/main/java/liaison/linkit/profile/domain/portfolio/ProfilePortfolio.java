@@ -43,7 +43,7 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private ProjectSize projectSize; // 규모
-    
+
     private int projectHeadCount; // 인원
     private String projectTeamComposition; // 팀 구성
 
@@ -51,7 +51,7 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     private String projectEndDate;
     private boolean isProjectInProgress;
 
-    @OneToMany(mappedBy = "portfolio", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "profilePortfolio", fetch = FetchType.LAZY)
     private List<ProjectRoleContribution> projectRoleContributions = new ArrayList<>();
 
     private String projectLink; // 링크
