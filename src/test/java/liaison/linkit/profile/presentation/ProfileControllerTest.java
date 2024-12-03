@@ -1,7 +1,7 @@
 package liaison.linkit.profile.presentation;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
-import static liaison.linkit.profile.domain.type.ProfileLogType.REPRESENTATIVE_LOG;
+import static liaison.linkit.profile.domain.type.LogType.REPRESENTATIVE_LOG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -437,7 +437,7 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileLogItem.isLogPublic")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("로그 공개 여부"),
-                                        fieldWithPath("result.profileLogItem.profileLogType")
+                                        fieldWithPath("result.profileLogItem.logType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 로그 타입"),
                                         fieldWithPath("result.profileLogItem.modifiedAt")

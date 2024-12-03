@@ -27,6 +27,86 @@ include::{snippets}/team-controller-test/create-team/http-response.adoc[]
 include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
 ====
 
+== #[팀 - 팀 로그]#
+
+=== 팀 로그 본문 이미지 첨부
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/add-team-log-body-image/http-request.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log-body-image/path-parameters.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log-body-image/request-parts.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/add-team-log-body-image/http-response.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log-body-image/response-fields.adoc[]
+====
+
+=== 팀 로그 전체 조회
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/get-team-log-items/http-request.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/get-team-log-items/http-response.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-items/response-fields.adoc[]
+
+====
+
+=== 팀 로그 단일 조회
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/get-team-log-item/http-request.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-item/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/get-team-log-item/http-response.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-item/response-fields.adoc[]
+====
+
+=== 팀 로그 단일 생성
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/add-team-log/http-request.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log/path-parameters.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/add-team-log/http-response.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log/response-fields.adoc[]
+
+====
+
+=== 팀 로그 단일 삭제
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/remove-team-log/http-request.adoc[]
+include::{snippets}/team-log-controller-test/remove-team-log/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/remove-team-log/http-response.adoc[]
+include::{snippets}/team-log-controller-test/remove-team-log/response-fields.adoc[]
+
+====
+
+=== 팀 로그 대표글 설정 여부 수정
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/update-team-log-type/http-request.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log-type/path-parameters.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log-type/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/update-team-log-type/http-response.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log-type/request-fields.adoc[]
+====
+
 == #[팀 - 팀원 공고]#
 
 === 팀원 공고 단일 생성

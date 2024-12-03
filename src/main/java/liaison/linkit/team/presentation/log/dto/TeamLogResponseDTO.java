@@ -1,4 +1,4 @@
-package liaison.linkit.profile.presentation.log.dto;
+package liaison.linkit.team.presentation.log.dto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,23 +11,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ProfileLogResponseDTO {
+public class TeamLogResponseDTO {
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileLogItems {
+    public static class TeamLogItems {
         @Builder.Default
-        private List<ProfileLogItem> profileLogItems = new ArrayList<>();
+        private List<TeamLogResponseDTO.TeamLogItem> teamLogItems = new ArrayList<>();
     }
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ProfileLogItem {
-        private Long profileLogId;
+    public static class TeamLogItem {
+        private Long teamLogId;
         private Boolean isLogPublic;
         private LogType logType;
         private LocalDateTime modifiedAt;
@@ -39,8 +39,8 @@ public class ProfileLogResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AddProfileLogResponse {
-        private Long profileLogId;
+    public static class AddTeamLogResponse {
+        private Long teamLogId;
         private String logTitle;
         private String logContent;
         private LocalDateTime createdAt;
@@ -52,16 +52,16 @@ public class ProfileLogResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class RemoveProfileLogResponse {
-        private Long profileLogId;
+    public static class RemoveTeamLogResponse {
+        private Long teamLogId;
     }
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UpdateProfileLogTypeResponse {
-        private Long profileLogId;
+    public static class UpdateTeamLogTypeResponse {
+        private Long teamLogId;
         private LogType logType;
     }
 
@@ -69,7 +69,7 @@ public class ProfileLogResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AddProfileLogBodyImageResponse {
-        private String profileLogBodyImagePath;
+    public static class AddTeamLogBodyImageResponse {
+        private String teamLogBodyImagePath;
     }
 }

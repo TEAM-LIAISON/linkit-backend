@@ -1,4 +1,4 @@
-package liaison.linkit.profile.presentation.log.dto;
+package liaison.linkit.team.presentation.log.dto;
 
 import liaison.linkit.profile.domain.type.LogType;
 import lombok.AccessLevel;
@@ -8,13 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ProfileLogRequestDTO {
+public class TeamLogRequestDTO {
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AddProfileLogRequest {
+    public static class AddTeamLogRequest {
         private String logTitle;
         private String logContent;
         private Boolean isLogPublic;
@@ -24,8 +24,7 @@ public class ProfileLogRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UpdateProfileLogType {
+    public static class UpdateTeamLogType {
         private LogType logType;
     }
 }
-

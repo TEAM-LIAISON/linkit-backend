@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.team.domain.log;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -11,16 +11,16 @@ import com.querydsl.core.types.dsl.PathInits;
 
 
 /**
- * QProfileLog is a Querydsl query type for ProfileLog
+ * QTeamLog is a Querydsl query type for TeamLog
  */
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
-public class QProfileLog extends EntityPathBase<ProfileLog> {
+public class QTeamLog extends EntityPathBase<TeamLog> {
 
-    private static final long serialVersionUID = -381152744L;
+    private static final long serialVersionUID = -1022230372L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 
-    public static final QProfileLog profileLog = new QProfileLog("profileLog");
+    public static final QTeamLog teamLog = new QTeamLog("teamLog");
 
     public final liaison.linkit.common.domain.QBaseDateTimeEntity _super = new liaison.linkit.common.domain.QBaseDateTimeEntity(this);
 
@@ -40,27 +40,27 @@ public class QProfileLog extends EntityPathBase<ProfileLog> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final QProfile profile;
+    public final liaison.linkit.team.domain.QTeam team;
 
-    public QProfileLog(String variable) {
-        this(ProfileLog.class, forVariable(variable), INITS);
+    public QTeamLog(String variable) {
+        this(TeamLog.class, forVariable(variable), INITS);
     }
 
-    public QProfileLog(Path<? extends ProfileLog> path) {
+    public QTeamLog(Path<? extends TeamLog> path) {
         this(path.getType(), path.getMetadata(), PathInits.getFor(path.getMetadata(), INITS));
     }
 
-    public QProfileLog(PathMetadata metadata) {
+    public QTeamLog(PathMetadata metadata) {
         this(metadata, PathInits.getFor(metadata, INITS));
     }
 
-    public QProfileLog(PathMetadata metadata, PathInits inits) {
-        this(ProfileLog.class, metadata, inits);
+    public QTeamLog(PathMetadata metadata, PathInits inits) {
+        this(TeamLog.class, metadata, inits);
     }
 
-    public QProfileLog(Class<? extends ProfileLog> type, PathMetadata metadata, PathInits inits) {
+    public QTeamLog(Class<? extends TeamLog> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.profile = inits.isInitialized("profile") ? new QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.team = inits.isInitialized("team") ? new liaison.linkit.team.domain.QTeam(forProperty("team"), inits.get("team")) : null;
     }
 
 }
