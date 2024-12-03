@@ -1,4 +1,4 @@
-package liaison.linkit.global.config.csv.teamScale;
+package liaison.linkit.global.config.csv.scale;
 
 
 import lombok.RequiredArgsConstructor;
@@ -16,32 +16,32 @@ import org.springframework.core.io.ClassPathResource;
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
-public class CsvTeamScaleReader {
-    @Value("${teamScale.csv-path}")
-    private String teamBuildingFieldCsv;
+public class CsvScaleReader {
+    @Value("${scale.csv-path}")
+    private String scaleCsv;
 
-    @Bean(name = "teamScaleCsvReader")
-    public FlatFileItemReader<TeamScaleCsvData> csvTeamBuildingFieldReader() {
+    @Bean(name = "scaleCsvReader")
+    public FlatFileItemReader<ScaleCsvData> csvScaleReader() {
 
-        FlatFileItemReader<TeamScaleCsvData> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(new ClassPathResource(teamBuildingFieldCsv));
+        FlatFileItemReader<ScaleCsvData> flatFileItemReader = new FlatFileItemReader<>();
+        flatFileItemReader.setResource(new ClassPathResource(scaleCsv));
         flatFileItemReader.setEncoding("UTF-8");
 
         // 데이터 내부에 개행이 있으면 꼭! 추가해주세요
         flatFileItemReader.setRecordSeparatorPolicy(new DefaultRecordSeparatorPolicy());
 
         // 읽어온 파일을 한 줄씩 읽기
-        DefaultLineMapper<TeamScaleCsvData> defaultLineMapper = new DefaultLineMapper<>();
+        DefaultLineMapper<ScaleCsvData> defaultLineMapper = new DefaultLineMapper<>();
         // 따로 설정하지 않으면 기본값은 ","
         DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer();
 
         // "name", "phoneNumber", "comment", "address" 필드 설정
-        delimitedLineTokenizer.setNames(TeamScaleCsvData.getFieldNames().toArray(String[]::new));
+        delimitedLineTokenizer.setNames(ScaleCsvData.getFieldNames().toArray(String[]::new));
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
         // 매칭할 class 타입 지정(필드 지정)
-        BeanWrapperFieldSetMapper<TeamScaleCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
-        beanWrapperFieldSetMapper.setTargetType(TeamScaleCsvData.class);
+        BeanWrapperFieldSetMapper<ScaleCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        beanWrapperFieldSetMapper.setTargetType(ScaleCsvData.class);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
         flatFileItemReader.setLineMapper(defaultLineMapper);

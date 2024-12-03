@@ -1,4 +1,4 @@
-package liaison.linkit.profile.presentation;
+package liaison.linkit.team.presentation.teamMember;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/api/v1/team/{teamName}")
 @Slf4j
-public class AntecedentsController {
-
+public class TeamMemberController {
+    
 }

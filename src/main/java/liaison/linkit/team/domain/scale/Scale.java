@@ -1,15 +1,12 @@
 package liaison.linkit.team.domain.scale;
 
-import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import liaison.linkit.team.domain.Team;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,17 +17,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class TeamScale {
-
+public class Scale {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
-    private Team team;
+    // 시/도 이름
+    @Column(name = "scale_name")
+    private String scaleName;
 
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "scale_id")
-    private Scale scale;
+    public static Scale of(
+            final String scaleName
+    ) {
+        return new Scale(
+                null,
+                scaleName
+        );
+    }
 }

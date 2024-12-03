@@ -1,4 +1,4 @@
-package liaison.linkit.global.config.csv.teamScale;
+package liaison.linkit.global.config.csv.scale;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -6,11 +6,11 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class TeamScaleCsvData {
+public class ScaleCsvData {
     public String scaleName;
 
     public static List<String> getFieldNames() {
-        Field[] declaredFields = TeamScaleCsvData.class.getDeclaredFields();
+        Field[] declaredFields = ScaleCsvData.class.getDeclaredFields();
         List<String> result = new ArrayList<>();
         for (Field declaredField : declaredFields) {
             result.add(declaredField.getName());

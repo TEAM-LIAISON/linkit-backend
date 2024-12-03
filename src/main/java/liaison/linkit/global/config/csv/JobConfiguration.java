@@ -14,9 +14,9 @@ import liaison.linkit.global.config.csv.skill.CsvSkillReader;
 import liaison.linkit.global.config.csv.skill.CsvSkillWriter;
 import liaison.linkit.global.config.csv.teamBuildingField.CsvTeamBuildingFieldReader;
 import liaison.linkit.global.config.csv.teamBuildingField.CsvTeamBuildingFieldWriter;
-import liaison.linkit.global.config.csv.teamScale.CsvTeamScaleReader;
-import liaison.linkit.global.config.csv.teamScale.CsvTeamScaleWriter;
-import liaison.linkit.global.config.csv.teamScale.TeamScaleCsvData;
+import liaison.linkit.global.config.csv.scale.CsvScaleReader;
+import liaison.linkit.global.config.csv.scale.CsvScaleWriter;
+import liaison.linkit.global.config.csv.scale.ScaleCsvData;
 import liaison.linkit.global.config.csv.university.CsvUniversityReader;
 import liaison.linkit.global.config.csv.university.CsvUniversityWriter;
 import liaison.linkit.global.config.csv.university.UniversityCsvData;
@@ -43,8 +43,8 @@ public class JobConfiguration {
     private final CsvTeamBuildingFieldReader csvTeamBuildingFieldReader;
     private final CsvTeamBuildingFieldWriter csvTeamBuildingFieldWriter;
 
-    private final CsvTeamScaleReader csvTeamScaleReader;
-    private final CsvTeamScaleWriter csvTeamScaleWriter;
+    private final CsvScaleReader csvScaleReader;
+    private final CsvScaleWriter csvScaleWriter;
 
     private final CsvRegionReader csvRegionReader;
     private final CsvRegionWriter csvRegionWriter;
@@ -106,9 +106,9 @@ public class JobConfiguration {
             PlatformTransactionManager platformTransactionManager
     ) {
         return new StepBuilder("teamScaleDataLoadStep", jobRepository)
-                .<TeamScaleCsvData, TeamScaleCsvData>chunk(5, platformTransactionManager)
-                .reader(csvTeamScaleReader.csvTeamBuildingFieldReader())
-                .writer(csvTeamScaleWriter)
+                .<ScaleCsvData, ScaleCsvData>chunk(5, platformTransactionManager)
+                .reader(csvScaleReader.csvScaleReader())
+                .writer(csvScaleWriter)
                 .allowStartIfComplete(true)
                 .build();
     }
