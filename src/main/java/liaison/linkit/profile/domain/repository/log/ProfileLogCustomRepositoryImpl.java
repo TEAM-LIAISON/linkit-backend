@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.domain.QProfileLog;
-import liaison.linkit.profile.domain.type.ProfileLogType;
+import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -38,7 +38,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
         long updatedCount = queryFactory
                 .update(qProfileLog)
-                .set(qProfileLog.profileLogType, updateProfileLogType.getProfileLogType())
+                .set(qProfileLog.logType, updateProfileLogType.getLogType())
                 .where(qProfileLog.id.eq(profileLog.getId()))
                 .execute();
 
@@ -46,7 +46,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         entityManager.clear();
 
         if (updatedCount > 0) { // 업데이트 성공 확인
-            profileLog.setProfileLogType(updateProfileLogType.getProfileLogType()); // 메모리 내 객체 업데이트
+            profileLog.setLogType(updateProfileLogType.getLogType()); // 메모리 내 객체 업데이트
             return profileLog;
         } else {
             throw new IllegalStateException("프로필 로그 업데이트 실패");
@@ -61,7 +61,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                 .selectFrom(qProfileLog)
                 .where(
                         qProfileLog.profile.id.eq(profileId)
-                                .and(qProfileLog.profileLogType.eq(ProfileLogType.REPRESENTATIVE_LOG))
+                                .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
                 )
                 .fetchFirst();
 

@@ -16,7 +16,7 @@ public class ProfileLogMapper {
         return ProfileLogResponseDTO.ProfileLogItem.builder()
                 .profileLogId(profileLog.getId())
                 .isLogPublic(profileLog.isLogPublic())
-                .profileLogType(profileLog.getProfileLogType())
+                .logType(profileLog.getLogType())
                 .modifiedAt(profileLog.getModifiedAt())
                 .logTitle(profileLog.getLogTitle())
                 .logContent(profileLog.getLogContent())
@@ -51,7 +51,7 @@ public class ProfileLogMapper {
         return ProfileLogResponseDTO.UpdateProfileLogTypeResponse
                 .builder()
                 .profileLogId(profileLog.getId())
-                .profileLogType(profileLog.getProfileLogType())
+                .logType(profileLog.getLogType())
                 .build();
     }
 

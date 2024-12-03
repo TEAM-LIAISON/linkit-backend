@@ -134,10 +134,10 @@ public class ProfileActivityControllerTest extends ControllerTest {
     void getProfileActivityItems() throws Exception {
         // given
         final ProfileActivityResponseDTO.ProfileActivityItem firstProfileActivityItem
-                = new ProfileActivityItem(1L, "리에종", "PO", "2022.06", "2026.06", true);
+                = new ProfileActivityItem(1L, "리에종", "PO", "2022.06", "2026.06", true, "이력 설명 1");
 
         final ProfileActivityResponseDTO.ProfileActivityItem secondProfileActivityItem
-                = new ProfileActivityItem(2L, "리에종", "디자이너", "2024.10", "2024.12", true);
+                = new ProfileActivityItem(2L, "리에종", "디자이너", "2024.10", "2024.12", true, "이력 설명 2");
 
         final ProfileActivityResponseDTO.ProfileActivityItems profileActivityItems
                 = new ProfileActivityItems(Arrays.asList(firstProfileActivityItem, secondProfileActivityItem));

@@ -31,6 +31,7 @@ public class ProfileActivityResponseDTO {
         private String activityStartDate;
         private String activityEndDate;
         private Boolean isActivityVerified;
+        private String activityDescription;
     }
 
     @Builder

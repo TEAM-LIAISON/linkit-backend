@@ -66,6 +66,7 @@ public class ProfileActivityMapper {
                 .activityStartDate(profileActivity.getActivityStartDate())
                 .activityEndDate(profileActivity.getActivityEndDate())
                 .isActivityVerified(profileActivity.isActivityVerified())
+                .activityDescription(profileActivity.getActivityDescription())
                 .build();
     }
 

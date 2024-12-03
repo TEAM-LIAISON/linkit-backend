@@ -1,7 +1,7 @@
 package liaison.linkit.profile.presentation;
 
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
-import static liaison.linkit.profile.domain.type.ProfileLogType.REPRESENTATIVE_LOG;
+import static liaison.linkit.profile.domain.type.LogType.REPRESENTATIVE_LOG;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -278,10 +278,10 @@ class ProfileControllerTest extends ControllerTest {
                 = Arrays.asList(firstProfileSkillItem, secondProfileSkillItem);
 
         final ProfileActivityResponseDTO.ProfileActivityItem firstProfileActivityItem
-                = new ProfileActivityItem(1L, "리에종", "PO", "2022.06", "2026.06", true);
+                = new ProfileActivityItem(1L, "리에종", "PO", "2022.06", "2026.06", true, "이력 설명 1");
 
         final ProfileActivityResponseDTO.ProfileActivityItem secondProfileActivityItem
-                = new ProfileActivityItem(2L, "리에종", "디자이너", "2024.10", "2024.12", true);
+                = new ProfileActivityItem(2L, "리에종", "디자이너", "2024.10", "2024.12", true, "이력 설명 2");
 
         final List<ProfileActivityItem> profileActivityItems
                 = Arrays.asList(firstProfileActivityItem, secondProfileActivityItem);
@@ -296,28 +296,28 @@ class ProfileControllerTest extends ControllerTest {
                 = Arrays.asList(firstProfilePortfolioItem, secondProfilePortfolioItem);
 
         final ProfileEducationResponseDTO.ProfileEducationItem firstProfileEducationItem
-                = new ProfileEducationItem(1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, true);
+                = new ProfileEducationItem(1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, true, "학력 설명 1");
 
         final ProfileEducationResponseDTO.ProfileEducationItem secondProfileEducationItem
-                = new ProfileEducationItem(2L, "대학 이름 2", "전공 이름 2", "입학 연도 2", "졸업 연도 2", false, true);
+                = new ProfileEducationItem(2L, "대학 이름 2", "전공 이름 2", "입학 연도 2", "졸업 연도 2", false, true, "학력 설명 2");
 
         final List<ProfileEducationItem> profileEducationItems
                 = Arrays.asList(firstProfileEducationItem, secondProfileEducationItem);
 
         final ProfileAwardsResponseDTO.ProfileAwardsItem firstProfileAwardsItem
-                = new ProfileAwardsItem(1L, "수상 이름 1", "훈격 1", "수상 날짜 1", true);
+                = new ProfileAwardsItem(1L, "수상 이름 1", "훈격 1", "수상 날짜 1", true, "수상 설명 1");
 
         final ProfileAwardsResponseDTO.ProfileAwardsItem secondProfileAwardsItem
-                = new ProfileAwardsItem(2L, "수상 이름 2", "훈격 2", "수상 날짜 2", true);
+                = new ProfileAwardsItem(2L, "수상 이름 2", "훈격 2", "수상 날짜 2", true, "수상 설명 2");
 
         final List<ProfileAwardsItem> profileAwardsItems
                 = Arrays.asList(firstProfileAwardsItem, secondProfileAwardsItem);
 
         final ProfileLicenseResponseDTO.ProfileLicenseItem firstProfileLicenseItem
-                = new ProfileLicenseItem(1L, "자격증 자격명 1", "자격증 관련 부처 1", "자격증 취득 시기 1", true);
+                = new ProfileLicenseItem(1L, "자격증 자격명 1", "자격증 관련 부처 1", "자격증 취득 시기 1", true, "자격증 설명 1");
 
         final ProfileLicenseResponseDTO.ProfileLicenseItem secondProfileLicenseItem
-                = new ProfileLicenseItem(2L, "자격증 자격명 2", "자격증 관련 부처 2", "자격증 취득 시기 2", true);
+                = new ProfileLicenseItem(2L, "자격증 자격명 2", "자격증 관련 부처 2", "자격증 취득 시기 2", true, "자격증 설명 2");
 
         final List<ProfileLicenseItem> profileLicenseItems
                 = Arrays.asList(firstProfileLicenseItem, secondProfileLicenseItem);
@@ -437,7 +437,7 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileLogItem.isLogPublic")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("로그 공개 여부"),
-                                        fieldWithPath("result.profileLogItem.profileLogType")
+                                        fieldWithPath("result.profileLogItem.logType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 로그 타입"),
                                         fieldWithPath("result.profileLogItem.modifiedAt")
@@ -484,6 +484,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileActivityItems[].isActivityVerified")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("활동 인증 여부"),
+                                        fieldWithPath("result.profileActivityItems[].activityDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("이력 설명"),
 
                                         fieldWithPath("result.profilePortfolioItems")
                                                 .type(JsonFieldType.ARRAY)
@@ -543,6 +546,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileEducationItems[].isEducationVerified")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("학력 인증 여부"),
+                                        fieldWithPath("result.profileEducationItems[].educationDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("학력 설명"),
 
                                         fieldWithPath("result.profileAwardsItems")
                                                 .type(JsonFieldType.ARRAY)
@@ -562,6 +568,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileAwardsItems[].isAwardsVerified")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("수상 인증 여부"),
+                                        fieldWithPath("result.profileAwardsItems[].awardsDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수상 설명"),
 
                                         fieldWithPath("result.profileLicenseItems")
                                                 .type(JsonFieldType.ARRAY)
@@ -581,6 +590,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileLicenseItems[].isLicenseVerified")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("자격증 인증 여부"),
+                                        fieldWithPath("result.profileLicenseItems[].licenseDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("자격증 설명"),
 
                                         fieldWithPath("result.profileLinkItems")
                                                 .type(JsonFieldType.ARRAY)
