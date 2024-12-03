@@ -17,6 +17,9 @@ import liaison.linkit.global.config.csv.teamBuildingField.CsvTeamBuildingFieldWr
 import liaison.linkit.global.config.csv.scale.CsvScaleReader;
 import liaison.linkit.global.config.csv.scale.CsvScaleWriter;
 import liaison.linkit.global.config.csv.scale.ScaleCsvData;
+import liaison.linkit.global.config.csv.teamState.CsvTeamStateReader;
+import liaison.linkit.global.config.csv.teamState.CsvTeamStateWriter;
+import liaison.linkit.global.config.csv.teamState.TeamStateCsvData;
 import liaison.linkit.global.config.csv.university.CsvUniversityReader;
 import liaison.linkit.global.config.csv.university.CsvUniversityWriter;
 import liaison.linkit.global.config.csv.university.UniversityCsvData;
@@ -61,6 +64,9 @@ public class JobConfiguration {
     private final CsvProfileStateReader csvProfileStateReader;
     private final CsvProfileStateWriter csvProfileStateWriter;
 
+    private final CsvTeamStateReader csvTeamStateReader;
+    private final CsvTeamStateWriter csvTeamStateWriter;
+
     private final CsvUniversityReader csvUniversityReader;
     private final CsvUniversityWriter csvUniversityWriter;
 
@@ -73,6 +79,7 @@ public class JobConfiguration {
                                  Step jobRoleDataLoadStep,
                                  Step positionDataLoadStep,
                                  Step profileStateDataLoadStep,
+                                 Step teamStateDataLoadStep,
                                  Step skillDataLoadStep,
                                  Step universityDataLoadStep) {
         return new JobBuilder("linkitInformationLoadJob", jobRepository)
@@ -82,6 +89,7 @@ public class JobConfiguration {
                 .next(jobRoleDataLoadStep)
                 .next(positionDataLoadStep)
                 .next(profileStateDataLoadStep)
+                .next(teamStateDataLoadStep)
                 .next(skillDataLoadStep)
                 .next(universityDataLoadStep)
                 .build();
@@ -161,6 +169,19 @@ public class JobConfiguration {
                 .<ProfileStateCsvData, ProfileStateCsvData>chunk(10, platformTransactionManager)
                 .reader(csvProfileStateReader.csvProfileStateReader())
                 .writer(csvProfileStateWriter)
+                .allowStartIfComplete(true)
+                .build();
+    }
+
+    @Bean
+    public Step teamStateDataLoadStep(
+            JobRepository jobRepository,
+            PlatformTransactionManager platformTransactionManager
+    ) {
+        return new StepBuilder("teamStateDataLoadStep", jobRepository)
+                .<TeamStateCsvData, TeamStateCsvData>chunk(10, platformTransactionManager)
+                .reader(csvTeamStateReader.csvTeamStateReader())
+                .writer(csvTeamStateWriter)
                 .allowStartIfComplete(true)
                 .build();
     }

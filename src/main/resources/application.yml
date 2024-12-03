@@ -167,6 +167,9 @@ position:
 profileState:
   csv-path: ${profileState.path}
 
+teamState:
+  csv-path: ${teamState.path}
+
 naver:
   id: linkit@linkit.im
   password: ${mail.password}
