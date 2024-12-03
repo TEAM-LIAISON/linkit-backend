@@ -760,7 +760,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Mon, 9 Dec 2024 16:55:48 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Tue, 10 Dec 2024 06:47:46 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 216
 
@@ -895,7 +895,7 @@ Content-Length: 159
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2024-12-03T01:55:48.259683"
+    "logoutAt" : "2024-12-03T15:47:46.063684"
   }
 }</code></pre>
 </div>
@@ -1049,7 +1049,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2024-12-03T01:55:48.322629"
+    "quitAt" : "2024-12-03T15:47:46.116102"
   }
 }</code></pre>
 </div>
@@ -1127,7 +1127,7 @@ Content-Length: 178
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2024-12-03T01:55:48.202285"
+    "reAuthenticationEmailSendAt" : "2024-12-03T15:47:46.015486"
   }
 }</code></pre>
 </div>
@@ -1207,7 +1207,7 @@ Content-Length: 214
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2024-12-03T01:55:47.865233"
+    "verificationSuccessAt" : "2024-12-03T15:47:45.748114"
   }
 }</code></pre>
 </div>
@@ -2033,7 +2033,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 4280
+Content-Length: 4667
 
 {
   "isSuccess" : true,
@@ -2063,8 +2063,8 @@ Content-Length: 4280
     "profileLogItem" : {
       "profileLogId" : 1,
       "isLogPublic" : true,
-      "profileLogType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2024-12-03T01:55:50.602227",
+      "logType" : "REPRESENTATIVE_LOG",
+      "modifiedAt" : "2024-12-03T15:47:48.329516",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     },
@@ -2083,14 +2083,16 @@ Content-Length: 4280
       "activityRole" : "PO",
       "activityStartDate" : "2022.06",
       "activityEndDate" : "2026.06",
-      "isActivityVerified" : true
+      "isActivityVerified" : true,
+      "activityDescription" : "이력 설명 1"
     }, {
       "profileActivityId" : 2,
       "activityName" : "리에종",
       "activityRole" : "디자이너",
       "activityStartDate" : "2024.10",
       "activityEndDate" : "2024.12",
-      "isActivityVerified" : true
+      "isActivityVerified" : true,
+      "activityDescription" : "이력 설명 2"
     } ],
     "profilePortfolioItems" : [ {
       "profilePortfolioId" : 1,
@@ -2120,7 +2122,8 @@ Content-Length: 4280
       "admissionYear" : "입학 연도 1",
       "graduationYear" : "졸업 연도 1",
       "isAttendUniversity" : false,
-      "isEducationVerified" : true
+      "isEducationVerified" : true,
+      "educationDescription" : "학력 설명 1"
     }, {
       "profileEducationId" : 2,
       "universityName" : "대학 이름 2",
@@ -2128,33 +2131,38 @@ Content-Length: 4280
       "admissionYear" : "입학 연도 2",
       "graduationYear" : "졸업 연도 2",
       "isAttendUniversity" : false,
-      "isEducationVerified" : true
+      "isEducationVerified" : true,
+      "educationDescription" : "학력 설명 2"
     } ],
     "profileAwardsItems" : [ {
       "profileAwardsId" : 1,
       "awardsName" : "수상 이름 1",
       "awardsRanking" : "훈격 1",
       "awardsDate" : "수상 날짜 1",
-      "isAwardsVerified" : true
+      "isAwardsVerified" : true,
+      "awardsDescription" : "수상 설명 1"
     }, {
       "profileAwardsId" : 2,
       "awardsName" : "수상 이름 2",
       "awardsRanking" : "훈격 2",
       "awardsDate" : "수상 날짜 2",
-      "isAwardsVerified" : true
+      "isAwardsVerified" : true,
+      "awardsDescription" : "수상 설명 2"
     } ],
     "profileLicenseItems" : [ {
       "profileLicenseId" : 1,
       "licenseName" : "자격증 자격명 1",
       "licenseInstitution" : "자격증 관련 부처 1",
       "licenseAcquisitionDate" : "자격증 취득 시기 1",
-      "isLicenseVerified" : true
+      "isLicenseVerified" : true,
+      "licenseDescription" : "자격증 설명 1"
     }, {
       "profileLicenseId" : 2,
       "licenseName" : "자격증 자격명 2",
       "licenseInstitution" : "자격증 관련 부처 2",
       "licenseAcquisitionDate" : "자격증 취득 시기 2",
-      "isLicenseVerified" : true
+      "isLicenseVerified" : true,
+      "licenseDescription" : "자격증 설명 2"
     } ],
     "profileLinkItems" : [ {
       "profileLinkId" : 1,
@@ -2289,7 +2297,7 @@ Content-Length: 4280
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 공개 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.profileLogType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItem.logType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 로그 타입</p></td>
 </tr>
@@ -2362,6 +2370,11 @@ Content-Length: 4280
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityItems[].isActivityVerified</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">활동 인증 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileActivityItems[].activityDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이력 설명</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profilePortfolioItems</code></p></td>
@@ -2459,6 +2472,11 @@ Content-Length: 4280
 <td class="tableblock halign-left valign-top"><p class="tableblock">학력 인증 여부</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileEducationItems[].educationDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">학력 설명</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileAwardsItems</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 수상 항목 배열</p></td>
@@ -2489,6 +2507,11 @@ Content-Length: 4280
 <td class="tableblock halign-left valign-top"><p class="tableblock">수상 인증 여부</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileAwardsItems[].awardsDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">수상 설명</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLicenseItems</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 자격증 항목 배열</p></td>
@@ -2517,6 +2540,11 @@ Content-Length: 4280
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLicenseItems[].isLicenseVerified</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">자격증 인증 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLicenseItems[].licenseDescription</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">자격증 설명</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLinkItems</code></p></td>
@@ -2941,7 +2969,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 465
+Content-Length: 464
 
 {
   "isSuccess" : true,
@@ -2949,7 +2977,7 @@ Content-Length: 465
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "profileId" : 1,
-    "modifiedAt" : "2024-12-03T01:55:49.294105",
+    "modifiedAt" : "2024-12-03T15:47:47.03392",
     "majorPosition" : "대분류 포지션",
     "subPosition" : "소분류 포지션",
     "cityName" : "활동지역 시/도",
@@ -3165,7 +3193,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 601
+Content-Length: 587
 
 {
   "isSuccess" : true,
@@ -3175,15 +3203,15 @@ Content-Length: 601
     "profileLogItems" : [ {
       "profileLogId" : 1,
       "isLogPublic" : true,
-      "profileLogType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2024-12-03T01:55:52.188859",
+      "logType" : "REPRESENTATIVE_LOG",
+      "modifiedAt" : "2024-12-03T15:47:49.948525",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
-      "profileLogType" : "GENERAL_LOG",
-      "modifiedAt" : "2024-12-03T01:55:52.188862",
+      "logType" : "GENERAL_LOG",
+      "modifiedAt" : "2024-12-03T15:47:49.948527",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -3236,7 +3264,7 @@ Content-Length: 601
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 공개 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItems[].profileLogType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogItems[].logType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 유형 (대표글 여부)</p></td>
 </tr>
@@ -3303,7 +3331,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 326
+Content-Length: 319
 
 {
   "isSuccess" : true,
@@ -3312,8 +3340,8 @@ Content-Length: 326
   "result" : {
     "profileLogId" : 1,
     "isLogPublic" : true,
-    "profileLogType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2024-12-03T01:55:52.154432",
+    "logType" : "REPRESENTATIVE_LOG",
+    "modifiedAt" : "2024-12-03T15:47:49.912024",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -3360,7 +3388,7 @@ Content-Length: 326
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 공개 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.logType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 유형 (대표글 여부)</p></td>
 </tr>
@@ -3415,7 +3443,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 328
+Content-Length: 321
 
 {
   "isSuccess" : true,
@@ -3425,8 +3453,8 @@ Content-Length: 328
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2024-12-03T01:55:52.134635",
-    "profileLogType" : "GENERAL_LOG",
+    "createdAt" : "2024-12-03T15:47:49.897425",
+    "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
 }</code></pre>
@@ -3482,7 +3510,7 @@ Content-Length: 328
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 생성 시간</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.logType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그 유형 (대표글 여부)</p></td>
 </tr>
@@ -3586,7 +3614,7 @@ Authorization: accessToken
 Cookie: refreshToken=refreshToken
 
 {
-  "profileLogType" : "GENERAL_LOG"
+  "logType" : "GENERAL_LOG"
 }</code></pre>
 </div>
 </div>
@@ -3600,7 +3628,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 174
+Content-Length: 167
 
 {
   "isSuccess" : true,
@@ -3608,7 +3636,7 @@ Content-Length: 174
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "profileLogId" : 1,
-    "profileLogType" : "GENERAL_LOG"
+    "logType" : "GENERAL_LOG"
   }
 }</code></pre>
 </div>
@@ -3648,7 +3676,7 @@ Content-Length: 174
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 로그 ID</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileLogType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.logType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해당 로그 대표글 설정 여부</p></td>
 </tr>
@@ -3934,7 +3962,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 585
+Content-Length: 683
 
 {
   "isSuccess" : true,
@@ -3947,14 +3975,16 @@ Content-Length: 585
       "activityRole" : "PO",
       "activityStartDate" : "2022.06",
       "activityEndDate" : "2026.06",
-      "isActivityVerified" : true
+      "isActivityVerified" : true,
+      "activityDescription" : "이력 설명 1"
     }, {
       "profileActivityId" : 2,
       "activityName" : "리에종",
       "activityRole" : "디자이너",
       "activityStartDate" : "2024.10",
       "activityEndDate" : "2024.12",
-      "isActivityVerified" : true
+      "isActivityVerified" : true,
+      "activityDescription" : "이력 설명 2"
     } ]
   }
 }</code></pre>
@@ -6006,7 +6036,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 710
+Content-Length: 810
 
 {
   "isSuccess" : true,
@@ -6020,7 +6050,8 @@ Content-Length: 710
       "admissionYear" : "입학 연도 1",
       "graduationYear" : "졸업 연도 1",
       "isAttendUniversity" : false,
-      "isEducationVerified" : true
+      "isEducationVerified" : true,
+      "educationDescription" : "학력 설명 1"
     }, {
       "profileEducationId" : 2,
       "universityName" : "대학 이름 2",
@@ -6028,7 +6059,8 @@ Content-Length: 710
       "admissionYear" : "입학 연도 2",
       "graduationYear" : "졸업 연도 2",
       "isAttendUniversity" : false,
-      "isEducationVerified" : true
+      "isEducationVerified" : true,
+      "educationDescription" : "학력 설명 2"
     } ]
   }
 }</code></pre>
@@ -6896,7 +6928,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 515
+Content-Length: 609
 
 {
   "isSuccess" : true,
@@ -6908,13 +6940,15 @@ Content-Length: 515
       "awardsName" : "수상 이름 1",
       "awardsRanking" : "훈격 1",
       "awardsDate" : "수상 날짜 1",
-      "isAwardsVerified" : true
+      "isAwardsVerified" : true,
+      "awardsDescription" : "수상 설명 1"
     }, {
       "profileAwardsId" : 2,
       "awardsName" : "수상 이름 2",
       "awardsRanking" : "훈격 2",
       "awardsDate" : "수상 날짜 2",
-      "isAwardsVerified" : true
+      "isAwardsVerified" : true,
+      "awardsDescription" : "수상 설명 2"
     } ]
   }
 }</code></pre>
@@ -7812,7 +7846,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 622
+Content-Length: 724
 
 {
   "isSuccess" : true,
@@ -7824,13 +7858,15 @@ Content-Length: 622
       "licenseName" : "자격증 자격명 1",
       "licenseInstitution" : "자격증 관련 부처 1",
       "licenseAcquisitionDate" : "자격증 취득 시기 1",
-      "isLicenseVerified" : true
+      "isLicenseVerified" : true,
+      "licenseDescription" : "자격증 설명 1"
     }, {
       "profileLicenseId" : 2,
       "licenseName" : "자격증 자격명 2",
       "licenseInstitution" : "자격증 관련 부처 2",
       "licenseAcquisitionDate" : "자격증 취득 시기 2",
-      "isLicenseVerified" : true
+      "isLicenseVerified" : true,
+      "licenseDescription" : "자격증 설명 2"
     } ]
   }
 }</code></pre>

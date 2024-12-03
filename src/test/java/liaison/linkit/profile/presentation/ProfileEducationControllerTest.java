@@ -130,10 +130,10 @@ public class ProfileEducationControllerTest extends ControllerTest {
     void getProfileEducationItems() throws Exception {
         // given
         final ProfileEducationResponseDTO.ProfileEducationItem firstProfileEducationItem
-                = new ProfileEducationItem(1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, true);
+                = new ProfileEducationItem(1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, true, "학력 설명 1");
 
         final ProfileEducationResponseDTO.ProfileEducationItem secondProfileEducationItem
-                = new ProfileEducationItem(2L, "대학 이름 2", "전공 이름 2", "입학 연도 2", "졸업 연도 2", false, true);
+                = new ProfileEducationItem(2L, "대학 이름 2", "전공 이름 2", "입학 연도 2", "졸업 연도 2", false, true, "학력 설명 2");
 
         final ProfileEducationResponseDTO.ProfileEducationItems profileEducationItems
                 = new ProfileEducationResponseDTO.ProfileEducationItems(Arrays.asList(firstProfileEducationItem, secondProfileEducationItem));

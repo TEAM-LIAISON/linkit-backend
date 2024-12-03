@@ -62,6 +62,7 @@ public class ProfileAwardsMapper {
                 .awardsRanking(profileAwards.getAwardsRanking())
                 .awardsDate(profileAwards.getAwardsDate())
                 .isAwardsVerified(profileAwards.isAwardsVerified())
+                .awardsDescription(profileAwards.getAwardsDescription())
                 .build();
     }
 

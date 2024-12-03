@@ -67,6 +67,7 @@ public class ProfileEducationMapper {
                 .graduationYear(profileEducation.getGraduationYear())
                 .isAttendUniversity(profileEducation.isAttendUniversity())
                 .isEducationVerified(profileEducation.isEducationVerified())
+                .educationDescription(profileEducation.getEducationDescription())
                 .build();
     }
 

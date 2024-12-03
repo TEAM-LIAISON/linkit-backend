@@ -131,10 +131,10 @@ class ProfileAwardsControllerTest extends ControllerTest {
     void getProfileAwardsItems() throws Exception {
         // given
         final ProfileAwardsResponseDTO.ProfileAwardsItem firstProfileAwardsItem
-                = new ProfileAwardsItem(1L, "수상 이름 1", "훈격 1", "수상 날짜 1", true);
+                = new ProfileAwardsItem(1L, "수상 이름 1", "훈격 1", "수상 날짜 1", true, "수상 설명 1");
 
         final ProfileAwardsResponseDTO.ProfileAwardsItem secondProfileAwardsItem
-                = new ProfileAwardsItem(2L, "수상 이름 2", "훈격 2", "수상 날짜 2", true);
+                = new ProfileAwardsItem(2L, "수상 이름 2", "훈격 2", "수상 날짜 2", true, "수상 설명 2");
 
         final ProfileAwardsResponseDTO.ProfileAwardsItems profileAwardsItems
                 = new ProfileAwardsItems(Arrays.asList(firstProfileAwardsItem, secondProfileAwardsItem));

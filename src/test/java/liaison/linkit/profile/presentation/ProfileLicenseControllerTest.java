@@ -133,10 +133,10 @@ public class ProfileLicenseControllerTest extends ControllerTest {
     void getProfileLicenseItems() throws Exception {
         // given
         final ProfileLicenseResponseDTO.ProfileLicenseItem firstProfileLicenseItem
-                = new ProfileLicenseItem(1L, "자격증 자격명 1", "자격증 관련 부처 1", "자격증 취득 시기 1", true);
+                = new ProfileLicenseItem(1L, "자격증 자격명 1", "자격증 관련 부처 1", "자격증 취득 시기 1", true, "자격증 설명 1");
 
         final ProfileLicenseResponseDTO.ProfileLicenseItem secondProfileLicenseItem
-                = new ProfileLicenseItem(2L, "자격증 자격명 2", "자격증 관련 부처 2", "자격증 취득 시기 2", true);
+                = new ProfileLicenseItem(2L, "자격증 자격명 2", "자격증 관련 부처 2", "자격증 취득 시기 2", true, "자격증 설명 2");
 
         final ProfileLicenseResponseDTO.ProfileLicenseItems profileLicenseItems
                 = new ProfileLicenseItems(Arrays.asList(firstProfileLicenseItem, secondProfileLicenseItem));

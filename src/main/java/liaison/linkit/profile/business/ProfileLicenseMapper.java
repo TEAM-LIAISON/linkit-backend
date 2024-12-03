@@ -59,6 +59,7 @@ public class ProfileLicenseMapper {
                 .licenseInstitution(profileLicense.getLicenseInstitution())
                 .licenseAcquisitionDate(profileLicense.getLicenseAcquisitionDate())
                 .isLicenseVerified(profileLicense.isLicenseVerified())
+                .licenseDescription(profileLicense.getLicenseDescription())
                 .build();
     }
 

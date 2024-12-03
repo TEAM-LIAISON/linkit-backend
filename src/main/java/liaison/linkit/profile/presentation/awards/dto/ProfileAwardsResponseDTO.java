@@ -41,6 +41,7 @@ public class ProfileAwardsResponseDTO {
         private String awardsRanking;
         private String awardsDate;
         private Boolean isAwardsVerified;
+        private String awardsDescription;
     }
 
     @Builder
@@ -51,7 +52,7 @@ public class ProfileAwardsResponseDTO {
         @Builder.Default
         private List<ProfileAwardsItem> profileAwardsItems = new ArrayList<>();
     }
-    
+
     @Builder
     @Getter
     @NoArgsConstructor

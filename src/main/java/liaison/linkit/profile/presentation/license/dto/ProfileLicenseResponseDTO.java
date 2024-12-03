@@ -29,6 +29,7 @@ public class ProfileLicenseResponseDTO {
         private String licenseInstitution;
         private String licenseAcquisitionDate;
         private Boolean isLicenseVerified;
+        private String licenseDescription;
     }
 
     @Builder
