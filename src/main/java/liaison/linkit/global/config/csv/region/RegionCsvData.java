@@ -1,4 +1,4 @@
-package liaison.linkit.member.presentation.dto.csv;
+package liaison.linkit.global.config.csv.region;
 
 import lombok.Data;
 
@@ -7,11 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class MemberRoleCsvData {
-    private String roleName;
+public class RegionCsvData {
+
+    // 시도 이름
+    public String cityName;
+
+    // 시군구 이름
+    public String divisionName;
 
     public static List<String> getFieldNames() {
-        Field[] declaredFields = MemberRoleCsvData.class.getDeclaredFields();
+        Field[] declaredFields = RegionCsvData.class.getDeclaredFields();
         List<String> result = new ArrayList<>();
         for (Field declaredField : declaredFields) {
             result.add(declaredField.getName());

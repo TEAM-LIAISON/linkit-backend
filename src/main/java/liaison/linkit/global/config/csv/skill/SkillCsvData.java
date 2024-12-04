@@ -1,4 +1,4 @@
-package liaison.linkit.profile.csv;
+package liaison.linkit.global.config.csv.skill;
 
 import lombok.Data;
 
@@ -7,11 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class JobRoleCsvData {
-    private String jobRoleName;
+public class SkillCsvData {
+    // 기술 이름
+    private String skillName;
 
     public static List<String> getFieldNames() {
-        Field[] declaredFields = JobRoleCsvData.class.getDeclaredFields();
+        Field[] declaredFields = SkillCsvData.class.getDeclaredFields();
         List<String> result = new ArrayList<>();
         for (Field declaredField : declaredFields) {
             result.add(declaredField.getName());

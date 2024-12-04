@@ -5,7 +5,6 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -23,9 +22,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class AnnouncementPosition extends BaseDateTimeEntity {
+    
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "announcement_position_id")
     private Long id;
 
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)

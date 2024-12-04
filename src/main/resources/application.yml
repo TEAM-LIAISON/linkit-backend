@@ -131,32 +131,14 @@ jwt:
 university:
   csv-path: ${university.path}
 
-teamBuildingField:
-  csv-path: ${teamBuildingField.path}
-
-major:
-  csv-path: ${major.path}
-
 region:
   csv-path: ${region.path}
 
 scale:
   csv-path: ${scale.path}
 
-memberRole:
-  csv-path: ${memberRole.path}
-
-industrySector:
-  csv-path: ${industrySector.path}
-
-activityMethodTag:
-  csv-path: ${activityMethodTag.path}
-
 skill:
   csv-path: ${skill.path}
-
-degree:
-  csv-path: ${degree.path}
 
 jobRole:
   csv-path: ${jobRole.path}
@@ -169,10 +151,6 @@ profileState:
 
 teamState:
   csv-path: ${teamState.path}
-
-naver:
-  id: linkit@linkit.im
-  password: ${mail.password}
 
 google:
   id: linkit@linkit.im

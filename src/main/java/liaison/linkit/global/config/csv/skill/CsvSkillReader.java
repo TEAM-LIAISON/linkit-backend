@@ -1,6 +1,5 @@
 package liaison.linkit.global.config.csv.skill;
 
-import liaison.linkit.profile.csv.SkillCsvData;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemReader;

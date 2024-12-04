@@ -25,18 +25,6 @@ public class MailServiceImpl implements MailService {
     @Value("${google.id}")
     private String id;
 
-    @Override
-    public void sendEmailReAuthenticationMail(final String email, final String authcode) throws MessagingException {
-        final MimeMessage mimeMessage = createEmailReAuthenticationMail(email, authcode);
-
-        try {
-            emailSender.send(mimeMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException();
-        }
-    }
-
     // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
     @Override
     public void mailRequestPrivateToPrivate(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill,
@@ -181,46 +169,6 @@ public class MailServiceImpl implements MailService {
             e.printStackTrace();
             throw new IllegalArgumentException();
         }
-    }
-
-    private MimeMessage createEmailReAuthenticationMail(final String email, final String authCode) throws MessagingException {
-        final MimeMessage mimeMessage = emailSender.createMimeMessage();
-
-        mimeMessage.addRecipients(Message.RecipientType.TO, email);
-        mimeMessage.setSubject("[링킷] 이메일 변경 인증 코드 발송");
-
-        final String msgg = String.format("""
-                           <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" style="border-collapse: collapse;">
-                                               <tbody>
-                                                   <tr>
-                                                       <td>
-                                                           <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="max-width: 600px; border-radius: 8px; margin: 0 auto;">
-                                                               <tbody>
-                                                                   <tr>
-                                                                       <td align="left" style="padding: 20px;">
-                                                                           <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;">
-                                                                       </td>
-                                                                   </tr>
-                                                                   <tr>
-                                                                       <td align="center" style="padding: 30px 20px;">
-                                                                           <span style="font-size: 24px; font-weight: bold;">이메일 인증 코드</span>
-                                                                           <p style="font-size: 16px; color: #555; text-align: center;">귀하의 이메일 변경을 위한 인증 코드입니다:</p>
-                                                                           <div class="code">%s</div>
-                                                                           <p style="font-size: 14px; color: #555; text-align: center;">위 코드를 인증 폼에 입력해 주세요.</p>
-                                                                       </td>
-                                                                   </tr>
-                                                               </tbody>
-                                                           </table>
-                                                       </td>
-                                                   </tr>
-                                               </tbody>
-                                           </table>     
-                """, authCode);
-
-        mimeMessage.setContent(msgg, "text/html; charset=utf-8");
-        mimeMessage.setFrom(id);
-
-        return mimeMessage;
     }
 
     // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우

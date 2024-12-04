@@ -75,7 +75,7 @@ public class QTeamMemberAnnouncement extends EntityPathBase<TeamMemberAnnounceme
 
     public QTeamMemberAnnouncement(Class<? extends TeamMemberAnnouncement> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.team = inits.isInitialized("team") ? new liaison.linkit.team.domain.QTeam(forProperty("team"), inits.get("team")) : null;
+        this.team = inits.isInitialized("team") ? new liaison.linkit.team.domain.QTeam(forProperty("team")) : null;
     }
 
 }

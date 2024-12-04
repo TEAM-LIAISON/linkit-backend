@@ -47,7 +47,7 @@ public class QTeamScale extends EntityPathBase<TeamScale> {
     public QTeamScale(Class<? extends TeamScale> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.scale = inits.isInitialized("scale") ? new QScale(forProperty("scale")) : null;
-        this.team = inits.isInitialized("team") ? new liaison.linkit.team.domain.QTeam(forProperty("team"), inits.get("team")) : null;
+        this.team = inits.isInitialized("team") ? new liaison.linkit.team.domain.QTeam(forProperty("team")) : null;
     }
 
 }
