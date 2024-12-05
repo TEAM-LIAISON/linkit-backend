@@ -74,11 +74,12 @@ include::{snippets}/login-controller-test/quit-account/response-fields.adoc[]
 ====
 *요청*
 
-include::{snippets}/login-controller-test/re-authentication-email/http-request.adoc[]
+include::{snippets}/member-controller-test/re-authentication-email/http-request.adoc[]
+include::{snippets}/member-controller-test/re-authentication-email/request-fields.adoc[]
 
 *응답*
-include::{snippets}/login-controller-test/re-authentication-email/http-response.adoc[]
-include::{snippets}/login-controller-test/re-authentication-email/response-fields.adoc[]
+include::{snippets}/member-controller-test/re-authentication-email/http-response.adoc[]
+include::{snippets}/member-controller-test/re-authentication-email/response-fields.adoc[]
 
 ====
 
@@ -88,11 +89,12 @@ include::{snippets}/login-controller-test/re-authentication-email/response-field
 
 *요청*
 
-include::{snippets}/login-controller-test/verification-auth-code/http-request.adoc[]
+include::{snippets}/member-controller-test/verification-auth-code/http-request.adoc[]
+include::{snippets}/member-controller-test/verification-auth-code/request-fields.adoc[]
 
 *응답*
-include::{snippets}/login-controller-test/verification-auth-code/http-response.adoc[]
-include::{snippets}/login-controller-test/verification-auth-code/response-fields.adoc[]
+include::{snippets}/member-controller-test/verification-auth-code/http-response.adoc[]
+include::{snippets}/member-controller-test/verification-auth-code/response-fields.adoc[]
 
 ====
 
@@ -791,4 +793,272 @@ include::{snippets}/profile-link-controller-test/update-profile-link-items/http-
 include::{snippets}/profile-link-controller-test/update-profile-link-items/response-fields.adoc[]
 ====
 
-== #[스크랩]#
+== #[팀]#
+
+=== 팀 생성
+
+====
+*요청*
+
+include::{snippets}/team-controller-test/create-team/http-request.adoc[]
+include::{snippets}/team-controller-test/create-team/request-parts.adoc[]
+include::{snippets}/team-controller-test/create-team/request-part-addTeamBasicInformRequest-fields.adoc[]
+
+*응답*
+
+include::{snippets}/team-controller-test/create-team/http-response.adoc[]
+include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
+====
+
+== #[팀 - 팀 로그]#
+
+=== 팀 로그 본문 이미지 첨부
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/add-team-log-body-image/http-request.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log-body-image/path-parameters.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log-body-image/request-parts.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/add-team-log-body-image/http-response.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log-body-image/response-fields.adoc[]
+====
+
+=== 팀 로그 전체 조회
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/get-team-log-items/http-request.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/get-team-log-items/http-response.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-items/response-fields.adoc[]
+
+====
+
+=== 팀 로그 단일 조회
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/get-team-log-item/http-request.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-item/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/get-team-log-item/http-response.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-item/response-fields.adoc[]
+====
+
+=== 팀 로그 단일 생성
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/add-team-log/http-request.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log/path-parameters.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/add-team-log/http-response.adoc[]
+include::{snippets}/team-log-controller-test/add-team-log/response-fields.adoc[]
+
+====
+
+=== 팀 로그 단일 삭제
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/remove-team-log/http-request.adoc[]
+include::{snippets}/team-log-controller-test/remove-team-log/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/remove-team-log/http-response.adoc[]
+include::{snippets}/team-log-controller-test/remove-team-log/response-fields.adoc[]
+
+====
+
+=== 팀 로그 대표글 설정 여부 수정
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/update-team-log-type/http-request.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log-type/path-parameters.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log-type/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/update-team-log-type/http-response.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log-type/request-fields.adoc[]
+====
+
+== #[팀 - 팀원 공고]#
+
+=== 팀원 공고 단일 생성
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/path-parameters.adoc[]
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/add-team-member-announcement/response-fields.adoc[]
+
+====
+
+=== 팀원 공고 단일 수정
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/path-parameters.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement/response-fields.adoc[]
+====
+
+=== 팀원 공고 단일 삭제
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/response-fields.adoc[]
+
+====
+
+== #[팀 - 팀 프로덕트]#
+
+=== 팀 프로덕트 전체 조회
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/get-team-product-items/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/get-team-product-items/http-response.adoc[]
+include::{snippets}/team-product-controller-test/get-team-product-items/response-fields.adoc[]
+====
+
+=== 팀 프로덕트 단일 조회
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/get-team-product-detail/http-request.adoc[]
+include::{snippets}/team-product-controller-test/get-team-product-detail/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/get-team-product-detail/http-response.adoc[]
+include::{snippets}/team-product-controller-test/get-team-product-detail/response-fields.adoc[]
+====
+
+=== 팀 프로덕트 단일 생성
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/add-team-product/http-request.adoc[]
+include::{snippets}/team-product-controller-test/add-team-product/path-parameters.adoc[]
+include::{snippets}/team-product-controller-test/add-team-product/request-parts.adoc[]
+include::{snippets}/team-product-controller-test/add-team-product/request-part-addTeamProductRequest-fields.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/add-team-product/http-response.adoc[]
+include::{snippets}/team-product-controller-test/add-team-product/response-fields.adoc[]
+====
+
+=== 팀 프로덕트 단일 수정
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/update-team-product/http-request.adoc[]
+include::{snippets}/team-product-controller-test/update-team-product/path-parameters.adoc[]
+include::{snippets}/team-product-controller-test/update-team-product/request-parts.adoc[]
+include::{snippets}/team-product-controller-test/update-team-product/request-part-updateTeamProductRequest-fields.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/update-team-product/http-response.adoc[]
+include::{snippets}/team-product-controller-test/update-team-product/response-fields.adoc[]
+====
+
+=== 팀 프로덕트 단일 삭제
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/remove-team-product/http-request.adoc[]
+include::{snippets}/team-product-controller-test/remove-team-product/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/remove-team-product/http-response.adoc[]
+include::{snippets}/team-product-controller-test/remove-team-product/response-fields.adoc[]
+====
+
+== #[팀 - 팀 연혁]#
+
+=== 팀 연혁 전체 조회
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/get-team-history-items/http-request.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/get-team-history-items/http-response.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-items/response-fields.adoc[]
+====
+
+=== 팀 연혁 단일 조회
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/get-team-history-detail/http-request.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-detail/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/get-team-history-detail/http-response.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-detail/response-fields.adoc[]
+====
+
+=== 팀 연혁 단일 생성
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/add-team-history/http-request.adoc[]
+include::{snippets}/team-history-controller-test/add-team-history/path-parameters.adoc[]
+include::{snippets}/team-history-controller-test/add-team-history/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/add-team-history/http-response.adoc[]
+include::{snippets}/team-history-controller-test/add-team-history/response-fields.adoc[]
+====
+
+=== 팀 연혁 단일 수정
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/update-team-history/http-request.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/path-parameters.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/update-team-history/http-response.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/response-fields.adoc[]
+====
+
+=== 팀 연혁 단일 삭제
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/update-team-history/http-request.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/update-team-history/http-response.adoc[]
+include::{snippets}/team-history-controller-test/update-team-history/response-fields.adoc[]
+====
+
+
