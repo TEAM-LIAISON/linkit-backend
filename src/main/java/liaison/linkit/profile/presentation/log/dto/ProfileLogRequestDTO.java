@@ -24,6 +24,16 @@ public class ProfileLogRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class UpdateProfileLogRequest {
+        private String logTitle;
+        private String logContent;
+        private Boolean isLogPublic;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class UpdateProfileLogType {
         private LogType logType;
     }

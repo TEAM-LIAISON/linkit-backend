@@ -52,6 +52,19 @@ public class ProfileLogResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class UpdateProfileLogResponse {
+        private Long profileLogId;
+        private String logTitle;
+        private String logContent;
+        private LocalDateTime createdAt;
+        private LogType logType;
+        private Boolean isLogPublic;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RemoveProfileLogResponse {
         private Long profileLogId;
     }

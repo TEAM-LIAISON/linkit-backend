@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class ProfileLogQueryAdapter {
     private final ProfileLogRepository profileLogRepository;
 
+
     public ProfileLog getProfileLog(final Long profileLogId) {
         return profileLogRepository.findById(profileLogId)
                 .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
@@ -29,4 +30,6 @@ public class ProfileLogQueryAdapter {
     public boolean existsProfileLogByProfileId(final Long profileId) {
         return profileLogRepository.existsProfileLogByProfileId(profileId);
     }
+
+
 }

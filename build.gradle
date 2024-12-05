@@ -37,6 +37,8 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    
+    implementation 'org.jsoup:jsoup:1.15.3'
 
     // p6spy 자리
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'

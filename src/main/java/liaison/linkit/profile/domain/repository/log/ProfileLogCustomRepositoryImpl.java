@@ -8,6 +8,7 @@ import java.util.Optional;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.domain.QProfileLog;
 import liaison.linkit.profile.domain.type.LogType;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -77,5 +78,32 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                 .from(qProfileLog)
                 .where(qProfileLog.profile.id.eq(profileId))
                 .fetchFirst() != null;
+    }
+
+    @Override
+    public ProfileLog updateProfileLog(final ProfileLog profileLog, final UpdateProfileLogRequest updateProfileLogRequest) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        // 프로필 활동 업데이트
+        long updatedCount = queryFactory
+                .update(qProfileLog)
+                .set(qProfileLog.logTitle, updateProfileLogRequest.getLogTitle())
+                .set(qProfileLog.logContent, updateProfileLogRequest.getLogContent())
+                .set(qProfileLog.isLogPublic, updateProfileLogRequest.getIsLogPublic())
+                .where(qProfileLog.id.eq(profileLog.getId()))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) {
+            // 업데이트된 ProfileActivity 조회 및 반환
+            return queryFactory
+                    .selectFrom(qProfileLog)
+                    .where(qProfileLog.id.eq(profileLog.getId()))
+                    .fetchOne();
+        } else {
+            return null;
+        }
     }
 }
