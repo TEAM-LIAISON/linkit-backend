@@ -1,31 +1,45 @@
 package liaison.linkit.member.business;
 
+import jakarta.mail.MessagingException;
+import java.util.Random;
+import liaison.linkit.login.exception.AuthCodeBadRequestException;
+import liaison.linkit.login.infrastructure.MailReAuthenticationRedisUtil;
+import liaison.linkit.mail.service.AuthCodeMailService;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailVerificationResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 // 소셜로그인 이후 기본 정보 기입 플로우부터
 @Service
-@RequiredArgsConstructor
 @Transactional
+@RequiredArgsConstructor
+@Slf4j
 public class MemberService {
 
     private final MemberQueryAdapter memberQueryAdapter;
     private final MemberBasicInformQueryAdapter memberBasicInformQueryAdapter;
     private final MemberBasicInformCommandAdapter memberBasicInformCommandAdapter;
     private final MemberBasicInformMapper memberBasicInformMapper;
+
+    private final MailReAuthenticationRedisUtil mailReAuthenticationRedisUtil;
+    private final AuthCodeMailService authCodeMailService;
 
     // 회원 기본 정보 요청 (UPDATE)
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
@@ -73,5 +87,72 @@ public class MemberService {
     public UpdateConsentMarketingResponse updateConsentMarketing(final Long memberId, final UpdateConsentMarketingRequest updateConsentMarketingRequest) {
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateConsentMarketing(memberId, updateConsentMarketingRequest);
         return memberBasicInformMapper.toUpdateConsentMarketingResponse(updatedMemberBasicInform);
+    }
+
+
+    public MailReAuthenticationResponse reAuthenticationEmail(
+            final Long memberId,
+            final MailReAuthenticationRequest mailReAuthenticationRequest
+    ) throws MessagingException {
+
+        // 레디스에서 이메일 해시키가 존재한다면 데이터를 삭제한다. (5분 만료 이전에 다시 요청 보내는 경우 대비)
+        if (mailReAuthenticationRedisUtil.existData(mailReAuthenticationRequest.getEmail())) {
+            mailReAuthenticationRedisUtil.deleteData(mailReAuthenticationRequest.getEmail());
+        }
+
+        // 재인증 코드를 생성한다
+        final String authCode = createCode();
+
+        // Redis 에 해당 인증코드 인증 시간 설정
+        mailReAuthenticationRedisUtil.setDataExpire(mailReAuthenticationRequest.getEmail(), authCode, 60 * 10L);
+
+        // DB 조회
+        final Member member = memberQueryAdapter.findById(memberId);
+
+        // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
+        authCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), member.getEmail(), authCode);
+
+        // 재인증 코드를 발송한 시간 발행
+        return memberBasicInformMapper.toReAuthenticationResponse();
+    }
+
+    private String createCode() {
+        int leftLimit = 48; // number '0'
+        int rightLimit = 57; // number '9'
+        int targetStringLength = 6;
+        Random random = new Random();
+
+        return random.ints(leftLimit, rightLimit + 1)
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+    }
+
+    public MailVerificationResponse verifyAuthCodeAndChangeAccountEmail(final Long memberId, final AuthCodeVerificationRequest authCodeVerificationRequest) {
+        final String authCode = authCodeVerificationRequest.getAuthCode();
+        log.info("authCode = {}", authCode);
+        final String changeRequestEmail = authCodeVerificationRequest.getChangeRequestEmail();
+        log.info("changeRequestEmail = {}", changeRequestEmail);
+        
+        // 인증 코드가 잘못 입력된 경우
+        if (!verifyEmailCode(changeRequestEmail, authCode)) {
+            throw AuthCodeBadRequestException.EXCEPTION;
+        }
+
+        final Member member = memberQueryAdapter.findById(memberId);
+        member.updateEmail(changeRequestEmail);
+
+        return memberBasicInformMapper.toEmailVerificationResponse(changeRequestEmail);
+    }
+
+    // 코드 검증
+    public Boolean verifyEmailCode(String email, String code) {
+        String codeFoundByEmail = mailReAuthenticationRedisUtil.getData(email);
+        log.info("codeFoundByEmail = {}", codeFoundByEmail);
+        if (codeFoundByEmail == null) {
+            log.info("false 실행");
+            return false;
+        }
+        return codeFoundByEmail.equals(code);
     }
 }

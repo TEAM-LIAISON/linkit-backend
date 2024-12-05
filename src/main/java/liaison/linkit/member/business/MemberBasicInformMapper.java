@@ -1,9 +1,12 @@
 package liaison.linkit.member.business;
 
+import java.time.LocalDateTime;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.type.Platform;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailVerificationResponse;
 
 @Mapper
 public class MemberBasicInformMapper {
@@ -28,7 +31,7 @@ public class MemberBasicInformMapper {
                 .platform(platform)
                 .build();
     }
-    
+
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse toMemberBasicInformResponse(
             final MemberBasicInform memberBasicInform,
             final String email
@@ -74,5 +77,19 @@ public class MemberBasicInformMapper {
     ) {
         return MemberBasicInformResponseDTO.UpdateConsentMarketingResponse.builder()
                 .isMarketingAgree(memberBasicInform.isMarketingAgree()).build();
+    }
+
+    public MailReAuthenticationResponse toReAuthenticationResponse() {
+        return MailReAuthenticationResponse.builder()
+                .reAuthenticationEmailSendAt(LocalDateTime.now())
+                .build();
+    }
+
+    public MailVerificationResponse toEmailVerificationResponse(final String email) {
+        return MailVerificationResponse
+                .builder()
+                .changedEmail(email)
+                .verificationSuccessAt(LocalDateTime.now())
+                .build();
     }
 }

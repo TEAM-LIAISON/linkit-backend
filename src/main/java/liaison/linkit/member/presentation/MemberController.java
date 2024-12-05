@@ -6,6 +6,8 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.member.business.MemberService;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
@@ -88,6 +90,26 @@ public class MemberController {
     ) {
         log.info("memberId = {}의 회원 마케팅 수신 동의 정보 수정 요청 발생", accessor.getMemberId());
         return CommonResponse.onSuccess(memberService.updateConsentMarketing(accessor.getMemberId(), updateConsentMarketingRequest));
+    }
+
+    // 회원이 이메일 재인증을 한다
+    @PostMapping("/email/re-authentication")
+    @MemberOnly
+    public CommonResponse<MemberBasicInformResponseDTO.MailReAuthenticationResponse> reAuthenticationEmail(
+            @Auth final Accessor accessor,
+            @RequestBody final MailReAuthenticationRequest emailReAuthenticationRequest
+    ) throws Exception {
+        return CommonResponse.onSuccess(memberService.reAuthenticationEmail(accessor.getMemberId(), emailReAuthenticationRequest));
+    }
+
+    // 회원이 수신한 재인증 코드를 입력한다.
+    @PostMapping("/email/verification")
+    @MemberOnly
+    public CommonResponse<MemberBasicInformResponseDTO.MailVerificationResponse> verificationAuthCode(
+            @Auth final Accessor accessor,
+            @RequestBody final AuthCodeVerificationRequest authCodeVerificationRequest
+    ) {
+        return CommonResponse.onSuccess(memberService.verifyAuthCodeAndChangeAccountEmail(accessor.getMemberId(), authCodeVerificationRequest));
     }
 }
 

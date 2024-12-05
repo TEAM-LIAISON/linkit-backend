@@ -31,11 +31,8 @@ public class AccountResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginResponse {
-
         private String accessToken;
-
         private String email;
-
         private Boolean isMemberBasicInform;
 
     }
@@ -53,30 +50,9 @@ public class AccountResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LoginServiceResponse {
-
         private String accessToken;
-
         private String refreshToken;
-
         private String email;
-
         private Boolean isMemberBasicInform;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class EmailReAuthenticationResponse {
-        private LocalDateTime reAuthenticationEmailSendAt;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class EmailVerificationResponse {
-        private String changedEmail;
-        private LocalDateTime verificationSuccessAt;
     }
 }

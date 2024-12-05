@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class EmailReAuthenticationRedisUtil {
+public class MailReAuthenticationRedisUtil {
 
     private final StringRedisTemplate stringRedisTemplate;
 

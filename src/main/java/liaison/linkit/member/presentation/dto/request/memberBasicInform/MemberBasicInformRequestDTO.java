@@ -70,4 +70,21 @@ public class MemberBasicInformRequestDTO {
         @NotNull(message = "광고성 정보 수신 동의를 선택해주세요")
         private Boolean isMarketingAgree;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MailReAuthenticationRequest {
+        private String email;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AuthCodeVerificationRequest {
+        private String changeRequestEmail;
+        private String authCode;
+    }
 }
