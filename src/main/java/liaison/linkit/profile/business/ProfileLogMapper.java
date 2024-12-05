@@ -8,6 +8,7 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveProfileLogResponse;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogResponse;
 
 @Mapper
 public class ProfileLogMapper {
@@ -60,6 +61,17 @@ public class ProfileLogMapper {
         return AddProfileLogBodyImageResponse
                 .builder()
                 .profileLogBodyImagePath(profileLogBodyImagePath)
+                .build();
+    }
+
+    public UpdateProfileLogResponse toUpdateProfileLogResponse(final ProfileLog profileLog) {
+        return UpdateProfileLogResponse
+                .builder()
+                .profileLogId(profileLog.getId())
+                .logTitle(profileLog.getLogTitle())
+                .logContent(profileLog.getLogContent())
+                .isLogPublic(profileLog.isLogPublic())
+                .logType(profileLog.getLogType())
                 .build();
     }
 }

@@ -1,8 +1,11 @@
 package liaison.linkit.profile.implement.log;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.ProfileLog;
+import liaison.linkit.profile.domain.ProfileLogImage;
+import liaison.linkit.profile.domain.repository.log.ProfileLogImageRepository;
 import liaison.linkit.profile.domain.repository.log.ProfileLogRepository;
 import liaison.linkit.profile.exception.log.ProfileLogNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProfileLogQueryAdapter {
     private final ProfileLogRepository profileLogRepository;
+    private final ProfileLogImageRepository profileLogImageRepository;
 
     public ProfileLog getProfileLog(final Long profileLogId) {
         return profileLogRepository.findById(profileLogId)
@@ -28,5 +32,9 @@ public class ProfileLogQueryAdapter {
 
     public boolean existsProfileLogByProfileId(final Long profileId) {
         return profileLogRepository.existsProfileLogByProfileId(profileId);
+    }
+
+    public List<ProfileLogImage> getUnusedProfileLogImages(LocalDateTime threshold) {
+        return profileLogImageRepository.getUnusedProfileLogImages(threshold);
     }
 }

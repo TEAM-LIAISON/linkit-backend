@@ -73,6 +73,18 @@ public class ProfileLogController {
         return CommonResponse.onSuccess(profileLogService.addProfileLog(accessor.getMemberId(), addProfileLogRequest));
     }
 
+    // 로그 수정
+    @PostMapping("/{profileLogId}")
+    @MemberOnly
+    public CommonResponse<ProfileLogResponseDTO.UpdateProfileLogResponse> updateProfileLog(
+            @Auth final Accessor accessor,
+            @PathVariable final Long profileLogId,
+            @RequestBody ProfileLogRequestDTO.UpdateProfileLogRequest updateProfileLogRequest
+    ) {
+        log.info("memberId = {}의 프로필 로그에 대한 수정 요청이 발생했습니다.", accessor.getMemberId());
+        return CommonResponse.onSuccess(profileLogService.updateProfileLog(accessor.getMemberId(), profileLogId, updateProfileLogRequest));
+    }
+
     // 로그 삭제
     @DeleteMapping("/{profileLogId}")
     @MemberOnly
@@ -85,7 +97,7 @@ public class ProfileLogController {
     }
 
     // 로그 대표글/일반글 변경
-    @PostMapping("/{profileLogId}")
+    @PostMapping("/type/{profileLogId}")
     @MemberOnly
     public CommonResponse<UpdateProfileLogTypeResponse> updateProfileLogPublicState(
             @Auth final Accessor accessor,
@@ -95,4 +107,7 @@ public class ProfileLogController {
         log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청이 발생했습니다.", accessor.getMemberId(), profileLogId);
         return CommonResponse.onSuccess(profileLogService.updateProfileLogType(accessor.getMemberId(), profileLogId, updateProfileLogType));
     }
+
+    // 1. 이미지 삭제 요청
+    // 2. 본문에 있는 body만 삭제
 }

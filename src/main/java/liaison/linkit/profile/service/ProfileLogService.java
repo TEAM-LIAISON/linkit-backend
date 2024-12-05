@@ -2,6 +2,7 @@ package liaison.linkit.profile.service;
 
 import static liaison.linkit.profile.domain.type.LogType.GENERAL_LOG;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import liaison.linkit.common.validator.ImageValidator;
 import liaison.linkit.file.domain.ImageFile;
@@ -9,15 +10,18 @@ import liaison.linkit.file.infrastructure.S3Uploader;
 import liaison.linkit.profile.business.ProfileLogMapper;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileLog;
+import liaison.linkit.profile.domain.ProfileLogImage;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogCommandAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogQueryAdapter;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItems;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveProfileLogResponse;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogTypeResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -94,9 +98,18 @@ public class ProfileLogService {
             profileLogBodyImagePath = s3Uploader.uploadProfileLogBodyImage(new ImageFile(profileLogBodyImage));
         }
 
-        // DB에 저장안하면 발생하는 문제점?
-        // 수정요청이 들어갈때? 이미지가 남는다?
+        final ProfileLogImage profileLogImage = new ProfileLogImage(null, profileLogBodyImagePath, true, LocalDateTime.now(), null);
+        final ProfileLogImage savedProfileLogImage = profileLogCommandAdapter.addProfileLogImage(profileLogImage);
+        log.info("savedProfileLogImage = {}", savedProfileLogImage);
 
         return profileLogMapper.toAddProfileLogBodyImageResponse(profileLogBodyImagePath);
+    }
+
+    public UpdateProfileLogResponse updateProfileLog(final Long memberId, final Long profileLogId, final UpdateProfileLogRequest updateProfileLogRequest) {
+        final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+
+        final ProfileLog updatedProfileLog = profileLogCommandAdapter.updateProfileLog(profileLog, updateProfileLogRequest);
+
+        return profileLogMapper.toUpdateProfileLogResponse(updatedProfileLog);
     }
 }
