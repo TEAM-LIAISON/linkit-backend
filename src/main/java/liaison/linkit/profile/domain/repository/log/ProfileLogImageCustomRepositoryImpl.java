@@ -1,8 +1,8 @@
 package liaison.linkit.profile.domain.repository.log;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.time.LocalDateTime;
 import java.util.List;
+import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.domain.ProfileLogImage;
 import liaison.linkit.profile.domain.QProfileLogImage;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +14,12 @@ public class ProfileLogImageCustomRepositoryImpl implements ProfileLogImageCusto
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<ProfileLogImage> getUnusedProfileLogImages(final LocalDateTime threshold) {
-        QProfileLogImage profileLogImage = QProfileLogImage.profileLogImage;
+    public List<ProfileLogImage> findByProfileLog(final ProfileLog profileLog) {
+        QProfileLogImage qProfileLogImage = QProfileLogImage.profileLogImage;
 
-        return queryFactory.selectFrom(profileLogImage)
-                .where(
-                        profileLogImage.isTemporary.eq(true)
-                                .and(profileLogImage.createdAt.loe(threshold))
-                )
+        return queryFactory
+                .selectFrom(qProfileLogImage)
+                .where(qProfileLogImage.profileLog.eq(profileLog))
                 .fetch();
     }
 }

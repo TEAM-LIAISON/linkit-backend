@@ -22,15 +22,11 @@ public class QProfileLogImage extends EntityPathBase<ProfileLogImage> {
 
     public static final QProfileLogImage profileLogImage = new QProfileLogImage("profileLogImage");
 
-    public final DateTimePath<java.time.LocalDateTime> createdAt = createDateTime("createdAt", java.time.LocalDateTime.class);
-
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final BooleanPath isTemporary = createBoolean("isTemporary");
+    public final liaison.linkit.image.domain.QImage image;
 
     public final QProfileLog profileLog;
-
-    public final StringPath profileLogImageUrl = createString("profileLogImageUrl");
 
     public QProfileLogImage(String variable) {
         this(ProfileLogImage.class, forVariable(variable), INITS);
@@ -50,6 +46,7 @@ public class QProfileLogImage extends EntityPathBase<ProfileLogImage> {
 
     public QProfileLogImage(Class<? extends ProfileLogImage> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.image = inits.isInitialized("image") ? new liaison.linkit.image.domain.QImage(forProperty("image")) : null;
         this.profileLog = inits.isInitialized("profileLog") ? new QProfileLog(forProperty("profileLog"), inits.get("profileLog")) : null;
     }
 

@@ -116,7 +116,7 @@ public class ProfileLogControllerTest extends ControllerTest {
 
     private ResultActions performUpdateProfileLogType(final Long profileLogId, final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType) throws Exception {
         return mockMvc.perform(
-                post("/api/v1/profile/log/{profileLogId}", profileLogId)
+                post("/api/v1/profile/log/type/{profileLogId}", profileLogId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)

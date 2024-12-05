@@ -107,7 +107,4 @@ public class ProfileLogController {
         log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청이 발생했습니다.", accessor.getMemberId(), profileLogId);
         return CommonResponse.onSuccess(profileLogService.updateProfileLogType(accessor.getMemberId(), profileLogId, updateProfileLogType));
     }
-
-    // 1. 이미지 삭제 요청
-    // 2. 본문에 있는 body만 삭제
 }
