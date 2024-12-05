@@ -2,7 +2,6 @@ package liaison.linkit.global.config.csv.jobRole;
 
 import liaison.linkit.profile.domain.repository.jobRole.JobRoleRepository;
 import liaison.linkit.profile.domain.role.JobRole;
-import liaison.linkit.profile.csv.JobRoleCsvData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;

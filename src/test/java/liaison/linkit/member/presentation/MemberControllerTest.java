@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -20,18 +21,23 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
+import java.time.LocalDateTime;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.member.business.MemberService;
 import liaison.linkit.member.domain.type.Platform;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
+import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailVerificationResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MemberBasicInformDetail;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse;
@@ -47,6 +53,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -56,6 +63,9 @@ import org.springframework.test.web.servlet.ResultActions;
 @AutoConfigureRestDocs
 @Slf4j
 class MemberControllerTest extends ControllerTest {
+
+    private final static String REFRESH_TOKEN = "refreshToken";
+    private final static String RENEW_ACCESS_TOKEN = "I'mNewAccessToken!";
 
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
     private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
@@ -583,5 +593,152 @@ class MemberControllerTest extends ControllerTest {
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원은 이메일 재인증을 할 수 있다.")
+    @Test
+    void reAuthenticationEmail() throws Exception {
+        // given
+        given(refreshTokenRepository.existsById(any())).willReturn(true);
+        doNothing().when(jwtProvider).validateTokens(any());
+        given(jwtProvider.getSubject(any())).willReturn("1");
+
+        final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
+        final Cookie cookie = new Cookie("refreshToken", memberTokens.getRefreshToken());
+
+        final MailReAuthenticationRequest mailReAuthenticationRequest = new MailReAuthenticationRequest("kwondm7@gmail.com");
+
+        final MemberBasicInformResponseDTO.MailReAuthenticationResponse mailReAuthenticationResponse = new MailReAuthenticationResponse(LocalDateTime.now());
+
+        // when
+        when(memberService.reAuthenticationEmail(anyLong(), any())).thenReturn(mailReAuthenticationResponse);
+
+        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/member/email/re-authentication")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(mailReAuthenticationRequest)));
+
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("email")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경하고자 하는 타겟 이메일")
+                                                .attributes(field("constraint", "문자열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.reAuthenticationEmailSendAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("재인증 이메일 발송 시각")
+                                                .attributes(field("constraint", "LocalDateTime"))
+                                )
+                        ))
+                .andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<MailReAuthenticationResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<MailReAuthenticationResponse>>() {
+                }
+        );
+
+        final CommonResponse<MailReAuthenticationResponse> expected = CommonResponse.onSuccess(mailReAuthenticationResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        verify(memberService).reAuthenticationEmail(anyLong(), any());
+    }
+
+    @DisplayName("회원은 인증코드를 입력하여 이메일 변경을 진행할 수 있다.")
+    @Test
+    void verificationAuthCode() throws Exception {
+        // given
+        given(refreshTokenRepository.existsById(any())).willReturn(true);
+        doNothing().when(jwtProvider).validateTokens(any());
+        given(jwtProvider.getSubject(any())).willReturn("1");
+
+        final MemberTokens memberTokens = new MemberTokens(REFRESH_TOKEN, RENEW_ACCESS_TOKEN);
+        final Cookie cookie = new Cookie("refreshToken", memberTokens.getRefreshToken());
+
+        final AuthCodeVerificationRequest authCodeVerificationRequest = new AuthCodeVerificationRequest("kwondm7@gmail.com", "123456");
+        final MailVerificationResponse mailVerificationResponse = new MailVerificationResponse("kwondm7@gmail.com", LocalDateTime.now());
+
+        // when
+        when(memberService.verifyAuthCodeAndChangeAccountEmail(anyLong(), any())).thenReturn(mailVerificationResponse);
+
+        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/v1/member/email/verification")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(authCodeVerificationRequest)));
+
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("changeRequestEmail")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경하고자 하는 타겟 이메일")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("authCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("인증 코드")
+                                                .attributes(field("constraint", "문자열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.changedEmail")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경된 이메일")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.verificationSuccessAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경 성공 시각")
+                                                .attributes(field("constraint", "LocalDateTime"))
+                                )
+                        )
+                ).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<MailVerificationResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<MailVerificationResponse>>() {
+                }
+        );
+
+        final CommonResponse<MailVerificationResponse> expected = CommonResponse.onSuccess(mailVerificationResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        verify(memberService).verifyAuthCodeAndChangeAccountEmail(anyLong(), any());
     }
 }

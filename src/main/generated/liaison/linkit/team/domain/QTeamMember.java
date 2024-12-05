@@ -49,7 +49,7 @@ public class QTeamMember extends EntityPathBase<TeamMember> {
     public QTeamMember(Class<? extends TeamMember> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new liaison.linkit.member.domain.QMember(forProperty("member"), inits.get("member")) : null;
-        this.team = inits.isInitialized("team") ? new QTeam(forProperty("team"), inits.get("team")) : null;
+        this.team = inits.isInitialized("team") ? new QTeam(forProperty("team")) : null;
     }
 
 }

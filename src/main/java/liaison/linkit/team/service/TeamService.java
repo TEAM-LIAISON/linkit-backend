@@ -11,7 +11,6 @@ import liaison.linkit.team.business.TeamMapper;
 import liaison.linkit.team.business.TeamMemberMapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.TeamMember;
-import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.implement.TeamCommandAdapter;
 import liaison.linkit.team.implement.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
@@ -55,19 +54,13 @@ public class TeamService {
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
 
-        // 사용자가 입력한 정보에서 팀 규모 객체 조회
-        final TeamScale teamScale = teamScaleQueryAdapter.findByScaleName(addTeamBasicInformRequest.getScaleName());
-
-        // 사용자가 입력한 정보에서 지역 객체 조회
-        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamBasicInformRequest.getCityName(), addTeamBasicInformRequest.getDivisionName());
-
         // 사용자가 첨부한 이미지의 유효성 판단 이후에 이미지 업로드 진행
         if (imageValidator.validatingImageUpload(teamLogoImage)) {
             teamLogoImagePath = s3Uploader.uploadTeamBasicLogoImage(new ImageFile(teamLogoImage));
         }
 
         // 팀 생성
-        final Team team = teamMapper.toTeam(teamLogoImagePath, addTeamBasicInformRequest, teamScale, region);
+        final Team team = teamMapper.toTeam(teamLogoImagePath, addTeamBasicInformRequest);
         final Team savedTeam = teamCommandAdapter.add(team);
 
         // 팀원에 추가
@@ -95,7 +88,6 @@ public class TeamService {
 
         team.setTeamName(addTeamBasicInformRequest.getTeamName());
         team.setTeamShortDescription(addTeamBasicInformRequest.getTeamShortDescription());
-        team.setRegion(region);
 
         // 사용자가 새로운 이미지를 업로드
         if (!teamLogoImage.isEmpty() && imageValidator.validatingImageUpload(teamLogoImage)) {

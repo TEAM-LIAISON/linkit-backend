@@ -36,7 +36,7 @@ public class TeamController {
         return CommonResponse.onSuccess(teamService.createTeam(accessor.getMemberId(), teamLogoImage, addTeamBasicInformRequest));
     }
 
-
+    // 팀 기본정보 저장
     @PostMapping("/{teamId}")
     @MemberOnly
     public CommonResponse<TeamResponseDTO.SaveTeamBasicInformResponse> saveTeamBasicInform(
@@ -47,8 +47,4 @@ public class TeamController {
     ) {
         return CommonResponse.onSuccess(teamService.saveTeamBasicInform(accessor.getMemberId(), teamId, teamLogoImage, addTeamBasicInformRequest));
     }
-
-//    @GetMapping("/teams")
-//    @MemberOnly
-//    public CommonResponse<>
 }

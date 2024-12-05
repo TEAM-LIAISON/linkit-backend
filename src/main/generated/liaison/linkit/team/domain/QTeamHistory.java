@@ -54,7 +54,7 @@ public class QTeamHistory extends EntityPathBase<TeamHistory> {
 
     public QTeamHistory(Class<? extends TeamHistory> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.team = inits.isInitialized("team") ? new QTeam(forProperty("team"), inits.get("team")) : null;
+        this.team = inits.isInitialized("team") ? new QTeam(forProperty("team")) : null;
     }
 
 }

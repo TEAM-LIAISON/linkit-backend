@@ -28,6 +28,7 @@ public class TeamProductController {
 
     private final TeamProductService teamProductService;
 
+    // 팀 프로덕트 전체 조회
     @GetMapping
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.TeamProductItems> getTeamProductItems(
@@ -38,6 +39,7 @@ public class TeamProductController {
         return CommonResponse.onSuccess(teamProductService.getTeamProductItems(accessor.getMemberId(), teamName));
     }
 
+    // 팀 프로덕트 단일 조회
     @GetMapping("/{teamProductId}")
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.TeamProductDetail> getTeamProductDetail(

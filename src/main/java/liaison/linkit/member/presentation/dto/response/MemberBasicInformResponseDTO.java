@@ -1,5 +1,6 @@
 package liaison.linkit.member.presentation.dto.response;
 
+import java.time.LocalDateTime;
 import liaison.linkit.member.domain.type.Platform;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -74,5 +75,22 @@ public class MemberBasicInformResponseDTO {
     @AllArgsConstructor
     public static class UpdateConsentMarketingResponse {
         private Boolean isMarketingAgree;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MailReAuthenticationResponse {
+        private LocalDateTime reAuthenticationEmailSendAt;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MailVerificationResponse {
+        private String changedEmail;
+        private LocalDateTime verificationSuccessAt;
     }
 }

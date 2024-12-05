@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface MailService {
 
-    void sendEmailReAuthenticationMail(final String receiverEmail, final String authCode) throws MessagingException;
 
     // 1. 내 이력서 -> 내 이력서 매칭 요청 보낸 경우
     void mailRequestPrivateToPrivate(final String receiverEmail, final String receiverName, final String senderName, final List<String> senderRole, final List<String> senderSkill,

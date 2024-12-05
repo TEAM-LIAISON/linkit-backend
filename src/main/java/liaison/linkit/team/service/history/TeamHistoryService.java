@@ -43,11 +43,6 @@ public class TeamHistoryService {
         final Team team = teamQueryAdapter.findByTeamName(teamName);
         final TeamHistory teamHistory = teamHistoryMapper.toAddTeamHistory(team, addTeamHistoryRequest);
         final TeamHistory savedTeamHistory = teamHistoryCommandAdapter.addTeamHistory(teamHistory);
-
-        if (!team.isTeamHistory()) {
-            team.setIsTeamHistory(true);
-        }
-
         return teamHistoryMapper.toAddTeamHistoryResponse(savedTeamHistory);
     }
 
@@ -62,10 +57,6 @@ public class TeamHistoryService {
         final TeamHistory teamHistory = teamHistoryQueryAdapter.getTeamHistory(teamHistoryId);
 
         teamHistoryCommandAdapter.removeTeamHistory(teamHistory);
-        if (!teamHistoryQueryAdapter.existsByTeamId(team.getId())) {
-            team.setIsTeamHistory(false);
-        }
-
         return teamHistoryMapper.toRemoveTeamHistory(teamHistoryId);
     }
 }
