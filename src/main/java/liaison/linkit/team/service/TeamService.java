@@ -65,7 +65,7 @@ public class TeamService {
 
         // 팀원에 추가
         final TeamMember teamMember = teamMemberMapper.toTeamMember(member, savedTeam);
-        teamMemberCommandAdapter.add(teamMember);
+        teamMemberCommandAdapter.addTeamMember(teamMember);
 
         // 생성된 팀의 정보를 반환
         return teamMapper.toAddTeam(savedTeam);
