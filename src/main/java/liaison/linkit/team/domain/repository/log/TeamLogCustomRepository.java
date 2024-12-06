@@ -3,14 +3,18 @@ package liaison.linkit.team.domain.repository.log;
 import java.util.List;
 import java.util.Optional;
 import liaison.linkit.team.domain.log.TeamLog;
-import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogType;
+import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogRequest;
 
 public interface TeamLogCustomRepository {
     List<TeamLog> getTeamLogs(final Long teamId);
 
-    TeamLog updateTeamLogType(final TeamLog teamLog, final UpdateTeamLogType updateTeamLogType);
+    void updateTeamLogTypeRepresent(final TeamLog teamLog);
 
     Optional<TeamLog> findRepresentativeTeamLog(final Long teamId);
 
-    boolean existsTeamLogByTeamId(final Long teamId);
+    TeamLog updateTeamLogPublicState(final TeamLog teamLog, final boolean isTeamLogCurrentPublicState);
+
+    boolean existingRepresentativeTeamLogByTeam(final Long teamId);
+
+    TeamLog updateTeamLog(final TeamLog teamLog, final UpdateTeamLogRequest updateTeamLogRequest);
 }

@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.log;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -16,7 +16,7 @@ import com.querydsl.core.types.dsl.PathInits;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QProfileLogImage extends EntityPathBase<ProfileLogImage> {
 
-    private static final long serialVersionUID = -2011220445L;
+    private static final long serialVersionUID = 1273853433L;
 
     private static final PathInits INITS = PathInits.DIRECT2;
 

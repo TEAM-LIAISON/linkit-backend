@@ -20,7 +20,7 @@ import liaison.linkit.profile.business.ProfileSkillMapper;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileCurrentState;
 import liaison.linkit.profile.domain.ProfileLink;
-import liaison.linkit.profile.domain.ProfileLog;
+import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.ProfilePosition;
 import liaison.linkit.profile.domain.ProfileRegion;
 import liaison.linkit.profile.domain.ProfileSkill;

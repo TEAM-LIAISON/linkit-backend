@@ -36,7 +36,6 @@ import liaison.linkit.profile.presentation.log.ProfileLogController;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.AddProfileLogRequest;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
-import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogResponse;
@@ -127,13 +126,11 @@ public class ProfileLogControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performUpdateProfileLogType(final Long profileLogId, final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType) throws Exception {
+    private ResultActions performUpdateProfileLogType(final Long profileLogId) throws Exception {
         return mockMvc.perform(
                 post("/api/v1/profile/log/type/{profileLogId}", profileLogId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateProfileLogType))
         );
     }
 
@@ -584,16 +581,14 @@ public class ProfileLogControllerTest extends ControllerTest {
     @Test
     void updateProfileLogType() throws Exception {
         // given
-        final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType
-                = new UpdateProfileLogType(GENERAL_LOG);
 
         final ProfileLogResponseDTO.UpdateProfileLogTypeResponse updateProfileLogTypeResponse
-                = new UpdateProfileLogTypeResponse(1L, GENERAL_LOG);
+                = new UpdateProfileLogTypeResponse(1L, REPRESENTATIVE_LOG);
 
         // when
-        when(profileLogService.updateProfileLogType(anyLong(), anyLong(), any())).thenReturn(updateProfileLogTypeResponse);
+        when(profileLogService.updateProfileLogType(anyLong(), anyLong())).thenReturn(updateProfileLogTypeResponse);
 
-        final ResultActions resultActions = performUpdateProfileLogType(1L, updateProfileLogType);
+        final ResultActions resultActions = performUpdateProfileLogType(1L);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -606,12 +601,6 @@ public class ProfileLogControllerTest extends ControllerTest {
                                 pathParameters(
                                         parameterWithName("profileLogId")
                                                 .description("프로필 로그 ID")
-                                ),
-                                requestFields(
-                                        fieldWithPath("logType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("프로필 대표글 설정")
-                                                .attributes(field("constraint", "GENERAL_LOG 또는 REPRESENTATIVE_LOG"))
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")

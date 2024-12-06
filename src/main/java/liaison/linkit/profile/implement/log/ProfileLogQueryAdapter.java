@@ -2,7 +2,7 @@ package liaison.linkit.profile.implement.log;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.domain.ProfileLog;
+import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.repository.log.ProfileLogRepository;
 import liaison.linkit.profile.exception.log.ProfileLogNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +31,7 @@ public class ProfileLogQueryAdapter {
         return profileLogRepository.existsProfileLogByProfileId(profileId);
     }
 
-
+    public boolean existsRepresentativeProfileLogByProfile(final Long profileId) {
+        return profileLogRepository.existsRepresentativeProfileLogByProfile(profileId);
+    }
 }

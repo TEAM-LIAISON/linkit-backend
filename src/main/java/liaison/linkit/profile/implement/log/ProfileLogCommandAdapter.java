@@ -1,9 +1,8 @@
 package liaison.linkit.profile.implement.log;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.domain.ProfileLog;
+import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.repository.log.ProfileLogRepository;
-import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -21,8 +20,8 @@ public class ProfileLogCommandAdapter {
         profileLogRepository.delete(profileLog);
     }
 
-    public ProfileLog updateProfileLogType(final ProfileLog profileLog, final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType) {
-        return profileLogRepository.updateProfileLogType(profileLog, updateProfileLogType);
+    public void updateProfileLogTypeRepresent(final ProfileLog profileLog) {
+        profileLogRepository.updateProfileLogTypeRepresent(profileLog);
     }
 
     public ProfileLog updateProfileLog(final ProfileLog profileLog, final UpdateProfileLogRequest updateProfileLogRequest) {

@@ -14,10 +14,9 @@ import liaison.linkit.image.implement.ImageQueryAdapter;
 import liaison.linkit.image.util.ImageUtils;
 import liaison.linkit.profile.business.ProfileLogMapper;
 import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.ProfileLog;
-import liaison.linkit.profile.domain.ProfileLogImage;
+import liaison.linkit.profile.domain.log.ProfileLog;
+import liaison.linkit.profile.domain.log.ProfileLogImage;
 import liaison.linkit.profile.domain.type.LogType;
-import liaison.linkit.profile.exception.log.ProfileLogNotFoundException;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogCommandAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogImageCommandAdapter;
@@ -216,10 +215,6 @@ public class ProfileLogService {
 
         // 1. ProfileLog 엔티티 조회
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-        if (profileLog == null) {
-            throw ProfileLogNotFoundException.EXCEPTION;
-        }
-
         log.info("ProfileLog = {}가 성공적으로 조회되었습니다.", profileLog);
 
         // 2. ProfileLog와 연관된 ProfileLogImage 엔티티 조회
@@ -229,9 +224,6 @@ public class ProfileLogService {
         // 3. ProfileLogImage 삭제 및 Image 상태 업데이트
         for (ProfileLogImage profileLogImage : profileLogImages) {
             Image image = profileLogImage.getImage();
-            Long imageId = image.getId();
-            log.info("Processing Image ID: {}", imageId);
-
             // 3.1. ProfileLogImage 삭제
             profileLogImageCommandAdapter.removeProfileLogImage(profileLogImage);
             log.info("ProfileLogImage = {} 삭제 완료.", profileLogImage.getId());
@@ -239,22 +231,47 @@ public class ProfileLogService {
             // 3.3. Image의 isTemporary 필드를 true로 업데이트
             image.setTemporary(true);
             imageCommandAdapter.addImage(image);
-            log.info("Image ID: {}의 isTemporary 필드가 true로 업데이트되었습니다.", imageId);
         }
 
         // 4. ProfileLog 삭제
         profileLogCommandAdapter.remove(profileLog);
         log.info("ProfileLog = {} 삭제 완료.", profileLogId);
 
-        return profileLogMapper.toRemoveProfileLog(memberId, profileLogId);
+        return profileLogMapper.toRemoveProfileLog(profileLogId);
     }
 
     // 프로필 로그 타입 수정
-    public UpdateProfileLogTypeResponse updateProfileLogType(final Long memberId, final Long profileLogId, final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType) {
+    public UpdateProfileLogTypeResponse updateProfileLogType(final Long memberId, final Long profileLogId) {
         log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청 발생했습니다.", memberId, profileLogId);
+
+        // 1. ProfileLog 엔티티 조회
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-        final ProfileLog updatedProfileLog = profileLogCommandAdapter.updateProfileLogType(profileLog, updateProfileLogType);
-        return profileLogMapper.toUpdateProfileLogType(updatedProfileLog);
+        log.info("ProfileLog = {}가 성공적으로 조회되었습니다.", profileLog);
+
+        // 2. 현재 프로필 조회
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
+
+        // 3. 기존 대표 로그 조회
+        ProfileLog existingRepresentativeLog = null;
+        if (profileLogQueryAdapter.existsRepresentativeProfileLogByProfile(profile.getId())) {
+            existingRepresentativeLog = profileLogQueryAdapter.getRepresentativeProfileLog(profile.getId());
+        }
+
+        log.info("기존 대표 로그: {}", existingRepresentativeLog);
+
+        // 4. 기존 대표 로그가 존재하고, 수정하려는 로그가 아닌 경우 기존 대표 로그를 일반 로그로 변경
+        if (existingRepresentativeLog != null && !existingRepresentativeLog.getId().equals(profileLogId)) {
+            log.info("기존 대표 로그가 존재하므로, 기존 대표 로그를 일반 로그로 변경합니다. 기존 대표 로그 ID: {}", existingRepresentativeLog.getId());
+
+            profileLogCommandAdapter.updateProfileLogTypeRepresent(existingRepresentativeLog);
+            log.info("기존 대표 로그(ID: {})가 일반 로그로 변경되었습니다.", existingRepresentativeLog.getId());
+        }
+
+        // 5. 수정하려는 로그를 대표 로그로 설정
+        log.info("수정하려는 로그를 대표 로그로 설정합니다. 로그 ID: {}", profileLogId);
+        profileLogCommandAdapter.updateProfileLogTypeRepresent(profileLog);
+
+        return profileLogMapper.toUpdateProfileLogType(profileLog);
     }
 
     // 프로필 로그 공개 여부 수정

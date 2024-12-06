@@ -3,9 +3,11 @@ package liaison.linkit.team.business.log;
 import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.image.domain.Image;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.TeamLogItem;
+import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogResponse;
 
 @Mapper
 public class TeamLogMapper {
@@ -58,10 +60,29 @@ public class TeamLogMapper {
     }
 
 
-    public TeamLogResponseDTO.AddTeamLogBodyImageResponse toAddTeamLogBodyImageResponse(final String teamLogBodyImagePath) {
+    public TeamLogResponseDTO.AddTeamLogBodyImageResponse toAddTeamLogBodyImageResponse(final Image image) {
         return TeamLogResponseDTO.AddTeamLogBodyImageResponse
                 .builder()
-                .teamLogBodyImagePath(teamLogBodyImagePath)
+                .teamLogBodyImagePath(image.getImageUrl())
+                .build();
+    }
+
+    public TeamLogResponseDTO.UpdateTeamLogPublicStateResponse toUpdateTeamLogPublicState(final TeamLog teamLog) {
+        return TeamLogResponseDTO.UpdateTeamLogPublicStateResponse
+                .builder()
+                .teamLogId(teamLog.getId())
+                .isLogPublic(teamLog.isLogPublic())
+                .build();
+    }
+
+    public UpdateTeamLogResponse toUpdateTeamLogResponse(final TeamLog teamLog) {
+        return UpdateTeamLogResponse
+                .builder()
+                .teamLogId(teamLog.getId())
+                .logTitle(teamLog.getLogTitle())
+                .logContent(teamLog.getLogContent())
+                .isLogPublic(teamLog.isLogPublic())
+                .logType(teamLog.getLogType())
                 .build();
     }
 }

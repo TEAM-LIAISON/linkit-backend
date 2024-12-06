@@ -316,6 +316,7 @@ include::{snippets}/profile-log-controller-test/remove-profile-log/response-fiel
 *요청*
 
 include::{snippets}/profile-log-controller-test/update-profile-log-type/http-request.adoc[]
+include::{snippets}/profile-log-controller-test/update-profile-log-type/path-parameters.adoc[]
 
 *응답*
 include::{snippets}/profile-log-controller-test/update-profile-log-type/http-response.adoc[]
@@ -323,7 +324,7 @@ include::{snippets}/profile-log-controller-test/update-profile-log-type/response
 
 ====
 
-=== 나의 로그 공개 여부 설정 수정
+=== 나의 로그 공개/비공개 여부 수정
 
 ====
 *요청*
@@ -890,6 +891,19 @@ include::{snippets}/team-log-controller-test/add-team-log/response-fields.adoc[]
 
 ====
 
+=== 팀 로그 단일 수정
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/update-team-log/http-request.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log/path-parameters.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/update-team-log/http-response.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log/request-fields.adoc[]
+====
+
 === 팀 로그 단일 삭제
 
 ====
@@ -909,11 +923,23 @@ include::{snippets}/team-log-controller-test/remove-team-log/response-fields.ado
 *요청*
 include::{snippets}/team-log-controller-test/update-team-log-type/http-request.adoc[]
 include::{snippets}/team-log-controller-test/update-team-log-type/path-parameters.adoc[]
-include::{snippets}/team-log-controller-test/update-team-log-type/request-fields.adoc[]
 
 *응답*
 include::{snippets}/team-log-controller-test/update-team-log-type/http-response.adoc[]
-include::{snippets}/team-log-controller-test/update-team-log-type/request-fields.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log-type/response-fields.adoc[]
+
+====
+
+=== 팀 로그 공개/비공개 여부 수정
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/update-team-log-public-state/http-request.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log-public-state/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/update-team-log-public-state/http-response.adoc[]
+include::{snippets}/team-log-controller-test/update-team-log-public-state/response-fields.adoc[]
 ====
 
 == #[팀 - 팀원 공고]#

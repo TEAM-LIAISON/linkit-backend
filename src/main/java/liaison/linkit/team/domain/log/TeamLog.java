@@ -51,4 +51,7 @@ public class TeamLog extends BaseDateTimeEntity {
         this.logType = logType;
     }
 
+    public void setIsLogPublic(final boolean isLogPublic) {
+        this.isLogPublic = isLogPublic;
+    }
 }
