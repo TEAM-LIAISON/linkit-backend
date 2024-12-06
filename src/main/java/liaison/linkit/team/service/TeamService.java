@@ -101,4 +101,10 @@ public class TeamService {
 
         return teamMapper.toSaveTeam(team);
     }
+
+    // 로그인한 사용자가 팀을 상세 조회한 케이스
+//    public TeamResponseDTO.TeamDetail getMyTeamDetail(final Long memberId, final String teamName) {
+//        final Team team = teamQueryAdapter.findByTeamName(teamName);
+//
+//    }
 }

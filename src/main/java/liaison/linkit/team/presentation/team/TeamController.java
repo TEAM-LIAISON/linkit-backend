@@ -47,4 +47,25 @@ public class TeamController {
     ) {
         return CommonResponse.onSuccess(teamService.saveTeamBasicInform(accessor.getMemberId(), teamId, teamLogoImage, addTeamBasicInformRequest));
     }
+
+    // 팀 상단 메뉴
+//    @GetMapping("/team/{teamName}")
+//    @MemberOnly
+//    public CommonResponse<TeamResponseDTO.TeamDetail> getTeamDetail(
+//            @PathVariable final String teamName,
+//            @Auth final Accessor accessor
+//    ) {
+//        if (accessor.isMember()) {
+//            log.info("memberId = {}의 팀 이름 = {}에 대한 팀 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
+//            return CommonResponse.onSuccess(teamService.getMyTeamDetail(accessor.getMemberId(), teamName));
+//        } else {
+//            log.info("teamName = {}에 대한 팀 상세 조회 요청이 발생했습니다.", teamName);
+//            return CommonResponse.onSuccess(teamService.getTeamDetail(teamName));
+//        }
+//    }
+
+    // ---
+    // 팀 삭제 요청
+
+    // 팀 나가기 요청
 }

@@ -1,6 +1,9 @@
 package liaison.linkit.team.presentation.team.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +12,17 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TeamResponseDTO {
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamDetail {
+        private Boolean isMyTeam;
+
+        @Builder.Default
+        private TeamInformMenu teamInformMenu = new TeamInformMenu();
+    }
 
     @Builder
     @Getter
@@ -23,8 +37,51 @@ public class TeamResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TeamInformMenu {
+
+        @Builder.Default
+        private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
+
+        private String teamName;
+        private String teamShortDescription;
+        private String teamLogoImagePath;
+
+        // 스크랩 수 (추가 예정)
+
+        // 팀 규모 정보
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+
+        // 지역 정보
+        @Builder.Default
+        private RegionDetail regionDetail = new RegionDetail();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class SaveTeamBasicInformResponse {
         private Long teamId;
         private LocalDateTime modifiedAt;
+    }
+
+
+    // 팀 현재 상태
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamCurrentStateItem {
+        private String teamStateName;
+    }
+
+    // 팀 규모 정보
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamScaleItem {
+        private String teamScaleName;
     }
 }
