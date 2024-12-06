@@ -49,4 +49,8 @@ public class ProfileLog extends BaseDateTimeEntity {
     public void setLogType(final LogType logType) {
         this.logType = logType;
     }
+
+    public void setIsLogPublic(final boolean isLogPublic) {
+        this.isLogPublic = isLogPublic;
+    }
 }

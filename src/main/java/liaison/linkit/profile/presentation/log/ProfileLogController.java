@@ -99,12 +99,22 @@ public class ProfileLogController {
     // 로그 대표글/일반글 변경
     @PostMapping("/type/{profileLogId}")
     @MemberOnly
-    public CommonResponse<UpdateProfileLogTypeResponse> updateProfileLogPublicState(
+    public CommonResponse<UpdateProfileLogTypeResponse> updateProfileLogType(
             @Auth final Accessor accessor,
             @PathVariable final Long profileLogId,
             @RequestBody final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType
     ) {
         log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청이 발생했습니다.", accessor.getMemberId(), profileLogId);
         return CommonResponse.onSuccess(profileLogService.updateProfileLogType(accessor.getMemberId(), profileLogId, updateProfileLogType));
+    }
+
+    @PostMapping("/state/{profileLogId}")
+    @MemberOnly
+    public CommonResponse<ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse> updateProfileLogPublicState(
+            @Auth final Accessor accessor,
+            @PathVariable final Long profileLogId
+    ) {
+        log.info("memberId = {}의 프로필 로그 = {}에 대한 공개 여부 수정 요청이 발생했습니다.", accessor.getMemberId(), profileLogId);
+        return CommonResponse.onSuccess(profileLogService.updateProfileLogPublicState(accessor.getMemberId(), profileLogId));
     }
 }

@@ -11,10 +11,12 @@ import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepository {
 
     private final JPAQueryFactory queryFactory;
@@ -48,6 +50,28 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         if (updatedCount > 0) { // 업데이트 성공 확인
             profileLog.setLogType(updateProfileLogType.getLogType()); // 메모리 내 객체 업데이트
+            return profileLog;
+        } else {
+            throw new IllegalStateException("프로필 로그 업데이트 실패");
+        }
+    }
+
+    @Override
+    public ProfileLog updateProfileLogPublicState(final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
+        long updatedCount = queryFactory
+                .update(qProfileLog)
+                .set(qProfileLog.isLogPublic, !isProfileLogCurrentPublicState)
+                .where(qProfileLog.id.eq(profileLog.getId()))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) { // 업데이트 성공 확인
+            profileLog.setIsLogPublic(!isProfileLogCurrentPublicState); // 메모리 내 객체 업데이트
             return profileLog;
         } else {
             throw new IllegalStateException("프로필 로그 업데이트 실패");

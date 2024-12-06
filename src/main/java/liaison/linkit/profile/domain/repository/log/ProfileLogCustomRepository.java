@@ -17,4 +17,6 @@ public interface ProfileLogCustomRepository {
     boolean existsProfileLogByProfileId(final Long profileId);
 
     ProfileLog updateProfileLog(final ProfileLog profileLog, final UpdateProfileLogRequest updateProfileLogRequest);
+
+    ProfileLog updateProfileLogPublicState(final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState);
 }

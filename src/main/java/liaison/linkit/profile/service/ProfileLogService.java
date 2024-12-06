@@ -1,7 +1,5 @@
 package liaison.linkit.profile.service;
 
-import static liaison.linkit.profile.domain.type.LogType.GENERAL_LOG;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -18,6 +16,8 @@ import liaison.linkit.profile.business.ProfileLogMapper;
 import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.domain.ProfileLogImage;
+import liaison.linkit.profile.domain.type.LogType;
+import liaison.linkit.profile.exception.log.ProfileLogNotFoundException;
 import liaison.linkit.profile.implement.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogCommandAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogImageCommandAdapter;
@@ -30,6 +30,7 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProf
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItems;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveProfileLogResponse;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogTypeResponse;
 import lombok.RequiredArgsConstructor;
@@ -82,35 +83,7 @@ public class ProfileLogService {
         return profileLogMapper.toProfileLogItem(profileLog);
     }
 
-    public AddProfileLogResponse addProfileLog(final Long memberId, final ProfileLogRequestDTO.AddProfileLogRequest addProfileLogRequest) {
-        log.info("memberId = {}의 프로필 로그 추가 요청 발생했습니다.", memberId);
-        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
-
-        final ProfileLog profileLog = new ProfileLog(null, profile, addProfileLogRequest.getLogTitle(), addProfileLogRequest.getLogContent(), addProfileLogRequest.getIsLogPublic(), GENERAL_LOG);
-        final ProfileLog savedProfileLog = profileLogCommandAdapter.addProfileLog(profileLog);
-
-        // content에서 URL 추출해서 연결짓는 작업 필요
-        final List<String> profileLogImagePaths = imageUtils.extractImageUrls(addProfileLogRequest.getLogContent());
-
-        // 각 profileLogImagePath를 ProfileLog 테이블에 있는 content 부분이랑 찾아서 해당 PK를 ProfileLogImage
-
-        return profileLogMapper.toAddProfileLogResponse(savedProfileLog);
-    }
-
-    public RemoveProfileLogResponse removeProfileLog(final Long memberId, final Long profileLogId) {
-        log.info("memberId = {}의 프로필 로그 삭제 요청 발생했습니다.", memberId);
-        final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-        profileLogCommandAdapter.remove(profileLog);
-        return profileLogMapper.toRemoveProfileLog(memberId, profileLogId);
-    }
-
-    public UpdateProfileLogTypeResponse updateProfileLogType(final Long memberId, final Long profileLogId, final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType) {
-        log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청 발생했습니다.", memberId, profileLogId);
-        final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
-        final ProfileLog updatedProfileLog = profileLogCommandAdapter.updateProfileLogType(profileLog, updateProfileLogType);
-        return profileLogMapper.toUpdateProfileLogType(updatedProfileLog);
-    }
-
+    // 프로필 로그 본문 이미지 추가
     public AddProfileLogBodyImageResponse addProfileLogBodyImage(final Long memberId, final MultipartFile profileLogBodyImage) {
         String profileLogBodyImagePath = null;
         log.info("memberId = {}의 프로필 로그 본문에 대한 이미지 추가 요청이 발생했습니다.", memberId);
@@ -124,9 +97,61 @@ public class ProfileLogService {
         final Image image = new Image(null, profileLogBodyImagePath, true, LocalDateTime.now());
         final Image savedImage = imageCommandAdapter.addImage(image);
 
-        return profileLogMapper.toAddProfileLogBodyImageResponse(profileLogBodyImagePath);
+        return profileLogMapper.toAddProfileLogBodyImageResponse(savedImage);
     }
 
+    // 프로필 로그 생성
+    public AddProfileLogResponse addProfileLog(final Long memberId, final ProfileLogRequestDTO.AddProfileLogRequest addProfileLogRequest) {
+        log.info("memberId = {}의 프로필 로그 추가 요청 발생했습니다.", memberId);
+
+        // 1. 프로필 조회
+        final Profile profile = profileQueryAdapter.findByMemberId(memberId);
+
+        // 2. ProfileLog 엔티티 생성 및 저장
+        final ProfileLog profileLog = new ProfileLog(
+                null,
+                profile,
+                addProfileLogRequest.getLogTitle(),
+                addProfileLogRequest.getLogContent(),
+                addProfileLogRequest.getIsLogPublic(),
+                LogType.GENERAL_LOG
+        );
+
+        final ProfileLog savedProfileLog = profileLogCommandAdapter.addProfileLog(profileLog);
+        log.info("ProfileLog = {}가 성공적으로 저장되었습니다.", savedProfileLog);
+
+        // 3. 글 내용에서 이미지 URL 추출
+        final List<String> profileLogImagePaths = imageUtils.extractImageUrls(addProfileLogRequest.getLogContent());
+        log.info("추출된 이미지 URL 목록: {}", profileLogImagePaths);
+
+        if (!profileLogImagePaths.isEmpty()) {
+            // 4. 이미지 URL로 Image 엔티티 조회
+            final List<Image> images = imageQueryAdapter.findByImageUrls(profileLogImagePaths);
+            log.info("조회된 Image 엔티티 목록: {}", images);
+
+            // 5. ProfileLogImage 엔티티 생성 및 저장
+            for (Image image : images) {
+                // 5.1. ProfileLogImage 엔티티 생성
+                ProfileLogImage profileLogImage = ProfileLogImage.builder()
+                        .profileLog(savedProfileLog)
+                        .image(image)
+                        .build();
+
+                // 5.2. ProfileLogImage 저장
+                profileLogImageCommandAdapter.addProfileLogImage(profileLogImage);
+                log.info("ProfileLogImage = {}가 성공적으로 저장되었습니다.", profileLogImage);
+
+                // 6. 이미지의 isTemporary 필드 업데이트
+                image.setTemporary(false);
+            }
+        } else {
+            log.info("추출된 이미지 URL이 없습니다. 이미지 연계 작업을 생략합니다.");
+        }
+
+        return profileLogMapper.toAddProfileLogResponse(savedProfileLog);
+    }
+
+    // 프로필 로그 수정
     public UpdateProfileLogResponse updateProfileLog(final Long memberId, final Long profileLogId, final UpdateProfileLogRequest updateProfileLogRequest) {
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
 
@@ -185,4 +210,61 @@ public class ProfileLogService {
         return profileLogMapper.toUpdateProfileLogResponse(updatedProfileLog);
     }
 
+    // 프로필 로그 삭제
+    public RemoveProfileLogResponse removeProfileLog(final Long memberId, final Long profileLogId) {
+        log.info("memberId = {}의 프로필 로그 삭제 요청 발생했습니다.", memberId);
+
+        // 1. ProfileLog 엔티티 조회
+        final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+        if (profileLog == null) {
+            throw ProfileLogNotFoundException.EXCEPTION;
+        }
+
+        log.info("ProfileLog = {}가 성공적으로 조회되었습니다.", profileLog);
+
+        // 2. ProfileLog와 연관된 ProfileLogImage 엔티티 조회
+        List<ProfileLogImage> profileLogImages = profileLogImageQueryAdapter.findByProfileLog(profileLog);
+        log.info("ProfileLog에 연관된 ProfileLogImage 개수: {}", profileLogImages.size());
+
+        // 3. ProfileLogImage 삭제 및 Image 상태 업데이트
+        for (ProfileLogImage profileLogImage : profileLogImages) {
+            Image image = profileLogImage.getImage();
+            Long imageId = image.getId();
+            log.info("Processing Image ID: {}", imageId);
+
+            // 3.1. ProfileLogImage 삭제
+            profileLogImageCommandAdapter.removeProfileLogImage(profileLogImage);
+            log.info("ProfileLogImage = {} 삭제 완료.", profileLogImage.getId());
+
+            // 3.3. Image의 isTemporary 필드를 true로 업데이트
+            image.setTemporary(true);
+            imageCommandAdapter.addImage(image);
+            log.info("Image ID: {}의 isTemporary 필드가 true로 업데이트되었습니다.", imageId);
+        }
+
+        // 4. ProfileLog 삭제
+        profileLogCommandAdapter.remove(profileLog);
+        log.info("ProfileLog = {} 삭제 완료.", profileLogId);
+
+        return profileLogMapper.toRemoveProfileLog(memberId, profileLogId);
+    }
+
+    // 프로필 로그 타입 수정
+    public UpdateProfileLogTypeResponse updateProfileLogType(final Long memberId, final Long profileLogId, final ProfileLogRequestDTO.UpdateProfileLogType updateProfileLogType) {
+        log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청 발생했습니다.", memberId, profileLogId);
+        final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+        final ProfileLog updatedProfileLog = profileLogCommandAdapter.updateProfileLogType(profileLog, updateProfileLogType);
+        return profileLogMapper.toUpdateProfileLogType(updatedProfileLog);
+    }
+
+    // 프로필 로그 공개 여부 수정
+    public UpdateProfileLogPublicStateResponse updateProfileLogPublicState(final Long memberId, final Long profileLogId) {
+        log.info("memberId = {}의 프로필 로그 = {}에 대한 프로필 로그 공개 여부 수정 요청 발생했습니다.", memberId, profileLogId);
+
+        final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+        final boolean isProfileLogCurrentPublicState = profileLog.isLogPublic();
+        final ProfileLog updatedProfileLog = profileLogCommandAdapter.updateProfileLogPublicState(profileLog, isProfileLogCurrentPublicState);
+
+        return profileLogMapper.toUpdateProfileLogPublicState(updatedProfileLog);
+    }
 }
