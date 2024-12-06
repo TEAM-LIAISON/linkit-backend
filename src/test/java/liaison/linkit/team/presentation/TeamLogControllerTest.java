@@ -33,6 +33,7 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.presentation.log.TeamLogController;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.AddTeamLogRequest;
+import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogRequest;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.AddTeamLogBodyImageResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.AddTeamLogResponse;
@@ -40,6 +41,7 @@ import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.RemoveTeamLog
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.TeamLogItem;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.TeamLogItems;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogPublicStateResponse;
+import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogTypeResponse;
 import liaison.linkit.team.service.log.TeamLogService;
 import org.junit.jupiter.api.BeforeEach;
@@ -101,6 +103,16 @@ public class TeamLogControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addTeamLogRequest))
+        );
+    }
+
+    private ResultActions performUpdateTeamLog(final String teamName, final Long teamLogId, final UpdateTeamLogRequest updateTeamLogRequest) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log/{teamLogId}", teamName, teamLogId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateTeamLogRequest))
         );
     }
 
@@ -435,6 +447,93 @@ public class TeamLogControllerTest extends ControllerTest {
         );
 
         final CommonResponse<AddTeamLogResponse> expected = CommonResponse.onSuccess(addTeamLogResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 로그를 추가할 수 있다.")
+    @Test
+    void updateTeamLog() throws Exception {
+        // given
+        final TeamLogRequestDTO.UpdateTeamLogRequest updateTeamLogRequest
+                = new UpdateTeamLogRequest("제목제목제목", "내용내용내용", true);
+
+        final TeamLogResponseDTO.UpdateTeamLogResponse updateTeamLogResponse
+                = new UpdateTeamLogResponse(1L, "제목제목제목", "내용내용내용", LocalDateTime.now(), GENERAL_LOG, true);
+        // when
+        when(teamLogService.updateTeamLog(anyLong(), any(), anyLong(), any())).thenReturn(updateTeamLogResponse);
+
+        final ResultActions resultActions = performUpdateTeamLog("liaison", 1L, updateTeamLogRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름"),
+                                        parameterWithName("teamLogId")
+                                                .description("팀 로그 ID")
+                                ),
+                                requestFields(
+                                        fieldWithPath("logTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 제목"),
+                                        fieldWithPath("logContent")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 내용"),
+                                        fieldWithPath("isLogPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("로그 공개 여부")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.teamLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("내 로그 ID"),
+                                        fieldWithPath("result.logTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 제목"),
+                                        fieldWithPath("result.logContent")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 내용"),
+                                        fieldWithPath("result.createdAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 생성 시간"),
+                                        fieldWithPath("result.logType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 유형 (대표글 여부)"),
+                                        fieldWithPath("result.isLogPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("로그 공개 여부")
+                                )
+                        )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamLogResponseDTO.UpdateTeamLogResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<UpdateTeamLogResponse>>() {
+                }
+        );
+
+        final CommonResponse<UpdateTeamLogResponse> expected = CommonResponse.onSuccess(updateTeamLogResponse);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
