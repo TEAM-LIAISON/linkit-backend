@@ -3,7 +3,7 @@ package liaison.linkit.team.implement.log;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.domain.repository.log.TeamLogRepository;
-import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO;
+import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogRequest;
 import lombok.RequiredArgsConstructor;
 
 @Adapter
@@ -19,7 +19,15 @@ public class TeamLogCommandAdapter {
         teamLogRepository.delete(teamLog);
     }
 
-    public TeamLog updateTeamLogType(final TeamLog teamLog, final TeamLogRequestDTO.UpdateTeamLogType updateTeamLogType) {
-        return teamLogRepository.updateTeamLogType(teamLog, updateTeamLogType);
+    public void updateTeamLogTypeRepresent(final TeamLog teamLog) {
+        teamLogRepository.updateTeamLogTypeRepresent(teamLog);
+    }
+
+    public TeamLog updateTeamLogPublicState(final TeamLog teamLog, final boolean isTeamLogCurrentPublicState) {
+        return teamLogRepository.updateTeamLogPublicState(teamLog, isTeamLogCurrentPublicState);
+    }
+
+    public TeamLog updateTeamLog(final TeamLog teamLog, final UpdateTeamLogRequest updateTeamLogRequest) {
+        return teamLogRepository.updateTeamLog(teamLog, updateTeamLogRequest);
     }
 }

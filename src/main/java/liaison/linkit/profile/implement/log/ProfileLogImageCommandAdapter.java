@@ -1,7 +1,7 @@
 package liaison.linkit.profile.implement.log;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.domain.ProfileLogImage;
+import liaison.linkit.profile.domain.log.ProfileLogImage;
 import liaison.linkit.profile.domain.repository.log.ProfileLogImageRepository;
 import lombok.RequiredArgsConstructor;
 

@@ -2,15 +2,14 @@ package liaison.linkit.profile.domain.repository.log;
 
 import java.util.List;
 import java.util.Optional;
-import liaison.linkit.profile.domain.ProfileLog;
+import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
-import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 
 public interface ProfileLogCustomRepository {
 
     List<ProfileLog> getProfileLogs(final Long memberId);
 
-    ProfileLog updateProfileLogType(final ProfileLog profileLog, final UpdateProfileLogType updateProfileLogType);
+    ProfileLog updateProfileLogTypeRepresent(final ProfileLog profileLog);
 
     Optional<ProfileLog> findRepresentativeProfileLog(final Long profileId);
 
@@ -19,4 +18,6 @@ public interface ProfileLogCustomRepository {
     ProfileLog updateProfileLog(final ProfileLog profileLog, final UpdateProfileLogRequest updateProfileLogRequest);
 
     ProfileLog updateProfileLogPublicState(final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState);
+
+    boolean existsRepresentativeProfileLogByProfile(final Long profileId);
 }

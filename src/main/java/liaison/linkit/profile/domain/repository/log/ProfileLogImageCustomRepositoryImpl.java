@@ -2,9 +2,9 @@ package liaison.linkit.profile.domain.repository.log;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import liaison.linkit.profile.domain.ProfileLog;
-import liaison.linkit.profile.domain.ProfileLogImage;
-import liaison.linkit.profile.domain.QProfileLogImage;
+import liaison.linkit.profile.domain.log.ProfileLog;
+import liaison.linkit.profile.domain.log.ProfileLogImage;
+import liaison.linkit.profile.domain.log.QProfileLogImage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

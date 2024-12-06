@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.profile.domain.log;
 
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
+import liaison.linkit.profile.domain.Profile;
 import liaison.linkit.profile.domain.type.LogType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

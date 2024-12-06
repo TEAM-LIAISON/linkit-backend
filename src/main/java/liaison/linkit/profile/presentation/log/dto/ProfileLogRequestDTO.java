@@ -1,6 +1,5 @@
 package liaison.linkit.profile.presentation.log.dto;
 
-import liaison.linkit.profile.domain.type.LogType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,14 +27,6 @@ public class ProfileLogRequestDTO {
         private String logTitle;
         private String logContent;
         private Boolean isLogPublic;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateProfileLogType {
-        private LogType logType;
     }
 }
 

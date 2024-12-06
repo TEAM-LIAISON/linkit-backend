@@ -52,6 +52,19 @@ public class TeamLogResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class UpdateTeamLogResponse {
+        private Long teamLogId;
+        private String logTitle;
+        private String logContent;
+        private LocalDateTime createdAt;
+        private LogType logType;
+        private Boolean isLogPublic;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RemoveTeamLogResponse {
         private Long teamLogId;
     }
@@ -63,6 +76,15 @@ public class TeamLogResponseDTO {
     public static class UpdateTeamLogTypeResponse {
         private Long teamLogId;
         private LogType logType;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateTeamLogPublicStateResponse {
+        private Long teamLogId;
+        private Boolean isLogPublic;
     }
 
     @Builder

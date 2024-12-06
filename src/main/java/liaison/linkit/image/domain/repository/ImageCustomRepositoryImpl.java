@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import liaison.linkit.image.domain.Image;
 import liaison.linkit.image.domain.QImage;
-import liaison.linkit.profile.domain.QProfileLogImage;
+import liaison.linkit.profile.domain.log.QProfileLogImage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

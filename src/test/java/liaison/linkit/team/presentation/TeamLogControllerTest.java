@@ -33,13 +33,13 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.presentation.log.TeamLogController;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.AddTeamLogRequest;
-import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogType;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.AddTeamLogBodyImageResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.AddTeamLogResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.RemoveTeamLogResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.TeamLogItem;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.TeamLogItems;
+import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogPublicStateResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogTypeResponse;
 import liaison.linkit.team.service.log.TeamLogService;
 import org.junit.jupiter.api.BeforeEach;
@@ -112,13 +112,19 @@ public class TeamLogControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performUpdateTeamLogType(final Long teamLogId, final String teamName, final TeamLogRequestDTO.UpdateTeamLogType updateTeamLogType) throws Exception {
+    private ResultActions performUpdateTeamLogType(final Long teamLogId, final String teamName) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log/{teamLogId}", teamName, teamLogId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log/type/{teamLogId}", teamName, teamLogId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateTeamLogType))
+        );
+    }
+
+    private ResultActions performUpdateTeamLogPublicState(final String teamName, final Long teamLogId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log/state/{teamLogId}", teamName, teamLogId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
         );
     }
 
@@ -495,16 +501,14 @@ public class TeamLogControllerTest extends ControllerTest {
     @Test
     void updateTeamLogType() throws Exception {
         // given
-        final TeamLogRequestDTO.UpdateTeamLogType updateTeamLogType
-                = new UpdateTeamLogType(GENERAL_LOG);
 
         final TeamLogResponseDTO.UpdateTeamLogTypeResponse updateTeamLogTypeResponse
                 = new UpdateTeamLogTypeResponse(1L, GENERAL_LOG);
 
         // when
-        when(teamLogService.updateTeamLogType(anyLong(), any(), anyLong(), any())).thenReturn(updateTeamLogTypeResponse);
+        when(teamLogService.updateTeamLogType(anyLong(), any(), anyLong())).thenReturn(updateTeamLogTypeResponse);
 
-        final ResultActions resultActions = performUpdateTeamLogType(1L, "liaison", updateTeamLogType);
+        final ResultActions resultActions = performUpdateTeamLogType(1L, "liaison");
 
         // then
         final MvcResult mvcResult = resultActions
@@ -519,12 +523,6 @@ public class TeamLogControllerTest extends ControllerTest {
                                                 .description("팀 이름"),
                                         parameterWithName("teamLogId")
                                                 .description("팀 로그 ID")
-                                ),
-                                requestFields(
-                                        fieldWithPath("logType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 대표글 설정")
-                                                .attributes(field("constraint", "GENERAL_LOG 또는 REPRESENTATIVE_LOG"))
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -558,7 +556,65 @@ public class TeamLogControllerTest extends ControllerTest {
         final CommonResponse<UpdateTeamLogTypeResponse> expected = CommonResponse.onSuccess(updateTeamLogTypeResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
 
+    @DisplayName("회원이 팀의 로그를 공개 여부 설정을 변경할 수 있다.")
+    @Test
+    void updateTeamLogPublicState() throws Exception {
+        // given
+        final TeamLogResponseDTO.UpdateTeamLogPublicStateResponse updateTeamLogPublicStateResponse
+                = new UpdateTeamLogPublicStateResponse(1L, true);
 
+        // when
+        when(teamLogService.updateTeamLogPublicState(anyLong(), any(), anyLong())).thenReturn(updateTeamLogPublicStateResponse);
+
+        final ResultActions resultActions = performUpdateTeamLogPublicState("liaison", 1L);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름"),
+                                        parameterWithName("teamLogId")
+                                                .description("팀 로그 ID")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.teamLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("해당 팀 로그 ID"),
+                                        fieldWithPath("result.isLogPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("해당 로그 변경된 로그 공개 여부")
+                                )
+                        )).andReturn();
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamLogResponseDTO.UpdateTeamLogPublicStateResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<UpdateTeamLogPublicStateResponse>>() {
+                }
+        );
+
+        final CommonResponse<UpdateTeamLogPublicStateResponse> expected = CommonResponse.onSuccess(updateTeamLogPublicStateResponse);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }

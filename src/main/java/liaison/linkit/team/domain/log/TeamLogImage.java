@@ -1,4 +1,4 @@
-package liaison.linkit.profile.domain;
+package liaison.linkit.team.domain.log;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,14 +19,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProfileLogImage {
+public class TeamLogImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_log_id")
-    private ProfileLog profileLog;
+    @JoinColumn(name = "team_log_id")
+    private TeamLog teamLog;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")

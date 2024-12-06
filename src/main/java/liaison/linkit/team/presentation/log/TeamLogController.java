@@ -73,6 +73,19 @@ public class TeamLogController {
         return CommonResponse.onSuccess(teamLogService.addTeamLog(accessor.getMemberId(), teamName, addTeamLogRequest));
     }
 
+    // 팀 로그 수정
+    @PostMapping("/{teamLogId}")
+    @MemberOnly
+    public CommonResponse<TeamLogResponseDTO.UpdateTeamLogResponse> updateTeamLog(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamName,
+            @PathVariable final Long teamLogId,
+            @RequestBody TeamLogRequestDTO.UpdateTeamLogRequest updateTeamLogRequest
+    ) {
+
+        return CommonResponse.onSuccess(teamLogService.updateTeamLog(accessor.getMemberId(), teamName, teamLogId, updateTeamLogRequest));
+    }
+
     // 팀 로그 삭제
     @DeleteMapping("/{teamLogId}")
     @MemberOnly
@@ -85,15 +98,26 @@ public class TeamLogController {
         return CommonResponse.onSuccess(teamLogService.removeTeamLog(accessor.getMemberId(), teamName, teamLogId));
     }
 
-    // 로그 대표글/일반글 변경
-    @PostMapping("/{teamLogId}")
+    // 팀 로그 대표글로 변경
+    @PostMapping("/type/{teamLogId}")
     @MemberOnly
-    public CommonResponse<TeamLogResponseDTO.UpdateTeamLogTypeResponse> updateTeamLogPublicState(
+    public CommonResponse<TeamLogResponseDTO.UpdateTeamLogTypeResponse> updateTeamLogType(
             @Auth final Accessor accessor,
             @PathVariable final String teamName,
-            @PathVariable final Long teamLogId,
-            @RequestBody final TeamLogRequestDTO.UpdateTeamLogType updateTeamLogType
+            @PathVariable final Long teamLogId
     ) {
-        return CommonResponse.onSuccess(teamLogService.updateTeamLogType(accessor.getMemberId(), teamName, teamLogId, updateTeamLogType));
+        return CommonResponse.onSuccess(teamLogService.updateTeamLogType(accessor.getMemberId(), teamName, teamLogId));
+    }
+
+    // 팀 로그 공개 여부 수정
+    @PostMapping("/state/{teamLogId}")
+    @MemberOnly
+    public CommonResponse<TeamLogResponseDTO.UpdateTeamLogPublicStateResponse> updateTeamLogPublicState(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamName,
+            @PathVariable final Long teamLogId
+    ) {
+        log.info("memberId = {}가 팀 이름 = {}의 팀 로그 = {}에 대한 공개 여부 수정 요청이 발생했습니다.", accessor.getMemberId(), teamName, teamLogId);
+        return CommonResponse.onSuccess(teamLogService.updateTeamLogPublicState(accessor.getMemberId(), teamName, teamLogId));
     }
 }

@@ -5,11 +5,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
-import liaison.linkit.profile.domain.ProfileLog;
-import liaison.linkit.profile.domain.QProfileLog;
+import liaison.linkit.profile.domain.log.ProfileLog;
+import liaison.linkit.profile.domain.log.QProfileLog;
 import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
-import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -35,13 +34,13 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
     }
 
     @Override
-    public ProfileLog updateProfileLogType(final ProfileLog profileLog, final UpdateProfileLogType updateProfileLogType) {
+    public ProfileLog updateProfileLogTypeRepresent(final ProfileLog profileLog) {
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
         long updatedCount = queryFactory
                 .update(qProfileLog)
-                .set(qProfileLog.logType, updateProfileLogType.getLogType())
+                .set(qProfileLog.logType, LogType.REPRESENTATIVE_LOG)
                 .where(qProfileLog.id.eq(profileLog.getId()))
                 .execute();
 
@@ -49,7 +48,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         entityManager.clear();
 
         if (updatedCount > 0) { // 업데이트 성공 확인
-            profileLog.setLogType(updateProfileLogType.getLogType()); // 메모리 내 객체 업데이트
+            profileLog.setLogType(LogType.REPRESENTATIVE_LOG); // 메모리 내 객체 업데이트
             return profileLog;
         } else {
             throw new IllegalStateException("프로필 로그 업데이트 실패");
@@ -101,6 +100,20 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                 .selectOne()
                 .from(qProfileLog)
                 .where(qProfileLog.profile.id.eq(profileId))
+                .fetchFirst() != null;
+    }
+
+    @Override
+    public boolean existsRepresentativeProfileLogByProfile(final Long profileId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        return queryFactory
+                .selectOne()
+                .from(qProfileLog)
+                .where(
+                        qProfileLog.profile.id.eq(profileId)
+                                .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+                )
                 .fetchFirst() != null;
     }
 
