@@ -35,6 +35,7 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.presentation.log.ProfileLogController;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.AddProfileLogRequest;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
@@ -42,6 +43,8 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProf
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItems;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveProfileLogResponse;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogTypeResponse;
 import liaison.linkit.profile.service.ProfileLogService;
 import org.junit.jupiter.api.BeforeEach;
@@ -96,13 +99,23 @@ public class ProfileLogControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performPostProfileLog(final AddProfileLogRequest addProfileLogRequest) throws Exception {
+    private ResultActions performAddProfileLog(final AddProfileLogRequest addProfileLogRequest) throws Exception {
         return mockMvc.perform(
                 post("/api/v1/profile/log")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addProfileLogRequest))
+        );
+    }
+
+    private ResultActions performUpdateProfileLog(final Long profileLogId, final UpdateProfileLogRequest updateProfileLogRequest) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/profile/log/{profileLogId}", profileLogId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateProfileLogRequest))
         );
     }
 
@@ -121,6 +134,14 @@ public class ProfileLogControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateProfileLogType))
+        );
+    }
+
+    private ResultActions performUpdateProfileLogPublicState(final Long profileLogId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/profile/log/state/{profileLogId}", profileLogId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
         );
     }
 
@@ -350,7 +371,7 @@ public class ProfileLogControllerTest extends ControllerTest {
         // when
         when(profileLogService.addProfileLog(anyLong(), any())).thenReturn(addProfileLogResponse);
 
-        final ResultActions resultActions = performPostProfileLog(addProfileLogRequest);
+        final ResultActions resultActions = performAddProfileLog(addProfileLogRequest);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -414,6 +435,91 @@ public class ProfileLogControllerTest extends ControllerTest {
         );
 
         final CommonResponse<AddProfileLogResponse> expected = CommonResponse.onSuccess(addProfileLogResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 로그를 추가할 수 있다.")
+    @Test
+    void updateProfileLog() throws Exception {
+        // given
+        final ProfileLogRequestDTO.UpdateProfileLogRequest updateProfileLogRequest
+                = new UpdateProfileLogRequest("제목제목제목", "내용내용내용", true);
+
+        final ProfileLogResponseDTO.UpdateProfileLogResponse updateProfileLogResponse
+                = new UpdateProfileLogResponse(1L, "제목제목제목", "내용내용내용", LocalDateTime.now(), GENERAL_LOG, true);
+        // when
+        when(profileLogService.updateProfileLog(anyLong(), anyLong(), any())).thenReturn(updateProfileLogResponse);
+
+        final ResultActions resultActions = performUpdateProfileLog(1L, updateProfileLogRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("profileLogId")
+                                                .description("프로필 로그 ID")
+                                ),
+                                requestFields(
+                                        fieldWithPath("logTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 제목"),
+                                        fieldWithPath("logContent")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 내용"),
+                                        fieldWithPath("isLogPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("로그 공개 여부")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.profileLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("내 로그 ID"),
+                                        fieldWithPath("result.logTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 제목"),
+                                        fieldWithPath("result.logContent")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 내용"),
+                                        fieldWithPath("result.createdAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 생성 시간"),
+                                        fieldWithPath("result.logType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 유형 (대표글 여부)"),
+                                        fieldWithPath("result.isLogPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("로그 공개 여부")
+                                )
+                        )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<ProfileLogResponseDTO.UpdateProfileLogResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<UpdateProfileLogResponse>>() {
+                }
+        );
+
+        final CommonResponse<UpdateProfileLogResponse> expected = CommonResponse.onSuccess(updateProfileLogResponse);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
@@ -539,7 +645,63 @@ public class ProfileLogControllerTest extends ControllerTest {
         final CommonResponse<UpdateProfileLogTypeResponse> expected = CommonResponse.onSuccess(updateProfileLogTypeResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
 
+    @DisplayName("회원이 나의 로그를 공개 여부 설정을 변경할 수 있다.")
+    @Test
+    void updateProfileLogPublicState() throws Exception {
+        // given
+        final ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse updateProfileLogPublicStateResponse
+                = new UpdateProfileLogPublicStateResponse(1L, true);
 
+        // when
+        when(profileLogService.updateProfileLogPublicState(anyLong(), anyLong())).thenReturn(updateProfileLogPublicStateResponse);
+
+        final ResultActions resultActions = performUpdateProfileLogPublicState(1L);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("profileLogId")
+                                                .description("프로필 로그 ID")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.profileLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("해당 로그 ID"),
+                                        fieldWithPath("result.isLogPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("해당 로그 변경된 로그 공개 여부")
+                                )
+                        )).andReturn();
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<UpdateProfileLogPublicStateResponse>>() {
+                }
+        );
+
+        final CommonResponse<UpdateProfileLogPublicStateResponse> expected = CommonResponse.onSuccess(updateProfileLogPublicStateResponse);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }

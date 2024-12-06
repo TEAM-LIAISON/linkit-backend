@@ -39,6 +39,14 @@ public class ProfileLogResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class AddProfileLogBodyImageResponse {
+        private String profileLogBodyImagePath;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AddProfileLogResponse {
         private Long profileLogId;
         private String logTitle;
@@ -82,7 +90,8 @@ public class ProfileLogResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AddProfileLogBodyImageResponse {
-        private String profileLogBodyImagePath;
+    public static class UpdateProfileLogPublicStateResponse {
+        private Long profileLogId;
+        private Boolean isLogPublic;
     }
 }

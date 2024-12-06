@@ -284,6 +284,19 @@ include::{snippets}/profile-log-controller-test/add-profile-log/http-response.ad
 include::{snippets}/profile-log-controller-test/add-profile-log/response-fields.adoc[]
 ====
 
+=== 나의 로그 단일 수정
+
+====
+*요청*
+include::{snippets}/profile-log-controller-test/update-profile-log/http-request.adoc[]
+include::{snippets}/profile-log-controller-test/update-profile-log/path-parameters.adoc[]
+include::{snippets}/profile-log-controller-test/update-profile-log/request-fields.adoc[]
+
+*응답*
+include::{snippets}/profile-log-controller-test/update-profile-log/http-response.adoc[]
+include::{snippets}/profile-log-controller-test/update-profile-log/response-fields.adoc[]
+====
+
 === 나의 로그 단일 삭제
 
 ====
@@ -300,13 +313,26 @@ include::{snippets}/profile-log-controller-test/remove-profile-log/response-fiel
 === 나의 로그 대표글 설정 여부 수정
 
 ====
-요청
+*요청*
 
 include::{snippets}/profile-log-controller-test/update-profile-log-type/http-request.adoc[]
 
-응답
+*응답*
 include::{snippets}/profile-log-controller-test/update-profile-log-type/http-response.adoc[]
 include::{snippets}/profile-log-controller-test/update-profile-log-type/response-fields.adoc[]
+
+====
+
+=== 나의 로그 공개 여부 설정 수정
+
+====
+*요청*
+include::{snippets}/profile-log-controller-test/update-profile-log-public-state/http-request.adoc[]
+include::{snippets}/profile-log-controller-test/update-profile-log-public-state/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/profile-log-controller-test/update-profile-log-public-state/http-response.adoc[]
+include::{snippets}/profile-log-controller-test/update-profile-log-public-state/response-fields.adoc[]
 
 ====
 

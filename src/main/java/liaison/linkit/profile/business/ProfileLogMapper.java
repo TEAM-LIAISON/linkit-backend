@@ -3,6 +3,7 @@ package liaison.linkit.profile.business;
 import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.image.domain.Image;
 import liaison.linkit.profile.domain.ProfileLog;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
@@ -38,6 +39,11 @@ public class ProfileLogMapper {
         return ProfileLogResponseDTO.AddProfileLogResponse
                 .builder()
                 .profileLogId(profileLog.getId())
+                .logTitle(profileLog.getLogTitle())
+                .logContent(profileLog.getLogContent())
+                .createdAt(profileLog.getCreatedAt())
+                .logType(profileLog.getLogType())
+                .isLogPublic(profileLog.isLogPublic())
                 .build();
     }
 
@@ -56,11 +62,19 @@ public class ProfileLogMapper {
                 .build();
     }
 
+    public ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse toUpdateProfileLogPublicState(final ProfileLog profileLog) {
+        return ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse
+                .builder()
+                .profileLogId(profileLog.getId())
+                .isLogPublic(profileLog.isLogPublic())
+                .build();
+    }
 
-    public AddProfileLogBodyImageResponse toAddProfileLogBodyImageResponse(final String profileLogBodyImagePath) {
+
+    public AddProfileLogBodyImageResponse toAddProfileLogBodyImageResponse(final Image image) {
         return AddProfileLogBodyImageResponse
                 .builder()
-                .profileLogBodyImagePath(profileLogBodyImagePath)
+                .profileLogBodyImagePath(image.getImageUrl())
                 .build();
     }
 
