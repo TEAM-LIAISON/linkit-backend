@@ -18,4 +18,8 @@ public class TeamMemberQueryAdapter {
     public List<TeamMember> getTeamMembers(final Long teamId) {
         return teamMemberRepository.getTeamMembers(teamId);
     }
+
+    public boolean isMemberOfTeam(final Long teamId, final Long memberId) {
+        return teamMemberRepository.isMemberOfTeam(teamId, memberId);
+    }
 }

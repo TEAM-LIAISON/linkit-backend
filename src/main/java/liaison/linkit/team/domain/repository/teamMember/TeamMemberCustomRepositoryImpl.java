@@ -33,4 +33,16 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .where(qTeamMember.team.id.eq(teamId))
                 .fetch();
     }
+
+    @Override
+    public boolean isMemberOfTeam(Long teamId, Long memberId) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        return jpaQueryFactory.selectOne()
+                .from(qTeamMember)
+                .where(qTeamMember.team.id.eq(teamId)
+                        .and(qTeamMember.member.id.eq(memberId)))
+                .fetchFirst() != null;
+    }
+    
 }

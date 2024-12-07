@@ -10,6 +10,8 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,22 +51,21 @@ public class TeamController {
     }
 
     // 팀 상단 메뉴
-//    @GetMapping("/team/{teamName}")
-//    @MemberOnly
-//    public CommonResponse<TeamResponseDTO.TeamDetail> getTeamDetail(
-//            @PathVariable final String teamName,
-//            @Auth final Accessor accessor
-//    ) {
-//        if (accessor.isMember()) {
-//            log.info("memberId = {}의 팀 이름 = {}에 대한 팀 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
-//            return CommonResponse.onSuccess(teamService.getMyTeamDetail(accessor.getMemberId(), teamName));
-//        } else {
-//            log.info("teamName = {}에 대한 팀 상세 조회 요청이 발생했습니다.", teamName);
-//            return CommonResponse.onSuccess(teamService.getTeamDetail(teamName));
-//        }
-//    }
-
-    // ---
+    @GetMapping("/team/{teamName}")
+    @MemberOnly
+    public CommonResponse<TeamResponseDTO.TeamDetail> getTeamDetail(
+            @PathVariable final String teamName,
+            @Auth final Accessor accessor
+    ) {
+        if (accessor.isMember()) {
+            log.info("memberId = {}의 팀 이름 = {}에 대한 팀 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
+            return CommonResponse.onSuccess(teamService.getLoggedInTeamDetail(accessor.getMemberId(), teamName));
+        } else {
+            log.info("teamName = {}에 대한 팀 상세 조회 요청이 발생했습니다.", teamName);
+            return CommonResponse.onSuccess(teamService.getLoggedOutTeamDetail(teamName));
+        }
+    }
+    
     // 팀 삭제 요청
 
     // 팀 나가기 요청

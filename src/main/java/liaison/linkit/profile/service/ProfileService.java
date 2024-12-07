@@ -148,6 +148,7 @@ public class ProfileService {
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
         log.info("지역 정보 조회 성공");
+
         final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
         final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
         log.info("상태 정보 조회 성공");
@@ -229,6 +230,7 @@ public class ProfileService {
             final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
+
         log.info("지역 정보 조회 성공");
         final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
         final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
