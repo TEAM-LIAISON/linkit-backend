@@ -837,6 +837,20 @@ include::{snippets}/team-controller-test/create-team/http-response.adoc[]
 include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
 ====
 
+== #[팀 - 팀 조회]#
+
+=== 팀_팀 상세 조회
+
+====
+*요청*
+include::{snippets}/team-controller-test/get-team-detail/http-request.adoc[]
+include::{snippets}/team-controller-test/get-team-detail/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-controller-test/get-team-detail/http-response.adoc[]
+include::{snippets}/team-controller-test/get-team-detail/response-fields.adoc[]
+====
+
 == #[팀 - 팀 로그]#
 
 === 팀 로그 본문 이미지 첨부
