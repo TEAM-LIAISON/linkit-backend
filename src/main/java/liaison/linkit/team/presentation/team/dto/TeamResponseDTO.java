@@ -36,7 +36,7 @@ public class TeamResponseDTO {
         private String teamName;
 
         private String teamShortDescription;
-        
+
         @Builder.Default
         private TeamScaleItem teamScaleItem = new TeamScaleItem();
 
@@ -46,7 +46,7 @@ public class TeamResponseDTO {
         @Builder.Default
         private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
 
-        private boolean isTeamPublic;
+        private Boolean isTeamPublic;
     }
 
     @Builder

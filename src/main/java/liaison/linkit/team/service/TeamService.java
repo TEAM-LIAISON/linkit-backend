@@ -33,6 +33,7 @@ import liaison.linkit.team.implement.state.TeamStateQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamBasicInformRequest;
+import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
@@ -66,7 +67,7 @@ public class TeamService {
     private final TeamScaleMapper teamScaleMapper;
 
     private final TeamStateQueryAdapter teamStateQueryAdapter;
-    private final TeamCurrentStateCommandAdapter teamCurrentStateCommandAdapter
+    private final TeamCurrentStateCommandAdapter teamCurrentStateCommandAdapter;
     private final TeamCurrentStateMapper teamCurrentStateMapper;
 
     private final TeamRegionCommandAdapter teamRegionCommandAdapter;
@@ -80,7 +81,7 @@ public class TeamService {
     public TeamResponseDTO.AddTeamResponse createTeam(
             final Long memberId,
             final MultipartFile teamLogoImage,
-            final AddTeamBasicInformRequest addTeamBasicInformRequest
+            final AddTeamRequest addTeamRequest
     ) {
         String teamLogoImagePath = null;
 
@@ -93,7 +94,7 @@ public class TeamService {
         }
 
         // 팀 생성
-        final Team team = teamMapper.toTeam(teamLogoImagePath, addTeamBasicInformRequest);
+        final Team team = teamMapper.toTeam(teamLogoImagePath, addTeamRequest);
         final Team savedTeam = teamCommandAdapter.add(team);
 
         // 팀원에 추가
@@ -101,19 +102,19 @@ public class TeamService {
         teamMemberCommandAdapter.addTeamMember(teamMember);
 
         // 팀 규모 저장
-        final Scale scale = scaleQueryAdapter.findByScaleName(addTeamBasicInformRequest.getScaleName());
+        final Scale scale = scaleQueryAdapter.findByScaleName(addTeamRequest.getScaleName());
         final TeamScale teamScale = new TeamScale(null, savedTeam, scale);
         teamScaleCommandAdapter.save(teamScale);
         final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
 
         // 팀 지역 저장
-        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamBasicInformRequest.getCityName(), addTeamBasicInformRequest.getDivisionName());
+        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamRequest.getCityName(), addTeamRequest.getDivisionName());
         final TeamRegion teamRegion = new TeamRegion(null, savedTeam, region);
         teamRegionCommandAdapter.save(teamRegion);
         final RegionDetail regionDetail = regionMapper.toRegionDetail(region);
 
         // 팀 현재 상태 저장
-        List<String> teamStateNames = addTeamBasicInformRequest.getTeamStateNames();
+        List<String> teamStateNames = addTeamRequest.getTeamStateNames();
         List<TeamCurrentState> teamCurrentStates = new ArrayList<>();
 
         for (String teamStateName : teamStateNames) {

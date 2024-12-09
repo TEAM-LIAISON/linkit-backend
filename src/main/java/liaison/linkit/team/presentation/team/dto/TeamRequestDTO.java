@@ -14,6 +14,20 @@ public class TeamRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class AddTeamRequest {
+        private String teamName;
+        private String teamShortDescription;
+        private String scaleName;
+        private String cityName;
+        private String divisionName;
+        private List<String> teamStateNames;
+        private Boolean isTeamPublic;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AddTeamBasicInformRequest {
         private String teamName;
         private String teamShortDescription;

@@ -6,10 +6,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
-import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestPartFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -25,14 +21,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.presentation.team.TeamController;
-import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamBasicInformRequest;
+import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.AddTeamResponse;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
@@ -81,13 +76,15 @@ public class TeamControllerTest extends ControllerTest {
     @Test
     void createTeam() throws Exception {
         // given
-        final AddTeamBasicInformRequest addTeamBasicInformRequest = new AddTeamBasicInformRequest(
-                "리에종",
-                "팀 한 줄 소개입니다.",
-                "1인",
-                "서울특별시",
-                "강남구"
-        );
+        final AddTeamRequest addTeamRequest = AddTeamRequest.builder()
+                .teamName("리에종")
+                .teamShortDescription("팀 한 줄 소개")
+                .scaleName("팀 규모")
+                .cityName("팀 활동지역 시/도")
+                .divisionName("팀 활동지역 시/군/구")
+                .teamStateNames(Arrays.asList("팀원 찾는 중", "투자 유치 중"))
+                .isTeamPublic(true)
+                .build();
 
         final MockMultipartFile teamLogoImage = new MockMultipartFile(
                 "teamLogoImage",
@@ -97,14 +94,40 @@ public class TeamControllerTest extends ControllerTest {
         );
 
         final MockMultipartFile createRequest = new MockMultipartFile(
-                "addTeamBasicInformRequest",
+                "addTeamRequest",
                 null,
                 "application/json",
-                objectMapper.writeValueAsString(addTeamBasicInformRequest).getBytes(StandardCharsets.UTF_8)
+                objectMapper.writeValueAsString(addTeamRequest).getBytes(StandardCharsets.UTF_8)
         );
 
-        final TeamResponseDTO.AddTeamResponse addTeamResponse
-                = new AddTeamResponse(1L, LocalDateTime.now());
+        final TeamResponseDTO.AddTeamResponse addTeamResponse = AddTeamResponse.builder()
+                .teamId(1L)
+                .teamLogoImagePath("팀 로고 이미지 경로")
+                .teamName("팀 이름")
+                .teamShortDescription("팀 한 줄 소개")
+                .teamScaleItem(
+                        TeamScaleItem.builder()
+                                .teamScaleName("팀 규모 이름")
+                                .build()
+                )
+                .regionDetail(
+                        RegionDetail.builder()
+                                .cityName("서울특별시")
+                                .divisionName("강남구")
+                                .build()
+                )
+                .teamCurrentStates(
+                        Arrays.asList(
+                                TeamCurrentStateItem.builder()
+                                        .teamStateName("팀원 찾는 중")
+                                        .build(),
+                                TeamCurrentStateItem.builder()
+                                        .teamStateName("투자 유치 중")
+                                        .build()
+                        )
+                )
+                .isTeamPublic(true)
+                .build();
 
         // when
 
@@ -120,28 +143,19 @@ public class TeamControllerTest extends ControllerTest {
                 .cookie(COOKIE));
 
         // then
-        resultActions
+        final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value("true"))
                 .andExpect(jsonPath("$.code").value("1000"))
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
                         restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refreshToken")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
-                                ),
                                 requestParts(
-                                        partWithName("addTeamBasicInformRequest").description("팀 기본 정보 생성 요청 객체"),
+                                        partWithName("addTeamRequest").description("팀 생성 요청 객체"),
                                         partWithName("teamLogoImage")
                                                 .description("팀 로고 이미지 파일. 지원되는 형식은 .png, .jpg 등이 있습니다.")
                                 ),
-                                requestPartFields("addTeamBasicInformRequest",
+                                requestPartFields("addTeamRequest",
                                         fieldWithPath("teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름")
@@ -161,7 +175,13 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("divisionName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("활동 지역 시/군/구 이름")
-                                                .attributes(field("constraint", "문자열"))
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("teamStateNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("현재 상태 배열"),
+                                        fieldWithPath("isTeamPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 공개 여부")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -179,12 +199,56 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamId")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("팀 ID"),
-                                        fieldWithPath("result.createdAt")
+
+                                        // 추가된 필드들
+                                        fieldWithPath("result.teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 생성 시간")
-                                                .attributes(field("constraint", "문자열"))
+                                                .description("팀 로고 이미지 경로"),
+                                        fieldWithPath("result.teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 이름"),
+                                        fieldWithPath("result.teamShortDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 한 줄 소개"),
+                                        fieldWithPath("result.teamScaleItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("팀 스케일 정보"),
+                                        fieldWithPath("result.teamScaleItem.teamScaleName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 스케일 이름"),
+                                        fieldWithPath("result.regionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("지역 상세 정보"),
+                                        fieldWithPath("result.regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("도시 이름"),
+                                        fieldWithPath("result.regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("구/군 이름"),
+                                        fieldWithPath("result.teamCurrentStates")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("팀 현재 상태 목록"),
+                                        fieldWithPath("result.teamCurrentStates[].teamStateName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 상태 이름"),
+                                        fieldWithPath("result.isTeamPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 공개 여부")
                                 )
                         )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<AddTeamResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<AddTeamResponse>>() {
+                }
+        );
+
+        final CommonResponse<AddTeamResponse> expected = CommonResponse.onSuccess(addTeamResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
     @DisplayName("회원이 팀 상세 정보를 조회한다.")

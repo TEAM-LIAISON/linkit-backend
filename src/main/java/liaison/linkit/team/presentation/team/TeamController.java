@@ -33,9 +33,9 @@ public class TeamController {
     public CommonResponse<TeamResponseDTO.AddTeamResponse> createTeam(
             @Auth final Accessor accessor,
             @RequestPart(required = false) MultipartFile teamLogoImage,
-            @RequestPart @Valid TeamRequestDTO.AddTeamBasicInformRequest addTeamBasicInformRequest
+            @RequestPart @Valid TeamRequestDTO.AddTeamRequest addTeamRequest
     ) {
-        return CommonResponse.onSuccess(teamService.createTeam(accessor.getMemberId(), teamLogoImage, addTeamBasicInformRequest));
+        return CommonResponse.onSuccess(teamService.createTeam(accessor.getMemberId(), teamLogoImage, addTeamRequest));
     }
 
     // 팀 기본정보 저장
@@ -65,7 +65,7 @@ public class TeamController {
             return CommonResponse.onSuccess(teamService.getLoggedOutTeamDetail(teamName));
         }
     }
-    
+
     // 팀 삭제 요청
 
     // 팀 나가기 요청

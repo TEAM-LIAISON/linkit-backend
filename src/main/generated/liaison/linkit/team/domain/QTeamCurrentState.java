@@ -34,7 +34,7 @@ public class QTeamCurrentState extends EntityPathBase<TeamCurrentState> {
 
     public final QTeam team;
 
-    public final QTeamState teamState;
+    public final liaison.linkit.team.domain.state.QTeamState teamState;
 
     public QTeamCurrentState(String variable) {
         this(TeamCurrentState.class, forVariable(variable), INITS);
@@ -55,7 +55,7 @@ public class QTeamCurrentState extends EntityPathBase<TeamCurrentState> {
     public QTeamCurrentState(Class<? extends TeamCurrentState> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.team = inits.isInitialized("team") ? new QTeam(forProperty("team")) : null;
-        this.teamState = inits.isInitialized("teamState") ? new QTeamState(forProperty("teamState")) : null;
+        this.teamState = inits.isInitialized("teamState") ? new liaison.linkit.team.domain.state.QTeamState(forProperty("teamState")) : null;
     }
 
 }

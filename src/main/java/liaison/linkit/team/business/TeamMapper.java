@@ -4,7 +4,7 @@ import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.team.domain.Team;
-import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamBasicInformRequest;
+import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
@@ -15,13 +15,13 @@ public class TeamMapper {
 
     public Team toTeam(
             final String teamLogoImagePath,
-            final AddTeamBasicInformRequest request
+            final AddTeamRequest request
     ) {
         return Team.builder()
                 .teamLogoImagePath(teamLogoImagePath)
                 .teamName(request.getTeamName())
                 .teamShortDescription(request.getTeamShortDescription())
-                .isTeamPublic(request.isTeamPublic())
+                .isTeamPublic(request.getIsTeamPublic())
                 .build();
     }
 

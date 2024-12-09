@@ -1,4 +1,4 @@
-package liaison.linkit.team.domain;
+package liaison.linkit.team.domain.state;
 
 import static com.querydsl.core.types.PathMetadataFactory.*;
 
@@ -7,7 +7,6 @@ import com.querydsl.core.types.dsl.*;
 import com.querydsl.core.types.PathMetadata;
 import javax.annotation.processing.Generated;
 import com.querydsl.core.types.Path;
-import liaison.linkit.team.domain.state.TeamState;
 
 
 /**
@@ -16,7 +15,7 @@ import liaison.linkit.team.domain.state.TeamState;
 @Generated("com.querydsl.codegen.DefaultEntitySerializer")
 public class QTeamState extends EntityPathBase<TeamState> {
 
-    private static final long serialVersionUID = -1969860205L;
+    private static final long serialVersionUID = 1207520566L;
 
     public static final QTeamState teamState = new QTeamState("teamState");
 
