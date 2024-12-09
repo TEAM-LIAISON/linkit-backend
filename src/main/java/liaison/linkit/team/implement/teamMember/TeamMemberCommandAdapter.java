@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 public class TeamMemberCommandAdapter {
     private final TeamMemberRepository teamMemberRepository;
 
-    public TeamMember add(final TeamMember teamMember) {
+    public TeamMember addTeamMember(final TeamMember teamMember) {
         return teamMemberRepository.save(teamMember);
     }
 }

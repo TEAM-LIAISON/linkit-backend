@@ -39,6 +39,8 @@ public class QTeamMemberAnnouncement extends EntityPathBase<TeamMemberAnnounceme
 
     public final StringPath idealCandidate = createString("idealCandidate");
 
+    public final BooleanPath isAnnouncementPublic = createBoolean("isAnnouncementPublic");
+
     public final BooleanPath isRegionFlexible = createBoolean("isRegionFlexible");
 
     public final StringPath joiningProcess = createString("joiningProcess");

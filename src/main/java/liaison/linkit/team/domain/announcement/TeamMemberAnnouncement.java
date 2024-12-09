@@ -43,4 +43,10 @@ public class TeamMemberAnnouncement extends BaseEntity {
     private String preferredQualifications; // 이런 분이면 더 좋아요
     private String joiningProcess; // 이런 과정으로 합류해요
     private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
+
+    private boolean isAnnouncementPublic;
+
+    public void setIsAnnouncementPublic(final boolean isAnnouncementPublic) {
+        this.isAnnouncementPublic = isAnnouncementPublic;
+    }
 }

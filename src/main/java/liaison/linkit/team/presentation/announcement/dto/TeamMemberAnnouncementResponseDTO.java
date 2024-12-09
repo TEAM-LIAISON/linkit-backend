@@ -80,7 +80,7 @@ public class TeamMemberAnnouncementResponseDTO {
         private String cityName;
         private String divisionName;
         private Boolean isRegionFlexible; // 지역 무관
-       
+
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식
         private String idealCandidate; // 이런 분을 찾고 있어요
@@ -147,5 +147,13 @@ public class TeamMemberAnnouncementResponseDTO {
         private String announcementSkillName;
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateTeamMemberAnnouncementPublicStateResponse {
+        private Long teamMemberAnnouncementId;
+        private Boolean isAnnouncementPublic;
+    }
 
 }

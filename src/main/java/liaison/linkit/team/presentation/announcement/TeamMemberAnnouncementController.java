@@ -35,7 +35,7 @@ public class TeamMemberAnnouncementController {
         log.info("memberId = {}의 팀 이름 = {}에 대한 팀원 공고 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
         return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementItems(accessor.getMemberId(), teamName));
     }
-    
+
     // 팀원 공고 단일 조회
     @GetMapping("/{teamMemberAnnouncementId}")
     @MemberOnly
@@ -82,5 +82,15 @@ public class TeamMemberAnnouncementController {
             @PathVariable final Long teamMemberAnnouncementId
     ) {
         return CommonResponse.onSuccess(teamMemberAnnouncementService.removeTeamMemberAnnouncement(accessor.getMemberId(), teamName, teamMemberAnnouncementId));
+    }
+
+    @PostMapping("/state/{teamMemberAnnouncementId}")
+    @MemberOnly
+    public CommonResponse<TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse> updateTeamMemberAnnouncementPublicState(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamName,
+            @PathVariable final Long teamMemberAnnouncementId
+    ) {
+        return CommonResponse.onSuccess(teamMemberAnnouncementService.updateTeamMemberAnnouncementPublicState(accessor.getMemberId(), teamName, teamMemberAnnouncementId));
     }
 }

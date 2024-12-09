@@ -9,4 +9,6 @@ public interface AnnouncementRegionCustomRepository {
     boolean existsAnnouncementRegionByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId);
 
     void deleteByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId);
+
+
 }

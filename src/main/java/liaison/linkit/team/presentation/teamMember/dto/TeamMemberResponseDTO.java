@@ -2,6 +2,8 @@ package liaison.linkit.team.presentation.teamMember.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +19,7 @@ public class TeamMemberResponseDTO {
     @AllArgsConstructor
     public static class TeamMemberItems {
         @Builder.Default
-        private List<TeamMemberItem> teamMemberItems = new ArrayList<>();
+        private List<ProfileInformMenu> profileInformMenus = new ArrayList<>();
     }
 
     @Builder
@@ -26,5 +28,23 @@ public class TeamMemberResponseDTO {
     @AllArgsConstructor
     public static class TeamMemberItem {
         private Long teamMemberId;
+        private String teamName;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileInformMenu {
+        @Builder.Default
+        private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
+
+        private String profileImagePath;
+        private String memberName;
+        private Boolean isProfilePublic;
+        private String majorPosition;
+
+        @Builder.Default
+        private RegionDetail regionDetail = new RegionDetail();
     }
 }

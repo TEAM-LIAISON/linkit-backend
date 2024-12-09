@@ -30,14 +30,17 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-batch'
-
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.webjars:sockjs-client:1.1.2'
+    implementation 'org.webjars:stomp-websocket:2.3.3-1'
+    
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.715'
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.0'
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
-    
+
     implementation 'org.jsoup:jsoup:1.15.3'
 
     // p6spy 자리

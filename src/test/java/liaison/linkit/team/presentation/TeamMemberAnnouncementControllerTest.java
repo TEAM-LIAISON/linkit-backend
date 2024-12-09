@@ -34,6 +34,7 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse;
 import liaison.linkit.team.service.announcement.TeamMemberAnnouncementService;
 import org.jetbrains.annotations.NotNull;
@@ -99,6 +100,14 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     private ResultActions performRemoveTeamMemberAnnouncement(final String teamName, final Long teamMemberAnnouncementId) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.delete("/api/v1/team/{teamName}/announcement/{teamMemberAnnouncementId}", teamName, teamMemberAnnouncementId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE));
+    }
+
+    // 팀원 공고 공개/비공개 여부 수정
+    private ResultActions performUpdateTeamMemberAnnouncementPublicState(final String teamName, final Long teamMemberAnnouncementId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/announcement/state/{teamMemberAnnouncementId}", teamName, teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
@@ -501,6 +510,66 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final CommonResponse<RemoveTeamMemberAnnouncementResponse> expected = CommonResponse.onSuccess(removeTeamMemberAnnouncementResponse);
 
         // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 팀원 공고를 공개 여부 설정을 변경할 수 있다.")
+    @Test
+    void updateTeamMemberAnnouncementPublicState() throws Exception {
+        // given
+        final TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse updateTeamMemberAnnouncementPublicStateResponse
+                = new UpdateTeamMemberAnnouncementPublicStateResponse(1L, true);
+
+        // when
+        when(teamMemberAnnouncementService.updateTeamMemberAnnouncementPublicState(anyLong(), any(), anyLong())).thenReturn(updateTeamMemberAnnouncementPublicStateResponse);
+
+        final ResultActions resultActions = performUpdateTeamMemberAnnouncementPublicState("liaison", 1L);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름"),
+                                        parameterWithName("teamMemberAnnouncementId")
+                                                .description("팀원 공고 ID")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.teamMemberAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("해당 팀원 공고 ID"),
+                                        fieldWithPath("result.isAnnouncementPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("해당 팀원 공고 변경된 팀원 공고 공개 여부")
+                                )
+                        )).andReturn();
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<UpdateTeamMemberAnnouncementPublicStateResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<UpdateTeamMemberAnnouncementPublicStateResponse>>() {
+                }
+        );
+
+        final CommonResponse<UpdateTeamMemberAnnouncementPublicStateResponse> expected = CommonResponse.onSuccess(updateTeamMemberAnnouncementPublicStateResponse);
+
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 

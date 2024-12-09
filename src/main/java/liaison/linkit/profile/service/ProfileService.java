@@ -6,6 +6,7 @@ import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.business.ProfileActivityMapper;
 import liaison.linkit.profile.business.ProfileAwardsMapper;
 import liaison.linkit.profile.business.ProfileCurrentStateMapper;
@@ -65,6 +66,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class ProfileService {
+    private final MemberQueryAdapter memberQueryAdapter;
 
     private final ProfileQueryAdapter profileQueryAdapter;
     private final RegionQueryAdapter regionQueryAdapter;
@@ -128,8 +130,16 @@ public class ProfileService {
         return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu);
     }
 
-    public ProfileResponseDTO.ProfileDetail getProfileMyDetail(final Long memberId) {
+    // 로그인한 사용자가 프로필을 조회한다.
+    public ProfileResponseDTO.ProfileDetail getMyProfileDetail(final Long memberId) {
+        final Member member = memberQueryAdapter.findById(memberId);
+
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
+
+        boolean isMyProfile = false;
+        if (profile.getMember().equals(member)) {
+            isMyProfile = true;
+        }
 
         RegionDetail regionDetail = new RegionDetail();
 
@@ -138,6 +148,7 @@ public class ProfileService {
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
         log.info("지역 정보 조회 성공");
+
         final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
         final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
         log.info("상태 정보 조회 성공");
@@ -191,7 +202,7 @@ public class ProfileService {
         final List<ProfileLinkItem> profileLinkItems = profileLinkMapper.profileLinksToProfileLinkItems(profileLinks);
 
         return profileMapper.toProfileDetail(
-                true,
+                isMyProfile,
                 profileCompletionMenu,
                 profileInformMenu,
                 profile.getProfileScrapCount(),
@@ -206,6 +217,7 @@ public class ProfileService {
         );
     }
 
+    // 로그인하지 않은 사용자가 프로필을 조회한다.
     public ProfileResponseDTO.ProfileDetail getProfileDetail(final String emailId) {
         log.info("이메일 ID = {}에 대한 상세 조회 요청이 발생했습니다.", emailId);
         final Profile profile = profileQueryAdapter.findByEmailId(emailId);
@@ -218,6 +230,7 @@ public class ProfileService {
             final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
+
         log.info("지역 정보 조회 성공");
         final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
         final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);

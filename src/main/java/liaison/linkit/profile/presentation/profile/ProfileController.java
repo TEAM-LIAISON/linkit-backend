@@ -30,6 +30,7 @@ public class ProfileController {
         return CommonResponse.onSuccess(profileService.getProfileLeftMenu(accessor.getMemberId()));
     }
 
+    // 내 프로필 조회
     @GetMapping("/profile/{emailId}")
     public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileDetail(
             @PathVariable final String emailId,
@@ -38,7 +39,7 @@ public class ProfileController {
         if (accessor.isMember()) {
             Long memberId = accessor.getMemberId();
             log.info("memberId = {}의 프로필 상세 조회 요청이 발생했습니다.", memberId);
-            return CommonResponse.onSuccess(profileService.getProfileMyDetail(memberId));
+            return CommonResponse.onSuccess(profileService.getMyProfileDetail(memberId));
         } else {
             log.info("emailId = {}에 대한 프로필 상세 조회 요청이 발생했습니다.", emailId);
             return CommonResponse.onSuccess(profileService.getProfileDetail(emailId));
