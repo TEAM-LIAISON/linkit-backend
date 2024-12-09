@@ -1,6 +1,5 @@
 package liaison.linkit.team.presentation.team.dto;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -53,6 +52,31 @@ public class TeamResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class UpdateTeamResponse {
+        private Long teamId;
+
+        private String teamLogoImagePath;
+
+        private String teamName;
+
+        private String teamShortDescription;
+
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+
+        @Builder.Default
+        private RegionDetail regionDetail = new RegionDetail();
+
+        @Builder.Default
+        private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
+
+        private Boolean isTeamPublic;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TeamInformMenu {
 
         @Builder.Default
@@ -71,15 +95,6 @@ public class TeamResponseDTO {
         // 지역 정보
         @Builder.Default
         private RegionDetail regionDetail = new RegionDetail();
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SaveTeamBasicInformResponse {
-        private Long teamId;
-        private LocalDateTime modifiedAt;
     }
 
 

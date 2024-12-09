@@ -14,14 +14,12 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 public class TeamMapper {
 
     public Team toTeam(
-            final String teamLogoImagePath,
-            final AddTeamRequest request
+            final AddTeamRequest addTeamRequest
     ) {
         return Team.builder()
-                .teamLogoImagePath(teamLogoImagePath)
-                .teamName(request.getTeamName())
-                .teamShortDescription(request.getTeamShortDescription())
-                .isTeamPublic(request.getIsTeamPublic())
+                .teamName(addTeamRequest.getTeamName())
+                .teamShortDescription(addTeamRequest.getTeamShortDescription())
+                .isTeamPublic(addTeamRequest.getIsTeamPublic())
                 .build();
     }
 
@@ -33,7 +31,6 @@ public class TeamMapper {
     ) {
         return TeamResponseDTO.AddTeamResponse.builder()
                 .teamId(team.getId())
-                .teamLogoImagePath(team.getTeamLogoImagePath())
                 .teamName(team.getTeamName())
                 .teamShortDescription(team.getTeamShortDescription())
                 .teamScaleItem(teamScaleItem)
@@ -43,10 +40,20 @@ public class TeamMapper {
                 .build();
     }
 
-    public TeamResponseDTO.SaveTeamBasicInformResponse toSaveTeam(final Team team) {
-        return TeamResponseDTO.SaveTeamBasicInformResponse.builder()
+    public TeamResponseDTO.UpdateTeamResponse toUpdateTeam(
+            final Team team,
+            final TeamScaleItem teamScaleItem,
+            final RegionDetail regionDetail,
+            final List<TeamCurrentStateItem> teamCurrentStateItems
+    ) {
+        return TeamResponseDTO.UpdateTeamResponse.builder()
                 .teamId(team.getId())
-                .modifiedAt(team.getModifiedAt())
+                .teamName(team.getTeamName())
+                .teamShortDescription(team.getTeamShortDescription())
+                .teamScaleItem(teamScaleItem)
+                .regionDetail(regionDetail)
+                .teamCurrentStates(teamCurrentStateItems)
+                .isTeamPublic(team.isTeamPublic())
                 .build();
     }
 
@@ -61,7 +68,6 @@ public class TeamMapper {
                 .teamCurrentStates(teamCurrentStateItems)
                 .teamName(team.getTeamName())
                 .teamShortDescription(team.getTeamShortDescription())
-                .teamLogoImagePath(team.getTeamLogoImagePath())
                 .teamScaleItem(teamScaleItem)
                 .regionDetail(regionDetail)
                 .build();

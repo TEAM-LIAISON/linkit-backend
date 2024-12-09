@@ -37,4 +37,14 @@ public class TeamRegionCustomRepositoryImpl implements TeamRegionCustomRepositor
 
         return Optional.ofNullable(teamRegion);
     }
+
+    @Override
+    public void deleteAllByTeamId(final Long teamId) {
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+
+        jpaQueryFactory
+                .delete(qTeamRegion)
+                .where(qTeamRegion.team.id.eq(teamId))
+                .execute();
+    }
 }

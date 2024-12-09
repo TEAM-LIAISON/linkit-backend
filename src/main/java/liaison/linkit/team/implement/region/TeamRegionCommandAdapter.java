@@ -13,4 +13,8 @@ public class TeamRegionCommandAdapter {
     public void save(final TeamRegion teamRegion) {
         teamRegionRepository.save(teamRegion);
     }
+
+    public void deleteAllByTeamId(final Long teamId) {
+        teamRegionRepository.deleteAllByTeamId(teamId);
+    }
 }

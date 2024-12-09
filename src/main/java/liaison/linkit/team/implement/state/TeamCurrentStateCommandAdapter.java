@@ -14,4 +14,8 @@ public class TeamCurrentStateCommandAdapter {
     public void saveAll(final List<TeamCurrentState> teamCurrentStates) {
         teamCurrentStateRepository.saveAll(teamCurrentStates);
     }
+
+    public void deleteAllByTeamId(final Long teamId) {
+        teamCurrentStateRepository.deleteAllByTeamId(teamId);
+    }
 }

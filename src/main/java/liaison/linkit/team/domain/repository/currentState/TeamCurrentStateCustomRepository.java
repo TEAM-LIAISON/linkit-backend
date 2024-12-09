@@ -6,4 +6,8 @@ import liaison.linkit.team.domain.TeamCurrentState;
 public interface TeamCurrentStateCustomRepository {
 
     List<TeamCurrentState> findTeamCurrentStatesByTeamId(final Long teamId);
+
+    boolean existsTeamCurrentStatesByTeamId(final Long teamId);
+
+    void deleteAllByTeamId(final Long teamId);
 }

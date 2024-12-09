@@ -28,7 +28,7 @@ public class TeamRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AddTeamBasicInformRequest {
+    public static class UpdateTeamRequest {
         private String teamName;
         private String teamShortDescription;
         private String scaleName;

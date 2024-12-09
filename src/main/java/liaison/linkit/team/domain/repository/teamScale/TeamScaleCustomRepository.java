@@ -6,4 +6,6 @@ public interface TeamScaleCustomRepository {
     boolean existsTeamScaleByTeamId(final Long teamId);
 
     TeamScale findTeamScaleByTeamId(final Long teamId);
+
+    void deleteAllByTeamId(final Long teamId);
 }
