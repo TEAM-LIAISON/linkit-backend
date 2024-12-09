@@ -21,13 +21,25 @@ public class TeamMapper {
                 .teamLogoImagePath(teamLogoImagePath)
                 .teamName(request.getTeamName())
                 .teamShortDescription(request.getTeamShortDescription())
+                .isTeamPublic(request.isTeamPublic())
                 .build();
     }
 
-    public TeamResponseDTO.AddTeamResponse toAddTeam(final Team team) {
+    public TeamResponseDTO.AddTeamResponse toAddTeam(
+            final Team team,
+            final TeamScaleItem teamScaleItem,
+            final RegionDetail regionDetail,
+            final List<TeamCurrentStateItem> teamCurrentStateItems
+    ) {
         return TeamResponseDTO.AddTeamResponse.builder()
                 .teamId(team.getId())
-                .createdAt(team.getCreatedAt())
+                .teamLogoImagePath(team.getTeamLogoImagePath())
+                .teamName(team.getTeamName())
+                .teamShortDescription(team.getTeamShortDescription())
+                .teamScaleItem(teamScaleItem)
+                .regionDetail(regionDetail)
+                .teamCurrentStates(teamCurrentStateItems)
+                .isTeamPublic(team.isTeamPublic())
                 .build();
     }
 
@@ -54,7 +66,7 @@ public class TeamMapper {
                 .regionDetail(regionDetail)
                 .build();
     }
-    
+
     public TeamResponseDTO.TeamDetail toTeamDetail(
             final boolean isMyTeam,
             final TeamInformMenu teamInformMenu

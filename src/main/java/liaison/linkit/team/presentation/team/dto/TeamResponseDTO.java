@@ -30,7 +30,23 @@ public class TeamResponseDTO {
     @AllArgsConstructor
     public static class AddTeamResponse {
         private Long teamId;
-        private LocalDateTime createdAt;
+
+        private String teamLogoImagePath;
+
+        private String teamName;
+
+        private String teamShortDescription;
+        
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+
+        @Builder.Default
+        private RegionDetail regionDetail = new RegionDetail();
+
+        @Builder.Default
+        private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
+
+        private boolean isTeamPublic;
     }
 
     @Builder

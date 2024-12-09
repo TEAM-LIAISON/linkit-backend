@@ -1,4 +1,4 @@
-package liaison.linkit.team.domain;
+package liaison.linkit.team.domain.state;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 

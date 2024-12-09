@@ -1,4 +1,4 @@
-package liaison.linkit.team.implement.teamScale;
+package liaison.linkit.team.implement.scale;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.repository.teamScale.TeamScaleRepository;

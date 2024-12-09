@@ -1,5 +1,6 @@
 package liaison.linkit.team.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
@@ -18,12 +19,19 @@ import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.TeamCurrentState;
 import liaison.linkit.team.domain.TeamMember;
 import liaison.linkit.team.domain.TeamRegion;
+import liaison.linkit.team.domain.scale.Scale;
 import liaison.linkit.team.domain.scale.TeamScale;
+import liaison.linkit.team.domain.state.TeamState;
 import liaison.linkit.team.implement.TeamCommandAdapter;
 import liaison.linkit.team.implement.TeamQueryAdapter;
+import liaison.linkit.team.implement.region.TeamRegionCommandAdapter;
+import liaison.linkit.team.implement.scale.ScaleQueryAdapter;
+import liaison.linkit.team.implement.scale.TeamScaleCommandAdapter;
+import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
+import liaison.linkit.team.implement.state.TeamCurrentStateCommandAdapter;
+import liaison.linkit.team.implement.state.TeamStateQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
-import liaison.linkit.team.implement.teamScale.TeamScaleQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamBasicInformRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
@@ -51,11 +59,17 @@ public class TeamService {
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final TeamMemberCommandAdapter teamMemberCommandAdapter;
 
+    private final ScaleQueryAdapter scaleQueryAdapter;
+
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
+    private final TeamScaleCommandAdapter teamScaleCommandAdapter;
     private final TeamScaleMapper teamScaleMapper;
 
+    private final TeamStateQueryAdapter teamStateQueryAdapter;
+    private final TeamCurrentStateCommandAdapter teamCurrentStateCommandAdapter
     private final TeamCurrentStateMapper teamCurrentStateMapper;
 
+    private final TeamRegionCommandAdapter teamRegionCommandAdapter;
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
 
@@ -69,6 +83,7 @@ public class TeamService {
             final AddTeamBasicInformRequest addTeamBasicInformRequest
     ) {
         String teamLogoImagePath = null;
+
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
 
@@ -85,10 +100,37 @@ public class TeamService {
         final TeamMember teamMember = teamMemberMapper.toTeamMember(member, savedTeam);
         teamMemberCommandAdapter.addTeamMember(teamMember);
 
-        // 생성된 팀의 정보를 반환
-        return teamMapper.toAddTeam(savedTeam);
-    }
+        // 팀 규모 저장
+        final Scale scale = scaleQueryAdapter.findByScaleName(addTeamBasicInformRequest.getScaleName());
+        final TeamScale teamScale = new TeamScale(null, savedTeam, scale);
+        teamScaleCommandAdapter.save(teamScale);
+        final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
 
+        // 팀 지역 저장
+        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamBasicInformRequest.getCityName(), addTeamBasicInformRequest.getDivisionName());
+        final TeamRegion teamRegion = new TeamRegion(null, savedTeam, region);
+        teamRegionCommandAdapter.save(teamRegion);
+        final RegionDetail regionDetail = regionMapper.toRegionDetail(region);
+
+        // 팀 현재 상태 저장
+        List<String> teamStateNames = addTeamBasicInformRequest.getTeamStateNames();
+        List<TeamCurrentState> teamCurrentStates = new ArrayList<>();
+
+        for (String teamStateName : teamStateNames) {
+            // ProfileState 엔티티 조회
+            TeamState teamState = teamStateQueryAdapter.findByStateName(teamStateName);
+
+            // ProfileCurrentState 엔티티 생성
+            TeamCurrentState teamCurrentState = new TeamCurrentState(null, savedTeam, teamState);
+            teamCurrentStates.add(teamCurrentState);
+        }
+
+        teamCurrentStateCommandAdapter.saveAll(teamCurrentStates);
+        List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
+
+        // 생성된 팀의 정보를 반환
+        return teamMapper.toAddTeam(savedTeam, teamScaleItem, regionDetail, teamCurrentStateItems);
+    }
 
     public TeamResponseDTO.SaveTeamBasicInformResponse saveTeamBasicInform(
             final Long memberId,

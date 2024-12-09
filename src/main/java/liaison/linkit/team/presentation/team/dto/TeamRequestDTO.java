@@ -1,6 +1,6 @@
 package liaison.linkit.team.presentation.team.dto;
 
-import jakarta.validation.constraints.NotNull;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,21 +15,12 @@ public class TeamRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddTeamBasicInformRequest {
-
-        @NotNull
         private String teamName;
-
-        @NotNull
         private String teamShortDescription;
-
-        @NotNull
         private String scaleName;
-
-        @NotNull
         private String cityName;
-
-        @NotNull
         private String divisionName;
-
+        private List<String> teamStateNames;
+        private boolean isTeamPublic;
     }
 }

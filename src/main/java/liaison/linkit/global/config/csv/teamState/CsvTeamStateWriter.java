@@ -1,6 +1,6 @@
 package liaison.linkit.global.config.csv.teamState;
 
-import liaison.linkit.team.domain.TeamState;
+import liaison.linkit.team.domain.state.TeamState;
 import liaison.linkit.team.domain.repository.currentState.TeamStateRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.Chunk;

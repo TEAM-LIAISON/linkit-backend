@@ -22,7 +22,7 @@ public class Scale {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    // 시/도 이름
+    // 규모 이름
     @Column(name = "scale_name")
     private String scaleName;
 
