@@ -820,21 +820,11 @@ include::{snippets}/profile-link-controller-test/update-profile-link-items/http-
 include::{snippets}/profile-link-controller-test/update-profile-link-items/response-fields.adoc[]
 ====
 
-== #[팀]#
+== #[팀 - 팀 기본 정보]#
 
 === 팀 생성
 
 ====
-*요청*
-
-include::{snippets}/team-controller-test/create-team/http-request.adoc[]
-include::{snippets}/team-controller-test/create-team/request-parts.adoc[]
-include::{snippets}/team-controller-test/create-team/request-part-addTeamBasicInformRequest-fields.adoc[]
-
-*응답*
-
-include::{snippets}/team-controller-test/create-team/http-response.adoc[]
-include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
 ====
 
 == #[팀 - 팀 조회]#
@@ -849,6 +839,19 @@ include::{snippets}/team-controller-test/get-team-detail/path-parameters.adoc[]
 *응답*
 include::{snippets}/team-controller-test/get-team-detail/http-response.adoc[]
 include::{snippets}/team-controller-test/get-team-detail/response-fields.adoc[]
+====
+
+=== 팀_팀원 상세 조회
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/get-team-member-items/http-request.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/get-team-member-items/http-response.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-items/response-fields.adoc[]
+
 ====
 
 == #[팀 - 팀 로그]#
@@ -995,6 +998,19 @@ include::{snippets}/team-member-announcement-controller-test/remove-team-member-
 *응답*
 include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/http-response.adoc[]
 include::{snippets}/team-member-announcement-controller-test/remove-team-member-announcement/response-fields.adoc[]
+
+====
+
+=== 팀원 공고 공개/비공개 여부 수정
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement-public-state/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement-public-state/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement-public-state/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/update-team-member-announcement-public-state/response-fields.adoc[]
 
 ====
 

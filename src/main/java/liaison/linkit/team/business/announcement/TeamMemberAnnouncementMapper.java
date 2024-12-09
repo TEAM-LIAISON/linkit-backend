@@ -145,5 +145,13 @@ public class TeamMemberAnnouncementMapper {
                 .teamMemberAnnouncementId(teamMemberAnnouncementId)
                 .build();
     }
+
+    public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse toUpdateTeamMemberAnnouncementPublicState(final TeamMemberAnnouncement teamMemberAnnouncement) {
+        return TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse
+                .builder()
+                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+                .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
+                .build();
+    }
     
 }

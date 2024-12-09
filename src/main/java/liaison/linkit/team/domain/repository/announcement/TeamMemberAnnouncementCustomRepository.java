@@ -10,4 +10,6 @@ public interface TeamMemberAnnouncementCustomRepository {
     TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId);
 
     TeamMemberAnnouncement updateTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement, final UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest);
+
+    TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(final TeamMemberAnnouncement teamMemberAnnouncement, final boolean isTeamMemberAnnouncementCurrentPublicState);
 }

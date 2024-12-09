@@ -14,6 +14,7 @@ import liaison.linkit.team.business.announcement.AnnouncementPositionMapper;
 import liaison.linkit.team.business.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.Team;
+import liaison.linkit.team.domain.TeamMember;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementRegion;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
@@ -227,5 +228,18 @@ public class TeamMemberAnnouncementService {
         teamMemberAnnouncementCommandAdapter.removeTeamMemberAnnouncement(existingTeamMemberAnnouncement);
 
         return teamMemberAnnouncementMapper.toRemoveTeamMemberAnnouncementId(teamMemberAnnouncementId);
+    }
+
+    public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse updateTeamMemberAnnouncementPublicState(
+            final Long memberId,
+            final String teamName,
+            final Long teamMemberAnnouncementId
+    ) {
+        final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
+        final boolean isTeamMemberAnnouncementCurrentPublicState = teamMemberAnnouncement.isAnnouncementPublic();
+        final TeamMemberAnnouncement updatedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncementPublicState(teamMemberAnnouncement,
+                isTeamMemberAnnouncementCurrentPublicState);
+
+        return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementPublicState(updatedTeamMemberAnnouncement);
     }
 }
