@@ -35,6 +35,6 @@ public class TeamRequestDTO {
         private String cityName;
         private String divisionName;
         private List<String> teamStateNames;
-        private boolean isTeamPublic;
+        private Boolean isTeamPublic;
     }
 }

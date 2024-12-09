@@ -34,7 +34,7 @@ public class QProfilePortfolio extends EntityPathBase<ProfilePortfolio> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final liaison.linkit.profile.domain.QProfile profile;
+    public final liaison.linkit.profile.domain.profile.QProfile profile;
 
     public final StringPath projectDescription = createString("projectDescription");
 
@@ -76,7 +76,7 @@ public class QProfilePortfolio extends EntityPathBase<ProfilePortfolio> {
 
     public QProfilePortfolio(Class<? extends ProfilePortfolio> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.profile.QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }

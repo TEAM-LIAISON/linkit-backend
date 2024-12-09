@@ -47,6 +47,7 @@ import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRespons
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.ProfileController;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileDetail;
@@ -118,15 +119,25 @@ class ProfileControllerTest extends ControllerTest {
 
         final RegionDetail regionDetail = new RegionDetail("서울특별시", "강남구");
 
-        final ProfileInformMenu profileInformMenu =
-                new ProfileInformMenu(
-                        profileCurrentStates,
-                        "프로필 이미지 경로",
-                        "권동민",
-                        true,
-                        "포지션 대분류",
-                        regionDetail
-                );
+        final ProfileInformMenu profileInformMenu = ProfileInformMenu.builder()
+                .profileCurrentStates(profileCurrentStates)
+                .profileImagePath("프로필 이미지 경로")
+                .memberName("권동민")
+                .emailId("이메일 아이디")
+                .isProfilePublic(true)
+                .majorPosition("포지션 대분류")
+                .regionDetail(regionDetail)
+                .profileTeamInforms(Arrays.asList(
+                        ProfileTeamInform.builder()
+                                .teamName("리에종")
+                                .teamLogoImagePath("팀 로고 이미지 경로")
+                                .build(),
+                        ProfileTeamInform.builder()
+                                .teamName("팀명 2")
+                                .teamLogoImagePath("팀 로고 이미지 경로 2")
+                                .build()
+                ))
+                .build();
 
         final ProfileBooleanMenu profileBooleanMenu =
                 new ProfileBooleanMenu(
@@ -184,6 +195,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.memberName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 사용자 이름"),
+                                        fieldWithPath("result.profileInformMenu.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이메일 아이디"),
                                         fieldWithPath("result.profileInformMenu.isProfilePublic")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로필 공개 여부"),
@@ -223,7 +237,14 @@ class ProfileControllerTest extends ControllerTest {
                                                 .description("프로필 자격증 기입 여부"),
                                         fieldWithPath("result.profileBooleanMenu.isProfileLink")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("프로필 링크 기입 여부")
+                                                .description("프로필 링크 기입 여부"),
+
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로")
                                 )
                         )).andReturn();
 
@@ -253,15 +274,25 @@ class ProfileControllerTest extends ControllerTest {
 
         final RegionDetail regionDetail = new RegionDetail("서울특별시", "강남구");
 
-        final ProfileInformMenu profileInformMenu =
-                new ProfileInformMenu(
-                        profileCurrentStates,
-                        "프로필 이미지 경로",
-                        "권동민",
-                        true,
-                        "포지션 대분류",
-                        regionDetail
-                );
+        final ProfileInformMenu profileInformMenu = ProfileInformMenu.builder()
+                .profileCurrentStates(profileCurrentStates)
+                .profileImagePath("프로필 이미지 경로")
+                .memberName("권동민")
+                .emailId("이메일 아이디")
+                .isProfilePublic(true)
+                .majorPosition("포지션 대분류")
+                .regionDetail(regionDetail)
+                .profileTeamInforms(Arrays.asList(
+                        ProfileTeamInform.builder()
+                                .teamName("리에종")
+                                .teamLogoImagePath("팀 로고 이미지 경로")
+                                .build(),
+                        ProfileTeamInform.builder()
+                                .teamName("팀명 2")
+                                .teamLogoImagePath("팀 로고 이미지 경로 2")
+                                .build()
+                ))
+                .build();
 
         final ProfileLogResponseDTO.ProfileLogItem profileLogItem
                 = new ProfileLogItem(1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
@@ -348,7 +379,7 @@ class ProfileControllerTest extends ControllerTest {
                 );
 
         // when
-        when(profileService.getProfileDetail(anyString())).thenReturn(profileDetail);
+        when(profileService.getLoggedOutProfileDetail(anyString())).thenReturn(profileDetail);
 
         final ResultActions resultActions = performGetProfileDetail("kwondm7");
 
@@ -408,6 +439,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.memberName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("회원 이름"),
+                                        fieldWithPath("result.profileInformMenu.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이메일 아이디"),
                                         fieldWithPath("result.profileInformMenu.isProfilePublic")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로필 공개 여부"),
@@ -605,7 +639,14 @@ class ProfileControllerTest extends ControllerTest {
                                                 .description("링크 이름"),
                                         fieldWithPath("result.profileLinkItems[].linkPath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("링크 경로")
+                                                .description("링크 경로"),
+
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로")
                                 )
                         )
                 ).andReturn();

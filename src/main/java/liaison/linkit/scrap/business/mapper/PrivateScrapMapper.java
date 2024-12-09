@@ -2,7 +2,7 @@ package liaison.linkit.scrap.business.mapper;
 
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.scrap.domain.PrivateScrap;
 import liaison.linkit.scrap.presentation.dto.privateScrap.PrivateScrapResponseDTO.AddPrivateScrap;
 import liaison.linkit.scrap.presentation.dto.privateScrap.PrivateScrapResponseDTO.RemovePrivateScrap;

@@ -822,7 +822,7 @@ include::{snippets}/profile-link-controller-test/update-profile-link-items/respo
 
 == #[팀 - 팀 기본 정보]#
 
-=== 팀 생성
+=== 팀 신규 생성
 
 ====
 *요청*
@@ -833,6 +833,20 @@ include::{snippets}/team-controller-test/create-team/request-part-addTeamRequest
 *응답*
 include::{snippets}/team-controller-test/create-team/http-response.adoc[]
 include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
+====
+
+=== 팀 기본 정보 수정
+
+====
+*요청*
+include::{snippets}/team-controller-test/update-team/http-request.adoc[]
+include::{snippets}/team-controller-test/update-team/path-parameters.adoc[]
+include::{snippets}/team-controller-test/update-team/request-parts.adoc[]
+include::{snippets}/team-controller-test/update-team/request-part-updateTeamRequest-fields.adoc[]
+
+*응답*
+include::{snippets}/team-controller-test/update-team/http-response.adoc[]
+include::{snippets}/team-controller-test/update-team/response-fields.adoc[]
 ====
 
 == #[팀 - 팀 조회]#

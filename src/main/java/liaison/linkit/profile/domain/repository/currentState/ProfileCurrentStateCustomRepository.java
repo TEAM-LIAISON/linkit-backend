@@ -1,7 +1,7 @@
 package liaison.linkit.profile.domain.repository.currentState;
 
 import java.util.List;
-import liaison.linkit.profile.domain.ProfileCurrentState;
+import liaison.linkit.profile.domain.state.ProfileCurrentState;
 
 public interface ProfileCurrentStateCustomRepository {
     List<ProfileCurrentState> findProfileCurrentStatesByProfileId(final Long profileId);

@@ -16,7 +16,7 @@ import jakarta.persistence.OneToOne;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.member.domain.type.MemberState;
 import liaison.linkit.member.domain.type.Platform;
-import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.profile.Profile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;

@@ -1,7 +1,7 @@
 package liaison.linkit.profile.domain.repository.region;
 
 import java.util.Optional;
-import liaison.linkit.profile.domain.ProfileRegion;
+import liaison.linkit.profile.domain.region.ProfileRegion;
 
 public interface ProfileRegionRepositoryCustom {
     Optional<ProfileRegion> findProfileRegionByProfileId(final Long profileId);

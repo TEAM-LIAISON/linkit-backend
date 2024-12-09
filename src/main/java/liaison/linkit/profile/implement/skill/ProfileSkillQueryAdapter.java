@@ -2,7 +2,7 @@ package liaison.linkit.profile.implement.skill;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.domain.ProfileSkill;
+import liaison.linkit.profile.domain.skill.ProfileSkill;
 import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
 import lombok.RequiredArgsConstructor;
 

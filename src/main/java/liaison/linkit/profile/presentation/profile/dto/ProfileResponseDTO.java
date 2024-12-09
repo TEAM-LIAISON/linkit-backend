@@ -67,11 +67,25 @@ public class ProfileResponseDTO {
 
         private String profileImagePath;
         private String memberName;
+        private String emailId;
         private Boolean isProfilePublic;
         private String majorPosition;
 
         @Builder.Default
         private RegionDetail regionDetail = new RegionDetail();
+
+        // 회원의 팀 정보
+        @Builder.Default
+        private List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileTeamInform {
+        private String teamName;
+        private String teamLogoImagePath;
     }
 
     @Builder

@@ -2,11 +2,13 @@ package liaison.linkit.team.business;
 
 
 import java.util.List;
+import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.TeamMember;
@@ -29,7 +31,7 @@ public class TeamMemberMapper {
                 .profileInformMenus(profileInformMenus)
                 .build();
     }
-    
+
     public ProfileInformMenu toProfileInformMenu(
             final List<ProfileCurrentStateItem> profileCurrentStateItems,
             final Profile profile,
@@ -44,6 +46,19 @@ public class TeamMemberMapper {
                 .isProfilePublic(profile.isProfilePublic())
                 .majorPosition(profilePositionDetail.getMajorPosition())
                 .regionDetail(regionDetail)
+                .build();
+    }
+
+    public List<ProfileTeamInform> toProfileTeamInforms(final List<Team> teams) {
+        return teams.stream()
+                .map(this::toProfileTeamInform)
+                .collect(Collectors.toList());
+    }
+
+    public ProfileTeamInform toProfileTeamInform(final Team team) {
+        return ProfileTeamInform.builder()
+                .teamName(team.getTeamName())
+                .teamLogoImagePath(team.getTeamLogoImagePath())
                 .build();
     }
 }

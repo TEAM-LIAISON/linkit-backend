@@ -1,8 +1,8 @@
 package liaison.linkit.profile.domain.repository.position;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import liaison.linkit.profile.domain.ProfilePosition;
-import liaison.linkit.profile.domain.QProfilePosition;
+import liaison.linkit.profile.domain.position.ProfilePosition;
+import liaison.linkit.profile.domain.position.QProfilePosition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

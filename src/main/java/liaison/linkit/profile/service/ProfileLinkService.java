@@ -2,11 +2,11 @@ package liaison.linkit.profile.service;
 
 import java.util.List;
 import liaison.linkit.profile.business.ProfileLinkMapper;
-import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.ProfileLink;
-import liaison.linkit.profile.implement.ProfileLinkCommandAdapter;
-import liaison.linkit.profile.implement.ProfileLinkQueryAdapter;
-import liaison.linkit.profile.implement.ProfileQueryAdapter;
+import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.domain.link.ProfileLink;
+import liaison.linkit.profile.implement.link.ProfileLinkCommandAdapter;
+import liaison.linkit.profile.implement.link.ProfileLinkQueryAdapter;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkRequestDTO;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO;
 import lombok.RequiredArgsConstructor;

@@ -2,8 +2,8 @@ package liaison.linkit.profile.domain.repository.region;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
-import liaison.linkit.profile.domain.ProfileRegion;
-import liaison.linkit.profile.domain.QProfileRegion;
+import liaison.linkit.profile.domain.region.ProfileRegion;
+import liaison.linkit.profile.domain.region.QProfileRegion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

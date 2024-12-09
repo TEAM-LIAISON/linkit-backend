@@ -1,7 +1,7 @@
 package liaison.linkit.profile.domain.repository.profile;
 
 import java.util.Optional;
-import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
 
 public interface ProfileCustomRepository {

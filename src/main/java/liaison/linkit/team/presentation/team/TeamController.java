@@ -39,7 +39,7 @@ public class TeamController {
     }
 
     // 팀 기본 정보 수정
-    @PostMapping("/{teamName}")
+    @PostMapping("/team/{teamName}")
     @MemberOnly
     public CommonResponse<UpdateTeamResponse> updateTeam(
             @Auth final Accessor accessor,

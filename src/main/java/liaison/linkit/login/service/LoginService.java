@@ -17,16 +17,15 @@ import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatching
 import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
-import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 import liaison.linkit.member.domain.type.Platform;
 import liaison.linkit.member.exception.member.FailMemberGenerateException;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.profile.implement.ProfileCommandAdapter;
-import liaison.linkit.profile.implement.ProfileQueryAdapter;
+import liaison.linkit.profile.implement.profile.ProfileCommandAdapter;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,7 @@ public class LoginService {
     private final ProfileRepository profileRepository;
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileCommandAdapter profileCommandAdapter;
-    
+
     private final PrivateMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
 

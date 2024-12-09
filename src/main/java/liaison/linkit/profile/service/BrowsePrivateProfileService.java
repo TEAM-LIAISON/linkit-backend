@@ -5,8 +5,6 @@ import liaison.linkit.profile.domain.repository.education.ProfileEducationReposi
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
 import liaison.linkit.profile.domain.repository.skill.SkillRepository;
-import liaison.linkit.profile.domain.repository.teambuilding.ProfileTeamBuildingFieldRepository;
-import liaison.linkit.profile.domain.repository.teambuilding.TeamBuildingFieldRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,5 @@ public class BrowsePrivateProfileService {
     private final ProfileRepository profileRepository;
     private final ProfileSkillRepository profileSkillRepository;
     private final SkillRepository skillRepository;
-    private final ProfileTeamBuildingFieldRepository profileTeamBuildingFieldRepository;
-    private final TeamBuildingFieldRepository teamBuildingFieldRepository;
     private final ProfileEducationRepository profileEducationRepository;
 }

@@ -11,7 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.profile.Profile;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,5 +42,5 @@ public class PrivateScrap {
     @Column(updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
-    
+
 }

@@ -48,7 +48,7 @@ public class QProfileLicense extends EntityPathBase<ProfileLicense> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final liaison.linkit.profile.domain.QProfile profile;
+    public final liaison.linkit.profile.domain.profile.QProfile profile;
 
     public QProfileLicense(String variable) {
         this(ProfileLicense.class, forVariable(variable), INITS);
@@ -68,7 +68,7 @@ public class QProfileLicense extends EntityPathBase<ProfileLicense> {
 
     public QProfileLicense(Class<? extends ProfileLicense> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.profile.QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }
