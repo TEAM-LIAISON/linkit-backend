@@ -9,12 +9,10 @@ import liaison.linkit.profile.domain.education.ProfileEducation;
 import liaison.linkit.profile.domain.education.QProfileEducation;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO.UpdateProfileEducationRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 @RequiredArgsConstructor
-@Slf4j
-@Transactional(readOnly = true)
 public class ProfileEducationCustomRepositoryImpl implements ProfileEducationCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -51,7 +49,7 @@ public class ProfileEducationCustomRepositoryImpl implements ProfileEducationCus
                 .set(qProfileEducation.educationDescription, updateProfileEducationRequest.getEducationDescription())
                 .where(qProfileEducation.id.eq(profileEducationId))
                 .execute();
-        
+
         entityManager.flush();
         entityManager.clear();
 
