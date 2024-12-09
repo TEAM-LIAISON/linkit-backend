@@ -23,7 +23,6 @@ import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.Pro
 @Mapper
 public class ProfileMapper {
 
-
     public ProfileResponseDTO.ProfileLeftMenu toProfileLeftMenu(
             final ProfileCompletionMenu profileCompletionMenu,
             final ProfileInformMenu profileInformMenu,
@@ -58,12 +57,14 @@ public class ProfileMapper {
                 .profileCurrentStates(profileCurrentStateItems)
                 .profileImagePath(profile.getProfileImagePath())
                 .memberName(profile.getMember().getMemberBasicInform().getMemberName())
+                .emailId(profile.getMember().getEmailId())
                 .isProfilePublic(profile.isProfilePublic())
                 .majorPosition(profilePositionDetail.getMajorPosition())
                 .regionDetail(regionDetail)
                 .profileTeamInforms(profileTeamInforms)
                 .build();
     }
+
 
     public ProfileResponseDTO.ProfileBooleanMenu toProfileBooleanMenu(
             final Profile profile
@@ -74,7 +75,6 @@ public class ProfileMapper {
                 .isProfileSkill(profile.isProfileSkill())
                 .isProfileActivity(profile.isProfileActivity())
                 .isProfilePortfolio(profile.isProfilePortfolio())
-                .isProfilePortfolio(profile.isProfileEducation())
                 .isProfileEducation(profile.isProfileEducation())
                 .isProfileAwards(profile.isProfileAwards())
                 .isProfileLicense(profile.isProfileLicense())

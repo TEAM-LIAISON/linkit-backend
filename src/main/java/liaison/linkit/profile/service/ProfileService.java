@@ -101,6 +101,7 @@ public class ProfileService {
     private final ProfileLinkMapper profileLinkMapper;
     private final TeamMemberMapper teamMemberMapper;
 
+    // 프로필 왼쪽 메뉴 조회 (내가 내 프로필 조회)
     public ProfileLeftMenu getProfileLeftMenu(final Long memberId) {
         log.info("memberId = {}의 프로필 왼쪽 메뉴 DTO 조회 요청 발생했습니다.", memberId);
 
@@ -301,7 +302,7 @@ public class ProfileService {
         log.info("학력 DTO 조회 에러 체크 1");
         final List<ProfileEducationItem> profileEducationItems = profileEducationMapper.profileEducationsToProfileProfileEducationItems(profileEducations);
         log.info("학력 DTO 조회 에러 체크 2");
-        
+
         log.info("수상 DTO 조회");
         final List<ProfileAwards> profileAwards = profileAwardsQueryAdapter.getProfileAwardsGroup(targetMember.getId());
         final List<ProfileAwardsItem> profileAwardsItems = profileAwardsMapper.profileEducationsToProfileProfileEducationItems(profileAwards);

@@ -1,9 +1,18 @@
 package liaison.linkit.search.presentation;
 
+import java.util.List;
+import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.search.service.ProfileSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,17 +33,21 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
      * @return 팀원 목록과 페이지 정보
      */
 
-//    @GetMapping
-//    public CommonResponse<Page<ProfileInformMenu>> searchProfiles(
-//            @RequestParam(value = "majorPosition", required = false) List<String> majorPosition,
-//            @RequestParam(value = "cityName", required = false) String cityName,
-//            @RequestParam(value = "profileStateName", required = false) List<String> profileStateName,
-//            @RequestParam(value = "page", defaultValue = "0") int page,
-//            @RequestParam(value = "size", defaultValue = "20") int size
-//    ) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-//        Page<ProfileResponseDTO> profiles = profileSearchService.searchProfiles(emailId, position, cityName, divisionName, pageable);
-//        CommonResponse<Page<ProfileResponseDTO>> response = CommonResponse.onSuccess(profiles);
-//        return CommonResponse.onSuccess(profileSearchService.searchProfiles());
-//    }
+    @GetMapping
+    public CommonResponse<Page<ProfileInformMenu>> searchProfiles(
+            @RequestParam(value = "majorPosition", required = false) List<String> majorPosition,
+            @RequestParam(value = "skillName", required = false) List<String> skillName,
+            @RequestParam(value = "cityName", required = false) List<String> cityName,
+            @RequestParam(value = "profileStateName", required = false) List<String> profileStateName,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size
+    ) {
+        log.info("팀원 검색 요청 - majorPosition: {}, skillName: {}, cityName: {}, profileStateName: {}, page: {}, size: {}",
+                majorPosition, skillName, cityName, profileStateName, page, size);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<ProfileInformMenu> profiles = profileSearchService.searchProfiles(majorPosition, skillName, cityName, profileStateName, pageable);
+        CommonResponse<Page<ProfileInformMenu>> response = CommonResponse.onSuccess(profiles);
+        return response;
+    }
 }

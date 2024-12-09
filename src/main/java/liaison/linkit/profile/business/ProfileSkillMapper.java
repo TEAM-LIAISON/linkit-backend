@@ -16,7 +16,7 @@ public class ProfileSkillMapper {
         return ProfileSkillResponseDTO.ProfileSkillItem
                 .builder()
                 .profileSkillId(profileSkill.getId())
-                .skillName(profileSkill.getSkillName())
+                .skillName(profileSkill.getSkill().getSkillName())
                 .skillLevel(profileSkill.getSkillLevel())
                 .build();
     }
@@ -41,7 +41,6 @@ public class ProfileSkillMapper {
     public ProfileSkill toProfileSkill(Profile profile, ProfileSkillRequestDTO.AddProfileSkillItem requestItem) {
         return ProfileSkill.builder()
                 .profile(profile)
-                .skillName(requestItem.getSkillName())
                 .skillLevel(requestItem.getSkillLevel())
                 .build();
     }

@@ -30,7 +30,9 @@ public class ProfileSkill extends BaseDateTimeEntity {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    private String skillIconImagePath;
-    private String skillName;
     private String skillLevel;
+
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "skill_id")
+    private Skill skill;
 }

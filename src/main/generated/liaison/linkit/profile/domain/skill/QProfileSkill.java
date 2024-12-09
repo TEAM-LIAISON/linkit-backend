@@ -34,11 +34,9 @@ public class QProfileSkill extends EntityPathBase<ProfileSkill> {
 
     public final liaison.linkit.profile.domain.profile.QProfile profile;
 
-    public final StringPath skillIconImagePath = createString("skillIconImagePath");
+    public final QSkill skill;
 
     public final StringPath skillLevel = createString("skillLevel");
-
-    public final StringPath skillName = createString("skillName");
 
     public QProfileSkill(String variable) {
         this(ProfileSkill.class, forVariable(variable), INITS);
@@ -59,6 +57,7 @@ public class QProfileSkill extends EntityPathBase<ProfileSkill> {
     public QProfileSkill(Class<? extends ProfileSkill> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.profile.QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.skill = inits.isInitialized("skill") ? new QSkill(forProperty("skill")) : null;
     }
 
 }
