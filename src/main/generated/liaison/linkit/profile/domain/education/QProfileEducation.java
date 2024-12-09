@@ -50,7 +50,7 @@ public class QProfileEducation extends EntityPathBase<ProfileEducation> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final liaison.linkit.profile.domain.QProfile profile;
+    public final liaison.linkit.profile.domain.profile.QProfile profile;
 
     public final liaison.linkit.common.domain.QUniversity university;
 
@@ -72,7 +72,7 @@ public class QProfileEducation extends EntityPathBase<ProfileEducation> {
 
     public QProfileEducation(Class<? extends ProfileEducation> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
-        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.profile.QProfile(forProperty("profile"), inits.get("profile")) : null;
         this.university = inits.isInitialized("university") ? new liaison.linkit.common.domain.QUniversity(forProperty("university")) : null;
     }
 

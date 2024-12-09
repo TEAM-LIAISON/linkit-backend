@@ -23,4 +23,26 @@ public class TeamCurrentStateCustomRepositoryImpl implements TeamCurrentStateCus
                 .fetch();
     }
 
+    @Override
+    public boolean existsTeamCurrentStatesByTeamId(final Long teamId) {
+        QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
+
+        Integer count = jpaQueryFactory
+                .selectOne()
+                .from(qTeamCurrentState)
+                .where(qTeamCurrentState.team.id.eq(teamId))
+                .fetchFirst();
+
+        return count != null;
+    }
+
+    @Override
+    public void deleteAllByTeamId(final Long teamId) {
+        QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
+
+        jpaQueryFactory
+                .delete(qTeamCurrentState)
+                .where(qTeamCurrentState.team.id.eq(teamId))
+                .execute();
+    }
 }

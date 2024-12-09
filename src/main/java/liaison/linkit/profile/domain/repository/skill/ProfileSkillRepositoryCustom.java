@@ -1,7 +1,7 @@
 package liaison.linkit.profile.domain.repository.skill;
 
 import java.util.List;
-import liaison.linkit.profile.domain.ProfileSkill;
+import liaison.linkit.profile.domain.skill.ProfileSkill;
 
 public interface ProfileSkillRepositoryCustom {
     boolean existsByProfileId(final Long profileId);

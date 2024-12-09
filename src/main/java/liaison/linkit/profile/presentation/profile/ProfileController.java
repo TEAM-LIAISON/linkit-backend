@@ -21,6 +21,7 @@ public class ProfileController {
 
     public final ProfileService profileService;
 
+    // 내 기본 정보에서 프로필 왼쪽 메뉴
     @GetMapping("/profile/left/menu")
     @MemberOnly
     public CommonResponse<ProfileResponseDTO.ProfileLeftMenu> getProfileLeftMenu(
@@ -39,10 +40,10 @@ public class ProfileController {
         if (accessor.isMember()) {
             Long memberId = accessor.getMemberId();
             log.info("memberId = {}의 프로필 상세 조회 요청이 발생했습니다.", memberId);
-            return CommonResponse.onSuccess(profileService.getMyProfileDetail(memberId));
+            return CommonResponse.onSuccess(profileService.getLoggedInProfileDetail(memberId, emailId));
         } else {
             log.info("emailId = {}에 대한 프로필 상세 조회 요청이 발생했습니다.", emailId);
-            return CommonResponse.onSuccess(profileService.getProfileDetail(emailId));
+            return CommonResponse.onSuccess(profileService.getLoggedOutProfileDetail(emailId));
         }
     }
 }

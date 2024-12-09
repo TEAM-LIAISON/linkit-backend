@@ -3,7 +3,7 @@ package liaison.linkit.profile.business;
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.ProfileAwardsItem;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.ProfileEducationItem;
@@ -13,6 +13,7 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.Profile
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
@@ -49,7 +50,8 @@ public class ProfileMapper {
             final List<ProfileCurrentStateItem> profileCurrentStateItems,
             final Profile profile,
             final ProfilePositionDetail profilePositionDetail,
-            final RegionDetail regionDetail
+            final RegionDetail regionDetail,
+            final List<ProfileTeamInform> profileTeamInforms
     ) {
         return ProfileResponseDTO.ProfileInformMenu
                 .builder()
@@ -59,6 +61,7 @@ public class ProfileMapper {
                 .isProfilePublic(profile.isProfilePublic())
                 .majorPosition(profilePositionDetail.getMajorPosition())
                 .regionDetail(regionDetail)
+                .profileTeamInforms(profileTeamInforms)
                 .build();
     }
 

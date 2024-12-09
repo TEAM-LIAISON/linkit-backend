@@ -83,7 +83,7 @@ public class S3Uploader {
         }
     }
 
-    public String uploadTeamBasicLogoImage(final ImageFile imageFile) {
+    public String uploadTeamLogoImage(final ImageFile imageFile) {
         return getImagePath(imageFile, teamBasicLogoImageFolder);
     }
 

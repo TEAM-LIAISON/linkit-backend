@@ -33,4 +33,14 @@ public class TeamScaleCustomRepositoryImpl implements TeamScaleCustomRepository 
                 .where(qTeamScale.team.id.eq(teamId))
                 .fetchOne();
     }
+
+    @Override
+    public void deleteAllByTeamId(final Long teamId) {
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+
+        jpaQueryFactory
+                .delete(qTeamScale)
+                .where(qTeamScale.team.id.eq(teamId))
+                .execute();
+    }
 }

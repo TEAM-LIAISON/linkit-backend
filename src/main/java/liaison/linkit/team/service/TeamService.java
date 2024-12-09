@@ -25,19 +25,22 @@ import liaison.linkit.team.domain.state.TeamState;
 import liaison.linkit.team.implement.TeamCommandAdapter;
 import liaison.linkit.team.implement.TeamQueryAdapter;
 import liaison.linkit.team.implement.region.TeamRegionCommandAdapter;
+import liaison.linkit.team.implement.region.TeamRegionQueryAdapter;
 import liaison.linkit.team.implement.scale.ScaleQueryAdapter;
 import liaison.linkit.team.implement.scale.TeamScaleCommandAdapter;
 import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.state.TeamCurrentStateCommandAdapter;
+import liaison.linkit.team.implement.state.TeamCurrentStateQueryAdapter;
 import liaison.linkit.team.implement.state.TeamStateQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
-import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamBasicInformRequest;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
+import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.UpdateTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -67,10 +70,12 @@ public class TeamService {
     private final TeamScaleMapper teamScaleMapper;
 
     private final TeamStateQueryAdapter teamStateQueryAdapter;
+    private final TeamCurrentStateQueryAdapter teamCurrentStateQueryAdapter;
     private final TeamCurrentStateCommandAdapter teamCurrentStateCommandAdapter;
     private final TeamCurrentStateMapper teamCurrentStateMapper;
 
     private final TeamRegionCommandAdapter teamRegionCommandAdapter;
+    private final TeamRegionQueryAdapter teamRegionQueryAdapter;
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
 
@@ -78,24 +83,28 @@ public class TeamService {
     private final S3Uploader s3Uploader;
 
 
+    // 초기 팀 생성
     public TeamResponseDTO.AddTeamResponse createTeam(
             final Long memberId,
             final MultipartFile teamLogoImage,
             final AddTeamRequest addTeamRequest
     ) {
-        String teamLogoImagePath = null;
-
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
 
-        // 사용자가 첨부한 이미지의 유효성 판단 이후에 이미지 업로드 진행
-        if (imageValidator.validatingImageUpload(teamLogoImage)) {
-            teamLogoImagePath = s3Uploader.uploadTeamBasicLogoImage(new ImageFile(teamLogoImage));
-        }
-
         // 팀 생성
-        final Team team = teamMapper.toTeam(teamLogoImagePath, addTeamRequest);
+        final Team team = teamMapper.toTeam(addTeamRequest);
         final Team savedTeam = teamCommandAdapter.add(team);
+
+        // 사용자가 새로운 이미지를 업로드
+        String teamLogoImagePath = null;
+        if (!teamLogoImage.isEmpty() && imageValidator.validatingImageUpload(teamLogoImage)) {
+            // 팀 로고 이미지 업로드
+            teamLogoImagePath = s3Uploader.uploadTeamLogoImage(new ImageFile(teamLogoImage));
+
+            // 새로운 로고 이미지 저장
+            savedTeam.setTeamLogoImagePath(teamLogoImagePath);
+        }
 
         // 팀원에 추가
         final TeamMember teamMember = teamMemberMapper.toTeamMember(member, savedTeam);
@@ -133,34 +142,74 @@ public class TeamService {
         return teamMapper.toAddTeam(savedTeam, teamScaleItem, regionDetail, teamCurrentStateItems);
     }
 
-    public TeamResponseDTO.SaveTeamBasicInformResponse saveTeamBasicInform(
+    public UpdateTeamResponse updateTeam(
             final Long memberId,
-            final Long teamId,
+            final String teamName,
             final MultipartFile teamLogoImage,
-            final AddTeamBasicInformRequest addTeamBasicInformRequest
+            final UpdateTeamRequest updateTeamRequest
     ) {
         String teamLogoImagePath = null;
 
         // 팀 조회
-        final Team team = teamQueryAdapter.findById(teamId);
+        final Team team = teamQueryAdapter.findByTeamName(teamName);
 
-        // 지역 조회
-        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamBasicInformRequest.getCityName(), addTeamBasicInformRequest.getDivisionName());
+        // 팀 로고 이미지 처리
+        if (teamLogoImage != null && !teamLogoImage.isEmpty()) {
+            if (imageValidator.validatingImageUpload(teamLogoImage)) {
+                // 이전에 업로드한 팀 로고 이미지가 존재
+                if (team.getTeamLogoImagePath() != null) {
+                    // 이미지 삭제
+                    s3Uploader.deleteS3Image(team.getTeamLogoImagePath());
+                }
 
-        team.setTeamName(addTeamBasicInformRequest.getTeamName());
-        team.setTeamShortDescription(addTeamBasicInformRequest.getTeamShortDescription());
+                // 팀 로고 이미지 업로드
+                teamLogoImagePath = s3Uploader.uploadTeamLogoImage(new ImageFile(teamLogoImage));
 
-        // 사용자가 새로운 이미지를 업로드
-        if (!teamLogoImage.isEmpty() && imageValidator.validatingImageUpload(teamLogoImage)) {
-            // 이전에 업로드한 팀 로고 이미지가 존재
-            if (team.getTeamLogoImagePath() != null) {
-                s3Uploader.deleteS3Image(team.getTeamLogoImagePath());
+                // 새로운 로고 이미지 저장
+                team.setTeamLogoImagePath(teamLogoImagePath);
             }
-            teamLogoImagePath = s3Uploader.uploadTeamBasicLogoImage(new ImageFile(teamLogoImage));
         }
-        team.setTeamLogoImagePath(teamLogoImagePath);
 
-        return teamMapper.toSaveTeam(team);
+        // 티미 규모 처리
+        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
+            teamScaleCommandAdapter.deleteAllByTeamId(team.getId());
+        }
+
+        final Scale scale = scaleQueryAdapter.findByScaleName(updateTeamRequest.getScaleName());
+        final TeamScale teamScale = new TeamScale(null, team, scale);
+        teamScaleCommandAdapter.save(teamScale);
+        final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+
+        // 팀 지역 처리
+        if (teamRegionQueryAdapter.existsTeamRegionByTeamId(team.getId())) {
+            teamRegionCommandAdapter.deleteAllByTeamId(team.getId());
+        }
+
+        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(updateTeamRequest.getCityName(), updateTeamRequest.getDivisionName());
+        final TeamRegion teamRegion = new TeamRegion(null, team, region);
+        teamRegionCommandAdapter.save(teamRegion);
+        final RegionDetail regionDetail = regionMapper.toRegionDetail(region);
+
+        // 팀 현재 상태 처리
+        if (teamCurrentStateQueryAdapter.existsTeamCurrentStatesByTeamId(team.getId())) {
+            teamCurrentStateCommandAdapter.deleteAllByTeamId(team.getId());
+        }
+
+        List<String> teamStateNames = updateTeamRequest.getTeamStateNames();
+        List<TeamCurrentState> teamCurrentStates = new ArrayList<>();
+        for (String teamStateName : teamStateNames) {
+            // ProfileState 엔티티 조회
+            TeamState teamState = teamStateQueryAdapter.findByStateName(teamStateName);
+
+            // ProfileCurrentState 엔티티 생성
+            TeamCurrentState teamCurrentState = new TeamCurrentState(null, team, teamState);
+            teamCurrentStates.add(teamCurrentState);
+        }
+
+        teamCurrentStateCommandAdapter.saveAll(teamCurrentStates);
+        List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
+
+        return teamMapper.toUpdateTeam(team, teamScaleItem, regionDetail, teamCurrentStateItems);
     }
 
     // 로그인한 사용자가 팀을 상세 조회한 케이스

@@ -29,7 +29,7 @@
 //import liaison.linkit.matching.dto.response.toTeamMatching.ToTeamMatchingResponse;
 //import liaison.linkit.member.domain.Member;
 //import liaison.linkit.member.domain.repository.member.MemberRepository;
-//import liaison.linkit.profile.domain.Profile;
+//import liaison.linkit.profile.domain.profile.Profile;
 //import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 //import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
 //import liaison.linkit.profile.domain.repository.skill.SkillRepository;

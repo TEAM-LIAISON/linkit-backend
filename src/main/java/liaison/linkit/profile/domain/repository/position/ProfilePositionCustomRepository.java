@@ -1,6 +1,6 @@
 package liaison.linkit.profile.domain.repository.position;
 
-import liaison.linkit.profile.domain.ProfilePosition;
+import liaison.linkit.profile.domain.position.ProfilePosition;
 
 public interface ProfilePositionCustomRepository {
 

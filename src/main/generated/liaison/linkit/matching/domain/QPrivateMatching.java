@@ -42,7 +42,7 @@ public class QPrivateMatching extends EntityPathBase<PrivateMatching> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> modifiedAt = _super.modifiedAt;
 
-    public final liaison.linkit.profile.domain.QProfile profile;
+    public final liaison.linkit.profile.domain.profile.QProfile profile;
 
     public final StringPath requestMessage = createString("requestMessage");
 
@@ -76,7 +76,7 @@ public class QPrivateMatching extends EntityPathBase<PrivateMatching> {
     public QPrivateMatching(Class<? extends PrivateMatching> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new liaison.linkit.member.domain.QMember(forProperty("member"), inits.get("member")) : null;
-        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.profile.QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }

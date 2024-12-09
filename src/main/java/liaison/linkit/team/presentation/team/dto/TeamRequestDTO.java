@@ -28,13 +28,13 @@ public class TeamRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AddTeamBasicInformRequest {
+    public static class UpdateTeamRequest {
         private String teamName;
         private String teamShortDescription;
         private String scaleName;
         private String cityName;
         private String divisionName;
         private List<String> teamStateNames;
-        private boolean isTeamPublic;
+        private Boolean isTeamPublic;
     }
 }

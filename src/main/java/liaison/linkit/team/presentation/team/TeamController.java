@@ -7,6 +7,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
 import liaison.linkit.team.service.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,16 +38,16 @@ public class TeamController {
         return CommonResponse.onSuccess(teamService.createTeam(accessor.getMemberId(), teamLogoImage, addTeamRequest));
     }
 
-    // 팀 기본정보 저장
-    @PostMapping("/{teamId}")
+    // 팀 기본 정보 수정
+    @PostMapping("/team/{teamName}")
     @MemberOnly
-    public CommonResponse<TeamResponseDTO.SaveTeamBasicInformResponse> saveTeamBasicInform(
+    public CommonResponse<UpdateTeamResponse> updateTeam(
             @Auth final Accessor accessor,
-            @RequestParam final Long teamId,
+            @PathVariable final String teamName,
             @RequestPart(required = false) MultipartFile teamLogoImage,
-            @RequestPart @Valid TeamRequestDTO.AddTeamBasicInformRequest addTeamBasicInformRequest
+            @RequestPart @Valid TeamRequestDTO.UpdateTeamRequest updateTeamRequest
     ) {
-        return CommonResponse.onSuccess(teamService.saveTeamBasicInform(accessor.getMemberId(), teamId, teamLogoImage, addTeamBasicInformRequest));
+        return CommonResponse.onSuccess(teamService.updateTeam(accessor.getMemberId(), teamName, teamLogoImage, updateTeamRequest));
     }
 
     // 팀 상단 메뉴

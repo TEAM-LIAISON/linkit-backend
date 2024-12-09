@@ -8,4 +8,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamRegionQueryAdapter {
     final TeamRegionRepository teamRegionRepository;
+
+    public boolean existsTeamRegionByTeamId(final Long teamId) {
+        return teamRegionRepository.existsTeamRegionByTeamId(teamId);
+    }
 }

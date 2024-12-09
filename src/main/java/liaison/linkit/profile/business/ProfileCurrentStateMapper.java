@@ -3,7 +3,7 @@ package liaison.linkit.profile.business;
 import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.profile.domain.ProfileCurrentState;
+import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 
 @Mapper

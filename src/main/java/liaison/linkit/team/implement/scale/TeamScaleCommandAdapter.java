@@ -13,4 +13,8 @@ public class TeamScaleCommandAdapter {
     public void save(final TeamScale teamScale) {
         teamScaleRepository.save(teamScale);
     }
+
+    public void deleteAllByTeamId(final Long teamId) {
+        teamScaleRepository.deleteAllByTeamId(teamId);
+    }
 }

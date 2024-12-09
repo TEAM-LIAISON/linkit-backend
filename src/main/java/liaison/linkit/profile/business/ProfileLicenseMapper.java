@@ -3,7 +3,7 @@ package liaison.linkit.profile.business;
 import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.profile.domain.Profile;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.license.ProfileLicense;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO;

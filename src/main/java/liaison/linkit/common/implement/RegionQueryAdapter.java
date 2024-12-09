@@ -1,7 +1,7 @@
 package liaison.linkit.common.implement;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.profile.domain.ProfileRegion;
+import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.profile.domain.repository.region.ProfileRegionRepository;
 import liaison.linkit.profile.exception.region.ProfileRegionNotFoundException;

@@ -46,7 +46,7 @@ public class QMember extends EntityPathBase<Member> {
 
     public final NumberPath<Integer> privateScrapCount = createNumber("privateScrapCount", Integer.class);
 
-    public final liaison.linkit.profile.domain.QProfile profile;
+    public final liaison.linkit.profile.domain.profile.QProfile profile;
 
     public final StringPath socialLoginId = createString("socialLoginId");
 
@@ -73,7 +73,7 @@ public class QMember extends EntityPathBase<Member> {
     public QMember(Class<? extends Member> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.memberBasicInform = inits.isInitialized("memberBasicInform") ? new QMemberBasicInform(forProperty("memberBasicInform"), inits.get("memberBasicInform")) : null;
-        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.profile.QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }

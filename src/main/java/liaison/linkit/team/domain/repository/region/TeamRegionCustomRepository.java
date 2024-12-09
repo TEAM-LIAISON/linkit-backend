@@ -7,4 +7,6 @@ public interface TeamRegionCustomRepository {
     boolean existsTeamRegionByTeamId(final Long teamId);
 
     Optional<TeamRegion> findTeamRegionByTeamId(final Long teamId);
+
+    void deleteAllByTeamId(final Long teamId);
 }

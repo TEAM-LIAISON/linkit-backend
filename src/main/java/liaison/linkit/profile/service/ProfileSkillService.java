@@ -2,9 +2,9 @@ package liaison.linkit.profile.service;
 
 import java.util.List;
 import liaison.linkit.profile.business.ProfileSkillMapper;
-import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.ProfileSkill;
-import liaison.linkit.profile.implement.ProfileQueryAdapter;
+import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.domain.skill.ProfileSkill;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.skill.ProfileSkillCommandAdapter;
 import liaison.linkit.profile.implement.skill.ProfileSkillQueryAdapter;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillRequestDTO;

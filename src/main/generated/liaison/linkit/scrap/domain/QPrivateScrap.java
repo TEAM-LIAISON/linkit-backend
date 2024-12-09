@@ -28,7 +28,7 @@ public class QPrivateScrap extends EntityPathBase<PrivateScrap> {
 
     public final liaison.linkit.member.domain.QMember member;
 
-    public final liaison.linkit.profile.domain.QProfile profile;
+    public final liaison.linkit.profile.domain.profile.QProfile profile;
 
     public QPrivateScrap(String variable) {
         this(PrivateScrap.class, forVariable(variable), INITS);
@@ -49,7 +49,7 @@ public class QPrivateScrap extends EntityPathBase<PrivateScrap> {
     public QPrivateScrap(Class<? extends PrivateScrap> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
         this.member = inits.isInitialized("member") ? new liaison.linkit.member.domain.QMember(forProperty("member"), inits.get("member")) : null;
-        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.QProfile(forProperty("profile"), inits.get("profile")) : null;
+        this.profile = inits.isInitialized("profile") ? new liaison.linkit.profile.domain.profile.QProfile(forProperty("profile"), inits.get("profile")) : null;
     }
 
 }
