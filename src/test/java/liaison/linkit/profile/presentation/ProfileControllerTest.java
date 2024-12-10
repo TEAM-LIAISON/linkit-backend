@@ -213,6 +213,14 @@ class ProfileControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 활동 지역 시/군/구"),
 
+                                        // profileTeamInform
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로"),
+
                                         // profileBooleanMenu
                                         fieldWithPath("result.profileBooleanMenu.isMiniProfile")
                                                 .type(JsonFieldType.BOOLEAN)
@@ -237,14 +245,7 @@ class ProfileControllerTest extends ControllerTest {
                                                 .description("프로필 자격증 기입 여부"),
                                         fieldWithPath("result.profileBooleanMenu.isProfileLink")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("프로필 링크 기입 여부"),
-
-                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("프로필 회원이 속한 팀의 팀 이름"),
-                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
-                                                .type(JsonFieldType.STRING)
-                                                .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로")
+                                                .description("프로필 링크 기입 여부")
                                 )
                         )).andReturn();
 
@@ -458,6 +459,14 @@ class ProfileControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("지역 시/군/구"),
 
+                                        // profileTeamInform
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로"),
+
                                         fieldWithPath("result.profileScrapCount")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("프로필 스크랩 수"),
@@ -639,14 +648,7 @@ class ProfileControllerTest extends ControllerTest {
                                                 .description("링크 이름"),
                                         fieldWithPath("result.profileLinkItems[].linkPath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("링크 경로"),
-
-                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("프로필 회원이 속한 팀의 팀 이름"),
-                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
-                                                .type(JsonFieldType.STRING)
-                                                .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로")
+                                                .description("링크 경로")
                                 )
                         )
                 ).andReturn();

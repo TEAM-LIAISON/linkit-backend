@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ProfileSkill extends BaseDateTimeEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,4 +36,5 @@ public class ProfileSkill extends BaseDateTimeEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "skill_id")
     private Skill skill;
+    
 }

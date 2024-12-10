@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
+import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillRequestDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
@@ -38,11 +39,15 @@ public class ProfileSkillMapper {
                 .collect(Collectors.toList());
     }
 
-    public ProfileSkill toProfileSkill(Profile profile, ProfileSkillRequestDTO.AddProfileSkillItem requestItem) {
+    public ProfileSkill toProfileSkill(
+            final Profile profile,
+            final Skill skill,
+            final ProfileSkillRequestDTO.AddProfileSkillItem addProfileSkillItem) {
         return ProfileSkill.builder()
                 .profile(profile)
-                .skillLevel(requestItem.getSkillLevel())
+                .skill(skill)
+                .skillLevel(addProfileSkillItem.getSkillLevel())
                 .build();
     }
-
+    
 }
