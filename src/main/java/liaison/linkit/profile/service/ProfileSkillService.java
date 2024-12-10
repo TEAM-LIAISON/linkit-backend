@@ -1,12 +1,15 @@
 package liaison.linkit.profile.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import liaison.linkit.profile.business.ProfileSkillMapper;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
+import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.skill.ProfileSkillCommandAdapter;
 import liaison.linkit.profile.implement.skill.ProfileSkillQueryAdapter;
+import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillRequestDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileSkillService {
 
     private final ProfileQueryAdapter profileQueryAdapter;
-
     private final ProfileSkillQueryAdapter profileSkillQueryAdapter;
+    private final SkillQueryAdapter skillQueryAdapter;
+
     private final ProfileSkillCommandAdapter profileSkillCommandAdapter;
+
     private final ProfileSkillMapper profileSkillMapper;
 
     @Transactional(readOnly = true)
@@ -48,13 +53,22 @@ public class ProfileSkillService {
             profile.removeProfileSkillCompletion();
         }
 
+        // 새로운 스킬 이력 생성
         List<ProfileSkill> profileSkills = addProfileSkillRequest.getProfileSkillItems().stream()
-                .map(requestItem -> profileSkillMapper.toProfileSkill(profile, requestItem))
-                .toList();
+                .map(requestItem -> {
+                    // Skill 엔티티 조회
+                    Skill skill = skillQueryAdapter.getSkillBySkillName(requestItem.getSkillName());
 
+                    // ProfileSkill 매핑
+                    return profileSkillMapper.toProfileSkill(profile, skill, requestItem);
+                })
+                .collect(Collectors.toList());
+
+        // ProfileSkill 저장
         profileSkillCommandAdapter.addProfileSkills(profileSkills);
 
-        if (profileSkillQueryAdapter.existsByProfileId(profile.getId())) {
+        // 스킬 이력 존재 여부에 따라 프로필 업데이트
+        if (!profileSkills.isEmpty()) {
             profile.setIsProfileSkill(true);
             profile.addProfileSkillCompletion();
         }

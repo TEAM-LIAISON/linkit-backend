@@ -1,22 +1,33 @@
 package liaison.linkit.profile.domain.repository.profile;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
 import liaison.linkit.common.domain.QPosition;
+import liaison.linkit.common.domain.QProfileState;
 import liaison.linkit.global.type.StatusType;
+import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.member.domain.QMemberBasicInform;
 import liaison.linkit.profile.domain.position.QProfilePosition;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.profile.QProfile;
+import liaison.linkit.profile.domain.region.QProfileRegion;
 import liaison.linkit.profile.domain.region.QRegion;
+import liaison.linkit.profile.domain.skill.QProfileSkill;
+import liaison.linkit.profile.domain.skill.QSkill;
 import liaison.linkit.profile.domain.state.QProfileCurrentState;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 
 @RequiredArgsConstructor
+@Slf4j
 public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -108,5 +119,138 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .set(profile.status, StatusType.DELETED)
                 .where(profile.member.id.eq(memberId))
                 .execute();
+    }
+
+    @Override
+    public Page<Profile> findAll(
+            final List<String> majorPosition,
+            final List<String> skillName,
+            final List<String> cityName,
+            final List<String> profileStateName,
+            final Pageable pageable
+    ) {
+        QProfile qProfile = QProfile.profile;
+        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+        QPosition qPosition = QPosition.position;
+
+        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+        QRegion qRegion = QRegion.region;
+
+        QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+        QProfileState qProfileState = QProfileState.profileState;
+
+        QProfileSkill qProfileSkill = QProfileSkill.profileSkill;
+        QSkill qSkill = QSkill.skill;
+
+        try {
+            // 입력 파라미터 로그
+            log.info("Executing findAll with parameters:");
+            log.info("Major Positions: {}", majorPosition);
+            log.info("Skill Names: {}", skillName);
+            log.info("City Names: {}", cityName);
+            log.info("Profile State Names: {}", profileStateName);
+            log.info("Pageable: {}", pageable);
+
+            // 데이터 조회 시작 로그
+            log.info("Starting query to fetch Profiles");
+
+            // 데이터 조회 쿼리
+            List<Profile> content = jpaQueryFactory
+                    .selectDistinct(qProfile)
+                    .from(qProfile)
+                    // Profile과 ProfilePosition 조인
+                    .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
+                    .leftJoin(qProfilePosition.position, qPosition)
+                    // Profile과 ProfileRegion 조인
+                    .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
+                    .leftJoin(qProfileRegion.region, qRegion)
+                    // Profile과 ProfileCurrentState 조인
+                    .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
+                    .leftJoin(qProfileCurrentState.profileState, qProfileState)
+                    // Profile과 ProfileSkill 조인
+                    .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
+                    .leftJoin(qProfileSkill.skill, qSkill)
+                    .where(
+                            hasMajorPositions(majorPosition),
+                            hasSkillNames(skillName),
+                            hasCityName(cityName),
+                            hasProfileStateNames(profileStateName)
+                    )
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .orderBy(QueryDslUtil.getOrderSpecifier(pageable.getSort(), qProfile, qProfilePosition, qProfileRegion, qProfileCurrentState, qProfileSkill))
+                    .fetch();
+            
+            // 조회된 데이터 수 로그
+            log.info("Fetched {} profiles from database", content.size());
+
+            // 카운트 쿼리 시작 로그
+            log.info("Starting count query");
+
+            // 카운트 쿼리
+            long total = jpaQueryFactory
+                    .select(qProfile.countDistinct())
+                    .from(qProfile)
+                    // 동일한 조인 설정 적용
+                    .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
+                    .leftJoin(qProfilePosition.position, qPosition)
+                    .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
+                    .leftJoin(qProfileRegion.region, qRegion)
+                    .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
+                    .leftJoin(qProfileCurrentState.profileState, qProfileState)
+                    .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
+                    .leftJoin(qProfileSkill.skill, qSkill)
+                    .where(
+                            hasMajorPositions(majorPosition),
+                            hasSkillNames(skillName),
+                            hasCityName(cityName),
+                            hasProfileStateNames(profileStateName)
+                    )
+                    .fetchOne();
+
+            // 카운트 결과 로그
+            log.info("Total profiles count: {}", total);
+
+            // 페이지네이션 결과 로그
+            log.info("Creating Page object with fetched data");
+
+            return PageableExecutionUtils.getPage(content, pageable, () -> total);
+        } catch (Exception e) {
+            // 예외 발생 시 에러 로그
+            log.error("Error executing findAll method", e);
+            throw e; // 예외를 다시 던져 상위 계층에서 처리하도록 합니다.
+        }
+    }
+
+    private BooleanExpression hasMajorPositions(final List<String> majorPosition) {
+        if (majorPosition == null || majorPosition.isEmpty()) {
+            return null;
+        }
+        QPosition qPosition = QPosition.position;
+        return qPosition.majorPosition.in(majorPosition);
+    }
+
+    private BooleanExpression hasSkillNames(List<String> skillName) {
+        if (skillName == null || skillName.isEmpty()) {
+            return null;
+        }
+        QSkill qSkill = QSkill.skill;
+        return qSkill.skillName.in(skillName);
+    }
+
+    private BooleanExpression hasCityName(List<String> cityName) {
+        if (cityName == null || cityName.isEmpty()) {
+            return null;
+        }
+        QRegion qRegion = QRegion.region;
+        return qRegion.cityName.in(cityName);
+    }
+
+    private BooleanExpression hasProfileStateNames(List<String> profileStateName) {
+        if (profileStateName == null || profileStateName.isEmpty()) {
+            return null;
+        }
+        QProfileState qProfileState = QProfileState.profileState;
+        return qProfileState.profileStateName.in(profileStateName);
     }
 }

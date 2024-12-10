@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-public class ProfileSkillRepositoryCustomImpl implements ProfileSkillRepositoryCustom {
+public class ProfileSkillCustomRepositoryImpl implements ProfileSkillCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

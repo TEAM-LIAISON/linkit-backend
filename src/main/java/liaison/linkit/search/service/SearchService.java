@@ -1,33 +1,33 @@
-package liaison.linkit.search.service;
-
-import liaison.linkit.member.domain.repository.member.MemberRepository;
-import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
-import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
-import liaison.linkit.scrap.domain.repository.privateScrap.PrivateScrapRepository;
-import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
-import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-@Service
-@RequiredArgsConstructor
-@Transactional
-@Slf4j
-public class SearchService {
-
-    private final MemberRepository memberRepository;
-
-    private final MemberBasicInformRepository memberBasicInformRepository;
-
-    private final ProfileJobRoleRepository profileJobRoleRepository;
-
-    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
-
-    private final PrivateScrapRepository privateScrapRepository;
-    private final TeamScrapRepository teamScrapRepository;
-
+//package liaison.linkit.search.service;
+//
+//import liaison.linkit.member.domain.repository.member.MemberRepository;
+//import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
+//import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
+//import liaison.linkit.scrap.domain.repository.privateScrap.PrivateScrapRepository;
+//import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
+//import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
+//import lombok.RequiredArgsConstructor;
+//import lombok.extern.slf4j.Slf4j;
+//import org.springframework.stereotype.Service;
+//import org.springframework.transaction.annotation.Transactional;
+//
+//@Service
+//@RequiredArgsConstructor
+//@Transactional
+//@Slf4j
+//public class SearchService {
+//
+//    private final MemberRepository memberRepository;
+//
+//    private final MemberBasicInformRepository memberBasicInformRepository;
+//
+//    private final ProfileJobRoleRepository profileJobRoleRepository;
+//
+//    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
+//
+//    private final PrivateScrapRepository privateScrapRepository;
+//    private final TeamScrapRepository teamScrapRepository;
+//
 //    // 개인 미니 프로필 (페이지) 조회
 //    @Transactional(readOnly = true)
 //    public Page<MiniProfileResponse> findPrivateMiniProfile(
@@ -397,5 +397,5 @@ public class SearchService {
 //        // MiniProfile을 BrowseMiniProfileResponse로 변환
 //        return miniProfiles.map(this::convertToMiniProfileResponse);
 //    }
-
-}
+//
+//}
