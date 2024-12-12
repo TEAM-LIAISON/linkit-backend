@@ -42,8 +42,10 @@ out/
 ### RestDocs ###
 src/main/resources/static/docs/
 
-### application.yml ###
-#src/main/resources/*.yml
+### application-secret.yml ###
+src/main/resources/application-secret.yml
+src/main/resources/application-secret-dev.yml
+src/main/resources/application-secret-prod.yml
 
 ### .gitmessage.txt ###
 .gitmessage.txt

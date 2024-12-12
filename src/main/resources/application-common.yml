@@ -1,0 +1,50 @@
+spring:
+  config:
+    activate:
+      on-profile: common
+
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher
+
+  batch:
+    job:
+      enabled: true
+    jdbc:
+      initialize-schema: always
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+        use_sql_comments: false
+        default_batch_fetch_size: 100
+    hibernate:
+      ddl-auto: create-drop
+
+    #  flyway:
+    #    enabled: true
+    #    baseline-on-migrate: true
+    #    baseline-version: 0
+  sql:
+    init:
+      mode: never
+
+  servlet:
+    multipart:
+      enabled: true # 멀티파트 업로드 지원여부
+      file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
+      max-file-size: 2MB # 한개 파일의 최대 사이즈 (default: 1MB)
+      max-request-size: 2MB # 한개 요청의 최대 사이즈 (default: 10MB)
+
+cors-allowed-origins:
+  http://localhost:8080,
+  http://localhost:3000,
+  https://linkit.im,
+  https://www.linkit.im,
+  https://liaison-dev.site,
+  https://www.liaison-dev.site,
+  https://linkit-dev.vercel.app

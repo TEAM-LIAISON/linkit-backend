@@ -2,6 +2,7 @@ package liaison.linkit.global.config.csv;
 
 import liaison.linkit.global.config.csv.jobRole.CsvJobRoleReader;
 import liaison.linkit.global.config.csv.jobRole.CsvJobRoleWriter;
+import liaison.linkit.global.config.csv.jobRole.JobRoleCsvData;
 import liaison.linkit.global.config.csv.position.CsvPositionReader;
 import liaison.linkit.global.config.csv.position.CsvPositionWriter;
 import liaison.linkit.global.config.csv.position.PositionCsvData;
@@ -10,22 +11,20 @@ import liaison.linkit.global.config.csv.profileState.CsvProfileStateWriter;
 import liaison.linkit.global.config.csv.profileState.ProfileStateCsvData;
 import liaison.linkit.global.config.csv.region.CsvRegionReader;
 import liaison.linkit.global.config.csv.region.CsvRegionWriter;
+import liaison.linkit.global.config.csv.region.RegionCsvData;
 import liaison.linkit.global.config.csv.scale.CsvScaleReader;
 import liaison.linkit.global.config.csv.scale.CsvScaleWriter;
 import liaison.linkit.global.config.csv.scale.ScaleCsvData;
 import liaison.linkit.global.config.csv.skill.CsvSkillReader;
 import liaison.linkit.global.config.csv.skill.CsvSkillWriter;
+import liaison.linkit.global.config.csv.skill.SkillCsvData;
 import liaison.linkit.global.config.csv.teamState.CsvTeamStateReader;
 import liaison.linkit.global.config.csv.teamState.CsvTeamStateWriter;
 import liaison.linkit.global.config.csv.teamState.TeamStateCsvData;
 import liaison.linkit.global.config.csv.university.CsvUniversityReader;
 import liaison.linkit.global.config.csv.university.CsvUniversityWriter;
 import liaison.linkit.global.config.csv.university.UniversityCsvData;
-import liaison.linkit.global.config.csv.jobRole.JobRoleCsvData;
-import liaison.linkit.global.config.csv.region.RegionCsvData;
-import liaison.linkit.global.config.csv.skill.SkillCsvData;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
@@ -35,7 +34,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class JobConfiguration {
