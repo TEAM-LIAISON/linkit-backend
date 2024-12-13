@@ -76,10 +76,10 @@ jobs:
     steps:
       - name: Set Target IP
         run: |
-          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LINKIT_IP_DEV }}/env")
+          STATUS=$(curl -o /dev/null -w "%{http_code}" "http://${{ secrets.LINKIT_IP_DEV }}/api/v1/env")
           echo $STATUS
           if [ $STATUS = 200 ]; then
-            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.LINKIT_IP_DEV }}/env")
+            CURRENT_UPSTREAM=$(curl -s "http://${{ secrets.LINKIT_IP_DEV }}/api/v1/env")
           else
             CURRENT_UPSTREAM=green
           fi
@@ -108,7 +108,7 @@ jobs:
       - name: Check deploy server URL
         uses: jtalk/url-health-check-action@v3
         with:
-          url: http://${{ secrets.LINKIT_IP_DEV }}:${{ env.STOPPED_PORT }}/env
+          url: http://${{ secrets.LINKIT_IP_DEV }}:${{ env.STOPPED_PORT }}/api/v1/env
           max-attempts: 5
           retry-delay: 10s
 
