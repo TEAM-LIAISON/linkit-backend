@@ -1,4 +1,4 @@
-name: DEVELOP_CI
+name: linkit-dev-ci
 
 on:
   pull_request:
