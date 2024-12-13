@@ -14,8 +14,22 @@ spring:
     activate:
       on-profile: local
 
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+        use_sql_comments: false
+        default_batch_fetch_size: 100
+    hibernate:
+      ddl-auto: create-drop
+
 server:
   port: 8080
   serverAddress: localhost
 
 serverName: local_server
+
+

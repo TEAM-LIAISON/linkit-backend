@@ -14,6 +14,18 @@ spring:
     activate:
       on-profile: blue
 
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+        use_sql_comments: false
+        default_batch_fetch_size: 100
+    hibernate:
+      ddl-auto: create
+
 server:
   port: 8080
   serverAddress: 13.124.174.27
