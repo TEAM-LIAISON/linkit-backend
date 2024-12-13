@@ -20,9 +20,7 @@ public class HealthController {
     @GetMapping("/hc")
     public ResponseEntity<?> healthcheck() {
         Map<String, String> responseData = new TreeMap<>();
-        
         responseData.put("env", env);
-
         return ResponseEntity.ok(responseData);
     }
 
