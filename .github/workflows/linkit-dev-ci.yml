@@ -27,9 +27,6 @@ jobs:
         run: |
           sudo timedatectl set-timezone Asia/Seoul
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
       - name: Gradle Caching
         uses: actions/cache@v3
         with:
@@ -40,11 +37,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - name: Build with Gradle
-        run: ./gradlew clean build
+      - name: Build Project with Gradle
+        run: |
+          echo ${{ secrets.APPLICATION_SECRET_DEV }} | base64 --decode > ./src/main/resources/application-secret-dev.yml
+          ./gradlew bootJar
 
       - name: Write Test Report
         uses: EnricoMi/publish-unit-test-result-action@v2
