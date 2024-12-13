@@ -17,11 +17,6 @@ spring:
 server:
   port: 8080
 
-logging:
-  level:
-    org.hibernate.SQL: debug  # logger를 통해 출력
-    org.hibernate.type: trace
-
 ---
 
 spring:
@@ -67,7 +62,7 @@ spring:
     #    baseline-version: 0
   sql:
     init:
-      mode: never
+      mode: always
 
   servlet:
     multipart:
