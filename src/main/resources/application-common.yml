@@ -28,6 +28,11 @@ spring:
       max-file-size: 2MB # 한개 파일의 최대 사이즈 (default: 1MB)
       max-request-size: 2MB # 한개 요청의 최대 사이즈 (default: 10MB)
 
+logging:
+  level:
+    org.hibernate.SQL: debug  # logger를 통해 출력
+    org.hibernate.type: trace
+
 cors-allowed-origins:
   http://localhost:8080,
   http://localhost:3000,

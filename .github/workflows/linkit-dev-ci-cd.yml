@@ -1,7 +1,6 @@
-name: linkit-dev-deploy
+name: linkit-dev-ci
 
 on:
-  workflow_dispatch:
   pull_request:
     branches: [ "develop" ]
 
@@ -132,3 +131,4 @@ jobs:
           script: |
             sudo docker stop ${{ env.CURRENT_UPSTREAM }}
             sudo docker rm ${{ env.CURRENT_UPSTREAM }}
+
