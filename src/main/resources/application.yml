@@ -34,17 +34,17 @@ spring:
         use_sql_comments: false
         default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: create
+      ddl-auto: create-drop
 
   mvc:
     path match:
       matching-strategy: ant_path_matcher
 
-    #  batch:
-    #    job:
-    #      enabled: true
-    #    jdbc:
-    #      initialize-schema: always
+  batch:
+    job:
+      enabled: true
+    jdbc:
+      initialize-schema: never
 
     #  flyway:
     #    enabled: true
@@ -52,7 +52,7 @@ spring:
     #    baseline-version: 0
   sql:
     init:
-      mode: never
+      mode: always
 
   servlet:
     multipart:

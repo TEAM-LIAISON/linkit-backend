@@ -16,6 +16,9 @@ spring:
 
 server:
   port: 8080
+  serverAddress: liaison-dev.site
+
+serverName: blue_server_dev
 
 ---
 
@@ -26,6 +29,9 @@ spring:
 
 server:
   port: 8081
+  serverAddress: liaison-dev.site
+
+serverName: green_server_dev
 
 ---
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 public class HealthController {
 
+
     @Value("${server.env}")
     private String env;
 
@@ -19,6 +20,7 @@ public class HealthController {
     public ResponseEntity<?> healthcheck() {
         Map<String, String> responseData = new TreeMap<>();
         responseData.put("env", env);
+
         return ResponseEntity.ok(responseData);
     }
 
