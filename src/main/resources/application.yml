@@ -16,9 +16,6 @@ spring:
 
 server:
   port: 8080
-  serverAddress: localhost
-
-serverName: local_server
 
 ---
 
@@ -37,7 +34,7 @@ spring:
         use_sql_comments: false
         default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
 
   mvc:
     path match:

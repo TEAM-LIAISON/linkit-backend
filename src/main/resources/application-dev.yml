@@ -16,9 +16,11 @@ spring:
 
 server:
   port: 8080
-  serverAddress: 13.124.174.27
 
-serverName: blue_server_dev
+logging:
+  level:
+    org.hibernate.SQL: debug  # logger를 통해 출력
+    org.hibernate.type: trace
 
 ---
 
@@ -29,9 +31,6 @@ spring:
 
 server:
   port: 8081
-  serverAddress: 13.124.174.27
-
-serverName: green_server_dev
 
 ---
 
@@ -50,7 +49,7 @@ spring:
         use_sql_comments: false
         default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
 
   mvc:
     path match:
