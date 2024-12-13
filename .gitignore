@@ -50,3 +50,6 @@ src/test/resources/application.yml
 
 ### .gitmessage.txt ###
 .gitmessage.txt
+
+### Querydsl ###
+/src/main/generated
