@@ -36,6 +36,17 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            redirect-uri: https://liaison-dev.site/login/oauth2/callback/naver
+          kakao:
+            redirect-uri: https://liaison-dev.site/login/oauth2/callback/kakao
+          google:
+            redirect-uri: https://liaison-dev.site/login/oauth2/callback/google
+
   mvc:
     path match:
       matching-strategy: ant_path_matcher
