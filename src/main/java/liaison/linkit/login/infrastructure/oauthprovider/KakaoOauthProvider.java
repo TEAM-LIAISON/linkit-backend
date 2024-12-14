@@ -92,6 +92,7 @@ public class KakaoOauthProvider implements OauthProvider {
         params.add("client_secret", clientSecret);
         params.add("redirect_uri", redirectUri);
         params.add("grant_type", "authorization_code");
+        
         final HttpEntity<MultiValueMap<String, String>> accessTokenRequestEntity = new HttpEntity<>(params, headers);
 
         final ResponseEntity<OauthAccessToken> accessTokenResponse = restTemplate.exchange(
