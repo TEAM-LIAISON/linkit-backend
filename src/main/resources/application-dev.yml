@@ -83,6 +83,5 @@ cors-allowed-origins:
   https://linkit.im,
   https://www.linkit.im,
   https://liaison-dev.site,
-  https://dev.liaison-dev.site,
   https://www.liaison-dev.site,
   https://linkit-dev.vercel.app
