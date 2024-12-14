@@ -89,8 +89,7 @@ spring:
 
 logging:
   level:
-    org.hibernate.SQL: debug  # logger를 통해 출력
-    org.hibernate.type: trace
+    root: debug
 
 cors-allowed-origins:
   http://localhost:8080,
