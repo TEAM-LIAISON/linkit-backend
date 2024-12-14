@@ -61,7 +61,7 @@ spring:
           kakao:
             redirect-uri: https://liaison-dev.site/login/oauth2/callback/kakao
           google:
-            redirect-uri: https://liaison-dev.site/login/oauth2/callback/google
+            redirect-uri: http://localhost:3000/login/oauth2/callback/google
   mvc:
     path match:
       matching-strategy: ant_path_matcher
