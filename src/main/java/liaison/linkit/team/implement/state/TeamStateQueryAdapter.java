@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Adapter
 @RequiredArgsConstructor
 public class TeamStateQueryAdapter {
-    private TeamStateRepository teamStateRepository;
+    private final TeamStateRepository teamStateRepository;
 
     public TeamState findByStateName(final String stateName) {
         return teamStateRepository.findByStateName(stateName).orElseThrow(() -> TeamStateNotFoundException.EXCEPTION);

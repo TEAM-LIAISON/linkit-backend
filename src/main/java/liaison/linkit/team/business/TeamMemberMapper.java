@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.global.type.TeamMemberType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
@@ -22,6 +23,7 @@ public class TeamMemberMapper {
         return TeamMember.builder()
                 .member(member)
                 .team(team)
+                .teamMemberType(TeamMemberType.TEAM_MANAGER)
                 .build();
     }
 
