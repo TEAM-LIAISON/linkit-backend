@@ -9,8 +9,6 @@ import liaison.linkit.scrap.business.mapper.ProfileScrapMapper;
 import liaison.linkit.scrap.business.mapper.TeamMemberAnnouncementScrapMapper;
 import liaison.linkit.scrap.business.mapper.TeamScrapMapper;
 import liaison.linkit.scrap.domain.TeamMemberAnnouncementScrap;
-import liaison.linkit.scrap.domain.TeamScrap;
-import liaison.linkit.scrap.exception.teamScrap.ForbiddenTeamScrapException;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapCommandAdapter;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.scrap.implement.teamMemberAnnouncement.TeamMemberAnnouncementScrapCommandAdapter;
@@ -19,9 +17,6 @@ import liaison.linkit.scrap.implement.teamScrap.TeamScrapCommandAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.teamMemberAnnouncementScrap.TeamMemberAnnouncementScrapResponseDTO;
 import liaison.linkit.scrap.presentation.dto.teamMemberAnnouncementScrap.TeamMemberAnnouncementScrapResponseDTO.AddTeamMemberAnnouncementScrap;
-import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapResponseDTO.AddTeamScrap;
-import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapResponseDTO.RemoveTeamScrap;
-import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.implement.TeamQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
@@ -59,23 +54,6 @@ public class ScrapService {
 
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
 
-    // 팀 스크랩 메서드
-    public AddTeamScrap createScrapToTeam(final Long memberId, final Long teamId) {
-
-        final Member member = memberQueryAdapter.findById(memberId);
-        final Team team = teamQueryAdapter.findById(teamId);
-
-        // 팀 소속 여부
-        if (teamMemberQueryAdapter.existsTeamMemberByMemberIdAndTeamId(memberId, teamId)) {
-            throw ForbiddenTeamScrapException.EXCEPTION;
-        }
-
-        final TeamScrap createdTeamScrap = teamScrapCommandAdapter.create(new TeamScrap(null, member, team, LocalDateTime.now()));
-        member.addTeamScrapCount();
-
-        return teamScrapMapper.toAddTeamScrap(createdTeamScrap);
-
-    }
 
     // 팀원 공고 스크랩 메서드
     public AddTeamMemberAnnouncementScrap createScrapToTeamMemberAnnouncement(final Long memberId, final Long teamMemberAnnouncementId) {
@@ -90,18 +68,7 @@ public class ScrapService {
 
     }
 
-    // 팀 스크랩 취소 메서드
-    public RemoveTeamScrap cancelScrapToTeamProfile(final Long memberId, final Long teamId) {
-
-        teamScrapCommandAdapter.deleteByMemberIdAndTeamId(memberId, teamId);
-
-        final Member member = memberQueryAdapter.findById(memberId);
-        member.subTeamScrapCount();
-
-        return teamScrapMapper.toRemoveTeamScrap();
-
-    }
-
+    
     // 팀원 공고 스크랩 취소 메서드
     public TeamMemberAnnouncementScrapResponseDTO.RemoveTeamMemberAnnouncementScrap cancelScrapToTeamMemberAnnouncement(final Long memberId, final Long teamMemberAnnouncementId) {
 

@@ -6,7 +6,7 @@ import liaison.linkit.scrap.exception.profileScrap.ForbiddenProfileScrapExceptio
 import liaison.linkit.scrap.exception.profileScrap.ProfileScrapManyRequestException;
 import liaison.linkit.scrap.exception.teamMemberAnnouncementScrap.DuplicateTeamMemberAnnouncementScrapException;
 import liaison.linkit.scrap.exception.teamMemberAnnouncementScrap.TeamMemberAnnouncementScrapManyRequestException;
-import liaison.linkit.scrap.exception.teamScrap.DuplicateTeamScrapException;
+import liaison.linkit.scrap.exception.teamScrap.ForbiddenTeamScrapException;
 import liaison.linkit.scrap.exception.teamScrap.TeamScrapManyRequestException;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.scrap.implement.teamMemberAnnouncement.TeamMemberAnnouncementScrapQueryAdapter;
@@ -71,9 +71,9 @@ public class ScrapValidator {
         }
     }
 
-    public void validateSelfTeamScrap(final Long memberId, final Long teamId) {
-        if (teamScrapQueryAdapter.existsByMemberIdAndTeamId(memberId, teamId)) {
-            throw DuplicateTeamScrapException.EXCEPTION;
+    public void validateSelfTeamScrap(final Long memberId, final String teamName) {
+        if (teamScrapQueryAdapter.existsByMemberIdAndTeamName(memberId, teamName)) {
+            throw ForbiddenTeamScrapException.EXCEPTION;
         }
     }
 

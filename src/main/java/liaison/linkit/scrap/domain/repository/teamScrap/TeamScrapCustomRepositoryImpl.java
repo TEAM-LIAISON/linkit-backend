@@ -56,21 +56,6 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
 
     }
 
-    @Override
-    public boolean existsByTeamIdAndMemberId(final Long teamId, final Long memberId) {
-
-        QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
-
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qTeamScrap)
-                .where(qTeamScrap.team.id.eq(teamId)
-                        .and(qTeamScrap.member.id.eq(memberId)))
-                .fetchFirst();
-
-        return count != null;
-
-    }
 
     @Override
     public boolean existsByMemberId(Long memberId) {
@@ -81,36 +66,6 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
                 .selectOne()
                 .from(qTeamScrap)
                 .where(qTeamScrap.member.id.eq(memberId))
-                .fetchFirst();
-
-        return count != null;
-
-    }
-
-    @Override
-    public boolean existsByTeamId(final Long teamId) {
-
-        QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
-
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qTeamScrap)
-                .where(qTeamScrap.team.id.eq(teamId))
-                .fetchFirst();
-
-        return count != null;
-
-    }
-
-    @Override
-    public boolean existsByTeamIds(final List<Long> teamIds) {
-
-        QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
-
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qTeamScrap)
-                .where(qTeamScrap.team.id.in(teamIds))
                 .fetchFirst();
 
         return count != null;
@@ -131,50 +86,26 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
 
     @Override
     @Transactional
-    public void deleteByMemberIdAndTeamId(final Long memberId, final Long teamId) {
+    public void deleteByMemberIdAndTeamName(final Long memberId, final String teamName) {
 
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
         jpaQueryFactory
                 .delete(qTeamScrap)
                 .where(qTeamScrap.member.id.eq(memberId)
-                        .and(qTeamScrap.team.id.eq(teamId)))
+                        .and(qTeamScrap.team.teamName.eq(teamName)))
                 .execute();
-        
+
     }
 
     @Override
-    @Transactional
-    public void deleteByTeamId(final Long teamId) {
-
-        QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
-
-        jpaQueryFactory
-                .delete(qTeamScrap)
-                .where(qTeamScrap.team.id.eq(teamId))
-                .execute();
-    }
-
-    @Override
-    @Transactional
-    public void deleteByTeamIds(final List<Long> teamIds) {
-
-        QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
-
-        jpaQueryFactory
-                .delete(qTeamScrap)
-                .where(qTeamScrap.team.id.in(teamIds))
-                .execute();
-    }
-
-    @Override
-    public boolean existsByMemberIdAndTeamId(final Long memberId, final Long teamId) {
+    public boolean existsByMemberIdAndTeamName(final Long memberId, final String teamName) {
 
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
         Integer count = jpaQueryFactory.selectOne().from(qTeamScrap)
                 .where(qTeamScrap.member.id.eq(memberId)
-                        .and(qTeamScrap.team.id.eq(teamId)))
+                        .and(qTeamScrap.team.teamName.eq(teamName)))
                 .fetchFirst();
 
         return count != null;

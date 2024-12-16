@@ -16,21 +16,12 @@ public interface TeamScrapCustomRepository {
             final Long teamId
     );
 
-    boolean existsByTeamIdAndMemberId(final Long teamId, final Long memberId);
 
     boolean existsByMemberId(final Long memberId);
 
-    boolean existsByTeamId(final Long teamMemberAnnouncementId);
-
-    boolean existsByTeamIds(final List<Long> teamMemberAnnouncementIds);
-
     void deleteByMemberId(final Long memberId);
 
-    void deleteByMemberIdAndTeamId(final Long memberId, final Long teamMemberAnnouncementId);
+    void deleteByMemberIdAndTeamName(final Long memberId, final String teamName);
 
-    void deleteByTeamId(final Long teamMemberAnnouncementId);
-
-    void deleteByTeamIds(final List<Long> teamMemberAnnouncementIds);
-
-    boolean existsByMemberIdAndTeamId(final Long memberId, final Long teamId);
+    boolean existsByMemberIdAndTeamName(final Long memberId, final String teamName);
 }
