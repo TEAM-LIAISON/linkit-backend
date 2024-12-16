@@ -20,8 +20,8 @@ public class TeamScrapQueryAdapter {
         return teamScrapRepository.findByTeamId(teamId)
                 .orElseThrow(() -> TeamScrapNotFoundException.EXCEPTION);
     }
-    
-    public boolean existsByMemberIdAndTeamId(final Long memberId, final Long teamId) {
-        return teamScrapRepository.existsByMemberIdAndTeamId(memberId, teamId);
+
+    public boolean existsByMemberIdAndTeamName(final Long memberId, final String teamName) {
+        return teamScrapRepository.existsByMemberIdAndTeamName(memberId, teamName);
     }
 }

@@ -127,7 +127,8 @@ public class TeamService {
         List<TeamCurrentState> teamCurrentStates = new ArrayList<>();
 
         for (String teamStateName : teamStateNames) {
-            // ProfileState 엔티티 조회
+            log.info("teamStateName = {}", teamStateName);
+            
             TeamState teamState = teamStateQueryAdapter.findByStateName(teamStateName);
 
             // ProfileCurrentState 엔티티 생성

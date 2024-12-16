@@ -108,7 +108,7 @@ public class LoginService {
                 ));
 
                 profileCommandAdapter.create(new Profile(
-                        null, member, null, false, 0, false, false, false, false, false, false, false, false, 0
+                        null, member, null, false, 0, false, false, false, false, false, false, false, false
                 ));
 
                 return member;

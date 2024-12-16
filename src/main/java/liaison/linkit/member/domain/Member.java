@@ -102,7 +102,7 @@ public class Member extends BaseDateTimeEntity {
         this.createMemberBasicInform = createMemberBasicInform;
     }
 
-    public void addPrivateScrapCount() {
+    public void addProfileScrapCount() {
         this.profileScrapCount += 1;
     }
 
@@ -110,7 +110,7 @@ public class Member extends BaseDateTimeEntity {
         this.teamScrapCount += 1;
     }
 
-    public void subPrivateScrapCount() {
+    public void subProfileScrapCount() {
         this.profileScrapCount -= 1;
     }
 

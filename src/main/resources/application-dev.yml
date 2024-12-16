@@ -56,6 +56,7 @@ spring:
             redirect-uri: http://localhost:3000/login/oauth2/callback/kakao
           google:
             redirect-uri: http://localhost:3000/login/oauth2/callback/google
+
   mvc:
     path match:
       matching-strategy: ant_path_matcher
@@ -87,6 +88,7 @@ logging:
 
 cors-allowed-origins:
   http://localhost:8080,
+  http://localhost:8081,
   http://localhost:3000,
   https://linkit.im,
   https://www.linkit.im,
