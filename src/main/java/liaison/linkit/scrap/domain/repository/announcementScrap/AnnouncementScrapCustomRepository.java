@@ -1,6 +1,6 @@
-package liaison.linkit.scrap.domain.repository.teamMemberAnnouncementScrap;
+package liaison.linkit.scrap.domain.repository.announcementScrap;
 
-public interface TeamMemberAnnouncementScrapCustomRepository {
+public interface AnnouncementScrapCustomRepository {
     void deleteByMemberIdAndTeamMemberAnnouncementId(final Long memberId, final Long teamMemberAnnouncementId);
 
     boolean existsByMemberIdAndTeamMemberAnnouncementId(final Long memberId, final Long teamMemberAnnouncementId);

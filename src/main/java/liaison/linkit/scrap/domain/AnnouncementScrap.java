@@ -24,7 +24,7 @@ import org.springframework.data.annotation.CreatedDate;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class TeamMemberAnnouncementScrap {
+public class AnnouncementScrap {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -41,5 +41,5 @@ public class TeamMemberAnnouncementScrap {
     @Column(updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
-    
+
 }

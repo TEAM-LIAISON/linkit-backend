@@ -6,17 +6,17 @@ import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.scrap.business.mapper.ProfileScrapMapper;
-import liaison.linkit.scrap.business.mapper.TeamMemberAnnouncementScrapMapper;
+import liaison.linkit.scrap.business.mapper.AnnouncementScrapMapper;
 import liaison.linkit.scrap.business.mapper.TeamScrapMapper;
-import liaison.linkit.scrap.domain.TeamMemberAnnouncementScrap;
+import liaison.linkit.scrap.domain.AnnouncementScrap;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapCommandAdapter;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
-import liaison.linkit.scrap.implement.teamMemberAnnouncement.TeamMemberAnnouncementScrapCommandAdapter;
+import liaison.linkit.scrap.implement.teamMemberAnnouncement.AnnouncementScrapCommandAdapter;
 import liaison.linkit.scrap.implement.teamMemberAnnouncement.TeamMemberAnnouncementScrapQueryAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapCommandAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
-import liaison.linkit.scrap.presentation.dto.teamMemberAnnouncementScrap.TeamMemberAnnouncementScrapResponseDTO;
-import liaison.linkit.scrap.presentation.dto.teamMemberAnnouncementScrap.TeamMemberAnnouncementScrapResponseDTO.AddTeamMemberAnnouncementScrap;
+import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO;
+import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO.AddTeamMemberAnnouncementScrap;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.implement.TeamQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
@@ -42,9 +42,9 @@ public class ScrapService {
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
     private final TeamScrapCommandAdapter teamScrapCommandAdapter;
 
-    private final TeamMemberAnnouncementScrapMapper teamMemberAnnouncementScrapMapper;
+    private final AnnouncementScrapMapper announcementScrapMapper;
     private final TeamMemberAnnouncementScrapQueryAdapter teamMemberAnnouncementScrapQueryAdapter;
-    private final TeamMemberAnnouncementScrapCommandAdapter teamMemberAnnouncementScrapCommandAdapter;
+    private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
 
     private final ProfileQueryAdapter profileQueryAdapter;
 
@@ -61,23 +61,23 @@ public class ScrapService {
         final Member member = memberQueryAdapter.findById(memberId);
         final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.findById(teamMemberAnnouncementId);
 
-        final TeamMemberAnnouncementScrap createdTeamMemberAnnouncementScrap = teamMemberAnnouncementScrapCommandAdapter.create(
-                new TeamMemberAnnouncementScrap(null, member, teamMemberAnnouncement, LocalDateTime.now()));
+        final AnnouncementScrap createdAnnouncementScrap = announcementScrapCommandAdapter.create(
+                new AnnouncementScrap(null, member, teamMemberAnnouncement, LocalDateTime.now()));
 
-        return teamMemberAnnouncementScrapMapper.toAddTeamMemberAnnouncementScrap(createdTeamMemberAnnouncementScrap);
+        return announcementScrapMapper.toAddTeamMemberAnnouncementScrap(createdAnnouncementScrap);
 
     }
 
-    
-    // 팀원 공고 스크랩 취소 메서드
-    public TeamMemberAnnouncementScrapResponseDTO.RemoveTeamMemberAnnouncementScrap cancelScrapToTeamMemberAnnouncement(final Long memberId, final Long teamMemberAnnouncementId) {
 
-        teamMemberAnnouncementScrapCommandAdapter.deleteByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
+    // 팀원 공고 스크랩 취소 메서드
+    public AnnouncementScrapResponseDTO.RemoveTeamMemberAnnouncementScrap cancelScrapToTeamMemberAnnouncement(final Long memberId, final Long teamMemberAnnouncementId) {
+
+        announcementScrapCommandAdapter.deleteByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
 
         final Member member = memberQueryAdapter.findById(memberId);
         member.subTeamMemberAnnouncementScrapCount();
 
-        return teamMemberAnnouncementScrapMapper.toRemoveTeamMemberAnnouncementScrap();
+        return announcementScrapMapper.toRemoveTeamMemberAnnouncementScrap();
 
     }
 }

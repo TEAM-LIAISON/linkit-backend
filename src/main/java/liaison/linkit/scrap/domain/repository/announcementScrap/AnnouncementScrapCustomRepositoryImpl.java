@@ -1,4 +1,4 @@
-package liaison.linkit.scrap.domain.repository.teamMemberAnnouncementScrap;
+package liaison.linkit.scrap.domain.repository.announcementScrap;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.scrap.domain.QTeamMemberAnnouncementScrap;
@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
-public class TeamMemberAnnouncementScrapCustomRepositoryImpl implements TeamMemberAnnouncementScrapCustomRepository {
+public class AnnouncementScrapCustomRepositoryImpl implements AnnouncementScrapCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

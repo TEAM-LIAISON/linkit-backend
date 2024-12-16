@@ -14,7 +14,7 @@ public class ScrapController {
 //    // 팀원 공고 스크랩하기
 //    @PostMapping("/announcement/{teamMemberAnnouncementId}")
 //    @MemberOnly
-//    public CommonResponse<TeamMemberAnnouncementScrapResponseDTO.AddTeamMemberAnnouncementScrap> createScrapToTeamMemberAnnouncement(
+//    public CommonResponse<AnnouncementScrapResponseDTO.AddTeamMemberAnnouncementScrap> createScrapToTeamMemberAnnouncement(
 //            @Auth final Accessor accessor, @PathVariable final Long teamMemberAnnouncementId
 //    ) {
 //        scrapValidator.validateMemberMaxTeamMemberAnnouncementScrap(accessor.getMemberId());
@@ -25,7 +25,7 @@ public class ScrapController {
 //    // 팀원 공고 스크랩 취소
 //    @DeleteMapping("/announcement/{teamMemberAnnouncementId}")
 //    @MemberOnly
-//    public CommonResponse<TeamMemberAnnouncementScrapResponseDTO.RemoveTeamMemberAnnouncementScrap> cancelScrapToTeamMemberAnnouncement(
+//    public CommonResponse<AnnouncementScrapResponseDTO.RemoveTeamMemberAnnouncementScrap> cancelScrapToTeamMemberAnnouncement(
 //            @Auth final Accessor accessor, @PathVariable final Long teamMemberAnnouncementId
 //    ) {
 //        return CommonResponse.onSuccess(scrapService.cancelScrapToTeamMemberAnnouncement(accessor.getMemberId(), teamMemberAnnouncementId));
