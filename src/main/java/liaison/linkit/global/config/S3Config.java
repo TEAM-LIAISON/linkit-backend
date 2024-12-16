@@ -29,6 +29,9 @@ public class S3Config {
         log.info("Creating AmazonS3Client with secret key: {}", secretKey);
         BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
+        log.info("region: {}", region);
+        log.info("credentials: {}", credentials);
+
         return AmazonS3ClientBuilder.standard()
                 .withRegion(region)
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
