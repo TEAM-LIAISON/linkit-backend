@@ -58,8 +58,6 @@ public class Profile extends BaseEntity {
     private boolean isProfileLicense;
     private boolean isProfileLink;
 
-    private int profileScrapCount;
-
     public void setIsProfilePublic(final boolean isProfilePublic) {
         this.isProfilePublic = isProfilePublic;
     }
@@ -98,14 +96,6 @@ public class Profile extends BaseEntity {
 
     public void updateProfileImagePath(final String profileImagePath) {
         this.profileImagePath = profileImagePath;
-    }
-
-    public void addProfileScrapCount() { // 프로필에 대한 스크랩 증가
-        this.profileScrapCount += 1;
-    }
-
-    public void removeProfileScrapCount() { // 프로필에 대한 스크랩 감소
-        this.profileScrapCount -= 1;
     }
 
     // 보유 스킬
