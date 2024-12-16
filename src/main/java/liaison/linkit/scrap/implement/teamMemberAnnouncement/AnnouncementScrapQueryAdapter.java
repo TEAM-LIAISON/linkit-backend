@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Adapter
 @RequiredArgsConstructor
-public class TeamMemberAnnouncementScrapQueryAdapter {
+public class AnnouncementScrapQueryAdapter {
     private final AnnouncementScrapRepository teamMemberAnnouncementScrapRepository;
 
     public boolean existsByMemberIdAndTeamMemberAnnouncementId(final Long memberId, final Long teamMemberAnnouncementId) {

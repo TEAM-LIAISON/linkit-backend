@@ -2,14 +2,14 @@ package liaison.linkit.scrap.validation;
 
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.scrap.exception.announcementScrap.ForbiddenAnnouncementScrapException;
 import liaison.linkit.scrap.exception.profileScrap.ForbiddenProfileScrapException;
 import liaison.linkit.scrap.exception.profileScrap.ProfileScrapManyRequestException;
-import liaison.linkit.scrap.exception.teamMemberAnnouncementScrap.DuplicateTeamMemberAnnouncementScrapException;
-import liaison.linkit.scrap.exception.teamMemberAnnouncementScrap.TeamMemberAnnouncementScrapManyRequestException;
+import liaison.linkit.scrap.exception.announcementScrap.AnnouncementScrapManyRequestException;
 import liaison.linkit.scrap.exception.teamScrap.ForbiddenTeamScrapException;
 import liaison.linkit.scrap.exception.teamScrap.TeamScrapManyRequestException;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
-import liaison.linkit.scrap.implement.teamMemberAnnouncement.TeamMemberAnnouncementScrapQueryAdapter;
+import liaison.linkit.scrap.implement.teamMemberAnnouncement.AnnouncementScrapQueryAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class ScrapValidator {
 
     private final ProfileScrapQueryAdapter profileScrapQueryAdapter;
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
-    private final TeamMemberAnnouncementScrapQueryAdapter teamMemberAnnouncementScrapQueryAdapter;
+    private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
 
     // 프로필 스크랩 최대 개수 판단 메서드
     public void validateMemberMaxProfileScrap(final Long memberId) {
@@ -59,7 +59,7 @@ public class ScrapValidator {
 
         // 팀원 공고 스크랩 최대 개수 에러코드 반환
         if (memberTeamMemberAnnouncementScrapCount >= 8) {
-            throw TeamMemberAnnouncementScrapManyRequestException.EXCEPTION;
+            throw AnnouncementScrapManyRequestException.EXCEPTION;
         }
 
     }
@@ -78,8 +78,8 @@ public class ScrapValidator {
     }
 
     public void validateSelfTeamMemberAnnouncementScrap(final Long memberId, final Long teamMemberAnnouncementId) {
-        if (teamMemberAnnouncementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId)) {
-            throw DuplicateTeamMemberAnnouncementScrapException.EXCEPTION;
+        if (announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId)) {
+            throw ForbiddenAnnouncementScrapException.EXCEPTION;
         }
     }
 

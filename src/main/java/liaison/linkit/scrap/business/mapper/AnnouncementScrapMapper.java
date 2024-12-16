@@ -1,24 +1,19 @@
 package liaison.linkit.scrap.business.mapper;
 
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.scrap.domain.AnnouncementScrap;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO;
+import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO.UpdateAnnouncementScrap;
 
 @Mapper
 public class AnnouncementScrapMapper {
-
-    public AnnouncementScrapResponseDTO.AddTeamMemberAnnouncementScrap toAddTeamMemberAnnouncementScrap(
-            final AnnouncementScrap announcementScrap
+    public AnnouncementScrapResponseDTO.UpdateAnnouncementScrap toUpdateAnnouncementScrap(
+            final Long teamMemberAnnouncementId,
+            final boolean changeScrapValue
     ) {
-        return AnnouncementScrapResponseDTO.AddTeamMemberAnnouncementScrap
-                .builder()
-                .createdAt(announcementScrap.getCreatedAt())
+        return UpdateAnnouncementScrap.builder()
+                .teamMemberAnnouncementId(teamMemberAnnouncementId)
+                .isAnnouncementScrap(changeScrapValue)
                 .build();
     }
 
-    public AnnouncementScrapResponseDTO.RemoveTeamMemberAnnouncementScrap toRemoveTeamMemberAnnouncementScrap() {
-        return AnnouncementScrapResponseDTO.RemoveTeamMemberAnnouncementScrap
-                .builder()
-                .build();
-    }
 }

@@ -2,20 +2,17 @@ package liaison.linkit.scrap.business;
 
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.profile.domain.profile.Profile;
-import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.scrap.business.mapper.AnnouncementScrapMapper;
-import liaison.linkit.scrap.business.mapper.ProfileScrapMapper;
-import liaison.linkit.scrap.domain.ProfileScrap;
+import liaison.linkit.scrap.domain.AnnouncementScrap;
+import liaison.linkit.scrap.exception.announcementScrap.BadRequestAnnouncementScrapException;
 import liaison.linkit.scrap.exception.profileScrap.BadRequestProfileScrapException;
-import liaison.linkit.scrap.implement.profileScrap.ProfileScrapCommandAdapter;
-import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.scrap.implement.teamMemberAnnouncement.AnnouncementScrapCommandAdapter;
+import liaison.linkit.scrap.implement.teamMemberAnnouncement.AnnouncementScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapRequestDTO.UpdateAnnouncementScrapRequest;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO;
-import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapRequestDTO.UpdateProfileScrapRequest;
-import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapResponseDTO;
 import liaison.linkit.scrap.validation.ScrapValidator;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AnnouncementScrapService {
 
     private final MemberQueryAdapter memberQueryAdapter;
-    private final ProfileQueryAdapter profileQueryAdapter;
+    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
     private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
 
@@ -42,36 +39,36 @@ public class AnnouncementScrapService {
 
         boolean shouldAddScrap = updateAnnouncementScrapRequest.isChangeScrapValue();
 
-        scrapValidator.validateSelfProfileScrap(memberId, emailId);     // 자기 자신의 프로필 선택에 대한 예외 처리
-        scrapValidator.validateMemberMaxProfileScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
+        scrapValidator.validateSelfTeamMemberAnnouncementScrap(memberId, teamMemberAnnouncementId);     // 자기 자신의 프로필 선택에 대한 예외 처리
+        scrapValidator.validateMemberMaxTeamMemberAnnouncementScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
 
-        boolean scrapExists = profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, emailId);
+        boolean scrapExists = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
 
         if (scrapExists) {
-            handleExistingScrap(memberId, emailId, shouldAddScrap);
+            handleExistingScrap(memberId, teamMemberAnnouncementId, shouldAddScrap);
         } else {
-            handleNonExistingScrap(memberId, emailId, shouldAddScrap);
+            handleNonExistingScrap(memberId, teamMemberAnnouncementId, shouldAddScrap);
         }
 
-        return profileScrapMapper.toUpdateProfileScrap(emailId, shouldAddScrap);
+        return announcementScrapMapper.toUpdateAnnouncementScrap(teamMemberAnnouncementId, shouldAddScrap);
     }
 
     // 스크랩이 존재하는 경우 처리 메서드
-    private void handleExistingScrap(Long memberId, String emailId, boolean shouldAddScrap) {
+    private void handleExistingScrap(Long memberId, Long teamMemberAnnouncementId, boolean shouldAddScrap) {
         if (!shouldAddScrap) {
-            profileScrapCommandAdapter.deleteByMemberIdAndEmailId(memberId, emailId);
+            announcementScrapCommandAdapter.deleteByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
         } else {
-            throw BadRequestProfileScrapException.EXCEPTION;
+            throw BadRequestAnnouncementScrapException.EXCEPTION;
         }
     }
 
     // 스크랩이 존재하지 않는 경우 처리 메서드
-    private void handleNonExistingScrap(Long memberId, String emailId, boolean shouldAddScrap) {
+    private void handleNonExistingScrap(Long memberId, Long teamMemberAnnouncementId, boolean shouldAddScrap) {
         if (shouldAddScrap) {
             Member member = memberQueryAdapter.findById(memberId);
-            Profile profile = profileQueryAdapter.findByEmailId(emailId);
-            ProfileScrap profileScrap = new ProfileScrap(null, member, profile);
-            profileScrapCommandAdapter.addProfileScrap(profileScrap);
+            TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.findById(teamMemberAnnouncementId);
+            AnnouncementScrap announcementScrap = new AnnouncementScrap(null, member, teamMemberAnnouncement);
+            announcementScrapCommandAdapter.addAnnouncementScrap(announcementScrap);
         } else {
             throw BadRequestProfileScrapException.EXCEPTION;
         }

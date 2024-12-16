@@ -11,7 +11,7 @@ public class AnnouncementScrapCommandAdapter {
     private final AnnouncementScrapRepository teamMemberAnnouncementScrapRepository;
 
 
-    public AnnouncementScrap create(final AnnouncementScrap announcementScrap) {
+    public AnnouncementScrap addAnnouncementScrap(final AnnouncementScrap announcementScrap) {
         return teamMemberAnnouncementScrapRepository.save(announcementScrap);
     }
 

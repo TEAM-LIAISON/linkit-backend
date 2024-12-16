@@ -1,7 +1,7 @@
 package liaison.linkit.scrap.domain.repository.announcementScrap;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import liaison.linkit.scrap.domain.QTeamMemberAnnouncementScrap;
+import liaison.linkit.scrap.domain.QAnnouncementScrap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,11 +14,11 @@ public class AnnouncementScrapCustomRepositoryImpl implements AnnouncementScrapC
     @Override
     public void deleteByMemberIdAndTeamMemberAnnouncementId(final Long memberId, final Long teamMemberAnnouncementId) {
 
-        QTeamMemberAnnouncementScrap qTeamMemberAnnouncementScrap = QTeamMemberAnnouncementScrap.teamMemberAnnouncementScrap;
+        QAnnouncementScrap qAnnouncementScrap = QAnnouncementScrap.announcementScrap;
 
-        jpaQueryFactory.delete(qTeamMemberAnnouncementScrap)
-                .where(qTeamMemberAnnouncementScrap.member.id.eq(memberId)
-                        .and(qTeamMemberAnnouncementScrap.teamMemberAnnouncement.id.eq(teamMemberAnnouncementId)))
+        jpaQueryFactory.delete(qAnnouncementScrap)
+                .where(qAnnouncementScrap.member.id.eq(memberId)
+                        .and(qAnnouncementScrap.teamMemberAnnouncement.id.eq(teamMemberAnnouncementId)))
                 .execute();
 
     }
@@ -26,13 +26,13 @@ public class AnnouncementScrapCustomRepositoryImpl implements AnnouncementScrapC
     @Override
     public boolean existsByMemberIdAndTeamMemberAnnouncementId(final Long memberId, final Long teamMemberAnnouncementId) {
 
-        QTeamMemberAnnouncementScrap qTeamMemberAnnouncementScrap = QTeamMemberAnnouncementScrap.teamMemberAnnouncementScrap;
+        QAnnouncementScrap qAnnouncementScrap = QAnnouncementScrap.announcementScrap;
 
         Integer count = jpaQueryFactory
                 .selectOne()
-                .from(qTeamMemberAnnouncementScrap)
-                .where(qTeamMemberAnnouncementScrap.member.id.eq(memberId)
-                        .and(qTeamMemberAnnouncementScrap.teamMemberAnnouncement.id.eq(teamMemberAnnouncementId)))
+                .from(qAnnouncementScrap)
+                .where(qAnnouncementScrap.member.id.eq(memberId)
+                        .and(qAnnouncementScrap.teamMemberAnnouncement.id.eq(teamMemberAnnouncementId)))
                 .fetchFirst();
 
         return count != null;
