@@ -5,8 +5,6 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.scrap.business.ScrapService;
-import liaison.linkit.scrap.presentation.dto.privateScrap.PrivateScrapResponseDTO.AddPrivateScrap;
-import liaison.linkit.scrap.presentation.dto.privateScrap.PrivateScrapResponseDTO.RemovePrivateScrap;
 import liaison.linkit.scrap.presentation.dto.teamMemberAnnouncementScrap.TeamMemberAnnouncementScrapResponseDTO;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapResponseDTO.AddTeamScrap;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapResponseDTO.RemoveTeamScrap;
@@ -27,15 +25,6 @@ public class ScrapController {
 
     public final ScrapService scrapService;
     public final ScrapValidator scrapValidator;
-
-    // 프로필 스크랩하기
-    @PostMapping("/profile/{profileId}")
-    @MemberOnly
-    public CommonResponse<AddPrivateScrap> createScrapToPrivateProfile(@Auth final Accessor accessor, @PathVariable final Long profileId) {
-        scrapValidator.validateMemberMaxPrivateScrap(accessor.getMemberId());
-        scrapValidator.validateSelfPrivateScrap(accessor.getMemberId(), profileId);
-        return CommonResponse.onSuccess(scrapService.createScrapToPrivateProfile(accessor.getMemberId(), profileId));
-    }
 
     // 팀 스크랩하기
     @PostMapping("/team/{teamId}")
@@ -58,13 +47,6 @@ public class ScrapController {
         scrapValidator.validateMemberMaxTeamMemberAnnouncementScrap(accessor.getMemberId());
         scrapValidator.validateSelfTeamMemberAnnouncementScrap(accessor.getMemberId(), teamMemberAnnouncementId);
         return CommonResponse.onSuccess(scrapService.createScrapToTeamMemberAnnouncement(accessor.getMemberId(), teamMemberAnnouncementId));
-    }
-
-    // 프로필 스크랩 취소
-    @DeleteMapping("/profile/{profileId}")
-    @MemberOnly
-    public CommonResponse<RemovePrivateScrap> removeScrapToPrivateProfile(@Auth final Accessor accessor, @PathVariable final Long profileId) {
-        return CommonResponse.onSuccess(scrapService.cancelScrapToPrivateProfile(accessor.getMemberId(), profileId));
     }
 
     // 팀 스크랩 취소

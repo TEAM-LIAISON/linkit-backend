@@ -34,7 +34,7 @@ spring:
         use_sql_comments: false
         default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
 
   security:
     oauth2:

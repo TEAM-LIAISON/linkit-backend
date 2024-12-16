@@ -90,6 +90,6 @@ cors-allowed-origins:
   http://localhost:3000,
   https://linkit.im,
   https://www.linkit.im,
-  https://liaison-dev.site,
+  https://liaison-dev.site
   https://www.liaison-dev.site,
   https://linkit-dev.vercel.app

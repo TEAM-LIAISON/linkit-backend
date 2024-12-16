@@ -55,7 +55,7 @@ public class Member extends BaseDateTimeEntity {
     private boolean createMemberBasicInform;
 
     @Column(nullable = false)
-    private int privateScrapCount;
+    private int profileScrapCount;
 
     @Column(nullable = false)
     private int teamScrapCount;
@@ -82,7 +82,7 @@ public class Member extends BaseDateTimeEntity {
         this.memberState = ACTIVE;
         this.memberBasicInform = memberBasicInform;
         this.createMemberBasicInform = false;
-        this.privateScrapCount = 0;
+        this.profileScrapCount = 0;
         this.teamScrapCount = 0;
         this.teamMemberAnnouncementScrapCount = 0;
         this.platform = platform;
@@ -103,7 +103,7 @@ public class Member extends BaseDateTimeEntity {
     }
 
     public void addPrivateScrapCount() {
-        this.privateScrapCount += 1;
+        this.profileScrapCount += 1;
     }
 
     public void addTeamScrapCount() {
@@ -111,7 +111,7 @@ public class Member extends BaseDateTimeEntity {
     }
 
     public void subPrivateScrapCount() {
-        this.privateScrapCount -= 1;
+        this.profileScrapCount -= 1;
     }
 
     public void subTeamScrapCount() {

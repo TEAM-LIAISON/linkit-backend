@@ -3,7 +3,7 @@
 //import liaison.linkit.member.domain.repository.member.MemberRepository;
 //import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 //import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
-//import liaison.linkit.scrap.domain.repository.privateScrap.PrivateScrapRepository;
+//import liaison.linkit.scrap.domain.repository.privateScrap.ProfileScrapRepository;
 //import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
 //import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 //import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@
 //
 //    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
 //
-//    private final PrivateScrapRepository privateScrapRepository;
+//    private final ProfileScrapRepository privateScrapRepository;
 //    private final TeamScrapRepository teamScrapRepository;
 //
 //    // 개인 미니 프로필 (페이지) 조회
