@@ -20,10 +20,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: set up TimeZone
-        run: |
-          sudo timedatectl set-timezone Asia/Seoul
-
       - name: Gradle Caching
         uses: actions/cache@v3
         with:
@@ -39,7 +35,7 @@ jobs:
 
       - name: Build Project with Gradle
         run: |
-          echo ${{ secrets.APPLICATION_SECRET_DEV }} | base64 --decode > ./src/main/resources/application-secret-dev.yml
+          echo ${{ secrets.APPLICATION_SECRET_DEV }} | base64 --decode >> ./src/main/resources/application-secret-dev.yml
           ./gradlew bootJar
 
       - name: Login DockerHub
@@ -116,4 +112,3 @@ jobs:
           script: |
             sudo docker stop ${{ env.CURRENT_UPSTREAM }}
             sudo docker rm ${{ env.CURRENT_UPSTREAM }}
-
