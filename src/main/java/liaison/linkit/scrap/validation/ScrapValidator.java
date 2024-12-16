@@ -2,13 +2,13 @@ package liaison.linkit.scrap.validation;
 
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.scrap.exception.privateScrap.DuplicatePrivateScrapException;
-import liaison.linkit.scrap.exception.privateScrap.PrivateScrapManyRequestException;
+import liaison.linkit.scrap.exception.profileScrap.ForbiddenProfileScrapException;
+import liaison.linkit.scrap.exception.profileScrap.ProfileScrapManyRequestException;
 import liaison.linkit.scrap.exception.teamMemberAnnouncementScrap.DuplicateTeamMemberAnnouncementScrapException;
 import liaison.linkit.scrap.exception.teamMemberAnnouncementScrap.TeamMemberAnnouncementScrapManyRequestException;
 import liaison.linkit.scrap.exception.teamScrap.DuplicateTeamScrapException;
 import liaison.linkit.scrap.exception.teamScrap.TeamScrapManyRequestException;
-import liaison.linkit.scrap.implement.privateScrap.PrivateScrapQueryAdapter;
+import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.scrap.implement.teamMemberAnnouncement.TeamMemberAnnouncementScrapQueryAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import lombok.RequiredArgsConstructor;
@@ -22,21 +22,20 @@ public class ScrapValidator {
 
     private final MemberQueryAdapter memberQueryAdapter;
 
-    private final PrivateScrapQueryAdapter privateScrapQueryAdapter;
+    private final ProfileScrapQueryAdapter profileScrapQueryAdapter;
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
     private final TeamMemberAnnouncementScrapQueryAdapter teamMemberAnnouncementScrapQueryAdapter;
 
     // 프로필 스크랩 최대 개수 판단 메서드
-    public void validateMemberMaxPrivateScrap(final Long memberId) {
+    public void validateMemberMaxProfileScrap(final Long memberId) {
 
         final Member member = memberQueryAdapter.findById(memberId);
-        final int memberPrivateScrapCount = member.getPrivateScrapCount();
+        final int memberProfileScrapCount = member.getProfileScrapCount();
 
         // 프로필 스크랩 최대 개수 에러코드 반환
-        if (memberPrivateScrapCount >= 8) {
-            throw PrivateScrapManyRequestException.EXCEPTION;
+        if (memberProfileScrapCount > 8) {
+            throw ProfileScrapManyRequestException.EXCEPTION;
         }
-
     }
 
     // 팀 스크랩 최대 개수 판단 메서드
@@ -65,9 +64,10 @@ public class ScrapValidator {
 
     }
 
-    public void validateSelfPrivateScrap(final Long memberId, final Long profileId) {
-        if (privateScrapQueryAdapter.existsByMemberIdAndProfileId(memberId, profileId)) {
-            throw DuplicatePrivateScrapException.EXCEPTION;
+    // 자신의 프로필에 대한 스크랩을 하지 못한다.
+    public void validateSelfProfileScrap(final Long memberId, final String emailId) {
+        if (profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, emailId)) {
+            throw ForbiddenProfileScrapException.EXCEPTION;
         }
     }
 

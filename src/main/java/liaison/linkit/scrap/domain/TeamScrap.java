@@ -30,10 +30,12 @@ public class TeamScrap {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    // 스크랩 주체 회원
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
+    // 스크랩 대상 팈
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "team_id")
     private Team team;

@@ -44,9 +44,9 @@ public class QMember extends EntityPathBase<Member> {
 
     public final EnumPath<liaison.linkit.member.domain.type.Platform> platform = createEnum("platform", liaison.linkit.member.domain.type.Platform.class);
 
-    public final NumberPath<Integer> privateScrapCount = createNumber("privateScrapCount", Integer.class);
-
     public final liaison.linkit.profile.domain.profile.QProfile profile;
+
+    public final NumberPath<Integer> profileScrapCount = createNumber("profileScrapCount", Integer.class);
 
     public final StringPath socialLoginId = createString("socialLoginId");
 

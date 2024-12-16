@@ -1,4 +1,4 @@
-package liaison.linkit.scrap.exception.privateScrap;
+package liaison.linkit.scrap.exception.profileScrap;
 
 import liaison.linkit.common.exception.BaseCodeException;
 
@@ -6,6 +6,6 @@ public class PrivateScrapNotFoundException extends BaseCodeException {
     public static BaseCodeException EXCEPTION = new PrivateScrapNotFoundException();
 
     private PrivateScrapNotFoundException() {
-        super(PrivateScrapErrorCode.PRIVATE_SCRAP_NOT_FOUND);
+        super(ProfileScrapErrorCode.PROFILE_SCRAP_NOT_FOUND);
     }
 }

@@ -29,11 +29,11 @@ public class NaverOauthProvider implements OauthProvider {
     protected final String userUri;
 
     public NaverOauthProvider(
-            @Value("${NAVER_CLIENT_ID}") final String clientId,
-            @Value("${NAVER_CLIENT_SECRET}") final String clientSecret,
-            @Value("${NAVER_REDIRECT_URL}") String redirectUri,
-            @Value("${NAVER_TOKEN_URI}") String tokenUri,
-            @Value("${NAVER_USER_INFO_URI}") String userUri
+            @Value("${spring.security.oauth2.client.registration.naver.client-id}") final String clientId,
+            @Value("${spring.security.oauth2.client.registration.naver.client-secret}") final String clientSecret,
+            @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}") String redirectUri,
+            @Value("${spring.security.oauth2.client.provider.naver.token-uri}") String tokenUri,
+            @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}") String userUri
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;

@@ -34,11 +34,12 @@ public class KakaoOauthProvider implements OauthProvider {
     protected final String userUri;
 
     public KakaoOauthProvider(
-            @Value("${KAKAO_CLIENT_ID}") final String clientId,
-            @Value("${KAKAO_CLIENT_SECRET}") final String clientSecret,
-            @Value("${KAKAO_REDIRECT_URL}") final String redirectUri,
+            @Value("${spring.security.oauth2.client.registration.kakao.client-id}") final String clientId,
+            @Value("${spring.security.oauth2.client.registration.kakao.client-secret}") final String clientSecret,
+            @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}") final String redirectUri,
             @Value("${spring.security.oauth2.client.provider.kakao.token-uri}") final String tokenUri,
             @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}") final String userUri
+
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -91,6 +92,7 @@ public class KakaoOauthProvider implements OauthProvider {
         params.add("client_secret", clientSecret);
         params.add("redirect_uri", redirectUri);
         params.add("grant_type", "authorization_code");
+        
         final HttpEntity<MultiValueMap<String, String>> accessTokenRequestEntity = new HttpEntity<>(params, headers);
 
         final ResponseEntity<OauthAccessToken> accessTokenResponse = restTemplate.exchange(
