@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @SpringBootApplication
 public class LinkitApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(LinkitApplication.class, args);
     }
