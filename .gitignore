@@ -46,7 +46,7 @@ src/main/resources/static/docs/
 /src/main/resources/application-secret.yml
 /src/main/resources/application-secret-dev.yml
 /src/main/resources/application-secret-prod.yml
-src/test/resources/*.yml
+/src/test/resources/*.yml
 
 ### .gitmessage.txt ###
 .gitmessage.txt
