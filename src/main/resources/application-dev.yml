@@ -34,17 +34,6 @@ spring:
     activate:
       on-profile: common
 
-  jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    properties:
-      hibernate:
-        format_sql: false
-        show_sql: false
-        default_batch_fetch_size: 100
-    hibernate:
-      ddl-auto: create
-
   security:
     oauth2:
       client:
@@ -55,6 +44,17 @@ spring:
             redirect-uri: https://liaison-dev.site/login/oauth2/callback/kakao
           google:
             redirect-uri: http://localhost:3000/login/oauth2/callback/google
+
+  jpa:
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    properties:
+      hibernate:
+        format_sql: false
+        show_sql: false
+        default_batch_fetch_size: 100
+    hibernate:
+      ddl-auto: create
 
   mvc:
     path match:
@@ -81,6 +81,7 @@ spring:
       max-file-size: 2MB # 한개 파일의 최대 사이즈 (default: 1MB)
       max-request-size: 2MB # 한개 요청의 최대 사이즈 (default: 10MB)
 
+
 cors-allowed-origins:
   http://localhost:8080,
   http://localhost:8081,
@@ -90,3 +91,7 @@ cors-allowed-origins:
   https://liaison-dev.site
   https://www.liaison-dev.site,
   https://linkit-dev.vercel.app
+
+logging:
+  level:
+    root: debug
