@@ -70,4 +70,17 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .where(qTeamMember.member.id.eq(memberId))
                 .fetch();
     }
+
+    @Override
+    public List<Team> getAllTeamsByMemberId(final Long memberId) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+        QTeam qTeam = QTeam.team;
+
+        return jpaQueryFactory
+                .select(qTeam)
+                .from(qTeamMember)
+                .join(qTeamMember.team, qTeam)
+                .where(qTeamMember.member.id.eq(memberId))
+                .fetch();
+    }
 }

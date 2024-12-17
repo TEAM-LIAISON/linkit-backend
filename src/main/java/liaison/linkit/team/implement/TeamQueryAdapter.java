@@ -28,6 +28,4 @@ public class TeamQueryAdapter {
     public List<TeamCurrentState> findTeamCurrentStatesByTeamId(final Long teamId) {
         return teamCurrentStateRepository.findTeamCurrentStatesByTeamId(teamId);
     }
-
-
 }

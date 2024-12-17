@@ -12,10 +12,6 @@ import lombok.RequiredArgsConstructor;
 public class TeamMemberQueryAdapter {
     private final TeamMemberRepository teamMemberRepository;
 
-    public boolean existsTeamMemberByMemberIdAndTeamId(final Long memberId, final Long teamId) {
-        return teamMemberRepository.existsTeamMemberByMemberIdAndTeamId(memberId, teamId);
-    }
-
     public List<TeamMember> getTeamMembers(final Long teamId) {
         return teamMemberRepository.getTeamMembers(teamId);
     }
@@ -30,5 +26,9 @@ public class TeamMemberQueryAdapter {
 
     public List<Team> getAllTeamByMemberId(final Long memberId) {
         return teamMemberRepository.getAllTeamByMemberId(memberId);
+    }
+
+    public List<Team> getAllTeamsByMemberId(final Long memberId) {
+        return teamMemberRepository.getAllTeamsByMemberId(memberId);
     }
 }

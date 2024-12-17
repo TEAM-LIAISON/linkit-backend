@@ -8,6 +8,7 @@ import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamItems;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 
 @Mapper
@@ -84,4 +85,11 @@ public class TeamMapper {
                 .build();
     }
 
+
+    public TeamResponseDTO.TeamItems toTeamItems(final List<TeamInformMenu> teamInformMenus) {
+        return TeamItems.builder()
+                .teamInformMenus(teamInformMenus)
+                .build();
+    }
+    
 }

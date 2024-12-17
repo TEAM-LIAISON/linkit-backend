@@ -14,4 +14,6 @@ public interface TeamMemberCustomRepository {
     boolean existsTeamByMemberId(final Long memberId);
 
     List<Team> getAllTeamByMemberId(final Long memberId);
+
+    List<Team> getAllTeamsByMemberId(final Long memberId);
 }

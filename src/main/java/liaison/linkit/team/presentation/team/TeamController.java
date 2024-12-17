@@ -69,4 +69,13 @@ public class TeamController {
     // 팀 삭제 요청
 
     // 팀 나가기 요청
+
+    // 나의 팀 조회
+    @GetMapping("/my/teams")
+    @MemberOnly
+    public CommonResponse<TeamResponseDTO.TeamItems> getTeamItems(
+            @Auth final Accessor accessor
+    ) {
+        return CommonResponse.onSuccess(teamService.getTeamItems(accessor.getMemberId()));
+    }
 }

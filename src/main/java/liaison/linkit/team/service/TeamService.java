@@ -128,7 +128,7 @@ public class TeamService {
 
         for (String teamStateName : teamStateNames) {
             log.info("teamStateName = {}", teamStateName);
-            
+
             TeamState teamState = teamStateQueryAdapter.findByStateName(teamStateName);
 
             // ProfileCurrentState 엔티티 생성
@@ -266,5 +266,32 @@ public class TeamService {
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, teamCurrentStateItems, teamScaleItem, regionDetail);
 
         return teamMapper.toTeamDetail(false, teamInformMenu);
+    }
+
+    public TeamResponseDTO.TeamItems getTeamItems(final Long memberId) {
+        final List<Team> teams = teamMemberQueryAdapter.getAllTeamsByMemberId(memberId);
+
+        final List<TeamInformMenu> teamInformMenus = new ArrayList<>();
+
+        for (Team team : teams) {
+            TeamScaleItem teamScaleItem = null;
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
+                final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+                teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+
+            RegionDetail regionDetail = new RegionDetail();
+            if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
+                final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+                regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+            }
+            log.info("팀 지역 정보 조회 성공");
+
+            TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(team, null, teamScaleItem, regionDetail);
+
+            teamInformMenus.add(teamInformMenu);
+        }
+
+        return teamMapper.toTeamItems(teamInformMenus);
     }
 }
