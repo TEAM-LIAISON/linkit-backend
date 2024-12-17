@@ -14,6 +14,16 @@ spring:
     activate:
       on-profile: local
 
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            redirect-uri: http://localhost:3000/login/oauth2/callback/naver
+          kakao:
+            redirect-uri: http://localhost:3000/login/oauth2/callback/kakao
+          google:
+            redirect-uri: http://localhost:3000/login/oauth2/callback/google
 server:
   port: 8080
 
@@ -35,17 +45,6 @@ spring:
         default_batch_fetch_size: 100
     hibernate:
       ddl-auto: create
-
-  security:
-    oauth2:
-      client:
-        registration:
-          naver:
-            redirect-uri: http://localhost:3000/login/oauth2/callback/naver
-          kakao:
-            redirect-uri: http://localhost:3000/login/oauth2/callback/kakao
-          google:
-            redirect-uri: http://localhost:3000/login/oauth2/callback/google
 
   mvc:
     path match:
