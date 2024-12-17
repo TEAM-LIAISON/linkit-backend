@@ -72,11 +72,6 @@ spring:
       max-file-size: 2MB # 한개 파일의 최대 사이즈 (default: 1MB)
       max-request-size: 2MB # 한개 요청의 최대 사이즈 (default: 10MB)
 
-
-logging:
-  level:
-    root: debug
-
 cors-allowed-origins:
   http://localhost:8080,
   http://localhost:3000,
