@@ -9,7 +9,7 @@ import liaison.linkit.scrap.exception.announcementScrap.AnnouncementScrapManyReq
 import liaison.linkit.scrap.exception.teamScrap.ForbiddenTeamScrapException;
 import liaison.linkit.scrap.exception.teamScrap.TeamScrapManyRequestException;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
-import liaison.linkit.scrap.implement.teamMemberAnnouncement.AnnouncementScrapQueryAdapter;
+import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

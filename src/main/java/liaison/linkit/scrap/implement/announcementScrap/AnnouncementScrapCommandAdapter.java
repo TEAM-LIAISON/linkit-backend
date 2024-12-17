@@ -1,4 +1,4 @@
-package liaison.linkit.scrap.implement.teamMemberAnnouncement;
+package liaison.linkit.scrap.implement.announcementScrap;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.scrap.domain.AnnouncementScrap;
