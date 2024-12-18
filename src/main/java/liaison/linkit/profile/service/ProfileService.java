@@ -143,7 +143,8 @@ public class ProfileService {
         final ProfileBooleanMenu profileBooleanMenu = profileMapper.toProfileBooleanMenu(profile);
         log.info("profileBooleanMenu = {}", profileBooleanMenu);
         final ProfileScrapMenu profileScrapMenu = profileMapper.toProfileScrapMenu(profile);
-
+        log.info("profileScrapMenu = {}", profileScrapMenu);
+        
         return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu, profileScrapMenu);
     }
 

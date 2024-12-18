@@ -251,7 +251,7 @@ class ProfileControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로필 링크 기입 여부"),
 
-                                        // profileBooleanMenu
+                                        // profileScrapMenu
                                         fieldWithPath("result.profileScrapMenu.profileScrapCount")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("프로필 전체 스크랩 개수")

@@ -8,9 +8,13 @@ import liaison.linkit.team.domain.repository.currentState.TeamCurrentStateReposi
 import liaison.linkit.team.domain.repository.team.TeamRepository;
 import liaison.linkit.team.exception.TeamNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Adapter
 @RequiredArgsConstructor
+@Slf4j
 public class TeamQueryAdapter {
 
     private final TeamRepository teamRepository;
@@ -27,5 +31,16 @@ public class TeamQueryAdapter {
 
     public List<TeamCurrentState> findTeamCurrentStatesByTeamId(final Long teamId) {
         return teamCurrentStateRepository.findTeamCurrentStatesByTeamId(teamId);
+    }
+
+    public Page<Team> findAllByFiltering(
+            List<String> scaleName,
+            Boolean isAnnouncement,
+            List<String> cityName,
+            List<String> teamStateName,
+            Pageable pageable
+    ) {
+        log.info("팀 필터링 요청 발생");
+        return teamRepository.findAllByFiltering(scaleName, isAnnouncement, cityName, teamStateName, pageable);
     }
 }
