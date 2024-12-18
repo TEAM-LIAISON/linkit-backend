@@ -1176,4 +1176,44 @@ include::{snippets}/team-history-controller-test/update-team-history/http-respon
 include::{snippets}/team-history-controller-test/update-team-history/response-fields.adoc[]
 ====
 
+== #[스크랩 - 프로필 스크랩]#
 
+=== 프로필 스크랩 및 스크랩 취소
+
+====
+*요청*
+include::{snippets}/profile-scrap-controller-test/update-profile-scrap/http-request.adoc[]
+include::{snippets}/profile-scrap-controller-test/update-profile-scrap/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/profile-scrap-controller-test/update-profile-scrap/http-response.adoc[]
+include::{snippets}/profile-scrap-controller-test/update-profile-scrap/response-fields.adoc[]
+====
+
+== #[스크랩 - 팀 스크랩]#
+
+=== 팀 스크랩 및 스크랩 취소
+
+====
+*요청*
+include::{snippets}/team-scrap-controller-test/update-team-scrap/http-request.adoc[]
+include::{snippets}/team-scrap-controller-test/update-team-scrap/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-scrap-controller-test/update-team-scrap/http-response.adoc[]
+include::{snippets}/team-scrap-controller-test/update-team-scrap/response-fields.adoc[]
+====
+
+== #[스크랩 - 팀원 공고 스크랩]#
+
+=== 팀원 공고 스크랩 및 스크랩 취소
+
+====
+*요청*
+include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap/http-request.adoc[]
+include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap/request-fields.adoc[]
+
+*응답*
+include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap/http-response.adoc[]
+include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap/response-fields.adoc[]
+====
