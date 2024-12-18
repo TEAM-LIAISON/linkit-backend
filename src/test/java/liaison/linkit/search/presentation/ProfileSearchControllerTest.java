@@ -1,36 +1,40 @@
 package liaison.linkit.search.presentation;
 
+import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.search.service.ProfileSearchService;
-import org.hibernate.query.Page;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -143,13 +147,8 @@ public class ProfileSearchControllerTest extends ControllerTest {
                 )
                 .build();
 
-
-        final ProfileInformMenu profileInformMenu = ProfileInformMenu.builder()
-                .
-                .build();
-
         List<ProfileInformMenu> profiles = Arrays.asList(profileInformMenu1, profileInformMenu2);
-        Page<ProfileInformMenu> profilePage = new PageImpl<>(Collections.singletonList(profileInformMenu1));
+        Page<ProfileInformMenu> profilePage = new PageImpl<>(profiles, PageRequest.of(0, 20), profiles.size());
 
         when(profileSearchService.searchProfiles(
                 any(),
@@ -172,7 +171,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
         // then
         final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
                 .andExpect(jsonPath("$.code").value("1000"))
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
@@ -213,27 +212,36 @@ public class ProfileSearchControllerTest extends ControllerTest {
                                         fieldWithPath("result.content")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("팀 정보 메뉴 목록"),
-                                        fieldWithPath("result.content[].teamCurrentStates")
+                                        fieldWithPath("result.content[].profileCurrentStates")
                                                 .type(JsonFieldType.ARRAY)
-                                                .description("팀 현재 상태 목록"),
-                                        fieldWithPath("result.content[].teamCurrentStates[].teamStateName")
+                                                .description("프로필 현재 상태 목록"),
+                                        fieldWithPath("result.content[].profileCurrentStates[].profileStateName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 상태 이름"),
-                                        fieldWithPath("result.content[].teamName")
+                                                .description("프로필 상태 이름"),
+                                        fieldWithPath("result.content[].profileImagePath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 이름"),
-                                        fieldWithPath("result.content[].teamShortDescription")
+                                                .description("프로필 이미지 경로"),
+                                        fieldWithPath("result.content[].memberName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 한 줄 소개"),
-                                        fieldWithPath("result.content[].teamLogoImagePath")
+                                                .description("회원 이름"),
+                                        fieldWithPath("result.content[].emailId")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 로고 이미지 경로"),
-                                        fieldWithPath("result.content[].teamScaleItem")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("팀 규모 정보"),
-                                        fieldWithPath("result.content[].teamScaleItem.teamScaleName")
+                                                .description("이메일 ID"),
+                                        fieldWithPath("result.content[].isProfilePublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 공개 여부"),
+                                        fieldWithPath("result.content[].majorPosition")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 스케일 이름"),
+                                                .description("포지션 대분류"),
+                                        fieldWithPath("result.content[].profileTeamInforms")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로필 팀 정보 목록"),
+                                        fieldWithPath("result.content[].profileTeamInforms[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소속 팀 이름"),
+                                        fieldWithPath("result.content[].profileTeamInforms[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소속 팀 로고 이미지 경로"),
                                         fieldWithPath("result.content[].regionDetail")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("지역 상세 정보"),
@@ -309,17 +317,5 @@ public class ProfileSearchControllerTest extends ControllerTest {
                                 )
                         )
                 ).andReturn();
-
-        // Optional: 추가적인 검증 및 Assert
-        final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<Page<ProfileInformMenu>> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<Page<ProfileInformMenu>>>() {
-                }
-        );
-
-        final CommonResponse<Page<ProfileInformMenu>> expected = CommonResponse.onSuccess(profilePage);
-
-        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }

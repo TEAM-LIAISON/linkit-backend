@@ -1176,6 +1176,21 @@ include::{snippets}/team-history-controller-test/update-team-history/http-respon
 include::{snippets}/team-history-controller-test/update-team-history/response-fields.adoc[]
 ====
 
+== #[팀원 찾기]#
+
+=== 팀원 찾기 (필터링 포함)
+
+====
+*요청*
+include::{snippets}/profile-search-controller-test/search-profiles/http-request.adoc[]
+include::{snippets}/profile-search-controller-test/search-profiles/query-parameters.adoc[]
+
+*응답*
+include::{snippets}/profile-search-controller-test/search-profiles/http-response.adoc[]
+include::{snippets}/profile-search-controller-test/search-profiles/response-fields.adoc[]
+
+====
+
 == #[스크랩 - 프로필 스크랩]#
 
 === 프로필 스크랩 및 스크랩 취소
