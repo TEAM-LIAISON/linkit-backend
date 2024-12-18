@@ -47,6 +47,9 @@ public class ProfileResponseDTO {
                 false,
                 false
         );
+
+        @Builder.Default
+        private ProfileScrapMenu profileScrapMenu = new ProfileScrapMenu();
     }
 
     @Builder
@@ -101,6 +104,14 @@ public class ProfileResponseDTO {
         private Boolean isProfileAwards;
         private Boolean isProfileLicense;
         private Boolean isProfileLink;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProfileScrapMenu {
+        private int profileScrapCount;
     }
 
     @Builder

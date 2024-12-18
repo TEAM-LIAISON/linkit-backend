@@ -13,6 +13,7 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.Profile
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileScrapMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
@@ -26,13 +27,24 @@ public class ProfileMapper {
     public ProfileResponseDTO.ProfileLeftMenu toProfileLeftMenu(
             final ProfileCompletionMenu profileCompletionMenu,
             final ProfileInformMenu profileInformMenu,
-            final ProfileBooleanMenu profileBooleanMenu
+            final ProfileBooleanMenu profileBooleanMenu,
+            final ProfileScrapMenu profileScrapMenu
     ) {
         return ProfileResponseDTO.ProfileLeftMenu
                 .builder()
                 .profileCompletionMenu(profileCompletionMenu)
                 .profileInformMenu(profileInformMenu)
                 .profileBooleanMenu(profileBooleanMenu)
+                .profileScrapMenu(profileScrapMenu)
+                .build();
+    }
+
+    public ProfileResponseDTO.ProfileScrapMenu toProfileScrapMenu(
+            final Profile profile
+    ) {
+        return ProfileScrapMenu
+                .builder()
+                .profileScrapCount(profile.getMember().getProfileScrapCount())
                 .build();
     }
 

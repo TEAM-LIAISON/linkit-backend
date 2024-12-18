@@ -51,6 +51,7 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.Profile
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileScrapMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
@@ -142,8 +143,9 @@ public class ProfileService {
         log.info("profileInformMenu = {}", profileInformMenu);
         final ProfileBooleanMenu profileBooleanMenu = profileMapper.toProfileBooleanMenu(profile);
         log.info("profileBooleanMenu = {}", profileBooleanMenu);
+        final ProfileScrapMenu profileScrapMenu = profileMapper.toProfileScrapMenu(profile);
 
-        return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu);
+        return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu, profileScrapMenu);
     }
 
     // 로그인한 사용자가 프로필을 조회한다.

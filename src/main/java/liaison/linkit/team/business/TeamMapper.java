@@ -69,6 +69,7 @@ public class TeamMapper {
                 .teamCurrentStates(teamCurrentStateItems)
                 .teamName(team.getTeamName())
                 .teamShortDescription(team.getTeamShortDescription())
+                .teamLogoImagePath(team.getTeamLogoImagePath())
                 .teamScaleItem(teamScaleItem)
                 .regionDetail(regionDetail)
                 .build();
@@ -91,5 +92,5 @@ public class TeamMapper {
                 .teamInformMenus(teamInformMenus)
                 .build();
     }
-    
+
 }
