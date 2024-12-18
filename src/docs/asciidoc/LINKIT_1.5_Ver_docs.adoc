@@ -835,6 +835,17 @@ include::{snippets}/team-controller-test/create-team/http-response.adoc[]
 include::{snippets}/team-controller-test/create-team/response-fields.adoc[]
 ====
 
+=== 팀 목록 조회
+
+====
+*요청*
+include::{snippets}/team-controller-test/get-teams/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-controller-test/get-teams/http-response.adoc[]
+include::{snippets}/team-controller-test/get-teams/response-fields.adoc[]
+====
+
 === 팀 기본 정보 수정
 
 ====

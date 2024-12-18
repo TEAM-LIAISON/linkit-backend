@@ -14,6 +14,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,6 +36,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.AddTeamResponse
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamDetail;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamItems;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
 import liaison.linkit.team.service.TeamService;
@@ -70,6 +72,14 @@ public class TeamControllerTest extends ControllerTest {
     private ResultActions performGetTeamDetail(final String teamName) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}", teamName)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performGetTeamItems() throws Exception {
+        return mockMvc.perform(
+                get("/api/v1/my/teams")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -555,5 +565,144 @@ public class TeamControllerTest extends ControllerTest {
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
 
+    }
+
+    @DisplayName("회원이 자신의 팀 목록을 조회한다.")
+    @Test
+    void getTeams() throws Exception {
+        // given
+        final TeamItems teamItems = TeamItems.builder()
+                .teamInformMenus(
+                        Arrays.asList(
+                                TeamInformMenu.builder()
+                                        .teamCurrentStates(
+                                                Arrays.asList(
+                                                        TeamCurrentStateItem.builder()
+                                                                .teamStateName("투자 유치 중")
+                                                                .build(),
+                                                        TeamCurrentStateItem.builder()
+                                                                .teamStateName("공모전 준비 중")
+                                                                .build()
+                                                )
+                                        )
+                                        .teamName("팀 이름")
+                                        .teamShortDescription("팀 한 줄 소개")
+                                        .teamLogoImagePath("팀 로고 이미지 경로")
+                                        .teamScaleItem(
+                                                TeamScaleItem.builder()
+                                                        .teamScaleName("1인")
+                                                        .build()
+                                        )
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("서울특별시")
+                                                        .divisionName("강남구")
+                                                        .build()
+                                        )
+                                        .build(),
+                                TeamInformMenu.builder()
+                                        .teamCurrentStates(
+                                                Arrays.asList(
+                                                        TeamCurrentStateItem.builder()
+                                                                .teamStateName("투자 유치 중")
+                                                                .build(),
+                                                        TeamCurrentStateItem.builder()
+                                                                .teamStateName("공모전 준비 중")
+                                                                .build()
+                                                )
+                                        )
+                                        .teamName("팀 이름")
+                                        .teamShortDescription("팀 한 줄 소개 2")
+                                        .teamLogoImagePath("팀 로고 이미지 경로 2")
+                                        .teamScaleItem(
+                                                TeamScaleItem.builder()
+                                                        .teamScaleName("2~5인")
+                                                        .build()
+                                        )
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("서울특별시")
+                                                        .divisionName("중랑구")
+                                                        .build()
+                                        )
+                                        .build()
+                        )
+                )
+                .build();
+
+        // when
+        when(teamService.getTeamItems(anyLong())).thenReturn(teamItems);
+
+        final ResultActions resultActions = performGetTeamItems();
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+
+                                        fieldWithPath("result.teamInformMenus")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("팀 정보 메뉴 목록"),
+                                        fieldWithPath("result.teamInformMenus[].teamCurrentStates")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("팀 현재 상태 목록"),
+                                        fieldWithPath("result.teamInformMenus[].teamCurrentStates[].teamStateName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 상태 이름"),
+                                        fieldWithPath("result.teamInformMenus[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 이름"),
+                                        fieldWithPath("result.teamInformMenus[].teamShortDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 한 줄 소개"),
+                                        fieldWithPath("result.teamInformMenus[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 로고 이미지 경로"),
+                                        fieldWithPath("result.teamInformMenus[].teamScaleItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("팀 규모 정보"),
+                                        fieldWithPath("result.teamInformMenus[].teamScaleItem.teamScaleName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 규모 이름"),
+                                        fieldWithPath("result.teamInformMenus[].regionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("지역 상세 정보"),
+                                        fieldWithPath("result.teamInformMenus[].regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("지역 시/도 이름"),
+                                        fieldWithPath("result.teamInformMenus[].regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("시/군/구 이름")
+                                )
+                        )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamItems> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<TeamItems>>() {
+                }
+        );
+
+        final CommonResponse<TeamItems> expected = CommonResponse.onSuccess(teamItems);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }
