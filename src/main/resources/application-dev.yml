@@ -41,9 +41,9 @@ spring:
           naver:
             redirect-uri: https://liaison-dev.site/login/oauth2/callback/naver
           kakao:
-            redirect-uri: http://localhost:3000/login/oauth2/callback/kakao
+            redirect-uri: https://liaison-dev.site/login/oauth2/callback/kakao
           google:
-            redirect-uri: http://localhost:3000/login/oauth2/callback/google
+            redirect-uri: https://liaison-dev.site/login/oauth2/callback/google
 
   jpa:
     database: mysql

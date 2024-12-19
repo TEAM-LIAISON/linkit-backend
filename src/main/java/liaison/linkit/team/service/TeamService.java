@@ -154,6 +154,9 @@ public class TeamService {
         // 팀 조회
         final Team team = teamQueryAdapter.findByTeamName(teamName);
 
+        // 팀 이름 업데이트
+        team.setTeamName(teamName);
+        
         // 팀 로고 이미지 처리
         if (teamLogoImage != null && !teamLogoImage.isEmpty()) {
             if (imageValidator.validatingImageUpload(teamLogoImage)) {
@@ -171,7 +174,7 @@ public class TeamService {
             }
         }
 
-        // 티미 규모 처리
+        // 팀 규모 처리
         if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
             teamScaleCommandAdapter.deleteAllByTeamId(team.getId());
         }
