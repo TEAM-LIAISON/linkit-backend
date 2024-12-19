@@ -68,10 +68,10 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 0 1.25rem; text-align: center;">
-                                        <img src="%s" alt="팀 로고" style="width: 4rem; height: 4rem; margin-bottom: 1rem;">
-                                        <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 1.25rem; font-weight: 600; margin: 0;">%s</p>
-                                    </td>
+                                  <td style="padding: 0 1.25rem; text-align: center;">
+                                      <img src="%s" alt="팀 로고" style="width: 4rem; height: 4rem; margin-bottom: 1rem; border-radius: 0.9375rem;">
+                                      <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 1.25rem; font-weight: 600; margin: 0;">%s</p>
+                                  </td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 1.875rem 1.25rem; text-align: center;">
