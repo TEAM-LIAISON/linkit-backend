@@ -106,7 +106,7 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
                         </tr>
                       </tbody>
                     </table>
-                """, teamName, teamName, teamLogoImagePath, teamName, "www.linkit.im");
+                """, teamName, teamName, teamLogoImagePath, teamName, "https://www.linkit.im");
 
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
         mimeMessage.setFrom(mailId);

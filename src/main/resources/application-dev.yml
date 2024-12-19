@@ -81,17 +81,6 @@ spring:
       max-file-size: 2MB # 한개 파일의 최대 사이즈 (default: 1MB)
       max-request-size: 2MB # 한개 요청의 최대 사이즈 (default: 10MB)
 
-
-cors-allowed-origins:
-  http://localhost:8080,
-  http://localhost:8081,
-  http://localhost:3000,
-  https://linkit.im,
-  https://www.linkit.im,
-  https://liaison-dev.site
-  https://www.liaison-dev.site,
-  https://linkit-dev.vercel.app
-
 logging:
   level:
     root: debug

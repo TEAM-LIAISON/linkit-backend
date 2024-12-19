@@ -45,4 +45,6 @@ public class TeamMemberController {
     ) throws Exception {
         return CommonResponse.onSuccess(teamMemberService.addTeamMember(accessor.getMemberId(), teamName, addTeamMemberRequest));
     }
+
+    
 }
