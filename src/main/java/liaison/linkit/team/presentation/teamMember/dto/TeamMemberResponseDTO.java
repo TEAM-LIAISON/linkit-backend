@@ -39,8 +39,9 @@ public class TeamMemberResponseDTO {
         private RegionDetail regionDetail = new RegionDetail();
     }
 
-    @Builder
+
     @Getter
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddTeamMemberResponse {

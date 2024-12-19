@@ -1047,6 +1047,21 @@ include::{snippets}/team-member-announcement-controller-test/update-team-member-
 
 ====
 
+== #[팀 - 팀 구성원]#
+
+=== 팀 구성원 1명 초대
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/add-team-member/http-request.adoc[]
+include::{snippets}/team-member-controller-test/add-team-member/path-parameters.adoc[]
+include::{snippets}/team-member-controller-test/add-team-member/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/add-team-member/http-response.adoc[]
+include::{snippets}/team-member-controller-test/add-team-member/response-fields.adoc[]
+====
+
 == #[팀 - 팀 프로덕트]#
 
 === 팀 프로덕트 전체 조회

@@ -32,14 +32,18 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
         }
     }
 
-    private MimeMessage createTeamMemberInvitationMail(final String teamMemberInvitationEmail, final String teamLogoImagePath, final String teamName) throws MessagingException {
+    private MimeMessage createTeamMemberInvitationMail(
+            final String teamMemberInvitationEmail,
+            final String teamLogoImagePath,
+            final String teamName
+    ) throws MessagingException {
         final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, teamMemberInvitationEmail);
-        mimeMessage.setSubject("[링킷] 이메일 변경 인증 코드 발송");
+        mimeMessage.setSubject("[링킷] 팀원 초대 코드 발송");
 
         final String msgg = String.format("""
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%%" style="border-collapse:collapse; background-color: #ffffff;"></table>
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%%" style="border-collapse:collapse; background-color: #ffffff;">
                         <tbody>
                           <tr>
                             <td>
