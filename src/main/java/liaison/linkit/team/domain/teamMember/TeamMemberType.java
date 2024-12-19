@@ -1,4 +1,4 @@
-package liaison.linkit.global.type;
+package liaison.linkit.team.domain.teamMember;
 
 public enum TeamMemberType {
     TEAM_MANAGER,   // 관리자

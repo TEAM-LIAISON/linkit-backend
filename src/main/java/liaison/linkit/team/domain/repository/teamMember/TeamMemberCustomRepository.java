@@ -2,7 +2,7 @@ package liaison.linkit.team.domain.repository.teamMember;
 
 import java.util.List;
 import liaison.linkit.team.domain.Team;
-import liaison.linkit.team.domain.TeamMember;
+import liaison.linkit.team.domain.teamMember.TeamMember;
 
 public interface TeamMemberCustomRepository {
     boolean existsTeamMemberByMemberIdAndTeamId(final Long memberId, final Long teamId);

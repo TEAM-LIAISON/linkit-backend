@@ -1191,6 +1191,20 @@ include::{snippets}/profile-search-controller-test/search-profiles/response-fiel
 
 ====
 
+== #[팀 찾기]#
+
+=== 팀 찾기 (필터링 포함)
+
+====
+*요청*
+include::{snippets}/team-search-controller-test/search-teams/http-request.adoc[]
+include::{snippets}/team-search-controller-test/search-teams/query-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-search-controller-test/search-teams/http-response.adoc[]
+include::{snippets}/team-search-controller-test/search-teams/response-fields.adoc[]
+====
+
 == #[스크랩 - 프로필 스크랩]#
 
 === 프로필 스크랩 및 스크랩 취소

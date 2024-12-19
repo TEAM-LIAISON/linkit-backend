@@ -14,7 +14,6 @@ import liaison.linkit.team.business.announcement.AnnouncementPositionMapper;
 import liaison.linkit.team.business.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.Team;
-import liaison.linkit.team.domain.TeamMember;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementRegion;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;

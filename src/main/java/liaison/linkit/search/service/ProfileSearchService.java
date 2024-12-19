@@ -18,7 +18,7 @@ import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDT
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
-import liaison.linkit.team.business.TeamMemberMapper;
+import liaison.linkit.team.business.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;

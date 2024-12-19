@@ -3,9 +3,10 @@ package liaison.linkit.team.domain.repository.teamMember;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import liaison.linkit.team.domain.QTeam;
-import liaison.linkit.team.domain.QTeamMember;
+
 import liaison.linkit.team.domain.Team;
-import liaison.linkit.team.domain.TeamMember;
+import liaison.linkit.team.domain.teamMember.QTeamMember;
+import liaison.linkit.team.domain.teamMember.TeamMember;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

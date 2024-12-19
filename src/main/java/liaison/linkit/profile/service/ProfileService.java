@@ -59,7 +59,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
-import liaison.linkit.team.business.TeamMemberMapper;
+import liaison.linkit.team.business.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
@@ -144,7 +144,7 @@ public class ProfileService {
         log.info("profileBooleanMenu = {}", profileBooleanMenu);
         final ProfileScrapMenu profileScrapMenu = profileMapper.toProfileScrapMenu(profile);
         log.info("profileScrapMenu = {}", profileScrapMenu);
-        
+
         return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu, profileScrapMenu);
     }
 

@@ -26,15 +26,6 @@ public class TeamMemberResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamMemberItem {
-        private Long teamMemberId;
-        private String teamName;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class ProfileInformMenu {
         @Builder.Default
         private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
@@ -46,5 +37,14 @@ public class TeamMemberResponseDTO {
 
         @Builder.Default
         private RegionDetail regionDetail = new RegionDetail();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddTeamMemberResponse {
+        private String invitedTeamMemberEmail;
+        private String teamName;
     }
 }
