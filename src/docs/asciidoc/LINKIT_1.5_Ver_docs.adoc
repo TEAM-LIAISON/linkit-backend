@@ -994,6 +994,30 @@ include::{snippets}/team-log-controller-test/update-team-log-public-state/respon
 
 == #[팀 - 팀원 공고]#
 
+=== 팀원 공고 전체 조회
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-items/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-items/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-items/response-fields.adoc[]
+====
+
+=== 팀원 공고 단일 조회
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-detail/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-detail/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-detail/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-detail/response-fields.adoc[]
+====
+
 === 팀원 공고 단일 생성
 
 ====

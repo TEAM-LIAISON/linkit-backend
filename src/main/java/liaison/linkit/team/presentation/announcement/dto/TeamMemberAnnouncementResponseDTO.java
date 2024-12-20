@@ -49,6 +49,14 @@ public class TeamMemberAnnouncementResponseDTO {
     @AllArgsConstructor
     public static class TeamMemberAnnouncementItem {
         private Long teamMemberAnnouncementId;
+        private String announcementTitle;
+        private String majorPosition;
+
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+
+        private Boolean isAnnouncementPublic;       // 공고 공개/비공개 여부
+        private Boolean isAnnouncementInProgress;   // 공고 현재 진행 여부
     }
 
     @Builder

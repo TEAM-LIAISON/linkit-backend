@@ -19,11 +19,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.presentation.announcement.TeamMemberAnnouncementController;
@@ -33,7 +32,11 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse;
 import liaison.linkit.team.service.announcement.TeamMemberAnnouncementService;
@@ -72,12 +75,28 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
+    // 팀원 공고 전체 조회
+    private ResultActions performGetTeamMemberAnnouncementItems(final String teamName) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/announcement", teamName)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    // 팀원 공고 단일 조회
+    private ResultActions performGetTeamMemberAnnouncementDetail(final String teamName, final Long teamMemberAnnouncementId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/announcement/{teamMemberAnnouncementId}", teamName, teamMemberAnnouncementId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
     // 팀원 공고 생성
     private ResultActions performAddTeamMemberAnnouncement(final String teamName, final AddTeamMemberAnnouncementRequest request) throws Exception {
-        String encodedTeamName = URLEncoder.encode(teamName, StandardCharsets.UTF_8.toString());
-
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/announcement", encodedTeamName)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/announcement", teamName)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -110,6 +129,240 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/announcement/state/{teamMemberAnnouncementId}", teamName, teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
+    }
+
+    @DisplayName("회원이 팀의 팀원 공고를 전체 조회할 수 있다.")
+    @Test
+    void getTeamMemberAnnouncementItems() throws Exception {
+        // given
+        final TeamMemberAnnouncementItem firstTeamMemberAnnouncementItem = TeamMemberAnnouncementItem.builder()
+                .teamMemberAnnouncementId(1L)
+                .announcementTitle("팀원 공고 제목 1")
+                .majorPosition("포지션 대분류")
+                .announcementSkillNames(Arrays.asList(
+                        AnnouncementSkillName.builder()
+                                .announcementSkillName("스킬 이름 1")
+                                .build(),
+                        AnnouncementSkillName.builder()
+                                .announcementSkillName("스킬 이름 2")
+                                .build()
+                ))
+                .isAnnouncementPublic(true)
+                .isAnnouncementInProgress(false)
+                .build();
+
+        final TeamMemberAnnouncementItem secondTeamMemberAnnouncementItem = TeamMemberAnnouncementItem.builder()
+                .teamMemberAnnouncementId(1L)
+                .announcementTitle("팀원 공고 제목 2")
+                .majorPosition("포지션 대분류")
+                .announcementSkillNames(Arrays.asList(
+                        AnnouncementSkillName.builder()
+                                .announcementSkillName("스킬 이름 1")
+                                .build(),
+                        AnnouncementSkillName.builder()
+                                .announcementSkillName("스킬 이름 2")
+                                .build()
+                ))
+                .isAnnouncementPublic(true)
+                .isAnnouncementInProgress(false)
+                .build();
+
+        final TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems teamMemberAnnouncementItems
+                = TeamMemberAnnouncementItems.builder()
+                .teamMemberAnnouncementItems(Arrays.asList(firstTeamMemberAnnouncementItem, secondTeamMemberAnnouncementItem))
+                .build();
+
+        // when
+        when(teamMemberAnnouncementService.getTeamMemberAnnouncementItems(anyLong(), any())).thenReturn(teamMemberAnnouncementItems);
+
+        final ResultActions resultActions = performGetTeamMemberAnnouncementItems("liaison");
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").type(JsonFieldType.BOOLEAN).description("요청 성공 여부"),
+                                        fieldWithPath("code").type(JsonFieldType.STRING).description("요청 성공 코드"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("요청 성공 메시지"),
+                                        fieldWithPath("result.teamMemberAnnouncementItems").type(JsonFieldType.ARRAY).description("팀원 공고 목록"),
+                                        fieldWithPath("result.teamMemberAnnouncementItems[].teamMemberAnnouncementId").type(JsonFieldType.NUMBER).description("팀원 공고 ID"),
+                                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementTitle").type(JsonFieldType.STRING).description("팀원 공고 제목"),
+                                        fieldWithPath("result.teamMemberAnnouncementItems[].majorPosition").type(JsonFieldType.STRING).description("포지션 대분류"),
+                                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementSkillNames").type(JsonFieldType.ARRAY).description("공고 스킬 목록"),
+                                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementSkillNames[].announcementSkillName").type(JsonFieldType.STRING).description("공고 스킬 이름"),
+                                        fieldWithPath("result.teamMemberAnnouncementItems[].isAnnouncementPublic").type(JsonFieldType.BOOLEAN).description("공고 공개 여부"),
+                                        fieldWithPath("result.teamMemberAnnouncementItems[].isAnnouncementInProgress").type(JsonFieldType.BOOLEAN).description("공고 진행 여부")
+                                )
+                        )
+                ).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<TeamMemberAnnouncementItems>>() {
+                }
+        );
+
+        final CommonResponse<TeamMemberAnnouncementItems> expected = CommonResponse.onSuccess(teamMemberAnnouncementItems);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 팀의 팀원 공고를 단일 조회할 수 있다.")
+    @Test
+    void getTeamMemberAnnouncementDetail() throws Exception {
+        // given
+        final TeamMemberAnnouncementDetail teamMemberAnnouncementDetail
+                = TeamMemberAnnouncementDetail.builder()
+                .teamMemberAnnouncementId(1L)
+                .announcementTitle("팀원 공고 제목")
+                .announcementPositionItem(
+                        AnnouncementPositionItem.builder()
+                                .majorPosition("포지션 대분류")
+                                .subPosition("포지션 소분류")
+                                .build()
+                )
+                .announcementSkillNames(
+                        Arrays.asList(
+                                AnnouncementSkillName.builder()
+                                        .announcementSkillName("스킬 이름 1")
+                                        .build(),
+                                AnnouncementSkillName.builder()
+                                        .announcementSkillName("스킬 이름 2")
+                                        .build()
+                        )
+                )
+                .announcementStartDate("공고 시작 날짜")
+                .announcementEndDate("공고 종료 날짜")
+                .regionDetail(
+                        RegionDetail.builder()
+                                .cityName("활동 지역 시/도")
+                                .divisionName("활동 지역 시/군/구")
+                                .build()
+                )
+                .isRegionFlexible(true)
+                .mainTasks("주요 업무")
+                .workMethod("업무 방식")
+                .idealCandidate("이런 분을 찾고 있어요")
+                .preferredQualifications("이런 분이면 더 좋아요")
+                .joiningProcess("이런 과정으로 합류해요")
+                .benefits("합류하면 이런 것들을 얻어갈 수 있어요")
+                .build();
+
+        // when
+        when(teamMemberAnnouncementService.getTeamMemberAnnouncementDetail(anyLong(), any(), anyLong())).thenReturn(teamMemberAnnouncementDetail);
+
+        final ResultActions resultActions = performGetTeamMemberAnnouncementDetail("liaison", 1L);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름"),
+                                        parameterWithName("teamMemberAnnouncementId")
+                                                .description("팀원 공고 ID")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("응답 결과"),
+                                        fieldWithPath("result.teamMemberAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀원 모집 공고 ID"),
+                                        fieldWithPath("result.announcementTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 제목"),
+                                        fieldWithPath("result.announcementPositionItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("공고 포지션 정보"),
+                                        fieldWithPath("result.announcementPositionItem.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 포지션 대분류"),
+                                        fieldWithPath("result.announcementPositionItem.subPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 포지션 소분류"),
+                                        fieldWithPath("result.announcementSkillNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("공고 스킬 목록"),
+                                        fieldWithPath("result.announcementSkillNames[].announcementSkillName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 스킬 이름"),
+                                        fieldWithPath("result.announcementStartDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 시작 날짜"),
+                                        fieldWithPath("result.announcementEndDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 종료 날짜"),
+                                        fieldWithPath("result.regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동 지역 시/도"),
+                                        fieldWithPath("result.regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동 지역 시/군/구"),
+                                        fieldWithPath("result.isRegionFlexible")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("지역 무관 여부"),
+                                        fieldWithPath("result.mainTasks")
+                                                .type(JsonFieldType.STRING)
+                                                .description("주요 업무"),
+                                        fieldWithPath("result.workMethod")
+                                                .type(JsonFieldType.STRING)
+                                                .description("업무 방식"),
+                                        fieldWithPath("result.idealCandidate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("이런 분을 찾고 있어요"),
+                                        fieldWithPath("result.preferredQualifications")
+                                                .type(JsonFieldType.STRING)
+                                                .description("이런 분이면 더 좋아요"),
+                                        fieldWithPath("result.joiningProcess")
+                                                .type(JsonFieldType.STRING)
+                                                .description("이런 과정으로 합류해요"),
+                                        fieldWithPath("result.benefits")
+                                                .type(JsonFieldType.STRING)
+                                                .description("합류하면 이런 것들을 얻어 갈 수 있어요")
+                                )
+                        )
+                ).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamMemberAnnouncementDetail> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<TeamMemberAnnouncementDetail>>() {
+                }
+        );
+
+        final CommonResponse<TeamMemberAnnouncementDetail> expected = CommonResponse.onSuccess(teamMemberAnnouncementDetail);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
     @DisplayName("회원이 팀의 팀원 공고를 생성할 수 있다.")
