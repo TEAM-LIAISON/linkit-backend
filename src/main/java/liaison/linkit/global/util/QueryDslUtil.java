@@ -8,6 +8,10 @@ import liaison.linkit.profile.domain.profile.QProfile;
 import liaison.linkit.profile.domain.region.QProfileRegion;
 import liaison.linkit.profile.domain.skill.QProfileSkill;
 import liaison.linkit.profile.domain.state.QProfileCurrentState;
+import liaison.linkit.team.domain.QTeam;
+import liaison.linkit.team.domain.QTeamCurrentState;
+import liaison.linkit.team.domain.QTeamRegion;
+import liaison.linkit.team.domain.scale.QTeamScale;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 
@@ -15,9 +19,14 @@ import org.springframework.data.domain.Sort;
 @Slf4j
 public class QueryDslUtil {
 
-    public static OrderSpecifier<?>[] getOrderSpecifier(Sort sort, QProfile qProfile, QProfilePosition qProfilePosition,
-                                                        QProfileRegion qProfileRegion, QProfileCurrentState qProfileCurrentState, QProfileSkill qProfileSkill) {
-
+    public static OrderSpecifier<?>[] getOrderProfileSpecifier(
+            Sort sort,
+            QProfile qProfile,
+            QProfilePosition qProfilePosition,
+            QProfileRegion qProfileRegion,
+            QProfileCurrentState qProfileCurrentState,
+            QProfileSkill qProfileSkill
+    ) {
         if (sort.isUnsorted()) {
             return new OrderSpecifier<?>[]{};
         }
@@ -63,6 +72,60 @@ public class QueryDslUtil {
                     orderSpecifier = new OrderSpecifier<>(
                             order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
                             qProfileCurrentState.profileState.profileStateName
+                    );
+                    break;
+                default:
+                    throw new IllegalArgumentException("Unknown sort property: " + order.getProperty());
+            }
+
+            if (orderSpecifier != null) {
+                orders.add(orderSpecifier);
+            }
+        }
+
+        return orders.toArray(new OrderSpecifier<?>[0]);
+    }
+
+    public static OrderSpecifier<?>[] getOrderTeamSpecifier(
+            Sort sort,
+            QTeam qTeam,
+            QTeamScale qTeamScale,
+            QTeamRegion qTeamRegion,
+            QTeamCurrentState qTeamCurrentState
+    ) {
+        if (sort.isUnsorted()) {
+            return new OrderSpecifier<?>[]{};
+        }
+
+        // OrderSpecifier를 저장할 리스트
+        List<OrderSpecifier<?>> orders = new ArrayList<>();
+
+        for (Sort.Order order : sort) {
+            OrderSpecifier<?> orderSpecifier = null;
+
+            switch (order.getProperty()) {
+                case "id":
+                    orderSpecifier = new OrderSpecifier<>(
+                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                            qTeam.id
+                    );
+                    break;
+                case "scaleName":
+                    orderSpecifier = new OrderSpecifier<>(
+                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                            qTeamScale.scale.scaleName
+                    );
+                    break;
+                case "cityName":
+                    orderSpecifier = new OrderSpecifier<>(
+                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                            qTeamRegion.region.cityName
+                    );
+                    break;
+                case "teamStateName":
+                    orderSpecifier = new OrderSpecifier<>(
+                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                            qTeamCurrentState.teamState.teamStateName
                     );
                     break;
                 default:

@@ -34,6 +34,17 @@ spring:
     activate:
       on-profile: common
 
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            redirect-uri: https://liaison-dev.site/login/oauth2/callback/naver
+          kakao:
+            redirect-uri: https://liaison-dev.site/login/oauth2/callback/kakao
+          google:
+            redirect-uri: https://liaison-dev.site/login/oauth2/callback/google
+
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -45,17 +56,6 @@ spring:
     hibernate:
       ddl-auto: create
 
-  security:
-    oauth2:
-      client:
-        registration:
-          naver:
-            redirect-uri: https://liaison-dev.site/login/oauth2/callback/naver
-          kakao:
-            redirect-uri: http://localhost:3000/login/oauth2/callback/kakao
-          google:
-            redirect-uri: http://localhost:3000/login/oauth2/callback/google
-
   mvc:
     path match:
       matching-strategy: ant_path_matcher
@@ -64,7 +64,7 @@ spring:
     job:
       enabled: true
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
 
     #  flyway:
     #    enabled: true
@@ -81,12 +81,6 @@ spring:
       max-file-size: 2MB # 한개 파일의 최대 사이즈 (default: 1MB)
       max-request-size: 2MB # 한개 요청의 최대 사이즈 (default: 10MB)
 
-cors-allowed-origins:
-  http://localhost:8080,
-  http://localhost:8081,
-  http://localhost:3000,
-  https://linkit.im,
-  https://www.linkit.im,
-  https://liaison-dev.site
-  https://www.liaison-dev.site,
-  https://linkit-dev.vercel.app
+logging:
+  level:
+    root: debug

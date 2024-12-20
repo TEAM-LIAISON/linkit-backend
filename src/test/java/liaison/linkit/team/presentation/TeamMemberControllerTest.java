@@ -9,6 +9,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -24,8 +25,11 @@ import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.team.presentation.teamMember.TeamMemberController;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
 import liaison.linkit.team.service.teamMember.TeamMemberService;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +40,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
@@ -66,6 +71,16 @@ public class TeamMemberControllerTest extends ControllerTest {
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members", teamName)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performPostTeamMember(final String teamName, final AddTeamMemberRequest request) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/member", teamName)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
         );
     }
 
@@ -183,6 +198,83 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
 
         final CommonResponse<TeamMemberItems> expected = CommonResponse.onSuccess(teamMemberItems);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 팀원을 초대할 수 있다.")
+    @Test
+    void addTeamMember() throws Exception {
+        // given
+        final TeamMemberResponseDTO.AddTeamMemberResponse addTeamMemberResponse =
+                AddTeamMemberResponse.builder()
+                        .teamName("팀 이름")
+                        .invitedTeamMemberEmail("liaison@liaison.liaison")
+                        .build();
+
+        final AddTeamMemberRequest addTeamMemberRequest =
+                AddTeamMemberRequest.builder()
+                        .teamMemberInvitationEmail("liaison@liaison.liaison")
+                        .teamMemberType(TeamMemberType.TEAM_MANAGER)
+                        .build();
+
+        // when
+        when(teamMemberService.addTeamMember(anyLong(), any(), any())).thenReturn(addTeamMemberResponse);
+
+        final ResultActions resultActions = performPostTeamMember("liaison", addTeamMemberRequest);
+
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // BOOLEAN 값으로 수정
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름")
+                                ),
+                                requestFields(
+                                        fieldWithPath("teamMemberInvitationEmail")
+                                                .type(JsonFieldType.STRING)
+                                                .description("초대할 팀원 이메일"),
+                                        fieldWithPath("teamMemberType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 이름")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("결과 데이터"),
+                                        fieldWithPath("result.invitedTeamMemberEmail")
+                                                .type(JsonFieldType.STRING)
+                                                .description("초대된 팀원 이메일"),
+                                        fieldWithPath("result.teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 이름")
+                                )
+                        )).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<AddTeamMemberResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<AddTeamMemberResponse>>() {
+                }
+        );
+
+        final CommonResponse<AddTeamMemberResponse> expected = CommonResponse.onSuccess(addTeamMemberResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }

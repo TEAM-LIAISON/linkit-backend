@@ -178,9 +178,9 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                     )
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
-                    .orderBy(QueryDslUtil.getOrderSpecifier(pageable.getSort(), qProfile, qProfilePosition, qProfileRegion, qProfileCurrentState, qProfileSkill))
+                    .orderBy(QueryDslUtil.getOrderProfileSpecifier(pageable.getSort(), qProfile, qProfilePosition, qProfileRegion, qProfileCurrentState, qProfileSkill))
                     .fetch();
-            
+
             // 조회된 데이터 수 로그
             log.info("Fetched {} profiles from database", content.size());
 

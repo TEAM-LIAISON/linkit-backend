@@ -1,17 +1,19 @@
-package liaison.linkit.team.domain.announcement;
+package liaison.linkit.team.domain.teamMember;
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import liaison.linkit.common.domain.BaseDateTimeEntity;
-import liaison.linkit.profile.domain.skill.Skill;
+import liaison.linkit.member.domain.Member;
+import liaison.linkit.team.domain.Team;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,19 +22,23 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@NoArgsConstructor(access = PROTECTED)
-public class AnnouncementSkill extends BaseDateTimeEntity {
+public class TeamMember {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "announcement_skill_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_member_announcement_id")
-    private TeamMemberAnnouncement teamMemberAnnouncement;
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "skill_id")
-    private Skill skill;
+    @JoinColumn(name = "team_id")
+    private Team team;
+
+    @Column(nullable = false)
+    @Enumerated(value = STRING)
+    private TeamMemberType teamMemberType;  // 팀원 권한
 }

@@ -1,19 +1,21 @@
-package liaison.linkit.team.business;
+package liaison.linkit.team.business.teamMember;
 
 
 import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.global.type.TeamMemberType;
+import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
+import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.domain.Team;
-import liaison.linkit.team.domain.TeamMember;
+import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.ProfileInformMenu;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
 
@@ -61,6 +63,15 @@ public class TeamMemberMapper {
         return ProfileTeamInform.builder()
                 .teamName(team.getTeamName())
                 .teamLogoImagePath(team.getTeamLogoImagePath())
+                .build();
+    }
+
+    public TeamMemberResponseDTO.AddTeamMemberResponse toAddTeamMemberInvitation(
+            final TeamMemberInvitation teamMemberInvitation
+    ) {
+        return AddTeamMemberResponse.builder()
+                .invitedTeamMemberEmail(teamMemberInvitation.getTeamMemberInvitationEmail())
+                .teamName(teamMemberInvitation.getTeam().getTeamName())
                 .build();
     }
 }

@@ -115,4 +115,14 @@ public class TeamResponseDTO {
     public static class TeamScaleItem {
         private String teamScaleName;
     }
+
+    // 팀 목록 정보
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamItems {
+        @Builder.Default
+        final List<TeamInformMenu> teamInformMenus = new ArrayList<>();
+    }
 }

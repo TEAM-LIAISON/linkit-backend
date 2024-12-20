@@ -13,11 +13,11 @@ import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.team.business.TeamCurrentStateMapper;
 import liaison.linkit.team.business.TeamMapper;
-import liaison.linkit.team.business.TeamMemberMapper;
+import liaison.linkit.team.business.teamMember.TeamMemberMapper;
 import liaison.linkit.team.business.TeamScaleMapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.TeamCurrentState;
-import liaison.linkit.team.domain.TeamMember;
+import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.TeamRegion;
 import liaison.linkit.team.domain.scale.Scale;
 import liaison.linkit.team.domain.scale.TeamScale;
@@ -128,7 +128,7 @@ public class TeamService {
 
         for (String teamStateName : teamStateNames) {
             log.info("teamStateName = {}", teamStateName);
-            
+
             TeamState teamState = teamStateQueryAdapter.findByStateName(teamStateName);
 
             // ProfileCurrentState 엔티티 생성
@@ -154,6 +154,9 @@ public class TeamService {
         // 팀 조회
         final Team team = teamQueryAdapter.findByTeamName(teamName);
 
+        // 팀 이름 업데이트
+        team.updateTeam(updateTeamRequest.getTeamName(), updateTeamRequest.getTeamShortDescription(), updateTeamRequest.getIsTeamPublic());
+
         // 팀 로고 이미지 처리
         if (teamLogoImage != null && !teamLogoImage.isEmpty()) {
             if (imageValidator.validatingImageUpload(teamLogoImage)) {
@@ -171,7 +174,7 @@ public class TeamService {
             }
         }
 
-        // 티미 규모 처리
+        // 팀 규모 처리
         if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
             teamScaleCommandAdapter.deleteAllByTeamId(team.getId());
         }
@@ -266,5 +269,32 @@ public class TeamService {
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, teamCurrentStateItems, teamScaleItem, regionDetail);
 
         return teamMapper.toTeamDetail(false, teamInformMenu);
+    }
+
+    public TeamResponseDTO.TeamItems getTeamItems(final Long memberId) {
+        final List<Team> teams = teamMemberQueryAdapter.getAllTeamsByMemberId(memberId);
+
+        final List<TeamInformMenu> teamInformMenus = new ArrayList<>();
+
+        for (Team team : teams) {
+            TeamScaleItem teamScaleItem = null;
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
+                final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+                teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+
+            RegionDetail regionDetail = new RegionDetail();
+            if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
+                final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+                regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+            }
+            log.info("팀 지역 정보 조회 성공");
+
+            TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(team, null, teamScaleItem, regionDetail);
+
+            teamInformMenus.add(teamInformMenu);
+        }
+
+        return teamMapper.toTeamItems(teamInformMenus);
     }
 }

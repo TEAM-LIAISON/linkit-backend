@@ -42,4 +42,14 @@ public class Team extends BaseEntity {
     public void setTeamShortDescription(final String teamShortDescription) {
         this.teamShortDescription = teamShortDescription;
     }
+
+    public void updateTeam(
+            final String teamName,
+            final String teamShortDescription,
+            final Boolean isTeamPublic
+    ) {
+        this.teamName = teamName;
+        this.teamShortDescription = teamShortDescription;
+        this.isTeamPublic = isTeamPublic;
+    }
 }

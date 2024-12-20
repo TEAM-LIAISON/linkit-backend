@@ -61,8 +61,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
             return Accessor.member(memberId);
         } catch (final RefreshTokenExpiredException e) {
-            log.info("게스트로 처리됩니다.");
-            return Accessor.guest();
+            throw RefreshTokenExpiredException.EXCEPTION;
         }
     }
 

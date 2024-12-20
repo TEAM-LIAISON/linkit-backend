@@ -3,7 +3,7 @@ package liaison.linkit.team.implement.teamMember;
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.Team;
-import liaison.linkit.team.domain.TeamMember;
+import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -11,10 +11,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamMemberQueryAdapter {
     private final TeamMemberRepository teamMemberRepository;
-
-    public boolean existsTeamMemberByMemberIdAndTeamId(final Long memberId, final Long teamId) {
-        return teamMemberRepository.existsTeamMemberByMemberIdAndTeamId(memberId, teamId);
-    }
 
     public List<TeamMember> getTeamMembers(final Long teamId) {
         return teamMemberRepository.getTeamMembers(teamId);
@@ -30,5 +26,9 @@ public class TeamMemberQueryAdapter {
 
     public List<Team> getAllTeamByMemberId(final Long memberId) {
         return teamMemberRepository.getAllTeamByMemberId(memberId);
+    }
+
+    public List<Team> getAllTeamsByMemberId(final Long memberId) {
+        return teamMemberRepository.getAllTeamsByMemberId(memberId);
     }
 }

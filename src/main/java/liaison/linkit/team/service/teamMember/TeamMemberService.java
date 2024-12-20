@@ -1,12 +1,14 @@
 package liaison.linkit.team.service.teamMember;
 
+import jakarta.mail.MessagingException;
 import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.mail.service.TeamMemberInvitationMailService;
+import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.business.ProfileCurrentStateMapper;
-import liaison.linkit.profile.business.ProfileMapper;
 import liaison.linkit.profile.business.ProfilePositionMapper;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.state.ProfileCurrentState;
@@ -16,11 +18,17 @@ import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
-import liaison.linkit.team.business.TeamMemberMapper;
+import liaison.linkit.team.business.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.Team;
-import liaison.linkit.team.domain.TeamMember;
+import liaison.linkit.team.domain.teamMember.TeamMember;
+import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
+import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
+import liaison.linkit.team.exception.teamMember.TeamMemberInvitationDuplicateException;
 import liaison.linkit.team.implement.TeamQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.ProfileInformMenu;
 import lombok.RequiredArgsConstructor;
@@ -33,23 +41,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class TeamMemberService {
-
     private final TeamQueryAdapter teamQueryAdapter;
-
-    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
-    private final TeamMemberMapper teamMemberMapper;
-
-    private final ProfileQueryAdapter profileQueryAdapter;
-
-    private final ProfileCurrentStateMapper profileCurrentStateMapper;
-
-    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
-    private final ProfileMapper profileMapper;
-
-    private final ProfilePositionMapper profilePositionMapper;
-
     private final RegionQueryAdapter regionQueryAdapter;
+    private final MemberQueryAdapter memberQueryAdapter;
+    private final ProfileQueryAdapter profileQueryAdapter;
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
+    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
+    private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
+
+    private final TeamMemberMapper teamMemberMapper;
+    private final ProfilePositionMapper profilePositionMapper;
+    private final ProfileCurrentStateMapper profileCurrentStateMapper;
+    private final TeamMemberInvitationCommandAdapter teamMemberInvitationCommandAdapter;
+
     private final RegionMapper regionMapper;
+
+    private final TeamMemberInvitationMailService teamMemberInvitationMailService;
 
     public TeamMemberResponseDTO.TeamMemberItems getTeamMemberItems(final Long memberId, final String teamName) {
         // 1. 팀 조회
@@ -100,5 +107,29 @@ public class TeamMemberService {
 
         // 5. 응답 DTO 생성 및 반환
         return teamMemberMapper.toTeamMemberItems(profileInformMenus);
+    }
+
+    public TeamMemberResponseDTO.AddTeamMemberResponse addTeamMember(
+            final Long memberId,
+            final String teamName,
+            final AddTeamMemberRequest addTeamMemberRequest
+    ) throws MessagingException {
+        final String teamMemberInvitationEmail = addTeamMemberRequest.getTeamMemberInvitationEmail();
+
+        final Team team = teamQueryAdapter.findByTeamName(teamName);
+
+        if (teamMemberInvitationQueryAdapter.existsByEmailAndTeam(teamMemberInvitationEmail, team)) {
+            throw TeamMemberInvitationDuplicateException.EXCEPTION;
+        }
+
+        // 해당 회원에 대해 이메일 발송
+        teamMemberInvitationMailService.sendMailTeamMemberInvitation(teamMemberInvitationEmail, team.getTeamLogoImagePath(), team.getTeamName());
+
+        // 새로운 팀원 초대 객체 생성
+        final TeamMemberInvitation teamMemberInvitation = new TeamMemberInvitation(null, teamMemberInvitationEmail, team, TeamMemberInviteState.PENDING);
+
+        teamMemberInvitationCommandAdapter.addTeamMemberInvitation(teamMemberInvitation);
+
+        return teamMemberMapper.toAddTeamMemberInvitation(teamMemberInvitation);
     }
 }

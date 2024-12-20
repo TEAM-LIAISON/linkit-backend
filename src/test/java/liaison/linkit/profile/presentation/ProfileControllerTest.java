@@ -47,6 +47,7 @@ import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRespons
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.ProfileController;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileScrapMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
@@ -150,11 +151,14 @@ class ProfileControllerTest extends ControllerTest {
                         false,
                         false);
 
+        final ProfileScrapMenu profileScrapMenu = new ProfileScrapMenu(100);
+
         final ProfileLeftMenu profileLeftMenu =
                 new ProfileLeftMenu(
                         profileCompletionMenu,
                         profileInformMenu,
-                        profileBooleanMenu
+                        profileBooleanMenu,
+                        profileScrapMenu
                 );
 
         // when
@@ -245,7 +249,13 @@ class ProfileControllerTest extends ControllerTest {
                                                 .description("프로필 자격증 기입 여부"),
                                         fieldWithPath("result.profileBooleanMenu.isProfileLink")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("프로필 링크 기입 여부")
+                                                .description("프로필 링크 기입 여부"),
+
+                                        // profileScrapMenu
+                                        fieldWithPath("result.profileScrapMenu.profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 전체 스크랩 개수")
+
                                 )
                         )).andReturn();
 

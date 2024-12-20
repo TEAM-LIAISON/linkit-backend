@@ -14,7 +14,6 @@ import liaison.linkit.team.business.announcement.AnnouncementPositionMapper;
 import liaison.linkit.team.business.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.Team;
-import liaison.linkit.team.domain.TeamMember;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementRegion;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
@@ -106,12 +105,7 @@ public class TeamMemberAnnouncementService {
         final TeamMemberAnnouncement savedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.addTeamMemberAnnouncement(teamMemberAnnouncement);
 
         // 포지션 저장
-
         final Position position = positionQueryAdapter.findByMajorPositionAndSubPosition(addTeamMemberAnnouncementRequest.getMajorPosition(), addTeamMemberAnnouncementRequest.getSubPosition());
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(savedTeamMemberAnnouncement.getId())) {
-            announcementPositionCommandAdapter.deleteAllByTeamMemberAnnouncementId(savedTeamMemberAnnouncement.getId());
-        }
-
         AnnouncementPosition announcementPosition = new AnnouncementPosition(null, savedTeamMemberAnnouncement, position);
         AnnouncementPosition savedAnnouncementPosition = announcementPositionCommandAdapter.save(announcementPosition);
         final AnnouncementPositionItem announcementPositionItem = announcementPositionMapper.toAnnouncementPositionItem(savedAnnouncementPosition);
@@ -121,18 +115,16 @@ public class TeamMemberAnnouncementService {
                 .stream()
                 .map(TeamMemberAnnouncementRequestDTO.AnnouncementSkillName::getAnnouncementSkillName) // 괄호 제거
                 .collect(Collectors.toList());
-
+        log.info("check bug 0");
         final List<Skill> skills = skillQueryAdapter.getSkillsBySkillNames(skillNames);
+        log.info("check bug 1");
         final List<AnnouncementSkill> announcementSkills = announcementSkillMapper.toAddProjectSkills(savedTeamMemberAnnouncement, skills);
+        log.info("check bug 2");
         announcementSkillCommandAdapter.saveAll(announcementSkills);
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
         // 지역 저장
         final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamMemberAnnouncementRequest.getCityName(), addTeamMemberAnnouncementRequest.getDivisionName());
-        if (announcementRegionQueryAdapter.existsAnnouncementRegionByTeamMemberAnnouncementId(savedTeamMemberAnnouncement.getId())) {
-            announcementRegionCommandAdapter.deleteByTeamMemberAnnouncementId(savedTeamMemberAnnouncement.getId());
-        }
-
         AnnouncementRegion announcementRegion = new AnnouncementRegion(null, savedTeamMemberAnnouncement, region);
         announcementRegionCommandAdapter.save(announcementRegion);
         final RegionDetail regionDetail = regionMapper.toRegionDetail(announcementRegion.getRegion());

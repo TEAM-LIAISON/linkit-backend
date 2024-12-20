@@ -51,6 +51,7 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.Profile
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileScrapMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
@@ -58,7 +59,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
-import liaison.linkit.team.business.TeamMemberMapper;
+import liaison.linkit.team.business.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
@@ -109,18 +110,17 @@ public class ProfileService {
         log.info("profile = {}가 성공적으로 조회되었습니다.", profile);
 
         RegionDetail regionDetail = new RegionDetail();
-
         if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
             final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
         log.info("지역 정보 조회 성공");
+
         final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
         final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
         log.info("상태 정보 조회 성공");
 
         ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
-
         if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
             final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
             profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
@@ -142,8 +142,10 @@ public class ProfileService {
         log.info("profileInformMenu = {}", profileInformMenu);
         final ProfileBooleanMenu profileBooleanMenu = profileMapper.toProfileBooleanMenu(profile);
         log.info("profileBooleanMenu = {}", profileBooleanMenu);
+        final ProfileScrapMenu profileScrapMenu = profileMapper.toProfileScrapMenu(profile);
+        log.info("profileScrapMenu = {}", profileScrapMenu);
 
-        return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu);
+        return profileMapper.toProfileLeftMenu(profileCompletionMenu, profileInformMenu, profileBooleanMenu, profileScrapMenu);
     }
 
     // 로그인한 사용자가 프로필을 조회한다.

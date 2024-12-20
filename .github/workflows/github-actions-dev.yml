@@ -1,5 +1,8 @@
-name: linkit-dev-ci-cd
+# github repository actions 페이지에 나타날 이름
+name: CI/CD using github actions & docker
 
+# event trigger
+# main이나 dev 브랜치에 pull request가 발생 되었을 때 실행
 on:
   pull_request:
     branches: [ "develop" ]
@@ -7,18 +10,15 @@ on:
 permissions:
   contents: read
 
-env:
-  AWS_REGION: ap-northeast-2
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout source
+        uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Setup Java
+        uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -36,25 +36,22 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Prepare and Build Project with Gradle
+      - name: Build Project with Gradle
         run: |
-          echo ${{ secrets.APPLICATION_SECRETS_DEV }} | base64 --decode > ./src/main/resources/application-secret-dev.yml
-          ./gradlew clean bootJar
+          echo ${{ secrets.APPLICATION_SECRET_DEV }} | base64 --decode > ./src/main/resources/application-secret-dev.yml
+          ./gradlew bootJar
 
-      - name: Verify decoded secret
-        run: cat ./src/main/resources/application-secret-dev.yml
-
-      - name: Login DockerHub
+      - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build Docker Image
-        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/linkit-dev .
+      - name: Build docker image
+        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/linkit-develop .
 
       - name: Publish image to docker hub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/linkit-dev:latest
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/linkit-develop:latest
 
   deploy:
     needs: build
@@ -86,15 +83,16 @@ jobs:
           username: ubuntu
           host: ${{ secrets.LINKIT_IP_DEV }}
           key: ${{ secrets.EC2_SSH_KEY_DEV }}
+          script_stop: true
           script: |
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/linkit-dev:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/linkit-develop:latest
             sudo docker-compose -f docker-compose-${{env.TARGET_UPSTREAM}}.yml up -d
 
       - name: Check deploy server URL
         uses: jtalk/url-health-check-action@v3
         with:
           url: http://${{ secrets.LINKIT_IP_DEV }}:${{ env.STOPPED_PORT }}/env
-          max-attempts: 7
+          max-attempts: 5
           retry-delay: 10s
 
       - name: Change nginx upstream
@@ -103,8 +101,9 @@ jobs:
           username: ubuntu
           host: ${{ secrets.LINKIT_IP_DEV }}
           key: ${{ secrets.EC2_SSH_KEY_DEV }}
+          script_stop: true
           script: |
-            sudo docker exec -i nginxserver bash -c 'echo "set \$service_url ${{env.TARGET_UPSTREAM}};" > /etc/nginx/conf.d/service-env.inc && nginx -s reload'
+            sudo docker exec -i nginxserver bash -c 'echo "set \$service_url ${{env.TARGET_UPSTREAM}};" > etc/nginx/conf.d/service-env.inc && nginx -s reload'
 
       - name: Stop current server
         uses: appleboy/ssh-action@master
@@ -112,6 +111,7 @@ jobs:
           username: ubuntu
           host: ${{ secrets.LINKIT_IP_DEV }}
           key: ${{ secrets.EC2_SSH_KEY_DEV }}
+          script_stop: true
           script: |
             sudo docker stop ${{ env.CURRENT_UPSTREAM }}
             sudo docker rm ${{ env.CURRENT_UPSTREAM }}
