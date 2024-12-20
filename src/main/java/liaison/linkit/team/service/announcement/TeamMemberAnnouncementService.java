@@ -115,9 +115,11 @@ public class TeamMemberAnnouncementService {
                 .stream()
                 .map(TeamMemberAnnouncementRequestDTO.AnnouncementSkillName::getAnnouncementSkillName) // 괄호 제거
                 .collect(Collectors.toList());
-
+        log.info("check bug 0");
         final List<Skill> skills = skillQueryAdapter.getSkillsBySkillNames(skillNames);
+        log.info("check bug 1");
         final List<AnnouncementSkill> announcementSkills = announcementSkillMapper.toAddProjectSkills(savedTeamMemberAnnouncement, skills);
+        log.info("check bug 2");
         announcementSkillCommandAdapter.saveAll(announcementSkills);
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
