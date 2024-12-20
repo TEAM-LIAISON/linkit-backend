@@ -24,6 +24,7 @@ public class TeamMemberController {
 
     private final TeamMemberService teamMemberService;
 
+    // 팀원 전체 조회
     @GetMapping("/members")
     @MemberOnly
     public CommonResponse<TeamMemberResponseDTO.TeamMemberItems> getTeamMemberItems(
@@ -33,9 +34,7 @@ public class TeamMemberController {
         return CommonResponse.onSuccess(teamMemberService.getTeamMemberItems(accessor.getMemberId(), teamName));
     }
 
-    // 팀 구성원 추가하기
-
-    // 뷰어 및 관리자를 선택한다
+    // 뷰어 및 관리자를 선택해서 팀 구성원 추가하기
     @PostMapping("/member")
     @MemberOnly
     public CommonResponse<TeamMemberResponseDTO.AddTeamMemberResponse> addTeamMember(
@@ -46,5 +45,16 @@ public class TeamMemberController {
         return CommonResponse.onSuccess(teamMemberService.addTeamMember(accessor.getMemberId(), teamName, addTeamMemberRequest));
     }
 
-    
+    // 뷰어 및 관리자 변경 요청
+    @PostMapping("/member/type/{emailId}")
+    @MemberOnly
+    public CommonResponse<TeamMemberResponseDTO.UpdateTeamMemberTypeResponse> updateTeamMemberType(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamName,
+            @PathVariable final String emailId,
+            @RequestBody TeamMemberRequestDTO.UpdateTeamMemberTypeRequest updateTeamMemberTypeRequest
+    ) {
+        return CommonResponse.onSuccess(teamMemberService.updateTeamMemberType(accessor.getMemberId(), teamName, emailId, updateTeamMemberTypeRequest));
+    }
+
 }

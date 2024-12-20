@@ -23,12 +23,15 @@ import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
+import liaison.linkit.team.domain.teamMember.TeamMemberType;
+import liaison.linkit.team.exception.teamMember.TeamMemberForbiddenException;
 import liaison.linkit.team.exception.teamMember.TeamMemberInvitationDuplicateException;
 import liaison.linkit.team.implement.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.UpdateTeamMemberTypeRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.ProfileInformMenu;
 import lombok.RequiredArgsConstructor;
@@ -131,5 +134,24 @@ public class TeamMemberService {
         teamMemberInvitationCommandAdapter.addTeamMemberInvitation(teamMemberInvitation);
 
         return teamMemberMapper.toAddTeamMemberInvitation(teamMemberInvitation);
+    }
+
+    public TeamMemberResponseDTO.UpdateTeamMemberTypeResponse updateTeamMemberType(
+            final Long memberId,
+            final String teamName,
+            final String emailId,
+            final UpdateTeamMemberTypeRequest updateTeamMemberTypeRequest
+    ) {
+        // 1. TeamMember 엔티티 조회
+        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamNameAndEmailId(teamName, emailId);
+
+        final TeamMemberType requestedTeamMemberType = updateTeamMemberTypeRequest.getTeamMemberType();
+        if (requestedTeamMemberType == teamMember.getTeamMemberType()) {
+            throw TeamMemberForbiddenException.EXCEPTION;
+        }
+
+        teamMember.updateTeamMemberType(requestedTeamMemberType);
+
+        return teamMemberMapper.toUpdateTeamMemberTypeResponse(teamMember);
     }
 }

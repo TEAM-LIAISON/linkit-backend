@@ -18,4 +18,12 @@ public class TeamMemberRequestDTO {
         private String teamMemberInvitationEmail;   // 팀원 초대 이메일
         private TeamMemberType teamMemberType;      // 팀원 권한
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateTeamMemberTypeRequest {
+        private TeamMemberType teamMemberType;
+    }
 }

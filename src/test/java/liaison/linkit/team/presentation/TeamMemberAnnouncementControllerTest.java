@@ -22,7 +22,6 @@ import jakarta.servlet.http.Cookie;
 import java.util.Arrays;
 import java.util.List;
 import liaison.linkit.common.presentation.CommonResponse;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.presentation.announcement.TeamMemberAnnouncementController;
@@ -244,12 +243,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 )
                 .announcementStartDate("공고 시작 날짜")
                 .announcementEndDate("공고 종료 날짜")
-                .regionDetail(
-                        RegionDetail.builder()
-                                .cityName("활동 지역 시/도")
-                                .divisionName("활동 지역 시/군/구")
-                                .build()
-                )
                 .isRegionFlexible(true)
                 .mainTasks("주요 업무")
                 .workMethod("업무 방식")
@@ -321,12 +314,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
-                                        fieldWithPath("result.regionDetail.cityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("활동 지역 시/도"),
-                                        fieldWithPath("result.regionDetail.divisionName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("활동 지역 시/군/구"),
                                         fieldWithPath("result.isRegionFlexible")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("지역 무관 여부"),
@@ -373,7 +360,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
 
         final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
-                = new AddTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 시작 날짜", "공고 종료 날짜", "활동 지역 시/도", "활동 지역 시/군/구", false, "주요 업무", "업무 방식",
+                = new AddTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 시작 날짜", "공고 종료 날짜", false, "주요 업무", "업무 방식",
                 "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
 
         final AddTeamMemberAnnouncementResponse addTeamMemberAnnouncementResponse = getAddTeamMemberAnnouncementResponse();
@@ -419,12 +406,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
 
-                                        fieldWithPath("cityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 활동 지역 시/도"),
-                                        fieldWithPath("divisionName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 활동 지역 시/군/구"),
                                         fieldWithPath("isRegionFlexible")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("지역 무관 여부"),
@@ -491,12 +472,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
-                                        fieldWithPath("result.cityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("활동 지역 시/도"),
-                                        fieldWithPath("result.divisionName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("활동 지역 시/군/구"),
                                         fieldWithPath("result.isRegionFlexible")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("지역 무관 여부"),
@@ -543,7 +518,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
 
         final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
-                = new UpdateTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 시작 날짜", "공고 종료 날짜", "활동 지역 시/도", "활동 지역 시/군/구", false, "주요 업무", "업무 방식",
+                = new UpdateTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 시작 날짜", "공고 종료 날짜", false, "주요 업무", "업무 방식",
                 "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
 
         final UpdateTeamMemberAnnouncementResponse updateTeamMemberAnnouncementResponse = getUpdateTeamMemberAnnouncementResponse();
@@ -591,12 +566,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
 
-                                        fieldWithPath("cityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 활동 지역 시/도"),
-                                        fieldWithPath("divisionName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 활동 지역 시/군/구"),
                                         fieldWithPath("isRegionFlexible")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("지역 무관 여부"),
@@ -663,12 +632,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
-                                        fieldWithPath("result.cityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("활동 지역 시/도"),
-                                        fieldWithPath("result.divisionName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("활동 지역 시/군/구"),
                                         fieldWithPath("result.isRegionFlexible")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("지역 무관 여부"),
@@ -834,7 +797,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNamesResponse
                 = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
 
-        return new AddTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 시작 날짜", "공고 종료 날짜", "활동 지역 시/도", "활동 지역 시/군/구", false, "주요 업무",
+        return new AddTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 시작 날짜", "공고 종료 날짜", false, "주요 업무",
                 "업무 방식", "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
     }
 
@@ -846,7 +809,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNamesResponse
                 = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
 
-        return new UpdateTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 시작 날짜", "공고 종료 날짜", "활동 지역 시/도", "활동 지역 시/군/구", false, "주요 업무",
+        return new UpdateTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 시작 날짜", "공고 종료 날짜", false, "주요 업무",
                 "업무 방식", "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
     }
 }

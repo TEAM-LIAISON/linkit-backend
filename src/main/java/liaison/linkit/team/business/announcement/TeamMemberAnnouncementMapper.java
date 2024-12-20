@@ -3,7 +3,6 @@ package liaison.linkit.team.business.announcement;
 import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
@@ -21,8 +20,7 @@ public class TeamMemberAnnouncementMapper {
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail toTeamMemberAnnouncementDetail(
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final AnnouncementPositionItem announcementPositionItem,
-            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames,
-            final RegionDetail regionDetail
+            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
         return TeamMemberAnnouncementDetail
                 .builder()
@@ -32,7 +30,6 @@ public class TeamMemberAnnouncementMapper {
                 .announcementSkillNames(announcementSkillNames)
                 .announcementStartDate(teamMemberAnnouncement.getAnnouncementStartDate())
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
-                .regionDetail(regionDetail)
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())
@@ -90,8 +87,7 @@ public class TeamMemberAnnouncementMapper {
     public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse toAddTeamMemberAnnouncementResponse(
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final AnnouncementPositionItem announcementPositionItem,
-            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames,
-            final RegionDetail regionDetail
+            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
         return AddTeamMemberAnnouncementResponse
                 .builder()
@@ -101,8 +97,6 @@ public class TeamMemberAnnouncementMapper {
                 .announcementSkillNames(announcementSkillNames)
                 .announcementStartDate(teamMemberAnnouncement.getAnnouncementStartDate())
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
-                .cityName(regionDetail.getCityName())
-                .divisionName(regionDetail.getDivisionName())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())
@@ -116,8 +110,7 @@ public class TeamMemberAnnouncementMapper {
     public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse toUpdateTeamMemberAnnouncementResponse(
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final AnnouncementPositionItem announcementPositionItem,
-            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames,
-            final RegionDetail regionDetail
+            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
         return UpdateTeamMemberAnnouncementResponse
                 .builder()
@@ -127,8 +120,6 @@ public class TeamMemberAnnouncementMapper {
                 .announcementSkillNames(announcementSkillNames)
                 .announcementStartDate(teamMemberAnnouncement.getAnnouncementStartDate())
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
-                .cityName(regionDetail.getCityName())
-                .divisionName(regionDetail.getDivisionName())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())
@@ -153,5 +144,5 @@ public class TeamMemberAnnouncementMapper {
                 .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
                 .build();
     }
-    
+
 }

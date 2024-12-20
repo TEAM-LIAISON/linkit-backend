@@ -1086,6 +1086,18 @@ include::{snippets}/team-member-controller-test/add-team-member/http-response.ad
 include::{snippets}/team-member-controller-test/add-team-member/response-fields.adoc[]
 ====
 
+=== 팀 구성원 관리 권한 변경
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/update-team-member-type/http-request.adoc[]
+include::{snippets}/team-member-controller-test/update-team-member-type/path-parameters.adoc[]
+include::{snippets}/team-member-controller-test/update-team-member-type/request-fields.adoc[]
+*응답*
+include::{snippets}/team-member-controller-test/update-team-member-type/http-response.adoc[]
+include::{snippets}/team-member-controller-test/update-team-member-type/response-fields.adoc[]
+====
+
 == #[팀 - 팀 프로덕트]#
 
 === 팀 프로덕트 전체 조회

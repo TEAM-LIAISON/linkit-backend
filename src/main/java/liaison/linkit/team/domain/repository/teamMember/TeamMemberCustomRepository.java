@@ -16,4 +16,6 @@ public interface TeamMemberCustomRepository {
     List<Team> getAllTeamByMemberId(final Long memberId);
 
     List<Team> getAllTeamsByMemberId(final Long memberId);
+
+    TeamMember getTeamMemberByTeamNameAndEmailId(final String teamName, final String emailId);
 }

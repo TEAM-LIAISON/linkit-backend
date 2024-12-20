@@ -31,4 +31,8 @@ public class TeamMemberQueryAdapter {
     public List<Team> getAllTeamsByMemberId(final Long memberId) {
         return teamMemberRepository.getAllTeamsByMemberId(memberId);
     }
+
+    public TeamMember getTeamMemberByTeamNameAndEmailId(final String teamName, final String emailId) {
+        return teamMemberRepository.getTeamMemberByTeamNameAndEmailId(teamName, emailId);
+    }
 }

@@ -2,6 +2,7 @@ package liaison.linkit.team.domain.repository.teamMember;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import liaison.linkit.member.domain.QMember;
 import liaison.linkit.team.domain.QTeam;
 
 import liaison.linkit.team.domain.Team;
@@ -83,5 +84,23 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .join(qTeamMember.team, qTeam)
                 .where(qTeamMember.member.id.eq(memberId))
                 .fetch();
+    }
+
+    @Override
+    public TeamMember getTeamMemberByTeamNameAndEmailId(
+            final String teamName,
+            final String emailId
+    ) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+        QMember qMember = QMember.member;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMember)
+                .join(qTeamMember.member, qMember)
+                .where(
+                        qTeamMember.team.teamName.eq(teamName),
+                        qMember.emailId.eq(emailId)
+                )
+                .fetchOne();
     }
 }

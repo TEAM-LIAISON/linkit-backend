@@ -2,7 +2,6 @@ package liaison.linkit.team.presentation.announcement.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +27,6 @@ public class TeamMemberAnnouncementResponseDTO {
 
         private String announcementStartDate;
         private String announcementEndDate;
-
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
 
         private Boolean isRegionFlexible; // 지역 무관
         private String mainTasks; // 주요 업무
@@ -85,8 +81,6 @@ public class TeamMemberAnnouncementResponseDTO {
         private String announcementStartDate;
         private String announcementEndDate;
 
-        private String cityName;
-        private String divisionName;
         private Boolean isRegionFlexible; // 지역 무관
 
         private String mainTasks; // 주요 업무
@@ -115,9 +109,7 @@ public class TeamMemberAnnouncementResponseDTO {
 
         private String announcementStartDate;
         private String announcementEndDate;
-
-        private String cityName;
-        private String divisionName;
+        
         private Boolean isRegionFlexible; // 지역 무관
 
         private String mainTasks; // 주요 업무

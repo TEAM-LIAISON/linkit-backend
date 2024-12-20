@@ -41,4 +41,8 @@ public class TeamMember {
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private TeamMemberType teamMemberType;  // 팀원 권한
+
+    public void updateTeamMemberType(final TeamMemberType teamMemberType) {
+        this.teamMemberType = teamMemberType;
+    }
 }

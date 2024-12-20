@@ -27,10 +27,13 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.team.presentation.teamMember.TeamMemberController;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.UpdateTeamMemberTypeRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
 import liaison.linkit.team.service.teamMember.TeamMemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -84,6 +87,15 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performUpdateTeamMemberType(final String teamName, final String emailId, final UpdateTeamMemberTypeRequest request) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/member/type/{emailId}", teamName, emailId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+    }
 
     @DisplayName("회원이 팀의 팀 구성원을 전체 조회할 수 있다.")
     @Test
@@ -275,6 +287,80 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
 
         final CommonResponse<AddTeamMemberResponse> expected = CommonResponse.onSuccess(addTeamMemberResponse);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 팀원의 관리 권한을 수정할 수 있다.")
+    @Test
+    void updateTeamMemberType() throws Exception {
+        // given
+        final TeamMemberRequestDTO.UpdateTeamMemberTypeRequest updateTeamMemberTypeRequest = UpdateTeamMemberTypeRequest.builder()
+                .teamMemberType(TeamMemberType.TEAM_VIEWER)
+                .build();
+
+        final TeamMemberResponseDTO.UpdateTeamMemberTypeResponse updateTeamMemberTypeResponse = UpdateTeamMemberTypeResponse.builder()
+                .emailId("liaison@liaison.liaison")
+                .teamMemberType(TeamMemberType.TEAM_VIEWER)
+                .build();
+
+        // when
+        when(teamMemberService.updateTeamMemberType(anyLong(), any(), any(), any())).thenReturn(updateTeamMemberTypeResponse);
+
+        final ResultActions resultActions = performUpdateTeamMemberType("liaison", "kwondm7", updateTeamMemberTypeRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // BOOLEAN 값으로 수정
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름"),
+                                        parameterWithName("emailId")
+                                                .description("팀원의 이메일 ID")
+                                ),
+                                requestFields(
+                                        fieldWithPath("teamMemberType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경하려고하는 팀원의 권한 명 (TEAM_MANAGER, TEAM_VIEWER)")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("결과 데이터"),
+                                        fieldWithPath("result.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀원의 이메일 ID"),
+                                        fieldWithPath("result.teamMemberType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경 완료된 팀원의 관리 권한 (TEAM_MANAGER, TEAM_VIEWER)")
+                                )
+                        )).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<UpdateTeamMemberTypeResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<UpdateTeamMemberTypeResponse>>() {
+                }
+        );
+
+        final CommonResponse<UpdateTeamMemberTypeResponse> expected = CommonResponse.onSuccess(updateTeamMemberTypeResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }

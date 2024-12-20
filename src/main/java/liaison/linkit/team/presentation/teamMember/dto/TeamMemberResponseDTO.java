@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,5 +48,14 @@ public class TeamMemberResponseDTO {
     public static class AddTeamMemberResponse {
         private String invitedTeamMemberEmail;
         private String teamName;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateTeamMemberTypeResponse {
+        private String emailId;
+        private TeamMemberType teamMemberType;
     }
 }

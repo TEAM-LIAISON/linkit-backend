@@ -2,11 +2,7 @@ package liaison.linkit.team.service.announcement;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.domain.Position;
-import liaison.linkit.common.implement.RegionQueryAdapter;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
@@ -15,14 +11,11 @@ import liaison.linkit.team.business.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
-import liaison.linkit.team.domain.announcement.AnnouncementRegion;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.implement.TeamQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
-import liaison.linkit.team.implement.announcement.AnnouncementRegionCommandAdapter;
-import liaison.linkit.team.implement.announcement.AnnouncementRegionQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
@@ -44,7 +37,6 @@ public class TeamMemberAnnouncementService {
     private final TeamQueryAdapter teamQueryAdapter;
 
     private final SkillQueryAdapter skillQueryAdapter;
-    private final RegionQueryAdapter regionQueryAdapter;
 
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final TeamMemberAnnouncementCommandAdapter teamMemberAnnouncementCommandAdapter;
@@ -58,10 +50,6 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
     private final AnnouncementSkillCommandAdapter announcementSkillCommandAdapter;
     private final AnnouncementSkillMapper announcementSkillMapper;
-
-    private final AnnouncementRegionQueryAdapter announcementRegionQueryAdapter;
-    private final AnnouncementRegionCommandAdapter announcementRegionCommandAdapter;
-    private final RegionMapper regionMapper;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems getTeamMemberAnnouncementItems(final Long memberId, final String teamName) {
@@ -85,14 +73,7 @@ public class TeamMemberAnnouncementService {
         List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
         List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
-        // 지역 조회
-        RegionDetail regionDetail = new RegionDetail();
-        if (regionQueryAdapter.existsAnnouncementRegionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            final AnnouncementRegion announcementRegion = regionQueryAdapter.findAnnouncementRegionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-            regionDetail = regionMapper.toRegionDetail(announcementRegion.getRegion());
-        }
-
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementDetail(teamMemberAnnouncement, announcementPositionItem, announcementSkillNames, regionDetail);
+        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementDetail(teamMemberAnnouncement, announcementPositionItem, announcementSkillNames);
     }
 
     // 팀원 공고 생성 메서드
@@ -123,17 +104,10 @@ public class TeamMemberAnnouncementService {
         announcementSkillCommandAdapter.saveAll(announcementSkills);
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
-        // 지역 저장
-        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamMemberAnnouncementRequest.getCityName(), addTeamMemberAnnouncementRequest.getDivisionName());
-        AnnouncementRegion announcementRegion = new AnnouncementRegion(null, savedTeamMemberAnnouncement, region);
-        announcementRegionCommandAdapter.save(announcementRegion);
-        final RegionDetail regionDetail = regionMapper.toRegionDetail(announcementRegion.getRegion());
-
         return teamMemberAnnouncementMapper.toAddTeamMemberAnnouncementResponse(
                 teamMemberAnnouncement,
                 announcementPositionItem,
-                announcementSkillNames,
-                regionDetail
+                announcementSkillNames
         );
     }
 
@@ -181,22 +155,10 @@ public class TeamMemberAnnouncementService {
         announcementSkillCommandAdapter.saveAll(newAnnouncementSkills);
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(newAnnouncementSkills);
 
-        // 기존 지역 삭제
-        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(updateTeamMemberAnnouncementRequest.getCityName(), updateTeamMemberAnnouncementRequest.getDivisionName());
-        if (announcementRegionQueryAdapter.existsAnnouncementRegionByTeamMemberAnnouncementId(teamMemberAnnouncementId)) {
-            announcementRegionCommandAdapter.deleteByTeamMemberAnnouncementId(teamMemberAnnouncementId);
-        }
-
-        // 기존 지역 추가
-        AnnouncementRegion announcementRegion = new AnnouncementRegion(null, updatedTeamMemberAnnouncement, region);
-        announcementRegionCommandAdapter.save(announcementRegion);
-        final RegionDetail regionDetail = regionMapper.toRegionDetail(region);
-
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementResponse(
                 updatedTeamMemberAnnouncement,
                 announcementPositionItem,
-                announcementSkillNames,
-                regionDetail
+                announcementSkillNames
         );
     }
 
@@ -211,10 +173,6 @@ public class TeamMemberAnnouncementService {
         List<AnnouncementSkill> existingAnnouncementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
         if (existingAnnouncementSkills != null & !existingAnnouncementSkills.isEmpty()) {
             announcementSkillCommandAdapter.deleteAll(existingAnnouncementSkills);
-        }
-
-        if (announcementRegionQueryAdapter.existsAnnouncementRegionByTeamMemberAnnouncementId(teamMemberAnnouncementId)) {
-            announcementRegionCommandAdapter.deleteByTeamMemberAnnouncementId(teamMemberAnnouncementId);
         }
 
         teamMemberAnnouncementCommandAdapter.removeTeamMemberAnnouncement(existingTeamMemberAnnouncement);

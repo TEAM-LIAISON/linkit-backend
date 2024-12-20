@@ -18,6 +18,7 @@ import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.ProfileInformMenu;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
 
 @Mapper
 public class TeamMemberMapper {
@@ -72,6 +73,15 @@ public class TeamMemberMapper {
         return AddTeamMemberResponse.builder()
                 .invitedTeamMemberEmail(teamMemberInvitation.getTeamMemberInvitationEmail())
                 .teamName(teamMemberInvitation.getTeam().getTeamName())
+                .build();
+    }
+
+    public TeamMemberResponseDTO.UpdateTeamMemberTypeResponse toUpdateTeamMemberTypeResponse(
+            final TeamMember teamMember
+    ) {
+        return UpdateTeamMemberTypeResponse.builder()
+                .emailId(teamMember.getMember().getEmailId())
+                .teamMemberType(teamMember.getTeamMemberType())
                 .build();
     }
 }
