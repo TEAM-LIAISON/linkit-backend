@@ -155,8 +155,8 @@ public class TeamService {
         final Team team = teamQueryAdapter.findByTeamName(teamName);
 
         // 팀 이름 업데이트
-        team.updateTeam(updateTeamRequest.getTeamName(), updateTeamRequest.getTeamShortDescription(), updateTeamRequest.getIsTeamPublic())
-        
+        team.updateTeam(updateTeamRequest.getTeamName(), updateTeamRequest.getTeamShortDescription(), updateTeamRequest.getIsTeamPublic());
+
         // 팀 로고 이미지 처리
         if (teamLogoImage != null && !teamLogoImage.isEmpty()) {
             if (imageValidator.validatingImageUpload(teamLogoImage)) {
