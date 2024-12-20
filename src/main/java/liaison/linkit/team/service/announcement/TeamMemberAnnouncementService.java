@@ -105,12 +105,7 @@ public class TeamMemberAnnouncementService {
         final TeamMemberAnnouncement savedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.addTeamMemberAnnouncement(teamMemberAnnouncement);
 
         // 포지션 저장
-
         final Position position = positionQueryAdapter.findByMajorPositionAndSubPosition(addTeamMemberAnnouncementRequest.getMajorPosition(), addTeamMemberAnnouncementRequest.getSubPosition());
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(savedTeamMemberAnnouncement.getId())) {
-            announcementPositionCommandAdapter.deleteAllByTeamMemberAnnouncementId(savedTeamMemberAnnouncement.getId());
-        }
-
         AnnouncementPosition announcementPosition = new AnnouncementPosition(null, savedTeamMemberAnnouncement, position);
         AnnouncementPosition savedAnnouncementPosition = announcementPositionCommandAdapter.save(announcementPosition);
         final AnnouncementPositionItem announcementPositionItem = announcementPositionMapper.toAnnouncementPositionItem(savedAnnouncementPosition);
@@ -128,10 +123,6 @@ public class TeamMemberAnnouncementService {
 
         // 지역 저장
         final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamMemberAnnouncementRequest.getCityName(), addTeamMemberAnnouncementRequest.getDivisionName());
-        if (announcementRegionQueryAdapter.existsAnnouncementRegionByTeamMemberAnnouncementId(savedTeamMemberAnnouncement.getId())) {
-            announcementRegionCommandAdapter.deleteByTeamMemberAnnouncementId(savedTeamMemberAnnouncement.getId());
-        }
-
         AnnouncementRegion announcementRegion = new AnnouncementRegion(null, savedTeamMemberAnnouncement, region);
         announcementRegionCommandAdapter.save(announcementRegion);
         final RegionDetail regionDetail = regionMapper.toRegionDetail(announcementRegion.getRegion());

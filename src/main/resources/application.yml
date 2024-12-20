@@ -50,11 +50,11 @@ spring:
     path match:
       matching-strategy: ant_path_matcher
 
-    #  batch:
-    #    job:
-    #      enabled: true
-    #    jdbc:
-    #      initialize-schema: always
+  batch:
+    job:
+      enabled: true
+    jdbc:
+      initialize-schema: always
 
     #  flyway:
     #    enabled: true
