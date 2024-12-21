@@ -29,7 +29,7 @@ import software.amazon.awssdk.utils.ImmutableMap;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Message implements Serializable {
+public class MessageKafka implements Serializable {
     private String id;
 
     @NotNull
@@ -82,16 +82,16 @@ public class Message implements Serializable {
 
         // KafkaListener 컨테이너 팩토리를 생성하는 Bean 메서드
         @Bean
-        ConcurrentKafkaListenerContainerFactory<String, Message> kafkaListenerContainerFactory() {
-            ConcurrentKafkaListenerContainerFactory<String, Message> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, MessageKafka> kafkaListenerContainerFactory() {
+            ConcurrentKafkaListenerContainerFactory<String, MessageKafka> factory = new ConcurrentKafkaListenerContainerFactory<>();
             factory.setConsumerFactory(consumerFactory());
             return factory;
         }
 
         // Kafka ConsumerFactory를 생성하는 Bean 메서드
         @Bean
-        public ConsumerFactory<String, Message> consumerFactory() {
-            JsonDeserializer<Message> deserializer = new JsonDeserializer<>();
+        public ConsumerFactory<String, MessageKafka> consumerFactory() {
+            JsonDeserializer<MessageKafka> deserializer = new JsonDeserializer<>();
             // 패키지 신뢰 오류로 인해 모든 패키지를 신뢰하도록 작성
             deserializer.addTrustedPackages("*");
 

@@ -31,7 +31,7 @@ public class KafkaMessageService {
 
             kafkaTemplate.send(topic, messagePayload);
 
-            log.info("Message sent to Kafka topic: {} with payload: {}", topic, messagePayload);
+            log.info("MessageKafka sent to Kafka topic: {} with payload: {}", topic, messagePayload);
         } catch (Exception e) {
             log.error("Failed to send message to Kafka", e);
             throw new RuntimeException("Kafka message sending failed", e);
