@@ -64,7 +64,7 @@ spring:
     job:
       enabled: true
     jdbc:
-      initialize-schema: never
+      initialize-schema: always
 
     #  flyway:
     #    enabled: true

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-public class MessageController {
+public class MessagingController {
     private final KafkaMessageService kafkaMessageService;
     private final SimpMessagingTemplate sendingOperations; // 메시지를 클라이언트로 전송하는 Bean
 
