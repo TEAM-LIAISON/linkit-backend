@@ -8,10 +8,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableMongoRepositories(basePackages = "liaison.linkit.chat.domain.repository")
 public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @Value("${spring.data.mongodb.host}")
@@ -44,11 +45,6 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
                 username, password, host, database, uriOptions);
         logConnectionDetails(uri);
         return MongoClients.create(uri);
-    }
-
-    @Bean
-    public MongoTemplate mongoTemplate() {
-        return new MongoTemplate(mongoClient(), getDatabaseName());
     }
 
     private void logConnectionDetails(String uri) {

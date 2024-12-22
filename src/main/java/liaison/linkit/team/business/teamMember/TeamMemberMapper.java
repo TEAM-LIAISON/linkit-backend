@@ -17,7 +17,7 @@ import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.ProfileInformMenu;
-import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
 
 @Mapper
@@ -30,8 +30,8 @@ public class TeamMemberMapper {
                 .build();
     }
 
-    public TeamMemberItems toTeamMemberItems(final List<TeamMemberResponseDTO.ProfileInformMenu> profileInformMenus) {
-        return TeamMemberItems
+    public TeamMemberViewItems toTeamMemberItems(final List<TeamMemberResponseDTO.ProfileInformMenu> profileInformMenus) {
+        return TeamMemberViewItems
                 .builder()
                 .profileInformMenus(profileInformMenus)
                 .build();

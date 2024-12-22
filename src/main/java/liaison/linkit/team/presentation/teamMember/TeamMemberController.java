@@ -6,6 +6,8 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.service.teamMember.TeamMemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +29,16 @@ public class TeamMemberController {
     // 팀원 전체 조회
     @GetMapping("/members")
     @MemberOnly
-    public CommonResponse<TeamMemberResponseDTO.TeamMemberItems> getTeamMemberItems(
+    public CommonResponse<TeamMemberViewItems> getTeamMemberViewItems(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamName
+    ) {
+        return CommonResponse.onSuccess(teamMemberService.getTeamMemberViewItems(accessor.getMemberId(), teamName));
+    }
+
+    @GetMapping("/members/invitation")
+    @MemberOnly
+    public CommonResponse<TeamMemberItems> getTeamMemberItems(
             @Auth final Accessor accessor,
             @PathVariable final String teamName
     ) {

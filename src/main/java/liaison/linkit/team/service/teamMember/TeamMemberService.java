@@ -33,7 +33,10 @@ import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.UpdateTeamMemberTypeRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.PendingTeamMemberItem;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.ProfileInformMenu;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -61,7 +64,7 @@ public class TeamMemberService {
 
     private final TeamMemberInvitationMailService teamMemberInvitationMailService;
 
-    public TeamMemberResponseDTO.TeamMemberItems getTeamMemberItems(final Long memberId, final String teamName) {
+    public TeamMemberViewItems getTeamMemberViewItems(final Long memberId, final String teamName) {
         // 1. 팀 조회
         final Team team = teamQueryAdapter.findByTeamName(teamName);
 
@@ -129,7 +132,7 @@ public class TeamMemberService {
         teamMemberInvitationMailService.sendMailTeamMemberInvitation(teamMemberInvitationEmail, team.getTeamLogoImagePath(), team.getTeamName());
 
         // 새로운 팀원 초대 객체 생성
-        final TeamMemberInvitation teamMemberInvitation = new TeamMemberInvitation(null, teamMemberInvitationEmail, team, TeamMemberInviteState.PENDING);
+        final TeamMemberInvitation teamMemberInvitation = new TeamMemberInvitation(null, teamMemberInvitationEmail, team, addTeamMemberRequest.getTeamMemberType(), TeamMemberInviteState.PENDING);
 
         teamMemberInvitationCommandAdapter.addTeamMemberInvitation(teamMemberInvitation);
 
@@ -154,4 +157,54 @@ public class TeamMemberService {
 
         return teamMemberMapper.toUpdateTeamMemberTypeResponse(teamMember);
     }
+
+    public TeamMemberResponseDTO.TeamMemberItems getTeamMemberItems(final Long memberId, final String teamName) {
+        // 팀 이름으로 팀 정보 조회
+        final Team team = teamQueryAdapter.findByTeamName(teamName);
+
+        // 해당 팀의 모든 팀 멤버 조회
+        final List<TeamMember> teamMembers = teamMemberQueryAdapter.getTeamMembers(team.getId());
+
+        // 초대 수락 완료된 팀 멤버들을 AcceptedTeamMemberItem 리스트로 매핑
+        final List<AcceptedTeamMemberItem> acceptedTeamMemberItems = teamMembers.stream()
+                .map(teamMember -> {
+                    // 프로필 정보 조회
+                    Profile profile = profileQueryAdapter.findByMemberId(teamMember.getMember().getId());
+
+                    // 대분류 포지션 정보 조회
+                    ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+                    if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+                        final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+                        profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                    }
+
+                    return AcceptedTeamMemberItem.builder()
+                            .profileImagePath(profile.getProfileImagePath())
+                            .memberName(profile.getMember().getMemberBasicInform().getMemberName())
+                            .majorPosition(profilePositionDetail.getMajorPosition())
+                            .teamMemberType(teamMember.getTeamMemberType())
+                            .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
+                            .build();
+                })
+                .toList();
+
+        // 초대 수락 대기 중인 멤버들을 PendingTeamMemberItem 리스트로 매핑
+        final List<TeamMemberInvitation> teamMemberInvitations = teamMemberInvitationQueryAdapter.getTeamMemberInvitations(team.getId());
+
+        final List<PendingTeamMemberItem> pendingTeamMemberItems = teamMemberInvitations.stream()
+                .map(teamMemberInvitation ->
+                        PendingTeamMemberItem.builder()
+                                .teamMemberInvitationEmail(teamMemberInvitation.getTeamMemberInvitationEmail())
+                                .teamMemberType(teamMemberInvitation.getTeamMemberType())
+                                .teamMemberInviteState(teamMemberInvitation.getTeamMemberInviteState())
+                                .build()
+                ).toList();
+
+        // 결과 객체 생성 및 반환
+        return TeamMemberResponseDTO.TeamMemberItems.builder()
+                .acceptedTeamMemberItems(acceptedTeamMemberItems)
+                .pendingTeamMemberItems(pendingTeamMemberItems)
+                .build();
+    }
+
 }

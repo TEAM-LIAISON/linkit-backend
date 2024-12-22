@@ -36,6 +36,10 @@ public class TeamMemberInvitation extends BaseDateTimeEntity {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @Column(nullable = false)
+    @Enumerated(value = STRING)
+    private TeamMemberType teamMemberType;
+
     // 초대 상태
     @Column(nullable = false)
     @Enumerated(value = STRING)
