@@ -27,7 +27,6 @@ import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.domain.portfolio.ProjectSize;
 import liaison.linkit.team.presentation.product.TeamProductController;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO.AddTeamProductRequest;
@@ -111,6 +110,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .productLineDescription("프로덕트 한 줄 소개 1")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
+                .productRepresentImagePath("프로덕트 대표 이미지 1")
                 .isProductInProgress(false)
                 .teamProductLinks(Arrays.asList(
                         TeamProductResponseDTO.TeamProductLinkResponse.builder()
@@ -133,6 +133,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .productLineDescription("프로덕트 한 줄 소개 2")
                 .productStartDate("프로덕트 시작 날짜 2")
                 .productEndDate("프로덕트 종료 날짜 2")
+                .productRepresentImagePath("프로덕트 대표 이미지 2")
                 .isProductInProgress(false)
                 .teamProductLinks(Arrays.asList(
                         TeamProductResponseDTO.TeamProductLinkResponse.builder()
@@ -202,6 +203,9 @@ public class TeamProductControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamProductItems[].productEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 종료 날짜"),
+                                        fieldWithPath("result.teamProductItems[].productRepresentImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 대표 이미지 경로"),
                                         fieldWithPath("result.teamProductItems[].isProductInProgress")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로덕트 진행 중 여부"),
@@ -244,9 +248,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 제목 1")
                 .productLineDescription("프로덕트 한 줄 소개 1")
-                .projectSize(ProjectSize.TEAM)
-                .productHeadCount(8)
-                .productTeamComposition("개발자 8명")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -322,15 +324,9 @@ public class TeamProductControllerTest extends ControllerTest {
                                         fieldWithPath("result.productLineDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 한 줄 소개"),
-                                        fieldWithPath("result.projectSize")
+                                        fieldWithPath("result.productField")
                                                 .type(JsonFieldType.STRING)
-                                                .description("프로젝트 규모"),
-                                        fieldWithPath("result.productHeadCount")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("프로덕트 인원 수"),
-                                        fieldWithPath("result.productTeamComposition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("프로덕트 팀 구성"),
+                                                .description("프로덕트 분야"),
                                         fieldWithPath("result.productStartDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 시작 날짜"),
@@ -391,9 +387,7 @@ public class TeamProductControllerTest extends ControllerTest {
         final TeamProductRequestDTO.AddTeamProductRequest addTeamProductRequest = AddTeamProductRequest.builder()
                 .productName("프로덕트 이름")
                 .productLineDescription("프로덕트 한 줄 소개")
-                .projectSize(ProjectSize.PERSONAL)
-                .productHeadCount(1)
-                .productTeamComposition("팀 구성")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -446,9 +440,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 이름")
                 .productLineDescription("프로덕트 한 줄 소개")
-                .projectSize(ProjectSize.PERSONAL)
-                .productHeadCount(1)
-                .productTeamComposition("팀 구성")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -527,9 +519,7 @@ public class TeamProductControllerTest extends ControllerTest {
                         requestPartFields("addTeamProductRequest",
                                 fieldWithPath("productName").type(JsonFieldType.STRING).description("프로덕트 이름"),
                                 fieldWithPath("productLineDescription").type(JsonFieldType.STRING).description("프로덕트 한 줄 소개"),
-                                fieldWithPath("projectSize").type(JsonFieldType.STRING).description("프로젝트 규모 (PERSONAL 또는 TEAM)"),
-                                fieldWithPath("productHeadCount").type(JsonFieldType.NUMBER).description("프로덕트 인원 수"),
-                                fieldWithPath("productTeamComposition").type(JsonFieldType.STRING).description("프로덕트 팀 구성"),
+                                fieldWithPath("productField").type(JsonFieldType.STRING).description("프로덕트 분야"),
                                 fieldWithPath("productStartDate").type(JsonFieldType.STRING).description("프로덕트 시작 날짜"),
                                 fieldWithPath("productEndDate").type(JsonFieldType.STRING).description("프로덕트 종료 날짜"),
                                 fieldWithPath("isProductInProgress").type(JsonFieldType.BOOLEAN).description("프로덕트 진행 중 여부"),
@@ -563,15 +553,9 @@ public class TeamProductControllerTest extends ControllerTest {
                                 fieldWithPath("result.productLineDescription")
                                         .type(JsonFieldType.STRING)
                                         .description("프로덕트 한 줄 소개"),
-                                fieldWithPath("result.projectSize")
+                                fieldWithPath("result.productField")
                                         .type(JsonFieldType.STRING)
-                                        .description("프로젝트 규모 (PERSONAL 또는 TEAM)"),
-                                fieldWithPath("result.productHeadCount")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("프로덕트 인원 수"),
-                                fieldWithPath("result.productTeamComposition")
-                                        .type(JsonFieldType.STRING)
-                                        .description("프로덕트 팀 구성"),
+                                        .description("프로덕트 분야"),
                                 fieldWithPath("result.productStartDate")
                                         .type(JsonFieldType.STRING)
                                         .description("프로덕트 시작 날짜"),
@@ -631,9 +615,7 @@ public class TeamProductControllerTest extends ControllerTest {
         final TeamProductRequestDTO.UpdateTeamProductRequest updateTeamProductRequest = UpdateTeamProductRequest.builder()
                 .productName("프로덕트 이름")
                 .productLineDescription("프로덕트 한 줄 소개")
-                .projectSize(ProjectSize.PERSONAL)
-                .productHeadCount(1)
-                .productTeamComposition("팀 구성")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -686,9 +668,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 이름")
                 .productLineDescription("프로덕트 한 줄 소개")
-                .projectSize(ProjectSize.PERSONAL)
-                .productHeadCount(1)
-                .productTeamComposition("팀 구성")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -770,9 +750,7 @@ public class TeamProductControllerTest extends ControllerTest {
                         requestPartFields("updateTeamProductRequest",
                                 fieldWithPath("productName").type(JsonFieldType.STRING).description("프로덕트 이름"),
                                 fieldWithPath("productLineDescription").type(JsonFieldType.STRING).description("프로덕트 한 줄 소개"),
-                                fieldWithPath("projectSize").type(JsonFieldType.STRING).description("프로젝트 규모 (PERSONAL 또는 TEAM)"),
-                                fieldWithPath("productHeadCount").type(JsonFieldType.NUMBER).description("프로덕트 인원 수"),
-                                fieldWithPath("productTeamComposition").type(JsonFieldType.STRING).description("프로덕트 팀 구성"),
+                                fieldWithPath("productField").type(JsonFieldType.STRING).description("프로덕트 분야"),
                                 fieldWithPath("productStartDate").type(JsonFieldType.STRING).description("프로덕트 시작 날짜"),
                                 fieldWithPath("productEndDate").type(JsonFieldType.STRING).description("프로덕트 종료 날짜"),
                                 fieldWithPath("isProductInProgress").type(JsonFieldType.BOOLEAN).description("프로덕트 진행 중 여부"),
@@ -806,15 +784,9 @@ public class TeamProductControllerTest extends ControllerTest {
                                 fieldWithPath("result.productLineDescription")
                                         .type(JsonFieldType.STRING)
                                         .description("프로덕트 한 줄 소개"),
-                                fieldWithPath("result.projectSize")
+                                fieldWithPath("result.productField")
                                         .type(JsonFieldType.STRING)
-                                        .description("프로젝트 규모 (PERSONAL 또는 TEAM)"),
-                                fieldWithPath("result.productHeadCount")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("프로덕트 인원 수"),
-                                fieldWithPath("result.productTeamComposition")
-                                        .type(JsonFieldType.STRING)
-                                        .description("프로덕트 팀 구성"),
+                                        .description("프로덕트 분야"),
                                 fieldWithPath("result.productStartDate")
                                         .type(JsonFieldType.STRING)
                                         .description("프로덕트 시작 날짜"),

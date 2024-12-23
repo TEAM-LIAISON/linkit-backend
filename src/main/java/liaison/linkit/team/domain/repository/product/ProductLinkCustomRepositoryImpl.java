@@ -22,10 +22,11 @@ public class ProductLinkCustomRepositoryImpl implements ProductLinkCustomReposit
         QProductLink qProductLink = QProductLink.productLink;
         QTeamProduct qTeamProduct = QTeamProduct.teamProduct;
 
+        // TeamProduct와 ProductLink 간의 조인을 명확히 설정
         List<Tuple> results = jpaQueryFactory
                 .select(qTeamProduct.id, qProductLink)
                 .from(qTeamProduct)
-                .leftJoin(qTeamProduct.productLinks, qProductLink)
+                .leftJoin(qProductLink).on(qProductLink.teamProduct.id.eq(qTeamProduct.id))
                 .where(qTeamProduct.team.id.eq(teamId))
                 .fetch();
 
@@ -50,6 +51,7 @@ public class ProductLinkCustomRepositoryImpl implements ProductLinkCustomReposit
 
         return resultMap;
     }
+
 
     @Override
     public List<ProductLink> getProductLinks(final Long teamProductId) {

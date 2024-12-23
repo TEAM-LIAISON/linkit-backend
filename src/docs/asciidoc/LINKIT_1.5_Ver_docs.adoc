@@ -874,16 +874,16 @@ include::{snippets}/team-controller-test/get-team-detail/http-response.adoc[]
 include::{snippets}/team-controller-test/get-team-detail/response-fields.adoc[]
 ====
 
-=== 팀_팀원 상세 조회
+=== 팀_팀원 상세 조회 (뷰어)
 
 ====
 *요청*
-include::{snippets}/team-member-controller-test/get-team-member-items/http-request.adoc[]
-include::{snippets}/team-member-controller-test/get-team-member-items/path-parameters.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-view-items/http-request.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-view-items/path-parameters.adoc[]
 
 *응답*
-include::{snippets}/team-member-controller-test/get-team-member-items/http-response.adoc[]
-include::{snippets}/team-member-controller-test/get-team-member-items/response-fields.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-view-items/http-response.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-view-items/response-fields.adoc[]
 
 ====
 
@@ -1077,12 +1077,12 @@ include::{snippets}/team-member-announcement-controller-test/update-team-member-
 
 ====
 *요청*
-include::{snippets}/team-member-controller-test/get-team-member-items/http-request.adoc[]
-include::{snippets}/team-member-controller-test/get-team-member-items/path-parameters.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-edit-items/http-request.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-edit-items/path-parameters.adoc[]
 
 *응답*
-include::{snippets}/team-member-controller-test/get-team-member-items/http-response.adoc[]
-include::{snippets}/team-member-controller-test/get-team-member-items/response-fields.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-edit-items/http-response.adoc[]
+include::{snippets}/team-member-controller-test/get-team-member-edit-items/response-fields.adoc[]
 ====
 
 === 팀 구성원 1명 초대

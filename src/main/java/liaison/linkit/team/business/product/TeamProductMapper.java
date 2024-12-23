@@ -32,6 +32,7 @@ public class TeamProductMapper {
                 .teamProductId(teamProduct.getId())
                 .productName(teamProduct.getProductName())
                 .productLineDescription(teamProduct.getProductLineDescription())
+                .productField(teamProduct.getProductField())
                 .productStartDate(teamProduct.getProductStartDate())
                 .productEndDate(teamProduct.getProductEndDate())
                 .isProductInProgress(teamProduct.isProductInProgress())
@@ -54,7 +55,7 @@ public class TeamProductMapper {
                 .build();
     }
 
-    private TeamProductItem toTeamProductItem(TeamProduct teamProduct, List<ProductLink> productLinks) {
+    private TeamProductItem toTeamProductItem(final TeamProduct teamProduct, final List<ProductLink> productLinks) {
         List<TeamProductLinkResponse> linkResponses = productLinks.stream()
                 .map(this::toTeamProductLinkResponse)
                 .collect(Collectors.toList());
@@ -65,6 +66,7 @@ public class TeamProductMapper {
                 .productLineDescription(teamProduct.getProductLineDescription())
                 .productStartDate(teamProduct.getProductStartDate())
                 .productEndDate(teamProduct.getProductEndDate())
+                .productRepresentImagePath(teamProduct.getProductRepresentImagePath())
                 .isProductInProgress(teamProduct.isProductInProgress())
                 .teamProductLinks(linkResponses)
                 .productDescription(teamProduct.getProductDescription())
@@ -84,14 +86,17 @@ public class TeamProductMapper {
                 .collect(Collectors.toList());
     }
 
-    public TeamProduct toAddTeamProduct(final Team team, final TeamProductRequestDTO.AddTeamProductRequest request) {
+    public TeamProduct toAddTeamProduct(
+            final Team team,
+            final TeamProductRequestDTO.AddTeamProductRequest request
+    ) {
         return TeamProduct
                 .builder()
                 .id(null)
                 .team(team)
                 .productName(request.getProductName())
                 .productLineDescription(request.getProductLineDescription())
-                .projectSize(request.getProjectSize())
+                .productField(request.getProductField())
                 .productStartDate(request.getProductStartDate())
                 .productEndDate(request.getProductEndDate())
                 .isProductInProgress(request.getIsProductInProgress())
@@ -99,7 +104,7 @@ public class TeamProductMapper {
                 .build();
     }
 
-    private TeamProductLinkResponse toTeamProductLinkResponse(ProductLink productLink) {
+    private TeamProductLinkResponse toTeamProductLinkResponse(final ProductLink productLink) {
         return TeamProductLinkResponse.builder()
                 .productLinkId(productLink.getId())
                 .productLinkName(productLink.getProductLinkName())
@@ -111,6 +116,7 @@ public class TeamProductMapper {
     public List<TeamProductLinkResponse> toTeamProductLinks(final List<ProductLink> productLinks) {
         return productLinks.stream()
                 .map(pls -> TeamProductLinkResponse.builder()
+                        .productLinkId(pls.getId())
                         .productLinkName(pls.getProductLinkName())
                         .productLinkPath(pls.getProductLinkPath())
                         .build())
@@ -140,15 +146,10 @@ public class TeamProductMapper {
                 .teamProductId(teamProduct.getId())
                 .productName(teamProduct.getProductName())
                 .productLineDescription(teamProduct.getProductLineDescription())
-
-                .projectSize(teamProduct.getProjectSize())
-                .productHeadCount(teamProduct.getProductHeadCount())
-                .productTeamComposition(teamProduct.getProductTeamComposition())
-
+                .productField(teamProduct.getProductField())
                 .productStartDate(teamProduct.getProductStartDate())
                 .productEndDate(teamProduct.getProductEndDate())
                 .isProductInProgress(teamProduct.isProductInProgress())
-
                 .teamProductLinks(teamProductLinkResponses)
                 .productDescription(teamProduct.getProductDescription())
                 .teamProductImages(teamProductImages)
@@ -165,11 +166,7 @@ public class TeamProductMapper {
                 .teamProductId(teamProduct.getId())
                 .productName(teamProduct.getProductName())
                 .productLineDescription(teamProduct.getProductLineDescription())
-
-                .projectSize(teamProduct.getProjectSize())
-                .productHeadCount(teamProduct.getProductHeadCount())
-                .productTeamComposition(teamProduct.getProductTeamComposition())
-
+                .productField(teamProduct.getProductField())
                 .productStartDate(teamProduct.getProductStartDate())
                 .productEndDate(teamProduct.getProductEndDate())
                 .isProductInProgress(teamProduct.isProductInProgress())

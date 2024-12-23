@@ -27,7 +27,7 @@ public class TeamMemberController {
     private final TeamMemberService teamMemberService;
 
     // 팀원 전체 조회
-    @GetMapping("/members")
+    @GetMapping("/members/view")
     @MemberOnly
     public CommonResponse<TeamMemberViewItems> getTeamMemberViewItems(
             @Auth final Accessor accessor,
@@ -36,7 +36,8 @@ public class TeamMemberController {
         return CommonResponse.onSuccess(teamMemberService.getTeamMemberViewItems(accessor.getMemberId(), teamName));
     }
 
-    @GetMapping("/members/invitation")
+    // 팀원 목록 조회
+    @GetMapping("/members/edit")
     @MemberOnly
     public CommonResponse<TeamMemberItems> getTeamMemberItems(
             @Auth final Accessor accessor,

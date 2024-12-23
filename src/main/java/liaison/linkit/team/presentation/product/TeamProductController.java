@@ -51,6 +51,7 @@ public class TeamProductController {
         return CommonResponse.onSuccess(teamProductService.getTeamProductDetail(accessor.getMemberId(), teamName, teamProductId));
     }
 
+    // 팀 프로덕트 생성
     @PostMapping
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.AddTeamProductResponse> addTeamProduct(
@@ -64,6 +65,7 @@ public class TeamProductController {
         return CommonResponse.onSuccess(teamProductService.addTeamProduct(accessor.getMemberId(), teamName, addTeamProductRequest, productRepresentImage, productSubImages));
     }
 
+    // 팀 프로덕트 수정
     @PostMapping("/{teamProductId}")
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.UpdateTeamProductResponse> updateTeamProduct(
@@ -77,7 +79,8 @@ public class TeamProductController {
         log.info("memberId = {}의 팀 이름 = {}에 대한 팀 프로덕트 단일 수정 요청이 발생했습니다.", accessor.getMemberId(), teamName);
         return CommonResponse.onSuccess(teamProductService.updateTeamProduct(accessor.getMemberId(), teamName, teamProductId, updateTeamProductRequest, productRepresentImage, productSubImages));
     }
-
+    
+    // 팀 프로덕트 삭제
     @DeleteMapping("/{teamProductId}")
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.RemoveTeamProductResponse> removeTeamProduct(

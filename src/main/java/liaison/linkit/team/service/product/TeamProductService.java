@@ -54,13 +54,12 @@ public class TeamProductService {
     @Transactional(readOnly = true)
     public TeamProductResponseDTO.TeamProductItems getTeamProductItems(final Long memberId, final String teamName) {
         log.info("memberId = {}의 팀 이름 = {}에 대한 프로덕트 Items 조회 요청이 서비스 계층에 발생했습니다.", memberId, teamName);
-
         final Team team = teamQueryAdapter.findByTeamName(teamName);
-
+        log.info("team={}", team);
         final List<TeamProduct> teamProducts = teamProductQueryAdapter.getTeamProducts(team.getId());
-
+        log.info("teamProducts={}", teamProducts);
         final Map<Long, List<ProductLink>> productLinksMap = productLinkQueryAdapter.getProductLinksMap(team.getId());
-
+        log.info("productLinksMap={}", productLinksMap);
         return teamProductMapper.toTeamProductItems(teamProducts, productLinksMap);
     }
 

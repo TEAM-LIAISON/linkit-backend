@@ -75,7 +75,15 @@ public class TeamMemberControllerTest extends ControllerTest {
 
     private ResultActions performGetTeamMemberViewItems(final String teamName) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/view", teamName)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performGetTeamMemberEditItems(final String teamName) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/edit", teamName)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -98,14 +106,6 @@ public class TeamMemberControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
-        );
-    }
-
-    private ResultActions performGetTeamMemberItems(final String teamName) throws Exception {
-        return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/invitation", teamName)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
         );
     }
 
@@ -228,7 +228,7 @@ public class TeamMemberControllerTest extends ControllerTest {
 
     @DisplayName("회원이 팀 구성원으로 등록, 초대된 회원 정보들을 조회할 수 있다.")
     @Test
-    void getTeamMemberItems() throws Exception {
+    void getTeamMemberEditItems() throws Exception {
         // given
         final TeamMemberItems teamMemberItems = TeamMemberItems.builder()
                 .acceptedTeamMemberItems(
@@ -268,7 +268,7 @@ public class TeamMemberControllerTest extends ControllerTest {
         // when
         when(teamMemberService.getTeamMemberItems(anyLong(), any())).thenReturn(teamMemberItems);
 
-        final ResultActions resultActions = performGetTeamMemberItems("liaison");
+        final ResultActions resultActions = performGetTeamMemberEditItems("liaison");
 
         // then
         final MvcResult mvcResult = resultActions
