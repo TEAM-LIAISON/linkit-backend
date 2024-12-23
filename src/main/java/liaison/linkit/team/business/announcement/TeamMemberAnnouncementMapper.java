@@ -1,7 +1,6 @@
 package liaison.linkit.team.business.announcement;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
@@ -57,14 +56,10 @@ public class TeamMemberAnnouncementMapper {
                 .build();
     }
 
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems toTeamMemberAnnouncementItems(final List<TeamMemberAnnouncement> teamMemberAnnouncements) {
-        List<TeamMemberAnnouncementItem> items = teamMemberAnnouncements.stream()
-                .map(this::toTeamMemberAnnouncementItem)
-                .collect(Collectors.toList());
-
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems toTeamMemberAnnouncementItems(final List<TeamMemberAnnouncementItem> teamMemberAnnouncementItems) {
         return TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems
                 .builder()
-                .teamMemberAnnouncementItems(items)
+                .teamMemberAnnouncementItems(teamMemberAnnouncementItems)
                 .build();
     }
 
@@ -73,6 +68,7 @@ public class TeamMemberAnnouncementMapper {
         return TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem
                 .builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .build();
     }
 

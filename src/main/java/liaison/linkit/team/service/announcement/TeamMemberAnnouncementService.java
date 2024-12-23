@@ -55,7 +55,33 @@ public class TeamMemberAnnouncementService {
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems getTeamMemberAnnouncementItems(final Long memberId, final String teamName) {
         final Team team = teamQueryAdapter.findByTeamName(teamName);
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementItems(teamMemberAnnouncements);
+
+        // 조회한 TeamMemberAnnouncement 리스트를 TeamMemberAnnouncementItems 매핑
+        List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem> items = teamMemberAnnouncements.stream()
+                .map(teamMemberAnnouncement -> {
+                    // 포지션 조회
+                    AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+                    if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
+                        AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+                        announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
+                    }
+
+                    List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
+                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+
+                    // TeamMemberAnnouncementItem 생성
+                    return TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem.builder()
+                            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+                            .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+                            .majorPosition(announcementPositionItem.getMajorPosition())
+                            .announcementSkillNames(announcementSkillNames)
+                            .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
+                            .isAnnouncementInProgress(teamMemberAnnouncement.isAnnouncementInProgress())
+                            .build();
+                })
+                .toList();
+
+        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementItems(items);
     }
 
     @Transactional(readOnly = true)
