@@ -64,6 +64,7 @@ public class TeamProductMapper {
                 .teamProductId(teamProduct.getId())
                 .productName(teamProduct.getProductName())
                 .productLineDescription(teamProduct.getProductLineDescription())
+                .productField(teamProduct.getProductField())
                 .productStartDate(teamProduct.getProductStartDate())
                 .productEndDate(teamProduct.getProductEndDate())
                 .productRepresentImagePath(teamProduct.getProductRepresentImagePath())

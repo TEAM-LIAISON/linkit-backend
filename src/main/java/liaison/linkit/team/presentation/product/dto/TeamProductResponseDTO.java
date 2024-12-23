@@ -41,6 +41,7 @@ public class TeamProductResponseDTO {
         private Long teamProductId;
         private String productName;
         private String productLineDescription;
+        private String productField;
         private String productStartDate;
         private String productEndDate;
         private Boolean isProductInProgress;
