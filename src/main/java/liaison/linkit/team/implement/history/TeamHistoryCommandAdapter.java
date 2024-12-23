@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TeamHistoryCommandAdapter {
 
-    private TeamHistoryRepository teamHistoryRepository;
+    final TeamHistoryRepository teamHistoryRepository;
 
     public TeamHistory addTeamHistory(final TeamHistory teamHistory) {
         return teamHistoryRepository.save(teamHistory);

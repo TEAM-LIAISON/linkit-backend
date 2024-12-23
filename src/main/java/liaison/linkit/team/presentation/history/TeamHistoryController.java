@@ -45,7 +45,8 @@ public class TeamHistoryController {
         log.info("memberId = {}의 팀 이름 = {}에 대한 팀 연혁 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
         return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryDetail(accessor.getMemberId(), teamName, teamHistoryId));
     }
-
+    
+    // 팀 연혁 생성
     @PostMapping
     @MemberOnly
     public CommonResponse<TeamHistoryResponseDTO.AddTeamHistoryResponse> addTeamHistory(

@@ -41,8 +41,12 @@ public class TeamHistoryService {
 
     public TeamHistoryResponseDTO.AddTeamHistoryResponse addTeamHistory(final Long memberId, final String teamName, final TeamHistoryRequestDTO.AddTeamHistoryRequest addTeamHistoryRequest) {
         final Team team = teamQueryAdapter.findByTeamName(teamName);
+        log.info("team ={}", team);
         final TeamHistory teamHistory = teamHistoryMapper.toAddTeamHistory(team, addTeamHistoryRequest);
+        log.info("teamHistory ={}", teamHistory);
         final TeamHistory savedTeamHistory = teamHistoryCommandAdapter.addTeamHistory(teamHistory);
+        log.info("savedTeamHistory ={}", savedTeamHistory);
+        
         return teamHistoryMapper.toAddTeamHistoryResponse(savedTeamHistory);
     }
 
