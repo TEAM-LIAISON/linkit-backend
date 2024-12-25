@@ -108,6 +108,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 제목 1")
                 .productLineDescription("프로덕트 한 줄 소개 1")
+                .productField("프로덕트 분야 1")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .productRepresentImagePath("프로덕트 대표 이미지 1")
@@ -131,6 +132,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 제목 2")
                 .productLineDescription("프로덕트 한 줄 소개 2")
+                .productField("프로덕트 분야 2")
                 .productStartDate("프로덕트 시작 날짜 2")
                 .productEndDate("프로덕트 종료 날짜 2")
                 .productRepresentImagePath("프로덕트 대표 이미지 2")
@@ -197,6 +199,9 @@ public class TeamProductControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamProductItems[].productLineDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 한 줄 소개"),
+                                        fieldWithPath("result.teamProductItems[].productField")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 분야"),
                                         fieldWithPath("result.teamProductItems[].productStartDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 시작 날짜"),
