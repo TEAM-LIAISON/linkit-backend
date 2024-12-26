@@ -1,5 +1,6 @@
 package liaison.linkit.login.service;
 
+import java.util.List;
 import java.util.Optional;
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.business.AccountMapper;
@@ -13,7 +14,7 @@ import liaison.linkit.login.exception.DuplicateEmailRequestException;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
-import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
+import liaison.linkit.matching.domain.repository.profileMatching.ProfileMatchingRepository;
 import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
@@ -22,10 +23,14 @@ import liaison.linkit.member.exception.member.FailMemberGenerateException;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.notification.implement.NotificationCommandAdapter;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.implement.profile.ProfileCommandAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.team.domain.Team;
+import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,8 +58,13 @@ public class LoginService {
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileCommandAdapter profileCommandAdapter;
 
-    private final PrivateMatchingRepository privateMatchingRepository;
+    private final ProfileMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
+
+    private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
+    private final TeamMemberInvitationCommandAdapter teamMemberInvitationCommandAdapter;
+    private final NotificationCommandAdapter notificationCommandAdapter;
+
 
     // 회원이 로그인한다
     public AccountResponseDTO.LoginServiceResponse login(final String providerName, final String code) {
@@ -110,6 +120,14 @@ public class LoginService {
                 profileCommandAdapter.create(new Profile(
                         null, member, null, false, 0, false, false, false, false, false, false, false, false
                 ));
+
+                if (teamMemberInvitationQueryAdapter.existsByEmail(email)) {
+                    final List<Team> invitationTeams = teamMemberInvitationQueryAdapter.getTeamsByEmail(email);
+                    log.info("invitationTeams.size() = " + invitationTeams.size());
+
+                    notificationCommandAdapter.addInvitationNotificationsForTeams(emailId, invitationTeams);
+
+                }
 
                 return member;
             } else if (memberQueryAdapter.existsByEmail(email)) {

@@ -1,7 +1,7 @@
 package liaison.linkit.matching.dto.response.requestTeamMatching;
 
 import java.time.LocalDate;
-import liaison.linkit.matching.domain.type.MatchingType;
+import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class MyTeamMatchingResponse {
     // 발신자가 누구인지
     private final SenderType senderType;
     // 매칭 요청 타입
-    private final MatchingType matchingType;
+    private final ReceiverType receiverType;
     // 어떤 이력/소개서에 매칭 요청을 보냈는지
     private final boolean isRequestTeamProfile;
 }

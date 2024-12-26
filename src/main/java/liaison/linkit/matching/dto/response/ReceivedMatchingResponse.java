@@ -1,6 +1,6 @@
 package liaison.linkit.matching.dto.response;
 
-import liaison.linkit.matching.domain.type.MatchingType;
+import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
 import liaison.linkit.matching.dto.response.toTeamMatching.ToTeamMatchingResponse;
@@ -32,7 +32,7 @@ public class ReceivedMatchingResponse {
     // 발신자가 누구인지
     private final SenderType senderType;
     // 매칭 요청 타입
-    private final MatchingType matchingType;
+    private final ReceiverType receiverType;
     // 어떤 이력/소개서에 매칭 요청이 왔는지
     private final boolean isReceivedTeamProfile;
 
@@ -53,7 +53,7 @@ public class ReceivedMatchingResponse {
                         pmr.getRequestMessage(),
                         pmr.getRequestOccurTime(),
                         pmr.getSenderType(),
-                        pmr.getMatchingType(),
+                        pmr.getReceiverType(),
                         pmr.isReceivedTeamProfile(),
                         pmr.getIsReceiverCheck())),
                 toTeamMatchingResponseList.stream().map(tmr -> new ReceivedMatchingResponse(
@@ -64,7 +64,7 @@ public class ReceivedMatchingResponse {
                         tmr.getRequestMessage(),
                         tmr.getRequestOccurTime(),
                         tmr.getSenderType(),
-                        tmr.getMatchingType(),
+                        tmr.getReceiverType(),
                         tmr.isReceivedTeamProfile(),
                         tmr.getIsReceiverCheck()))
         ).collect(Collectors.toList());

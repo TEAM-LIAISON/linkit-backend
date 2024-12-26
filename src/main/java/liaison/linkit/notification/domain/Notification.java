@@ -1,9 +1,7 @@
 package liaison.linkit.notification.domain;
 
-import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import liaison.linkit.notification.domain.type.NotificationStatus;
@@ -22,8 +20,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor(access = PROTECTED)
 public class Notification {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    private String id;
 
     private NotificationType notificationType;      // 알림 타입
     private NotificationStatus notificationStatus;  // 알림 상태
@@ -41,7 +38,6 @@ public class Notification {
     @AllArgsConstructor
     public static class InvitationDetails {
         private String teamName;                    // 발신 팀 이름
-        private String memberName;                  // 수신 회원 이름
     }
 
     @Data

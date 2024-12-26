@@ -6,7 +6,7 @@
 //import jakarta.servlet.http.Cookie;
 //import liaison.linkit.global.ControllerTest;
 //import liaison.linkit.login.domain.MemberTokens;
-//import liaison.linkit.matching.domain.type.MatchingType;
+//import liaison.linkit.matching.domain.type.ReceiverType;
 //import liaison.linkit.matching.domain.type.SenderType;
 //import liaison.linkit.matching.dto.request.AllowMatchingRequest;
 //import liaison.linkit.matching.dto.request.MatchingCreateRequest;
@@ -448,7 +448,7 @@
 //                "매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 7, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.PROFILE,
+//                ReceiverType.PROFILE,
 //                false, // 이력서 수신 여부
 //                false
 //        );
@@ -461,7 +461,7 @@
 //                "매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 7, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.PROFILE,
+//                ReceiverType.PROFILE,
 //                false, // 이력서 수신 여부
 //                false
 //        );
@@ -476,7 +476,7 @@
 //                "매칭 요청 메시지입니다.",
 //                LocalDate.of(2023, 12, 10),
 //                SenderType.TEAM,
-//                MatchingType.TEAM_PROFILE,
+//                ReceiverType.TEAM_PROFILE,
 //                true, // 팀 소개서 수신 여부
 //                false
 //        );
@@ -489,7 +489,7 @@
 //                "매칭 요청 메시지입니다.",
 //                LocalDate.of(2022, 10, 10),
 //                SenderType.TEAM,
-//                MatchingType.TEAM_PROFILE,
+//                ReceiverType.TEAM_PROFILE,
 //                true, // 팀 소개서 수신 여부
 //                false
 //        );
@@ -545,7 +545,7 @@
 //                "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 7, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.PROFILE,
+//                ReceiverType.PROFILE,
 //                false
 //        );
 //
@@ -556,7 +556,7 @@
 //                "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 8, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.PROFILE,
+//                ReceiverType.PROFILE,
 //                false
 //        );
 //
@@ -569,7 +569,7 @@
 //                "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 7, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.TEAM_PROFILE,
+//                ReceiverType.TEAM_PROFILE,
 //                true
 //        );
 //
@@ -580,7 +580,7 @@
 //                "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
 //                LocalDate.of(2023, 10, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.TEAM_PROFILE,
+//                ReceiverType.TEAM_PROFILE,
 //                true
 //        );
 //
@@ -635,7 +635,7 @@
 //                "매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 7, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.PROFILE,
+//                ReceiverType.PROFILE,
 //                false,
 //                false
 //        );
@@ -648,7 +648,7 @@
 //                "매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 7, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.PROFILE,
+//                ReceiverType.PROFILE,
 //                false,
 //                false
 //        );
@@ -663,7 +663,7 @@
 //                "매칭 요청 메시지입니다.",
 //                LocalDate.of(2023, 12, 10),
 //                SenderType.TEAM,
-//                MatchingType.TEAM_PROFILE,
+//                ReceiverType.TEAM_PROFILE,
 //                true,
 //                false
 //        );
@@ -676,7 +676,7 @@
 //                "매칭 요청 메시지입니다.",
 //                LocalDate.of(2022, 10, 10),
 //                SenderType.TEAM,
-//                MatchingType.TEAM_PROFILE,
+//                ReceiverType.TEAM_PROFILE,
 //                true,
 //                false
 //        );
@@ -690,7 +690,7 @@
 //                "주서영님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 7, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.PROFILE,
+//                ReceiverType.PROFILE,
 //                false
 //        );
 //
@@ -701,7 +701,7 @@
 //                "주은강님의 내 이력서에 보낸 매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 8, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.PROFILE,
+//                ReceiverType.PROFILE,
 //                false
 //        );
 //
@@ -714,7 +714,7 @@
 //                "링컬쳐님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
 //                LocalDate.of(2024, 7, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.TEAM_PROFILE,
+//                ReceiverType.TEAM_PROFILE,
 //                true
 //        );
 //
@@ -725,7 +725,7 @@
 //                "하이브님의 팀 소개서에 보낸 매칭 요청 메시지입니다.",
 //                LocalDate.of(2023, 10, 10),
 //                SenderType.PRIVATE,
-//                MatchingType.TEAM_PROFILE,
+//                ReceiverType.TEAM_PROFILE,
 //                true
 //        );
 //
@@ -1052,7 +1052,7 @@
 //        final ResultActions resultActions = performPostAcceptReceivePrivateMatching(1, allowMatchingRequest);
 //
 //        // then
-////        verify(matchingService).acceptPrivateMatching(eq(1L), any(AllowMatchingRequest.class));
+/// /        verify(matchingService).acceptPrivateMatching(eq(1L), any(AllowMatchingRequest.class));
 //
 //        resultActions.andExpect(status().isOk())
 //                .andDo(restDocs.document(

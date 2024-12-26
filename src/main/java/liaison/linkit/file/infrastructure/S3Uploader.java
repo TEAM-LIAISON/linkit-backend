@@ -44,17 +44,17 @@ public class S3Uploader {
     private String cloudFrontFileDomain;
 
     private String teamBasicLogoImageFolder;
-    private String profileImageFolder;
+
     private String profileActivityCertificationFileFolder;
     private String profileAwardsCertificationFileFolder;
     private String profileLicenseCertificationFileFolder;
+    
+    private String profileImageFolder;
     private String profileLogBodyImageFolder;
     private String profilePortfolioRepresentImageFolder;
     private String profilePortfolioSubImageFolder;
-
     private String teamProductRepresentImageFolder;
     private String teamProductSubImageFolder;
-
     private String teamLogBodyImageFolder;
 
     private String profileEducationCertificationFileFolder;

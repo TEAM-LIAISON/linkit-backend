@@ -4,9 +4,9 @@
 //import liaison.linkit.global.exception.AuthException;
 //import liaison.linkit.global.exception.BadRequestException;
 //import liaison.linkit.mail.service.MailService;
-//import liaison.linkit.matching.domain.PrivateMatching;
+//import liaison.linkit.matching.domain.ProfileMatching;
 //import liaison.linkit.matching.domain.TeamMatching;
-//import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
+//import liaison.linkit.matching.domain.repository.privateMatching.ProfileMatchingRepository;
 //import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
 //import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
 //import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
@@ -54,8 +54,8 @@
 //
 //import static liaison.linkit.global.exception.ExceptionCode.*;
 //import static liaison.linkit.matching.domain.type.MatchingStatusType.REQUESTED;
-//import static liaison.linkit.matching.domain.type.MatchingType.PROFILE;
-//import static liaison.linkit.matching.domain.type.MatchingType.TEAM_PROFILE;
+//import static liaison.linkit.matching.domain.type.ReceiverType.PROFILE;
+//import static liaison.linkit.matching.domain.type.ReceiverType.TEAM_PROFILE;
 //
 //@Service
 //@RequiredArgsConstructor
@@ -65,7 +65,7 @@
 //
 //    private final ProfileRepository profileRepository;
 //    private final MemberRepository memberRepository;
-//    private final PrivateMatchingRepository privateMatchingRepository;
+//    private final ProfileMatchingRepository privateMatchingRepository;
 //    private final TeamMatchingRepository teamMatchingRepository;
 //    private final ProfileJobRoleRepository profileJobRoleRepository;
 //    private final JobRoleRepository jobRoleRepository;
@@ -95,7 +95,7 @@
 //                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
 //    }
 //
-//    private PrivateMatching getPrivateMatching(final Long privateMatchingId) {
+//    private ProfileMatching getPrivateMatching(final Long privateMatchingId) {
 //        return privateMatchingRepository.findById(privateMatchingId)
 //                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PRIVATE_MATCHING_BY_ID));
 //    }
@@ -130,7 +130,7 @@
 //        }
 //
 //        // 새로운 매칭 객체를 생성한다.
-//        final PrivateMatching newPrivateMatching = new PrivateMatching(
+//        final ProfileMatching newPrivateMatching = new ProfileMatching(
 //                null,
 //                // 요청 보낸 회원
 //                member,
@@ -151,7 +151,7 @@
 //        );
 //
 //        // to 내 이력서
-//        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
+//        final ProfileMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
 //
 //        List<ProfileJobRole> profileJobRoles = profileJobRoleRepository.findAllByProfileId(savedPrivateMatching.getMember().getProfile().getId());
 //        List<String> jobRoleNames = profileJobRoles.stream()
@@ -196,7 +196,7 @@
 //            throw new BadRequestException(NOT_ALLOW_T2P_MATCHING);
 //        }
 //
-//        final PrivateMatching newPrivateMatching = new PrivateMatching(
+//        final ProfileMatching newPrivateMatching = new ProfileMatching(
 //                null,
 //                // 요청 보낸 회원
 //                member,
@@ -217,7 +217,7 @@
 //                false
 //        );
 //
-//        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
+//        final ProfileMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
 //
 //        // 저장되어 있는 활동 방식 리포지토리에서 모든 활동 방식 조회
 //        List<ActivityMethod> activityMethods = activityMethodRepository.findAllByTeamProfileId(savedPrivateMatching.getMember().getTeamProfile().getId());
@@ -391,7 +391,7 @@
 //        // 일단 나의 내 이력서에 보낸 사람만
 //        if (profileRepository.existsByMemberId(memberId)) {
 //            final Profile profile = getProfile(memberId);
-//            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByProfileIdAndMatchingStatus(profile.getId());
+//            final List<ProfileMatching> privateMatchingList = privateMatchingRepository.findByProfileIdAndMatchingStatus(profile.getId());
 //            toPrivateMatchingResponseList = ToPrivateMatchingResponse.toPrivateMatchingResponse(privateMatchingList);
 //        }
 //
@@ -413,7 +413,7 @@
 //
 //        // 내 이력서에 매칭 요청 보낸 것
 //        if (profileRepository.existsByMemberId(memberId)) {
-//            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByMemberIdAndMatchingStatus(memberId);
+//            final List<ProfileMatching> privateMatchingList = privateMatchingRepository.findByMemberIdAndMatchingStatus(memberId);
 //            myPrivateMatchingResponseList = MyPrivateMatchingResponse.myPrivateMatchingResponseList(privateMatchingList);
 //        }
 //
@@ -436,11 +436,11 @@
 //        if (profileRepository.existsByMemberId(memberId)) {
 //            // 나의 내 이력서로 받은 매칭 요청 조회
 //            final Profile profile = getProfile(memberId);
-//            final List<PrivateMatching> privateReceivedMatchingList = privateMatchingRepository.findSuccessReceivedMatching(profile.getId());
+//            final List<ProfileMatching> privateReceivedMatchingList = privateMatchingRepository.findSuccessReceivedMatching(profile.getId());
 //            toPrivateMatchingResponseList = ToPrivateMatchingResponse.toPrivateMatchingResponse(privateReceivedMatchingList);
 //
 //            // 내가 보낸 매칭 요청 조회
-//            final List<PrivateMatching> privateRequestMatchingList = privateMatchingRepository.findSuccessRequestMatching(memberId);
+//            final List<ProfileMatching> privateRequestMatchingList = privateMatchingRepository.findSuccessRequestMatching(memberId);
 //            myPrivateMatchingResponseList = MyPrivateMatchingResponse.myPrivateMatchingResponseList(privateRequestMatchingList);
 //        }
 //
@@ -503,7 +503,7 @@
 //            final Long privateMatchingId
 //    ) {
 //        // 이 private matching -> member -> 보낸 사람의 ID / profile -> 수신자의 내 이력서 ID
-//        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+//        final ProfileMatching privateMatching = getPrivateMatching(privateMatchingId);
 //        final List<String> jobRoleNames = getJobRoleNames(privateMatching.getMember().getId());
 //
 //        return new ReceivedPrivateMatchingMessageResponse(
@@ -520,7 +520,7 @@
 //            final Long privateMatchingId
 //    ) {
 //        // 보낸 팀의 정보가 필요
-//        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+//        final ProfileMatching privateMatching = getPrivateMatching(privateMatchingId);
 //        return new ReceivedPrivateMatchingMessageResponse(
 //                privateMatching.getId(),
 //                // 상대 팀의 이름 필요
@@ -553,7 +553,7 @@
 //            final Long privateMatchingId
 //    ) {
 //        // 이 private matching -> member -> 나의 ID / profile -> 상대의 내 이력서 ID
-//        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+//        final ProfileMatching privateMatching = getPrivateMatching(privateMatchingId);
 //
 //        // 상대의 jobRoleName 필요
 //        final List<String> jobRoleNames = getJobRoleNames(privateMatching.getProfile().getMember().getId());
@@ -573,7 +573,7 @@
 //    public RequestPrivateMatchingMessageResponse getRequestTeamToPrivateMatchingMessage(
 //            final Long privateMatchingId
 //    ) {
-//        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+//        final ProfileMatching privateMatching = getPrivateMatching(privateMatchingId);
 //        // 상대의 jobRoleName 필요
 //        final List<String> jobRoleNames = getJobRoleNames(privateMatching.getProfile().getMember().getId());
 //
@@ -612,7 +612,7 @@
 //            final Long memberId,
 //            final Long privateMatchingId
 //    ) {
-//        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+//        final ProfileMatching privateMatching = getPrivateMatching(privateMatchingId);
 //        // 매칭 요청 보낸 사람의 ID = 열람한 사람의 ID -> Profile 객체의 정보를 가져온다
 //
 //        // 내가 개인 이력서에 매칭 요청 보낸 것이다.
@@ -709,7 +709,7 @@
 //    }
 //
 //    public void acceptPrivateMatching(final Long privateMatchingId, final AllowMatchingRequest allowMatchingRequest) throws MessagingException {
-//        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+//        final ProfileMatching privateMatching = getPrivateMatching(privateMatchingId);
 //
 //        // 매칭 성사 상태로 업데이트를 진행한다.
 //        if (allowMatchingRequest.getIsAllowMatching()) {
@@ -797,7 +797,7 @@
 //
 //    // 내가 보낸 매칭 삭제 (내 이력서 대상)
 //    public void deleteRequestPrivateMatching(final Long privateMatchingId) {
-//        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+//        final ProfileMatching privateMatching = getPrivateMatching(privateMatchingId);
 //        privateMatching.updateRequestSenderDeleteStatusType(true);
 //    }
 //
@@ -809,12 +809,12 @@
 //
 //    // 성사된 매칭에서 내 이력서 대상 매칭을 삭제하는 경우
 //    public void deleteSuccessPrivateMatching(final Long memberId, final Long privateMatchingId) {
-//        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
+//        final ProfileMatching privateMatching = getPrivateMatching(privateMatchingId);
 //        if (Objects.equals(privateMatching.getMember().getId(), memberId)) {
-////            발신자 쪽에서 매칭 삭제
+/// /            발신자 쪽에서 매칭 삭제
 //            privateMatching.updateSuccessSenderDeleteStatusType(true);
 //        } else {
-////            수신자 쪽에서 매칭 삭제
+/// /            수신자 쪽에서 매칭 삭제
 //            privateMatching.updateSuccessReceiverDeleteStatusType(true);
 //        }
 //    }

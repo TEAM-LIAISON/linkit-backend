@@ -1,6 +1,6 @@
 package liaison.linkit.matching.dto.response;
 
-import liaison.linkit.matching.domain.type.MatchingType;
+import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.dto.response.requestPrivateMatching.MyPrivateMatchingResponse;
 import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingResponse;
 import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
@@ -27,7 +27,7 @@ public class SuccessMatchingResponse {
     // 매칭 요청 발생 날짜
     private final LocalDate requestOccurTime;
     // 매칭 요청 타입
-    private final MatchingType matchingType;
+    private final ReceiverType receiverType;
 
     public static List<SuccessMatchingResponse> successMatchingResponseList(
             final List<ToPrivateMatchingResponse> toPrivateMatchingResponseList,
@@ -43,13 +43,13 @@ public class SuccessMatchingResponse {
                                 pmr.getSenderName(),
                                 pmr.getRequestMessage(),
                                 pmr.getRequestOccurTime(),
-                                pmr.getMatchingType())),
+                                pmr.getReceiverType())),
                         toTeamMatchingResponseList.stream().map(tmr -> new SuccessMatchingResponse(
                                 tmr.getTeamMatchingId(),
                                 tmr.getSenderName(),
                                 tmr.getRequestMessage(),
                                 tmr.getRequestOccurTime(),
-                                tmr.getMatchingType()))
+                                tmr.getReceiverType()))
                 ),
                 Stream.concat(
                         myPrivateMatchingResponseList.stream().map(mpm -> new SuccessMatchingResponse(
@@ -57,13 +57,13 @@ public class SuccessMatchingResponse {
                                 mpm.getReceiverName(),
                                 mpm.getRequestMessage(),
                                 mpm.getRequestOccurTime(),
-                                mpm.getMatchingType())),
+                                mpm.getReceiverType())),
                         myTeamMatchingResponseList.stream().map(mtm -> new SuccessMatchingResponse(
                                 mtm.getTeamMatchingId(),
                                 mtm.getReceiverName(),
                                 mtm.getRequestMessage(),
                                 mtm.getRequestOccurTime(),
-                                mtm.getMatchingType()))
+                                mtm.getReceiverType()))
                 )
         );
 

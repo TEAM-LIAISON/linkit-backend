@@ -14,6 +14,18 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
 
     private final JPAQueryFactory jpaQueryFactory;
 
+
+    @Override
+    public boolean existsByEmail(final String email) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qTeamMemberInvitation)
+                .where(qTeamMemberInvitation.teamMemberInvitationEmail.eq(email))
+                .fetchFirst() != null;
+    }
+
     @Override
     public boolean existsByEmailAndTeam(final String email, final Team team) {
         QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
@@ -33,6 +45,17 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
         return jpaQueryFactory
                 .selectFrom(qTeamMemberInvitation)
                 .where(qTeamMemberInvitation.team.id.eq(teamId))
+                .fetch();
+    }
+
+    @Override
+    public List<Team> getTeamsByEmail(final String email) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        return jpaQueryFactory
+                .select(qTeamMemberInvitation.team) // Team 객체를 선택
+                .from(qTeamMemberInvitation)
+                .where(qTeamMemberInvitation.teamMemberInvitationEmail.eq(email)) // 이메일 조건
                 .fetch();
     }
 }

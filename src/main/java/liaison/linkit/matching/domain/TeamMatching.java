@@ -1,19 +1,30 @@
 package liaison.linkit.matching.domain;
 
-import jakarta.persistence.*;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.IDENTITY;
+import static lombok.AccessLevel.PROTECTED;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import liaison.linkit.global.BaseEntity;
-import liaison.linkit.matching.domain.type.*;
+import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverType;
+import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
+import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
+import liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
-
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
@@ -44,7 +55,7 @@ public class TeamMatching extends BaseEntity {
     // 어떤 소개서에 요청 보낸 것인지 type 필요
     @Column(name = "matching_type")
     @Enumerated(value = STRING)
-    private MatchingType matchingType;
+    private ReceiverType receiverType;
 
     // 요청할 때 보내는 메시지
     @Column(name = "request_message")

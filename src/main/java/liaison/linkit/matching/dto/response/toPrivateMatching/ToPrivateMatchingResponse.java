@@ -1,7 +1,7 @@
 package liaison.linkit.matching.dto.response.toPrivateMatching;
 
 import java.time.LocalDate;
-import liaison.linkit.matching.domain.type.MatchingType;
+import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +25,14 @@ public class ToPrivateMatchingResponse {
     // 발신자가 누구인지
     private final SenderType senderType;
     // 매칭 요청 타입
-    private final MatchingType matchingType;
+    private final ReceiverType receiverType;
     // 어떤 이력/소개서에 매칭 요청이 왔는지
     private final boolean isReceivedTeamProfile;
     // 내가 열람한 매칭 요청인지 여부
     private final Boolean isReceiverCheck;
 
 //    public static List<ToPrivateMatchingResponse> toPrivateMatchingResponse(
-//            final List<PrivateMatching> privateMatchingList
+//            final List<ProfileMatching> privateMatchingList
 //    ) {
 //        return privateMatchingList.stream()
 //                .map(privateMatching -> {
@@ -47,7 +47,7 @@ public class ToPrivateMatchingResponse {
 //                                privateMatching.getRequestMessage(),
 //                                LocalDate.from(privateMatching.getCreatedAt()),
 //                                privateMatching.getSenderType(),    // PRIVATE
-//                                privateMatching.getMatchingType(),
+//                                privateMatching.getReceiverType(),
 //                                false,
 //                                privateMatching.getIsReceiverCheck()
 //                        );
@@ -63,7 +63,7 @@ public class ToPrivateMatchingResponse {
 //                                privateMatching.getRequestMessage(),
 //                                LocalDate.from(privateMatching.getCreatedAt()),
 //                                privateMatching.getSenderType(),    // TEAM
-//                                privateMatching.getMatchingType(),
+//                                privateMatching.getReceiverType(),
 //                                true,
 //                                privateMatching.getIsReceiverCheck()
 //                        );

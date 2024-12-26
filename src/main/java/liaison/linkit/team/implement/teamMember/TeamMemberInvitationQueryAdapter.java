@@ -14,6 +14,14 @@ public class TeamMemberInvitationQueryAdapter {
 
     private final TeamMemberInvitationRepository teamMemberInvitationRepository;
 
+    public List<Team> getTeamsByEmail(final String email) {
+        return teamMemberInvitationRepository.getTeamsByEmail(email);
+    }
+
+    public boolean existsByEmail(final String email) {
+        return teamMemberInvitationRepository.existsByEmail(email);
+    }
+
     public boolean existsByEmailAndTeam(final String email, final Team team) {
         return teamMemberInvitationRepository.existsByEmailAndTeam(email, team);
     }
