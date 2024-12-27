@@ -2,7 +2,6 @@ package liaison.linkit.notification.domain;
 
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import liaison.linkit.notification.domain.type.NotificationStatus;
 import liaison.linkit.notification.domain.type.NotificationType;
@@ -11,16 +10,22 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "notifications")
+@TypeAlias("Notification")
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class Notification {
+
     @Id
     private String id;
+
+    private String memberId;                        // 어떤 회원에게 필요한 알림인지
 
     private NotificationType notificationType;      // 알림 타입
     private NotificationStatus notificationStatus;  // 알림 상태

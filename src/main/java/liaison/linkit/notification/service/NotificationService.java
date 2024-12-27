@@ -113,8 +113,6 @@ public class NotificationService {
                 .notificationStatus(NotificationStatus.PENDING) // 임의로 설정
                 .createdAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
-                // invitationDetails / chatDetails / matchingDetails 등은
-                // 필요 시 별도의 Builder 로직을 추가
                 .build();
     }
 

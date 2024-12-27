@@ -14,7 +14,6 @@ import liaison.linkit.login.exception.DuplicateEmailRequestException;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
-import liaison.linkit.matching.domain.repository.profileMatching.ProfileMatchingRepository;
 import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
@@ -58,7 +57,6 @@ public class LoginService {
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileCommandAdapter profileCommandAdapter;
 
-    private final ProfileMatchingRepository privateMatchingRepository;
     private final TeamMatchingRepository teamMatchingRepository;
 
     private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
@@ -123,10 +121,7 @@ public class LoginService {
 
                 if (teamMemberInvitationQueryAdapter.existsByEmail(email)) {
                     final List<Team> invitationTeams = teamMemberInvitationQueryAdapter.getTeamsByEmail(email);
-                    log.info("invitationTeams.size() = " + invitationTeams.size());
-
-                    notificationCommandAdapter.addInvitationNotificationsForTeams(emailId, invitationTeams);
-
+                    notificationCommandAdapter.addInvitationNotificationsForTeams(member, invitationTeams);
                 }
 
                 return member;
@@ -189,16 +184,6 @@ public class LoginService {
 //        if (teamMatchingRepository.existsByTeamMemberAnnouncementIds(teamMemberAnnouncementIds)) {
 //            teamMatchingRepository.deleteByTeamMemberAnnouncementIds(teamMemberAnnouncementIds);
 //        }
-
-        // 내가 어떤 내 이력서에 매칭 요청 보낸 경우
-        if (privateMatchingRepository.existsByMemberId(memberId)) {
-            privateMatchingRepository.deleteByMemberId(memberId);
-        }
-
-        // 내가 올린 내 이력서에 매칭 요청이 온 경우
-        if (privateMatchingRepository.existsByProfileId(profile.getId())) {
-            privateMatchingRepository.deleteByProfileId(profile.getId());
-        }
 
         // 내가 찜한 팀 소개서
 //        if (teamScrapRepository.existsByMemberId(memberId)) {

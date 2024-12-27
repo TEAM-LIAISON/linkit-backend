@@ -44,7 +44,7 @@ spring:
         use_sql_comments: false
         default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 
   mvc:
     path match:
@@ -54,7 +54,7 @@ spring:
     job:
       enabled: true
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
 
     #  flyway:
     #    enabled: true

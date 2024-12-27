@@ -1,53 +1,38 @@
 package liaison.linkit.matching.domain;
 
 import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import liaison.linkit.global.BaseEntity;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
 import liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType;
-import liaison.linkit.member.domain.Member;
-import liaison.linkit.profile.domain.profile.Profile;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLRestriction;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-// 내 이력서로 요청이 온 객체 저장
-@Entity
+@Document(collection = "profile_matching")
+@TypeAlias("ProfileMatching")
 @Getter
-@NoArgsConstructor(access = PROTECTED)
+@Builder
 @AllArgsConstructor
-@SQLRestriction("status = 'USABLE'")
-public class ProfileMatching extends BaseEntity {
+@NoArgsConstructor(access = PROTECTED)
+public class ProfileMatching {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    private String id;
 
-    // 발신자의 ID
-    // 매칭 요청을 보낸 사람의 아이디가 외래키로 작동한다.
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
-    private Profile profile;
-
+    private String memberId;
+    private String profileId;
+    
     // 매칭 요청 발신자 타입
     @Column(name = "sender_type")
     @Enumerated(value = STRING)

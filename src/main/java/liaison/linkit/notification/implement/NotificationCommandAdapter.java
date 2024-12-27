@@ -2,7 +2,9 @@ package liaison.linkit.notification.implement;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import liaison.linkit.common.annotation.Adapter;
+import liaison.linkit.member.domain.Member;
 import liaison.linkit.notification.domain.Notification;
 import liaison.linkit.notification.domain.repository.notification.NotificationRepository;
 import liaison.linkit.notification.domain.type.NotificationStatus;
@@ -17,9 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationCommandAdapter {
     private final NotificationRepository notificationRepository;
 
-    public void addInvitationNotificationsForTeams(final String emailId, final List<Team> teams) {
+    public void addInvitationNotificationsForTeams(final Member member, final List<Team> teams) {
         List<Notification> notifications = teams.stream()
                 .map(team -> Notification.builder()
+                        .id(UUID.randomUUID().toString())
+                        .memberId(member.getId().toString())
                         .notificationType(NotificationType.TEAM_INVITATION)
                         .notificationStatus(NotificationStatus.PENDING)
                         .createdAt(LocalDateTime.now())

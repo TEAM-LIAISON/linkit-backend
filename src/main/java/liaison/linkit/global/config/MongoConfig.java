@@ -2,11 +2,16 @@ package liaison.linkit.global.config;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @Configuration
@@ -51,5 +56,27 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     private void logConnectionDetails(String uri) {
         System.out.println("Connecting to MongoDB with URI: " + uri);
+    }
+
+    @Bean
+    public MongoCustomConversions customConversions() {
+        List<Object> converters = new ArrayList<>();
+        converters.add(new LocalDateTimeToStringConverter());
+        converters.add(new StringToLocalDateTimeConverter());
+        return new MongoCustomConversions(converters);
+    }
+
+    static class LocalDateTimeToStringConverter implements org.springframework.core.convert.converter.Converter<LocalDateTime, String> {
+        @Override
+        public String convert(LocalDateTime source) {
+            return source.format(DateTimeFormatter.ISO_DATE_TIME); // ISO 8601 형식으로 변환
+        }
+    }
+
+    static class StringToLocalDateTimeConverter implements org.springframework.core.convert.converter.Converter<String, LocalDateTime> {
+        @Override
+        public LocalDateTime convert(String source) {
+            return LocalDateTime.parse(source, DateTimeFormatter.ISO_DATE_TIME);
+        }
     }
 }
