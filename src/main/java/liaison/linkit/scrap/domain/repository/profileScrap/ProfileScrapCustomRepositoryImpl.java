@@ -2,6 +2,7 @@ package liaison.linkit.scrap.domain.repository.profileScrap;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import liaison.linkit.member.domain.QMember;
 import liaison.linkit.scrap.domain.ProfileScrap;
 import liaison.linkit.scrap.domain.QProfileScrap;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +15,13 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    // 스크랩 주체 회원이 스크랩한 모든 프로필 스크랩 객체를 조회한다.
     @Override
-    public List<ProfileScrap> findAllByMemberId(final Long memberId) {
+    public List<ProfileScrap> getAllProfileScrapByMemberId(final Long memberId) {
         QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
 
         return jpaQueryFactory
                 .selectFrom(qProfileScrap)
+                .join(qProfileScrap.member, QMember.member)
                 .where(qProfileScrap.member.id.eq(memberId))
                 .fetch();
     }

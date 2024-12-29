@@ -30,4 +30,12 @@ public class AnnouncementScrapController {
     ) {
         return CommonResponse.onSuccess(announcementScrapService.updateAnnouncementScrap(accessor.getMemberId(), teamMemberAnnouncementId, updateAnnouncementScrapRequest));
     }
+
+//    @GetMapping
+//    @MemberOnly
+//    public CommonResponse<> getAnnouncementScrap(
+//            @Auth final Accessor accessor
+//    ) {
+//        return CommonResponse.onSuccess(announcementScrapService.getAnnouncementScrap(accessor.getMemberId()));
+//    }
 }

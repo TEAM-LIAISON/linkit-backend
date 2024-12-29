@@ -5,7 +5,7 @@ import liaison.linkit.scrap.domain.ProfileScrap;
 import java.util.List;
 
 public interface ProfileScrapCustomRepository {
-    List<ProfileScrap> findAllByMemberId(final Long memberId);
+    List<ProfileScrap> getAllProfileScrapByMemberId(final Long memberId);
 
     void deleteByMemberId(final Long memberId);
 

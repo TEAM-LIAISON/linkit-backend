@@ -11,8 +11,8 @@ import lombok.RequiredArgsConstructor;
 public class ProfileScrapQueryAdapter {
     private final ProfileScrapRepository privateScrapRepository;
 
-    public List<ProfileScrap> findAllPrivateWish(final Long memberId) {
-        return privateScrapRepository.findAllByMemberId(memberId);
+    public List<ProfileScrap> getAllProfileScrapByMemberId(final Long memberId) {
+        return privateScrapRepository.getAllProfileScrapByMemberId(memberId);
     }
 
     public boolean existsByMemberId(final Long memberId) {

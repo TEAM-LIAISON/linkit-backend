@@ -1282,6 +1282,17 @@ include::{snippets}/profile-scrap-controller-test/update-profile-scrap/http-resp
 include::{snippets}/profile-scrap-controller-test/update-profile-scrap/response-fields.adoc[]
 ====
 
+=== 프로필 스크랩 전체 조회
+
+====
+*요청*
+include::{snippets}/profile-scrap-controller-test/get-profile-scraps/http-request.adoc[]
+
+*응답*
+include::{snippets}/profile-scrap-controller-test/get-profile-scraps/http-response.adoc[]
+include::{snippets}/profile-scrap-controller-test/get-profile-scraps/response-fields.adoc[]
+====
+
 == #[스크랩 - 팀 스크랩]#
 
 === 팀 스크랩 및 스크랩 취소

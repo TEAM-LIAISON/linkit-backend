@@ -64,6 +64,15 @@ public class ProfileResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class ProfileInformMenus {
+        @Builder.Default
+        private List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ProfileInformMenu {
         @Builder.Default
         private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
