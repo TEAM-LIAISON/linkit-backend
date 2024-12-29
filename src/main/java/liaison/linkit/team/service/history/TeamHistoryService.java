@@ -27,6 +27,11 @@ public class TeamHistoryService {
     private final TeamHistoryCommandAdapter teamHistoryCommandAdapter;
     private final TeamHistoryMapper teamHistoryMapper;
 
+    public TeamHistoryResponseDTO.TeamHistoryViewItems getTeamHistoryViewItems(final Long memberId, final String teamName) {
+        final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamName);
+        return teamHistoryMapper.toTeamHistoryViewItems(teamHistories);
+    }
+
     @Transactional(readOnly = true)
     public TeamHistoryResponseDTO.TeamHistoryItems getTeamHistoryItems(final Long memberId, final String teamName) {
         final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamName);
@@ -46,7 +51,7 @@ public class TeamHistoryService {
         log.info("teamHistory ={}", teamHistory);
         final TeamHistory savedTeamHistory = teamHistoryCommandAdapter.addTeamHistory(teamHistory);
         log.info("savedTeamHistory ={}", savedTeamHistory);
-        
+
         return teamHistoryMapper.toAddTeamHistoryResponse(savedTeamHistory);
     }
 

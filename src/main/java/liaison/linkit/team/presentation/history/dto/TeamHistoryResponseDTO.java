@@ -28,6 +28,28 @@ public class TeamHistoryResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TeamHistoryViewItems {
+        @Builder.Default
+        private List<TeamHistoryViewItem> teamHistoryViewItems = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamHistoryViewItem {
+        private Long teamHistoryId;
+        private String historyName;
+        private String historyStartDate;
+        private String historyEndDate;
+        private Boolean isHistoryInProgress;
+        private String historyDescription;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TeamHistoryItem {
         private Long teamHistoryId;
         private String historyName;

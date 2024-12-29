@@ -8,10 +8,33 @@ import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO.AddTea
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.RemoveTeamHistoryResponse;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryItem;
+import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryViewItem;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.UpdateTeamHistoryResponse;
 
 @Mapper
 public class TeamHistoryMapper {
+
+    public TeamHistoryResponseDTO.TeamHistoryViewItems toTeamHistoryViewItems(final List<TeamHistory> teamHistories) {
+        List<TeamHistoryViewItem> items = teamHistories.stream()
+                .map(this::toTeamHistoryViewItem)
+                .toList();
+
+        return TeamHistoryResponseDTO.TeamHistoryViewItems.builder()
+                .teamHistoryViewItems(items)
+                .build();
+    }
+
+    public TeamHistoryViewItem toTeamHistoryViewItem(final TeamHistory teamHistory) {
+        return TeamHistoryResponseDTO.TeamHistoryViewItem.builder()
+                .teamHistoryId(teamHistory.getId())
+                .historyName(teamHistory.getHistoryName())
+                .historyStartDate(teamHistory.getHistoryStartDate())
+                .historyEndDate(teamHistory.getHistoryEndDate())
+                .isHistoryInProgress(teamHistory.isHistoryInProgress())
+                .historyDescription(teamHistory.getHistoryDescription())
+                .build();
+    }
+
     public TeamHistoryResponseDTO.TeamHistoryItems toTeamHistoryItems(List<TeamHistory> teamHistories) {
         List<TeamHistoryItem> items = teamHistories.stream()
                 .map(this::toTeamHistoryItem)

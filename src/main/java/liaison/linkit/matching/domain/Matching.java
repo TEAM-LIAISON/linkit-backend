@@ -50,7 +50,7 @@ public class Matching {
     @Column(name = "sender_team_id", nullable = true)
     private Long senderTeamId;
 
-    // 수신자가 프로필이면 receiver_profile_id 사용, 팀이면 receiver_team_id 사용, 공고이면 receiver_posting_id 사용
+    // 수신자가 프로필이면 receiver_email_id 사용, 팀이면 receiver_team_id 사용, 공고이면 receiver_posting_id 사용
     @Column(name = "receiver_email_id", nullable = true)
     private Long receiverEmailId;
 

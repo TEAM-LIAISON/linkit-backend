@@ -6,6 +6,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
+import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryViewItems;
 import liaison.linkit.team.service.history.TeamHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamHistoryController {
 
     private final TeamHistoryService teamHistoryService;
+
+    @GetMapping("/view")
+    @MemberOnly
+    public CommonResponse<TeamHistoryViewItems> getTeamHistoryViewItems(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamName
+    ) {
+        return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryViewItems(accessor.getMemberId(), teamName));
+    }
 
     @GetMapping
     @MemberOnly
@@ -45,7 +55,7 @@ public class TeamHistoryController {
         log.info("memberId = {}의 팀 이름 = {}에 대한 팀 연혁 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
         return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryDetail(accessor.getMemberId(), teamName, teamHistoryId));
     }
-    
+
     // 팀 연혁 생성
     @PostMapping
     @MemberOnly
