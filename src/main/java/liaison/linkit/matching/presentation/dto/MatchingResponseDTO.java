@@ -1,0 +1,28 @@
+package liaison.linkit.matching.presentation.dto;
+
+import liaison.linkit.matching.domain.type.ReceiverType;
+import liaison.linkit.matching.domain.type.SenderType;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class MatchingResponseDTO {
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AddMatchingResponse {
+        private SenderType senderType;
+        private ReceiverType receiverType;
+        private Long senderEmailId;
+        private Long senderTeamId;
+        private Long receiverProfileId;
+        private Long receiverTeamId;
+        private Long receiverAnnouncementId;
+        private String requestMessage;
+    }
+}

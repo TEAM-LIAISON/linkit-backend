@@ -12,7 +12,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
+import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
 import liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType;
 import lombok.AllArgsConstructor;
@@ -32,23 +34,25 @@ public class Matching {
     private Long id;
 
     // 발신자 타입: PROFILE, TEAM, (추가 가능)
+    @Enumerated(value = STRING)
     @Column(name = "sender_type", length = 50)
-    private String senderType;
+    private SenderType senderType;
 
     // 수신자 타입: PROFILE, TEAM, POSTING 등
+    @Enumerated(value = STRING)
     @Column(name = "receiver_type", length = 50)
-    private String receiverType;
+    private ReceiverType receiverType;
 
     // 발신자가 프로필이면 sender_profile_id 사용, 팀이면 sender_team_id 사용
-    @Column(name = "sender_profile_id", nullable = true)
-    private Long senderProfileId;
+    @Column(name = "sender_email_id", nullable = true)
+    private Long senderEmailId;
 
     @Column(name = "sender_team_id", nullable = true)
     private Long senderTeamId;
 
     // 수신자가 프로필이면 receiver_profile_id 사용, 팀이면 receiver_team_id 사용, 공고이면 receiver_posting_id 사용
-    @Column(name = "receiver_profile_id", nullable = true)
-    private Long receiverProfileId;
+    @Column(name = "receiver_email_id", nullable = true)
+    private Long receiverEmailId;
 
     @Column(name = "receiver_team_id", nullable = true)
     private Long receiverTeamId;
