@@ -34,6 +34,8 @@ import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.Remov
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryDetail;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryItem;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryItems;
+import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryViewItem;
+import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryViewItems;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.UpdateTeamHistoryResponse;
 import liaison.linkit.team.service.history.TeamHistoryService;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,6 +70,14 @@ public class TeamHistoryControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
+    }
+
+    private ResultActions performGetTeamHistoryViewItems(final String teamName) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/history/view", teamName)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
     }
 
     private ResultActions performGetTeamHistoryItems(final String teamName) throws Exception {
@@ -111,6 +121,99 @@ public class TeamHistoryControllerTest extends ControllerTest {
                         .cookie(COOKIE));
     }
 
+    @DisplayName("회원이 다른 팀의 연혁을 전체 조회할 수 있다. (View)")
+    @Test
+    void getTeamHistoryViewItems() throws Exception {
+        // given
+        final TeamHistoryResponseDTO.TeamHistoryViewItems teamHistoryViewItems = TeamHistoryViewItems.builder()
+                .teamHistoryViewItems(
+                        Arrays.asList(
+                                TeamHistoryViewItem.builder()
+                                        .teamHistoryId(1L)
+                                        .historyName("연혁명")
+                                        .historyStartDate("연혁 시작 날짜")
+                                        .historyEndDate("연혁 종료 날짜")
+                                        .isHistoryInProgress(true)
+                                        .historyDescription("연혁 설명")
+                                        .build(),
+                                TeamHistoryViewItem.builder()
+                                        .teamHistoryId(2L)
+                                        .historyName("연혁명")
+                                        .historyStartDate("연혁 시작 날짜")
+                                        .historyEndDate("연혁 종료 날짜")
+                                        .isHistoryInProgress(true)
+                                        .historyDescription("연혁 설명")
+                                        .build()
+                        )
+                )
+                .build();
+
+        // when
+        when(teamHistoryService.getTeamHistoryViewItems(anyLong(), any())).thenReturn(teamHistoryViewItems);
+
+        final ResultActions resultActions = performGetTeamHistoryViewItems("liaison");
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+
+                                        subsectionWithPath("result.teamHistoryViewItems[]")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("팀 연혁 배열"),
+                                        fieldWithPath("result.teamHistoryViewItems[].teamHistoryId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀 연혁 ID"),
+                                        fieldWithPath("result.teamHistoryViewItems[].historyName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 연혁 이름"),
+                                        fieldWithPath("result.teamHistoryViewItems[].historyStartDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 연혁 시작 날짜"),
+                                        fieldWithPath("result.teamHistoryViewItems[].historyEndDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 연혁 종료 날짜"),
+                                        fieldWithPath("result.teamHistoryViewItems[].isHistoryInProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 연혁 진행 여부"),
+                                        fieldWithPath("result.teamHistoryViewItems[].historyDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 연혁 설명")
+                                )
+                        )).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamHistoryViewItems> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<TeamHistoryViewItems>>() {
+                }
+        );
+
+        final CommonResponse<TeamHistoryViewItems> expected = CommonResponse.onSuccess(teamHistoryViewItems);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
 
     @DisplayName("회원이 팀의 연혁을 전체 조회할 수 있다.")
     @Test

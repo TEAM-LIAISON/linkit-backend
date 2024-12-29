@@ -1177,6 +1177,18 @@ include::{snippets}/team-product-controller-test/remove-team-product/response-fi
 
 == #[팀 - 팀 연혁]#
 
+=== 팀 연혁 뷰어 전체 조회
+
+====
+*요청*
+include::{snippets}/team-history-controller-test/get-team-history-view-items/http-request.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-view-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-history-controller-test/get-team-history-view-items/http-response.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-view-items/response-fields.adoc[]
+====
+
 === 팀 연혁 전체 조회
 
 ====
