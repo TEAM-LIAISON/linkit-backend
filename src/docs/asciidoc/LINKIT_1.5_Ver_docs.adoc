@@ -1309,3 +1309,16 @@ include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap
 include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap/http-response.adoc[]
 include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap/response-fields.adoc[]
 ====
+
+== #[알림]#
+
+=== 알림 목록 전체 조회 (상단바)
+
+====
+*요청*
+include::{snippets}/notification-controller-test/get-notification-items/http-request.adoc[]
+
+*응답*
+include::{snippets}/notification-controller-test/get-notification-items/http-response.adoc[]
+include::{snippets}/notification-controller-test/get-notification-items/response-fields.adoc[]
+====

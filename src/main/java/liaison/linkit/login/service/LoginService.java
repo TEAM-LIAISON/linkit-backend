@@ -14,7 +14,6 @@ import liaison.linkit.login.exception.DuplicateEmailRequestException;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
-import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.type.Platform;
@@ -56,8 +55,6 @@ public class LoginService {
     private final ProfileRepository profileRepository;
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileCommandAdapter profileCommandAdapter;
-
-    private final TeamMatchingRepository teamMatchingRepository;
 
     private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
     private final TeamMemberInvitationCommandAdapter teamMemberInvitationCommandAdapter;
@@ -173,12 +170,6 @@ public class LoginService {
 //        final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream()
 //                .map(TeamMemberAnnouncement::getId)
 //                .toList();
-
-        // 팀 매칭의 경우
-        // 내가 어떤 팀 소개서에 매칭 요청 보낸 경우
-        if (teamMatchingRepository.existsByMemberId(memberId)) {
-            teamMatchingRepository.deleteByMemberId(memberId);
-        }
 
         // 내가 올린 팀 소개서 (팀원 공고) 매칭 요청이 온 경우
 //        if (teamMatchingRepository.existsByTeamMemberAnnouncementIds(teamMemberAnnouncementIds)) {
