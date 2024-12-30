@@ -21,6 +21,10 @@ public class TeamLogQueryAdapter {
         return teamLogRepository.getTeamLogs(teamId);
     }
 
+    public List<TeamLog> getTeamLogsPublic(final Long teamId) {
+        return teamLogRepository.getTeamLogsPublic(teamId);
+    }
+
     public TeamLog getRepresentativeTeamLog(final Long teamId) {
         return teamLogRepository.findRepresentativeTeamLog(teamId)
                 .orElseThrow(() -> TeamLogNotFoundException.EXCEPTION);

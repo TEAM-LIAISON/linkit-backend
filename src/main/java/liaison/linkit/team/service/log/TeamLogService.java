@@ -61,6 +61,14 @@ public class TeamLogService {
     private final S3Uploader s3Uploader;
 
     @Transactional(readOnly = true)
+    public TeamLogResponseDTO.TeamLogItems getTeamLogViewItems(final String teamName) {
+        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final List<TeamLog> teamLogs = teamLogQueryAdapter.getTeamLogsPublic(team.getId());
+
+        return teamLogMapper.toTeamLogItems(teamLogs);
+    }
+
+    @Transactional(readOnly = true)
     public TeamLogResponseDTO.TeamLogItems getTeamLogItems(final Long memberId, final String teamName) {
         log.info("memberId = {}의 팀 로그 Items 조회 요청 발생했습니다.", memberId);
 

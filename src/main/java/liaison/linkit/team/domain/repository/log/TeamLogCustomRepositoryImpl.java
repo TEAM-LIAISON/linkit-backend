@@ -31,6 +31,17 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
     }
 
     @Override
+    public List<TeamLog> getTeamLogsPublic(final Long teamId) {
+        QTeamLog qTeamLog = QTeamLog.teamLog;
+
+        return queryFactory
+                .selectFrom(qTeamLog)
+                .where(qTeamLog.team.id.eq(teamId)
+                        .and(qTeamLog.isLogPublic.eq(true)))
+                .fetch();
+    }
+
+    @Override
     public void updateTeamLogTypeRepresent(final TeamLog teamLog) {
         QTeamLog qTeamLog = QTeamLog.teamLog;
 

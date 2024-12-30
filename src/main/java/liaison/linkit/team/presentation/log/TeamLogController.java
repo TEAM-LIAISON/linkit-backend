@@ -38,6 +38,14 @@ public class TeamLogController {
         return CommonResponse.onSuccess(teamLogService.addTeamLogBodyImage(accessor.getMemberId(), teamName, teamLogBodyImage));
     }
 
+    // 로그 전체 뷰어 조회 (public만 허용)
+    @GetMapping("/view")
+    public CommonResponse<TeamLogResponseDTO.TeamLogItems> getTeamLogViewItems(
+            @PathVariable final String teamName
+    ) {
+        return CommonResponse.onSuccess(teamLogService.getTeamLogViewItems(teamName));
+    }
+
     // 로그 전체 조회
     @GetMapping
     @MemberOnly
