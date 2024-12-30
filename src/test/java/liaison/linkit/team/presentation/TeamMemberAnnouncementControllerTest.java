@@ -365,6 +365,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final TeamMemberAnnouncementDetail teamMemberAnnouncementDetail
                 = TeamMemberAnnouncementDetail.builder()
                 .teamMemberAnnouncementId(1L)
+                .isAnnouncementScrap(true)
+                .announcementScrapCount(100)
                 .announcementTitle("팀원 공고 제목")
                 .announcementPositionItem(
                         AnnouncementPositionItem.builder()
@@ -394,7 +396,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .build();
 
         // when
-        when(teamMemberAnnouncementService.getTeamMemberAnnouncementDetail(anyLong(), any(), anyLong())).thenReturn(teamMemberAnnouncementDetail);
+        when(teamMemberAnnouncementService.getTeamMemberAnnouncementDetailInLogoutState(any(), anyLong())).thenReturn(teamMemberAnnouncementDetail);
 
         final ResultActions resultActions = performGetTeamMemberAnnouncementDetail("liaison", 1L);
 
@@ -430,7 +432,13 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 .description("응답 결과"),
                                         fieldWithPath("result.teamMemberAnnouncementId")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("팀원 모집 공고 ID"),
+                                                .description("팀원 공고 ID"),
+                                        fieldWithPath("result.isAnnouncementScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀원 공고 스크랩 여부"),
+                                        fieldWithPath("result.announcementScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀원 공고 스크랩 수"),
                                         fieldWithPath("result.announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),

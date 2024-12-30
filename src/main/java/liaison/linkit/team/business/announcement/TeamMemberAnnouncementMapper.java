@@ -82,12 +82,16 @@ public class TeamMemberAnnouncementMapper {
 
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail toTeamMemberAnnouncementDetail(
             final TeamMemberAnnouncement teamMemberAnnouncement,
+            final boolean isAnnouncementScrap,
+            final int announcementScrapCount,
             final AnnouncementPositionItem announcementPositionItem,
             final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
         return TeamMemberAnnouncementDetail
                 .builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+                .isAnnouncementScrap(isAnnouncementScrap)
+                .announcementScrapCount(announcementScrapCount)
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)

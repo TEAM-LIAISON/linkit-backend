@@ -59,14 +59,12 @@ public class TeamLogController {
 
     // 로그 상세 조회
     @GetMapping("/{teamLogId}")
-    @MemberOnly
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getTeamLogItem(
-            @Auth final Accessor accessor,
             @PathVariable final String teamName,
             @PathVariable final Long teamLogId
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 로그 ID = {}의 단일 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName, teamLogId);
-        return CommonResponse.onSuccess(teamLogService.getTeamLogItem(accessor.getMemberId(), teamName, teamLogId));
+        log.info("팀 이름 = {}에 대한 팀 로그 ID = {}의 단일 조회 요청이 발생했습니다.", teamName, teamLogId);
+        return CommonResponse.onSuccess(teamLogService.getTeamLogItem(teamName, teamLogId));
     }
 
     // 로그 추가

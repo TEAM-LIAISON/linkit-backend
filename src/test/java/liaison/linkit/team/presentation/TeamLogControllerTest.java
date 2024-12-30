@@ -97,11 +97,9 @@ public class TeamLogControllerTest extends ControllerTest {
     private ResultActions performGetTeamLogItem(final String teamName, final Long teamLogId) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/log/{teamLogId}", teamName, teamLogId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
         );
     }
-
+    
     private ResultActions performPostTeamLog(final String teamName, final AddTeamLogRequest addTeamLogRequest) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log", teamName)
@@ -297,7 +295,7 @@ public class TeamLogControllerTest extends ControllerTest {
                                                 .description("로그 내용")
                                 )
                         )).andReturn();
-        
+
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.TeamLogItems> actual = objectMapper.readValue(
@@ -401,7 +399,7 @@ public class TeamLogControllerTest extends ControllerTest {
                 = new TeamLogItem(1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
 
         // when
-        when(teamLogService.getTeamLogItem(anyLong(), any(), anyLong())).thenReturn(teamLogItem);
+        when(teamLogService.getTeamLogItem(any(), anyLong())).thenReturn(teamLogItem);
 
         final ResultActions resultActions = performGetTeamLogItem("liaison", 1L);
 

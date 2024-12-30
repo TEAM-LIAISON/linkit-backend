@@ -55,14 +55,18 @@ public class TeamMemberAnnouncementController {
 
     // 팀원 공고 단일 조회
     @GetMapping("/{teamMemberAnnouncementId}")
-    @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail> getTeamMemberAnnouncementDetail(
             @Auth final Accessor accessor,
             @PathVariable final String teamName,
             @PathVariable final Long teamMemberAnnouncementId
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀원 공고 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
-        return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementDetail(accessor.getMemberId(), teamName, teamMemberAnnouncementId));
+        if (accessor.isMember()) {
+            log.info("memberId = {}의 팀 이름 = {}에 대한 팀원 공고 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementDetailInLoginState(accessor.getMemberId(), teamName, teamMemberAnnouncementId));
+        } else {
+            log.info("팀 이름 = {}에 대한 팀원 공고 상세 조회 요청이 발생했습니다. (로그아웃 상태)", teamName);
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementDetailInLogoutState(teamName, teamMemberAnnouncementId));
+        }
     }
 
     // 팀원 공고 생성

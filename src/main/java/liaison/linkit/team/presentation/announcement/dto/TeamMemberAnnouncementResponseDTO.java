@@ -17,6 +17,10 @@ public class TeamMemberAnnouncementResponseDTO {
     @AllArgsConstructor
     public static class TeamMemberAnnouncementDetail {
         private Long teamMemberAnnouncementId;
+
+        private Boolean isAnnouncementScrap;
+        private int announcementScrapCount;
+
         private String announcementTitle;
 
         @Builder.Default

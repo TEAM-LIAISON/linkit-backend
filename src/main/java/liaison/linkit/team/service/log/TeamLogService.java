@@ -79,7 +79,7 @@ public class TeamLogService {
     }
 
     @Transactional(readOnly = true)
-    public TeamLogItem getTeamLogItem(final Long memberId, final String teamName, final Long teamLogId) {
+    public TeamLogItem getTeamLogItem(final String teamName, final Long teamLogId) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
         return teamLogMapper.toTeamLogItem(teamLog);
     }

@@ -73,7 +73,7 @@ public class TeamSearchControllerTest extends ControllerTest {
 
     // ...
 
-    @DisplayName("팀 검색 API")
+    @DisplayName("회원/비회원이 팀을 검색할 수 있다. (필터링 가능)")
     @Test
     void searchTeams() throws Exception {
         // given
@@ -82,6 +82,8 @@ public class TeamSearchControllerTest extends ControllerTest {
                         TeamCurrentStateItem.builder().teamStateName("대회 준비 중").build(),
                         TeamCurrentStateItem.builder().teamStateName("투자 유치 중").build()
                 ))
+                .isTeamScrap(true)
+                .teamScrapCount(100)
                 .teamName("팀 이름 1")
                 .teamShortDescription("팀 한 줄 소개 1")
                 .teamLogoImagePath("팀 로고 이미지 경로 1")
@@ -97,6 +99,8 @@ public class TeamSearchControllerTest extends ControllerTest {
                         TeamCurrentStateItem.builder().teamStateName("대회 준비 중").build(),
                         TeamCurrentStateItem.builder().teamStateName("투자 유치 중").build()
                 ))
+                .isTeamScrap(false)
+                .teamScrapCount(200)
                 .teamName("팀 이름 2")
                 .teamShortDescription("팀 한 줄 소개 2")
                 .teamLogoImagePath("팀 로고 이미지 경로 2")
@@ -157,6 +161,12 @@ public class TeamSearchControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].teamCurrentStates[].teamStateName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 상태 이름"),
+                                        fieldWithPath("result.content[].isTeamScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 스크랩 여부"),
+                                        fieldWithPath("result.content[].teamScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀 스크랩 수"),
                                         fieldWithPath("result.content[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
@@ -250,7 +260,7 @@ public class TeamSearchControllerTest extends ControllerTest {
                                 )
                         )
                 ).andReturn();
-        
+
     }
 
 }

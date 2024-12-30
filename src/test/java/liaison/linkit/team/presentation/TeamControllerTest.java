@@ -462,6 +462,8 @@ public class TeamControllerTest extends ControllerTest {
                                         .build()
                         )
                 )
+                .isTeamScrap(false)
+                .teamScrapCount(200)
                 .teamName("팀 이름")
                 .teamShortDescription("팀 한 줄 소개")
                 .teamLogoImagePath("팀 로고 이미지 경로")
@@ -525,6 +527,12 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamInformMenu.teamCurrentStates[].teamStateName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 상태 이름"),
+                                        fieldWithPath("result.teamInformMenu.isTeamScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 스크랩 여부"),
+                                        fieldWithPath("result.teamInformMenu.teamScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀 스크랩 수"),
                                         fieldWithPath("result.teamInformMenu.teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
@@ -585,6 +593,8 @@ public class TeamControllerTest extends ControllerTest {
                                                                 .build()
                                                 )
                                         )
+                                        .isTeamScrap(false)
+                                        .teamScrapCount(200)
                                         .teamName("팀 이름")
                                         .teamShortDescription("팀 한 줄 소개")
                                         .teamLogoImagePath("팀 로고 이미지 경로")
@@ -611,6 +621,8 @@ public class TeamControllerTest extends ControllerTest {
                                                                 .build()
                                                 )
                                         )
+                                        .isTeamScrap(false)
+                                        .teamScrapCount(100)
                                         .teamName("팀 이름")
                                         .teamShortDescription("팀 한 줄 소개 2")
                                         .teamLogoImagePath("팀 로고 이미지 경로 2")
@@ -665,6 +677,14 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamInformMenus[].teamCurrentStates[].teamStateName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 상태 이름"),
+
+                                        fieldWithPath("result.teamInformMenus[].isTeamScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 스크랩 여부"),
+                                        fieldWithPath("result.teamInformMenus[].teamScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀 스크랩 수"),
+
                                         fieldWithPath("result.teamInformMenus[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
