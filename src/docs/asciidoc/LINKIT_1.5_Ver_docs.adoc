@@ -1112,6 +1112,18 @@ include::{snippets}/team-member-controller-test/update-team-member-type/response
 
 == #[팀 - 팀 프로덕트]#
 
+=== 팀 프로덕트 뷰어 전체 조회
+
+====
+*요청*
+include::{snippets}/team-product-controller-test/get-team-product-view-items/http-request.adoc[]
+include::{snippets}/team-product-controller-test/get-team-product-view-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-product-controller-test/get-team-product-view-items/http-response.adoc[]
+include::{snippets}/team-product-controller-test/get-team-product-view-items/response-fields.adoc[]
+====
+
 === 팀 프로덕트 전체 조회
 
 ====
