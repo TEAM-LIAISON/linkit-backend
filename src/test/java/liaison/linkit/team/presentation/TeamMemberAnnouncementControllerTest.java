@@ -147,6 +147,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .teamMemberAnnouncementViewItems(Arrays.asList(
                         TeamMemberAnnouncementViewItem.builder()
                                 .teamMemberAnnouncementId(1L)
+                                .announcementDDay(19)
                                 .announcementTitle("공고 제목")
                                 .majorPosition("포지션 대분류")
                                 .announcementSkillNames(
@@ -166,6 +167,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                 .build(),
                         TeamMemberAnnouncementViewItem.builder()
                                 .teamMemberAnnouncementId(2L)
+                                .announcementDDay(20)
                                 .announcementTitle("공고 제목 2")
                                 .majorPosition("포지션 대분류")
                                 .announcementSkillNames(
@@ -221,10 +223,13 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 .description("응답 데이터 객체"),
                                         fieldWithPath("result.teamMemberAnnouncementViewItems")
                                                 .type(JsonFieldType.ARRAY)
-                                                .description("팀 멤버 공고 ViewItems 리스트"),
+                                                .description("팀원 공고 ViewItems 리스트"),
                                         fieldWithPath("result.teamMemberAnnouncementViewItems[].teamMemberAnnouncementId")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("팀 멤버 공고 ID"),
+                                                .description("팀원 공고 ID"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].announcementDDay")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀원 공고 마감 디데이"),
                                         fieldWithPath("result.teamMemberAnnouncementViewItems[].announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),

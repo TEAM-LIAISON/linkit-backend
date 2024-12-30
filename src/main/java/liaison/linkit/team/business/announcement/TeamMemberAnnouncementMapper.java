@@ -2,6 +2,7 @@ package liaison.linkit.team.business.announcement;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
@@ -39,7 +40,10 @@ public class TeamMemberAnnouncementMapper {
 
                     final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
 
-                    return toTeamMemberAnnouncementViewItem(teamMemberAnnouncement, announcementPosition.getPosition().getMajorPosition(), announcementSkillNames, false, announcementScrapCount);
+                    final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+
+                    return toTeamMemberAnnouncementViewItem(teamMemberAnnouncement, announcementDDay, announcementPosition.getPosition().getMajorPosition(), announcementSkillNames, false,
+                            announcementScrapCount);
                 }).toList();
 
         return TeamMemberAnnouncementViewItems.builder()
@@ -65,7 +69,9 @@ public class TeamMemberAnnouncementMapper {
                     final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
                     final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
 
-                    return toTeamMemberAnnouncementViewItem(teamMemberAnnouncement, announcementPosition.getPosition().getMajorPosition(), announcementSkillNames, isAnnouncementScrap,
+                    final int dDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+
+                    return toTeamMemberAnnouncementViewItem(teamMemberAnnouncement, dDay, announcementPosition.getPosition().getMajorPosition(), announcementSkillNames, isAnnouncementScrap,
                             announcementScrapCount);
                 }).toList();
 
@@ -123,6 +129,7 @@ public class TeamMemberAnnouncementMapper {
 
     public TeamMemberAnnouncementViewItem toTeamMemberAnnouncementViewItem(
             final TeamMemberAnnouncement teamMemberAnnouncement,
+            final int announcementDDay,
             final String majorPosition,
             final List<AnnouncementSkillName> announcementSkillNames,
             final boolean isAnnouncementScrap,
@@ -130,6 +137,7 @@ public class TeamMemberAnnouncementMapper {
     ) {
         return TeamMemberAnnouncementViewItem.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+                .announcementDDay(announcementDDay)
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .majorPosition(majorPosition)
                 .announcementSkillNames(announcementSkillNames)

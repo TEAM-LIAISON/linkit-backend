@@ -78,7 +78,7 @@ public class TeamMemberControllerTest extends ControllerTest {
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/view", teamName)
         );
     }
-    
+
     private ResultActions performGetTeamMemberEditItems(final String teamName) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/edit", teamName)
@@ -107,7 +107,7 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("회원이 팀의 팀 구성원을 전체 조회할 수 있다.")
+    @DisplayName("회원이 팀의 팀 구성원 뷰어를 전체 조회할 수 있다.")
     @Test
     void getTeamMemberViewItems() throws Exception {
         // given

@@ -26,7 +26,7 @@ public class TeamMemberController {
 
     private final TeamMemberService teamMemberService;
 
-    // 팀원 전체 조회
+    // 팀원 뷰어 전체 조회
     @GetMapping("/members/view")
     public CommonResponse<TeamMemberViewItems> getTeamMemberViewItems(
             @PathVariable final String teamName

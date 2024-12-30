@@ -53,9 +53,10 @@ public class TeamMemberAnnouncementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamMemberAnnouncementViewItem {
-        // 디데이 추가 필요
-
         private Long teamMemberAnnouncementId;
+
+        private int announcementDDay;
+
         private String announcementTitle;
         private String majorPosition;
 
