@@ -60,6 +60,8 @@ public class TeamMapper {
 
     public TeamResponseDTO.TeamInformMenu toTeamInformMenu(
             final Team team,
+            final boolean isTeamScrap,
+            final int teamScrapCount,
             final List<TeamCurrentStateItem> teamCurrentStateItems,
             final TeamScaleItem teamScaleItem,
             final RegionDetail regionDetail
@@ -67,6 +69,8 @@ public class TeamMapper {
         return TeamResponseDTO.TeamInformMenu
                 .builder()
                 .teamCurrentStates(teamCurrentStateItems)
+                .isTeamScrap(isTeamScrap)
+                .teamScrapCount(teamScrapCount)
                 .teamName(team.getTeamName())
                 .teamShortDescription(team.getTeamShortDescription())
                 .teamLogoImagePath(team.getTeamLogoImagePath())

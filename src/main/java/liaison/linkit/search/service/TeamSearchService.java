@@ -4,6 +4,7 @@ import java.util.List;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import liaison.linkit.team.business.TeamCurrentStateMapper;
 import liaison.linkit.team.business.TeamMapper;
 import liaison.linkit.team.business.TeamScaleMapper;
@@ -38,6 +39,7 @@ public class TeamSearchService {
     private final TeamMapper teamMapper;
     private final TeamCurrentStateMapper teamCurrentStateMapper;
     private final TeamScaleMapper teamScaleMapper;
+    private final TeamScrapQueryAdapter teamScrapQueryAdapter;
 
     public Page<TeamInformMenu> searchTeams(
             List<String> scaleName,
@@ -51,10 +53,10 @@ public class TeamSearchService {
         Page<Team> teams = teamQueryAdapter.findAllByFiltering(scaleName, isAnnouncement, cityName, teamStateName, pageable);
         log.info("검색 결과 - 총 팀 수: {}", teams.getTotalElements());
 
-        return teams.map(this::toSearchTeamInformMenu);
+        return teams.map(this::toSearchTeamInformMenuInLogoutState);
     }
 
-    private TeamInformMenu toSearchTeamInformMenu(
+    private TeamInformMenu toSearchTeamInformMenuInLogoutState(
             final Team team
     ) {
         RegionDetail regionDetail = new RegionDetail();
@@ -71,6 +73,8 @@ public class TeamSearchService {
         final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
         final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
 
-        return teamMapper.toTeamInformMenu(team, teamCurrentStateItems, teamScaleItem, regionDetail);
+        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamName(team.getTeamName());
+
+        return teamMapper.toTeamInformMenu(team, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
     }
 }

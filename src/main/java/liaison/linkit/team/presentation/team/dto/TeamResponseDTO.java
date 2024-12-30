@@ -82,11 +82,13 @@ public class TeamResponseDTO {
         @Builder.Default
         private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
 
+        private Boolean isTeamScrap;
+        private int teamScrapCount;
+
         private String teamName;
         private String teamShortDescription;
         private String teamLogoImagePath;
 
-        // 스크랩 수 (추가 예정)
 
         // 팀 규모 정보
         @Builder.Default

@@ -11,6 +11,7 @@ import liaison.linkit.file.infrastructure.S3Uploader;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.domain.region.Region;
+import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import liaison.linkit.team.business.TeamCurrentStateMapper;
 import liaison.linkit.team.business.TeamMapper;
 import liaison.linkit.team.business.teamMember.TeamMemberMapper;
@@ -81,6 +82,7 @@ public class TeamService {
 
     private final ImageValidator imageValidator;
     private final S3Uploader s3Uploader;
+    private final TeamScrapQueryAdapter teamScrapQueryAdapter;
 
 
     // 초기 팀 생성
@@ -240,7 +242,10 @@ public class TeamService {
         }
         log.info("팀 지역 정보 조회 성공");
 
-        final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, teamCurrentStateItems, teamScaleItem, regionDetail);
+        final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamName(memberId, teamName);
+        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamName(teamName);
+
+        final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
         return teamMapper.toTeamDetail(isMyTeam, teamInformMenu);
     }
@@ -265,8 +270,8 @@ public class TeamService {
             regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
         }
         log.info("팀 지역 정보 조회 성공");
-
-        final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, teamCurrentStateItems, teamScaleItem, regionDetail);
+        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamName(teamName);
+        final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
         return teamMapper.toTeamDetail(false, teamInformMenu);
     }
@@ -289,8 +294,8 @@ public class TeamService {
                 regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
             }
             log.info("팀 지역 정보 조회 성공");
-
-            TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(team, null, teamScaleItem, regionDetail);
+            
+            TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(team, false, 0, null, teamScaleItem, regionDetail);
 
             teamInformMenus.add(teamInformMenu);
         }
