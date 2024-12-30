@@ -18,6 +18,7 @@ import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDT
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
+import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.team.business.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -44,24 +45,72 @@ public class ProfileSearchService {
     private final ProfilePositionMapper profilePositionMapper;
     private final TeamMemberMapper teamMemberMapper;
     private final RegionMapper regionMapper;
+    private final ProfileScrapQueryAdapter profileScrapQueryAdapter;
 
 
-    public Page<ProfileInformMenu> searchProfiles(
+    public Page<ProfileInformMenu> searchProfilesInLoginState(
+            final Long memberId,
             List<String> majorPosition,
             List<String> skillName,
             List<String> cityName,
             List<String> profileStateName,
             Pageable pageable
     ) {
-        log.info("검색 조건 - MajorPosition: {}, SkillName: {}, CityName: {}, ProfileStateName: {}",
-                majorPosition, skillName, cityName, profileStateName);
         Page<Profile> profiles = profileQueryAdapter.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
-        log.info("검색 결과 - 총 팀원 수: {}", profiles.getTotalElements());
-
-        return profiles.map(this::toSearchProfileInformMenu);
+        return profiles.map(
+                profile -> toSearchProfileInformMenuInLoginState(memberId, profile)
+        );
     }
 
-    private ProfileInformMenu toSearchProfileInformMenu(
+    public Page<ProfileInformMenu> searchProfilesInLogoutState(
+            List<String> majorPosition,
+            List<String> skillName,
+            List<String> cityName,
+            List<String> profileStateName,
+            Pageable pageable
+    ) {
+        Page<Profile> profiles = profileQueryAdapter.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
+        return profiles.map(this::toSearchProfileInformMenuInLogoutState);
+    }
+
+    private ProfileInformMenu toSearchProfileInformMenuInLoginState(
+            final Long memberId,
+            final Profile profile
+    ) {
+        RegionDetail regionDetail = new RegionDetail();
+
+        if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
+            final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+            regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+        }
+        log.info("지역 정보 조회 성공");
+
+        final List<ProfileCurrentState> profileCurrentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
+        final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
+        log.info("상태 정보 조회 성공");
+
+        final boolean isProfileScrap = profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, profile.getMember().getEmailId());
+
+        ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+            profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+
+        log.info("대분류 포지션 정보 조회 성공");
+
+        List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
+        if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
+            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamByMemberId(profile.getMember().getId());
+            profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
+            log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
+        }
+
+        return profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+    }
+
+    private ProfileInformMenu toSearchProfileInformMenuInLogoutState(
             final Profile profile
     ) {
         RegionDetail regionDetail = new RegionDetail();
@@ -92,6 +141,6 @@ public class ProfileSearchService {
             log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
         }
 
-        return profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+        return profileMapper.toProfileInformMenu(profileCurrentStateItems, false, profile, profilePositionDetail, regionDetail, profileTeamInforms);
     }
 }

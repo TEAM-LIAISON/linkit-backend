@@ -167,6 +167,7 @@ public class ProfileScrapControllerTest extends ControllerTest {
                                                                 .build()
                                                 )
                                         )
+                                        .isProfileScrap(true)
                                         .profileImagePath("프로필 이미지 경로")
                                         .memberName("회원 이름")
                                         .emailId("이메일 ID")
@@ -202,6 +203,7 @@ public class ProfileScrapControllerTest extends ControllerTest {
                                                                 .build()
                                                 )
                                         )
+                                        .isProfileScrap(true)
                                         .profileImagePath("프로필 이미지 경로 2")
                                         .memberName("회원 이름 2")
                                         .emailId("이메일 ID 2")
@@ -260,6 +262,9 @@ public class ProfileScrapControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenus[].profileCurrentStates[].profileStateName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 상태 이름"),
+                                        fieldWithPath("result.profileInformMenus[].isProfileScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 스크랩 여부 (자기 자신이 스크랩한 목록 조회는 무조건 true)"),
                                         fieldWithPath("result.profileInformMenus[].profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),

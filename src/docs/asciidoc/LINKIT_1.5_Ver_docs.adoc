@@ -41,7 +41,7 @@ include::{snippets}/login-controller-test/logout/request-cookies.adoc[]
 include::{snippets}/login-controller-test/logout/http-response.adoc[]
 ====
 
-=== AccessToken 재발행
+=== accessToken 재발행
 
 ====
 *요청*
@@ -902,6 +902,18 @@ include::{snippets}/team-log-controller-test/add-team-log-body-image/http-respon
 include::{snippets}/team-log-controller-test/add-team-log-body-image/response-fields.adoc[]
 ====
 
+=== 팀 로그 뷰어 전체 조회 (토큰 필요 X)
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/get-team-log-view-items/http-request.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-view-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/get-team-log-view-items/http-response.adoc[]
+include::{snippets}/team-log-controller-test/get-team-log-view-items/response-fields.adoc[]
+====
+
 === 팀 로그 전체 조회
 
 ====
@@ -1125,7 +1137,7 @@ include::{snippets}/team-member-controller-test/update-team-member-type/response
 
 == #[팀 - 팀 프로덕트]#
 
-=== 팀 프로덕트 뷰어 전체 조회
+=== 팀 프로덕트 뷰어 전체 조회 (토큰 필요 X)
 
 ====
 *요청*

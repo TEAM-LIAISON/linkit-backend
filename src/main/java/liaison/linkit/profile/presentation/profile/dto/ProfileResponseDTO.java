@@ -77,6 +77,8 @@ public class ProfileResponseDTO {
         @Builder.Default
         private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
 
+        private Boolean isProfileScrap;
+
         private String profileImagePath;
         private String memberName;
         private String emailId;

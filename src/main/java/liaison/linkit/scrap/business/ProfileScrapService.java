@@ -104,6 +104,8 @@ public class ProfileScrapService {
             final List<ProfileCurrentStateItem> profileCurrentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
             log.info("상태 정보 조회 성공");
 
+            final boolean isProfileScrap = profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, profile.getMember().getEmailId());
+
             ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
             if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
                 final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
@@ -118,7 +120,7 @@ public class ProfileScrapService {
                 profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
                 log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
             }
-            final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+            final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, profile, profilePositionDetail, regionDetail, profileTeamInforms);
             profileInformMenus.add(profileInformMenu);
         }
 

@@ -59,6 +59,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
+import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.team.business.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -101,6 +102,7 @@ public class ProfileService {
     private final ProfileLicenseMapper profileLicenseMapper;
     private final ProfileLinkMapper profileLinkMapper;
     private final TeamMemberMapper teamMemberMapper;
+    private final ProfileScrapQueryAdapter profileScrapQueryAdapter;
 
     // 프로필 왼쪽 메뉴 조회 (내가 내 프로필 조회)
     public ProfileLeftMenu getProfileLeftMenu(final Long memberId) {
@@ -138,7 +140,7 @@ public class ProfileService {
 
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(profile);
         log.info("profileCompletionMenu = {}", profileCompletionMenu);
-        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, false, profile, profilePositionDetail, regionDetail, profileTeamInforms);
         log.info("profileInformMenu = {}", profileInformMenu);
         final ProfileBooleanMenu profileBooleanMenu = profileMapper.toProfileBooleanMenu(profile);
         log.info("profileBooleanMenu = {}", profileBooleanMenu);
@@ -158,6 +160,8 @@ public class ProfileService {
         if (targetProfile.getMember().equals(member)) {
             isMyProfile = true;
         }
+
+        final boolean isProfileScrap = profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, emailId);
 
         RegionDetail regionDetail = new RegionDetail();
 
@@ -188,7 +192,7 @@ public class ProfileService {
         }
 
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(targetProfile);
-        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, targetProfile, profilePositionDetail, regionDetail, profileTeamInforms);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, targetProfile, profilePositionDetail, regionDetail, profileTeamInforms);
 
         log.info("대표 로그 DTO 조회");
         ProfileLogItem profileLogItem = new ProfileLogItem();
@@ -277,7 +281,7 @@ public class ProfileService {
         }
 
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(targetProfile);
-        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, targetProfile, profilePositionDetail, regionDetail, profileTeamInforms);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, false, targetProfile, profilePositionDetail, regionDetail, profileTeamInforms);
 
         log.info("대표 로그 DTO 조회");
         ProfileLogItem profileLogItem = new ProfileLogItem();

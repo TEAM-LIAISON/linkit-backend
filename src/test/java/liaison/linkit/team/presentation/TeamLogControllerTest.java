@@ -80,6 +80,12 @@ public class TeamLogControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
+    private ResultActions performGetTeamLogViewItems(final String teamName) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/log/view", teamName)
+        );
+    }
+
     private ResultActions performGetTeamLogItems(final String teamName) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/log", teamName)
@@ -211,6 +217,98 @@ public class TeamLogControllerTest extends ControllerTest {
 
         final CommonResponse<AddTeamLogBodyImageResponse> expected = CommonResponse.onSuccess(addTeamLogBodyImageResponse);
 
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 로그 뷰어를 전체 조회할 수 있다. (로그인 이전 가능)")
+    @Test
+    void getTeamLogViewItems() throws Exception {
+        // given
+        final TeamLogResponseDTO.TeamLogItems teamLogItems = TeamLogResponseDTO.TeamLogItems.builder()
+                .teamLogItems(Arrays.asList(
+                        TeamLogItem.builder()
+                                .teamLogId(1L)
+                                .isLogPublic(true)
+                                .logType(REPRESENTATIVE_LOG)
+                                .modifiedAt(LocalDateTime.now())
+                                .logTitle("로그 제목 1")
+                                .logContent("로그 내용 1")
+                                .build(),
+                        TeamLogItem.builder()
+                                .teamLogId(2L)
+                                .isLogPublic(true)
+                                .logType(GENERAL_LOG)
+                                .modifiedAt(LocalDateTime.now())
+                                .logTitle("로그 제목 2")
+                                .logContent("로그 내용 2")
+                                .build()
+                ))
+                .build();
+        // when
+        when(teamLogService.getTeamLogViewItems(any())).thenReturn(teamLogItems);
+
+        final ResultActions resultActions = performGetTeamLogViewItems("liaison");
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        subsectionWithPath("result.teamLogItems[]")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("팀 로그 아이템 배열"),
+                                        fieldWithPath("result.teamLogItems[].teamLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("내 로그 ID"),
+                                        fieldWithPath("result.teamLogItems[].isLogPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("로그 공개 여부"),
+                                        fieldWithPath("result.teamLogItems[].logType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 유형 (대표글 여부)"),
+                                        fieldWithPath("result.teamLogItems[].modifiedAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 수정 시간"),
+                                        fieldWithPath("result.teamLogItems[].logTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 제목"),
+                                        fieldWithPath("result.teamLogItems[].logContent")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 내용")
+                                )
+                        )).andReturn();
+        
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamLogResponseDTO.TeamLogItems> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<TeamLogItems>>() {
+                }
+        );
+
+        final CommonResponse<TeamLogItems> expected = CommonResponse.onSuccess(teamLogItems);
+
+        // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
