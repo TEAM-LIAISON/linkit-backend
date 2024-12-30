@@ -8,6 +8,7 @@ import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.product.ProductLink;
 import liaison.linkit.team.domain.product.TeamProduct;
+import liaison.linkit.team.implement.product.ProductSubImageQueryAdapter;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.AddTeamProductResponse;
@@ -17,6 +18,7 @@ import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamP
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductItem;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductItems;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductLinkResponse;
+import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductViewItem;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.UpdateTeamProductResponse;
 
 @Mapper
@@ -37,6 +39,60 @@ public class TeamProductMapper {
                 .productEndDate(teamProduct.getProductEndDate())
                 .isProductInProgress(teamProduct.isProductInProgress())
                 .teamProductLinks(teamProductLinkResponses)
+                .productDescription(teamProduct.getProductDescription())
+                .teamProductImages(teamProductImages)
+                .build();
+    }
+
+
+    public TeamProductResponseDTO.TeamProductViewItems toTeamProductViewItems(
+            final List<TeamProduct> teamProducts,
+            final Map<Long, List<ProductLink>> productLinksMap,
+            final ProductSubImageQueryAdapter productSubImageQueryAdapter
+    ) {
+        // 각 TeamProduct를 순회하며 ViewItem 생성
+        List<TeamProductResponseDTO.TeamProductViewItem> items = teamProducts.stream()
+                .map(teamProduct -> {
+                    // 1) SubImagePaths 조회
+                    List<String> productSubImagePaths = productSubImageQueryAdapter.getProjectSubImagePaths(teamProduct.getId());
+
+                    // 2) 대표이미지 + 서브이미지를 묶은 TeamProductImages 생성
+                    TeamProductImages teamProductImages = toTeamProductImages(
+                            teamProduct.getProductRepresentImagePath(),
+                            productSubImagePaths
+                    );
+
+                    // 3) ProductLink 목록 조회
+                    List<ProductLink> productLinks = productLinksMap.getOrDefault(teamProduct.getId(), Collections.emptyList());
+
+                    // 4) ViewItem 생성
+                    return toTeamProductViewItem(teamProduct, productLinks, teamProductImages);
+                })
+                .toList();
+
+        // 5) ViewItems 래퍼 객체 생성
+        return TeamProductResponseDTO.TeamProductViewItems.builder()
+                .teamProductViewItems(items)
+                .build();
+    }
+
+    public TeamProductResponseDTO.TeamProductViewItem toTeamProductViewItem(
+            final TeamProduct teamProduct, final List<ProductLink> productLinks, final TeamProductImages teamProductImages
+    ) {
+        List<TeamProductLinkResponse> linkResponses = productLinks.stream()
+                .map(this::toTeamProductLinkResponse)
+                .collect(Collectors.toList());
+
+        return TeamProductViewItem.builder()
+                .teamProductId(teamProduct.getId())
+                .productName(teamProduct.getProductName())
+                .productLineDescription(teamProduct.getProductLineDescription())
+                .productField(teamProduct.getProductField())
+                .productStartDate(teamProduct.getProductStartDate())
+                .productEndDate(teamProduct.getProductEndDate())
+                .productRepresentImagePath(teamProduct.getProductRepresentImagePath())
+                .isProductInProgress(teamProduct.isProductInProgress())
+                .teamProductLinks(linkResponses)
                 .productDescription(teamProduct.getProductDescription())
                 .teamProductImages(teamProductImages)
                 .build();

@@ -28,6 +28,16 @@ public class TeamProductController {
 
     private final TeamProductService teamProductService;
 
+    // 팀 프로덕트 뷰어 전체 조회
+    @GetMapping("/view")
+    @MemberOnly
+    public CommonResponse<TeamProductResponseDTO.TeamProductViewItems> getTeamProductViewItems(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamName
+    ) {
+        return CommonResponse.onSuccess(teamProductService.getTeamProductViewItems(accessor.getMemberId(), teamName));
+    }
+
     // 팀 프로덕트 전체 조회
     @GetMapping
     @MemberOnly
@@ -79,7 +89,7 @@ public class TeamProductController {
         log.info("memberId = {}의 팀 이름 = {}에 대한 팀 프로덕트 단일 수정 요청이 발생했습니다.", accessor.getMemberId(), teamName);
         return CommonResponse.onSuccess(teamProductService.updateTeamProduct(accessor.getMemberId(), teamName, teamProductId, updateTeamProductRequest, productRepresentImage, productSubImages));
     }
-    
+
     // 팀 프로덕트 삭제
     @DeleteMapping("/{teamProductId}")
     @MemberOnly

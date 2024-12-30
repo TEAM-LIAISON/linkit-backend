@@ -37,6 +37,38 @@ public class TeamProductResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TeamProductViewItems {
+        @Builder.Default
+        private List<TeamProductViewItem> teamProductViewItems = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamProductViewItem {
+        private Long teamProductId;
+        private String productName;
+        private String productLineDescription;
+        private String productField;
+        private String productStartDate;
+        private String productEndDate;
+        private Boolean isProductInProgress;
+        private String productRepresentImagePath;
+
+        @Builder.Default
+        private List<TeamProductResponseDTO.TeamProductLinkResponse> teamProductLinks = new ArrayList<>();
+
+        private String productDescription;
+
+        @Builder.Default
+        private TeamProductImages teamProductImages = new TeamProductImages();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TeamProductItem {
         private Long teamProductId;
         private String productName;

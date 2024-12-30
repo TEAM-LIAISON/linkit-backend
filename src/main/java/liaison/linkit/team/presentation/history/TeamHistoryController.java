@@ -32,6 +32,7 @@ public class TeamHistoryController {
             @Auth final Accessor accessor,
             @PathVariable final String teamName
     ) {
+        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 연혁 뷰어 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
         return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryViewItems(accessor.getMemberId(), teamName));
     }
 

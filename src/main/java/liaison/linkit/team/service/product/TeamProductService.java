@@ -50,6 +50,14 @@ public class TeamProductService {
 
     private final S3Uploader s3Uploader;
 
+    @Transactional(readOnly = true)
+    public TeamProductResponseDTO.TeamProductViewItems getTeamProductViewItems(final Long memberId, final String teamName) {
+        log.info("memberId = {}의 팀 이름 = {}에 대한 프로덕트 View Items 조회 요청이 서비스 계층에 발생했습니다.", memberId, teamName);
+        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final List<TeamProduct> teamProducts = teamProductQueryAdapter.getTeamProducts(team.getId());
+        final Map<Long, List<ProductLink>> productLinksMap = productLinkQueryAdapter.getProductLinksMap(team.getId());
+        return teamProductMapper.toTeamProductViewItems(teamProducts, productLinksMap, productSubImageQueryAdapter);
+    }
 
     @Transactional(readOnly = true)
     public TeamProductResponseDTO.TeamProductItems getTeamProductItems(final Long memberId, final String teamName) {
