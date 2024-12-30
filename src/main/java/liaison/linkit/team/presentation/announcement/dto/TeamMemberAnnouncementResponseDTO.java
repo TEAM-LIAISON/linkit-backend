@@ -43,6 +43,36 @@ public class TeamMemberAnnouncementResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TeamMemberAnnouncementViewItems {
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItem> teamMemberAnnouncementViewItems = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamMemberAnnouncementViewItem {
+        // 디데이 추가 필요
+
+        private Long teamMemberAnnouncementId;
+        private String announcementTitle;
+        private String majorPosition;
+
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+
+        private Boolean isAnnouncementPublic;       // 공고 공개/비공개 여부
+        private Boolean isAnnouncementInProgress;   // 공고 현재 진행 여부
+
+        private Boolean isAnnouncementScrap;        // 공고 스크랩 여부
+        private int announcementScrapCount;         // 공고의 전체 스크랩 개수
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TeamMemberAnnouncementItem {
         private Long teamMemberAnnouncementId;
         private String announcementTitle;
@@ -109,7 +139,7 @@ public class TeamMemberAnnouncementResponseDTO {
 
         private String announcementStartDate;
         private String announcementEndDate;
-        
+
         private Boolean isRegionFlexible; // 지역 무관
 
         private String mainTasks; // 주요 업무

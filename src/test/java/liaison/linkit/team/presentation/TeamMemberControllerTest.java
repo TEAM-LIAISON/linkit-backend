@@ -76,11 +76,9 @@ public class TeamMemberControllerTest extends ControllerTest {
     private ResultActions performGetTeamMemberViewItems(final String teamName) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/view", teamName)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
         );
     }
-
+    
     private ResultActions performGetTeamMemberEditItems(final String teamName) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/edit", teamName)
@@ -171,7 +169,7 @@ public class TeamMemberControllerTest extends ControllerTest {
                 ).build();
 
         // when
-        when(teamMemberService.getTeamMemberViewItems(anyLong(), any())).thenReturn(teamMemberViewItems);
+        when(teamMemberService.getTeamMemberViewItems(any())).thenReturn(teamMemberViewItems);
 
         final ResultActions resultActions = performGetTeamMemberViewItems("liaison");
 

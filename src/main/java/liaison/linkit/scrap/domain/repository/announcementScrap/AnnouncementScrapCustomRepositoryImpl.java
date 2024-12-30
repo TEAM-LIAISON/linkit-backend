@@ -38,4 +38,19 @@ public class AnnouncementScrapCustomRepositoryImpl implements AnnouncementScrapC
         return count != null;
 
     }
+
+    @Override
+    public int getTotalAnnouncementScrapCount(final Long teamMemberAnnouncementId) {
+        QAnnouncementScrap qAnnouncementScrap = QAnnouncementScrap.announcementScrap;
+
+        Long count = jpaQueryFactory
+                .select(qAnnouncementScrap.count())
+                .from(qAnnouncementScrap)
+                .where(qAnnouncementScrap.teamMemberAnnouncement.id.eq(teamMemberAnnouncementId))
+                .fetchOne();
+
+        // Long 값을 int로 변환 (null 체크 포함)
+        return count != null ? count.intValue() : 0;
+    }
+
 }

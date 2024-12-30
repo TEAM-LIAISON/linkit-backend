@@ -2,19 +2,77 @@ package liaison.linkit.team.business.announcement;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
+import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
+import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse;
 
 @Mapper
 public class TeamMemberAnnouncementMapper {
+
+    public TeamMemberAnnouncementViewItems toLoggedOutTeamMemberAnnouncementViewItems(
+            final List<TeamMemberAnnouncement> teamMemberAnnouncements,
+            final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter,
+            final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter,
+            final AnnouncementSkillMapper announcementSkillMapper,
+            final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter
+    ) {
+        List<TeamMemberAnnouncementViewItem> items = teamMemberAnnouncements.stream()
+                .map(teamMemberAnnouncement -> {
+                    final AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+
+                    final List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
+                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+
+                    final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+
+                    return toTeamMemberAnnouncementViewItem(teamMemberAnnouncement, announcementPosition.getPosition().getMajorPosition(), announcementSkillNames, false, announcementScrapCount);
+                }).toList();
+
+        return TeamMemberAnnouncementViewItems.builder()
+                .teamMemberAnnouncementViewItems(items)
+                .build();
+    }
+
+    public TeamMemberAnnouncementViewItems toLoggedInTeamMemberAnnouncementViewItems(
+            final Long memberId,
+            final List<TeamMemberAnnouncement> teamMemberAnnouncements,
+            final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter,
+            final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter,
+            final AnnouncementSkillMapper announcementSkillMapper,
+            final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter
+    ) {
+        List<TeamMemberAnnouncementViewItem> items = teamMemberAnnouncements.stream()
+                .map(teamMemberAnnouncement -> {
+                    final AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+
+                    final List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
+                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+
+                    final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
+                    final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+
+                    return toTeamMemberAnnouncementViewItem(teamMemberAnnouncement, announcementPosition.getPosition().getMajorPosition(), announcementSkillNames, isAnnouncementScrap,
+                            announcementScrapCount);
+                }).toList();
+
+        return TeamMemberAnnouncementViewItems.builder()
+                .teamMemberAnnouncementViewItems(items)
+                .build();
+    }
 
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail toTeamMemberAnnouncementDetail(
             final TeamMemberAnnouncement teamMemberAnnouncement,
@@ -63,6 +121,25 @@ public class TeamMemberAnnouncementMapper {
                 .build();
     }
 
+    public TeamMemberAnnouncementViewItem toTeamMemberAnnouncementViewItem(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final String majorPosition,
+            final List<AnnouncementSkillName> announcementSkillNames,
+            final boolean isAnnouncementScrap,
+            final int announcementScrapCount
+    ) {
+        return TeamMemberAnnouncementViewItem.builder()
+                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+                .majorPosition(majorPosition)
+                .announcementSkillNames(announcementSkillNames)
+                .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
+                .isAnnouncementInProgress(teamMemberAnnouncement.isAnnouncementInProgress())
+                .isAnnouncementScrap(isAnnouncementScrap)
+                .announcementScrapCount(announcementScrapCount)
+                .build();
+    }
+
     // 수정 필요
     public TeamMemberAnnouncementItem toTeamMemberAnnouncementItem(final TeamMemberAnnouncement teamMemberAnnouncement) {
         return TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem
@@ -71,6 +148,7 @@ public class TeamMemberAnnouncementMapper {
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .build();
     }
+
 
     public TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem toAnnouncementPositionItem(final AnnouncementPosition announcementPosition) {
         return AnnouncementPositionItem

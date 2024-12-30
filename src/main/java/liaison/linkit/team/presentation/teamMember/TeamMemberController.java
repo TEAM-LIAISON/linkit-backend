@@ -28,12 +28,10 @@ public class TeamMemberController {
 
     // 팀원 전체 조회
     @GetMapping("/members/view")
-    @MemberOnly
     public CommonResponse<TeamMemberViewItems> getTeamMemberViewItems(
-            @Auth final Accessor accessor,
             @PathVariable final String teamName
     ) {
-        return CommonResponse.onSuccess(teamMemberService.getTeamMemberViewItems(accessor.getMemberId(), teamName));
+        return CommonResponse.onSuccess(teamMemberService.getTeamMemberViewItems(teamName));
     }
 
     // 팀원 목록 조회

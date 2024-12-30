@@ -6,6 +6,7 @@ import liaison.linkit.common.domain.Position;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
+import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.team.business.announcement.AnnouncementPositionMapper;
 import liaison.linkit.team.business.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.announcement.TeamMemberAnnouncementMapper;
@@ -50,6 +51,36 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
     private final AnnouncementSkillCommandAdapter announcementSkillCommandAdapter;
     private final AnnouncementSkillMapper announcementSkillMapper;
+
+    private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
+
+    @Transactional(readOnly = true)
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamName) {
+        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
+        return teamMemberAnnouncementMapper.toLoggedInTeamMemberAnnouncementViewItems(
+                memberId,
+                teamMemberAnnouncements,
+                announcementPositionQueryAdapter,
+                announcementSkillQueryAdapter,
+                announcementSkillMapper,
+                announcementScrapQueryAdapter
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedOutTeamMemberAnnouncementViewItems(final String teamName) {
+        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
+
+        return teamMemberAnnouncementMapper.toLoggedOutTeamMemberAnnouncementViewItems(
+                teamMemberAnnouncements,
+                announcementPositionQueryAdapter,
+                announcementSkillQueryAdapter,
+                announcementSkillMapper,
+                announcementScrapQueryAdapter
+        );
+    }
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems getTeamMemberAnnouncementItems(final Long memberId, final String teamName) {

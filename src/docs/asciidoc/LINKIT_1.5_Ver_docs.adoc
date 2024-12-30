@@ -994,6 +994,19 @@ include::{snippets}/team-log-controller-test/update-team-log-public-state/respon
 
 == #[팀 - 팀원 공고]#
 
+=== 팀원 공고 뷰어 전체 조회 (로그인 전 - 토큰 X / 로그인 후 - 토큰 O)
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-view-items/http-request.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-view-items/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-view-items/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-logged-out-team-member-announcement-view-items/response-fields.adoc[]
+
+====
+
 === 팀원 공고 전체 조회
 
 ====

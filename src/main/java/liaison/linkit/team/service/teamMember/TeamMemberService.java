@@ -64,7 +64,7 @@ public class TeamMemberService {
 
     private final TeamMemberInvitationMailService teamMemberInvitationMailService;
 
-    public TeamMemberViewItems getTeamMemberViewItems(final Long memberId, final String teamName) {
+    public TeamMemberViewItems getTeamMemberViewItems(final String teamName) {
         // 1. 팀 조회
         final Team team = teamQueryAdapter.findByTeamName(teamName);
 

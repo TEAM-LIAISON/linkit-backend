@@ -36,6 +36,8 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse;
 import liaison.linkit.team.service.announcement.TeamMemberAnnouncementService;
@@ -72,6 +74,13 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
+    }
+
+    // 팀원 공고 뷰어 전체 조회
+    private ResultActions performGetLoggedOutTeamMemberAnnouncementViewItems(final String teamName) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/announcement/view", teamName)
+        );
     }
 
     // 팀원 공고 전체 조회
@@ -128,6 +137,133 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/announcement/state/{teamMemberAnnouncementId}", teamName, teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
+    }
+
+    @DisplayName("회원이 팀의 팀원 공고 뷰어를 전체 조회할 수 있다.")
+    @Test
+    void getLoggedOutTeamMemberAnnouncementViewItems() throws Exception {
+        // given
+        final TeamMemberAnnouncementViewItems teamMemberAnnouncementViewItems = TeamMemberAnnouncementViewItems.builder()
+                .teamMemberAnnouncementViewItems(Arrays.asList(
+                        TeamMemberAnnouncementViewItem.builder()
+                                .teamMemberAnnouncementId(1L)
+                                .announcementTitle("공고 제목")
+                                .majorPosition("포지션 대분류")
+                                .announcementSkillNames(
+                                        Arrays.asList(
+                                                TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 스킬 이름 1")
+                                                        .build(),
+                                                TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 스킬 이름 2")
+                                                        .build()
+                                        )
+                                )
+                                .isAnnouncementPublic(true)
+                                .isAnnouncementInProgress(false)
+                                .isAnnouncementScrap(true)
+                                .announcementScrapCount(100)
+                                .build(),
+                        TeamMemberAnnouncementViewItem.builder()
+                                .teamMemberAnnouncementId(2L)
+                                .announcementTitle("공고 제목 2")
+                                .majorPosition("포지션 대분류")
+                                .announcementSkillNames(
+                                        Arrays.asList(
+                                                TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 스킬 이름 3")
+                                                        .build(),
+                                                TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 스킬 이름 4")
+                                                        .build()
+                                        )
+                                )
+                                .isAnnouncementPublic(true)
+                                .isAnnouncementInProgress(false)
+                                .isAnnouncementScrap(true)
+                                .announcementScrapCount(200)
+                                .build()
+                ))
+                .build();
+
+        // when
+        when(teamMemberAnnouncementService.getLoggedOutTeamMemberAnnouncementViewItems(any())).thenReturn(teamMemberAnnouncementViewItems);
+
+        final ResultActions resultActions = performGetLoggedOutTeamMemberAnnouncementViewItems("liaison");
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("응답 데이터 객체"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("팀 멤버 공고 ViewItems 리스트"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].teamMemberAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀 멤버 공고 ID"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].announcementTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 제목"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("포지션 대분류"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].announcementSkillNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("공고에 필요한 스킬 이름 리스트"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].announcementSkillNames[].announcementSkillName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 스킬 이름"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].isAnnouncementPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("공고 공개 여부"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].isAnnouncementInProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("공고 진행 여부"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].isAnnouncementScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("공고 스크랩 여부"),
+                                        fieldWithPath("result.teamMemberAnnouncementViewItems[].announcementScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("공고 스크랩된 횟수")
+                                )
+                        )
+                ).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamMemberAnnouncementViewItems> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<TeamMemberAnnouncementViewItems>>() {
+                }
+        );
+
+        final CommonResponse<TeamMemberAnnouncementViewItems> expected = CommonResponse.onSuccess(teamMemberAnnouncementViewItems);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
     @DisplayName("회원이 팀의 팀원 공고를 전체 조회할 수 있다.")

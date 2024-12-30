@@ -25,6 +25,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamMemberAnnouncementController {
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
+    // 팀원 공고 뷰어 전체 조회
+    @GetMapping("/view")
+    public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems> getTeamMemberAnnouncementViewItems(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamName
+    ) {
+        log.info("팀 이름 = {}에 대한 팀원 공고 뷰어 전체 조회 요청이 발생했습니다.", teamName);
+        if (accessor.isMember()) {
+            final Long memberId = accessor.getMemberId();
+            log.info("memberId = {}의 팀원 공고 뷰어 조회 요청이 발생했습니다.", memberId);
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getLoggedInTeamMemberAnnouncementViewItems(memberId, teamName));
+        } else {
+            log.info("teamName = {}에 팀원 공고 뷰어 조회 요청이 발생했습니다.", teamName);
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getLoggedOutTeamMemberAnnouncementViewItems(teamName));
+        }
+    }
+
     // 팀원 공고 전체 조회
     @GetMapping
     @MemberOnly

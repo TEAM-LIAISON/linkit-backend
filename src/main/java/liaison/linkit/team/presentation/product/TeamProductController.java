@@ -30,12 +30,10 @@ public class TeamProductController {
 
     // 팀 프로덕트 뷰어 전체 조회
     @GetMapping("/view")
-    @MemberOnly
     public CommonResponse<TeamProductResponseDTO.TeamProductViewItems> getTeamProductViewItems(
-            @Auth final Accessor accessor,
             @PathVariable final String teamName
     ) {
-        return CommonResponse.onSuccess(teamProductService.getTeamProductViewItems(accessor.getMemberId(), teamName));
+        return CommonResponse.onSuccess(teamProductService.getTeamProductViewItems(teamName));
     }
 
     // 팀 프로덕트 전체 조회

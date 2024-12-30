@@ -83,8 +83,6 @@ public class TeamProductControllerTest extends ControllerTest {
     private ResultActions performGetTeamProductViewItems(final String teamName) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/product/view", teamName)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
         );
     }
 
@@ -194,7 +192,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 ))
                 .build();
         // when
-        when(teamProductService.getTeamProductViewItems(anyLong(), any())).thenReturn(teamProductViewItems);
+        when(teamProductService.getTeamProductViewItems(any())).thenReturn(teamProductViewItems);
 
         final ResultActions resultActions = performGetTeamProductViewItems("liaison");
         // then

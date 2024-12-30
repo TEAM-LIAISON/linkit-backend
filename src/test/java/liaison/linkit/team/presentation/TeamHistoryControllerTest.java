@@ -75,8 +75,6 @@ public class TeamHistoryControllerTest extends ControllerTest {
     private ResultActions performGetTeamHistoryViewItems(final String teamName) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/history/view", teamName)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
         );
     }
 
@@ -149,7 +147,7 @@ public class TeamHistoryControllerTest extends ControllerTest {
                 .build();
 
         // when
-        when(teamHistoryService.getTeamHistoryViewItems(anyLong(), any())).thenReturn(teamHistoryViewItems);
+        when(teamHistoryService.getTeamHistoryViewItems(any())).thenReturn(teamHistoryViewItems);
 
         final ResultActions resultActions = performGetTeamHistoryViewItems("liaison");
 

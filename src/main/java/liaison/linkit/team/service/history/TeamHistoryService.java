@@ -27,7 +27,7 @@ public class TeamHistoryService {
     private final TeamHistoryCommandAdapter teamHistoryCommandAdapter;
     private final TeamHistoryMapper teamHistoryMapper;
 
-    public TeamHistoryResponseDTO.TeamHistoryViewItems getTeamHistoryViewItems(final Long memberId, final String teamName) {
+    public TeamHistoryResponseDTO.TeamHistoryViewItems getTeamHistoryViewItems(final String teamName) {
         final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamName);
         return teamHistoryMapper.toTeamHistoryViewItems(teamHistories);
     }
