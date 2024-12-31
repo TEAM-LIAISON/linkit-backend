@@ -5,9 +5,11 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.member.MemberRepository;
 import liaison.linkit.member.exception.member.DuplicateEmailIdException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Adapter
 @RequiredArgsConstructor
+@Slf4j
 public class MemberCommandAdapter {
     private final MemberRepository memberRepository;
 
@@ -16,6 +18,8 @@ public class MemberCommandAdapter {
     }
 
     public Member updateEmailId(final Long memberId, final String emailId) {
+        log.info("유저 ID 수정 요청이 발생했습니다.");
+        log.info("emailId: {}", emailId);
         return memberRepository.updateEmailId(memberId, emailId)
                 .orElseThrow(() -> DuplicateEmailIdException.EXCEPTION);
     }

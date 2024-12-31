@@ -1,20 +1,23 @@
 package liaison.linkit.member.domain.repository.member;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import java.util.Optional;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.domain.MemberBasicInform;
-import liaison.linkit.member.domain.type.MemberState;
 import liaison.linkit.member.domain.QMember;
+import liaison.linkit.member.domain.type.MemberState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
 public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public Optional<Member> findBySocialLoginId(String socialLoginId) {
@@ -37,8 +40,11 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .where(qMember.id.eq(memberId))
                 .execute();
 
+        // 변경 사항을 데이터베이스에서 다시 조회
         if (affectedRows > 0) {
-            // 업데이트된 객체를 다시 조회해서 반환
+            entityManager.flush(); // 동기화
+            entityManager.clear(); // 캐시 무효화
+
             Member updatedEntity = jpaQueryFactory
                     .selectFrom(qMember)
                     .where(qMember.id.eq(memberId))

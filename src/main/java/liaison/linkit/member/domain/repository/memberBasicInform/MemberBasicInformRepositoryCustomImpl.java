@@ -1,6 +1,8 @@
 package liaison.linkit.member.domain.repository.memberBasicInform;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.Optional;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.QMemberBasicInform;
@@ -14,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 public class MemberBasicInformRepositoryCustomImpl implements MemberBasicInformRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public boolean existsByMemberId(final Long memberId) {
@@ -59,6 +64,9 @@ public class MemberBasicInformRepositoryCustomImpl implements MemberBasicInformR
                     .fetchOne();
             return Optional.ofNullable(updatedEntity);
         }
+
+        entityManager.flush();
+        entityManager.clear();
 
         return Optional.empty();  // 업데이트가 실패한 경우
     }
