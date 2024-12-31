@@ -19,9 +19,6 @@ public class MemberBasicInformRequestDTO {
         @NotNull(message = "이름을 입력해주세요")
         private String memberName;
 
-        @NotNull(message = "유저 아이디를 입력해주세요")
-        private String emailId;
-
         @NotNull(message = "연락처를 입력해주세요")
         private String contact;
     }

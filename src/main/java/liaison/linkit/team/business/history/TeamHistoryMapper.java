@@ -1,9 +1,11 @@
 package liaison.linkit.team.business.history;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.TeamHistory;
@@ -27,14 +29,20 @@ public class TeamHistoryMapper {
         Map<String, Map<String, List<TeamHistoryViewItem>>> groupByYearMonth =
                 groupByYearAndMonth(teamHistoryViewItems);
 
-        // 3) 원하는 JSON 형태로 변환
+        // 3) 년도 내림차순 정렬
+        Map<String, Map<String, List<TeamHistoryViewItem>>> sortedGroupByYearMonth =
+                new TreeMap<>(Comparator.reverseOrder());
+        sortedGroupByYearMonth.putAll(groupByYearMonth);
+
+        // 4) 원하는 JSON 형태로 변환
         List<Map<String, List<Map<String, List<TeamHistoryViewItem>>>>> finalCalendarStructure =
-                convertToNestedList(groupByYearMonth);
+                convertToNestedList(sortedGroupByYearMonth);
 
         return TeamHistoryCalendarResponse.builder()
                 .teamHistoryCalendar(finalCalendarStructure)
                 .build();
     }
+
 
     public TeamHistoryViewItem toTeamHistoryViewItem(final TeamHistory teamHistory) {
         return TeamHistoryResponseDTO.TeamHistoryViewItem.builder()

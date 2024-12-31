@@ -27,6 +27,7 @@ public class TeamHistoryService {
     private final TeamHistoryCommandAdapter teamHistoryCommandAdapter;
     private final TeamHistoryMapper teamHistoryMapper;
 
+    @Transactional(readOnly = true)
     public TeamHistoryResponseDTO.TeamHistoryCalendarResponse getTeamHistoryCalendarResponses(final String teamName) {
         final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamName);
         return teamHistoryMapper.toTeamHistoryCalendar(teamHistories);

@@ -1218,12 +1218,12 @@ include::{snippets}/team-product-controller-test/remove-team-product/response-fi
 
 ====
 *요청*
-include::{snippets}/team-history-controller-test/get-team-history-view-items/http-request.adoc[]
-include::{snippets}/team-history-controller-test/get-team-history-view-items/path-parameters.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-calendar-responses/http-request.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-calendar-responses/path-parameters.adoc[]
 
 *응답*
-include::{snippets}/team-history-controller-test/get-team-history-view-items/http-response.adoc[]
-include::{snippets}/team-history-controller-test/get-team-history-view-items/response-fields.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-calendar-responses/http-response.adoc[]
+include::{snippets}/team-history-controller-test/get-team-history-calendar-responses/response-fields.adoc[]
 ====
 
 === 팀 연혁 전체 조회
