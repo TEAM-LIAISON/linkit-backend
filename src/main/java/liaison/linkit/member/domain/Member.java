@@ -43,7 +43,7 @@ public class Member extends BaseDateTimeEntity {
     @Column(nullable = false, length = 50)
     private String email;
 
-    @Column(nullable = false, length = 50)
+    @Column(unique = true, length = 50)
     private String emailId;
 
     // 계정 상태 관리 컬럼

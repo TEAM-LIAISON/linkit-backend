@@ -99,14 +99,7 @@ public class LoginService {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberQueryAdapter.existsByEmail(email)) {
-                // 이메일에서 '@' 앞의 부분을 추출하여 emailId 변수에 저장
-                int atIndex = email.indexOf('@');
-                if (atIndex == -1) {
-                    throw new IllegalArgumentException("유효한 이메일 주소가 아닙니다.");
-                }
-                String emailId = email.substring(0, atIndex);
-
-                final Member member = memberCommandAdapter.create(new Member(socialLoginId, email, emailId, null, platform));
+                final Member member = memberCommandAdapter.create(new Member(socialLoginId, email, null, null, platform));
 
                 memberBasicInformCommandAdapter.create(new MemberBasicInform(
                         null, member, null, null, false, false, false, false
@@ -116,6 +109,7 @@ public class LoginService {
                         null, member, null, false, 0, false, false, false, false, false, false, false, false
                 ));
 
+                // 팀원 초대를 받은 신규 회원인 경우 알림 데이터 추가
                 if (teamMemberInvitationQueryAdapter.existsByEmail(email)) {
                     final List<Team> invitationTeams = teamMemberInvitationQueryAdapter.getTeamsByEmail(email);
                     notificationCommandAdapter.addInvitationNotificationsForTeams(member, invitationTeams);

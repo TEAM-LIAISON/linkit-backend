@@ -1,12 +1,16 @@
 package liaison.linkit.team.business.history;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.team.domain.Team;
 import liaison.linkit.team.domain.TeamHistory;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO.AddTeamHistoryRequest;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.RemoveTeamHistoryResponse;
+import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryCalendarResponse;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryItem;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryViewItem;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.UpdateTeamHistoryResponse;
@@ -14,13 +18,21 @@ import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.Updat
 @Mapper
 public class TeamHistoryMapper {
 
-    public TeamHistoryResponseDTO.TeamHistoryViewItems toTeamHistoryViewItems(final List<TeamHistory> teamHistories) {
-        List<TeamHistoryViewItem> items = teamHistories.stream()
+    public TeamHistoryResponseDTO.TeamHistoryCalendarResponse toTeamHistoryCalendar(final List<TeamHistory> teamHistories) {
+        List<TeamHistoryViewItem> teamHistoryViewItems = teamHistories.stream()
                 .map(this::toTeamHistoryViewItem)
                 .toList();
 
-        return TeamHistoryResponseDTO.TeamHistoryViewItems.builder()
-                .teamHistoryViewItems(items)
+        // 2) 년도/월 그룹핑
+        Map<String, Map<String, List<TeamHistoryViewItem>>> groupByYearMonth =
+                groupByYearAndMonth(teamHistoryViewItems);
+
+        // 3) 원하는 JSON 형태로 변환
+        List<Map<String, List<Map<String, List<TeamHistoryViewItem>>>>> finalCalendarStructure =
+                convertToNestedList(groupByYearMonth);
+
+        return TeamHistoryCalendarResponse.builder()
+                .teamHistoryCalendar(finalCalendarStructure)
                 .build();
     }
 
@@ -108,5 +120,53 @@ public class TeamHistoryMapper {
     public TeamHistoryResponseDTO.RemoveTeamHistoryResponse toRemoveTeamHistory(final Long teamHistoryId) {
         return RemoveTeamHistoryResponse.builder()
                 .teamHistoryId(teamHistoryId).build();
+    }
+
+    private Map<String, Map<String, List<TeamHistoryViewItem>>> groupByYearAndMonth(final List<TeamHistoryViewItem> teamHistoryViewItems) {
+        // year -> (month -> List<item>) 구조
+        Map<String, Map<String, List<TeamHistoryViewItem>>> map = new LinkedHashMap<>();
+
+        for (TeamHistoryViewItem teamHistoryViewItem : teamHistoryViewItems) {
+            // startDate = "2023.01" 형태로 가정
+            String[] dateParts = teamHistoryViewItem.getHistoryStartDate().split("\\.");
+            // dateParts[0] = "2023", dateParts[1] = "01"
+            String year = dateParts[0];
+            String month = dateParts[1];
+
+            // year가 없으면 새로 put
+            map.putIfAbsent(year, new LinkedHashMap<>());
+
+            // month가 없으면 새 list
+            map.get(year).putIfAbsent(month, new ArrayList<>());
+
+            // list에 현재 item 추가
+            map.get(year).get(month).add(teamHistoryViewItem);
+        }
+
+        return map;
+    }
+
+    private List<Map<String, List<Map<String, List<TeamHistoryViewItem>>>>> convertToNestedList(
+            Map<String, Map<String, List<TeamHistoryViewItem>>> groupByYearMonth) {
+
+        List<Map<String, List<Map<String, List<TeamHistoryViewItem>>>>> result = new ArrayList<>();
+
+        for (String year : groupByYearMonth.keySet()) {
+            List<Map<String, List<TeamHistoryViewItem>>> monthList = new ArrayList<>();
+            Map<String, List<TeamHistoryViewItem>> monthMap = groupByYearMonth.get(year);
+
+            for (String month : monthMap.keySet()) {
+                Map<String, List<TeamHistoryViewItem>> singleMonthEntry = new LinkedHashMap<>();
+                singleMonthEntry.put(month, monthMap.get(month));
+                monthList.add(singleMonthEntry);
+            }
+
+            Map<String, List<Map<String, List<TeamHistoryViewItem>>>> singleYearEntry = new LinkedHashMap<>();
+            singleYearEntry.put(year, monthList);
+
+            result.add(singleYearEntry);
+        }
+
+        return result;
     }
 }

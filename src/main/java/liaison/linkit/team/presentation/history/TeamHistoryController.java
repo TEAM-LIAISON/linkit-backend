@@ -6,7 +6,6 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
-import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryViewItems;
 import liaison.linkit.team.service.history.TeamHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,11 +26,11 @@ public class TeamHistoryController {
     private final TeamHistoryService teamHistoryService;
 
     @GetMapping("/view")
-    public CommonResponse<TeamHistoryViewItems> getTeamHistoryViewItems(
+    public CommonResponse<TeamHistoryResponseDTO.TeamHistoryCalendarResponse> getTeamHistoryCalendarResponses(
             @PathVariable final String teamName
     ) {
         log.info("팀 이름 = {}에 대한 팀 연혁 뷰어 전체 조회 요청이 발생했습니다.", teamName);
-        return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryViewItems(teamName));
+        return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryCalendarResponses(teamName));
     }
 
     @GetMapping
