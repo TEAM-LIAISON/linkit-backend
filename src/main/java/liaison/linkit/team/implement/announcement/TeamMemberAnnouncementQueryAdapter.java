@@ -6,6 +6,8 @@ import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.exception.announcement.TeamMemberAnnouncementNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Adapter
 @RequiredArgsConstructor
@@ -23,5 +25,15 @@ public class TeamMemberAnnouncementQueryAdapter {
 
     public TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId) {
         return teamMemberAnnouncementRepository.getTeamMemberAnnouncement(teamMemberAnnouncementId);
+    }
+
+    public Page<TeamMemberAnnouncement> findAll(
+            final List<String> majorPosition,
+            final List<String> skillName,
+            final List<String> cityName,
+            final List<String> scaleName,
+            final Pageable pageable
+    ) {
+        return teamMemberAnnouncementRepository.findAll(majorPosition, skillName, cityName, scaleName, pageable);
     }
 }

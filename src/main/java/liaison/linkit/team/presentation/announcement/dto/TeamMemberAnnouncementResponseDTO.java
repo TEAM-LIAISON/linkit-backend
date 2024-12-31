@@ -2,6 +2,8 @@ package liaison.linkit.team.presentation.announcement.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +12,34 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TeamMemberAnnouncementResponseDTO {
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnnouncementInform {
+
+        private String teamLogoImagePath;
+        private String teamName;
+
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+
+        @Builder.Default
+        private RegionDetail regionDetail = new RegionDetail();
+
+        private int announcementDDay;           // 디데이
+        private String announcementTitle;       // 공고 제목
+        private Boolean isAnnouncementScrap;    // 공고 스크랩 여부
+        private int announcementScrapCount;     // 공고 스크랩 수
+
+        @Builder.Default
+        private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+
+    }
 
     @Builder
     @Getter

@@ -1,13 +1,27 @@
 package liaison.linkit.team.domain.repository.announcement;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
+import liaison.linkit.common.domain.QPosition;
+import liaison.linkit.global.util.QueryDslUtil;
+import liaison.linkit.profile.domain.region.QRegion;
+import liaison.linkit.profile.domain.skill.QSkill;
+import liaison.linkit.team.domain.QTeam;
+import liaison.linkit.team.domain.QTeamRegion;
+import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
+import liaison.linkit.team.domain.announcement.QAnnouncementSkill;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.scale.QScale;
+import liaison.linkit.team.domain.scale.QTeamScale;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -92,5 +106,129 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         } else {
             throw new IllegalStateException("팀원 공고 공개/비공개 업데이트 실패");
         }
+    }
+
+    @Override
+    public Page<TeamMemberAnnouncement> findAll(
+            final List<String> majorPosition,
+            final List<String> skillName,
+            final List<String> cityName,
+            final List<String> scaleName,
+            final Pageable pageable
+    ) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        QTeam qTeam = QTeam.team;
+
+        QAnnouncementPosition qAnnouncementPosition = QAnnouncementPosition.announcementPosition;
+        QPosition qPosition = QPosition.position;
+
+        QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
+        QSkill qSkill = QSkill.skill;
+
+        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+        QRegion qRegion = QRegion.region;
+
+        QTeamScale qTeamScale = QTeamScale.teamScale;
+        QScale qScale = QScale.scale;
+
+        List<TeamMemberAnnouncement> content = jpaQueryFactory
+                .selectDistinct(qTeamMemberAnnouncement)
+                .from(qTeamMemberAnnouncement)
+
+                .leftJoin(qTeamMemberAnnouncement.team, qTeam)
+
+                .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
+                .leftJoin(qTeamScale.scale, qScale)
+
+                .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
+                .leftJoin(qTeamRegion.region, qRegion)
+
+                .leftJoin(qAnnouncementPosition).on(qAnnouncementPosition.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
+                .leftJoin(qAnnouncementPosition.position, qPosition)
+
+                .leftJoin(qAnnouncementSkill).on(qAnnouncementSkill.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
+                .leftJoin(qAnnouncementSkill.skill, qSkill)
+
+                .where(
+                        hasMajorPositions(majorPosition),
+                        hasSkillNames(skillName),
+                        hasCityName(cityName),
+                        hasScaleNames(scaleName)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(
+                        QueryDslUtil.getOrderAnnouncementSpecifier(
+                                pageable.getSort(),
+                                qTeamMemberAnnouncement,
+                                qAnnouncementPosition,
+                                qAnnouncementSkill,
+                                qTeamRegion,
+                                qTeamScale
+                        )
+                )
+                .fetch();
+
+        // 카운트 쿼리
+        Long totalLong = jpaQueryFactory
+                .select(qTeamMemberAnnouncement.countDistinct())
+                .from(qTeamMemberAnnouncement)
+
+                .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
+                .leftJoin(qTeamScale.scale, qScale)
+
+                .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
+                .leftJoin(qTeamRegion.region, qRegion)
+
+                .leftJoin(qAnnouncementPosition).on(qAnnouncementPosition.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
+                .leftJoin(qAnnouncementPosition.position, qPosition)
+
+                .leftJoin(qAnnouncementSkill).on(qAnnouncementSkill.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
+                .leftJoin(qAnnouncementSkill.skill, qSkill)
+
+                .where(
+                        hasMajorPositions(majorPosition),
+                        hasSkillNames(skillName),
+                        hasCityName(cityName),
+                        hasScaleNames(scaleName)
+                )
+                .fetchOne();
+
+        long total = (totalLong == null) ? 0L : totalLong;
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+    }
+
+    private BooleanExpression hasMajorPositions(final List<String> majorPosition) {
+        if (majorPosition == null || majorPosition.isEmpty()) {
+            return null;
+        }
+        QPosition qPosition = QPosition.position;
+        return qPosition.majorPosition.in(majorPosition);
+    }
+
+    private BooleanExpression hasSkillNames(List<String> skillName) {
+        if (skillName == null || skillName.isEmpty()) {
+            return null;
+        }
+        QSkill qSkill = QSkill.skill;
+        return qSkill.skillName.in(skillName);
+    }
+
+    private BooleanExpression hasCityName(List<String> cityName) {
+        if (cityName == null || cityName.isEmpty()) {
+            return null;
+        }
+        QRegion qRegion = QRegion.region;
+        return qRegion.cityName.in(cityName);
+    }
+
+    private BooleanExpression hasScaleNames(List<String> scaleName) {
+        if (scaleName == null || scaleName.isEmpty()) {
+            return null;
+        }
+        QScale qScale = QScale.scale;
+        return qScale.scaleName.in(scaleName);
     }
 }

@@ -92,7 +92,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     .fetch();
 
             // 카운트 쿼리
-            long total = jpaQueryFactory
+            Long totalLong = jpaQueryFactory
                     .select(qTeam.countDistinct())
                     .from(qTeam)
 
@@ -112,6 +112,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                             hasTeamStateNames(teamStateName)
                     )
                     .fetchOne();
+
+            long total = (totalLong == null) ? 0L : totalLong;
 
             return PageableExecutionUtils.getPage(content, pageable, () -> total);
         } catch (Exception e) {

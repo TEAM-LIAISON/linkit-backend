@@ -33,3 +33,4 @@ public class TeamRegion {
     @JoinColumn(name = "region_id")
     private Region region;
 }
+
