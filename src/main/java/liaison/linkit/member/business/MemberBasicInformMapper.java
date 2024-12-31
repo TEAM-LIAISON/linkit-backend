@@ -34,11 +34,13 @@ public class MemberBasicInformMapper {
 
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse toMemberBasicInformResponse(
             final MemberBasicInform memberBasicInform,
-            final String email
+            final String email,
+            final String emailId
     ) {
         return MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse.builder()
                 .memberBasicInformId(memberBasicInform.getId())
                 .memberName(memberBasicInform.getMemberName())
+                .emailId(emailId)
                 .contact(memberBasicInform.getContact())
                 .email(email)
                 .build();

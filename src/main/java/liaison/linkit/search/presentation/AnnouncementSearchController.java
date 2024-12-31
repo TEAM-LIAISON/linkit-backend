@@ -20,7 +20,7 @@ public class AnnouncementSearchController {
      * @param majorPosition 포지션 대분류 (선택적)
      * @param skillName     보유 스킬 (선택적)
      * @param cityName      활동 지역 (선택적)
-     * @param               규모 (선택적)
+     * @param scaleName     규모 (선택적)
      * @param page          페이지 번호 (기본값: 0)
      * @param size          페이지 크기 (기본값: 20)
      * @return 팀원 목록과 페이지 정보

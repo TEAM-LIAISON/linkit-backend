@@ -9,6 +9,7 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
+import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
 import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
@@ -40,18 +41,18 @@ public class MemberService {
 
     private final MailReAuthenticationRedisUtil mailReAuthenticationRedisUtil;
     private final AuthCodeMailService authCodeMailService;
+    private final MemberCommandAdapter memberCommandAdapter;
 
     // 회원 기본 정보 요청 (UPDATE)
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
 
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberBasicInform(memberId, request);
 
-        final Member member = memberQueryAdapter.findById(memberId);
-        member.setCreateMemberBasicInform(updatedMemberBasicInform.isMemberBasicInform());
+        final Member updatedMember = memberCommandAdapter.updateEmailId(memberId, request.getEmailId());
 
-        final String email = memberQueryAdapter.findEmailById(memberId);
+        updatedMember.setCreateMemberBasicInform(updatedMemberBasicInform.isMemberBasicInform());
 
-        return memberBasicInformMapper.toMemberBasicInformResponse(updatedMemberBasicInform, email);
+        return memberBasicInformMapper.toMemberBasicInformResponse(updatedMemberBasicInform, updatedMember.getEmail(), updatedMember.getEmailId());
     }
 
     // 서비스 이용 동의 요청 (UPDATE)

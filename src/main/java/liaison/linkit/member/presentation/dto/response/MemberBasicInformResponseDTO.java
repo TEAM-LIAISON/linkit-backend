@@ -35,6 +35,7 @@ public class MemberBasicInformResponseDTO {
     public static class UpdateMemberBasicInformResponse {
         private Long memberBasicInformId;
         private String memberName;
+        private String emailId;
         private String contact;
         private String email;
     }

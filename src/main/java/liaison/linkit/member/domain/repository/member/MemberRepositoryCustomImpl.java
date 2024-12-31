@@ -2,6 +2,7 @@ package liaison.linkit.member.domain.repository.member;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.type.MemberState;
 import liaison.linkit.member.domain.QMember;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,27 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .fetchOne();
 
         return Optional.ofNullable(result);
+    }
+
+    @Override
+    public Optional<Member> updateEmailId(final Long memberId, final String emailId) {
+        QMember qMember = QMember.member;
+
+        long affectedRows = jpaQueryFactory.update(qMember)
+                .set(qMember.emailId, emailId)
+                .where(qMember.id.eq(memberId))
+                .execute();
+
+        if (affectedRows > 0) {
+            // 업데이트된 객체를 다시 조회해서 반환
+            Member updatedEntity = jpaQueryFactory
+                    .selectFrom(qMember)
+                    .where(qMember.id.eq(memberId))
+                    .fetchOne();
+            return Optional.ofNullable(updatedEntity);
+        }
+
+        return Optional.empty();  // 업데이트가 실패한 경우
     }
 
     @Override
