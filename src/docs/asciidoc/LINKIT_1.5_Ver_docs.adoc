@@ -1031,7 +1031,7 @@ include::{snippets}/team-member-announcement-controller-test/get-team-member-ann
 include::{snippets}/team-member-announcement-controller-test/get-team-member-announcement-items/response-fields.adoc[]
 ====
 
-=== 팀원 공고 단일 조회
+=== 팀원 공고 단일 조회 (로그인 - 토큰 O / 로그아웃 - 토큰 X)
 
 ====
 *요청*

@@ -128,6 +128,8 @@ public class TeamMemberService {
             throw TeamMemberInvitationDuplicateException.EXCEPTION;
         }
 
+        log.info("teamMemberInvitationEmail = {}", teamMemberInvitationEmail);
+
         // 해당 회원에 대해 이메일 발송
         teamMemberInvitationMailService.sendMailTeamMemberInvitation(teamMemberInvitationEmail, team.getTeamLogoImagePath(), team.getTeamName());
 

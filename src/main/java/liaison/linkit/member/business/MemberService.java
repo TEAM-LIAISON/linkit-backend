@@ -110,7 +110,7 @@ public class MemberService {
         final Member member = memberQueryAdapter.findById(memberId);
 
         // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
-        authCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), member.getEmail(), authCode);
+        authCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), mailReAuthenticationRequest.getEmail(), authCode);
 
         // 재인증 코드를 발송한 시간 발행
         return memberBasicInformMapper.toReAuthenticationResponse();
@@ -133,7 +133,7 @@ public class MemberService {
         log.info("authCode = {}", authCode);
         final String changeRequestEmail = authCodeVerificationRequest.getChangeRequestEmail();
         log.info("changeRequestEmail = {}", changeRequestEmail);
-        
+
         // 인증 코드가 잘못 입력된 경우
         if (!verifyEmailCode(changeRequestEmail, authCode)) {
             throw AuthCodeBadRequestException.EXCEPTION;
