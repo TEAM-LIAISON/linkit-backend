@@ -2,6 +2,7 @@ package liaison.linkit.team.business.announcement;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.team.domain.Team;
@@ -13,6 +14,7 @@ import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInform;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
@@ -20,9 +22,37 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 
 @Mapper
 public class TeamMemberAnnouncementMapper {
+
+    public TeamMemberAnnouncementResponseDTO.AnnouncementInform toTeamMemberAnnouncementInform(
+            final String teamLogoImagePath,
+            final String teamName,
+            final TeamScaleItem teamScaleItem,
+            final RegionDetail regionDetail,
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final int announcementDDay,
+            final boolean isAnnouncementScrap,
+            final int announcementScrapCount,
+            final AnnouncementPositionItem announcementPositionItem,
+            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
+    ) {
+
+        return AnnouncementInform.builder()
+                .teamLogoImagePath(teamLogoImagePath)
+                .teamName(teamName)
+                .teamScaleItem(teamScaleItem)
+                .regionDetail(regionDetail)
+                .announcementDDay(announcementDDay)
+                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+                .isAnnouncementScrap(isAnnouncementScrap)
+                .announcementScrapCount(announcementScrapCount)
+                .announcementPositionItem(announcementPositionItem)
+                .announcementSkillNames(announcementSkillNames)
+                .build();
+    }
 
     public TeamMemberAnnouncementViewItems toLoggedOutTeamMemberAnnouncementViewItems(
             final List<TeamMemberAnnouncement> teamMemberAnnouncements,

@@ -156,10 +156,10 @@ class MemberControllerTest extends ControllerTest {
     void updateMemberBasicInform() throws Exception {
         // given
         final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest updateMemberBasicInformRequest
-                = new UpdateMemberBasicInformRequest("권동민", "01036614067");
+                = new UpdateMemberBasicInformRequest("권동민", "kwondm7", "01036614067");
 
         final MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInformResponse
-                = new UpdateMemberBasicInformResponse(1L, "권동민", "01036614067", "kwondm7@gmail.com");
+                = new UpdateMemberBasicInformResponse(1L, "권동민", "kwondm7", "01036614067", "kwondm7@gmail.com");
 
         // when
         when(memberService.updateMemberBasicInform(anyLong(), any())).thenReturn(updateMemberBasicInformResponse);
@@ -178,6 +178,10 @@ class MemberControllerTest extends ControllerTest {
                                         fieldWithPath("memberName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("회원 이름")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("유저 아이디")
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("contact")
                                                 .type(JsonFieldType.STRING)
@@ -203,6 +207,10 @@ class MemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.memberName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("회원 이름")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("유저 아이디")
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("result.contact")
                                                 .type(JsonFieldType.STRING)

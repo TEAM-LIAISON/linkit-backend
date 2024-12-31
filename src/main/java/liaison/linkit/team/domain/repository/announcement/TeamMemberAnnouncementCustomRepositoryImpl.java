@@ -19,6 +19,7 @@ import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
+@Slf4j
 public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnnouncementCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -131,7 +133,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
         QTeamScale qTeamScale = QTeamScale.teamScale;
         QScale qScale = QScale.scale;
-
+        log.info("Starting query to fetch Announcements");
         List<TeamMemberAnnouncement> content = jpaQueryFactory
                 .selectDistinct(qTeamMemberAnnouncement)
                 .from(qTeamMemberAnnouncement)
@@ -170,10 +172,14 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 )
                 .fetch();
 
+        log.info("Fetched {} announcements from database", content.size());
+
         // 카운트 쿼리
         Long totalLong = jpaQueryFactory
                 .select(qTeamMemberAnnouncement.countDistinct())
                 .from(qTeamMemberAnnouncement)
+
+                .leftJoin(qTeamMemberAnnouncement.team, qTeam)
 
                 .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
                 .leftJoin(qTeamScale.scale, qScale)

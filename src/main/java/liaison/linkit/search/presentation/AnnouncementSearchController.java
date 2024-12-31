@@ -55,6 +55,7 @@ public class AnnouncementSearchController {
             return CommonResponse.onSuccess(announcements);
         } else {
             Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+            log.info("c e");
             Page<AnnouncementInform> announcements = announcementSearchService.searchAnnouncementsInLogoutState(majorPosition, skillName, cityName, scaleName, pageable);
             return CommonResponse.onSuccess(announcements);
         }
