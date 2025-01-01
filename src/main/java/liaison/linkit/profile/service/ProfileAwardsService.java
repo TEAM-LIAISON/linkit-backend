@@ -85,7 +85,7 @@ public class ProfileAwardsService {
         final ProfileAwards profileAwards = profileAwardsQueryAdapter.getProfileAwards(profileAwardsId);
 
         if (profileAwards.getAwardsCertificationAttachFilePath() != null) {
-            s3Uploader.deleteFile(profileAwards.getAwardsCertificationAttachFilePath());
+            s3Uploader.deleteS3File(profileAwards.getAwardsCertificationAttachFilePath());
             profileAwards.setProfileAwardsCertification(false, false, null, null);
         }
 
@@ -125,7 +125,7 @@ public class ProfileAwardsService {
         final ProfileAwards profileAwards = profileAwardsQueryAdapter.getProfileAwards(profileAwardsId);
 
         // 업로드 파일 삭제
-        s3Uploader.deleteFile(profileAwards.getAwardsCertificationAttachFilePath());
+        s3Uploader.deleteS3File(profileAwards.getAwardsCertificationAttachFilePath());
 
         // 프로필 이력 인증 정보 업데이트
         profileAwards.setProfileAwardsCertification(false, false, null, null);

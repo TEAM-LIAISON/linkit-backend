@@ -114,7 +114,7 @@ public class MiniProfileService {
 
         // 프로필 사진을 업데이트한다
         if (imageValidator.validatingImageUpload(profileImage)) {
-            profileImagePath = s3Uploader.uploadProfileImage(new ImageFile(profileImage));
+            profileImagePath = s3Uploader.uploadProfileMainImage(new ImageFile(profileImage));
             profile.updateProfileImagePath(profileImagePath);
         }
 

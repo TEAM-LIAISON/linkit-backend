@@ -95,7 +95,7 @@ public class ProfileEducationService {
         final ProfileEducation profileEducation = profileEducationQueryAdapter.getProfileEducation(profileEducationId);
 
         if (profileEducation.getEducationCertificationAttachFilePath() != null) {
-            s3Uploader.deleteFile(profileEducation.getEducationCertificationAttachFilePath());
+            s3Uploader.deleteS3File(profileEducation.getEducationCertificationAttachFilePath());
             profileEducation.setProfileEducationCertification(false, false, null, null);
         }
 
@@ -136,7 +136,7 @@ public class ProfileEducationService {
         final ProfileEducation profileEducation = profileEducationQueryAdapter.getProfileEducation(profileEducationId);
 
         // 업로드 파일 삭제
-        s3Uploader.deleteFile(profileEducation.getEducationCertificationAttachFilePath());
+        s3Uploader.deleteS3File(profileEducation.getEducationCertificationAttachFilePath());
 
         // 프로필 이력 인증 정보 업데이트
         profileEducation.setProfileEducationCertification(false, false, null, null);

@@ -88,7 +88,7 @@ public class ProfileLicenseService {
         final ProfileLicense profileLicense = profileLicenseQueryAdapter.getProfileLicense(profileLicenseId);
 
         if (profileLicense.getLicenseCertificationAttachFilePath() != null) {
-            s3Uploader.deleteFile(profileLicense.getLicenseCertificationAttachFilePath());
+            s3Uploader.deleteS3File(profileLicense.getLicenseCertificationAttachFilePath());
             profileLicense.setProfileLicenseCertification(false, false, null, null);
         }
 
@@ -129,7 +129,7 @@ public class ProfileLicenseService {
         final ProfileLicense profileLicense = profileLicenseQueryAdapter.getProfileLicense(profileLicenseId);
 
         // 업로드 파일 삭제
-        s3Uploader.deleteFile(profileLicense.getLicenseCertificationAttachFilePath());
+        s3Uploader.deleteS3File(profileLicense.getLicenseCertificationAttachFilePath());
 
         // 프로필 자격증 인증 정보 업데이트
         profileLicense.setProfileLicenseCertification(false, false, null, null);

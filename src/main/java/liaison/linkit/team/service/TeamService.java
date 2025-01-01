@@ -169,7 +169,6 @@ public class TeamService {
             if (imageValidator.validatingImageUpload(teamLogoImage)) {
                 // 이전에 업로드한 팀 로고 이미지가 존재
                 if (team.getTeamLogoImagePath() != null) {
-                    // 이미지 삭제
                     s3Uploader.deleteS3Image(team.getTeamLogoImagePath());
                 }
 

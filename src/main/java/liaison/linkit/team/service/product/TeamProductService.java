@@ -162,7 +162,7 @@ public class TeamProductService {
             if (imageValidator.validatingImageUpload(productRepresentImage)) {
                 // 기존 대표 이미지 삭제 (선택 사항)
                 if (updatedTeamProduct.getProductRepresentImagePath() != null) {
-                    s3Uploader.deleteFile(updatedTeamProduct.getProductRepresentImagePath());
+                    s3Uploader.deleteS3File(updatedTeamProduct.getProductRepresentImagePath());
                 }
                 // 새로운 대표 이미지 업로드
                 String newRepresentImagePath = s3Uploader.uploadTeamProductRepresentImage(new ImageFile(productRepresentImage));
@@ -184,7 +184,7 @@ public class TeamProductService {
             List<ProductSubImage> existingSubImages = productSubImageQueryAdapter.getProjectSubImages(teamProductId);
             if (existingSubImages != null && !existingSubImages.isEmpty()) {
                 for (ProductSubImage subImage : existingSubImages) {
-                    s3Uploader.deleteFile(subImage.getProductSubImagePath());
+                    s3Uploader.deleteS3File(subImage.getProductSubImagePath());
                 }
                 productSubImageCommandAdapter.deleteAll(existingSubImages);
             }
@@ -247,14 +247,14 @@ public class TeamProductService {
 
         // 기존 대표 이미지 삭제 (선택 사항)
         if (teamProduct.getProductRepresentImagePath() != null) {
-            s3Uploader.deleteFile(teamProduct.getProductRepresentImagePath());
+            s3Uploader.deleteS3File(teamProduct.getProductRepresentImagePath());
         }
 
         // 기존 보조 이미지 삭제 (선택 사항)
         List<ProductSubImage> existingSubImages = productSubImageQueryAdapter.getProjectSubImages(teamProductId);
         if (existingSubImages != null && !existingSubImages.isEmpty()) {
             for (ProductSubImage subImage : existingSubImages) {
-                s3Uploader.deleteFile(subImage.getProductSubImagePath());
+                s3Uploader.deleteS3File(subImage.getProductSubImagePath());
             }
             productSubImageCommandAdapter.deleteAll(existingSubImages);
         }

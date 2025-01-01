@@ -86,7 +86,7 @@ public class ProfileActivityService {
         final ProfileActivity profileActivity = profileActivityQueryAdapter.getProfileActivity(profileActivityId);
 
         if (profileActivity.getActivityCertificationAttachFilePath() != null) {
-            s3Uploader.deleteFile(profileActivity.getActivityCertificationAttachFilePath());
+            s3Uploader.deleteS3File(profileActivity.getActivityCertificationAttachFilePath());
             profileActivity.setProfileActivityCertification(false, false, null, null);
         }
 
@@ -126,7 +126,7 @@ public class ProfileActivityService {
         final ProfileActivity profileActivity = profileActivityQueryAdapter.getProfileActivity(profileActivityId);
 
         // 업로드 파일 삭제
-        s3Uploader.deleteFile(profileActivity.getActivityCertificationAttachFilePath());
+        s3Uploader.deleteS3File(profileActivity.getActivityCertificationAttachFilePath());
 
         // 프로필 이력 인증 정보 업데이트
         profileActivity.setProfileActivityCertification(false, false, null, null);

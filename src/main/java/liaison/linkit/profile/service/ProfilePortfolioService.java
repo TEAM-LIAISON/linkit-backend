@@ -132,7 +132,7 @@ public class ProfilePortfolioService {
             List<ProjectSubImage> projectSubImageEntities = new ArrayList<>();
             for (MultipartFile subImage : projectSubImages) {
                 if (imageValidator.validatingImageUpload(subImage)) {
-                    String subImagePath = s3Uploader.uploadProjectSubImage(new ImageFile(subImage));
+                    String subImagePath = s3Uploader.uploadProfileProjectSubImage(new ImageFile(subImage));
                     projectSubImagePaths.add(subImagePath);
                     ProjectSubImage projectSubImage = ProjectSubImage.builder()
                             .profilePortfolio(profilePortfolio)
@@ -192,7 +192,7 @@ public class ProfilePortfolioService {
             if (imageValidator.validatingImageUpload(projectRepresentImage)) {
                 // 기존 대표 이미지 삭제 (선택 사항)
                 if (updatedProfilePortfolio.getProjectRepresentImagePath() != null) {
-                    s3Uploader.deleteFile(updatedProfilePortfolio.getProjectRepresentImagePath());
+                    s3Uploader.deleteS3File(updatedProfilePortfolio.getProjectRepresentImagePath());
                 }
                 // 새로운 대표 이미지 업로드
                 String newRepresentImagePath = s3Uploader.uploadProfileProjectRepresentImage(new ImageFile(projectRepresentImage));
@@ -214,7 +214,7 @@ public class ProfilePortfolioService {
             List<ProjectSubImage> existingSubImages = projectSubImageQueryAdapter.getProjectSubImages(profilePortfolioId);
             if (existingSubImages != null && !existingSubImages.isEmpty()) {
                 for (ProjectSubImage subImage : existingSubImages) {
-                    s3Uploader.deleteFile(subImage.getProjectSubImagePath());
+                    s3Uploader.deleteS3File(subImage.getProjectSubImagePath());
                 }
                 projectSubImageCommandAdapter.deleteAll(existingSubImages);
             }
@@ -223,7 +223,7 @@ public class ProfilePortfolioService {
             List<ProjectSubImage> newProjectSubImageEntities = new ArrayList<>();
             for (MultipartFile subImage : projectSubImages) {
                 if (imageValidator.validatingImageUpload(subImage)) {
-                    String subImagePath = s3Uploader.uploadProjectSubImage(new ImageFile(subImage));
+                    String subImagePath = s3Uploader.uploadProfileProjectSubImage(new ImageFile(subImage));
                     newProjectSubImagePaths.add(subImagePath);
                     ProjectSubImage newSubImage = ProjectSubImage.builder()
                             .profilePortfolio(updatedProfilePortfolio)
@@ -300,14 +300,14 @@ public class ProfilePortfolioService {
 
         // 기존 대표 이미지 삭제 (선택 사항)
         if (profilePortfolio.getProjectRepresentImagePath() != null) {
-            s3Uploader.deleteFile(profilePortfolio.getProjectRepresentImagePath());
+            s3Uploader.deleteS3File(profilePortfolio.getProjectRepresentImagePath());
         }
 
         // 기존 보조 이미지 삭제 (선택 사항)
         List<ProjectSubImage> existingSubImages = projectSubImageQueryAdapter.getProjectSubImages(profilePortfolioId);
         if (existingSubImages != null && !existingSubImages.isEmpty()) {
             for (ProjectSubImage subImage : existingSubImages) {
-                s3Uploader.deleteFile(subImage.getProjectSubImagePath());
+                s3Uploader.deleteS3File(subImage.getProjectSubImagePath());
             }
             projectSubImageCommandAdapter.deleteAll(existingSubImages);
         }

@@ -862,7 +862,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Wed, 8 Jan 2025 07:55:26 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Wed, 8 Jan 2025 08:58:07 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 216
 
@@ -990,14 +990,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 159
+Content-Length: 158
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2025-01-01T16:55:26.491276"
+    "logoutAt" : "2025-01-01T17:58:07.10334"
   }
 }</code></pre>
 </div>
@@ -1151,7 +1151,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2025-01-01T16:55:26.567325"
+    "quitAt" : "2025-01-01T17:58:07.179204"
   }
 }</code></pre>
 </div>
@@ -1253,7 +1253,7 @@ Content-Length: 178
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2025-01-01T16:55:27.056165"
+    "reAuthenticationEmailSendAt" : "2025-01-01T17:58:07.791832"
   }
 }</code></pre>
 </div>
@@ -1363,7 +1363,7 @@ Content-Length: 214
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2025-01-01T16:55:27.033967"
+    "verificationSuccessAt" : "2025-01-01T17:58:07.765967"
   }
 }</code></pre>
 </div>
@@ -2346,7 +2346,7 @@ Content-Length: 4984
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-01T16:55:29.189193",
+      "modifiedAt" : "2025-01-01T17:58:10.333732",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     },
@@ -3316,7 +3316,7 @@ Content-Length: 465
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "profileId" : 1,
-    "modifiedAt" : "2025-01-01T16:55:27.904994",
+    "modifiedAt" : "2025-01-01T17:58:08.821133",
     "majorPosition" : "대분류 포지션",
     "subPosition" : "소분류 포지션",
     "cityName" : "활동지역 시/도",
@@ -3543,14 +3543,14 @@ Content-Length: 587
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-01T16:55:30.620355",
+      "modifiedAt" : "2025-01-01T17:58:11.710242",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-01-01T16:55:30.620359",
+      "modifiedAt" : "2025-01-01T17:58:11.710245",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -3680,7 +3680,7 @@ Content-Length: 319
     "profileLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-01-01T16:55:30.590192",
+    "modifiedAt" : "2025-01-01T17:58:11.684776",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -3792,7 +3792,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-01T16:55:30.567581",
+    "createdAt" : "2025-01-01T17:58:11.665035",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -3959,7 +3959,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-01T16:55:30.631928",
+    "createdAt" : "2025-01-01T17:58:11.719599",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -9594,7 +9594,7 @@ Content-Type: multipart/form-data
 Content-Disposition: form-data; name=addTeamRequest
 Content-Type: application/json
 
-{"teamName":"리에종","teamShortDescription":"팀 한 줄 소개","scaleName":"팀 규모","cityName":"팀 활동지역 시/도","divisionName":"팀 활동지역 시/군/구","teamStateNames":["팀원 찾는 중","투자 유치 중"],"isTeamPublic":true}
+{"teamName":"리에종","teamCode":"팀 ID (팀 코드)","teamShortDescription":"팀 한 줄 소개","scaleName":"팀 규모","cityName":"팀 활동지역 시/도","divisionName":"팀 활동지역 시/군/구","teamStateNames":["팀원 찾는 중","투자 유치 중"],"isTeamPublic":true}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -9640,6 +9640,11 @@ Content-Type: application/json
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamCode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID (팀 코드)</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamShortDescription</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 한 줄 소개</p></td>
@@ -9681,7 +9686,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 610
+Content-Length: 641
 
 {
   "isSuccess" : true,
@@ -9691,6 +9696,7 @@ Content-Length: 610
     "teamId" : 1,
     "teamLogoImagePath" : "팀 로고 이미지 경로",
     "teamName" : "팀 이름",
+    "teamCode" : "팀 코드",
     "teamShortDescription" : "팀 한 줄 소개",
     "teamScaleItem" : {
       "teamScaleName" : "팀 규모 이름"
@@ -9752,6 +9758,11 @@ Content-Length: 610
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.teamName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.teamCode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀 ID (팀 코드)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.teamShortDescription</code></p></td>
@@ -10757,14 +10768,14 @@ Content-Length: 586
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-01T16:55:33.472956",
+      "modifiedAt" : "2025-01-01T17:58:14.501068",
       "logTitle" : "로그 제목 1",
       "logContent" : "로그 내용 1"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-01-01T16:55:33.472964",
+      "modifiedAt" : "2025-01-01T17:58:14.501076",
       "logTitle" : "로그 제목 2",
       "logContent" : "로그 내용 2"
     } ]
@@ -10895,14 +10906,14 @@ Content-Length: 578
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-01T16:55:33.488882",
+      "modifiedAt" : "2025-01-01T17:58:14.516002",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-01-01T16:55:33.488884",
+      "modifiedAt" : "2025-01-01T17:58:14.516004",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -11024,7 +11035,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 316
+Content-Length: 315
 
 {
   "isSuccess" : true,
@@ -11034,7 +11045,7 @@ Content-Length: 316
     "teamLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-01-01T16:55:33.462251",
+    "modifiedAt" : "2025-01-01T17:58:14.49079",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -11191,7 +11202,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 318
+Content-Length: 316
 
 {
   "isSuccess" : true,
@@ -11201,7 +11212,7 @@ Content-Length: 318
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-01T16:55:33.511267",
+    "createdAt" : "2025-01-01T17:58:14.5387",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -11362,7 +11373,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 317
+Content-Length: 318
 
 {
   "isSuccess" : true,
@@ -11372,7 +11383,7 @@ Content-Length: 317
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-01T16:55:33.52147",
+    "createdAt" : "2025-01-01T17:58:14.548952",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -15932,8 +15943,8 @@ Content-Length: 2242
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "unsorted" : true,
-        "sorted" : false
+        "sorted" : false,
+        "unsorted" : true
       },
       "offset" : 0,
       "paged" : true,
@@ -15947,8 +15958,8 @@ Content-Length: 2242
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "unsorted" : true,
-      "sorted" : false
+      "sorted" : false,
+      "unsorted" : true
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -16285,8 +16296,8 @@ Content-Length: 1762
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "unsorted" : true,
-        "sorted" : false
+        "sorted" : false,
+        "unsorted" : true
       },
       "offset" : 0,
       "paged" : true,
@@ -16300,8 +16311,8 @@ Content-Length: 1762
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "unsorted" : true,
-      "sorted" : false
+      "sorted" : false,
+      "unsorted" : true
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -16643,8 +16654,8 @@ Content-Length: 2239
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "unsorted" : true,
-        "sorted" : false
+        "sorted" : false,
+        "unsorted" : true
       },
       "offset" : 0,
       "paged" : true,
@@ -16658,8 +16669,8 @@ Content-Length: 2239
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "unsorted" : true,
-      "sorted" : false
+      "sorted" : false,
+      "unsorted" : true
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -17432,14 +17443,14 @@ Content-Length: 588
       "id" : "알림 ID 1",
       "notificationType" : "TEAM_INVITATION",
       "notificationStatus" : "PENDING",
-      "createdAt" : "2025-01-01T16:55:27.545246",
-      "modifiedAt" : "2025-01-01T16:55:27.545252"
+      "createdAt" : "2025-01-01T17:58:08.350201",
+      "modifiedAt" : "2025-01-01T17:58:08.350208"
     }, {
       "id" : "알림 ID 2",
       "notificationType" : "TEAM_INVITATION",
       "notificationStatus" : "PENDING",
-      "createdAt" : "2025-01-01T16:55:27.545257",
-      "modifiedAt" : "2025-01-01T16:55:27.545259"
+      "createdAt" : "2025-01-01T17:58:08.350215",
+      "modifiedAt" : "2025-01-01T17:58:08.350217"
     } ]
   }
 }</code></pre>
