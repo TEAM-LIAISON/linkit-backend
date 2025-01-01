@@ -41,7 +41,7 @@ import liaison.linkit.profile.presentation.education.dto.ProfileEducationRespons
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.RemoveProfileEducationResponse;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.UpdateProfileEducationResponse;
-import liaison.linkit.profile.service.ProfileEducationService;
+import liaison.linkit.profile.business.service.ProfileEducationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

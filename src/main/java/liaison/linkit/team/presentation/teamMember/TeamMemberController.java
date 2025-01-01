@@ -8,7 +8,7 @@ import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
-import liaison.linkit.team.service.teamMember.TeamMemberService;
+import liaison.linkit.team.business.service.teamMember.TeamMemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

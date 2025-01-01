@@ -9,14 +9,15 @@ import liaison.linkit.common.domain.QPosition;
 import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
 import liaison.linkit.profile.domain.skill.QSkill;
-import liaison.linkit.team.domain.QTeam;
-import liaison.linkit.team.domain.QTeamRegion;
+
 import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
 import liaison.linkit.team.domain.announcement.QAnnouncementSkill;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
+import liaison.linkit.team.domain.team.QTeam;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

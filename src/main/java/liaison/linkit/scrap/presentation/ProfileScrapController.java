@@ -6,7 +6,7 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenus;
-import liaison.linkit.scrap.business.ProfileScrapService;
+import liaison.linkit.scrap.business.service.ProfileScrapService;
 import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapRequestDTO;
 import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapResponseDTO;
 import lombok.RequiredArgsConstructor;

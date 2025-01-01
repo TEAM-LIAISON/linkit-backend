@@ -8,13 +8,13 @@ import liaison.linkit.profile.domain.profile.QProfile;
 import liaison.linkit.profile.domain.region.QProfileRegion;
 import liaison.linkit.profile.domain.skill.QProfileSkill;
 import liaison.linkit.profile.domain.state.QProfileCurrentState;
-import liaison.linkit.team.domain.QTeam;
-import liaison.linkit.team.domain.QTeamCurrentState;
-import liaison.linkit.team.domain.QTeamRegion;
 import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
 import liaison.linkit.team.domain.announcement.QAnnouncementSkill;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
+import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.scale.QTeamScale;
+import liaison.linkit.team.domain.state.QTeamCurrentState;
+import liaison.linkit.team.domain.team.QTeam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 

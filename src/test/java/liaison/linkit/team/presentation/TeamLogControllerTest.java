@@ -43,7 +43,7 @@ import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.TeamLogItems;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogPublicStateResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO.UpdateTeamLogTypeResponse;
-import liaison.linkit.team.service.log.TeamLogService;
+import liaison.linkit.team.business.service.log.TeamLogService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -99,7 +99,7 @@ public class TeamLogControllerTest extends ControllerTest {
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/log/{teamLogId}", teamName, teamLogId)
         );
     }
-    
+
     private ResultActions performPostTeamLog(final String teamName, final AddTeamLogRequest addTeamLogRequest) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log", teamName)

@@ -5,7 +5,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
-import liaison.linkit.search.service.ProfileSearchService;
+import liaison.linkit.search.business.service.ProfileSearchService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

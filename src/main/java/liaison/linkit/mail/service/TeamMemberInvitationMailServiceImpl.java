@@ -80,7 +80,7 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
                                 </tr>
                                 <tr>
                                   <td style="padding: 1.875rem 1.25rem;">
-                                    <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 0.75rem; color: #94A3B8; margin: 0; word-break: keep-all;">*이메일 변경을 요청하시지 않은 경우 이메일을 삭제해 주세요</p>
+                                    <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 0.75rem; color: #94A3B8; margin: 0; word-break: keep-all;">*팀원 초대를 희망하시지 않는 경우 이메일을 삭제해 주세요</p>
                                   </td>
                                 </tr>
                                 <tr>
@@ -93,7 +93,7 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
                                             리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민<br/>
                                             주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
                                             Copyright ⓒ 2024. liaison All rights reserved.<br/>
-                                            ※ 본 메일은 이메일 변경을 위해 발송되었습니다
+                                            ※ 본 메일은 팀원 초대를 위해 발송되었습니다
                                         </p>
                                     </td>
                                 </tr>

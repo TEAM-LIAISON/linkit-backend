@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-// MongoDB에 저장 (Collection -> chat_messages)
 @Document(collection = "chat_messages")
 @Getter
 @AllArgsConstructor
@@ -23,5 +22,5 @@ public class ChatMessage {
     private String senderMemberName;
     private String messageContent;
     private LocalDateTime timeStamp;
-    
+
 }

@@ -4,7 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
-import liaison.linkit.scrap.business.TeamScrapService;
+import liaison.linkit.scrap.business.service.TeamScrapService;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapRequestDTO;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +29,5 @@ public class TeamScrapController {
     ) {
         return CommonResponse.onSuccess(teamScrapService.updateTeamScrap(accessor.getMemberId(), teamName, updateTeamScrapRequest));
     }
-    
+
 }

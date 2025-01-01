@@ -7,7 +7,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsRequestDTO;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO;
-import liaison.linkit.profile.service.ProfileAwardsService;
+import liaison.linkit.profile.business.service.ProfileAwardsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;

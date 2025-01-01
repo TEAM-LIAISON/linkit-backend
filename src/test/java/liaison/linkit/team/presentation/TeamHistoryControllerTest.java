@@ -38,7 +38,7 @@ import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamH
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryItem;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryItems;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.UpdateTeamHistoryResponse;
-import liaison.linkit.team.service.history.TeamHistoryService;
+import liaison.linkit.team.business.service.history.TeamHistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

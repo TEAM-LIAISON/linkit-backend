@@ -26,7 +26,7 @@ import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.implement.profile.ProfileCommandAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
-import liaison.linkit.team.domain.Team;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import lombok.RequiredArgsConstructor;

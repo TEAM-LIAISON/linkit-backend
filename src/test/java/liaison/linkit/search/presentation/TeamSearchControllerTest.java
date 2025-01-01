@@ -16,7 +16,7 @@ import java.util.List;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.search.service.TeamSearchService;
+import liaison.linkit.search.business.service.TeamSearchService;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;

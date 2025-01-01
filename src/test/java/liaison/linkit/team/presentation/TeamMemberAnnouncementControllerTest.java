@@ -40,7 +40,7 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse;
-import liaison.linkit.team.service.announcement.TeamMemberAnnouncementService;
+import liaison.linkit.team.business.service.announcement.TeamMemberAnnouncementService;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

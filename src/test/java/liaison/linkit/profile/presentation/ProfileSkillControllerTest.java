@@ -32,7 +32,7 @@ import liaison.linkit.profile.presentation.skill.dto.ProfileSkillRequestDTO.AddP
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItems;
-import liaison.linkit.profile.service.ProfileSkillService;
+import liaison.linkit.profile.business.service.ProfileSkillService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

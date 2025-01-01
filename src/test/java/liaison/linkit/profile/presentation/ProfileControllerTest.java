@@ -56,7 +56,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
-import liaison.linkit.profile.service.ProfileService;
+import liaison.linkit.profile.business.service.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

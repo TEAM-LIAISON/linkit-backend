@@ -2,7 +2,7 @@ package liaison.linkit.team.domain.repository.teamMember;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import liaison.linkit.team.domain.Team;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.QTeamMemberInvitation;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
 import lombok.RequiredArgsConstructor;

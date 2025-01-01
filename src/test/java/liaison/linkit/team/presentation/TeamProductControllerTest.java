@@ -42,7 +42,7 @@ import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamP
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductViewItem;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductViewItems;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.UpdateTeamProductResponse;
-import liaison.linkit.team.service.product.TeamProductService;
+import liaison.linkit.team.business.service.product.TeamProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

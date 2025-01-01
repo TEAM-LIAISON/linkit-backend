@@ -28,7 +28,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenus;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
-import liaison.linkit.scrap.business.ProfileScrapService;
+import liaison.linkit.scrap.business.service.ProfileScrapService;
 import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapRequestDTO.UpdateProfileScrapRequest;
 import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapResponseDTO;
 import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapResponseDTO.UpdateProfileScrap;

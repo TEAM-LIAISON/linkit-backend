@@ -10,7 +10,7 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogTypeResponse;
-import liaison.linkit.profile.service.ProfileLogService;
+import liaison.linkit.profile.business.service.ProfileLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;

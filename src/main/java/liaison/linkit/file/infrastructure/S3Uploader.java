@@ -30,12 +30,6 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.s3.image-folder}")
-    private String imageFolder;
-
-    @Value("${cloud.aws.s3.file-folder}")
-    private String fileFolder;
-
     @Value("${cloud.aws.s3.cloud-front-image-domain}")
     private String cloudFrontImageDomain;
 
@@ -50,7 +44,6 @@ public class S3Uploader {
     private static final String PROFILE_EDUCATION_FOLDER = "/profile/education/";
     private static final String PROFILE_AWARDS_FOLDER = "/profile/awards/";
     private static final String PROFILE_LICENSE_FOLDER = "/profile/license/";
-
 
     private static final String TEAM_MAIN_FOLDER = "team/main/";
     private static final String TEAM_LOG_FOLDER = "team/log/";

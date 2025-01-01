@@ -2,7 +2,7 @@ package liaison.linkit.team.domain.repository.team;
 
 import java.util.List;
 import java.util.Optional;
-import liaison.linkit.team.domain.Team;
+import liaison.linkit.team.domain.team.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

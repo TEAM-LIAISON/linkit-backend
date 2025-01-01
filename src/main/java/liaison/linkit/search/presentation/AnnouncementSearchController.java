@@ -4,7 +4,7 @@ import java.util.List;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
-import liaison.linkit.search.service.AnnouncementSearchService;
+import liaison.linkit.search.business.service.AnnouncementSearchService;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInform;
 import lombok.RequiredArgsConstructor;

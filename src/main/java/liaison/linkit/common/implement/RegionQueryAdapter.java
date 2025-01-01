@@ -5,7 +5,7 @@ import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.profile.domain.repository.region.ProfileRegionRepository;
 import liaison.linkit.profile.exception.region.ProfileRegionNotFoundException;
-import liaison.linkit.team.domain.TeamRegion;
+import liaison.linkit.team.domain.region.TeamRegion;
 import liaison.linkit.team.domain.repository.region.RegionRepository;
 import liaison.linkit.team.domain.repository.region.TeamRegionRepository;
 import liaison.linkit.team.exception.region.TeamRegionNotFoundException;
@@ -31,7 +31,7 @@ public class RegionQueryAdapter {
         return profileRegionRepository.findProfileRegionByProfileId(profileId)
                 .orElseThrow(() -> ProfileRegionNotFoundException.EXCEPTION);
     }
-    
+
     public boolean existsTeamRegionByTeamId(final Long teamId) {
         return teamRegionRepository.existsTeamRegionByTeamId(teamId);
     }

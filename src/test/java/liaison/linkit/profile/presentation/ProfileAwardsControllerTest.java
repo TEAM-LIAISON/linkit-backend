@@ -42,7 +42,7 @@ import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.P
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.RemoveProfileAwardsCertificationResponse;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.RemoveProfileAwardsResponse;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.UpdateProfileAwardsResponse;
-import liaison.linkit.profile.service.ProfileAwardsService;
+import liaison.linkit.profile.business.service.ProfileAwardsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

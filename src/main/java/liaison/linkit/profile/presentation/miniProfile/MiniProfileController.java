@@ -8,7 +8,7 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileRequestDTO;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
-import liaison.linkit.profile.service.MiniProfileService;
+import liaison.linkit.profile.business.service.MiniProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

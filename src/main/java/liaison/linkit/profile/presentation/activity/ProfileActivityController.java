@@ -8,7 +8,7 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
-import liaison.linkit.profile.service.ProfileActivityService;
+import liaison.linkit.profile.business.service.ProfileActivityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;

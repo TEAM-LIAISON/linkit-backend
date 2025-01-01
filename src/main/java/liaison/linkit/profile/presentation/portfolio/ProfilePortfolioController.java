@@ -9,7 +9,7 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItems;
-import liaison.linkit.profile.service.ProfilePortfolioService;
+import liaison.linkit.profile.business.service.ProfilePortfolioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;

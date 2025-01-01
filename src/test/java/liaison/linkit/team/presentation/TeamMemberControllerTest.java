@@ -38,7 +38,7 @@ import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.Pen
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
-import liaison.linkit.team.service.teamMember.TeamMemberService;
+import liaison.linkit.team.business.service.teamMember.TeamMemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

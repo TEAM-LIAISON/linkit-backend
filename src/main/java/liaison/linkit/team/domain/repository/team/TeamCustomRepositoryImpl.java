@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
-import liaison.linkit.team.domain.QTeam;
-import liaison.linkit.team.domain.QTeamCurrentState;
-import liaison.linkit.team.domain.QTeamRegion;
-import liaison.linkit.team.domain.Team;
+
+import liaison.linkit.team.domain.region.QTeamRegion;
+import liaison.linkit.team.domain.state.QTeamCurrentState;
+import liaison.linkit.team.domain.team.QTeam;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;

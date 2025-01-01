@@ -39,7 +39,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamItems;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
-import liaison.linkit.team.service.TeamService;
+import liaison.linkit.team.business.service.team.TeamService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

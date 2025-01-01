@@ -9,7 +9,7 @@ import liaison.linkit.notification.domain.Notification;
 import liaison.linkit.notification.domain.repository.notification.NotificationRepository;
 import liaison.linkit.notification.domain.type.NotificationStatus;
 import liaison.linkit.notification.domain.type.NotificationType;
-import liaison.linkit.team.domain.Team;
+import liaison.linkit.team.domain.team.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

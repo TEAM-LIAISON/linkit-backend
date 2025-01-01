@@ -2,8 +2,8 @@ package liaison.linkit.team.domain.repository.region;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
-import liaison.linkit.team.domain.QTeamRegion;
-import liaison.linkit.team.domain.TeamRegion;
+import liaison.linkit.team.domain.region.QTeamRegion;
+import liaison.linkit.team.domain.region.TeamRegion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -9,7 +9,7 @@ import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.AddProfileLicenseResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItems;
-import liaison.linkit.profile.service.ProfileLicenseService;
+import liaison.linkit.profile.business.service.ProfileLicenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;

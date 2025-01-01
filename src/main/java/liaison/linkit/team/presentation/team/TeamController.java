@@ -8,7 +8,7 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
-import liaison.linkit.team.service.TeamService;
+import liaison.linkit.team.business.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

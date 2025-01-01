@@ -7,7 +7,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
-import liaison.linkit.team.service.log.TeamLogService;
+import liaison.linkit.team.business.service.log.TeamLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;

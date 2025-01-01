@@ -1,7 +1,7 @@
 package liaison.linkit.team.implement.history;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.team.domain.TeamHistory;
+import liaison.linkit.team.domain.history.TeamHistory;
 import liaison.linkit.team.domain.repository.history.TeamHistoryRepository;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO.UpdateTeamHistoryRequest;
 import lombok.RequiredArgsConstructor;
