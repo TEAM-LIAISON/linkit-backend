@@ -16,6 +16,7 @@ public class TeamRequestDTO {
     @AllArgsConstructor
     public static class AddTeamRequest {
         private String teamName;
+        private String teamCode;
         private String teamShortDescription;
         private String scaleName;
         private String cityName;

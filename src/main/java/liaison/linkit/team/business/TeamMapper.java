@@ -19,6 +19,7 @@ public class TeamMapper {
     ) {
         return Team.builder()
                 .teamName(addTeamRequest.getTeamName())
+                .teamCode(addTeamRequest.getTeamCode())
                 .teamShortDescription(addTeamRequest.getTeamShortDescription())
                 .isTeamPublic(addTeamRequest.getIsTeamPublic())
                 .build();

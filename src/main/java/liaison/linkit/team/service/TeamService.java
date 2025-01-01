@@ -23,6 +23,7 @@ import liaison.linkit.team.domain.TeamRegion;
 import liaison.linkit.team.domain.scale.Scale;
 import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.state.TeamState;
+import liaison.linkit.team.exception.DuplicateTeamCodeException;
 import liaison.linkit.team.implement.TeamCommandAdapter;
 import liaison.linkit.team.implement.TeamQueryAdapter;
 import liaison.linkit.team.implement.region.TeamRegionCommandAdapter;
@@ -93,6 +94,10 @@ public class TeamService {
     ) {
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
+
+        if (teamQueryAdapter.existsByTeamCode(addTeamRequest.getTeamCode())) {
+            throw DuplicateTeamCodeException.EXCEPTION;
+        }
 
         // 팀 생성
         final Team team = teamMapper.toTeam(addTeamRequest);
@@ -294,7 +299,7 @@ public class TeamService {
                 regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
             }
             log.info("팀 지역 정보 조회 성공");
-            
+
             TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(team, false, 0, null, teamScaleItem, regionDetail);
 
             teamInformMenus.add(teamInformMenu);

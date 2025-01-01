@@ -39,6 +39,17 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     @Override
+    public boolean existsByTeamCode(final String teamCode) {
+        QTeam qTeam = QTeam.team;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qTeam)
+                .where(qTeam.teamCode.eq(teamCode))
+                .fetchFirst() != null;
+    }
+
+    @Override
     public Page<Team> findAllByFiltering(
             final List<String> scaleName,
             final Boolean isAnnouncement,

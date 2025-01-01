@@ -20,6 +20,10 @@ public class TeamQueryAdapter {
     private final TeamRepository teamRepository;
     private final TeamCurrentStateRepository teamCurrentStateRepository;
 
+    public boolean existsByTeamCode(final String teamCode) {
+        return teamRepository.existsByTeamCode(teamCode);
+    }
+
     public Team findById(final Long teamId) {
         return teamRepository.findById(teamId).orElseThrow(() -> TeamNotFoundException.EXCEPTION);
     }

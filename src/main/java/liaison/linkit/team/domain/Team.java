@@ -4,6 +4,7 @@ package liaison.linkit.team.domain;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -27,6 +28,10 @@ public class Team extends BaseEntity {
     private Long id;
 
     private String teamName;
+
+    @Column(nullable = false, unique = true)
+    private String teamCode;
+    
     private String teamShortDescription;
     private String teamLogoImagePath;
     private boolean isTeamPublic;

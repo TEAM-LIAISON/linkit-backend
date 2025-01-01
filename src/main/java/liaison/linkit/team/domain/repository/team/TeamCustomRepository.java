@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 public interface TeamCustomRepository {
     Optional<Team> findByTeamName(final String teamName);
 
+    boolean existsByTeamCode(final String teamCode);
+
     Page<Team> findAllByFiltering(
             final List<String> scaleName,
             final Boolean isAnnouncement,
