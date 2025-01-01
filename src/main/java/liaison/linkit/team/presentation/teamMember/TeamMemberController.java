@@ -36,7 +36,6 @@ public class TeamMemberController {
 
     // 팀원 목록 조회
     @GetMapping("/members/edit")
-    @MemberOnly
     public CommonResponse<TeamMemberItems> getTeamMemberItems(
             @Auth final Accessor accessor,
             @PathVariable final String teamName

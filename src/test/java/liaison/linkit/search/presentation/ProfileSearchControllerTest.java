@@ -152,6 +152,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
         List<ProfileInformMenu> profiles = Arrays.asList(profileInformMenu1, profileInformMenu2);
         Page<ProfileInformMenu> profilePage = new PageImpl<>(profiles, PageRequest.of(0, 20), profiles.size());
 
+        // when
         when(profileSearchService.searchProfilesInLogoutState(
                 any(),
                 any(),
@@ -160,7 +161,6 @@ public class ProfileSearchControllerTest extends ControllerTest {
                 any(Pageable.class)
         )).thenReturn(profilePage);
 
-        // when
         final ResultActions resultActions = performSearchProfiles(
                 Arrays.asList("개발자"),
                 Arrays.asList("Java", "Spring"),

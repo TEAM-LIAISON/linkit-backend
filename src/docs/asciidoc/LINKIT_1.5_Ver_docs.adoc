@@ -1317,6 +1317,20 @@ include::{snippets}/team-search-controller-test/search-teams/http-response.adoc[
 include::{snippets}/team-search-controller-test/search-teams/response-fields.adoc[]
 ====
 
+== #[팀원 공고 찾기]#
+
+=== 팀원 공고 찾기 (필터링 포함)
+
+====
+*요청*
+include::{snippets}/announcement-search-controller-test/search-announcements/http-request.adoc[]
+include::{snippets}/announcement-search-controller-test/search-announcements/query-parameters.adoc[]
+
+*응답*
+include::{snippets}/announcement-search-controller-test/search-announcements/http-response.adoc[]
+include::{snippets}/announcement-search-controller-test/search-announcements/response-fields.adoc[]
+====
+
 == #[스크랩 - 프로필 스크랩]#
 
 === 프로필 스크랩 및 스크랩 취소

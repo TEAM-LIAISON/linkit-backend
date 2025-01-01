@@ -42,8 +42,7 @@ public class S3Uploader {
 
     @Value("${cloud.aws.s3.cloud-front-file-domain}")
     private String cloudFrontFileDomain;
-
-    @Value("")
+    
     private String teamBasicLogoImageFolder;
 
     private String profileActivityCertificationFileFolder;
