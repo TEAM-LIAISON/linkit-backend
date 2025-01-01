@@ -11,17 +11,19 @@ import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
+import liaison.linkit.member.presentation.dto.request.MemberRequestDTO;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailVerificationResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
+import liaison.linkit.member.presentation.dto.response.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,7 @@ public class MemberService {
     private final MailReAuthenticationRedisUtil mailReAuthenticationRedisUtil;
     private final AuthCodeMailService authCodeMailService;
     private final MemberCommandAdapter memberCommandAdapter;
+    private final MemberMapper memberMapper;
 
     // 회원 기본 정보 요청 (UPDATE)
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
@@ -76,6 +79,12 @@ public class MemberService {
     public MemberBasicInformResponseDTO.UpdateMemberNameResponse updateMemberName(final Long memberId, final UpdateMemberNameRequest updateMemberNameRequest) {
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberName(memberId, updateMemberNameRequest);
         return memberBasicInformMapper.toUpdateMemberNameResponse(updatedMemberBasicInform);
+    }
+
+    // 회원 유저 아이디 수정 요쳥 (UPDATE)
+    public MemberResponseDTO.UpdateMemberUserIdResponse updateMemberUserId(final Long memberId, final MemberRequestDTO.UpdateMemberUserIdRequest updateMemberUserIdRequest) {
+        final Member updatedMember = memberCommandAdapter.updateEmailId(memberId, updateMemberUserIdRequest.getEmailId());
+        return memberMapper.toUpdateUserIdResponse(updatedMember);
     }
 
     // 회원 전화번호 수정 요청 (UPDATE)

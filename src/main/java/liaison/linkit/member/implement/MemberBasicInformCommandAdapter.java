@@ -4,10 +4,10 @@ import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.repository.memberBasicInform.MemberBasicInformRepository;
 import liaison.linkit.member.exception.memberBasicInform.MemberBasicInformBadRequestException;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -27,14 +27,16 @@ import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.member.business.MemberService;
 import liaison.linkit.member.domain.type.Platform;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
+import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
+import liaison.linkit.member.presentation.dto.request.MemberRequestDTO;
+import liaison.linkit.member.presentation.dto.request.MemberRequestDTO.UpdateMemberUserIdRequest;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailVerificationResponse;
@@ -44,6 +46,8 @@ import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponse
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateMemberContactResponse;
 import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateMemberNameResponse;
+import liaison.linkit.member.presentation.dto.response.MemberResponseDTO;
+import liaison.linkit.member.presentation.dto.response.MemberResponseDTO.UpdateMemberUserIdResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -124,6 +128,18 @@ class MemberControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateMemberNameRequest))
+        );
+    }
+
+    private ResultActions performUpdateMemberUserId(
+            final MemberRequestDTO.UpdateMemberUserIdRequest updateMemberUserIdRequest
+    ) throws Exception {
+        return mockMvc.perform(
+                post("/api/v1/member/userId")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateMemberUserIdRequest))
         );
     }
 
@@ -472,6 +488,71 @@ class MemberControllerTest extends ControllerTest {
         );
 
         final CommonResponse<MemberBasicInformResponseDTO.UpdateMemberNameResponse> expected = CommonResponse.onSuccess(updateMemberNameResponse);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원 유저 아이디 정보를 수정 요청할 수 있다.")
+    @Test
+    void updateMemberUserId() throws Exception {
+        // given
+        final MemberRequestDTO.UpdateMemberUserIdRequest updateMemberUserIdRequest = UpdateMemberUserIdRequest.builder()
+                .emailId("변경하고자 하는 유저 아이디")
+                .build();
+
+        final MemberResponseDTO.UpdateMemberUserIdResponse updateMemberUserIdResponse = UpdateMemberUserIdResponse.builder()
+                .emailId("변경된 유저 아이디")
+                .build();
+
+        // when
+        when(memberService.updateMemberUserId(anyLong(), any())).thenReturn(updateMemberUserIdResponse);
+
+        final ResultActions resultActions = performUpdateMemberUserId(updateMemberUserIdRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 유저 아이디")
+                                                .attributes(field("constraint", "문자열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 유저 아이디")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<UpdateMemberUserIdResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<UpdateMemberUserIdResponse>>() {
+                }
+        );
+
+        final CommonResponse<UpdateMemberUserIdResponse> expected = CommonResponse.onSuccess(updateMemberUserIdResponse);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);

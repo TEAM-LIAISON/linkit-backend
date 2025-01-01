@@ -18,8 +18,6 @@ public class MemberCommandAdapter {
     }
 
     public Member updateEmailId(final Long memberId, final String emailId) {
-        log.info("유저 ID 수정 요청이 발생했습니다.");
-        log.info("emailId: {}", emailId);
         return memberRepository.updateEmailId(memberId, emailId)
                 .orElseThrow(() -> DuplicateEmailIdException.EXCEPTION);
     }

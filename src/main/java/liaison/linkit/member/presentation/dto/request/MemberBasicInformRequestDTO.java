@@ -1,4 +1,4 @@
-package liaison.linkit.member.presentation.dto.request.memberBasicInform;
+package liaison.linkit.member.presentation.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -51,7 +51,7 @@ public class MemberBasicInformRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateMemberNameRequest {
-        @NotNull(message = "변경하려는 이름을 입력해주세요")
+        @NotNull(message = "변경하려는 이름을 입력해주세요.")
         private String memberName;
     }
 
