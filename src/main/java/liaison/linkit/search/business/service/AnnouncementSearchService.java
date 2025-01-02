@@ -20,7 +20,7 @@ import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInform;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public class AnnouncementSearchService {
     private final RegionMapper regionMapper;
 
     // 로그인 상태에서 조회
-    public Page<AnnouncementInform> searchAnnouncementsInLoginState(
+    public Page<AnnouncementInformMenu> searchAnnouncementsInLoginState(
             final Long memberId,
             List<String> majorPosition,
             List<String> skillName,
@@ -63,7 +63,7 @@ public class AnnouncementSearchService {
     }
 
     // 로그아웃 상태에서 조회
-    public Page<AnnouncementInform> searchAnnouncementsInLogoutState(
+    public Page<AnnouncementInformMenu> searchAnnouncementsInLogoutState(
             List<String> majorPosition,
             List<String> skillName,
             List<String> cityName,
@@ -74,7 +74,7 @@ public class AnnouncementSearchService {
         return announcements.map(this::toSearchAnnouncementInformInLogoutState);
     }
 
-    private AnnouncementInform toSearchAnnouncementInformInLogoutState(
+    private AnnouncementInformMenu toSearchAnnouncementInformInLogoutState(
             final TeamMemberAnnouncement teamMemberAnnouncement
     ) {
         final Team team = teamMemberAnnouncement.getTeam();
@@ -124,7 +124,7 @@ public class AnnouncementSearchService {
     }
 
 
-    private AnnouncementInform toSearchAnnouncementInformInLoginState(
+    private AnnouncementInformMenu toSearchAnnouncementInformInLoginState(
             final Long memberId,
             final TeamMemberAnnouncement teamMemberAnnouncement
     ) {

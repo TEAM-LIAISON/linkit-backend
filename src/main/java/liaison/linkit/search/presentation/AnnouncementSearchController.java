@@ -5,8 +5,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.search.business.service.AnnouncementSearchService;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInform;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +39,7 @@ public class AnnouncementSearchController {
      */
 
     @GetMapping
-    public CommonResponse<Page<TeamMemberAnnouncementResponseDTO.AnnouncementInform>> searchAnnouncements(
+    public CommonResponse<Page<AnnouncementInformMenu>> searchAnnouncements(
             @Auth final Accessor accessor,
             @RequestParam(value = "majorPosition", required = false) List<String> majorPosition,
             @RequestParam(value = "skillName", required = false) List<String> skillName,
@@ -51,12 +50,12 @@ public class AnnouncementSearchController {
     ) {
         if (accessor.isMember()) {
             Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-            Page<AnnouncementInform> announcements = announcementSearchService.searchAnnouncementsInLoginState(accessor.getMemberId(), majorPosition, skillName, cityName, scaleName, pageable);
+            Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncementsInLoginState(accessor.getMemberId(), majorPosition, skillName, cityName, scaleName, pageable);
             return CommonResponse.onSuccess(announcements);
         } else {
             Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
             log.info("c e");
-            Page<AnnouncementInform> announcements = announcementSearchService.searchAnnouncementsInLogoutState(majorPosition, skillName, cityName, scaleName, pageable);
+            Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncementsInLogoutState(majorPosition, skillName, cityName, scaleName, pageable);
             return CommonResponse.onSuccess(announcements);
         }
     }

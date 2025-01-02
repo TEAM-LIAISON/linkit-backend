@@ -7,7 +7,9 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.scrap.business.service.AnnouncementScrapService;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapRequestDTO;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,11 +33,11 @@ public class AnnouncementScrapController {
         return CommonResponse.onSuccess(announcementScrapService.updateAnnouncementScrap(accessor.getMemberId(), teamMemberAnnouncementId, updateAnnouncementScrapRequest));
     }
 
-//    @GetMapping
-//    @MemberOnly
-//    public CommonResponse<> getAnnouncementScrap(
-//            @Auth final Accessor accessor
-//    ) {
-//        return CommonResponse.onSuccess(announcementScrapService.getAnnouncementScrap(accessor.getMemberId()));
-//    }
+    @GetMapping
+    @MemberOnly
+    public CommonResponse<AnnouncementInformMenus> getAnnouncementScraps(
+            @Auth final Accessor accessor
+    ) {
+        return CommonResponse.onSuccess(announcementScrapService.getAnnouncementScraps(accessor.getMemberId()));
+    }
 }

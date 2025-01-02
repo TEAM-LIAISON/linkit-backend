@@ -238,7 +238,6 @@ public class ProfileScrapControllerTest extends ControllerTest {
         final ResultActions resultActions = performGetProfileScraps();
 
         // then
-        // then
         final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value("true"))

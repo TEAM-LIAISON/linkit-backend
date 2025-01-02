@@ -18,7 +18,7 @@ import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.search.business.service.AnnouncementSearchService;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInform;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
@@ -77,7 +77,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
     @Test
     void searchAnnouncements() throws Exception {
         // given
-        AnnouncementInform announcementInform1 = AnnouncementInform.builder()
+        AnnouncementInformMenu announcementInformMenu1 = AnnouncementInformMenu.builder()
                 .teamLogoImagePath("팀 로고 이미지 경로")
                 .teamName("팀 이름")
                 .teamScaleItem(
@@ -113,7 +113,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                 )
                 .build();
 
-        AnnouncementInform announcementInform2 = AnnouncementInform.builder()
+        AnnouncementInformMenu announcementInformMenu2 = AnnouncementInformMenu.builder()
                 .teamLogoImagePath("팀 로고 이미지 경로 2")
                 .teamName("팀 이름 2")
                 .teamScaleItem(
@@ -149,8 +149,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                 )
                 .build();
 
-        List<AnnouncementInform> announcementInforms = Arrays.asList(announcementInform1, announcementInform2);
-        Page<AnnouncementInform> announcementInformPage = new PageImpl<>(announcementInforms, PageRequest.of(0, 20), announcementInforms.size());
+        List<AnnouncementInformMenu> announcementInformMenus = Arrays.asList(announcementInformMenu1, announcementInformMenu2);
+        Page<AnnouncementInformMenu> announcementInformPage = new PageImpl<>(announcementInformMenus, PageRequest.of(0, 20), announcementInformMenus.size());
 
         // when
         when(announcementSearchService.searchAnnouncementsInLogoutState(

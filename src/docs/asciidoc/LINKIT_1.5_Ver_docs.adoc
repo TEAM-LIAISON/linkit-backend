@@ -1364,7 +1364,7 @@ include::{snippets}/profile-scrap-controller-test/update-profile-scrap/http-resp
 include::{snippets}/profile-scrap-controller-test/update-profile-scrap/response-fields.adoc[]
 ====
 
-=== 프로필 스크랩 전체 조회
+=== 프로필 스크랩 전체 조회 (매칭 관리)
 
 ====
 *요청*
@@ -1389,6 +1389,17 @@ include::{snippets}/team-scrap-controller-test/update-team-scrap/http-response.a
 include::{snippets}/team-scrap-controller-test/update-team-scrap/response-fields.adoc[]
 ====
 
+=== 팀 스크랩 전체 조회 (매칭 관리)
+
+====
+*요청*
+include::{snippets}/team-scrap-controller-test/get-team-scraps/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-scrap-controller-test/get-team-scraps/http-response.adoc[]
+include::{snippets}/team-scrap-controller-test/get-team-scraps/response-fields.adoc[]
+====
+
 == #[스크랩 - 팀원 공고 스크랩]#
 
 === 팀원 공고 스크랩 및 스크랩 취소
@@ -1401,6 +1412,17 @@ include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap
 *응답*
 include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap/http-response.adoc[]
 include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap/response-fields.adoc[]
+====
+
+=== 팀원 공고 스크랩 전체 조회 (매칭 관리)
+
+====
+*요청*
+include::{snippets}/announcement-scrap-controller-test/get-announcement-scraps/http-request.adoc[]
+
+*응답*
+include::{snippets}/announcement-scrap-controller-test/get-announcement-scraps/http-response.adoc[]
+include::{snippets}/announcement-scrap-controller-test/get-announcement-scraps/response-fields.adoc[]
 ====
 
 == #[알림]#

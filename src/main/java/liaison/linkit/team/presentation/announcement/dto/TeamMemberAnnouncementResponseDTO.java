@@ -17,7 +17,16 @@ public class TeamMemberAnnouncementResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AnnouncementInform {
+    public static class AnnouncementInformMenus {
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu> announcementInformMenus = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnnouncementInformMenu {
 
         private String teamLogoImagePath;
         private String teamName;

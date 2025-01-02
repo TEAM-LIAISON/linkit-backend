@@ -79,6 +79,15 @@ public class TeamResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TeamInformMenus {
+        @Builder.Default
+        private List<TeamResponseDTO.TeamInformMenu> teamInformMenus = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TeamInformMenu {
 
         @Builder.Default

@@ -1,6 +1,8 @@
 package liaison.linkit.scrap.domain.repository.announcementScrap;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+import liaison.linkit.scrap.domain.AnnouncementScrap;
 import liaison.linkit.scrap.domain.QAnnouncementScrap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,4 +55,13 @@ public class AnnouncementScrapCustomRepositoryImpl implements AnnouncementScrapC
         return count != null ? count.intValue() : 0;
     }
 
+    @Override
+    public List<AnnouncementScrap> findAllByMemberId(final Long memberId) {
+        QAnnouncementScrap qAnnouncementScrap = QAnnouncementScrap.announcementScrap;
+
+        return jpaQueryFactory
+                .selectFrom(qAnnouncementScrap)
+                .where(qAnnouncementScrap.member.id.eq(memberId))
+                .fetch();
+    }
 }
