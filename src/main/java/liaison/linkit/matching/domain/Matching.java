@@ -45,17 +45,17 @@ public class Matching {
 
     // 발신자가 프로필이면 sender_profile_id 사용, 팀이면 sender_team_id 사용
     @Column(name = "sender_email_id", nullable = true)
-    private Long senderEmailId;
+    private String senderEmailId;
 
     @Column(name = "sender_team_id", nullable = true)
-    private Long senderTeamId;
+    private String senderTeamCode;
 
     // 수신자가 프로필이면 receiver_email_id 사용, 팀이면 receiver_team_id 사용, 공고이면 receiver_posting_id 사용
     @Column(name = "receiver_email_id", nullable = true)
-    private Long receiverEmailId;
+    private String receiverEmailId;
 
-    @Column(name = "receiver_team_id", nullable = true)
-    private Long receiverTeamId;
+    @Column(name = "receiver_team_code", nullable = true)
+    private String receiverTeamCode;
 
     @Column(name = "receiver_posting_id", nullable = true)
     private Long receiverAnnouncementId;

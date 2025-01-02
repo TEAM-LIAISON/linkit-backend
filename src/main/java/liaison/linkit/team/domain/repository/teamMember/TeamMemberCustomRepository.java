@@ -13,9 +13,11 @@ public interface TeamMemberCustomRepository {
 
     boolean existsTeamByMemberId(final Long memberId);
 
-    List<Team> getAllTeamByMemberId(final Long memberId);
+    boolean existsTeamOwnerByMemberId(final Long memberId);
 
     List<Team> getAllTeamsByMemberId(final Long memberId);
+
+    List<Team> getAllTeamsInOwnerStateByMemberId(final Long memberId);
 
     TeamMember getTeamMemberByTeamNameAndEmailId(final String teamName, final String emailId);
 }

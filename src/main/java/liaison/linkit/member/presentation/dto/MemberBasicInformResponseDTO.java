@@ -1,4 +1,4 @@
-package liaison.linkit.member.presentation.dto.response;
+package liaison.linkit.member.presentation.dto;
 
 import java.time.LocalDateTime;
 import liaison.linkit.member.domain.type.Platform;

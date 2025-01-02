@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.util.Collections;
 import java.util.List;
 import liaison.linkit.common.domain.QPosition;
 import liaison.linkit.global.util.QueryDslUtil;
@@ -43,6 +44,23 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         return jpaQueryFactory
                 .selectFrom(qTeamMemberAnnouncement)
                 .where(qTeamMemberAnnouncement.team.id.eq(teamId))
+                .fetch();
+    }
+
+    @Override
+    public List<TeamMemberAnnouncement> getAllByTeamIds(final List<Long> teamIds) {
+        // 팀 ID 리스트가 비어있으면 바로 빈 리스트 반환
+        if (teamIds == null || teamIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        // Q 클래스 준비
+        QTeamMemberAnnouncement qAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        // 쿼리 실행
+        return jpaQueryFactory
+                .selectFrom(qAnnouncement)
+                .where(qAnnouncement.team.id.in(teamIds))
                 .fetch();
     }
 

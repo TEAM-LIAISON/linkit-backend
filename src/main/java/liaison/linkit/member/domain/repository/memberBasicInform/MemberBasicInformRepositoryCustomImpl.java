@@ -6,8 +6,8 @@ import jakarta.persistence.PersistenceContext;
 import java.util.Optional;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.QMemberBasicInform;
-import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO;
-import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

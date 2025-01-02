@@ -1,8 +1,10 @@
 package liaison.linkit.matching.domain.type;
 
 public enum ReceiverType {
-    // 내 이력서에 매칭 요청 보낸 경우
+    // 프로필에 매칭 요청 보낸 경우
     PROFILE,
-    // 팀 소개서에 매칭 요청 보낸 경우
-    TEAM_PROFILE
+    // 팀에 매칭 요청 보낸 경우
+    TEAM,
+    // 팀원 공고에 매칭 요청 보낸 경우
+    ANNOUNCEMENT
 }

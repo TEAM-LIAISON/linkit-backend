@@ -102,7 +102,7 @@ public class ProfileSearchService {
 
         List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
         if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
-            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamByMemberId(profile.getMember().getId());
+            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(profile.getMember().getId());
             profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
             log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
         }
@@ -136,7 +136,7 @@ public class ProfileSearchService {
 
         List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
         if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
-            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamByMemberId(profile.getMember().getId());
+            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(profile.getMember().getId());
             profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
             log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
         }

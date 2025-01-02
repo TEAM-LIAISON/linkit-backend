@@ -1,4 +1,4 @@
-package liaison.linkit.member.presentation.dto.response;
+package liaison.linkit.member.presentation.dto;
 
 import liaison.linkit.member.domain.Member;
 import lombok.AllArgsConstructor;

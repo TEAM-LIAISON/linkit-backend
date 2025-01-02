@@ -10,4 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/team/{teamName}")
 @Slf4j
 public class ChattingController {
+
+    // 채팅방 생성하기
 }

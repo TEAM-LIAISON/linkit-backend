@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 public interface TeamMemberAnnouncementCustomRepository {
     List<TeamMemberAnnouncement> getTeamMemberAnnouncements(final Long teamId);
 
+    List<TeamMemberAnnouncement> getAllByTeamIds(final List<Long> teamIds);
+
     TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId);
 
     TeamMemberAnnouncement updateTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement, final UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest);

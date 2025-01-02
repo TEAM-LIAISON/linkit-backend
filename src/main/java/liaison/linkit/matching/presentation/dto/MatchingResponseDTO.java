@@ -15,13 +15,22 @@ public class MatchingResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class MatchingMenuResponse {
+        private int receivedMatchingNotificationCount;                  // 수신함에서 매칭 성사가 안된 안읽은 요청의 개수 + 매칭 성사가 되고 나서 내가 아직 읽지 않은 요청의 개수
+        private int requestedMatchingNotificationCount;                 // 발신함에서 매칭 성사가 되었는데, 안읽은 요청의 개수
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AddMatchingResponse {
         private SenderType senderType;
         private ReceiverType receiverType;
-        private Long senderEmailId;
-        private Long senderTeamId;
-        private Long receiverProfileId;
-        private Long receiverTeamId;
+        private String senderEmailId;
+        private String senderTeamCode;
+        private String receiverEmailId;
+        private String receiverTeamCode;
         private Long receiverAnnouncementId;
         private String requestMessage;
     }

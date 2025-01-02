@@ -23,6 +23,10 @@ public class TeamMemberAnnouncementQueryAdapter {
         return teamMemberAnnouncementRepository.getTeamMemberAnnouncements(teamId);
     }
 
+    public List<TeamMemberAnnouncement> getAllByTeamIds(final List<Long> teamIds) {
+        return teamMemberAnnouncementRepository.getAllByTeamIds(teamIds);
+    }
+
     public TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId) {
         return teamMemberAnnouncementRepository.getTeamMemberAnnouncement(teamMemberAnnouncementId);
     }

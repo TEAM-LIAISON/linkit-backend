@@ -1,4 +1,4 @@
-package liaison.linkit.member.presentation.dto.request;
+package liaison.linkit.member.presentation.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -43,7 +43,7 @@ public class MemberBasicInformRequestDTO {
 
         @NotNull(message = "광고성 정보 수신 동의를 선택해주세요")
         private Boolean isMarketingAgree;
-
+        
     }
 
     @Builder

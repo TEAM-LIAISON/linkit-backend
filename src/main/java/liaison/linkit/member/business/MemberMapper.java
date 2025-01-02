@@ -2,8 +2,8 @@ package liaison.linkit.member.business;
 
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.presentation.dto.response.MemberResponseDTO;
-import liaison.linkit.member.presentation.dto.response.MemberResponseDTO.UpdateMemberUserIdResponse;
+import liaison.linkit.member.presentation.dto.MemberResponseDTO;
+import liaison.linkit.member.presentation.dto.MemberResponseDTO.UpdateMemberUserIdResponse;
 
 @Mapper
 public class MemberMapper {
@@ -14,5 +14,5 @@ public class MemberMapper {
                 .emailId(member.getEmailId())
                 .build();
     }
-    
+
 }

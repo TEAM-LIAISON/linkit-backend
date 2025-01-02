@@ -116,7 +116,7 @@ public class ProfileScrapService {
 
             List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
             if (teamMemberQueryAdapter.existsTeamByMemberId(memberId)) {
-                final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamByMemberId(memberId);
+                final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(memberId);
                 profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
                 log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
             }

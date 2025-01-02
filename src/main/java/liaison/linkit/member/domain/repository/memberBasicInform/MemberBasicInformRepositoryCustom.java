@@ -2,8 +2,8 @@ package liaison.linkit.member.domain.repository.memberBasicInform;
 
 import java.util.Optional;
 import liaison.linkit.member.domain.MemberBasicInform;
-import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO;
-import liaison.linkit.member.presentation.dto.request.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 
 public interface MemberBasicInformRepositoryCustom {
     boolean existsByMemberId(final Long memberId);

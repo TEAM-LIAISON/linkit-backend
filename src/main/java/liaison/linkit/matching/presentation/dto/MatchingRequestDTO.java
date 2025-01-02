@@ -16,13 +16,16 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddMatchingRequest {
-        private SenderType senderType;
-        private ReceiverType receiverType;
+        private SenderType senderType;                  //     PROFILE, TEAM
+        private ReceiverType receiverType;              //     PROFILE, TEAM, ANNOUNCEMENT
+
         private Long senderEmailId;
-        private Long senderTeamId;
+        private Long senderTeamCode;
+
         private Long receiverProfileId;
-        private Long receiverTeamId;
+        private Long receiverTeamCode;
         private Long receiverAnnouncementId;
+
         private String requestMessage;
     }
 }
