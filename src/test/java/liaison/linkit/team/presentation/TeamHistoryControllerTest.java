@@ -75,7 +75,7 @@ public class TeamHistoryControllerTest extends ControllerTest {
 
     private ResultActions performGetTeamHistoryCalendarResponses(final String teamName) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/history/view", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/history/view/calendar", teamName)
         );
     }
 

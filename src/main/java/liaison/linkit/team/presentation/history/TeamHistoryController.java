@@ -25,8 +25,8 @@ public class TeamHistoryController {
 
     private final TeamHistoryService teamHistoryService;
 
-    // 팀 연혁 뷰어 조회
-    @GetMapping("/view")
+    // 팀 연혁 달력 뷰어 조회
+    @GetMapping("/view/calendar")
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryCalendarResponse> getTeamHistoryCalendarResponses(
             @PathVariable final String teamName
     ) {
@@ -34,6 +34,7 @@ public class TeamHistoryController {
         return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryCalendarResponses(teamName));
     }
 
+    // 팀 연혁 수정창 조회
     @GetMapping
     @MemberOnly
     public CommonResponse<TeamHistoryResponseDTO.TeamHistoryItems> getTeamHistoryItems(

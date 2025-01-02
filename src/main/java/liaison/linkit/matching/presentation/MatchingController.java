@@ -7,6 +7,7 @@ import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,12 +28,12 @@ public class MatchingController {
 
     // 4. 스크랩 정보 (구현 완료) -> 스크랩 디렉토리에 존재
 
-//    @GetMapping("/menu")
-//    public CommonResponse<MatchingResponseDTO.MatchingMenuResponse> getMatchingMenu(
-//            @Auth final Accessor accessor
-//    ) {
-//        return CommonResponse.onSuccess(matchingService.getMatchingMenu(accessor.getMemberId()));
-//    }
+    @GetMapping("/menu")
+    public CommonResponse<MatchingResponseDTO.MatchingMenuResponse> getMatchingMenu(
+            @Auth final Accessor accessor
+    ) {
+        return CommonResponse.onSuccess(matchingService.getMatchingMenu(accessor.getMemberId()));
+    }
 
     @PostMapping
     public CommonResponse<MatchingResponseDTO.AddMatchingResponse> addMatching(
