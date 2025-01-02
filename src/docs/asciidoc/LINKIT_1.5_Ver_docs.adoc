@@ -1415,3 +1415,17 @@ include::{snippets}/notification-controller-test/get-notification-items/http-req
 include::{snippets}/notification-controller-test/get-notification-items/http-response.adoc[]
 include::{snippets}/notification-controller-test/get-notification-items/response-fields.adoc[]
 ====
+
+== #[매칭 관리]#
+
+=== 매칭 관리 상단 메뉴 알림 조회
+
+====
+*요청*
+include::{snippets}/matching-controller-test/get-matching-menu/http-request.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/get-matching-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-matching-menu/response-fields.adoc[]
+
+====

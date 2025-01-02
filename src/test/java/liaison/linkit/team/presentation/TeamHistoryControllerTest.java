@@ -179,7 +179,7 @@ public class TeamHistoryControllerTest extends ControllerTest {
 
         final ResultActions resultActions = performGetTeamHistoryCalendarResponses("liaison");
 
-// then
+        // then
         final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isSuccess").value("true"))

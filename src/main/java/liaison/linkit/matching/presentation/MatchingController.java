@@ -28,6 +28,7 @@ public class MatchingController {
 
     // 4. 스크랩 정보 (구현 완료) -> 스크랩 디렉토리에 존재
 
+    // 상단 메뉴
     @GetMapping("/menu")
     public CommonResponse<MatchingResponseDTO.MatchingMenuResponse> getMatchingMenu(
             @Auth final Accessor accessor
