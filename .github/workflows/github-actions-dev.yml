@@ -47,8 +47,12 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build docker image
-        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/linkit-develop .
+      - name: Build docker image (no-cache)
+        run: |
+          docker build \
+          --no-cache \
+          --platform linux/amd64 \
+          -t ${{ secrets.DOCKER_USERNAME }}/linkit-develop .
 
       - name: Publish image to docker hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/linkit-develop:latest
