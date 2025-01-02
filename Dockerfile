@@ -1,5 +1,5 @@
 # open jdk 17 버전의 환경을 구성
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-alpine
 
 # 빌드 인수 정의
 ARG JAR_FILE=build/libs/*.jar
