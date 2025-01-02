@@ -2,6 +2,7 @@ package liaison.linkit.team.presentation.history.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,7 +16,31 @@ public class TeamHistoryResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TeamHistoryCalendarResponse {
+        /**
+         * 최종 응답을 담을 필드. 예: [ { "2023" : [ { "01" : [ { ... }, { ... } ] }, { "02" : [ { ... }, { ... } ] } ] }, { "2024" : [...] } ]
+         */
+        private List<Map<String, List<Map<String, List<TeamHistoryViewItem>>>>> teamHistoryCalendar;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TeamHistoryDetail {
+        private Long teamHistoryId;
+        private String historyName;
+        private String historyStartDate;
+        private String historyEndDate;
+        private Boolean isHistoryInProgress;
+        private String historyDescription;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamHistoryViewItem {
         private Long teamHistoryId;
         private String historyName;
         private String historyStartDate;

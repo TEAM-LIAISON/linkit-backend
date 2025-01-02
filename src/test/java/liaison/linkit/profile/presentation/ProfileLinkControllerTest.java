@@ -31,7 +31,7 @@ import liaison.linkit.profile.presentation.link.dto.ProfileLinkRequestDTO.AddPro
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO.ProfileLinkItem;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO.ProfileLinkItems;
-import liaison.linkit.profile.service.ProfileLinkService;
+import liaison.linkit.profile.business.service.ProfileLinkService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

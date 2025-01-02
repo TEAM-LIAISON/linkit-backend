@@ -2,7 +2,7 @@ package liaison.linkit.search.presentation;
 
 import java.util.List;
 import liaison.linkit.common.presentation.CommonResponse;
-import liaison.linkit.search.service.TeamSearchService;
+import liaison.linkit.search.business.service.TeamSearchService;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -24,4 +24,8 @@ public class TeamScrapQueryAdapter {
     public boolean existsByMemberIdAndTeamName(final Long memberId, final String teamName) {
         return teamScrapRepository.existsByMemberIdAndTeamName(memberId, teamName);
     }
+
+    public int countTotalTeamScrapByTeamName(final String teamName) {
+        return teamScrapRepository.countTotalTeamScrapByTeamName(teamName);
+    }
 }

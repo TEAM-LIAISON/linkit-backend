@@ -2,8 +2,8 @@ package liaison.linkit.team.domain.repository.currentState;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import liaison.linkit.team.domain.QTeamCurrentState;
-import liaison.linkit.team.domain.TeamCurrentState;
+import liaison.linkit.team.domain.state.QTeamCurrentState;
+import liaison.linkit.team.domain.state.TeamCurrentState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

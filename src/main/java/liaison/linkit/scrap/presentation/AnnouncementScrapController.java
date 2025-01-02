@@ -4,7 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
-import liaison.linkit.scrap.business.AnnouncementScrapService;
+import liaison.linkit.scrap.business.service.AnnouncementScrapService;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapRequestDTO;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -30,4 +30,12 @@ public class AnnouncementScrapController {
     ) {
         return CommonResponse.onSuccess(announcementScrapService.updateAnnouncementScrap(accessor.getMemberId(), teamMemberAnnouncementId, updateAnnouncementScrapRequest));
     }
+
+//    @GetMapping
+//    @MemberOnly
+//    public CommonResponse<> getAnnouncementScrap(
+//            @Auth final Accessor accessor
+//    ) {
+//        return CommonResponse.onSuccess(announcementScrapService.getAnnouncementScrap(accessor.getMemberId()));
+//    }
 }

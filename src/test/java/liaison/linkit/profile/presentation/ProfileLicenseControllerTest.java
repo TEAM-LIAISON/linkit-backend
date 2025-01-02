@@ -43,7 +43,7 @@ import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.RemoveProfileLicenseCertificationResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.RemoveProfileLicenseResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.UpdateProfileLicenseResponse;
-import liaison.linkit.profile.service.ProfileLicenseService;
+import liaison.linkit.profile.business.service.ProfileLicenseService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

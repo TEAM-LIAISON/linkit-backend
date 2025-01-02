@@ -48,7 +48,7 @@ import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRespons
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectSkillName;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse;
-import liaison.linkit.profile.service.ProfilePortfolioService;
+import liaison.linkit.profile.business.service.ProfilePortfolioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

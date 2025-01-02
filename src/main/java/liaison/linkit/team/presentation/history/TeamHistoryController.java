@@ -6,7 +6,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
-import liaison.linkit.team.service.history.TeamHistoryService;
+import liaison.linkit.team.business.service.history.TeamHistoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +24,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamHistoryController {
 
     private final TeamHistoryService teamHistoryService;
+
+    @GetMapping("/view")
+    public CommonResponse<TeamHistoryResponseDTO.TeamHistoryCalendarResponse> getTeamHistoryCalendarResponses(
+            @PathVariable final String teamName
+    ) {
+        log.info("팀 이름 = {}에 대한 팀 연혁 뷰어 전체 조회 요청이 발생했습니다.", teamName);
+        return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryCalendarResponses(teamName));
+    }
 
     @GetMapping
     @MemberOnly
@@ -46,6 +54,7 @@ public class TeamHistoryController {
         return CommonResponse.onSuccess(teamHistoryService.getTeamHistoryDetail(accessor.getMemberId(), teamName, teamHistoryId));
     }
 
+    // 팀 연혁 생성
     @PostMapping
     @MemberOnly
     public CommonResponse<TeamHistoryResponseDTO.AddTeamHistoryResponse> addTeamHistory(

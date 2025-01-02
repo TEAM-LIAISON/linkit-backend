@@ -24,4 +24,6 @@ public interface TeamScrapCustomRepository {
     void deleteByMemberIdAndTeamName(final Long memberId, final String teamName);
 
     boolean existsByMemberIdAndTeamName(final Long memberId, final String teamName);
+
+    int countTotalTeamScrapByTeamName(final String teamName);
 }

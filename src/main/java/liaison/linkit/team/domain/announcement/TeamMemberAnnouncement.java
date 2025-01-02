@@ -11,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import liaison.linkit.global.BaseEntity;
-import liaison.linkit.team.domain.Team;
+import liaison.linkit.team.domain.team.Team;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,18 +33,18 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    private String announcementTitle; // 공고 제목
-    private String announcementStartDate; // 공고 시작 기간
-    private String announcementEndDate; // 공고 마감 기간
-    private boolean isRegionFlexible; // 지역 무관
-    private String mainTasks; // 주요 업무
-    private String workMethod; // 업무 방식
-    private String idealCandidate; // 이런 분을 찾고 있어요
-    private String preferredQualifications; // 이런 분이면 더 좋아요
-    private String joiningProcess; // 이런 과정으로 합류해요
-    private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
-
-    private boolean isAnnouncementPublic;
+    private String announcementTitle;                   // 공고 제목
+    private String announcementStartDate;               // 공고 시작 기간
+    private String announcementEndDate;                 // 공고 마감 기간
+    private boolean isRegionFlexible;                   // 지역 무관
+    private String mainTasks;                           // 주요 업무
+    private String workMethod;                          // 업무 방식
+    private String idealCandidate;                      // 이런 분을 찾고 있어요
+    private String preferredQualifications;             // 이런 분이면 더 좋아요
+    private String joiningProcess;                      // 이런 과정으로 합류해요
+    private String benefits;                            // 합류하면 이런 것들을 얻어 갈 수 있어요
+    private boolean isAnnouncementPublic;               // 공고 공개/비공개 설정
+    private boolean isAnnouncementInProgress;           // 공고 진행/완료 여부
 
     public void setIsAnnouncementPublic(final boolean isAnnouncementPublic) {
         this.isAnnouncementPublic = isAnnouncementPublic;

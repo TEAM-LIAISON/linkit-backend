@@ -5,12 +5,14 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.member.business.MemberService;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
+import liaison.linkit.member.presentation.dto.MemberRequestDTO;
+import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
+import liaison.linkit.member.presentation.dto.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +38,15 @@ public class MemberController {
     ) {
         log.info("memberId = {}의 회원 기본 정보 수정 요청 발생", accessor.getMemberId());
         return CommonResponse.onSuccess(memberService.updateMemberBasicInform(accessor.getMemberId(), request));
+    }
+
+    @PostMapping("/userId")
+    @MemberOnly
+    public CommonResponse<MemberResponseDTO.UpdateMemberUserIdResponse> updateMemberUserId(
+            @Auth final Accessor accessor,
+            @RequestBody final MemberRequestDTO.UpdateMemberUserIdRequest updateMemberUserIdRequest
+    ) {
+        return CommonResponse.onSuccess(memberService.updateMemberUserId(accessor.getMemberId(), updateMemberUserIdRequest));
     }
 
     // 서비스 이용 동의 수정

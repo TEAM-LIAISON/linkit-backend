@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
+import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,9 +19,44 @@ public class TeamMemberResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamMemberItems {
+    public static class TeamMemberViewItems {
         @Builder.Default
         private List<ProfileInformMenu> profileInformMenus = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamMemberItems {
+
+        @Builder.Default
+        private List<AcceptedTeamMemberItem> acceptedTeamMemberItems = new ArrayList<>();
+
+        @Builder.Default
+        private List<PendingTeamMemberItem> pendingTeamMemberItems = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AcceptedTeamMemberItem {                // 초대 수락 완료
+        private String profileImagePath;                        // 프로필 이미지 경로
+        private String memberName;                              // 회원 이름
+        private String majorPosition;                           // 주요 포지션
+        private TeamMemberType teamMemberType;                  // 초대 요청 시 회원 타입
+        private TeamMemberInviteState teamMemberInviteState;    // 초대 상태 (PENDING, REJECTED, ACCEPTED, ADMIN)
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PendingTeamMemberItem {                 // 초대 발송 완료 (수락 대기 중)
+        private String teamMemberInvitationEmail;               // 초대 발송한 이메일
+        private TeamMemberType teamMemberType;                  // 초대 요청 시 회원 타입
+        private TeamMemberInviteState teamMemberInviteState;    // 초대 상태
     }
 
     @Builder
@@ -47,5 +84,14 @@ public class TeamMemberResponseDTO {
     public static class AddTeamMemberResponse {
         private String invitedTeamMemberEmail;
         private String teamName;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateTeamMemberTypeResponse {
+        private String emailId;
+        private TeamMemberType teamMemberType;
     }
 }

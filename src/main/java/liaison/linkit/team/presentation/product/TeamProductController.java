@@ -8,7 +8,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO;
-import liaison.linkit.team.service.product.TeamProductService;
+import liaison.linkit.team.business.service.product.TeamProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +27,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class TeamProductController {
 
     private final TeamProductService teamProductService;
+
+    // 팀 프로덕트 뷰어 전체 조회
+    @GetMapping("/view")
+    public CommonResponse<TeamProductResponseDTO.TeamProductViewItems> getTeamProductViewItems(
+            @PathVariable final String teamName
+    ) {
+        return CommonResponse.onSuccess(teamProductService.getTeamProductViewItems(teamName));
+    }
 
     // 팀 프로덕트 전체 조회
     @GetMapping
@@ -51,6 +59,7 @@ public class TeamProductController {
         return CommonResponse.onSuccess(teamProductService.getTeamProductDetail(accessor.getMemberId(), teamName, teamProductId));
     }
 
+    // 팀 프로덕트 생성
     @PostMapping
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.AddTeamProductResponse> addTeamProduct(
@@ -64,6 +73,7 @@ public class TeamProductController {
         return CommonResponse.onSuccess(teamProductService.addTeamProduct(accessor.getMemberId(), teamName, addTeamProductRequest, productRepresentImage, productSubImages));
     }
 
+    // 팀 프로덕트 수정
     @PostMapping("/{teamProductId}")
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.UpdateTeamProductResponse> updateTeamProduct(
@@ -78,6 +88,7 @@ public class TeamProductController {
         return CommonResponse.onSuccess(teamProductService.updateTeamProduct(accessor.getMemberId(), teamName, teamProductId, updateTeamProductRequest, productRepresentImage, productSubImages));
     }
 
+    // 팀 프로덕트 삭제
     @DeleteMapping("/{teamProductId}")
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.RemoveTeamProductResponse> removeTeamProduct(

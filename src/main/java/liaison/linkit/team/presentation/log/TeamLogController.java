@@ -7,7 +7,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
-import liaison.linkit.team.service.log.TeamLogService;
+import liaison.linkit.team.business.service.log.TeamLogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,6 +38,14 @@ public class TeamLogController {
         return CommonResponse.onSuccess(teamLogService.addTeamLogBodyImage(accessor.getMemberId(), teamName, teamLogBodyImage));
     }
 
+    // 로그 전체 뷰어 조회 (public만 허용)
+    @GetMapping("/view")
+    public CommonResponse<TeamLogResponseDTO.TeamLogItems> getTeamLogViewItems(
+            @PathVariable final String teamName
+    ) {
+        return CommonResponse.onSuccess(teamLogService.getTeamLogViewItems(teamName));
+    }
+
     // 로그 전체 조회
     @GetMapping
     @MemberOnly
@@ -51,14 +59,12 @@ public class TeamLogController {
 
     // 로그 상세 조회
     @GetMapping("/{teamLogId}")
-    @MemberOnly
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getTeamLogItem(
-            @Auth final Accessor accessor,
             @PathVariable final String teamName,
             @PathVariable final Long teamLogId
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 로그 ID = {}의 단일 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName, teamLogId);
-        return CommonResponse.onSuccess(teamLogService.getTeamLogItem(accessor.getMemberId(), teamName, teamLogId));
+        log.info("팀 이름 = {}에 대한 팀 로그 ID = {}의 단일 조회 요청이 발생했습니다.", teamName, teamLogId);
+        return CommonResponse.onSuccess(teamLogService.getTeamLogItem(teamName, teamLogId));
     }
 
     // 로그 추가

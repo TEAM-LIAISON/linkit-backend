@@ -12,4 +12,8 @@ public class AnnouncementScrapQueryAdapter {
     public boolean existsByMemberIdAndTeamMemberAnnouncementId(final Long memberId, final Long teamMemberAnnouncementId) {
         return teamMemberAnnouncementScrapRepository.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
     }
+
+    public int getTotalAnnouncementScrapCount(final Long teamMemberAnnouncementId) {
+        return teamMemberAnnouncementScrapRepository.getTotalAnnouncementScrapCount(teamMemberAnnouncementId);
+    }
 }

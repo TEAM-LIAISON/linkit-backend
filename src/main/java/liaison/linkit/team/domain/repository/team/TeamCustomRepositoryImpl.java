@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Optional;
 import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
-import liaison.linkit.team.domain.QTeam;
-import liaison.linkit.team.domain.QTeamCurrentState;
-import liaison.linkit.team.domain.QTeamRegion;
-import liaison.linkit.team.domain.Team;
+
+import liaison.linkit.team.domain.region.QTeamRegion;
+import liaison.linkit.team.domain.state.QTeamCurrentState;
+import liaison.linkit.team.domain.team.QTeam;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
@@ -36,6 +37,17 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                 .fetchOne();
 
         return Optional.ofNullable(team);
+    }
+
+    @Override
+    public boolean existsByTeamCode(final String teamCode) {
+        QTeam qTeam = QTeam.team;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qTeam)
+                .where(qTeam.teamCode.eq(teamCode))
+                .fetchFirst() != null;
     }
 
     @Override
@@ -92,7 +104,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     .fetch();
 
             // 카운트 쿼리
-            long total = jpaQueryFactory
+            Long totalLong = jpaQueryFactory
                     .select(qTeam.countDistinct())
                     .from(qTeam)
 
@@ -112,6 +124,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                             hasTeamStateNames(teamStateName)
                     )
                     .fetchOne();
+
+            long total = (totalLong == null) ? 0L : totalLong;
 
             return PageableExecutionUtils.getPage(content, pageable, () -> total);
         } catch (Exception e) {

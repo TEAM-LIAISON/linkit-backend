@@ -8,6 +8,8 @@ import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogR
 public interface TeamLogCustomRepository {
     List<TeamLog> getTeamLogs(final Long teamId);
 
+    List<TeamLog> getTeamLogsPublic(final Long teamId);
+
     void updateTeamLogTypeRepresent(final TeamLog teamLog);
 
     Optional<TeamLog> findRepresentativeTeamLog(final Long teamId);

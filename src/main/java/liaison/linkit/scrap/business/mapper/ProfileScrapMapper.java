@@ -6,6 +6,7 @@ import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapResponseDT
 
 @Mapper
 public class ProfileScrapMapper {
+
     public ProfileScrapResponseDTO.UpdateProfileScrap toUpdateProfileScrap(
             final String emailId,
             final boolean changeScrapValue
@@ -15,5 +16,5 @@ public class ProfileScrapMapper {
                 .isProfileScrap(changeScrapValue)
                 .build();
     }
-    
+
 }

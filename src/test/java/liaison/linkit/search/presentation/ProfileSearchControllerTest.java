@@ -20,7 +20,7 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
-import liaison.linkit.search.service.ProfileSearchService;
+import liaison.linkit.search.business.service.ProfileSearchService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +73,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
         );
     }
 
-    @DisplayName("팀원 검색 API 테스트")
+    @DisplayName("회원/비회원이 팀원을 검색할 수 있다. (필터링 가능)")
     @Test
     void searchProfiles() throws Exception {
         // given
@@ -87,6 +87,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
                                         .build()
                         )
                 )
+                .isProfileScrap(true)
                 .profileImagePath("프로필 이미지 경로 1")
                 .memberName("회원 이름 1")
                 .emailId("이메일 ID 1")
@@ -122,6 +123,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
                                         .build()
                         )
                 )
+                .isProfileScrap(false)
                 .profileImagePath("프로필 이미지 경로 2")
                 .memberName("회원 이름 2")
                 .emailId("이메일 ID 2")
@@ -150,7 +152,8 @@ public class ProfileSearchControllerTest extends ControllerTest {
         List<ProfileInformMenu> profiles = Arrays.asList(profileInformMenu1, profileInformMenu2);
         Page<ProfileInformMenu> profilePage = new PageImpl<>(profiles, PageRequest.of(0, 20), profiles.size());
 
-        when(profileSearchService.searchProfiles(
+        // when
+        when(profileSearchService.searchProfilesInLogoutState(
                 any(),
                 any(),
                 any(),
@@ -158,7 +161,6 @@ public class ProfileSearchControllerTest extends ControllerTest {
                 any(Pageable.class)
         )).thenReturn(profilePage);
 
-        // when
         final ResultActions resultActions = performSearchProfiles(
                 Arrays.asList("개발자"),
                 Arrays.asList("Java", "Spring"),
@@ -218,6 +220,9 @@ public class ProfileSearchControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].profileCurrentStates[].profileStateName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 상태 이름"),
+                                        fieldWithPath("result.content[].isProfileScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 스크랩 여부 (로그인, 로그아웃 상태 반영 & 스크랩 여부 반영)"),
                                         fieldWithPath("result.content[].profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),

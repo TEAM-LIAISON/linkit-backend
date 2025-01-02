@@ -2,7 +2,6 @@ package liaison.linkit.team.presentation.product.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.profile.domain.portfolio.ProjectSize;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,15 +17,9 @@ public class TeamProductResponseDTO {
     @AllArgsConstructor
     public static class TeamProductDetail {
         private Long teamProductId;
-
         private String productName;
-
         private String productLineDescription;
-
-        private ProjectSize projectSize;
-        private int productHeadCount;
-        private String productTeamComposition;
-
+        private String productField;
         private String productStartDate;
         private String productEndDate;
         private Boolean isProductInProgress;
@@ -44,16 +37,47 @@ public class TeamProductResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamProductItem {
+    public static class TeamProductViewItems {
+        @Builder.Default
+        private List<TeamProductViewItem> teamProductViewItems = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamProductViewItem {
         private Long teamProductId;
-
         private String productName;
-
         private String productLineDescription;
-
+        private String productField;
         private String productStartDate;
         private String productEndDate;
         private Boolean isProductInProgress;
+        private String productRepresentImagePath;
+
+        @Builder.Default
+        private List<TeamProductResponseDTO.TeamProductLinkResponse> teamProductLinks = new ArrayList<>();
+
+        private String productDescription;
+
+        @Builder.Default
+        private TeamProductImages teamProductImages = new TeamProductImages();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamProductItem {
+        private Long teamProductId;
+        private String productName;
+        private String productLineDescription;
+        private String productField;
+        private String productStartDate;
+        private String productEndDate;
+        private Boolean isProductInProgress;
+        private String productRepresentImagePath;
 
         @Builder.Default
         private List<TeamProductResponseDTO.TeamProductLinkResponse> teamProductLinks = new ArrayList<>();
@@ -78,12 +102,8 @@ public class TeamProductResponseDTO {
         private Long teamProductId;
 
         private String productName;
-
         private String productLineDescription;
-
-        private ProjectSize projectSize;
-        private int productHeadCount;
-        private String productTeamComposition;
+        private String productField;
 
         private String productStartDate;
         private String productEndDate;
@@ -104,14 +124,9 @@ public class TeamProductResponseDTO {
     @AllArgsConstructor
     public static class UpdateTeamProductResponse {
         private Long teamProductId;
-
         private String productName;
-
         private String productLineDescription;
-
-        private ProjectSize projectSize;
-        private int productHeadCount;
-        private String productTeamComposition;
+        private String productField;
 
         private String productStartDate;
         private String productEndDate;

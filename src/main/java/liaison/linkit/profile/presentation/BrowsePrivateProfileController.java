@@ -1,11 +1,11 @@
 package liaison.linkit.profile.presentation;
 
-import liaison.linkit.profile.service.AntecedentsService;
-import liaison.linkit.profile.service.ProfileAwardsService;
-import liaison.linkit.profile.service.BrowsePrivateProfileService;
-import liaison.linkit.profile.service.ProfileEducationService;
-import liaison.linkit.profile.service.MiniProfileService;
-import liaison.linkit.profile.service.ProfileService;
+import liaison.linkit.profile.business.service.AntecedentsService;
+import liaison.linkit.profile.business.service.ProfileAwardsService;
+import liaison.linkit.profile.business.service.BrowsePrivateProfileService;
+import liaison.linkit.profile.business.service.ProfileEducationService;
+import liaison.linkit.profile.business.service.MiniProfileService;
+import liaison.linkit.profile.business.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -9,18 +9,21 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
+import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
-import liaison.linkit.member.presentation.dto.request.memberBasicInform.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailVerificationResponse;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.MailReAuthenticationRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateMemberContactRequest;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateMemberNameRequest;
+import liaison.linkit.member.presentation.dto.MemberRequestDTO;
+import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
+import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO.MailVerificationResponse;
+import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO.UpdateConsentMarketingResponse;
+import liaison.linkit.member.presentation.dto.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,18 +43,19 @@ public class MemberService {
 
     private final MailReAuthenticationRedisUtil mailReAuthenticationRedisUtil;
     private final AuthCodeMailService authCodeMailService;
+    private final MemberCommandAdapter memberCommandAdapter;
+    private final MemberMapper memberMapper;
 
     // 회원 기본 정보 요청 (UPDATE)
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
 
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberBasicInform(memberId, request);
 
-        final Member member = memberQueryAdapter.findById(memberId);
-        member.setCreateMemberBasicInform(updatedMemberBasicInform.isMemberBasicInform());
+        final Member updatedMember = memberCommandAdapter.updateEmailId(memberId, request.getEmailId());
 
-        final String email = memberQueryAdapter.findEmailById(memberId);
+        updatedMember.setCreateMemberBasicInform(updatedMemberBasicInform.isMemberBasicInform());
 
-        return memberBasicInformMapper.toMemberBasicInformResponse(updatedMemberBasicInform, email);
+        return memberBasicInformMapper.toMemberBasicInformResponse(updatedMemberBasicInform, updatedMember.getEmail(), updatedMember.getEmailId());
     }
 
     // 서비스 이용 동의 요청 (UPDATE)
@@ -75,6 +79,12 @@ public class MemberService {
     public MemberBasicInformResponseDTO.UpdateMemberNameResponse updateMemberName(final Long memberId, final UpdateMemberNameRequest updateMemberNameRequest) {
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberName(memberId, updateMemberNameRequest);
         return memberBasicInformMapper.toUpdateMemberNameResponse(updatedMemberBasicInform);
+    }
+
+    // 회원 유저 아이디 수정 요쳥 (UPDATE)
+    public MemberResponseDTO.UpdateMemberUserIdResponse updateMemberUserId(final Long memberId, final MemberRequestDTO.UpdateMemberUserIdRequest updateMemberUserIdRequest) {
+        final Member updatedMember = memberCommandAdapter.updateEmailId(memberId, updateMemberUserIdRequest.getEmailId());
+        return memberMapper.toUpdateUserIdResponse(updatedMember);
     }
 
     // 회원 전화번호 수정 요청 (UPDATE)
@@ -110,7 +120,7 @@ public class MemberService {
         final Member member = memberQueryAdapter.findById(memberId);
 
         // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
-        authCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), member.getEmail(), authCode);
+        authCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), mailReAuthenticationRequest.getEmail(), authCode);
 
         // 재인증 코드를 발송한 시간 발행
         return memberBasicInformMapper.toReAuthenticationResponse();
@@ -133,7 +143,7 @@ public class MemberService {
         log.info("authCode = {}", authCode);
         final String changeRequestEmail = authCodeVerificationRequest.getChangeRequestEmail();
         log.info("changeRequestEmail = {}", changeRequestEmail);
-        
+
         // 인증 코드가 잘못 입력된 경우
         if (!verifyEmailCode(changeRequestEmail, authCode)) {
             throw AuthCodeBadRequestException.EXCEPTION;

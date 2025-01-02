@@ -2,11 +2,13 @@ package liaison.linkit.team.domain.repository.teamMember;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import liaison.linkit.team.domain.QTeam;
+import liaison.linkit.member.domain.QMember;
 
-import liaison.linkit.team.domain.Team;
+import liaison.linkit.team.domain.team.QTeam;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.QTeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMember;
+import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -60,16 +62,15 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
     }
 
     @Override
-    public List<Team> getAllTeamByMemberId(final Long memberId) {
+    public boolean existsTeamOwnerByMemberId(final Long memberId) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
-        QTeam qTeam = QTeam.team;
 
         return jpaQueryFactory
-                .select(qTeam)
+                .selectOne()
                 .from(qTeamMember)
-                .join(qTeamMember.team, qTeam)
-                .where(qTeamMember.member.id.eq(memberId))
-                .fetch();
+                .where(qTeamMember.member.id.eq(memberId)
+                        .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_OWNER)))
+                .fetchFirst() != null;
     }
 
     @Override
@@ -83,5 +84,38 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .join(qTeamMember.team, qTeam)
                 .where(qTeamMember.member.id.eq(memberId))
                 .fetch();
+    }
+
+    @Override
+    public List<Team> getAllTeamsInOwnerStateByMemberId(final Long memberId) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+        QTeam qTeam = QTeam.team;
+
+        return jpaQueryFactory
+                .select(qTeam)
+                .from(qTeamMember)
+                .join(qTeamMember.team, qTeam)
+                .where(qTeamMember.member.id.eq(memberId)
+                        .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_OWNER))
+                )
+                .fetch();
+    }
+
+    @Override
+    public TeamMember getTeamMemberByTeamNameAndEmailId(
+            final String teamName,
+            final String emailId
+    ) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+        QMember qMember = QMember.member;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMember)
+                .join(qTeamMember.member, qMember)
+                .where(
+                        qTeamMember.team.teamName.eq(teamName),
+                        qMember.emailId.eq(emailId)
+                )
+                .fetchOne();
     }
 }

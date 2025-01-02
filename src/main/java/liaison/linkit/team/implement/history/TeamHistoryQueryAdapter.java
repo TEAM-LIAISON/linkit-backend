@@ -2,7 +2,7 @@ package liaison.linkit.team.implement.history;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.team.domain.TeamHistory;
+import liaison.linkit.team.domain.history.TeamHistory;
 import liaison.linkit.team.domain.repository.history.TeamHistoryRepository;
 import liaison.linkit.team.exception.history.TeamHistoryNotFoundException;
 import lombok.RequiredArgsConstructor;

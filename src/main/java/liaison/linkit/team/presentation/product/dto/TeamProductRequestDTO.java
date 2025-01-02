@@ -2,7 +2,6 @@ package liaison.linkit.team.presentation.product.dto;
 
 import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.profile.domain.portfolio.ProjectSize;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,13 +17,8 @@ public class TeamProductRequestDTO {
     @AllArgsConstructor
     public static class AddTeamProductRequest {
         private String productName;
-
         private String productLineDescription;
-
-        private ProjectSize projectSize;
-        private int productHeadCount;
-        private String productTeamComposition;
-
+        private String productField;
         private String productStartDate;
         private String productEndDate;
         private Boolean isProductInProgress;
@@ -41,13 +35,8 @@ public class TeamProductRequestDTO {
     @AllArgsConstructor
     public static class UpdateTeamProductRequest {
         private String productName;
-
         private String productLineDescription;
-
-        private ProjectSize projectSize;
-        private int productHeadCount;
-        private String productTeamComposition;
-
+        private String productField;
         private String productStartDate;
         private String productEndDate;
         private Boolean isProductInProgress;

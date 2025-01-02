@@ -6,7 +6,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
-import liaison.linkit.team.service.announcement.TeamMemberAnnouncementService;
+import liaison.linkit.team.business.service.announcement.TeamMemberAnnouncementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +25,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamMemberAnnouncementController {
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
+    // 팀원 공고 뷰어 전체 조회
+    @GetMapping("/view")
+    public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems> getTeamMemberAnnouncementViewItems(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamName
+    ) {
+        log.info("팀 이름 = {}에 대한 팀원 공고 뷰어 전체 조회 요청이 발생했습니다.", teamName);
+        if (accessor.isMember()) {
+            final Long memberId = accessor.getMemberId();
+            log.info("memberId = {}의 팀원 공고 뷰어 조회 요청이 발생했습니다.", memberId);
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getLoggedInTeamMemberAnnouncementViewItems(memberId, teamName));
+        } else {
+            log.info("teamName = {}에 팀원 공고 뷰어 조회 요청이 발생했습니다.", teamName);
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getLoggedOutTeamMemberAnnouncementViewItems(teamName));
+        }
+    }
+
     // 팀원 공고 전체 조회
     @GetMapping
     @MemberOnly
@@ -38,14 +55,18 @@ public class TeamMemberAnnouncementController {
 
     // 팀원 공고 단일 조회
     @GetMapping("/{teamMemberAnnouncementId}")
-    @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail> getTeamMemberAnnouncementDetail(
             @Auth final Accessor accessor,
             @PathVariable final String teamName,
             @PathVariable final Long teamMemberAnnouncementId
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀원 공고 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
-        return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementDetail(accessor.getMemberId(), teamName, teamMemberAnnouncementId));
+        if (accessor.isMember()) {
+            log.info("memberId = {}의 팀 이름 = {}에 대한 팀원 공고 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementDetailInLoginState(accessor.getMemberId(), teamName, teamMemberAnnouncementId));
+        } else {
+            log.info("팀 이름 = {}에 대한 팀원 공고 상세 조회 요청이 발생했습니다. (로그아웃 상태)", teamName);
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementDetailInLogoutState(teamName, teamMemberAnnouncementId));
+        }
     }
 
     // 팀원 공고 생성

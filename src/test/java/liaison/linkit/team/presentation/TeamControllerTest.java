@@ -39,7 +39,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamItems;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
-import liaison.linkit.team.service.TeamService;
+import liaison.linkit.team.business.service.team.TeamService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -91,6 +91,7 @@ public class TeamControllerTest extends ControllerTest {
         // given
         final AddTeamRequest addTeamRequest = AddTeamRequest.builder()
                 .teamName("리에종")
+                .teamCode("팀 ID (팀 코드)")
                 .teamShortDescription("팀 한 줄 소개")
                 .scaleName("팀 규모")
                 .cityName("팀 활동지역 시/도")
@@ -117,6 +118,7 @@ public class TeamControllerTest extends ControllerTest {
                 .teamId(1L)
                 .teamLogoImagePath("팀 로고 이미지 경로")
                 .teamName("팀 이름")
+                .teamCode("팀 코드")
                 .teamShortDescription("팀 한 줄 소개")
                 .teamScaleItem(
                         TeamScaleItem.builder()
@@ -173,6 +175,10 @@ public class TeamControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름")
                                                 .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 ID (팀 코드)")
+                                                .attributes(field("constraint", "문자열")),
                                         fieldWithPath("teamShortDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 한 줄 소개")
@@ -220,6 +226,9 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
+                                        fieldWithPath("result.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 ID (팀 코드)"),
                                         fieldWithPath("result.teamShortDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 한 줄 소개"),
@@ -462,6 +471,8 @@ public class TeamControllerTest extends ControllerTest {
                                         .build()
                         )
                 )
+                .isTeamScrap(false)
+                .teamScrapCount(200)
                 .teamName("팀 이름")
                 .teamShortDescription("팀 한 줄 소개")
                 .teamLogoImagePath("팀 로고 이미지 경로")
@@ -525,6 +536,12 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamInformMenu.teamCurrentStates[].teamStateName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 상태 이름"),
+                                        fieldWithPath("result.teamInformMenu.isTeamScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 스크랩 여부"),
+                                        fieldWithPath("result.teamInformMenu.teamScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀 스크랩 수"),
                                         fieldWithPath("result.teamInformMenu.teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
@@ -585,6 +602,8 @@ public class TeamControllerTest extends ControllerTest {
                                                                 .build()
                                                 )
                                         )
+                                        .isTeamScrap(false)
+                                        .teamScrapCount(200)
                                         .teamName("팀 이름")
                                         .teamShortDescription("팀 한 줄 소개")
                                         .teamLogoImagePath("팀 로고 이미지 경로")
@@ -611,6 +630,8 @@ public class TeamControllerTest extends ControllerTest {
                                                                 .build()
                                                 )
                                         )
+                                        .isTeamScrap(false)
+                                        .teamScrapCount(100)
                                         .teamName("팀 이름")
                                         .teamShortDescription("팀 한 줄 소개 2")
                                         .teamLogoImagePath("팀 로고 이미지 경로 2")
@@ -665,6 +686,14 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamInformMenus[].teamCurrentStates[].teamStateName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 상태 이름"),
+
+                                        fieldWithPath("result.teamInformMenus[].isTeamScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 스크랩 여부"),
+                                        fieldWithPath("result.teamInformMenus[].teamScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀 스크랩 수"),
+
                                         fieldWithPath("result.teamInformMenus[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),

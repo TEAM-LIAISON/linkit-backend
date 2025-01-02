@@ -27,7 +27,6 @@ import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.domain.portfolio.ProjectSize;
 import liaison.linkit.team.presentation.product.TeamProductController;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO.AddTeamProductRequest;
@@ -37,9 +36,13 @@ import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.AddTe
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.ProductSubImage;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.RemoveTeamProductResponse;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductDetail;
+import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductImages;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductItems;
+import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductLinkResponse;
+import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductViewItem;
+import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductViewItems;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.UpdateTeamProductResponse;
-import liaison.linkit.team.service.product.TeamProductService;
+import liaison.linkit.team.business.service.product.TeamProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -77,6 +80,12 @@ public class TeamProductControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
+    private ResultActions performGetTeamProductViewItems(final String teamName) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/product/view", teamName)
+        );
+    }
+
     private ResultActions performGetTeamProductItems(final String teamName) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/product", teamName)
@@ -101,6 +110,190 @@ public class TeamProductControllerTest extends ControllerTest {
         );
     }
 
+    @DisplayName("회원이 팀의 팀 프로덕트 뷰어를 전체 조회할 수 있다.")
+    @Test
+    void getTeamProductViewItems() throws Exception {
+
+        // given
+        final TeamProductResponseDTO.TeamProductViewItems teamProductViewItems = TeamProductViewItems.builder()
+                .teamProductViewItems(Arrays.asList(
+                        TeamProductViewItem.builder()
+                                .teamProductId(1L)
+                                .productName("프로덕트 제목 1")
+                                .productLineDescription("프로덕트 한 줄 소개 1")
+                                .productField("프로덕트 분야 1")
+                                .productStartDate("프로덕트 시작 날짜 1")
+                                .productEndDate("프로덕트 종료 날짜 1")
+                                .productRepresentImagePath("프로덕트 대표 이미지 1")
+                                .isProductInProgress(false)
+                                .teamProductLinks(Arrays.asList(
+                                        TeamProductLinkResponse.builder()
+                                                .productLinkId(1L)
+                                                .productLinkName("프로덕트 링크 이름 1")
+                                                .productLinkPath("프로덕트 링크 경로 1")
+                                                .build(),
+                                        TeamProductLinkResponse.builder()
+                                                .productLinkId(2L)
+                                                .productLinkName("프로덕트 링크 이름 2")
+                                                .productLinkPath("프로덕트 링크 경로 2")
+                                                .build()
+                                ))
+                                .productDescription("프로덕트 설명 1")
+                                .teamProductImages(
+                                        TeamProductImages.builder()
+                                                .productRepresentImagePath("프로덕트 대표 이미지 경로")
+                                                .productSubImages(Arrays.asList(
+                                                        ProductSubImage.builder()
+                                                                .productSubImagePath("프로덕트 보조 이미지 경로 1")
+                                                                .build(),
+                                                        ProductSubImage.builder()
+                                                                .productSubImagePath("프로덕트 보조 이미지 경로 2")
+                                                                .build()
+                                                ))
+                                                .build()
+                                )
+                                .build(),
+                        TeamProductViewItem.builder()
+                                .teamProductId(1L)
+                                .productName("프로덕트 제목 2")
+                                .productLineDescription("프로덕트 한 줄 소개 2")
+                                .productField("프로덕트 분야 2")
+                                .productStartDate("프로덕트 시작 날짜 2")
+                                .productEndDate("프로덕트 종료 날짜 2")
+                                .productRepresentImagePath("프로덕트 대표 이미지 2")
+                                .isProductInProgress(false)
+                                .teamProductLinks(Arrays.asList(
+                                        TeamProductLinkResponse.builder()
+                                                .productLinkId(1L)
+                                                .productLinkName("프로덕트 링크 이름 1")
+                                                .productLinkPath("프로덕트 링크 경로 1")
+                                                .build(),
+                                        TeamProductLinkResponse.builder()
+                                                .productLinkId(2L)
+                                                .productLinkName("프로덕트 링크 이름 2")
+                                                .productLinkPath("프로덕트 링크 경로 2")
+                                                .build()
+                                ))
+                                .productDescription("프로덕트 설명 2")
+                                .teamProductImages(
+                                        TeamProductImages.builder()
+                                                .productRepresentImagePath("프로덕트 대표 이미지 경로")
+                                                .productSubImages(Arrays.asList(
+                                                        ProductSubImage.builder()
+                                                                .productSubImagePath("프로덕트 보조 이미지 경로 1")
+                                                                .build(),
+                                                        ProductSubImage.builder()
+                                                                .productSubImagePath("프로덕트 보조 이미지 경로 2")
+                                                                .build()
+                                                ))
+                                                .build()
+                                )
+                                .build()
+                ))
+                .build();
+        // when
+        when(teamProductService.getTeamProductViewItems(any())).thenReturn(teamProductViewItems);
+
+        final ResultActions resultActions = performGetTeamProductViewItems("liaison");
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("응답 결과"),
+                                        fieldWithPath("result.teamProductViewItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("팀 프로덕트 뷰어 목록"),
+                                        fieldWithPath("result.teamProductViewItems[].teamProductId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀 프로덕트 ID"),
+                                        fieldWithPath("result.teamProductViewItems[].productName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 이름"),
+                                        fieldWithPath("result.teamProductViewItems[].productLineDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 한 줄 소개"),
+                                        fieldWithPath("result.teamProductViewItems[].productField")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 분야"),
+                                        fieldWithPath("result.teamProductViewItems[].productStartDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 시작 날짜"),
+                                        fieldWithPath("result.teamProductViewItems[].productEndDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 종료 날짜"),
+                                        fieldWithPath("result.teamProductViewItems[].productRepresentImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 대표 이미지 경로"),
+                                        fieldWithPath("result.teamProductViewItems[].isProductInProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로덕트 진행 중 여부"),
+                                        fieldWithPath("result.teamProductViewItems[].teamProductLinks")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로덕트 링크 목록"),
+                                        fieldWithPath("result.teamProductViewItems[].teamProductLinks[].productLinkId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로덕트 링크 ID"),
+                                        fieldWithPath("result.teamProductViewItems[].teamProductLinks[].productLinkName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 링크 이름"),
+                                        fieldWithPath("result.teamProductViewItems[].teamProductLinks[].productLinkPath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 링크 경로"),
+                                        fieldWithPath("result.teamProductViewItems[].productDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 설명"),
+                                        fieldWithPath("result.teamProductViewItems[].teamProductImages")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("프로덕트 이미지 정보 객체"),
+                                        fieldWithPath("result.teamProductViewItems[].teamProductImages.productRepresentImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 대표 이미지 경로"),
+                                        fieldWithPath("result.teamProductViewItems[].teamProductImages.productSubImages")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로덕트 보조 이미지 리스트"),
+                                        fieldWithPath("result.teamProductViewItems[].teamProductImages.productSubImages[].productSubImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 보조 이미지 경로")
+                                )
+                        )
+                ).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamProductResponseDTO.TeamProductViewItems> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<TeamProductViewItems>>() {
+                }
+        );
+
+        final CommonResponse<TeamProductViewItems> expected = CommonResponse.onSuccess(teamProductViewItems);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
     @DisplayName("회원이 팀의 팀 프로덕트를 전체 조회할 수 있다.")
     @Test
     void getTeamProductItems() throws Exception {
@@ -109,8 +302,10 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 제목 1")
                 .productLineDescription("프로덕트 한 줄 소개 1")
+                .productField("프로덕트 분야 1")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
+                .productRepresentImagePath("프로덕트 대표 이미지 1")
                 .isProductInProgress(false)
                 .teamProductLinks(Arrays.asList(
                         TeamProductResponseDTO.TeamProductLinkResponse.builder()
@@ -131,8 +326,10 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 제목 2")
                 .productLineDescription("프로덕트 한 줄 소개 2")
+                .productField("프로덕트 분야 2")
                 .productStartDate("프로덕트 시작 날짜 2")
                 .productEndDate("프로덕트 종료 날짜 2")
+                .productRepresentImagePath("프로덕트 대표 이미지 2")
                 .isProductInProgress(false)
                 .teamProductLinks(Arrays.asList(
                         TeamProductResponseDTO.TeamProductLinkResponse.builder()
@@ -196,12 +393,18 @@ public class TeamProductControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamProductItems[].productLineDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 한 줄 소개"),
+                                        fieldWithPath("result.teamProductItems[].productField")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 분야"),
                                         fieldWithPath("result.teamProductItems[].productStartDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 시작 날짜"),
                                         fieldWithPath("result.teamProductItems[].productEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 종료 날짜"),
+                                        fieldWithPath("result.teamProductItems[].productRepresentImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로덕트 대표 이미지 경로"),
                                         fieldWithPath("result.teamProductItems[].isProductInProgress")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로덕트 진행 중 여부"),
@@ -244,9 +447,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 제목 1")
                 .productLineDescription("프로덕트 한 줄 소개 1")
-                .projectSize(ProjectSize.TEAM)
-                .productHeadCount(8)
-                .productTeamComposition("개발자 8명")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -322,15 +523,9 @@ public class TeamProductControllerTest extends ControllerTest {
                                         fieldWithPath("result.productLineDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 한 줄 소개"),
-                                        fieldWithPath("result.projectSize")
+                                        fieldWithPath("result.productField")
                                                 .type(JsonFieldType.STRING)
-                                                .description("프로젝트 규모"),
-                                        fieldWithPath("result.productHeadCount")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("프로덕트 인원 수"),
-                                        fieldWithPath("result.productTeamComposition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("프로덕트 팀 구성"),
+                                                .description("프로덕트 분야"),
                                         fieldWithPath("result.productStartDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로덕트 시작 날짜"),
@@ -391,9 +586,7 @@ public class TeamProductControllerTest extends ControllerTest {
         final TeamProductRequestDTO.AddTeamProductRequest addTeamProductRequest = AddTeamProductRequest.builder()
                 .productName("프로덕트 이름")
                 .productLineDescription("프로덕트 한 줄 소개")
-                .projectSize(ProjectSize.PERSONAL)
-                .productHeadCount(1)
-                .productTeamComposition("팀 구성")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -446,9 +639,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 이름")
                 .productLineDescription("프로덕트 한 줄 소개")
-                .projectSize(ProjectSize.PERSONAL)
-                .productHeadCount(1)
-                .productTeamComposition("팀 구성")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -527,9 +718,7 @@ public class TeamProductControllerTest extends ControllerTest {
                         requestPartFields("addTeamProductRequest",
                                 fieldWithPath("productName").type(JsonFieldType.STRING).description("프로덕트 이름"),
                                 fieldWithPath("productLineDescription").type(JsonFieldType.STRING).description("프로덕트 한 줄 소개"),
-                                fieldWithPath("projectSize").type(JsonFieldType.STRING).description("프로젝트 규모 (PERSONAL 또는 TEAM)"),
-                                fieldWithPath("productHeadCount").type(JsonFieldType.NUMBER).description("프로덕트 인원 수"),
-                                fieldWithPath("productTeamComposition").type(JsonFieldType.STRING).description("프로덕트 팀 구성"),
+                                fieldWithPath("productField").type(JsonFieldType.STRING).description("프로덕트 분야"),
                                 fieldWithPath("productStartDate").type(JsonFieldType.STRING).description("프로덕트 시작 날짜"),
                                 fieldWithPath("productEndDate").type(JsonFieldType.STRING).description("프로덕트 종료 날짜"),
                                 fieldWithPath("isProductInProgress").type(JsonFieldType.BOOLEAN).description("프로덕트 진행 중 여부"),
@@ -563,15 +752,9 @@ public class TeamProductControllerTest extends ControllerTest {
                                 fieldWithPath("result.productLineDescription")
                                         .type(JsonFieldType.STRING)
                                         .description("프로덕트 한 줄 소개"),
-                                fieldWithPath("result.projectSize")
+                                fieldWithPath("result.productField")
                                         .type(JsonFieldType.STRING)
-                                        .description("프로젝트 규모 (PERSONAL 또는 TEAM)"),
-                                fieldWithPath("result.productHeadCount")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("프로덕트 인원 수"),
-                                fieldWithPath("result.productTeamComposition")
-                                        .type(JsonFieldType.STRING)
-                                        .description("프로덕트 팀 구성"),
+                                        .description("프로덕트 분야"),
                                 fieldWithPath("result.productStartDate")
                                         .type(JsonFieldType.STRING)
                                         .description("프로덕트 시작 날짜"),
@@ -631,9 +814,7 @@ public class TeamProductControllerTest extends ControllerTest {
         final TeamProductRequestDTO.UpdateTeamProductRequest updateTeamProductRequest = UpdateTeamProductRequest.builder()
                 .productName("프로덕트 이름")
                 .productLineDescription("프로덕트 한 줄 소개")
-                .projectSize(ProjectSize.PERSONAL)
-                .productHeadCount(1)
-                .productTeamComposition("팀 구성")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -686,9 +867,7 @@ public class TeamProductControllerTest extends ControllerTest {
                 .teamProductId(1L)
                 .productName("프로덕트 이름")
                 .productLineDescription("프로덕트 한 줄 소개")
-                .projectSize(ProjectSize.PERSONAL)
-                .productHeadCount(1)
-                .productTeamComposition("팀 구성")
+                .productField("프로덕트 분야")
                 .productStartDate("프로덕트 시작 날짜 1")
                 .productEndDate("프로덕트 종료 날짜 1")
                 .isProductInProgress(false)
@@ -770,9 +949,7 @@ public class TeamProductControllerTest extends ControllerTest {
                         requestPartFields("updateTeamProductRequest",
                                 fieldWithPath("productName").type(JsonFieldType.STRING).description("프로덕트 이름"),
                                 fieldWithPath("productLineDescription").type(JsonFieldType.STRING).description("프로덕트 한 줄 소개"),
-                                fieldWithPath("projectSize").type(JsonFieldType.STRING).description("프로젝트 규모 (PERSONAL 또는 TEAM)"),
-                                fieldWithPath("productHeadCount").type(JsonFieldType.NUMBER).description("프로덕트 인원 수"),
-                                fieldWithPath("productTeamComposition").type(JsonFieldType.STRING).description("프로덕트 팀 구성"),
+                                fieldWithPath("productField").type(JsonFieldType.STRING).description("프로덕트 분야"),
                                 fieldWithPath("productStartDate").type(JsonFieldType.STRING).description("프로덕트 시작 날짜"),
                                 fieldWithPath("productEndDate").type(JsonFieldType.STRING).description("프로덕트 종료 날짜"),
                                 fieldWithPath("isProductInProgress").type(JsonFieldType.BOOLEAN).description("프로덕트 진행 중 여부"),
@@ -806,15 +983,9 @@ public class TeamProductControllerTest extends ControllerTest {
                                 fieldWithPath("result.productLineDescription")
                                         .type(JsonFieldType.STRING)
                                         .description("프로덕트 한 줄 소개"),
-                                fieldWithPath("result.projectSize")
+                                fieldWithPath("result.productField")
                                         .type(JsonFieldType.STRING)
-                                        .description("프로젝트 규모 (PERSONAL 또는 TEAM)"),
-                                fieldWithPath("result.productHeadCount")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("프로덕트 인원 수"),
-                                fieldWithPath("result.productTeamComposition")
-                                        .type(JsonFieldType.STRING)
-                                        .description("프로덕트 팀 구성"),
+                                        .description("프로덕트 분야"),
                                 fieldWithPath("result.productStartDate")
                                         .type(JsonFieldType.STRING)
                                         .description("프로덕트 시작 날짜"),

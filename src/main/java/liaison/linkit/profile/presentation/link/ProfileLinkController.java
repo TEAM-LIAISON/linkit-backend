@@ -6,7 +6,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkRequestDTO;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO;
-import liaison.linkit.profile.service.ProfileLinkService;
+import liaison.linkit.profile.business.service.ProfileLinkService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

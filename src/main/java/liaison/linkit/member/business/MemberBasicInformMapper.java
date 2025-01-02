@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.type.Platform;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
-import liaison.linkit.member.presentation.dto.response.MemberBasicInformResponseDTO.MailVerificationResponse;
+import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO;
+import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO.MailReAuthenticationResponse;
+import liaison.linkit.member.presentation.dto.MemberBasicInformResponseDTO.MailVerificationResponse;
 
 @Mapper
 public class MemberBasicInformMapper {
@@ -34,11 +34,13 @@ public class MemberBasicInformMapper {
 
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse toMemberBasicInformResponse(
             final MemberBasicInform memberBasicInform,
-            final String email
+            final String email,
+            final String emailId
     ) {
         return MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse.builder()
                 .memberBasicInformId(memberBasicInform.getId())
                 .memberName(memberBasicInform.getMemberName())
+                .emailId(emailId)
                 .contact(memberBasicInform.getContact())
                 .email(email)
                 .build();

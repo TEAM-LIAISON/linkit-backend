@@ -20,7 +20,7 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.scrap.business.TeamScrapService;
+import liaison.linkit.scrap.business.service.TeamScrapService;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapRequestDTO.UpdateTeamScrapRequest;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapResponseDTO;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapResponseDTO.UpdateTeamScrap;

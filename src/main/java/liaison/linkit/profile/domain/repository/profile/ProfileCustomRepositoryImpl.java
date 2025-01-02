@@ -188,7 +188,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             log.info("Starting count query");
 
             // 카운트 쿼리
-            long total = jpaQueryFactory
+            Long totalLong = jpaQueryFactory
                     .select(qProfile.countDistinct())
                     .from(qProfile)
                     // 동일한 조인 설정 적용
@@ -208,11 +208,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                     )
                     .fetchOne();
 
-            // 카운트 결과 로그
-            log.info("Total profiles count: {}", total);
-
-            // 페이지네이션 결과 로그
-            log.info("Creating Page object with fetched data");
+            long total = (totalLong == null) ? 0L : totalLong;
 
             return PageableExecutionUtils.getPage(content, pageable, () -> total);
         } catch (Exception e) {

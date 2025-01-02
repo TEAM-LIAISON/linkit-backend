@@ -100,7 +100,6 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
 
     @Override
     public boolean existsByMemberIdAndTeamName(final Long memberId, final String teamName) {
-
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
         Integer count = jpaQueryFactory.selectOne().from(qTeamScrap)
@@ -109,5 +108,18 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
                 .fetchFirst();
 
         return count != null;
+    }
+
+    @Override
+    public int countTotalTeamScrapByTeamName(final String teamName) {
+        QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
+        
+        Long count = jpaQueryFactory
+                .select(qTeamScrap.count())
+                .from(qTeamScrap)
+                .where(qTeamScrap.team.teamName.eq(teamName))
+                .fetchOne();
+
+        return count != null ? count.intValue() : 0;
     }
 }

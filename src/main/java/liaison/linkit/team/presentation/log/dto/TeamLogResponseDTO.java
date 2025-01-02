@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TeamLogResponseDTO {
 
+
     @Builder
     @Getter
     @NoArgsConstructor

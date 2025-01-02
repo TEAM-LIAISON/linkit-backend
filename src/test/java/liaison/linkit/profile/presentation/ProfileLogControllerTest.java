@@ -45,7 +45,7 @@ import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.RemoveP
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogPublicStateResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogResponse;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.UpdateProfileLogTypeResponse;
-import liaison.linkit.profile.service.ProfileLogService;
+import liaison.linkit.profile.business.service.ProfileLogService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

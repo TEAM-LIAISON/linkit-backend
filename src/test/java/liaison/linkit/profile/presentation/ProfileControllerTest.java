@@ -56,7 +56,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
-import liaison.linkit.profile.service.ProfileService;
+import liaison.linkit.profile.business.service.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -122,6 +122,7 @@ class ProfileControllerTest extends ControllerTest {
 
         final ProfileInformMenu profileInformMenu = ProfileInformMenu.builder()
                 .profileCurrentStates(profileCurrentStates)
+                .isProfileScrap(false)
                 .profileImagePath("프로필 이미지 경로")
                 .memberName("권동민")
                 .emailId("이메일 아이디")
@@ -193,6 +194,10 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.profileCurrentStates[].profileStateName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 현재 상태 이름"),
+                                        fieldWithPath("result.profileInformMenu.isProfileScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 스크랩 여부 (자기 자신의 조회는 무조건 false)"),
+
                                         fieldWithPath("result.profileInformMenu.profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),
@@ -287,6 +292,7 @@ class ProfileControllerTest extends ControllerTest {
 
         final ProfileInformMenu profileInformMenu = ProfileInformMenu.builder()
                 .profileCurrentStates(profileCurrentStates)
+                .isProfileScrap(false)
                 .profileImagePath("프로필 이미지 경로")
                 .memberName("권동민")
                 .emailId("이메일 아이디")
@@ -444,6 +450,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.profileCurrentStates[].profileStateName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 상태 이름"),
+                                        fieldWithPath("result.profileInformMenu.isProfileScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 스크랩 유무 (로그아웃 상태 -> 무조건 false)"),
                                         fieldWithPath("result.profileInformMenu.profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),

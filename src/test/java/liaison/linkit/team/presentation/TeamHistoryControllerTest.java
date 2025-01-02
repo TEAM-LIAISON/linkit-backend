@@ -21,6 +21,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
@@ -31,11 +33,12 @@ import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO.Update
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.AddTeamHistoryResponse;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.RemoveTeamHistoryResponse;
+import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryCalendarResponse;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryDetail;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryItem;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.TeamHistoryItems;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO.UpdateTeamHistoryResponse;
-import liaison.linkit.team.service.history.TeamHistoryService;
+import liaison.linkit.team.business.service.history.TeamHistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -68,6 +71,12 @@ public class TeamHistoryControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
+    }
+
+    private ResultActions performGetTeamHistoryCalendarResponses(final String teamName) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/history/view", teamName)
+        );
     }
 
     private ResultActions performGetTeamHistoryItems(final String teamName) throws Exception {
@@ -111,6 +120,107 @@ public class TeamHistoryControllerTest extends ControllerTest {
                         .cookie(COOKIE));
     }
 
+    @DisplayName("회원이 다른 팀의 연혁을 전체 조회할 수 있다. (View)")
+    @Test
+    void getTeamHistoryCalendarResponses() throws Exception {
+        // given
+        final TeamHistoryResponseDTO.TeamHistoryCalendarResponse teamHistoryCalendarResponse = TeamHistoryCalendarResponse.builder()
+                .teamHistoryCalendar(
+                        List.of(
+                                Map.of("2023", List.of(
+                                        Map.of("01", List.of(
+                                                TeamHistoryResponseDTO.TeamHistoryViewItem.builder()
+                                                        .teamHistoryId(1L)
+                                                        .historyName("연혁 1")
+                                                        .historyStartDate("2023.01")
+                                                        .historyEndDate("2023.02")
+                                                        .isHistoryInProgress(true)
+                                                        .historyDescription("연혁 설명 1")
+                                                        .build(),
+                                                TeamHistoryResponseDTO.TeamHistoryViewItem.builder()
+                                                        .teamHistoryId(2L)
+                                                        .historyName("연혁 2")
+                                                        .historyStartDate("2023.01")
+                                                        .historyEndDate("2023.03")
+                                                        .isHistoryInProgress(false)
+                                                        .historyDescription("연혁 설명 2")
+                                                        .build()
+                                        )),
+                                        Map.of("02", List.of(
+                                                TeamHistoryResponseDTO.TeamHistoryViewItem.builder()
+                                                        .teamHistoryId(3L)
+                                                        .historyName("연혁 3")
+                                                        .historyStartDate("2023.02")
+                                                        .historyEndDate("2023.05")
+                                                        .isHistoryInProgress(false)
+                                                        .historyDescription("연혁 설명 3")
+                                                        .build()
+                                        ))
+                                )),
+                                Map.of("2024", List.of(
+                                        Map.of("01", List.of(
+                                                TeamHistoryResponseDTO.TeamHistoryViewItem.builder()
+                                                        .teamHistoryId(4L)
+                                                        .historyName("연혁 4")
+                                                        .historyStartDate("2024.01")
+                                                        .historyEndDate("2024.02")
+                                                        .isHistoryInProgress(true)
+                                                        .historyDescription("연혁 설명 4")
+                                                        .build()
+                                        ))
+                                ))
+                        )
+                )
+                .build();
+
+        // when
+        when(teamHistoryService.getTeamHistoryCalendarResponses(any())).thenReturn(teamHistoryCalendarResponse);
+
+        final ResultActions resultActions = performGetTeamHistoryCalendarResponses("liaison");
+
+// then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamName")
+                                                .description("팀 이름")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        subsectionWithPath("result.teamHistoryCalendar")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("팀 연혁 캘린더 배열")
+                                )
+                        )
+                ).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamHistoryResponseDTO.TeamHistoryCalendarResponse> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<TeamHistoryResponseDTO.TeamHistoryCalendarResponse>>() {
+                }
+        );
+
+        final CommonResponse<TeamHistoryResponseDTO.TeamHistoryCalendarResponse> expected = CommonResponse.onSuccess(teamHistoryCalendarResponse);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
 
     @DisplayName("회원이 팀의 연혁을 전체 조회할 수 있다.")
     @Test

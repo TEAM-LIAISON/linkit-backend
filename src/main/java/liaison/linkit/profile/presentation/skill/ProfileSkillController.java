@@ -7,7 +7,7 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillRequestDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItems;
-import liaison.linkit.profile.service.ProfileSkillService;
+import liaison.linkit.profile.business.service.ProfileSkillService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

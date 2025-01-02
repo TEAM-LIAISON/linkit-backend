@@ -3,6 +3,7 @@ package liaison.linkit.team.presentation.announcement.dto;
 import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +17,40 @@ public class TeamMemberAnnouncementResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class AnnouncementInform {
+
+        private String teamLogoImagePath;
+        private String teamName;
+
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+
+        @Builder.Default
+        private RegionDetail regionDetail = new RegionDetail();
+
+        private int announcementDDay;           // 디데이
+        private String announcementTitle;       // 공고 제목
+        private Boolean isAnnouncementScrap;    // 공고 스크랩 여부
+        private int announcementScrapCount;     // 공고 스크랩 수
+
+        @Builder.Default
+        private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TeamMemberAnnouncementDetail {
         private Long teamMemberAnnouncementId;
+
+        private Boolean isAnnouncementScrap;
+        private int announcementScrapCount;
+
         private String announcementTitle;
 
         @Builder.Default
@@ -29,9 +62,6 @@ public class TeamMemberAnnouncementResponseDTO {
         private String announcementStartDate;
         private String announcementEndDate;
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
-
         private Boolean isRegionFlexible; // 지역 무관
         private String mainTasks; // 주요 업무
         private String workMethod; // 업무 방식
@@ -41,6 +71,37 @@ public class TeamMemberAnnouncementResponseDTO {
         private String preferredQualifications; // 이런 분이면 더 좋아요
         private String joiningProcess; // 이런 과정으로 합류해요
         private String benefits; // 합류하면 이런 것들을 얻어 갈 수 있어요
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamMemberAnnouncementViewItems {
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItem> teamMemberAnnouncementViewItems = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamMemberAnnouncementViewItem {
+        private Long teamMemberAnnouncementId;
+
+        private int announcementDDay;
+
+        private String announcementTitle;
+        private String majorPosition;
+
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+
+        private Boolean isAnnouncementPublic;       // 공고 공개/비공개 여부
+        private Boolean isAnnouncementInProgress;   // 공고 현재 진행 여부
+
+        private Boolean isAnnouncementScrap;        // 공고 스크랩 여부
+        private int announcementScrapCount;         // 공고의 전체 스크랩 개수
     }
 
     @Builder
@@ -85,8 +146,6 @@ public class TeamMemberAnnouncementResponseDTO {
         private String announcementStartDate;
         private String announcementEndDate;
 
-        private String cityName;
-        private String divisionName;
         private Boolean isRegionFlexible; // 지역 무관
 
         private String mainTasks; // 주요 업무
@@ -116,8 +175,6 @@ public class TeamMemberAnnouncementResponseDTO {
         private String announcementStartDate;
         private String announcementEndDate;
 
-        private String cityName;
-        private String divisionName;
         private Boolean isRegionFlexible; // 지역 무관
 
         private String mainTasks; // 주요 업무

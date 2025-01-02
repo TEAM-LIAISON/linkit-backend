@@ -1,5 +1,6 @@
 package liaison.linkit.member.exception.member;
 
+import static liaison.linkit.common.consts.LinkitStatic.DUPLICATE;
 import static liaison.linkit.common.consts.LinkitStatic.NOT_FOUND;
 import static liaison.linkit.common.consts.LinkitStatic.UNAUTHORIZED;
 
@@ -15,7 +16,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MemberErrorCode implements BaseErrorCode {
     FAIL_MEMBER_GENERATE(UNAUTHORIZED, "MEMBER_403_1", "회원 생성 과정에서 문제가 발생했습니다."),
-    MEMBER_NOT_FOUND(NOT_FOUND, "MEMBER_404_1", "회원을 찾을 수 없습니다.");
+    MEMBER_NOT_FOUND(NOT_FOUND, "MEMBER_404_1", "회원을 찾을 수 없습니다."),
+    DUPLICATE_EMAIL_ID(DUPLICATE, "MEMBER_409_1", "현재 사용 중인 이메일 ID가 있습니다.");
 
     private final Integer status;
     private final String code;

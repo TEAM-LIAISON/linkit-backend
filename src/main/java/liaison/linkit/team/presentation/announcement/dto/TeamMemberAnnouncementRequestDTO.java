@@ -27,8 +27,6 @@ public class TeamMemberAnnouncementRequestDTO {
         private String announcementStartDate;
         private String announcementEndDate;
 
-        private String cityName;    // 시/도
-        private String divisionName; // 시/군/구
         private Boolean isRegionFlexible; // 지역 무관
 
         private String mainTasks; // 주요 업무
@@ -56,9 +54,7 @@ public class TeamMemberAnnouncementRequestDTO {
 
         private String announcementStartDate;
         private String announcementEndDate;
-
-        private String cityName;
-        private String divisionName;
+        
         private Boolean isRegionFlexible; // 지역 무관
 
         private String mainTasks; // 주요 업무
