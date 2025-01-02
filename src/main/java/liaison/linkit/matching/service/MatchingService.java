@@ -40,6 +40,10 @@ public class MatchingService {
         int requestedMatchingNotificationCount = 0;
 
         // 내 프로필에 대한 수신함 우선 판단
+        /**
+         *  내가 가지고 있는 memberId에 대하여 Matching 엔티티에서 emailId와 동일한 값을 찾는다
+         *
+         */
 
         // 해당 회원이 오너인 팀이 존재한다면
         if (teamMemberQueryAdapter.existsTeamOwnerByMemberId(memberId)) {

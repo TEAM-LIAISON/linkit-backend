@@ -112,7 +112,9 @@ public class ProfileActivityService {
         // 프로필 이력 인증서를 업데이트한다.
         if (fileValidator.validatingFileUpload(profileActivityCertificationFile)) {
             activityCertificationAttachFileName = Normalizer.normalize(Objects.requireNonNull(profileActivityCertificationFile.getOriginalFilename()), Form.NFC);
-            activityCertificationAttachFilePath = s3Uploader.uploadProfileActivityFile(new CertificationFile(profileActivityCertificationFile));
+            activityCertificationAttachFilePath = s3Uploader.uploadProfileActivityFile(
+                    new CertificationFile(profileActivityCertificationFile)
+            );
             profileActivity.setProfileActivityCertification(true, false, activityCertificationAttachFileName, activityCertificationAttachFilePath);
         }
 

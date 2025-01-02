@@ -21,11 +21,13 @@ public class ImageFile {
     private static final String EXTENSION_DELIMITER = ".";
 
     private final MultipartFile file;
+    private final String originalImageName;
     private final String hashedName;
 
     public ImageFile(final MultipartFile file) {
         validateNullImage(file);
         this.file = file;
+        this.originalImageName = file.getOriginalFilename();
         this.hashedName = hashName(file);
     }
 

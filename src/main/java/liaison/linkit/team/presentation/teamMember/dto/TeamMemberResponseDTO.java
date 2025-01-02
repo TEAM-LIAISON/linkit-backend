@@ -21,7 +21,7 @@ public class TeamMemberResponseDTO {
     @AllArgsConstructor
     public static class TeamMemberViewItems {
         @Builder.Default
-        private List<ProfileInformMenu> profileInformMenus = new ArrayList<>();
+        private List<AcceptedTeamMemberItem> acceptedTeamMemberItems = new ArrayList<>();
     }
 
     @Builder

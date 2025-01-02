@@ -57,7 +57,7 @@ public class Matching {
     @Column(name = "receiver_team_code", nullable = true)
     private String receiverTeamCode;
 
-    @Column(name = "receiver_posting_id", nullable = true)
+    @Column(name = "receiver_announcement_id", nullable = true)
     private Long receiverAnnouncementId;
 
     // 매칭 요청 메시지
@@ -84,9 +84,25 @@ public class Matching {
     @Column(name = "success_receiver_delete", length = 50)
     private SuccessReceiverDeleteStatusType successReceiverDeleteStatusType;
 
-    // 수신자가 열람했는지 여부
-    @Column(name = "is_receiver_check", columnDefinition = "TINYINT(1) DEFAULT 0")
-    private boolean isReceiverCheck;
+    // 수신자가 매칭 요청에 대해서 열람했는지 여부
+    @Column(name = "is_receiver_matching_request_read", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private boolean isReceiverMatchingRequestRead;
+
+    // 수신자가 매칭 성사에 대해서 열람했는지 여부
+    @Column(name = "is_receiver_matching_success_read", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private boolean isReceiverMatchingSuccessRead;
+
+    // 발신자가 매칭 성사에 대해서 열람했는지 여부
+    @Column(name = "is_sender_matching_success_read", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private boolean isSenderMatchingSuccessRead;
+
+    // 수신자가 매칭 거절에 대해서 열람했는지 여부
+    @Column(name = "is_receiver_matching_denied_read", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private boolean isReceiverMatchingDeniedRead;
+
+    // 발신자가 매칭 거절에 대해서 열람했는지 여부
+    @Column(name = "is_sender_matching_denied_read", columnDefinition = "TINYINT(1) DEFAULT 0")
+    private boolean isSenderMatchingDeniedRead;
 
     // 생성, 수정 시간
     @Column(name = "created_at")
