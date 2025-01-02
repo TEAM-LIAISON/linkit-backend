@@ -73,6 +73,7 @@ public class TeamHistoryControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
+    // 달력 응답 조회
     private ResultActions performGetTeamHistoryCalendarResponses(final String teamName) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/history/view", teamName)
