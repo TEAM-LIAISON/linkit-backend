@@ -3,17 +3,23 @@ package liaison.linkit.matching.service;
 import java.util.List;
 import liaison.linkit.matching.business.MatchingMapper;
 import liaison.linkit.matching.domain.Matching;
+import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingReceivedMenu;
+import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +37,10 @@ public class MatchingService {
 
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
+    private final MemberQueryAdapter memberQueryAdapter;
 
     @Transactional(readOnly = true)
-    public MatchingResponseDTO.MatchingMenuResponse getMatchingMenu(
+    public MatchingMenu getMatchingMenu(
             final Long memberId
     ) {
         int receivedMatchingNotificationCount = 0;
@@ -76,6 +83,33 @@ public class MatchingService {
         }
 
         return matchingMapper.toMatchingMenuResponse(receivedMatchingNotificationCount, requestedMatchingNotificationCount);
+    }
+
+    public Page<MatchingReceivedMenu> getMatchingReceivedMenuResponse(
+            final Long memberId,
+            final ReceiverType receiverType,
+            Pageable pageable
+    ) {
+        if (receiverType.equals(ReceiverType.PROFILE)) {
+            // 삭제되지 않은 상태 + 수신자가 Profile + 발신자는 상관 X + 읽음 여부 상관 X
+            final String emailId = memberQueryAdapter.findEmailIdById(memberId);
+
+            final Page<Matching> receivedToProfileMatchingItems = matchingQueryAdapter.findReceivedToProfile(emailId, pageable);
+
+            return receivedToProfileMatchingItems.map(
+                    this::toMatchingReceivedMenu
+            );
+        } else {
+            return null;
+        }
+    }
+
+    private MatchingReceivedMenu toMatchingReceivedMenu(
+            final Matching receivedMatchingItem
+    ) {
+        return matchingMapper.toMatchingReceivedMenu(
+                receivedMatchingItem
+        );
     }
 
     public MatchingResponseDTO.AddMatchingResponse addMatching(

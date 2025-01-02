@@ -21,10 +21,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.team.business.service.teamMember.TeamMemberService;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.team.presentation.teamMember.TeamMemberController;
@@ -38,7 +37,6 @@ import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.Pen
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
-import liaison.linkit.team.business.service.teamMember.TeamMemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -113,60 +111,25 @@ public class TeamMemberControllerTest extends ControllerTest {
         // given
         final TeamMemberViewItems teamMemberViewItems = TeamMemberViewItems
                 .builder()
-                .profileInformMenus(
+                .acceptedTeamMemberItems(
                         Arrays.asList(
-                                TeamMemberResponseDTO.ProfileInformMenu
-                                        .builder()
-                                        .profileCurrentStates(
-                                                Arrays.asList(
-                                                        ProfileCurrentStateItem
-                                                                .builder()
-                                                                .profileStateName("팀원 찾는 중")
-                                                                .build(),
-                                                        ProfileCurrentStateItem
-                                                                .builder()
-                                                                .profileStateName("대회 준비 중")
-                                                                .build()
-                                                )
-                                        )
+                                AcceptedTeamMemberItem.builder()
                                         .profileImagePath("프로필 이미지 경로")
                                         .memberName("회원 이름")
-                                        .isProfilePublic(true)
                                         .majorPosition("포지션 대분류")
-                                        .regionDetail(
-                                                RegionDetail.builder()
-                                                        .cityName("활동지역 시/도")
-                                                        .divisionName("활동지역 시/군/구")
-                                                        .build()
-                                        )
+                                        .teamMemberType(TeamMemberType.TEAM_OWNER)
+                                        .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build(),
-                                TeamMemberResponseDTO.ProfileInformMenu
-                                        .builder()
-                                        .profileCurrentStates(
-                                                Arrays.asList(
-                                                        ProfileCurrentStateItem
-                                                                .builder()
-                                                                .profileStateName("팀원 찾는 중")
-                                                                .build(),
-                                                        ProfileCurrentStateItem
-                                                                .builder()
-                                                                .profileStateName("대회 준비 중")
-                                                                .build()
-                                                )
-                                        )
-                                        .profileImagePath("프로필 이미지 경로 2")
-                                        .memberName("회원 이름 2")
-                                        .isProfilePublic(true)
+                                AcceptedTeamMemberItem.builder()
+                                        .profileImagePath("프로필 이미지 경로2")
+                                        .memberName("회원 이름")
                                         .majorPosition("포지션 대분류")
-                                        .regionDetail(
-                                                RegionDetail.builder()
-                                                        .cityName("활동지역 시/도")
-                                                        .divisionName("활동지역 시/군/구")
-                                                        .build()
-                                        )
+                                        .teamMemberType(TeamMemberType.TEAM_VIEWER)
+                                        .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build()
                         )
-                ).build();
+                )
+                .build();
 
         // when
         when(teamMemberService.getTeamMemberViewItems(any())).thenReturn(teamMemberViewItems);
@@ -199,18 +162,15 @@ public class TeamMemberControllerTest extends ControllerTest {
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("result").type(JsonFieldType.OBJECT).description("결과 데이터"),
-                                        fieldWithPath("result.profileInformMenus").type(JsonFieldType.ARRAY).description("프로필 정보 목록"),
-                                        fieldWithPath("result.profileInformMenus[].profileCurrentStates").type(JsonFieldType.ARRAY).description("프로필 상태 목록"),
-                                        fieldWithPath("result.profileInformMenus[].profileCurrentStates[].profileStateName").type(JsonFieldType.STRING).description("프로필 상태 이름"),
-                                        fieldWithPath("result.profileInformMenus[].profileImagePath").type(JsonFieldType.STRING).description("프로필 이미지 경로"),
-                                        fieldWithPath("result.profileInformMenus[].memberName").type(JsonFieldType.STRING).description("회원 이름"),
-                                        fieldWithPath("result.profileInformMenus[].isProfilePublic").type(JsonFieldType.BOOLEAN).description("프로필 공개 여부"),
-                                        fieldWithPath("result.profileInformMenus[].majorPosition").type(JsonFieldType.STRING).description("포지션 대분류"),
-                                        fieldWithPath("result.profileInformMenus[].regionDetail").type(JsonFieldType.OBJECT).description("지역 상세 정보"),
-                                        fieldWithPath("result.profileInformMenus[].regionDetail.cityName").type(JsonFieldType.STRING).description("활동지역 시/도"),
-                                        fieldWithPath("result.profileInformMenus[].regionDetail.divisionName").type(JsonFieldType.STRING).description("활동지역 시/군/구")
+                                        fieldWithPath("result.acceptedTeamMemberItems").type(JsonFieldType.ARRAY).description("수락된 팀 멤버 목록"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].profileImagePath").type(JsonFieldType.STRING).description("프로필 이미지 경로"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].memberName").type(JsonFieldType.STRING).description("회원 이름"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].majorPosition").type(JsonFieldType.STRING).description("포지션 대분류"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].teamMemberType").type(JsonFieldType.STRING).description("팀 멤버 유형 (예: TEAM_OWNER, TEAM_VIEWER)"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].teamMemberInviteState").type(JsonFieldType.STRING).description("팀 멤버 초대 상태 (예: ACCEPTED)")
                                 )
-                        )).andReturn();
+                        )
+                ).andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamMemberViewItems> actual = objectMapper.readValue(

@@ -10,13 +10,13 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import java.time.LocalDateTime;
+import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
+import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
-import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
+import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
-import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
-import liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Matching {
+public class Matching extends BaseDateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,50 +64,23 @@ public class Matching {
     @Column(name = "request_message", columnDefinition = "TEXT")
     private String requestMessage;
 
-    // 매칭 상태(PENDING, SUCCESSFUL, DENIED 등)
+    // 매칭 상태(PENDING, COMPLETED, DENIED 등)
     @Enumerated(value = STRING)
     @Column(name = "matching_status", length = 50)
     private MatchingStatusType matchingStatusType;
 
-    // 발신자 삭제 상태 (매칭 요청 단계)
+    // 발신자 삭제 상태
     @Enumerated(EnumType.STRING)
-    @Column(name = "request_sender_delete", length = 50)
-    private RequestSenderDeleteStatusType requestSenderDeleteStatusType;
+    @Column(name = "sender_delete_status", length = 50)
+    private SenderDeleteStatus senderDeleteStatus;
 
-    // 성사된 매칭에서 발신자 삭제 상태
+    // 수신자 삭제 상태
     @Enumerated(EnumType.STRING)
-    @Column(name = "success_sender_delete", length = 50)
-    private SuccessSenderDeleteStatusType successSenderDeleteStatusType;
+    @Column(name = "receiver_delete_status", length = 50)
+    private ReceiverDeleteStatus receiverDeleteStatus;
 
-    // 성사된 매칭에서 수신자 삭제 상태
+    // 수신자 읽음 상태
     @Enumerated(EnumType.STRING)
-    @Column(name = "success_receiver_delete", length = 50)
-    private SuccessReceiverDeleteStatusType successReceiverDeleteStatusType;
-
-    // 수신자가 매칭 요청에 대해서 열람했는지 여부
-    @Column(name = "is_receiver_matching_request_read", columnDefinition = "TINYINT(1) DEFAULT 0")
-    private boolean isReceiverMatchingRequestRead;
-
-    // 수신자가 매칭 성사에 대해서 열람했는지 여부
-    @Column(name = "is_receiver_matching_success_read", columnDefinition = "TINYINT(1) DEFAULT 0")
-    private boolean isReceiverMatchingSuccessRead;
-
-    // 발신자가 매칭 성사에 대해서 열람했는지 여부
-    @Column(name = "is_sender_matching_success_read", columnDefinition = "TINYINT(1) DEFAULT 0")
-    private boolean isSenderMatchingSuccessRead;
-
-    // 수신자가 매칭 거절에 대해서 열람했는지 여부
-    @Column(name = "is_receiver_matching_denied_read", columnDefinition = "TINYINT(1) DEFAULT 0")
-    private boolean isReceiverMatchingDeniedRead;
-
-    // 발신자가 매칭 거절에 대해서 열람했는지 여부
-    @Column(name = "is_sender_matching_denied_read", columnDefinition = "TINYINT(1) DEFAULT 0")
-    private boolean isSenderMatchingDeniedRead;
-
-    // 생성, 수정 시간
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "modified_at")
-    private LocalDateTime modifiedAt;
+    @Column(name = "receiver_read_status", length = 50)
+    private ReceiverReadStatus receiverReadStatus;
 }

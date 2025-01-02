@@ -19,7 +19,7 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenuResponse;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.service.MatchingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +56,7 @@ public class MatchingControllerTest extends ControllerTest {
 
     private ResultActions performGetMatchingMenu() throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/matching/menu")
+                RestDocumentationRequestBuilders.get("/api/v1/matching/notification/menu")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -66,13 +66,13 @@ public class MatchingControllerTest extends ControllerTest {
     @Test
     void getMatchingMenu() throws Exception {
         // given
-        final MatchingMenuResponse matchingMenuResponse = MatchingMenuResponse.builder()
+        final MatchingMenu matchingMenu = MatchingMenu.builder()
                 .receivedMatchingNotificationCount(10)
                 .requestedMatchingNotificationCount(12)
                 .build();
 
         // when
-        when(matchingService.getMatchingMenu(any())).thenReturn(matchingMenuResponse);
+        when(matchingService.getMatchingMenu(any())).thenReturn(matchingMenu);
 
         final ResultActions resultActions = performGetMatchingMenu();
 
@@ -108,13 +108,13 @@ public class MatchingControllerTest extends ControllerTest {
                 ).andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<MatchingMenuResponse> actual = objectMapper.readValue(
+        final CommonResponse<MatchingMenu> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<MatchingMenuResponse>>() {
+                new TypeReference<CommonResponse<MatchingMenu>>() {
                 }
         );
 
-        final CommonResponse<MatchingMenuResponse> expected = CommonResponse.onSuccess(matchingMenuResponse);
+        final CommonResponse<MatchingMenu> expected = CommonResponse.onSuccess(matchingMenu);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }

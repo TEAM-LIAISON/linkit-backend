@@ -8,10 +8,10 @@
 //import liaison.linkit.matching.domain.TeamMatching;
 //import liaison.linkit.matching.domain.repository.privateMatching.ProfileMatchingRepository;
 //import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
-//import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
-//import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
+//import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
+//import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 //import liaison.linkit.matching.domain.type.SenderType;
-//import liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType;
+//import liaison.linkit.matching.domain.type.SenderCompletedDeleteStatusType;
 //import liaison.linkit.matching.dto.request.AllowMatchingRequest;
 //import liaison.linkit.matching.dto.request.MatchingCreateRequest;
 //import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
@@ -143,9 +143,9 @@
 //                matchingCreateRequest.getRequestMessage(),
 //                // 요청 상태로 저장한다.
 //                REQUESTED,
-//                RequestSenderDeleteStatusType.REMAINED,
-//                SuccessSenderDeleteStatusType.REMAINED,
-//                SuccessReceiverDeleteStatusType.REMAINED,
+//                SenderDeleteStatus.REMAINED,
+//                SenderCompletedDeleteStatusType.REMAINED,
+//                ReceiverDeleteStatus.REMAINED,
 //                false,
 //                false
 //        );
@@ -210,9 +210,9 @@
 //                matchingCreateRequest.getRequestMessage(),
 //                // 요청 상태로 저장한다.
 //                REQUESTED,
-//                RequestSenderDeleteStatusType.REMAINED,
-//                SuccessSenderDeleteStatusType.REMAINED,
-//                SuccessReceiverDeleteStatusType.REMAINED,
+//                SenderDeleteStatus.REMAINED,
+//                SenderCompletedDeleteStatusType.REMAINED,
+//                ReceiverDeleteStatus.REMAINED,
 //                false,
 //                false
 //        );
@@ -275,9 +275,9 @@
 //                matchingCreateRequest.getRequestMessage(),
 //                // 요청 상태로 저장한다.
 //                REQUESTED,
-//                RequestSenderDeleteStatusType.REMAINED,
-//                SuccessSenderDeleteStatusType.REMAINED,
-//                SuccessReceiverDeleteStatusType.REMAINED,
+//                SenderDeleteStatus.REMAINED,
+//                SenderCompletedDeleteStatusType.REMAINED,
+//                ReceiverDeleteStatus.REMAINED,
 //                false,
 //                false
 //        );
@@ -344,9 +344,9 @@
 //                matchingCreateRequest.getRequestMessage(),
 //                // 요청 상태로 저장한다.
 //                REQUESTED,
-//                RequestSenderDeleteStatusType.REMAINED,
-//                SuccessSenderDeleteStatusType.REMAINED,
-//                SuccessReceiverDeleteStatusType.REMAINED,
+//                SenderDeleteStatus.REMAINED,
+//                SenderCompletedDeleteStatusType.REMAINED,
+//                ReceiverDeleteStatus.REMAINED,
 //                false,
 //                false
 //        );
