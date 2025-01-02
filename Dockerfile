@@ -2,7 +2,7 @@
 FROM openjdk:17-jdk-slim
 
 # 빌드 인수 정의
-ARG JAR_FILE=/build/libs/*.jar
+ARG JAR_FILE=build/libs/*.jar
 ARG PROFILES
 ARG ENV
 
