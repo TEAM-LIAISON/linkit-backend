@@ -40,6 +40,7 @@ public class MemberController {
         return CommonResponse.onSuccess(memberService.updateMemberBasicInform(accessor.getMemberId(), request));
     }
 
+    // 회원 유저 아이디 수정
     @PostMapping("/userId")
     @MemberOnly
     public CommonResponse<MemberResponseDTO.UpdateMemberUserIdResponse> updateMemberUserId(

@@ -11,6 +11,8 @@ public interface MemberRepositoryCustom {
 
     boolean existsByEmail(final String email);
 
+    boolean existsByEmailId(final String emailId);
+
     void deleteByMemberId(final Long memberId);
 
     String findEmailById(final Long memberId);

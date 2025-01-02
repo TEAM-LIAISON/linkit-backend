@@ -67,6 +67,17 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     @Override
+    public boolean existsByEmailId(final String emailId) {
+        QMember member = QMember.member;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(member)
+                .where(member.emailId.eq(emailId))
+                .fetchFirst() != null;
+    }
+
+    @Override
     public String findEmailById(final Long memberId) {
         QMember member = QMember.member;
 

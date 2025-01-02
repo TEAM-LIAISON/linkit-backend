@@ -7,6 +7,7 @@ import liaison.linkit.login.infrastructure.MailReAuthenticationRedisUtil;
 import liaison.linkit.mail.service.AuthCodeMailService;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
+import liaison.linkit.member.exception.member.DuplicateEmailIdException;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberBasicInformQueryAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
@@ -48,6 +49,10 @@ public class MemberService {
 
     // 회원 기본 정보 요청 (UPDATE)
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
+
+        if (memberQueryAdapter.existsByEmailId(request.getEmailId())) {
+            throw DuplicateEmailIdException.EXCEPTION;
+        }
 
         final MemberBasicInform updatedMemberBasicInform = memberBasicInformCommandAdapter.updateMemberBasicInform(memberId, request);
 

@@ -13,6 +13,10 @@ public class MemberQueryAdapter {
     // 데이터를 조회하는 기능을 담당
     private final MemberRepository memberRepository;
 
+    public boolean existsByEmailId(final String emailId) {
+        return memberRepository.existsByEmailId(emailId);
+    }
+
     public Member findById(final Long memberId) {
         return memberRepository
                 .findById(memberId)
