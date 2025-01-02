@@ -1,6 +1,8 @@
 # github repository actions 페이지에 나타날 이름
 name: CI/CD using github actions & docker
 
+# event trigger
+# main이나 dev 브랜치에 pull request가 발생 되었을 때 실행
 on:
   pull_request:
     branches: [ "develop" ]
@@ -39,17 +41,6 @@ jobs:
           echo ${{ secrets.APPLICATION_SECRET_DEV }} | base64 --decode > ./src/main/resources/application-secret-dev.yml
           ./gradlew bootJar
 
-      ## -------------------------------
-      ## Docker Layer Cache 추가
-      ## -------------------------------
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /home/runner/.docker/layercache
-          key: ${{ runner.os }}-docker-${{ hashFiles('Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
-
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -57,14 +48,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Build docker image
-        run: |
-          docker build \
-            --platform linux/amd64 \
-            --cache-from type=local,src=/home/runner/.docker/layercache \
-            --cache-to type=local,dest=/home/runner/.docker/layercache-new,mode=max \
-            -t ${{ secrets.DOCKER_USERNAME }}/linkit-develop .
-          # 빌드 후 새로 생성된 레이어 캐시를 layercache-new → layercache로 이동
-          mv /home/runner/.docker/layercache-new /home/runner/.docker/layercache
+        run: docker build --platform linux/amd64 -t ${{ secrets.DOCKER_USERNAME }}/linkit-develop .
 
       - name: Publish image to docker hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/linkit-develop:latest
@@ -91,6 +75,7 @@ jobs:
             echo "CURRENT_PORT=8081" >> $GITHUB_ENV
             echo "STOPPED_PORT=8080" >> $GITHUB_ENV
             echo "TARGET_UPSTREAM=blue" >> $GITHUB_ENV
+          fi
 
       - name: Docker Compose
         uses: appleboy/ssh-action@master
