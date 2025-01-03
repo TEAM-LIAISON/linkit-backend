@@ -2,12 +2,15 @@ package liaison.linkit.team.business.service.teamMember;
 
 import jakarta.mail.MessagingException;
 import java.util.List;
+import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.mail.service.TeamMemberInvitationMailService;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
 import liaison.linkit.profile.domain.position.ProfilePosition;
 import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
@@ -52,6 +55,7 @@ public class TeamMemberService {
     private final TeamMemberInvitationCommandAdapter teamMemberInvitationCommandAdapter;
 
     private final TeamMemberInvitationMailService teamMemberInvitationMailService;
+    private final RegionMapper regionMapper;
 
     public TeamMemberViewItems getTeamMemberViewItems(final String teamName) {
         // 1. 팀 조회
@@ -156,10 +160,17 @@ public class TeamMemberService {
                         profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
                     }
 
+                    RegionDetail regionDetail = new RegionDetail();
+                    if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
+                        final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+                        regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+                    }
+
                     return AcceptedTeamMemberItem.builder()
                             .profileImagePath(profile.getProfileImagePath())
                             .memberName(profile.getMember().getMemberBasicInform().getMemberName())
                             .majorPosition(profilePositionDetail.getMajorPosition())
+                            .regionDetail(regionDetail)
                             .teamMemberType(teamMember.getTeamMemberType())
                             .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                             .build();

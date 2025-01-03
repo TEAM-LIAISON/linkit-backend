@@ -1,5 +1,6 @@
 package liaison.linkit.matching.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.matching.business.MatchingMapper;
 import liaison.linkit.matching.domain.Matching;
@@ -19,6 +20,7 @@ import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,18 +92,62 @@ public class MatchingService {
             final ReceiverType receiverType,
             Pageable pageable
     ) {
-        if (receiverType.equals(ReceiverType.PROFILE)) {
-            // 삭제되지 않은 상태 + 수신자가 Profile + 발신자는 상관 X + 읽음 여부 상관 X
+        List<Matching> combinedMatchingItems = new ArrayList<>();
+
+        // Profile 케이스
+        if (receiverType == null || receiverType.equals(ReceiverType.PROFILE)) {
             final String emailId = memberQueryAdapter.findEmailIdById(memberId);
+            final Page<Matching> profileMatchingItems = matchingQueryAdapter.findReceivedToProfile(emailId, pageable);
 
-            final Page<Matching> receivedToProfileMatchingItems = matchingQueryAdapter.findReceivedToProfile(emailId, pageable);
+            if (receiverType != null) {
+                return profileMatchingItems.map(this::toMatchingReceivedMenu);
+            }
 
-            return receivedToProfileMatchingItems.map(
-                    this::toMatchingReceivedMenu
-            );
-        } else {
-            return null;
+            combinedMatchingItems.addAll(profileMatchingItems.getContent());
         }
+
+        // Team 케이스
+        if (receiverType == null || receiverType.equals(ReceiverType.TEAM)) {
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            final Page<Matching> teamMatchingItems = matchingQueryAdapter.findReceivedToTeam(teams, pageable);
+
+            if (receiverType != null) {
+                return teamMatchingItems.map(this::toMatchingReceivedMenu);
+            }
+
+            combinedMatchingItems.addAll(teamMatchingItems.getContent());
+        }
+
+        // Announcement 케이스
+        if (receiverType == null || receiverType.equals(ReceiverType.ANNOUNCEMENT)) {
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+
+            final List<Long> teamIds = teams.stream()
+                    .map(Team::getId)
+                    .toList();
+
+            final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllByTeamIds(teamIds);
+            final List<Long> announcementIds = teamMemberAnnouncements.stream()
+                    .map(TeamMemberAnnouncement::getId)
+                    .toList();
+
+            final Page<Matching> announcementMatchingItems = matchingQueryAdapter.findReceivedToAnnouncement(announcementIds, pageable);
+
+            if (receiverType != null) {
+                return announcementMatchingItems.map(this::toMatchingReceivedMenu);
+            }
+
+            combinedMatchingItems.addAll(announcementMatchingItems.getContent());
+        }
+
+        // Null 케이스: Profile, Team, Announcement 데이터를 모두 병합
+        return new PageImpl<>(
+                combinedMatchingItems.stream()
+                        .map(this::toMatchingReceivedMenu)
+                        .toList(),
+                pageable,
+                combinedMatchingItems.size()
+        );
     }
 
     private MatchingReceivedMenu toMatchingReceivedMenu(

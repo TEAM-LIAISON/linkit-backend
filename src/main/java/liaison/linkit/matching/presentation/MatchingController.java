@@ -1,6 +1,7 @@
 package liaison.linkit.matching.presentation;
 
 import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.matching.domain.type.ReceiverType;
@@ -42,6 +43,7 @@ public class MatchingController {
 
     // 매칭 수신함
     @GetMapping("/received/menu")
+    @MemberOnly
     public CommonResponse<Page<MatchingReceivedMenu>> getMatchingReceivedMenuResponse(
             @Auth final Accessor accessor,
             @RequestParam(value = "receiverType", required = false) final ReceiverType receiverType,

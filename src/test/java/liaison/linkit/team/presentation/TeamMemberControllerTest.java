@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.business.service.teamMember.TeamMemberService;
@@ -117,6 +118,12 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         .profileImagePath("프로필 이미지 경로")
                                         .memberName("회원 이름")
                                         .majorPosition("포지션 대분류")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("지역 시/도")
+                                                        .divisionName("지역 시/군/구")
+                                                        .build()
+                                        )
                                         .teamMemberType(TeamMemberType.TEAM_OWNER)
                                         .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build(),
@@ -124,6 +131,12 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         .profileImagePath("프로필 이미지 경로2")
                                         .memberName("회원 이름")
                                         .majorPosition("포지션 대분류")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("지역 시/도")
+                                                        .divisionName("지역 시/군/구")
+                                                        .build()
+                                        )
                                         .teamMemberType(TeamMemberType.TEAM_VIEWER)
                                         .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build()
@@ -166,6 +179,15 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.acceptedTeamMemberItems[].profileImagePath").type(JsonFieldType.STRING).description("프로필 이미지 경로"),
                                         fieldWithPath("result.acceptedTeamMemberItems[].memberName").type(JsonFieldType.STRING).description("회원 이름"),
                                         fieldWithPath("result.acceptedTeamMemberItems[].majorPosition").type(JsonFieldType.STRING).description("포지션 대분류"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("지역 정보"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("지역 정보 시/도"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("지역 정보 시/군/구"),
                                         fieldWithPath("result.acceptedTeamMemberItems[].teamMemberType").type(JsonFieldType.STRING).description("팀 멤버 유형 (예: TEAM_OWNER, TEAM_VIEWER)"),
                                         fieldWithPath("result.acceptedTeamMemberItems[].teamMemberInviteState").type(JsonFieldType.STRING).description("팀 멤버 초대 상태 (예: ACCEPTED)")
                                 )
@@ -195,6 +217,12 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         .profileImagePath("프로필 이미지 경로 1")
                                         .memberName("회원 이름 1")
                                         .majorPosition("포지션 대분류 1")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("지역 시/도")
+                                                        .divisionName("지역 시/군/구")
+                                                        .build()
+                                        )
                                         .teamMemberType(TeamMemberType.TEAM_MANAGER)
                                         .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build(),
@@ -202,6 +230,12 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         .profileImagePath("프로필 이미지 경로 2")
                                         .memberName("회원 이름 2")
                                         .majorPosition("포지션 대분류 2")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("지역 시/도")
+                                                        .divisionName("지역 시/군/구")
+                                                        .build()
+                                        )
                                         .teamMemberType(TeamMemberType.TEAM_VIEWER)
                                         .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build()
@@ -268,6 +302,17 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.acceptedTeamMemberItems[].majorPosition")
                                                 .type(JsonFieldType.STRING)
                                                 .description("포지션 대분류"),
+
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("지역 정보"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("지역 정보 시/도"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING) // 수정: divisionName은 STRING 타입임
+                                                .description("지역 정보 시/군/구"), // 수정된 설명
+
                                         fieldWithPath("result.acceptedTeamMemberItems[].teamMemberType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 멤버 타입 (예: TEAM_MANAGER, TEAM_VIEWER 등)"),

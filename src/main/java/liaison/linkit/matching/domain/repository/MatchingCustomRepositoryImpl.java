@@ -1,12 +1,16 @@
 package liaison.linkit.matching.domain.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.QMatching;
+import liaison.linkit.team.domain.team.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
@@ -23,31 +27,96 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
         QMatching qMatching = QMatching.matching;
 
         try {
-            // 1. Matching 데이터 조회
             List<Matching> content = jpaQueryFactory
                     .selectFrom(qMatching)
-                    .where(qMatching.receiverEmailId.eq(emailId))   // receiverProfile의 emailId 조건
-                    .offset(pageable.getOffset())                   // 페이지의 시작 위치
-                    .limit(pageable.getPageSize())                  // 페이지 크기
-                    .orderBy(qMatching.createdAt.desc())            // 최신순 정렬
+                    .where(qMatching.receiverEmailId.eq(emailId))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .orderBy(qMatching.createdAt.desc())
                     .fetch();
 
-            // 2. Matching 데이터 개수 조회
-            Long totalLong = jpaQueryFactory
-                    .select(qMatching.count())
-                    .from(qMatching)
-                    .where(qMatching.receiverEmailId.eq(emailId)) // 동일 조건
-                    .fetchOne();
+            long total = Optional.ofNullable(
+                    jpaQueryFactory
+                            .select(qMatching.count())
+                            .from(qMatching)
+                            .where(qMatching.receiverEmailId.eq(emailId))
+                            .fetchOne()
+            ).orElse(0L);
 
-            long total = (totalLong == null) ? 0L : totalLong;
-
-            // 3. Page 생성
             return PageableExecutionUtils.getPage(content, pageable, () -> total);
         } catch (Exception e) {
-            // 예외 로깅 및 다시 던지기
-            log.error("Error while fetching received matchings for emailId: {}", emailId, e);
+            log.error("Error fetching matchings for emailId: {}, with pageable: {}", emailId, pageable, e);
             throw e;
         }
+    }
+
+
+    @Override
+    public Page<Matching> findReceivedToTeam(
+            final List<Team> teams,
+            final Pageable pageable
+    ) {
+        QMatching qMatching = QMatching.matching;
+
+        if (teams == null || teams.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        List<String> teamCodes = teams.stream()
+                .map(Team::getTeamCode)
+                .toList();
+
+        BooleanExpression condition = qMatching.receiverTeamCode.in(teamCodes);
+
+        List<Matching> content = jpaQueryFactory
+                .selectFrom(qMatching)
+                .where(condition)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qMatching.createdAt.desc())
+                .fetch();
+
+        long total = Optional.ofNullable(
+                jpaQueryFactory
+                        .select(qMatching.count())
+                        .from(qMatching)
+                        .where(condition)
+                        .fetchOne()
+        ).orElse(0L);
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
+    public Page<Matching> findReceivedToAnnouncement(
+            final List<Long> announcementIds,
+            final Pageable pageable
+    ) {
+        QMatching qMatching = QMatching.matching;
+
+        if (announcementIds == null || announcementIds.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        BooleanExpression condition = qMatching.receiverAnnouncementId.in(announcementIds);
+
+        List<Matching> content = jpaQueryFactory
+                .selectFrom(qMatching)
+                .where(condition)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qMatching.createdAt.desc())
+                .fetch();
+
+        long total = Optional.ofNullable(
+                jpaQueryFactory
+                        .select(qMatching.count())
+                        .from(qMatching)
+                        .where(condition)
+                        .fetchOne()
+        ).orElse(0L);
+
+        return new PageImpl<>(content, pageable, total);
     }
 
     @Override
