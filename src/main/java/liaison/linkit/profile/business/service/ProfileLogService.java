@@ -13,15 +13,15 @@ import liaison.linkit.image.implement.ImageCommandAdapter;
 import liaison.linkit.image.implement.ImageQueryAdapter;
 import liaison.linkit.image.util.ImageUtils;
 import liaison.linkit.profile.business.mapper.ProfileLogMapper;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.ProfileLogImage;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.type.LogType;
-import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogCommandAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogImageCommandAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogImageQueryAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogQueryAdapter;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.AddProfileLogBodyImageResponse;
@@ -106,6 +106,12 @@ public class ProfileLogService {
         // 1. 프로필 조회
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
+        LogType addProfileLogType = LogType.GENERAL_LOG;
+
+        if (!profileLogQueryAdapter.existsRepresentativeProfileLogByProfile(profile.getId())) {
+            addProfileLogType = LogType.REPRESENTATIVE_LOG;
+        }
+
         // 2. ProfileLog 엔티티 생성 및 저장
         final ProfileLog profileLog = new ProfileLog(
                 null,
@@ -113,7 +119,7 @@ public class ProfileLogService {
                 addProfileLogRequest.getLogTitle(),
                 addProfileLogRequest.getLogContent(),
                 addProfileLogRequest.getIsLogPublic(),
-                LogType.GENERAL_LOG
+                addProfileLogType
         );
 
         final ProfileLog savedProfileLog = profileLogCommandAdapter.addProfileLog(profileLog);
