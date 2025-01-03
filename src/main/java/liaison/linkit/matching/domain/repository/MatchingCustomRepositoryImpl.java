@@ -20,6 +20,72 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
+    public Page<Matching> findRequestedByProfile(
+            final String emailId,
+            final Pageable pageable
+    ) {
+        QMatching qMatching = QMatching.matching;
+
+        try {
+            List<Matching> content = jpaQueryFactory
+                    .selectFrom(qMatching)
+                    .where(qMatching.senderEmailId.eq(emailId))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .orderBy(qMatching.createdAt.desc())
+                    .fetch();
+
+            long total = Optional.ofNullable(
+                    jpaQueryFactory
+                            .select(qMatching.count())
+                            .from(qMatching)
+                            .where(qMatching.senderEmailId.eq(emailId))
+                            .fetchOne()
+            ).orElse(0L);
+
+            return PageableExecutionUtils.getPage(content, pageable, () -> total);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Override
+    public Page<Matching> findRequestedByTeam(
+            final List<Team> teams,
+            final Pageable pageable
+    ) {
+        QMatching qMatching = QMatching.matching;
+
+        if (teams == null || teams.isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        List<String> teamCodes = teams.stream()
+                .map(Team::getTeamCode)
+                .toList();
+
+        BooleanExpression condition = qMatching.senderTeamCode.in(teamCodes);
+
+        List<Matching> content = jpaQueryFactory
+                .selectFrom(qMatching)
+                .where(condition)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(qMatching.createdAt.desc())
+                .fetch();
+
+        long total = Optional.ofNullable(
+                jpaQueryFactory
+                        .select(qMatching.count())
+                        .from(qMatching)
+                        .where(condition)
+                        .fetchOne()
+        ).orElse(0L);
+
+        return new PageImpl<>(content, pageable, total);
+    }
+
+    @Override
     public Page<Matching> findReceivedToProfile(
             final String emailId,
             final Pageable pageable

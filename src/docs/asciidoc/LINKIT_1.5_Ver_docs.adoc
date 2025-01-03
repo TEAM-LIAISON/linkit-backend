@@ -1464,3 +1464,14 @@ include::{snippets}/matching-controller-test/get-matching-received-menu/http-res
 include::{snippets}/matching-controller-test/get-matching-received-menu/response-fields.adoc[]
 ====
 
+=== 매칭 관리 발신함 조회 (필터링 포함)
+
+====
+*요청*
+include::{snippets}/matching-controller-test/get-matching-requested-menu/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-matching-requested-menu/query-parameters.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/get-matching-requested-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-matching-requested-menu/response-fields.adoc[]
+====

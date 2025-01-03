@@ -5,10 +5,12 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.matching.domain.type.ReceiverType;
+import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingReceivedMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingRequestedMenu;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,7 +40,7 @@ public class MatchingController {
     public CommonResponse<MatchingMenu> getMatchingMenu(
             @Auth final Accessor accessor
     ) {
-        return CommonResponse.onSuccess(matchingService.getMatchingMenu(accessor.getMemberId()));
+        return CommonResponse.onSuccess(matchingService.getMatchingNotificationMenu(accessor.getMemberId()));
     }
 
     // 매칭 수신함
@@ -50,14 +52,26 @@ public class MatchingController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
     ) {
-
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<MatchingReceivedMenu> matchingReceivedMenus = matchingService.getMatchingReceivedMenuResponse(accessor.getMemberId(), receiverType, pageable);
         return CommonResponse.onSuccess(matchingReceivedMenus);
     }
 
-    //    // 매칭 발신함
-//    @GetMapping("/requested/menu")
+    // 매칭 발신함
+    @GetMapping("/requested/menu")
+    @MemberOnly
+    public CommonResponse<Page<MatchingRequestedMenu>> getMatchingRequestedMenuResponse(
+            @Auth final Accessor accessor,
+            @RequestParam(value = "senderType", required = false) final SenderType senderType,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<MatchingRequestedMenu> matchingRequestedMenus = matchingService.getMatchingRequestedMenuResponse(accessor.getMemberId(), senderType, pageable);
+        return CommonResponse.onSuccess(matchingRequestedMenus);
+    }
+
+
     // 매칭 요청 보내기
     @PostMapping
     public CommonResponse<MatchingResponseDTO.AddMatchingResponse> addMatching(

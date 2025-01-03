@@ -42,6 +42,9 @@ public class TeamMemberResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AcceptedTeamMemberItem {                // 초대 수락 완료
+        
+        private String emailId;
+
         private String profileImagePath;                        // 프로필 이미지 경로
         private String memberName;                              // 회원 이름
         private String majorPosition;                           // 주요 포지션

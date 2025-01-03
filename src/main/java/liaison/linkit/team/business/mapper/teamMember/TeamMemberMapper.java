@@ -5,19 +5,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
-import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.profile.Profile;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
+import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
+import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
+import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
-import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.ProfileInformMenu;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
 
@@ -35,23 +34,6 @@ public class TeamMemberMapper {
         return TeamMemberViewItems
                 .builder()
                 .acceptedTeamMemberItems(acceptedTeamMemberItems)
-                .build();
-    }
-
-    public ProfileInformMenu toProfileInformMenu(
-            final List<ProfileCurrentStateItem> profileCurrentStateItems,
-            final Profile profile,
-            final ProfilePositionDetail profilePositionDetail,
-            final RegionDetail regionDetail
-    ) {
-        return TeamMemberResponseDTO.ProfileInformMenu
-                .builder()
-                .profileCurrentStates(profileCurrentStateItems)
-                .profileImagePath(profile.getProfileImagePath())
-                .memberName(profile.getMember().getMemberBasicInform().getMemberName())
-                .isProfilePublic(profile.isProfilePublic())
-                .majorPosition(profilePositionDetail.getMajorPosition())
-                .regionDetail(regionDetail)
                 .build();
     }
 
@@ -83,6 +65,24 @@ public class TeamMemberMapper {
         return UpdateTeamMemberTypeResponse.builder()
                 .emailId(teamMember.getMember().getEmailId())
                 .teamMemberType(teamMember.getTeamMemberType())
+                .build();
+    }
+
+    public AcceptedTeamMemberItem toAcceptedTeamMemberItem(
+            final Profile profile,
+            final ProfilePositionDetail profilePositionDetail,
+            final RegionDetail regionDetail,
+            final TeamMember teamMember,
+            final TeamMemberInviteState teamMemberInviteState
+    ) {
+        return AcceptedTeamMemberItem.builder()
+                .emailId(profile.getMember().getEmailId())
+                .profileImagePath(profile.getProfileImagePath())
+                .memberName(profile.getMember().getMemberBasicInform().getMemberName())
+                .majorPosition(profilePositionDetail.getMajorPosition())
+                .regionDetail(regionDetail)
+                .teamMemberType(teamMember.getTeamMemberType())
+                .teamMemberInviteState(teamMemberInviteState)
                 .build();
     }
 }

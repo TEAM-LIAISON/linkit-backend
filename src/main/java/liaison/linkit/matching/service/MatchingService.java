@@ -5,6 +5,7 @@ import java.util.List;
 import liaison.linkit.matching.business.MatchingMapper;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.ReceiverType;
+import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
@@ -12,6 +13,7 @@ import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingReceivedMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingRequestedMenu;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
@@ -42,7 +44,7 @@ public class MatchingService {
     private final MemberQueryAdapter memberQueryAdapter;
 
     @Transactional(readOnly = true)
-    public MatchingMenu getMatchingMenu(
+    public MatchingMenu getMatchingNotificationMenu(
             final Long memberId
     ) {
         int receivedMatchingNotificationCount = 0;
@@ -147,6 +149,55 @@ public class MatchingService {
                         .toList(),
                 pageable,
                 combinedMatchingItems.size()
+        );
+    }
+
+    public Page<MatchingResponseDTO.MatchingRequestedMenu> getMatchingRequestedMenuResponse(
+            final Long memberId,
+            final SenderType senderType,
+            Pageable pageable
+    ) {
+        List<Matching> combinedMatchingItems = new ArrayList<>();
+
+        // Profile 케이스
+        if (senderType == null || senderType.equals(SenderType.PROFILE)) {
+            final String emailId = memberQueryAdapter.findEmailIdById(memberId);
+            final Page<Matching> profileMatchingItems = matchingQueryAdapter.findRequestedByProfile(emailId, pageable);
+
+            if (senderType != null) {
+                return profileMatchingItems.map(this::toMatchingRequestedMenu);
+            }
+
+            combinedMatchingItems.addAll(profileMatchingItems.getContent());
+        }
+
+        // Team 케이스
+        if (senderType == null || senderType.equals(SenderType.TEAM)) {
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            final Page<Matching> teamMatchingItems = matchingQueryAdapter.findRequestedByTeam(teams, pageable);
+
+            if (senderType != null) {
+                return teamMatchingItems.map(this::toMatchingRequestedMenu);
+            }
+
+            combinedMatchingItems.addAll(teamMatchingItems.getContent());
+        }
+
+        // Null 케이스: Profile, Team, Announcement 데이터를 모두 병합
+        return new PageImpl<>(
+                combinedMatchingItems.stream()
+                        .map(this::toMatchingRequestedMenu)
+                        .toList(),
+                pageable,
+                combinedMatchingItems.size()
+        );
+    }
+
+    private MatchingRequestedMenu toMatchingRequestedMenu(
+            final Matching requestedMatchingItem
+    ) {
+        return matchingMapper.toMatchingRequestedMenu(
+                requestedMatchingItem
         );
     }
 

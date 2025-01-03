@@ -30,6 +30,7 @@ import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingReceivedMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingRequestedMenu;
 import liaison.linkit.matching.service.MatchingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -94,6 +95,23 @@ public class MatchingControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performGetMatchingRequestedMenu(
+            SenderType senderType,
+            int page,
+            int size
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/matching/requested/menu")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .param("senderType", senderType.toString())
+                        .param("page", String.valueOf(page))
+                        .param("size", String.valueOf(size))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+        );
+    }
+
     @DisplayName("매칭 관리 상단 정보를 조회할 수 있다.")
     @Test
     void getMatchingMenu() throws Exception {
@@ -104,7 +122,7 @@ public class MatchingControllerTest extends ControllerTest {
                 .build();
 
         // when
-        when(matchingService.getMatchingMenu(any())).thenReturn(matchingMenu);
+        when(matchingService.getMatchingNotificationMenu(any())).thenReturn(matchingMenu);
 
         final ResultActions resultActions = performGetMatchingNotificationMenu();
 
@@ -155,6 +173,7 @@ public class MatchingControllerTest extends ControllerTest {
     @Test
     void getMatchingReceivedMenu() throws Exception {
         MatchingReceivedMenu matchingReceivedMenu1 = MatchingReceivedMenu.builder()
+                .matchingId(1L)
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
 
@@ -172,6 +191,7 @@ public class MatchingControllerTest extends ControllerTest {
                 .build();
 
         MatchingReceivedMenu matchingReceivedMenu2 = MatchingReceivedMenu.builder()
+                .matchingId(2L)
                 .senderType(SenderType.TEAM)
                 .receiverType(ReceiverType.PROFILE)
 
@@ -233,6 +253,11 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.content")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("매칭 요청 목록"),
+
+                                        fieldWithPath("result.content[].matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("매칭 ID (PK)"),
+
                                         fieldWithPath("result.content[].senderType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("발신자 타입 - [PROFILE, TEAM]"),
@@ -339,4 +364,199 @@ public class MatchingControllerTest extends ControllerTest {
                 .andReturn();
     }
 
+    @DisplayName("매칭 관리 발신함의 정보를 조회할 수 있다.")
+    @Test
+    void getMatchingRequestedMenu() throws Exception {
+        // given
+        MatchingRequestedMenu matchingRequestedMenu1 = MatchingRequestedMenu.builder()
+                .matchingId(1L)
+                .senderType(SenderType.PROFILE)
+                .receiverType(ReceiverType.PROFILE)
+
+                .senderEmailId("발신자 유저 아이디")
+                .senderTeamCode("발신자 팀 아이디")
+                .receiverEmailId("수신자 유저 아이디")
+                .receiverTeamCode("수신자 팀 아이디")
+                .receiverAnnouncementId(1L)
+
+                .requestMessage("매칭 요청 메시지")
+
+                .matchingStatusType(MatchingStatusType.REQUESTED)
+                .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
+                .build();
+
+        MatchingRequestedMenu matchingRequestedMenu2 = MatchingRequestedMenu.builder()
+                .matchingId(2L)
+                .senderType(SenderType.PROFILE)
+                .receiverType(ReceiverType.PROFILE)
+
+                .senderEmailId("발신자 유저 아이디")
+                .senderTeamCode("발신자 팀 아이디")
+                .receiverEmailId("수신자 유저 아이디")
+                .receiverTeamCode("수신자 팀 아이디")
+                .receiverAnnouncementId(2L)
+
+                .requestMessage("매칭 요청 메시지")
+
+                .matchingStatusType(MatchingStatusType.REQUESTED)
+                .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
+                .build();
+
+        List<MatchingRequestedMenu> matchingRequestedMenus = Arrays.asList(matchingRequestedMenu1, matchingRequestedMenu2);
+        Page<MatchingRequestedMenu> matchingReceivedMenus = new PageImpl<>(matchingRequestedMenus, PageRequest.of(0, 20), matchingRequestedMenus.size());
+
+        // when
+        when(matchingService.getMatchingRequestedMenuResponse(anyLong(), any(), any(Pageable.class))).thenReturn(matchingReceivedMenus);
+
+        final ResultActions resultActions = performGetMatchingRequestedMenu(
+                SenderType.PROFILE,
+                0,
+                20
+        );
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                queryParameters(
+                                        parameterWithName("senderType")
+                                                .optional()
+                                                .description("발신자 타입 (선택적) - [PROFILE, TEAM] 2개"),
+                                        parameterWithName("page")
+                                                .optional()
+                                                .description("페이지 번호 (기본값: 0)"),
+                                        parameterWithName("size")
+                                                .optional()
+                                                .description("페이지 크기 (기본값: 20)")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.content")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("매칭 요청 목록"),
+
+                                        fieldWithPath("result.content[].matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("매칭 ID (PK)"),
+
+                                        fieldWithPath("result.content[].senderType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 타입 - [PROFILE, TEAM]"),
+                                        fieldWithPath("result.content[].receiverType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 타입 - [PROFILE, TEAM, ANNOUNCEMENT]"),
+                                        fieldWithPath("result.content[].senderEmailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 유저 아이디"),
+                                        fieldWithPath("result.content[].senderTeamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 팀 아이디"),
+                                        fieldWithPath("result.content[].receiverEmailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 유저 아이디"),
+                                        fieldWithPath("result.content[].receiverTeamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 팀 아이디"),
+                                        fieldWithPath("result.content[].receiverAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("수신자 공고 ID"),
+                                        fieldWithPath("result.content[].requestMessage")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 요청 메시지"),
+                                        fieldWithPath("result.content[].matchingStatusType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 상태 타입 - [REQUESTED, COMPLETED 등]"),
+                                        fieldWithPath("result.content[].receiverReadStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 읽음 상태 - [UNREAD_REQUESTED_MATCHING, READ_COMPLETED_MATCHING 등]"),
+                                        fieldWithPath("result.pageable")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("페이지 정보"),
+
+                                        fieldWithPath("result.pageable.sort")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("정렬 정보"),
+                                        fieldWithPath("result.pageable.sort.empty")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬 정보가 비어 있는지 여부"),
+                                        fieldWithPath("result.pageable.sort.unsorted")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬되지 않은 상태인지 여부"),
+                                        fieldWithPath("result.pageable.sort.sorted")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬된 상태인지 여부"),
+                                        fieldWithPath("result.sort")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("정렬 정보"),
+                                        fieldWithPath("result.sort.empty")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬 정보가 비어 있는지 여부"),
+                                        fieldWithPath("result.sort.unsorted")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬되지 않은 상태인지 여부"),
+                                        fieldWithPath("result.sort.sorted")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("정렬된 상태인지 여부"),
+
+                                        fieldWithPath("result.pageable.pageNumber")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("현재 페이지 번호"),
+                                        fieldWithPath("result.pageable.pageSize")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("페이지 크기"),
+                                        fieldWithPath("result.pageable.offset")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("현재 페이지의 시작 오프셋"),
+                                        fieldWithPath("result.pageable.paged")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("페이징 여부"),
+                                        fieldWithPath("result.pageable.unpaged")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("비페이징 여부"),
+
+                                        fieldWithPath("result.totalPages")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("총 페이지 수"),
+                                        fieldWithPath("result.totalElements")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("총 요소 수"),
+                                        fieldWithPath("result.last")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("마지막 페이지 여부"),
+                                        fieldWithPath("result.first")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("첫 번째 페이지 여부"),
+                                        fieldWithPath("result.size")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("페이지 크기"),
+                                        fieldWithPath("result.number")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("현재 페이지 번호"),
+                                        fieldWithPath("result.numberOfElements")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("현재 페이지의 요소 수"),
+                                        fieldWithPath("result.empty")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("결과가 비어 있는지 여부")
+
+                                )
+                        )
+                )
+                .andReturn();
+    }
 }

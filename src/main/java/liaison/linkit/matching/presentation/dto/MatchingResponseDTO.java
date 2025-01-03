@@ -13,13 +13,40 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MatchingResponseDTO {
 
+
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MatchingReceivedMenu {                  // 수신함에서 응답 메뉴
+    public static class MatchingReceivedMenu {
 
         // 부가적인 사용자 정보 (이름, 로고 이미지 경로) 등은 추가 필요
+
+        private Long matchingId;
+
+        private SenderType senderType;
+        private ReceiverType receiverType;
+
+        private String senderEmailId;
+        private String senderTeamCode;
+
+        private String receiverEmailId;
+        private String receiverTeamCode;
+        private Long receiverAnnouncementId;
+
+        private String requestMessage;
+
+        private MatchingStatusType matchingStatusType;
+
+        private ReceiverReadStatus receiverReadStatus;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MatchingRequestedMenu {
+        private Long matchingId;
 
         private SenderType senderType;
         private ReceiverType receiverType;

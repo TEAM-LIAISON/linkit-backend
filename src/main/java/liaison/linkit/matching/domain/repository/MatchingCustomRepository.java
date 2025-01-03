@@ -22,6 +22,16 @@ public interface MatchingCustomRepository {
             final Pageable pageable
     );
 
+    Page<Matching> findRequestedByProfile(
+            final String emailId,
+            final Pageable pageable
+    );
+
+    Page<Matching> findRequestedByTeam(
+            final List<Team> teams,
+            final Pageable pageable
+    );
+
     int countByReceiverTeamCodes(final List<String> receiverTeamCodes);
 
     int countByReceiverAnnouncementIds(final List<Long> receiverAnnouncementIds);

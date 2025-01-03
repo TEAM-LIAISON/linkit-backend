@@ -166,14 +166,7 @@ public class TeamMemberService {
                         regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
                     }
 
-                    return AcceptedTeamMemberItem.builder()
-                            .profileImagePath(profile.getProfileImagePath())
-                            .memberName(profile.getMember().getMemberBasicInform().getMemberName())
-                            .majorPosition(profilePositionDetail.getMajorPosition())
-                            .regionDetail(regionDetail)
-                            .teamMemberType(teamMember.getTeamMemberType())
-                            .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
-                            .build();
+                    return teamMemberMapper.toAcceptedTeamMemberItem(profile, profilePositionDetail, regionDetail, teamMember, TeamMemberInviteState.ACCEPTED);
                 })
                 .toList();
     }
