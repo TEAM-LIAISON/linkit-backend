@@ -14,6 +14,10 @@ import org.springframework.data.domain.Pageable;
 public class MatchingQueryAdapter {
     private final MatchingRepository matchingRepository;
 
+    public List<Matching> findAllByIds(final List<Long> matchingIds) {
+        return matchingRepository.findAllByIds(matchingIds);
+    }
+
     public Page<Matching> findReceivedToProfile(
             final String emailId,
             final Pageable pageable

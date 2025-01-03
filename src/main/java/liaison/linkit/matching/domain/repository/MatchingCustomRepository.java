@@ -7,6 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface MatchingCustomRepository {
+
+    List<Matching> findAllByIds(final List<Long> matchingIds);
+
     Page<Matching> findReceivedToProfile(
             final String emailId,
             final Pageable pageable

@@ -1,5 +1,6 @@
 package liaison.linkit.matching.presentation.dto;
 
+import java.util.List;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.AccessLevel;
@@ -10,6 +11,14 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MatchingRequestDTO {
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReceivedMatchingReadRequest {
+        private List<Long> matchingIds;
+    }
 
     @Builder
     @Getter

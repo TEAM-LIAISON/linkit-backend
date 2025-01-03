@@ -1,20 +1,23 @@
 package liaison.linkit.matching.business;
 
+import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.AddMatchingResponse;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingReceivedMenu;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingRequestedMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingReadItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingReadItems;
 
 @Mapper
 public class MatchingMapper {
 
-    public MatchingRequestedMenu toMatchingRequestedMenu(
+    public RequestedMatchingMenu toMatchingRequestedMenu(
             final Matching requestedMatchingItem
     ) {
-        return MatchingRequestedMenu.builder()
+        return RequestedMatchingMenu.builder()
                 .matchingId(requestedMatchingItem.getId())
                 .senderType(requestedMatchingItem.getSenderType())
                 .receiverType(requestedMatchingItem.getReceiverType())
@@ -29,10 +32,10 @@ public class MatchingMapper {
                 .build();
     }
 
-    public MatchingReceivedMenu toMatchingReceivedMenu(
+    public ReceivedMatchingMenu toMatchingReceivedMenu(
             final Matching receivedMatchingItem
     ) {
-        return MatchingReceivedMenu.builder()
+        return ReceivedMatchingMenu.builder()
                 .matchingId(receivedMatchingItem.getId())
                 .senderType(receivedMatchingItem.getSenderType())
                 .receiverType(receivedMatchingItem.getReceiverType())
@@ -62,6 +65,14 @@ public class MatchingMapper {
         return MatchingMenu.builder()
                 .receivedMatchingNotificationCount(receivedMatchingNotificationCount)
                 .requestedMatchingNotificationCount(requestedMatchingNotificationCount)
+                .build();
+    }
+
+    public UpdateReceivedMatchingReadItems toUpdateMatchingReceivedReadItems(
+            final List<UpdateReceivedMatchingReadItem> items
+    ) {
+        return UpdateReceivedMatchingReadItems.builder()
+                .items(items)
                 .build();
     }
 }

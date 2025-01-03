@@ -1,5 +1,7 @@
 package liaison.linkit.matching.presentation.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
@@ -13,12 +15,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MatchingResponseDTO {
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReceivedMatchingReadItems {
+        @Builder.Default
+        private List<UpdateReceivedMatchingReadItem> items = new ArrayList<UpdateReceivedMatchingReadItem>();
+    }
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MatchingReceivedMenu {
+    public static class UpdateReceivedMatchingReadItem {
+        private Long memberId;
+        private ReceiverReadStatus receiverReadStatus;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReceivedMatchingMenu {
 
         // 부가적인 사용자 정보 (이름, 로고 이미지 경로) 등은 추가 필요
 
@@ -45,7 +64,7 @@ public class MatchingResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MatchingRequestedMenu {
+    public static class RequestedMatchingMenu {
         private Long matchingId;
 
         private SenderType senderType;

@@ -4,16 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.matching.business.MatchingMapper;
 import liaison.linkit.matching.domain.Matching;
+import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
+import liaison.linkit.matching.exception.ReceivedMatchingReadBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingReceivedMenu;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingRequestedMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingReadItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingReadItems;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
@@ -89,7 +95,7 @@ public class MatchingService {
         return matchingMapper.toMatchingMenuResponse(receivedMatchingNotificationCount, requestedMatchingNotificationCount);
     }
 
-    public Page<MatchingReceivedMenu> getMatchingReceivedMenuResponse(
+    public Page<ReceivedMatchingMenu> getReceivedMatchingMenuResponse(
             final Long memberId,
             final ReceiverType receiverType,
             Pageable pageable
@@ -152,7 +158,7 @@ public class MatchingService {
         );
     }
 
-    public Page<MatchingResponseDTO.MatchingRequestedMenu> getMatchingRequestedMenuResponse(
+    public Page<RequestedMatchingMenu> getRequestedMatchingMenuResponse(
             final Long memberId,
             final SenderType senderType,
             Pageable pageable
@@ -193,7 +199,44 @@ public class MatchingService {
         );
     }
 
-    private MatchingRequestedMenu toMatchingRequestedMenu(
+    public UpdateReceivedMatchingReadItems updateReceivedMatchingReadState(
+            final Long memberId,
+            final UpdateReceivedMatchingReadRequest request
+    ) {
+        List<Long> matchingIds = request.getMatchingIds();
+
+        if (matchingIds == null || matchingIds.isEmpty()) {
+            throw new IllegalArgumentException("Request must include valid matching IDs.");
+        }
+
+        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
+
+        if (matchings.isEmpty()) {
+            throw new IllegalArgumentException("No matchings found for the given IDs: " + matchingIds);
+        }
+
+        if (!matchings.stream()
+                .allMatch(matching -> matching.getMatchingStatusType().equals(MatchingStatusType.REQUESTED))) {
+            throw ReceivedMatchingReadBadRequestException.EXCEPTION;
+        }
+
+        matchings.forEach(matching ->
+                matching.setReceiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING));
+
+        matchingCommandAdapter.updateAll(matchings);
+
+        List<UpdateReceivedMatchingReadItem> updateReceivedMatchingReadItems = matchings.stream()
+                .map(matching -> new UpdateReceivedMatchingReadItem(
+                        matching.getId(),
+                        matching.getReceiverReadStatus()
+                ))
+                .toList();
+
+        return matchingMapper.toUpdateMatchingReceivedReadItems(updateReceivedMatchingReadItems);
+    }
+
+
+    private RequestedMatchingMenu toMatchingRequestedMenu(
             final Matching requestedMatchingItem
     ) {
         return matchingMapper.toMatchingRequestedMenu(
@@ -201,7 +244,7 @@ public class MatchingService {
         );
     }
 
-    private MatchingReceivedMenu toMatchingReceivedMenu(
+    private ReceivedMatchingMenu toMatchingReceivedMenu(
             final Matching receivedMatchingItem
     ) {
         return matchingMapper.toMatchingReceivedMenu(

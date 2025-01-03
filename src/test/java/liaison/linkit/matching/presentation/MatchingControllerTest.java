@@ -29,8 +29,8 @@ import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingReceivedMenu;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingRequestedMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
 import liaison.linkit.matching.service.MatchingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -78,7 +78,7 @@ public class MatchingControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performGetMatchingReceivedMenu(
+    private ResultActions performGetReceivedMatchingMenu(
             ReceiverType receiverType,
             int page,
             int size
@@ -171,8 +171,8 @@ public class MatchingControllerTest extends ControllerTest {
 
     @DisplayName("매칭 관리 수신함의 정보를 조회할 수 있다.")
     @Test
-    void getMatchingReceivedMenu() throws Exception {
-        MatchingReceivedMenu matchingReceivedMenu1 = MatchingReceivedMenu.builder()
+    void getReceivedMatchingMenu() throws Exception {
+        ReceivedMatchingMenu receivedMatchingMenu1 = ReceivedMatchingMenu.builder()
                 .matchingId(1L)
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
@@ -190,7 +190,7 @@ public class MatchingControllerTest extends ControllerTest {
 
                 .build();
 
-        MatchingReceivedMenu matchingReceivedMenu2 = MatchingReceivedMenu.builder()
+        ReceivedMatchingMenu receivedMatchingMenu2 = ReceivedMatchingMenu.builder()
                 .matchingId(2L)
                 .senderType(SenderType.TEAM)
                 .receiverType(ReceiverType.PROFILE)
@@ -208,12 +208,12 @@ public class MatchingControllerTest extends ControllerTest {
 
                 .build();
 
-        List<MatchingReceivedMenu> matchingReceivedMenus = Arrays.asList(matchingReceivedMenu1, matchingReceivedMenu2);
-        Page<MatchingReceivedMenu> matchingReceivedMenusPage = new PageImpl<>(matchingReceivedMenus, PageRequest.of(0, 20), matchingReceivedMenus.size());
+        List<ReceivedMatchingMenu> receivedMatchingMenus = Arrays.asList(receivedMatchingMenu1, receivedMatchingMenu2);
+        Page<ReceivedMatchingMenu> matchingReceivedMenusPage = new PageImpl<>(receivedMatchingMenus, PageRequest.of(0, 20), receivedMatchingMenus.size());
 
-        when(matchingService.getMatchingReceivedMenuResponse(anyLong(), any(), any(Pageable.class))).thenReturn(matchingReceivedMenusPage);
+        when(matchingService.getReceivedMatchingMenuResponse(anyLong(), any(), any(Pageable.class))).thenReturn(matchingReceivedMenusPage);
 
-        final ResultActions resultActions = performGetMatchingReceivedMenu(
+        final ResultActions resultActions = performGetReceivedMatchingMenu(
                 ReceiverType.PROFILE,
                 0,
                 20
@@ -368,7 +368,7 @@ public class MatchingControllerTest extends ControllerTest {
     @Test
     void getMatchingRequestedMenu() throws Exception {
         // given
-        MatchingRequestedMenu matchingRequestedMenu1 = MatchingRequestedMenu.builder()
+        RequestedMatchingMenu requestedMatchingMenu1 = RequestedMatchingMenu.builder()
                 .matchingId(1L)
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
@@ -385,7 +385,7 @@ public class MatchingControllerTest extends ControllerTest {
                 .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
                 .build();
 
-        MatchingRequestedMenu matchingRequestedMenu2 = MatchingRequestedMenu.builder()
+        RequestedMatchingMenu requestedMatchingMenu2 = RequestedMatchingMenu.builder()
                 .matchingId(2L)
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
@@ -402,11 +402,11 @@ public class MatchingControllerTest extends ControllerTest {
                 .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
                 .build();
 
-        List<MatchingRequestedMenu> matchingRequestedMenus = Arrays.asList(matchingRequestedMenu1, matchingRequestedMenu2);
-        Page<MatchingRequestedMenu> matchingReceivedMenus = new PageImpl<>(matchingRequestedMenus, PageRequest.of(0, 20), matchingRequestedMenus.size());
+        List<RequestedMatchingMenu> requestedMatchingMenus = Arrays.asList(requestedMatchingMenu1, requestedMatchingMenu2);
+        Page<RequestedMatchingMenu> matchingReceivedMenus = new PageImpl<>(requestedMatchingMenus, PageRequest.of(0, 20), requestedMatchingMenus.size());
 
         // when
-        when(matchingService.getMatchingRequestedMenuResponse(anyLong(), any(), any(Pageable.class))).thenReturn(matchingReceivedMenus);
+        when(matchingService.getRequestedMatchingMenuResponse(anyLong(), any(), any(Pageable.class))).thenReturn(matchingReceivedMenus);
 
         final ResultActions resultActions = performGetMatchingRequestedMenu(
                 SenderType.PROFILE,

@@ -83,4 +83,8 @@ public class Matching extends BaseDateTimeEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "receiver_read_status", length = 50)
     private ReceiverReadStatus receiverReadStatus;
+
+    public void setReceiverReadStatus(final ReceiverReadStatus receiverReadStatus) {
+        this.receiverReadStatus = receiverReadStatus;
+    }
 }

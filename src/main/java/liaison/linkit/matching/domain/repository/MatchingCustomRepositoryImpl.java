@@ -20,6 +20,16 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
+    public List<Matching> findAllByIds(final List<Long> matchingIds) {
+        QMatching qMatching = QMatching.matching;
+
+        return jpaQueryFactory
+                .selectFrom(qMatching)
+                .where(qMatching.id.in(matchingIds))
+                .fetch();
+    }
+
+    @Override
     public Page<Matching> findRequestedByProfile(
             final String emailId,
             final Pageable pageable
