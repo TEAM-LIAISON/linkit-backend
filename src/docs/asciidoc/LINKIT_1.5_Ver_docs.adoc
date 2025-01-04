@@ -1500,3 +1500,27 @@ include::{snippets}/matching-controller-test/update-received-matching-completed-
 include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/http-response.adoc[]
 include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/response-fields.adoc[]
 ====
+
+=== 매칭 관리 수신함에서 매칭 삭제 처리
+
+====
+*요청*
+include::{snippets}/matching-controller-test/delete-received-matching-items/http-request.adoc[]
+include::{snippets}/matching-controller-test/delete-received-matching-items/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/delete-received-matching-items/http-response.adoc[]
+include::{snippets}/matching-controller-test/delete-received-matching-items/response-fields.adoc[]
+====
+
+=== 매칭 관리 발신함에서 매칭 삭제 처리
+
+====
+*요청*
+include::{snippets}/matching-controller-test/delete-requested-matching-items/http-request.adoc[]
+include::{snippets}/matching-controller-test/delete-requested-matching-items/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/delete-requested-matching-items/http-response.adoc[]
+include::{snippets}/matching-controller-test/delete-requested-matching-items/response-fields.adoc[]
+====

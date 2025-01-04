@@ -781,6 +781,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_매칭_관리_발신함_조회_필터링_포함">29.3. 매칭 관리 발신함 조회 (필터링 포함)</a></li>
 <li><a href="#_매칭_관리_수신함에서_요청_받은_매칭에_대해_읽음_처리">29.4. 매칭 관리 수신함에서 요청 받은 매칭에 대해 읽음 처리</a></li>
 <li><a href="#_매칭_관리_수신함에서_성사된_매칭에_대해_읽음_처리">29.5. 매칭 관리 수신함에서 성사된 매칭에 대해 읽음 처리</a></li>
+<li><a href="#_매칭_관리_수신함에서_매칭_삭제_처리">29.6. 매칭 관리 수신함에서 매칭 삭제 처리</a></li>
+<li><a href="#_매칭_관리_발신함에서_매칭_삭제_처리">29.7. 매칭 관리 발신함에서 매칭 삭제 처리</a></li>
 </ul>
 </li>
 </ul>
@@ -873,7 +875,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 11 Jan 2025 09:38:27 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 11 Jan 2025 12:13:24 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 216
 
@@ -1008,7 +1010,7 @@ Content-Length: 159
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2025-01-04T18:38:27.178686"
+    "logoutAt" : "2025-01-04T21:13:24.273397"
   }
 }</code></pre>
 </div>
@@ -1162,7 +1164,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2025-01-04T18:38:27.243522"
+    "quitAt" : "2025-01-04T21:13:24.348719"
   }
 }</code></pre>
 </div>
@@ -1264,7 +1266,7 @@ Content-Length: 178
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2025-01-04T18:38:28.188292"
+    "reAuthenticationEmailSendAt" : "2025-01-04T21:13:25.564339"
   }
 }</code></pre>
 </div>
@@ -1374,7 +1376,7 @@ Content-Length: 214
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2025-01-04T18:38:28.169855"
+    "verificationSuccessAt" : "2025-01-04T21:13:25.543263"
   }
 }</code></pre>
 </div>
@@ -2317,7 +2319,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 4983
+Content-Length: 4984
 
 {
   "isSuccess" : true,
@@ -2357,7 +2359,7 @@ Content-Length: 4983
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-04T18:38:30.21741",
+      "modifiedAt" : "2025-01-04T21:13:28.629355",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     },
@@ -3327,7 +3329,7 @@ Content-Length: 465
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "profileId" : 1,
-    "modifiedAt" : "2025-01-04T18:38:29.014159",
+    "modifiedAt" : "2025-01-04T21:13:26.977561",
     "majorPosition" : "대분류 포지션",
     "subPosition" : "소분류 포지션",
     "cityName" : "활동지역 시/도",
@@ -3554,14 +3556,14 @@ Content-Length: 586
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-04T18:38:31.56326",
+      "modifiedAt" : "2025-01-04T21:13:29.85333",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-01-04T18:38:31.563263",
+      "modifiedAt" : "2025-01-04T21:13:29.853337",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -3691,7 +3693,7 @@ Content-Length: 319
     "profileLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-01-04T18:38:31.538937",
+    "modifiedAt" : "2025-01-04T21:13:29.827764",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -3793,7 +3795,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 321
+Content-Length: 320
 
 {
   "isSuccess" : true,
@@ -3803,7 +3805,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-04T18:38:31.521213",
+    "createdAt" : "2025-01-04T21:13:29.80906",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -3970,7 +3972,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-04T18:38:31.571821",
+    "createdAt" : "2025-01-04T21:13:29.864022",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -10773,14 +10775,14 @@ Content-Length: 586
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-04T18:38:34.394941",
+      "modifiedAt" : "2025-01-04T21:13:32.614151",
       "logTitle" : "로그 제목 1",
       "logContent" : "로그 내용 1"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-01-04T18:38:34.394949",
+      "modifiedAt" : "2025-01-04T21:13:32.614159",
       "logTitle" : "로그 제목 2",
       "logContent" : "로그 내용 2"
     } ]
@@ -10900,7 +10902,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 577
+Content-Length: 578
 
 {
   "isSuccess" : true,
@@ -10911,14 +10913,14 @@ Content-Length: 577
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-04T18:38:34.40928",
+      "modifiedAt" : "2025-01-04T21:13:32.628764",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-01-04T18:38:34.409282",
+      "modifiedAt" : "2025-01-04T21:13:32.628766",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -11050,7 +11052,7 @@ Content-Length: 316
     "teamLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-01-04T18:38:34.384839",
+    "modifiedAt" : "2025-01-04T21:13:32.604602",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -11217,7 +11219,7 @@ Content-Length: 318
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-04T18:38:34.432216",
+    "createdAt" : "2025-01-04T21:13:32.648558",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -11388,7 +11390,7 @@ Content-Length: 318
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-04T18:38:34.442762",
+    "createdAt" : "2025-01-04T21:13:32.659622",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -15978,8 +15980,8 @@ Content-Length: 2242
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -15993,8 +15995,8 @@ Content-Length: 2242
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -16331,8 +16333,8 @@ Content-Length: 1762
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -16346,8 +16348,8 @@ Content-Length: 1762
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -16689,8 +16691,8 @@ Content-Length: 2239
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -16704,8 +16706,8 @@ Content-Length: 2239
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -17850,14 +17852,14 @@ Content-Length: 588
       "id" : "알림 ID 1",
       "notificationType" : "TEAM_INVITATION",
       "notificationStatus" : "PENDING",
-      "createdAt" : "2025-01-04T18:38:28.644068",
-      "modifiedAt" : "2025-01-04T18:38:28.644072"
+      "createdAt" : "2025-01-04T21:13:26.130433",
+      "modifiedAt" : "2025-01-04T21:13:26.130438"
     }, {
       "id" : "알림 ID 2",
       "notificationType" : "TEAM_INVITATION",
       "notificationStatus" : "PENDING",
-      "createdAt" : "2025-01-04T18:38:28.644076",
-      "modifiedAt" : "2025-01-04T18:38:28.644077"
+      "createdAt" : "2025-01-04T21:13:26.130443",
+      "modifiedAt" : "2025-01-04T21:13:26.130443"
     } ]
   }
 }</code></pre>
@@ -18106,8 +18108,8 @@ Content-Length: 1634
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -18121,8 +18123,8 @@ Content-Length: 1634
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -18422,8 +18424,8 @@ Content-Length: 1639
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -18437,8 +18439,8 @@ Content-Length: 1639
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -18813,7 +18815,7 @@ Cookie: refreshToken=refreshToken
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>matchingIds</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 ID 목록. 읽음 처리할 매칭 (MatchingStatusType &#8594; REQUESTED &amp;&amp; ReceiverReadStatus &#8594; UNREAD_REQUESTED_MATCHING)인 항목들</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">매칭 ID 목록. 읽음 처리할 매칭 (MatchingStatusType &#8594; COMPLETED &amp;&amp; ReceiverReadStatus &#8594; UNREAD_COMPLETED_MATCHING)인 항목들</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 </tbody>
@@ -18900,12 +18902,262 @@ Content-Length: 346
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_매칭_관리_수신함에서_매칭_삭제_처리"><a class="link" href="#_매칭_관리_수신함에서_매칭_삭제_처리">29.6. 매칭 관리 수신함에서 매칭 삭제 처리</a></h3>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>요청</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/matching/received/menu/delete HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: accessToken
+Cookie: refreshToken=refreshToken
+
+{
+  "matchingIds" : [ 1, 2 ]
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>matchingIds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제 처리할 매칭 ID 목록</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>응답</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 300
+
+{
+  "isSuccess" : true,
+  "code" : "1000",
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "deleteReceivedMatchingItems" : [ {
+      "matchingId" : 1,
+      "receiverDeleteStatus" : "DELETED"
+    }, {
+      "matchingId" : 2,
+      "receiverDeleteStatus" : "DELETED"
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.deleteReceivedMatchingItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제된 매칭 항목 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.deleteReceivedMatchingItems[].matchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제된 매칭 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.deleteReceivedMatchingItems[].receiverDeleteStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제된 매칭의 삭제 상태</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_매칭_관리_발신함에서_매칭_삭제_처리"><a class="link" href="#_매칭_관리_발신함에서_매칭_삭제_처리">29.7. 매칭 관리 발신함에서 매칭 삭제 처리</a></h3>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>요청</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/matching/requested/menu/delete HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: accessToken
+Cookie: refreshToken=refreshToken
+
+{
+  "matchingIds" : [ 1, 2 ]
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Constraint</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>matchingIds</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제 처리할 매칭 ID 목록</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>응답</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json;charset=UTF-8
+Content-Length: 297
+
+{
+  "isSuccess" : true,
+  "code" : "1000",
+  "message" : "요청에 성공하였습니다.",
+  "result" : {
+    "deleteRequestedMatchingItems" : [ {
+      "matchingId" : 1,
+      "senderDeleteStatus" : "DELETED"
+    }, {
+      "matchingId" : 2,
+      "senderDeleteStatus" : "DELETED"
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.deleteRequestedMatchingItems</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제된 매칭 항목 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.deleteRequestedMatchingItems[].matchingId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제된 매칭 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.deleteRequestedMatchingItems[].senderDeleteStatus</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제된 매칭의 삭제 상태</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-01-04 18:39:10 +0900
+Last updated 2025-01-04 21:16:30 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

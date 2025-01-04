@@ -16,6 +16,22 @@ public class MatchingRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class DeleteRequestedMatchingRequest {
+        private List<Long> matchingIds;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteReceivedMatchingRequest {
+        private List<Long> matchingIds;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class UpdateReceivedMatchingReadRequest {
         private List<Long> matchingIds;
     }

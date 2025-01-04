@@ -26,10 +26,18 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
+import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteReceivedMatchingRequest;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteRequestedMatchingRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
@@ -136,6 +144,28 @@ public class MatchingControllerTest extends ControllerTest {
     ) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/completed/read")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .characterEncoding("UTF-8")
+        );
+    }
+
+    private ResultActions performDeleteReceivedMatchingItems(final DeleteReceivedMatchingRequest request) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/delete")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .characterEncoding("UTF-8")
+        );
+    }
+
+    private ResultActions performDeleteRequestedMatchingItems(final DeleteRequestedMatchingRequest request) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/matching/requested/menu/delete")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -728,4 +758,135 @@ public class MatchingControllerTest extends ControllerTest {
                                 ))).andReturn();
     }
 
+    @DisplayName("매칭 관리 수신함에서 매칭을 삭제 처리할 수 있다.")
+    @Test
+    void deleteReceivedMatchingItems() throws Exception {
+        // given
+        final DeleteReceivedMatchingRequest request = DeleteReceivedMatchingRequest.builder()
+                .matchingIds(Arrays.asList(
+                        1L,
+                        2L
+                ))
+                .build();
+
+        final DeleteReceivedMatchingItems deleteReceivedMatchingItems = DeleteReceivedMatchingItems.builder()
+                .deleteReceivedMatchingItems(Arrays.asList(
+                        DeleteReceivedMatchingItem.builder()
+                                .matchingId(1L)
+                                .receiverDeleteStatus(ReceiverDeleteStatus.DELETED)
+                                .build(),
+                        DeleteReceivedMatchingItem.builder()
+                                .matchingId(2L)
+                                .receiverDeleteStatus(ReceiverDeleteStatus.DELETED)
+                                .build()
+                ))
+                .build();
+
+        // when
+        when(matchingService.deleteReceivedMatchingItems(anyLong(), any())).thenReturn(deleteReceivedMatchingItems);
+
+        final ResultActions resultActions = performDeleteReceivedMatchingItems(request);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("matchingIds")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("삭제 처리할 매칭 ID 목록")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부"),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드"),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지"),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("결과 데이터"),
+                                        fieldWithPath("result.deleteReceivedMatchingItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("삭제된 매칭 항목 목록"),
+                                        fieldWithPath("result.deleteReceivedMatchingItems[].matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("삭제된 매칭 ID"),
+                                        fieldWithPath("result.deleteReceivedMatchingItems[].receiverDeleteStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("삭제된 매칭의 삭제 상태")
+                                ))).andReturn();
+    }
+
+    @DisplayName("매칭 관리 발신함에서 매칭을 삭제 처리할 수 있다.")
+    @Test
+    void deleteRequestedMatchingItems() throws Exception {
+        // given
+        final DeleteRequestedMatchingRequest request = DeleteRequestedMatchingRequest.builder()
+                .matchingIds(Arrays.asList(
+                        1L,
+                        2L
+                ))
+                .build();
+
+        final DeleteRequestedMatchingItems deleteRequestedMatchingItems = DeleteRequestedMatchingItems.builder()
+                .deleteRequestedMatchingItems(Arrays.asList(
+                        DeleteRequestedMatchingItem.builder()
+                                .matchingId(1L)
+                                .senderDeleteStatus(SenderDeleteStatus.DELETED)
+                                .build(),
+                        DeleteRequestedMatchingItem.builder()
+                                .matchingId(2L)
+                                .senderDeleteStatus(SenderDeleteStatus.DELETED)
+                                .build()
+                ))
+                .build();
+        // when
+        when(matchingService.deleteRequestedMatchingItems(anyLong(), any())).thenReturn(deleteRequestedMatchingItems);
+
+        final ResultActions resultActions = performDeleteRequestedMatchingItems(request);
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("matchingIds")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("삭제 처리할 매칭 ID 목록")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부"),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드"),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지"),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("결과 데이터"),
+                                        fieldWithPath("result.deleteRequestedMatchingItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("삭제된 매칭 항목 목록"),
+                                        fieldWithPath("result.deleteRequestedMatchingItems[].matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("삭제된 매칭 ID"),
+                                        fieldWithPath("result.deleteRequestedMatchingItems[].senderDeleteStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("삭제된 매칭의 삭제 상태")
+                                ))).andReturn();
+    }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import liaison.linkit.matching.business.MatchingMapper;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
@@ -14,8 +15,14 @@ import liaison.linkit.matching.exception.ReceivedMatchingReadBadRequestException
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteReceivedMatchingRequest;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteRequestedMatchingRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
@@ -268,6 +275,60 @@ public class MatchingService {
                 .toList();
 
         return matchingMapper.toUpdateMatchingCompletedToReadItems(updateReceivedMatchingCompletedStateReadItems);
+    }
+
+    public DeleteRequestedMatchingItems deleteRequestedMatchingItems(
+            final Long memberId,
+            final DeleteRequestedMatchingRequest request
+    ) {
+        List<Long> matchingIds = request.getMatchingIds();
+
+        if (matchingIds == null || matchingIds.isEmpty()) {
+            throw new IllegalArgumentException("Request must include valid matching IDs.");
+        }
+
+        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
+
+        matchings.forEach(matching ->
+                matching.setReceiverDeleteStatus(ReceiverDeleteStatus.DELETED));
+
+        matchingCommandAdapter.updateAll(matchings);
+
+        List<DeleteRequestedMatchingItem> deleteRequestedMatchingItems = matchings.stream()
+                .map(matching -> new DeleteRequestedMatchingItem(
+                        matching.getId(),
+                        matching.getSenderDeleteStatus()
+                ))
+                .toList();
+
+        return matchingMapper.toDeleteRequestedMatchingItems(deleteRequestedMatchingItems);
+    }
+
+    public DeleteReceivedMatchingItems deleteReceivedMatchingItems(
+            final Long memberId,
+            final DeleteReceivedMatchingRequest request
+    ) {
+        List<Long> matchingIds = request.getMatchingIds();
+
+        if (matchingIds == null || matchingIds.isEmpty()) {
+            throw new IllegalArgumentException("Request must include valid matching IDs.");
+        }
+
+        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
+
+        matchings.forEach(matching ->
+                matching.setReceiverDeleteStatus(ReceiverDeleteStatus.DELETED));
+
+        matchingCommandAdapter.updateAll(matchings);
+
+        List<DeleteReceivedMatchingItem> deleteReceivedMatchingItems = matchings.stream()
+                .map(matching -> new DeleteReceivedMatchingItem(
+                        matching.getId(),
+                        matching.getReceiverDeleteStatus()
+                ))
+                .toList();
+
+        return matchingMapper.toDeleteReceivedMatchingItems(deleteReceivedMatchingItems);
     }
 
     private RequestedMatchingMenu toMatchingRequestedMenu(

@@ -5,6 +5,10 @@ import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.AddMatchingResponse;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
@@ -83,6 +87,22 @@ public class MatchingMapper {
     ) {
         return UpdateReceivedMatchingCompletedStateReadItems.builder()
                 .updateReceivedMatchingCompletedStateReadItems(items)
+                .build();
+    }
+
+    public DeleteReceivedMatchingItems toDeleteReceivedMatchingItems(
+            final List<DeleteReceivedMatchingItem> items
+    ) {
+        return DeleteReceivedMatchingItems.builder()
+                .deleteReceivedMatchingItems(items)
+                .build();
+    }
+
+    public DeleteRequestedMatchingItems toDeleteRequestedMatchingItems(
+            final List<DeleteRequestedMatchingItem> items
+    ) {
+        return DeleteRequestedMatchingItems.builder()
+                .deleteRequestedMatchingItems(items)
                 .build();
     }
 }

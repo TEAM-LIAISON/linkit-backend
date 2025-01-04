@@ -3,8 +3,10 @@ package liaison.linkit.matching.presentation.dto;
 import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
+import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,42 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MatchingResponseDTO {
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteRequestedMatchingItems {
+        @Builder.Default
+        private List<DeleteRequestedMatchingItem> deleteRequestedMatchingItems = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteRequestedMatchingItem {
+        private Long matchingId;
+        private SenderDeleteStatus senderDeleteStatus;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteReceivedMatchingItems {
+        @Builder.Default
+        private List<DeleteReceivedMatchingItem> deleteReceivedMatchingItems = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteReceivedMatchingItem {
+        private Long matchingId;
+        private ReceiverDeleteStatus receiverDeleteStatus;
+    }
 
     @Builder
     @Getter

@@ -80,6 +80,25 @@ public class MatchingController {
         return CommonResponse.onSuccess(matchingService.updateReceivedMatchingCompletedStateToRead(accessor.getMemberId(), request));
     }
 
+    // 매칭 수신함에서 삭제 처리
+    @PostMapping("/received/menu/delete")
+    @MemberOnly
+    public CommonResponse<MatchingResponseDTO.DeleteReceivedMatchingItems> deleteReceivedMatchingItems(
+            @Auth final Accessor accessor,
+            @RequestBody final MatchingRequestDTO.DeleteReceivedMatchingRequest request
+    ) {
+        return CommonResponse.onSuccess(matchingService.deleteReceivedMatchingItems(accessor.getMemberId(), request));
+    }
+
+    // 매칭 발신함에서 삭제 처리
+    @PostMapping("/requested/menu/delete")
+    @MemberOnly
+    public CommonResponse<MatchingResponseDTO.DeleteRequestedMatchingItems> deleteRequestedMatchingItems(
+            @Auth final Accessor accessor,
+            @RequestBody final MatchingRequestDTO.DeleteRequestedMatchingRequest request
+    ) {
+        return CommonResponse.onSuccess(matchingService.deleteRequestedMatchingItems(accessor.getMemberId(), request));
+    }
 
     // 매칭 발신함
     @GetMapping("/requested/menu")

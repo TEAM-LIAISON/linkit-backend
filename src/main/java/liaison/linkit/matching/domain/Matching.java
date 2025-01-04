@@ -87,4 +87,12 @@ public class Matching extends BaseDateTimeEntity {
     public void setReceiverReadStatus(final ReceiverReadStatus receiverReadStatus) {
         this.receiverReadStatus = receiverReadStatus;
     }
+
+    public void setReceiverDeleteStatus(final ReceiverDeleteStatus receiverDeleteStatus) {
+        this.receiverDeleteStatus = receiverDeleteStatus;
+    }
+
+    public void setSenderDeleteStatus(final SenderDeleteStatus senderDeleteStatus) {
+        this.senderDeleteStatus = senderDeleteStatus;
+    }
 }

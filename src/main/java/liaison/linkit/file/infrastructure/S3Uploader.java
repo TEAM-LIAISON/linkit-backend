@@ -33,9 +33,6 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.cloud-front-image-domain}")
     private String cloudFrontImageDomain;
 
-    @Value("${cloud.aws.s3.cloud-front-file-domain}")
-    private String cloudFrontFileDomain;
-
     private static final String PROFILE_MAIN_FOLDER = "profile/main/";
     private static final String PROFILE_LOG_FOLDER = "profile/log/";
     private static final String PROFILE_ACTIVITY_FOLDER = "profile/activity/";
@@ -208,7 +205,7 @@ public class S3Uploader {
         try (final InputStream inputStream = file.getInputStream()) {
             s3Client.putObject(bucket, s3Key, inputStream, metadata);
             log.info("파일 업로드 완료 : {}", s3Key);
-            return "https://" + cloudFrontFileDomain + "/" + s3Key;
+            return "https://" + cloudFrontImageDomain + "/file/" + s3Key;
         } catch (AmazonServiceException e) {
             log.error("파일 업로드 실패 : {}", s3Key, e);
             throw InvalidFilePathException.EXCEPTION;
