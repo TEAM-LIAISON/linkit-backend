@@ -1456,22 +1456,47 @@ include::{snippets}/matching-controller-test/get-matching-menu/response-fields.a
 
 ====
 *요청*
-include::{snippets}/matching-controller-test/get-matching-received-menu/http-request.adoc[]
-include::{snippets}/matching-controller-test/get-matching-received-menu/query-parameters.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching-menu/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching-menu/query-parameters.adoc[]
 
 *응답*
-include::{snippets}/matching-controller-test/get-matching-received-menu/http-response.adoc[]
-include::{snippets}/matching-controller-test/get-matching-received-menu/response-fields.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching-menu/response-fields.adoc[]
+
 ====
 
 === 매칭 관리 발신함 조회 (필터링 포함)
 
 ====
 *요청*
-include::{snippets}/matching-controller-test/get-matching-requested-menu/http-request.adoc[]
-include::{snippets}/matching-controller-test/get-matching-requested-menu/query-parameters.adoc[]
+include::{snippets}/matching-controller-test/get-requested-matching-menu/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-requested-matching-menu/query-parameters.adoc[]
 
 *응답*
-include::{snippets}/matching-controller-test/get-matching-requested-menu/http-response.adoc[]
-include::{snippets}/matching-controller-test/get-matching-requested-menu/response-fields.adoc[]
+include::{snippets}/matching-controller-test/get-requested-matching-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-requested-matching-menu/response-fields.adoc[]
+====
+
+=== 매칭 관리 수신함에서 요청 받은 매칭에 대해 읽음 처리
+
+====
+*요청*
+include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/http-request.adoc[]
+include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/http-response.adoc[]
+include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/response-fields.adoc[]
+====
+
+=== 매칭 관리 수신함에서 성사된 매칭에 대해 읽음 처리
+
+====
+*요청*
+include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/http-request.adoc[]
+include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/http-response.adoc[]
+include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/response-fields.adoc[]
 ====

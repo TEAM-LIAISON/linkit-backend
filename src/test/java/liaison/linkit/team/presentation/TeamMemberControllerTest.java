@@ -115,6 +115,7 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .acceptedTeamMemberItems(
                         Arrays.asList(
                                 AcceptedTeamMemberItem.builder()
+                                        .emailId("회원 유저 아이디")
                                         .profileImagePath("프로필 이미지 경로")
                                         .memberName("회원 이름")
                                         .majorPosition("포지션 대분류")
@@ -128,6 +129,7 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build(),
                                 AcceptedTeamMemberItem.builder()
+                                        .emailId("회원 유저 아이디")
                                         .profileImagePath("프로필 이미지 경로2")
                                         .memberName("회원 이름")
                                         .majorPosition("포지션 대분류")
@@ -176,6 +178,7 @@ public class TeamMemberControllerTest extends ControllerTest {
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("result").type(JsonFieldType.OBJECT).description("결과 데이터"),
                                         fieldWithPath("result.acceptedTeamMemberItems").type(JsonFieldType.ARRAY).description("수락된 팀 멤버 목록"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].emailId").type(JsonFieldType.STRING).description("회원의 유저 아이디"),
                                         fieldWithPath("result.acceptedTeamMemberItems[].profileImagePath").type(JsonFieldType.STRING).description("프로필 이미지 경로"),
                                         fieldWithPath("result.acceptedTeamMemberItems[].memberName").type(JsonFieldType.STRING).description("회원 이름"),
                                         fieldWithPath("result.acceptedTeamMemberItems[].majorPosition").type(JsonFieldType.STRING).description("포지션 대분류"),
@@ -214,6 +217,7 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .acceptedTeamMemberItems(
                         Arrays.asList(
                                 AcceptedTeamMemberItem.builder()
+                                        .emailId("회원 유저 아이디 1")
                                         .profileImagePath("프로필 이미지 경로 1")
                                         .memberName("회원 이름 1")
                                         .majorPosition("포지션 대분류 1")
@@ -227,6 +231,7 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build(),
                                 AcceptedTeamMemberItem.builder()
+                                        .emailId("회원 유저 아이디 2")
                                         .profileImagePath("프로필 이미지 경로 2")
                                         .memberName("회원 이름 2")
                                         .majorPosition("포지션 대분류 2")
@@ -293,6 +298,9 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.acceptedTeamMemberItems")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("초대 수락 완료된 팀 멤버 목록"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원의 유저 아이디"),
                                         fieldWithPath("result.acceptedTeamMemberItems[].profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),

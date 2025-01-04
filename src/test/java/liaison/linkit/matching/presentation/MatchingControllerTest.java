@@ -398,7 +398,7 @@ public class MatchingControllerTest extends ControllerTest {
 
     @DisplayName("매칭 관리 발신함의 정보를 조회할 수 있다.")
     @Test
-    void getMatchingRequestedMenu() throws Exception {
+    void getRequestedMatchingMenu() throws Exception {
         // given
         RequestedMatchingMenu requestedMatchingMenu1 = RequestedMatchingMenu.builder()
                 .matchingId(1L)
@@ -701,7 +701,7 @@ public class MatchingControllerTest extends ControllerTest {
                                 requestFields(
                                         fieldWithPath("matchingIds")
                                                 .type(JsonFieldType.ARRAY)
-                                                .description("매칭 ID 목록. 읽음 처리할 매칭 (MatchingStatusType -> REQUESTED && ReceiverReadStatus -> UNREAD_REQUESTED_MATCHING)인 항목들")
+                                                .description("매칭 ID 목록. 읽음 처리할 매칭 (MatchingStatusType -> COMPLETED && ReceiverReadStatus -> UNREAD_COMPLETED_MATCHING)인 항목들")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
