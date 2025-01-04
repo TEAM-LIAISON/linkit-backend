@@ -19,16 +19,34 @@ public class MatchingResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UpdateReceivedMatchingReadItems {
+    public static class UpdateReceivedMatchingCompletedStateReadItems {
         @Builder.Default
-        private List<UpdateReceivedMatchingReadItem> items = new ArrayList<UpdateReceivedMatchingReadItem>();
+        private List<UpdateReceivedMatchingCompletedStateReadItem> items = new ArrayList<>();
     }
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class UpdateReceivedMatchingReadItem {
+    public static class UpdateReceivedMatchingCompletedStateReadItem {
+        private Long memberId;
+        private ReceiverReadStatus receiverReadStatus;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReceivedMatchingRequestedStateToReadItems {
+        @Builder.Default
+        private List<UpdateReceivedMatchingRequestedStateToReadItem> items = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReceivedMatchingRequestedStateToReadItem {
         private Long memberId;
         private ReceiverReadStatus receiverReadStatus;
     }

@@ -8,8 +8,10 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.AddMatchingR
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingReadItem;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingReadItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 
 @Mapper
 public class MatchingMapper {
@@ -68,10 +70,18 @@ public class MatchingMapper {
                 .build();
     }
 
-    public UpdateReceivedMatchingReadItems toUpdateMatchingReceivedReadItems(
-            final List<UpdateReceivedMatchingReadItem> items
+    public UpdateReceivedMatchingRequestedStateToReadItems toUpdateMatchingReceivedToReadItems(
+            final List<UpdateReceivedMatchingRequestedStateToReadItem> items
     ) {
-        return UpdateReceivedMatchingReadItems.builder()
+        return UpdateReceivedMatchingRequestedStateToReadItems.builder()
+                .items(items)
+                .build();
+    }
+
+    public UpdateReceivedMatchingCompletedStateReadItems toUpdateMatchingCompletedToReadItems(
+            final List<UpdateReceivedMatchingCompletedStateReadItem> items
+    ) {
+        return UpdateReceivedMatchingCompletedStateReadItems.builder()
                 .items(items)
                 .build();
     }

@@ -12,7 +12,8 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingReadItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -62,14 +63,23 @@ public class MatchingController {
     // 매칭 수신함에서 (요청온 매칭) 읽음처리
     @GetMapping("/received/menu/requested/read")
     @MemberOnly
-    public CommonResponse<UpdateReceivedMatchingReadItems> updateReceivedMatchingReadState(
+    public CommonResponse<UpdateReceivedMatchingRequestedStateToReadItems> updateReceivedMatchingRequestedStateRead(
             @Auth final Accessor accessor,
             @RequestBody final UpdateReceivedMatchingReadRequest request
     ) {
-        return CommonResponse.onSuccess(matchingService.updateReceivedMatchingReadState(accessor.getMemberId(), request));
+        return CommonResponse.onSuccess(matchingService.updateReceivedMatchingRequestedStateToRead(accessor.getMemberId(), request));
     }
 
     // 매칭 수신함에서 (성사된 매칭) 읽음처리
+    @GetMapping("/received/menu/completed/read")
+    @MemberOnly
+    public CommonResponse<UpdateReceivedMatchingCompletedStateReadItems> updateReceivedMatchingCompletedStateRead(
+            @Auth final Accessor accessor,
+            @RequestBody final UpdateReceivedMatchingReadRequest request
+    ) {
+        return CommonResponse.onSuccess(matchingService.updateReceivedMatchingCompletedStateToRead(accessor.getMemberId(), request));
+    }
+
 
     // 매칭 발신함
     @GetMapping("/requested/menu")

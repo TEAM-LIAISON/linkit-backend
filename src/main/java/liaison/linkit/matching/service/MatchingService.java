@@ -8,6 +8,7 @@ import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.exception.CompletedMatchingReadBadRequestException;
 import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
 import liaison.linkit.matching.exception.ReceivedMatchingReadBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
@@ -18,8 +19,10 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingReadItem;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingReadItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
@@ -199,7 +202,7 @@ public class MatchingService {
         );
     }
 
-    public UpdateReceivedMatchingReadItems updateReceivedMatchingReadState(
+    public UpdateReceivedMatchingRequestedStateToReadItems updateReceivedMatchingRequestedStateToRead(
             final Long memberId,
             final UpdateReceivedMatchingReadRequest request
     ) {
@@ -225,16 +228,47 @@ public class MatchingService {
 
         matchingCommandAdapter.updateAll(matchings);
 
-        List<UpdateReceivedMatchingReadItem> updateReceivedMatchingReadItems = matchings.stream()
-                .map(matching -> new UpdateReceivedMatchingReadItem(
+        List<UpdateReceivedMatchingRequestedStateToReadItem> updateReceivedMatchingRequestedStateToReadItems = matchings.stream()
+                .map(matching -> new UpdateReceivedMatchingRequestedStateToReadItem(
                         matching.getId(),
                         matching.getReceiverReadStatus()
                 ))
                 .toList();
 
-        return matchingMapper.toUpdateMatchingReceivedReadItems(updateReceivedMatchingReadItems);
+        return matchingMapper.toUpdateMatchingReceivedToReadItems(updateReceivedMatchingRequestedStateToReadItems);
     }
 
+    public UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingCompletedStateToRead(
+            final Long memberId,
+            final UpdateReceivedMatchingReadRequest request
+    ) {
+        List<Long> matchingIds = request.getMatchingIds();
+
+        if (matchingIds == null || matchingIds.isEmpty()) {
+            throw new IllegalArgumentException("Request must include valid matching IDs.");
+        }
+
+        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
+
+        if (!matchings.stream()
+                .allMatch(matching -> matching.getMatchingStatusType().equals(MatchingStatusType.COMPLETED))) {
+            throw CompletedMatchingReadBadRequestException.EXCEPTION;
+        }
+
+        matchings.forEach(matching ->
+                matching.setReceiverReadStatus(ReceiverReadStatus.READ_COMPLETED_MATCHING));
+
+        matchingCommandAdapter.updateAll(matchings);
+
+        List<UpdateReceivedMatchingCompletedStateReadItem> updateReceivedMatchingCompletedStateReadItems = matchings.stream()
+                .map(matching -> new UpdateReceivedMatchingCompletedStateReadItem(
+                        matching.getId(),
+                        matching.getReceiverReadStatus()
+                ))
+                .toList();
+
+        return matchingMapper.toUpdateMatchingCompletedToReadItems(updateReceivedMatchingCompletedStateReadItems);
+    }
 
     private RequestedMatchingMenu toMatchingRequestedMenu(
             final Matching requestedMatchingItem
