@@ -80,29 +80,29 @@ public class TeamLogControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
-    private ResultActions performGetTeamLogViewItems(final String teamName) throws Exception {
+    private ResultActions performGetTeamLogViewItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/log/view", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log/view", teamCode)
         );
     }
 
-    private ResultActions performGetTeamLogItems(final String teamName) throws Exception {
+    private ResultActions performGetTeamLogItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/log", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performGetTeamLogItem(final String teamName, final Long teamLogId) throws Exception {
+    private ResultActions performGetTeamLogItem(final String teamCode, final Long teamLogId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/log/{teamLogId}", teamName, teamLogId)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log/{teamLogId}", teamCode, teamLogId)
         );
     }
 
-    private ResultActions performPostTeamLog(final String teamName, final AddTeamLogRequest addTeamLogRequest) throws Exception {
+    private ResultActions performPostTeamLog(final String teamCode, final AddTeamLogRequest addTeamLogRequest) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log", teamName)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -110,9 +110,9 @@ public class TeamLogControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performUpdateTeamLog(final String teamName, final Long teamLogId, final UpdateTeamLogRequest updateTeamLogRequest) throws Exception {
+    private ResultActions performUpdateTeamLog(final String teamCode, final Long teamLogId, final UpdateTeamLogRequest updateTeamLogRequest) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log/{teamLogId}", teamName, teamLogId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log/{teamLogId}", teamCode, teamLogId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,25 +120,25 @@ public class TeamLogControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performDeleteTeamLog(final String teamName, final Long teamLogId) throws Exception {
+    private ResultActions performDeleteTeamLog(final String teamCode, final Long teamLogId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamName}/log/{teamLogId}", teamName, teamLogId)
+                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamCode}/log/{teamLogId}", teamCode, teamLogId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performUpdateTeamLogType(final Long teamLogId, final String teamName) throws Exception {
+    private ResultActions performUpdateTeamLogType(final Long teamLogId, final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log/type/{teamLogId}", teamName, teamLogId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log/type/{teamLogId}", teamCode, teamLogId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performUpdateTeamLogPublicState(final String teamName, final Long teamLogId) throws Exception {
+    private ResultActions performUpdateTeamLogPublicState(final String teamCode, final Long teamLogId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/log/state/{teamLogId}", teamName, teamLogId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log/state/{teamLogId}", teamCode, teamLogId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -158,13 +158,13 @@ public class TeamLogControllerTest extends ControllerTest {
                 "multipart/form-data",
                 "./src/test/resources/static/images/logo.png".getBytes()
         );
-        final String teamName = "liaison";
+        final String teamCode = "liaison";
 
         // when
         when(teamLogService.addTeamLogBodyImage(anyLong(), any(), any())).thenReturn(addTeamLogBodyImageResponse);
 
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamName}/log/body/image", teamName)
+                RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamCode}/log/body/image", teamCode)
                         .file(teamLogBodyImage)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.MULTIPART_FORM_DATA)
@@ -181,8 +181,8 @@ public class TeamLogControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("teamName")
-                                        .description("팀 이름")
+                                parameterWithName("teamCode")
+                                        .description("팀 아이디 (팀 코드)")
                         ),
                         requestParts(
                                 partWithName("teamLogBodyImage").description("팀 본문 이미지")
@@ -256,8 +256,8 @@ public class TeamLogControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -337,8 +337,8 @@ public class TeamLogControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -412,8 +412,8 @@ public class TeamLogControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamLogId")
                                                 .description("팀 로그 ID")
                                 ),
@@ -486,8 +486,8 @@ public class TeamLogControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 requestFields(
                                         fieldWithPath("logTitle")
@@ -571,8 +571,8 @@ public class TeamLogControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamLogId")
                                                 .description("팀 로그 ID")
                                 ),
@@ -656,8 +656,8 @@ public class TeamLogControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamLogId")
                                                 .description("팀 로그 ID")
                                 ),
@@ -714,8 +714,8 @@ public class TeamLogControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamLogId")
                                                 .description("팀 로그 ID")
                                 ),
@@ -774,8 +774,8 @@ public class TeamLogControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamLogId")
                                                 .description("팀 로그 ID")
                                 ),

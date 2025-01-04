@@ -50,10 +50,12 @@ public class Team extends BaseEntity {
 
     public void updateTeam(
             final String teamName,
+            final String teamCode,
             final String teamShortDescription,
             final Boolean isTeamPublic
     ) {
         this.teamName = teamName;
+        this.teamCode = teamCode;
         this.teamShortDescription = teamShortDescription;
         this.isTeamPublic = isTeamPublic;
     }

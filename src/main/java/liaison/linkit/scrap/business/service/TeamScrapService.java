@@ -60,24 +60,24 @@ public class TeamScrapService {
     // 회원이 팀 스크랩 버튼을 눌렀을 떄의 메서드
     public TeamScrapResponseDTO.UpdateTeamScrap updateTeamScrap(
             final Long memberId,
-            final String teamName,
+            final String teamCode,
             final UpdateTeamScrapRequest updateTeamScrapRequest
     ) {
 
         boolean shouldAddScrap = updateTeamScrapRequest.isChangeScrapValue();
 
-        scrapValidator.validateSelfTeamScrap(memberId, teamName); // 자기 자신이 속한 팀 스크랩에 대한 예외 처리
+        scrapValidator.validateSelfTeamScrap(memberId, teamCode); // 자기 자신이 속한 팀 스크랩에 대한 예외 처리
         scrapValidator.validateMemberMaxTeamScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
 
-        boolean scrapExists = teamScrapQueryAdapter.existsByMemberIdAndTeamName(memberId, teamName);
+        boolean scrapExists = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, teamCode);
 
         if (scrapExists) {
-            handleExistingScrap(memberId, teamName, shouldAddScrap);
+            handleExistingScrap(memberId, teamCode, shouldAddScrap);
         } else {
-            handleNonExistingScrap(memberId, teamName, shouldAddScrap);
+            handleNonExistingScrap(memberId, teamCode, shouldAddScrap);
         }
 
-        return teamScrapMapper.toUpdateTeamScrap(teamName, shouldAddScrap);
+        return teamScrapMapper.toUpdateTeamScrap(teamCode, shouldAddScrap);
     }
 
     @Transactional(readOnly = true)
@@ -108,8 +108,8 @@ public class TeamScrapService {
             final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
             final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
 
-            final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamName(memberId, team.getTeamName());
-            final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamName(team.getTeamName());
+            final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, team.getTeamCode());
+            final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamCode());
 
             final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(team, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
             teamInformMenus.add(teamInformMenu);
@@ -118,21 +118,20 @@ public class TeamScrapService {
         return teamScrapMapper.toTeamInformMenus(teamInformMenus);
     }
 
-
     // 스크랩이 존재하는 경우 처리 메서드
-    private void handleExistingScrap(Long memberId, String teamName, boolean shouldAddScrap) {
+    private void handleExistingScrap(Long memberId, String teamCode, boolean shouldAddScrap) {
         if (!shouldAddScrap) {
-            teamScrapCommandAdapter.deleteByMemberIdAndTeamName(memberId, teamName);
+            teamScrapCommandAdapter.deleteByMemberIdAndTeamCode(memberId, teamCode);
         } else {
             throw BadRequestTeamScrapException.EXCEPTION;
         }
     }
 
     // 스크랩이 존재하지 않는 경우 처리 메서드
-    private void handleNonExistingScrap(Long memberId, String teamName, boolean shouldAddScrap) {
+    private void handleNonExistingScrap(Long memberId, String teamCode, boolean shouldAddScrap) {
         if (shouldAddScrap) {
             Member member = memberQueryAdapter.findById(memberId);
-            Team team = teamQueryAdapter.findByTeamName(teamName);
+            Team team = teamQueryAdapter.findByTeamCode(teamCode);
             TeamScrap teamScrap = new TeamScrap(null, member, team);
             teamScrapCommandAdapter.addTeamScrap(teamScrap);
         } else {

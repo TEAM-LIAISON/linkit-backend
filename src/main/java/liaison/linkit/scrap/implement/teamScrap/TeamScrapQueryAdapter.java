@@ -4,7 +4,6 @@ import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.scrap.domain.TeamScrap;
 import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;
-import liaison.linkit.scrap.exception.teamScrap.TeamScrapNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Adapter
@@ -16,16 +15,11 @@ public class TeamScrapQueryAdapter {
         return teamScrapRepository.findAllByMemberId(memberId);
     }
 
-    public TeamScrap findByTeamId(final Long teamId) {
-        return teamScrapRepository.findByTeamId(teamId)
-                .orElseThrow(() -> TeamScrapNotFoundException.EXCEPTION);
+    public boolean existsByMemberIdAndTeamCode(final Long memberId, final String teamCode) {
+        return teamScrapRepository.existsByMemberIdAndTeamCode(memberId, teamCode);
     }
 
-    public boolean existsByMemberIdAndTeamName(final Long memberId, final String teamName) {
-        return teamScrapRepository.existsByMemberIdAndTeamName(memberId, teamName);
-    }
-
-    public int countTotalTeamScrapByTeamName(final String teamName) {
-        return teamScrapRepository.countTotalTeamScrapByTeamName(teamName);
+    public int countTotalTeamScrapByTeamCode(final String teamCode) {
+        return teamScrapRepository.countTotalTeamScrapByTeamCode(teamCode);
     }
 }

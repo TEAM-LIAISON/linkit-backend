@@ -42,7 +42,7 @@ public class TeamMemberResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AcceptedTeamMemberItem {                // 초대 수락 완료
-        
+
         private String emailId;
 
         private String profileImagePath;                        // 프로필 이미지 경로
@@ -90,7 +90,7 @@ public class TeamMemberResponseDTO {
     @AllArgsConstructor
     public static class AddTeamMemberResponse {
         private String invitedTeamMemberEmail;
-        private String teamName;
+        private String teamCode;
     }
 
     @Getter

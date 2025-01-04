@@ -72,23 +72,23 @@ public class TeamMemberControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
-    private ResultActions performGetTeamMemberViewItems(final String teamName) throws Exception {
+    private ResultActions performGetTeamMemberViewItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/view", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/members/view", teamCode)
         );
     }
 
-    private ResultActions performGetTeamMemberEditItems(final String teamName) throws Exception {
+    private ResultActions performGetTeamMemberEditItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/edit", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/members/edit", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performPostTeamMember(final String teamName, final AddTeamMemberRequest request) throws Exception {
+    private ResultActions performPostTeamMember(final String teamCode, final AddTeamMemberRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/member", teamName)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/member", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -96,9 +96,9 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performUpdateTeamMemberType(final String teamName, final String emailId, final UpdateTeamMemberTypeRequest request) throws Exception {
+    private ResultActions performUpdateTeamMemberType(final String teamCode, final String emailId, final UpdateTeamMemberTypeRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/member/type/{emailId}", teamName, emailId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/member/type/{emailId}", teamCode, emailId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -160,8 +160,8 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -276,8 +276,8 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -360,7 +360,7 @@ public class TeamMemberControllerTest extends ControllerTest {
         // given
         final TeamMemberResponseDTO.AddTeamMemberResponse addTeamMemberResponse =
                 AddTeamMemberResponse.builder()
-                        .teamName("팀 이름")
+                        .teamCode("팀 아이디 (팀 코드)")
                         .invitedTeamMemberEmail("liaison@liaison.liaison")
                         .build();
 
@@ -383,8 +383,8 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 requestFields(
                                         fieldWithPath("teamMemberInvitationEmail")
@@ -413,9 +413,9 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.invitedTeamMemberEmail")
                                                 .type(JsonFieldType.STRING)
                                                 .description("초대된 팀원 이메일"),
-                                        fieldWithPath("result.teamName")
+                                        fieldWithPath("result.teamCode")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 이름")
+                                                .description("팀 아이디 (팀 코드)")
                                 )
                         )).andReturn();
 
@@ -458,8 +458,8 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("emailId")
                                                 .description("팀원의 이메일 ID")
                                 ),

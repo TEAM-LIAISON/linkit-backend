@@ -71,8 +71,8 @@ public class ScrapValidator {
         }
     }
 
-    public void validateSelfTeamScrap(final Long memberId, final String teamName) {
-        if (teamScrapQueryAdapter.existsByMemberIdAndTeamName(memberId, teamName)) {
+    public void validateSelfTeamScrap(final Long memberId, final String teamCode) {
+        if (teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, teamCode)) {
             throw ForbiddenTeamScrapException.EXCEPTION;
         }
     }

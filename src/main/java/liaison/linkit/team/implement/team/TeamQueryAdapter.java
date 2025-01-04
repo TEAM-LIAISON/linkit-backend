@@ -28,8 +28,8 @@ public class TeamQueryAdapter {
         return teamRepository.findById(teamId).orElseThrow(() -> TeamNotFoundException.EXCEPTION);
     }
 
-    public Team findByTeamName(final String teamName) {
-        return teamRepository.findByTeamName(teamName)
+    public Team findByTeamCode(final String teamCode) {
+        return teamRepository.findByTeamCode(teamCode)
                 .orElseThrow(() -> TeamNotFoundException.EXCEPTION);
     }
 

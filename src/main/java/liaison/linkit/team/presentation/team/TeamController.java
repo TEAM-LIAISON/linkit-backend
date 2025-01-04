@@ -39,31 +39,31 @@ public class TeamController {
     }
 
     // 팀 기본 정보 수정
-    @PostMapping("/team/{teamName}")
+    @PostMapping("/team/{teamCode}")
     @MemberOnly
     public CommonResponse<UpdateTeamResponse> updateTeam(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName,
+            @PathVariable final String teamCode,
             @RequestPart(required = false) MultipartFile teamLogoImage,
             @RequestPart @Valid TeamRequestDTO.UpdateTeamRequest updateTeamRequest
     ) {
-        return CommonResponse.onSuccess(teamService.updateTeam(accessor.getMemberId(), teamName, teamLogoImage, updateTeamRequest));
+        return CommonResponse.onSuccess(teamService.updateTeam(accessor.getMemberId(), teamCode, teamLogoImage, updateTeamRequest));
     }
 
     // 팀 상단 메뉴
-    @GetMapping("/team/{teamName}")
+    @GetMapping("/team/{teamCode}")
     @MemberOnly
     public CommonResponse<TeamResponseDTO.TeamDetail> getTeamDetail(
-            @PathVariable final String teamName,
+            @PathVariable final String teamCode,
             @Auth final Accessor accessor
     ) {
-        log.info("teamName = {}", teamName);
+        log.info("teamCode = {}", teamCode);
         if (accessor.isMember()) {
-            log.info("memberId = {}의 팀 이름 = {}에 대한 팀 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
-            return CommonResponse.onSuccess(teamService.getLoggedInTeamDetail(accessor.getMemberId(), teamName));
+            log.info("memberId = {}의 팀 코드 = {}에 대한 팀 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
+            return CommonResponse.onSuccess(teamService.getLoggedInTeamDetail(accessor.getMemberId(), teamCode));
         } else {
-            log.info("teamName = {}에 대한 팀 상세 조회 요청이 발생했습니다.", teamName);
-            return CommonResponse.onSuccess(teamService.getLoggedOutTeamDetail(teamName));
+            log.info("teamCode = {}에 대한 팀 상세 조회 요청이 발생했습니다.", teamCode);
+            return CommonResponse.onSuccess(teamService.getLoggedOutTeamDetail(teamCode));
         }
     }
 

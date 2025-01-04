@@ -59,9 +59,9 @@ public class TeamScrapControllerTest extends ControllerTest {
     @MockBean
     private TeamScrapService teamScrapService;
 
-    private ResultActions performUpdateTeamScrap(final String teamName, final UpdateTeamScrapRequest request) throws Exception {
+    private ResultActions performUpdateTeamScrap(final String teamCode, final UpdateTeamScrapRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/scrap/{teamName}", teamName)
+                RestDocumentationRequestBuilders.post("/api/v1/team/scrap/{teamCode}", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -87,7 +87,7 @@ public class TeamScrapControllerTest extends ControllerTest {
                 .build();
 
         final TeamScrapResponseDTO.UpdateTeamScrap updateTeamScrap = UpdateTeamScrap.builder()
-                .teamName("팀 이름")
+                .teamCode("팀 아이디 (팀 코드)")
                 .isTeamScrap(true)
                 .build();
 
@@ -105,8 +105,8 @@ public class TeamScrapControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 requestFields(
                                         fieldWithPath("changeScrapValue")
@@ -127,10 +127,10 @@ public class TeamScrapControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
-
-                                        fieldWithPath("result.teamName")
+                                        
+                                        fieldWithPath("result.teamCode")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 이름"),
+                                                .description("팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.isTeamScrap")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("변경된 팀 스크랩 여부 (true -> 스크랩한 상태 / false -> 스크랩하지 않은 상태)")

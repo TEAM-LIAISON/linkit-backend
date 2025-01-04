@@ -51,18 +51,18 @@ public class TeamProductService {
     private final S3Uploader s3Uploader;
 
     @Transactional(readOnly = true)
-    public TeamProductResponseDTO.TeamProductViewItems getTeamProductViewItems(final String teamName) {
-        log.info("팀 이름 = {}에 대한 프로덕트 View Items 조회 요청이 서비스 계층에 발생했습니다.", teamName);
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+    public TeamProductResponseDTO.TeamProductViewItems getTeamProductViewItems(final String teamCode) {
+        log.info("teamCode = {}에 대한 프로덕트 View Items 조회 요청이 서비스 계층에 발생했습니다.", teamCode);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final List<TeamProduct> teamProducts = teamProductQueryAdapter.getTeamProducts(team.getId());
         final Map<Long, List<ProductLink>> productLinksMap = productLinkQueryAdapter.getProductLinksMap(team.getId());
         return teamProductMapper.toTeamProductViewItems(teamProducts, productLinksMap, productSubImageQueryAdapter);
     }
 
     @Transactional(readOnly = true)
-    public TeamProductResponseDTO.TeamProductItems getTeamProductItems(final Long memberId, final String teamName) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 프로덕트 Items 조회 요청이 서비스 계층에 발생했습니다.", memberId, teamName);
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+    public TeamProductResponseDTO.TeamProductItems getTeamProductItems(final Long memberId, final String teamCode) {
+        log.info("memberId = {}의 teamCode = {}에 대한 프로덕트 Items 조회 요청이 서비스 계층에 발생했습니다.", memberId, teamCode);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         log.info("team={}", team);
         final List<TeamProduct> teamProducts = teamProductQueryAdapter.getTeamProducts(team.getId());
         log.info("teamProducts={}", teamProducts);
@@ -72,8 +72,8 @@ public class TeamProductService {
     }
 
     @Transactional(readOnly = true)
-    public TeamProductResponseDTO.TeamProductDetail getTeamProductDetail(final Long memberId, final String teamName, final Long teamProductId) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 프로덕트 Detail 조회 요청이 서비스 계층에 발생했습니다.", memberId, teamName);
+    public TeamProductResponseDTO.TeamProductDetail getTeamProductDetail(final Long memberId, final String teamCode, final Long teamProductId) {
+        log.info("memberId = {}의 teamCode = {}에 대한 프로덕트 Detail 조회 요청이 서비스 계층에 발생했습니다.", memberId, teamCode);
         final TeamProduct teamProduct = teamProductQueryAdapter.getTeamProduct(teamProductId);
 
         // 해당 포트폴리오(프로젝트)의 연결된 링크 조회
@@ -89,14 +89,14 @@ public class TeamProductService {
 
     public TeamProductResponseDTO.AddTeamProductResponse addTeamProduct(
             final Long memberId,
-            final String teamName,
+            final String teamCode,
             final TeamProductRequestDTO.AddTeamProductRequest addTeamProductRequest,
             final MultipartFile productRepresentImage,
             final List<MultipartFile> productSubImages
     ) {
         String productRepresentImagePath = null;
 
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         final TeamProduct teamProduct = teamProductMapper.toAddTeamProduct(team, addTeamProductRequest);
         final TeamProduct savedTeamProduct = teamProductCommandAdapter.addTeamProduct(teamProduct); // 포트폴리오 객체 우선 저장
@@ -145,7 +145,7 @@ public class TeamProductService {
     // 팀 프로덕트 업데이트
     public TeamProductResponseDTO.UpdateTeamProductResponse updateTeamProduct(
             final Long memberId,
-            final String teamName,
+            final String teamCode,
             final Long teamProductId,
             final TeamProductRequestDTO.UpdateTeamProductRequest updateTeamProductRequest,
             final MultipartFile productRepresentImage,
@@ -234,8 +234,8 @@ public class TeamProductService {
 
 
     // 팀 프로덕트 삭제
-    public TeamProductResponseDTO.RemoveTeamProductResponse removeTeamProduct(final Long memberId, final String teamName, final Long teamProductId) {
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+    public TeamProductResponseDTO.RemoveTeamProductResponse removeTeamProduct(final Long memberId, final String teamCode, final Long teamProductId) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         final TeamProduct teamProduct = teamProductQueryAdapter.getTeamProduct(teamProductId);
 

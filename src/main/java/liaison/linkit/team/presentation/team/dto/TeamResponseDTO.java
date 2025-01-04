@@ -61,6 +61,8 @@ public class TeamResponseDTO {
 
         private String teamName;
 
+        private String teamCode;
+
         private String teamShortDescription;
 
         @Builder.Default

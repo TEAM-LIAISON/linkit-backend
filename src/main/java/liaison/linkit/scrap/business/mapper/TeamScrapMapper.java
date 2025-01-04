@@ -11,11 +11,11 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenus
 public class TeamScrapMapper {
 
     public TeamScrapResponseDTO.UpdateTeamScrap toUpdateTeamScrap(
-            final String teamName,
+            final String teamCode,
             final boolean changeScrapValue
     ) {
         return UpdateTeamScrap.builder()
-                .teamName(teamName)
+                .teamCode(teamCode)
                 .isTeamScrap(changeScrapValue)
                 .build();
     }

@@ -28,25 +28,25 @@ public class TeamHistoryService {
     private final TeamHistoryMapper teamHistoryMapper;
 
     @Transactional(readOnly = true)
-    public TeamHistoryResponseDTO.TeamHistoryCalendarResponse getTeamHistoryCalendarResponses(final String teamName) {
-        final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamName);
+    public TeamHistoryResponseDTO.TeamHistoryCalendarResponse getTeamHistoryCalendarResponses(final String teamCode) {
+        final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamCode);
         return teamHistoryMapper.toTeamHistoryCalendar(teamHistories);
     }
 
     @Transactional(readOnly = true)
-    public TeamHistoryResponseDTO.TeamHistoryItems getTeamHistoryItems(final Long memberId, final String teamName) {
-        final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamName);
+    public TeamHistoryResponseDTO.TeamHistoryItems getTeamHistoryItems(final Long memberId, final String teamCode) {
+        final List<TeamHistory> teamHistories = teamHistoryQueryAdapter.getTeamHistories(teamCode);
         return teamHistoryMapper.toTeamHistoryItems(teamHistories);
     }
 
     @Transactional(readOnly = true)
-    public TeamHistoryResponseDTO.TeamHistoryDetail getTeamHistoryDetail(final Long memberId, final String teamName, final Long teamHistoryId) {
+    public TeamHistoryResponseDTO.TeamHistoryDetail getTeamHistoryDetail(final Long memberId, final String teamCode, final Long teamHistoryId) {
         final TeamHistory teamHistory = teamHistoryQueryAdapter.getTeamHistory(teamHistoryId);
         return teamHistoryMapper.toTeamHistoryDetail(teamHistory);
     }
 
-    public TeamHistoryResponseDTO.AddTeamHistoryResponse addTeamHistory(final Long memberId, final String teamName, final TeamHistoryRequestDTO.AddTeamHistoryRequest addTeamHistoryRequest) {
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+    public TeamHistoryResponseDTO.AddTeamHistoryResponse addTeamHistory(final Long memberId, final String teamCode, final TeamHistoryRequestDTO.AddTeamHistoryRequest addTeamHistoryRequest) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         log.info("team ={}", team);
         final TeamHistory teamHistory = teamHistoryMapper.toAddTeamHistory(team, addTeamHistoryRequest);
         log.info("teamHistory ={}", teamHistory);
@@ -57,13 +57,14 @@ public class TeamHistoryService {
     }
 
     public TeamHistoryResponseDTO.UpdateTeamHistoryResponse updateTeamHistory(
-            final Long memberId, final String teamName, final Long teamHistoryId, final UpdateTeamHistoryRequest updateTeamHistoryRequest) {
+            final Long memberId, final String teamCode, final Long teamHistoryId, final UpdateTeamHistoryRequest updateTeamHistoryRequest
+    ) {
         final TeamHistory updatedTeamHistory = teamHistoryCommandAdapter.updateTeamHistory(teamHistoryId, updateTeamHistoryRequest);
         return teamHistoryMapper.toUpdateTeamHistoryResponse(updatedTeamHistory);
     }
 
-    public TeamHistoryResponseDTO.RemoveTeamHistoryResponse removeTeamHistory(final Long memberId, final String teamName, final Long teamHistoryId) {
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+    public TeamHistoryResponseDTO.RemoveTeamHistoryResponse removeTeamHistory(final Long memberId, final String teamCode, final Long teamHistoryId) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final TeamHistory teamHistory = teamHistoryQueryAdapter.getTeamHistory(teamHistoryId);
 
         teamHistoryCommandAdapter.removeTeamHistory(teamHistory);

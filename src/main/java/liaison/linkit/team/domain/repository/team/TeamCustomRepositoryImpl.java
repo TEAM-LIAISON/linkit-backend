@@ -28,12 +28,12 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<Team> findByTeamName(final String teamName) {
+    public Optional<Team> findByTeamCode(final String teamCode) {
         QTeam qTeam = QTeam.team;
 
         Team team = jpaQueryFactory
                 .selectFrom(qTeam)
-                .where(qTeam.teamName.eq(teamName))
+                .where(qTeam.teamCode.eq(teamCode))
                 .fetchOne();
 
         return Optional.ofNullable(team);

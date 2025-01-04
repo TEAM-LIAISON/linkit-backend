@@ -100,7 +100,7 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
     }
 
     @Override
-    public boolean existingRepresentativeTeamLogByTeam(final Long teamId) {
+    public boolean existsRepresentativeTeamLogByTeam(final Long teamId) {
         QTeamLog qTeamLog = QTeamLog.teamLog;
 
         return queryFactory

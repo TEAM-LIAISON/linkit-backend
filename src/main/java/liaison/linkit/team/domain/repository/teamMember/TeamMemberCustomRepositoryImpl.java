@@ -18,18 +18,6 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public boolean existsTeamMemberByMemberIdAndTeamId(final Long memberId, final Long teamId) {
-        QTeamMember qTeamMember = QTeamMember.teamMember;
-
-        return jpaQueryFactory
-                .selectOne()
-                .from(qTeamMember)
-                .where(qTeamMember.member.id.eq(memberId)
-                        .and(qTeamMember.team.id.eq(teamId)))
-                .fetchFirst() != null;
-    }
-
-    @Override
     public List<TeamMember> getTeamMembers(final Long teamId) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
 
@@ -102,8 +90,8 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
     }
 
     @Override
-    public TeamMember getTeamMemberByTeamNameAndEmailId(
-            final String teamName,
+    public TeamMember getTeamMemberByTeamCodeAndEmailId(
+            final String teamCode,
             final String emailId
     ) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
@@ -113,7 +101,7 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .selectFrom(qTeamMember)
                 .join(qTeamMember.member, qMember)
                 .where(
-                        qTeamMember.team.teamName.eq(teamName),
+                        qTeamMember.team.teamCode.eq(teamCode),
                         qMember.emailId.eq(emailId)
                 )
                 .fetchOne();

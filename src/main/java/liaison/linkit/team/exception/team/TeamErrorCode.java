@@ -15,7 +15,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TeamErrorCode implements BaseErrorCode {
 
-    TEAM_NOT_FOUND(NOT_FOUND, "TEAM_404_1", "해당하는 팀을 찾을 수 없습니다."),
+    TEAM_NOT_FOUND(NOT_FOUND, "TEAM_404_1", "해당하는 TeamCode를 가진 팀을 찾을 수 없습니다."),
     DUPLICATE_TEAM_CODE(DUPLICATE, "TEAM_409_1", "이미 존재하는 팀 아이디입니다.");
 
     private final Integer status;

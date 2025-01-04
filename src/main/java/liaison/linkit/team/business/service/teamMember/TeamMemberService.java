@@ -57,9 +57,9 @@ public class TeamMemberService {
     private final TeamMemberInvitationMailService teamMemberInvitationMailService;
     private final RegionMapper regionMapper;
 
-    public TeamMemberViewItems getTeamMemberViewItems(final String teamName) {
+    public TeamMemberViewItems getTeamMemberViewItems(final String teamCode) {
         // 1. 팀 조회
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         // 2. 팀 멤버 조회 (TeamMember)에 등록된 팀원만 조회된다. (수락한 팀원)
         final List<TeamMember> teamMembers = teamMemberQueryAdapter.getTeamMembers(team.getId());
@@ -74,12 +74,12 @@ public class TeamMemberService {
 
     public TeamMemberResponseDTO.AddTeamMemberResponse addTeamMember(
             final Long memberId,
-            final String teamName,
+            final String teamCode,
             final AddTeamMemberRequest addTeamMemberRequest
     ) throws MessagingException {
         final String teamMemberInvitationEmail = addTeamMemberRequest.getTeamMemberInvitationEmail();
 
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         if (teamMemberInvitationQueryAdapter.existsByEmailAndTeam(teamMemberInvitationEmail, team)) {
             throw TeamMemberInvitationDuplicateException.EXCEPTION;
@@ -100,12 +100,12 @@ public class TeamMemberService {
 
     public TeamMemberResponseDTO.UpdateTeamMemberTypeResponse updateTeamMemberType(
             final Long memberId,
-            final String teamName,
+            final String teamCode,
             final String emailId,
             final UpdateTeamMemberTypeRequest updateTeamMemberTypeRequest
     ) {
         // 1. TeamMember 엔티티 조회
-        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamNameAndEmailId(teamName, emailId);
+        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
 
         final TeamMemberType requestedTeamMemberType = updateTeamMemberTypeRequest.getTeamMemberType();
         if (requestedTeamMemberType == teamMember.getTeamMemberType()) {
@@ -117,9 +117,9 @@ public class TeamMemberService {
         return teamMemberMapper.toUpdateTeamMemberTypeResponse(teamMember);
     }
 
-    public TeamMemberResponseDTO.TeamMemberItems getTeamMemberItems(final Long memberId, final String teamName) {
+    public TeamMemberResponseDTO.TeamMemberItems getTeamMemberItems(final Long memberId, final String teamCode) {
         // 팀 이름으로 팀 정보 조회
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         // 해당 팀의 모든 팀 멤버 조회
         final List<TeamMember> teamMembers = teamMemberQueryAdapter.getTeamMembers(team.getId());

@@ -22,14 +22,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamScrapController {
     private final TeamScrapService teamScrapService;
 
-    @PostMapping("/{teamName}")
+    @PostMapping("/{teamCode}")
     @MemberOnly
     public CommonResponse<TeamScrapResponseDTO.UpdateTeamScrap> updateTeamScrap(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName,
+            @PathVariable final String teamCode,
             @RequestBody final TeamScrapRequestDTO.UpdateTeamScrapRequest updateTeamScrapRequest  // 변경하고자 하는 boolean 상태
     ) {
-        return CommonResponse.onSuccess(teamScrapService.updateTeamScrap(accessor.getMemberId(), teamName, updateTeamScrapRequest));
+        return CommonResponse.onSuccess(teamScrapService.updateTeamScrap(accessor.getMemberId(), teamCode, updateTeamScrapRequest));
     }
 
     // 내가 스크랩한 목록 전체 조회

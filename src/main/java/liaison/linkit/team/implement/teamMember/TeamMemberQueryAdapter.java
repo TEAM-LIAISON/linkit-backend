@@ -36,7 +36,7 @@ public class TeamMemberQueryAdapter {
         return teamMemberRepository.getAllTeamsInOwnerStateByMemberId(memberId);
     }
 
-    public TeamMember getTeamMemberByTeamNameAndEmailId(final String teamName, final String emailId) {
-        return teamMemberRepository.getTeamMemberByTeamNameAndEmailId(teamName, emailId);
+    public TeamMember getTeamMemberByTeamCodeAndEmailId(final String teamCode, final String emailId) {
+        return teamMemberRepository.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
     }
 }

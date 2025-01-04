@@ -51,6 +51,7 @@ public class TeamMapper {
         return TeamResponseDTO.UpdateTeamResponse.builder()
                 .teamId(team.getId())
                 .teamName(team.getTeamName())
+                .teamCode(team.getTeamCode())
                 .teamShortDescription(team.getTeamShortDescription())
                 .teamScaleItem(teamScaleItem)
                 .regionDetail(regionDetail)

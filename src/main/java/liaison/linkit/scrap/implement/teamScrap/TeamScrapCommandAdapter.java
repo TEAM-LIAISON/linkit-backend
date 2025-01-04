@@ -18,7 +18,7 @@ public class TeamScrapCommandAdapter {
         teamScrapRepository.delete(teamScrap);
     }
 
-    public void deleteByMemberIdAndTeamName(final Long memberId, final String teamName) {
-        teamScrapRepository.deleteByMemberIdAndTeamName(memberId, teamName);
+    public void deleteByMemberIdAndTeamCode(final Long memberId, final String teamCode) {
+        teamScrapRepository.deleteByMemberIdAndTeamCode(memberId, teamCode);
     }
 }

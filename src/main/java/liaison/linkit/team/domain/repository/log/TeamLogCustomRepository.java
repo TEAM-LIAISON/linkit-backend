@@ -16,7 +16,7 @@ public interface TeamLogCustomRepository {
 
     TeamLog updateTeamLogPublicState(final TeamLog teamLog, final boolean isTeamLogCurrentPublicState);
 
-    boolean existingRepresentativeTeamLogByTeam(final Long teamId);
+    boolean existsRepresentativeTeamLogByTeam(final Long teamId);
 
     TeamLog updateTeamLog(final TeamLog teamLog, final UpdateTeamLogRequest updateTeamLogRequest);
 }

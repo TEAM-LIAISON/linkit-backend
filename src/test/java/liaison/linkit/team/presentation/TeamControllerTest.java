@@ -69,9 +69,9 @@ public class TeamControllerTest extends ControllerTest {
     @MockBean
     private TeamService teamService;
 
-    private ResultActions performGetTeamDetail(final String teamName) throws Exception {
+    private ResultActions performGetTeamDetail(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -279,6 +279,7 @@ public class TeamControllerTest extends ControllerTest {
         // given
         final UpdateTeamRequest updateTeamRequest = UpdateTeamRequest.builder()
                 .teamName("리에종")
+                .teamCode("팀 아이디 (팀 코드)")
                 .teamShortDescription("팀 한 줄 소개")
                 .scaleName("팀 규모")
                 .cityName("팀 활동지역 시/도")
@@ -305,6 +306,7 @@ public class TeamControllerTest extends ControllerTest {
                 .teamId(1L)
                 .teamLogoImagePath("팀 로고 이미지 경로")
                 .teamName("팀 이름")
+                .teamCode("팀 아이디 (팀 코드)")
                 .teamShortDescription("팀 한 줄 소개")
                 .teamScaleItem(
                         TeamScaleItem.builder()
@@ -335,7 +337,7 @@ public class TeamControllerTest extends ControllerTest {
         when(teamService.updateTeam(anyLong(), any(), any(), any())).thenReturn(updateTeamResponse);
 
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamName}", "liaison")
+                RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamCode}", "liaison")
                         .file(teamLogoImage)
                         .file(updateRequest)
                         .accept(APPLICATION_JSON)
@@ -353,8 +355,8 @@ public class TeamControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 requestParts(
                                         partWithName("updateTeamRequest").description("팀 기본 정보 수정 요청 객체"),
@@ -365,6 +367,10 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)")
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("teamShortDescription")
                                                 .type(JsonFieldType.STRING)
@@ -413,6 +419,9 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
+                                        fieldWithPath("result.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.teamShortDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 한 줄 소개"),
@@ -508,8 +517,8 @@ public class TeamControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")

@@ -22,7 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/team/{teamName}/product")
+@RequestMapping("/api/v1/team/{teamCode}/product")
 @Slf4j
 public class TeamProductController {
 
@@ -31,9 +31,9 @@ public class TeamProductController {
     // 팀 프로덕트 뷰어 전체 조회
     @GetMapping("/view")
     public CommonResponse<TeamProductResponseDTO.TeamProductViewItems> getTeamProductViewItems(
-            @PathVariable final String teamName
+            @PathVariable final String teamCode
     ) {
-        return CommonResponse.onSuccess(teamProductService.getTeamProductViewItems(teamName));
+        return CommonResponse.onSuccess(teamProductService.getTeamProductViewItems(teamCode));
     }
 
     // 팀 프로덕트 전체 조회
@@ -41,10 +41,10 @@ public class TeamProductController {
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.TeamProductItems> getTeamProductItems(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName
+            @PathVariable final String teamCode
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 프로덕트 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
-        return CommonResponse.onSuccess(teamProductService.getTeamProductItems(accessor.getMemberId(), teamName));
+        log.info("memberId = {}의 teamCode = {}에 대한 팀 프로덕트 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
+        return CommonResponse.onSuccess(teamProductService.getTeamProductItems(accessor.getMemberId(), teamCode));
     }
 
     // 팀 프로덕트 단일 조회
@@ -52,11 +52,11 @@ public class TeamProductController {
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.TeamProductDetail> getTeamProductDetail(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName,
+            @PathVariable final String teamCode,
             @PathVariable final Long teamProductId
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 프로덕트 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamName);
-        return CommonResponse.onSuccess(teamProductService.getTeamProductDetail(accessor.getMemberId(), teamName, teamProductId));
+        log.info("memberId = {}의 teamCode = {}에 대한 팀 프로덕트 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
+        return CommonResponse.onSuccess(teamProductService.getTeamProductDetail(accessor.getMemberId(), teamCode, teamProductId));
     }
 
     // 팀 프로덕트 생성
@@ -64,13 +64,13 @@ public class TeamProductController {
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.AddTeamProductResponse> addTeamProduct(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName,
+            @PathVariable final String teamCode,
             @RequestPart @Valid final TeamProductRequestDTO.AddTeamProductRequest addTeamProductRequest,
             @RequestPart(required = false) MultipartFile productRepresentImage,
             @RequestPart(required = false) List<MultipartFile> productSubImages
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 프로덕트 단일 생성 요청이 발생했습니다.", accessor.getMemberId(), teamName);
-        return CommonResponse.onSuccess(teamProductService.addTeamProduct(accessor.getMemberId(), teamName, addTeamProductRequest, productRepresentImage, productSubImages));
+        log.info("memberId = {}의 teamCode = {}에 대한 팀 프로덕트 단일 생성 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
+        return CommonResponse.onSuccess(teamProductService.addTeamProduct(accessor.getMemberId(), teamCode, addTeamProductRequest, productRepresentImage, productSubImages));
     }
 
     // 팀 프로덕트 수정
@@ -78,14 +78,14 @@ public class TeamProductController {
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.UpdateTeamProductResponse> updateTeamProduct(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName,
+            @PathVariable final String teamCode,
             @PathVariable final Long teamProductId,
             @RequestPart @Valid final TeamProductRequestDTO.UpdateTeamProductRequest updateTeamProductRequest,
             @RequestPart(required = false) MultipartFile productRepresentImage,
             @RequestPart(required = false) List<MultipartFile> productSubImages
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 프로덕트 단일 수정 요청이 발생했습니다.", accessor.getMemberId(), teamName);
-        return CommonResponse.onSuccess(teamProductService.updateTeamProduct(accessor.getMemberId(), teamName, teamProductId, updateTeamProductRequest, productRepresentImage, productSubImages));
+        log.info("memberId = {}의 teamCode = {}에 대한 팀 프로덕트 단일 수정 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
+        return CommonResponse.onSuccess(teamProductService.updateTeamProduct(accessor.getMemberId(), teamCode, teamProductId, updateTeamProductRequest, productRepresentImage, productSubImages));
     }
 
     // 팀 프로덕트 삭제
@@ -93,10 +93,10 @@ public class TeamProductController {
     @MemberOnly
     public CommonResponse<TeamProductResponseDTO.RemoveTeamProductResponse> removeTeamProduct(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName,
+            @PathVariable final String teamCode,
             @PathVariable final Long teamProductId
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀 프로덕트 단일 삭제 요청이 발생했습니다.", accessor.getMemberId(), teamName);
-        return CommonResponse.onSuccess(teamProductService.removeTeamProduct(accessor.getMemberId(), teamName, teamProductId));
+        log.info("memberId = {}의 teamCode = {}에 대한 팀 프로덕트 단일 삭제 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
+        return CommonResponse.onSuccess(teamProductService.removeTeamProduct(accessor.getMemberId(), teamCode, teamProductId));
     }
 }

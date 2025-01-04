@@ -14,15 +14,16 @@ import liaison.linkit.image.domain.Image;
 import liaison.linkit.image.implement.ImageCommandAdapter;
 import liaison.linkit.image.implement.ImageQueryAdapter;
 import liaison.linkit.image.util.ImageUtils;
+import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.team.business.mapper.log.TeamLogMapper;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.domain.log.TeamLogImage;
-import liaison.linkit.team.implement.team.TeamQueryAdapter;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.log.TeamLogCommandAdapter;
 import liaison.linkit.team.implement.log.TeamLogImageCommandAdapter;
 import liaison.linkit.team.implement.log.TeamLogImageQueryAdapter;
 import liaison.linkit.team.implement.log.TeamLogQueryAdapter;
+import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogRequest;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
@@ -61,33 +62,32 @@ public class TeamLogService {
     private final S3Uploader s3Uploader;
 
     @Transactional(readOnly = true)
-    public TeamLogResponseDTO.TeamLogItems getTeamLogViewItems(final String teamName) {
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+    public TeamLogResponseDTO.TeamLogItems getTeamLogViewItems(final String teamCode) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final List<TeamLog> teamLogs = teamLogQueryAdapter.getTeamLogsPublic(team.getId());
 
         return teamLogMapper.toTeamLogItems(teamLogs);
     }
 
     @Transactional(readOnly = true)
-    public TeamLogResponseDTO.TeamLogItems getTeamLogItems(final Long memberId, final String teamName) {
+    public TeamLogResponseDTO.TeamLogItems getTeamLogItems(final Long memberId, final String teamCode) {
         log.info("memberId = {}의 팀 로그 Items 조회 요청 발생했습니다.", memberId);
 
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final List<TeamLog> teamLogs = teamLogQueryAdapter.getTeamLogs(team.getId());
 
         return teamLogMapper.toTeamLogItems(teamLogs);
     }
 
     @Transactional(readOnly = true)
-    public TeamLogItem getTeamLogItem(final String teamName, final Long teamLogId) {
+    public TeamLogItem getTeamLogItem(final String teamCode, final Long teamLogId) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
         return teamLogMapper.toTeamLogItem(teamLog);
     }
 
     // 팀 로그 본문 이미지 추가
-    public AddTeamLogBodyImageResponse addTeamLogBodyImage(final Long memberId, final String teamName, final MultipartFile teamLogBodyImage) {
+    public AddTeamLogBodyImageResponse addTeamLogBodyImage(final Long memberId, final String teamCode, final MultipartFile teamLogBodyImage) {
         String teamLogBodyImagePath = null;
-        log.info("memberId = {}의 팀 로그 본문에 대한 이미지 추가 요청이 발생했습니다.", memberId);
 
         // 버켓에만 저장함
         if (imageValidator.validatingImageUpload(teamLogBodyImage)) {
@@ -102,9 +102,15 @@ public class TeamLogService {
     }
 
     // 팀 로그 생성
-    public AddTeamLogResponse addTeamLog(final Long memberId, final String teamName, final TeamLogRequestDTO.AddTeamLogRequest addTeamLogRequest) {
+    public AddTeamLogResponse addTeamLog(final Long memberId, final String teamCode, final TeamLogRequestDTO.AddTeamLogRequest addTeamLogRequest) {
         // 1. 팀 조회
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+
+        LogType addTeamLogType = GENERAL_LOG;
+
+        if (!teamLogQueryAdapter.existsRepresentativeTeamLogByTeam(team.getId())) {
+            addTeamLogType = LogType.REPRESENTATIVE_LOG;
+        }
 
         // 2. TeamLog 엔티티 생성 및 저장
         final TeamLog teamLog = new TeamLog(
@@ -113,7 +119,7 @@ public class TeamLogService {
                 addTeamLogRequest.getLogTitle(),
                 addTeamLogRequest.getLogContent(),
                 addTeamLogRequest.getIsLogPublic(),
-                GENERAL_LOG
+                addTeamLogType
         );
 
         final TeamLog savedTeamLog = teamLogCommandAdapter.addTeamLog(teamLog);
@@ -141,7 +147,7 @@ public class TeamLogService {
     }
 
     // 팀 로그 수정
-    public TeamLogResponseDTO.UpdateTeamLogResponse updateTeamLog(final Long memberId, final String teamName, final Long teamLogId, final UpdateTeamLogRequest updateTeamLogRequest) {
+    public TeamLogResponseDTO.UpdateTeamLogResponse updateTeamLog(final Long memberId, final String teamCode, final Long teamLogId, final UpdateTeamLogRequest updateTeamLogRequest) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
 
         final TeamLog updatedTeamLog = teamLogCommandAdapter.updateTeamLog(teamLog, updateTeamLogRequest);
@@ -196,7 +202,7 @@ public class TeamLogService {
     }
 
     // 팀 로그 삭제
-    public RemoveTeamLogResponse removeTeamLog(final Long memberId, final String teamName, final Long teamLogId) {
+    public RemoveTeamLogResponse removeTeamLog(final Long memberId, final String teamCode, final Long teamLogId) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
         List<TeamLogImage> teamLogImages = teamLogImageQueryAdapter.findByTeamLog(teamLog);
 
@@ -215,16 +221,16 @@ public class TeamLogService {
     }
 
     // 팀 로그 대표글로 수정
-    public UpdateTeamLogTypeResponse updateTeamLogType(final Long memberId, final String teamName, final Long teamLogId) {
+    public UpdateTeamLogTypeResponse updateTeamLogType(final Long memberId, final String teamCode, final Long teamLogId) {
         // 1. TeamLog 엔티티 조회
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
 
         // 2. 현재 프로필 조회
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         // 3. 기존 대표 로그 조회
         TeamLog existingRepresentativeTeamLog = null;
-        if (teamLogQueryAdapter.existingRepresentativeTeamLogByTeam(team.getId())) {
+        if (teamLogQueryAdapter.existsRepresentativeTeamLogByTeam(team.getId())) {
             existingRepresentativeTeamLog = teamLogQueryAdapter.getRepresentativeTeamLog(team.getId());
         }
 
@@ -239,7 +245,7 @@ public class TeamLogService {
     }
 
     // 팀 로그 공개 여부 수정
-    public UpdateTeamLogPublicStateResponse updateTeamLogPublicState(final Long memberId, final String teamName, final Long teamLogId) {
+    public UpdateTeamLogPublicStateResponse updateTeamLogPublicState(final Long memberId, final String teamCode, final Long teamLogId) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
         final boolean isTeamLogCurrentPublicState = teamLog.isLogPublic();
         final TeamLog updatedTeamLog = teamLogCommandAdapter.updateTeamLogPublicState(teamLog, isTeamLogCurrentPublicState);

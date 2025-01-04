@@ -55,7 +55,7 @@ public class TeamMemberMapper {
     ) {
         return AddTeamMemberResponse.builder()
                 .invitedTeamMemberEmail(teamMemberInvitation.getTeamMemberInvitationEmail())
-                .teamName(teamMemberInvitation.getTeam().getTeamName())
+                .teamCode(teamMemberInvitation.getTeam().getTeamCode())
                 .build();
     }
 
