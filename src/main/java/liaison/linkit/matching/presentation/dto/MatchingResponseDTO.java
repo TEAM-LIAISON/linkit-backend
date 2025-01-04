@@ -21,7 +21,7 @@ public class MatchingResponseDTO {
     @AllArgsConstructor
     public static class UpdateReceivedMatchingCompletedStateReadItems {
         @Builder.Default
-        private List<UpdateReceivedMatchingCompletedStateReadItem> items = new ArrayList<>();
+        private List<UpdateReceivedMatchingCompletedStateReadItem> updateReceivedMatchingCompletedStateReadItems = new ArrayList<>();
     }
 
     @Builder
@@ -29,7 +29,7 @@ public class MatchingResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateReceivedMatchingCompletedStateReadItem {
-        private Long memberId;
+        private Long matchingId;
         private ReceiverReadStatus receiverReadStatus;
     }
 
@@ -39,7 +39,7 @@ public class MatchingResponseDTO {
     @AllArgsConstructor
     public static class UpdateReceivedMatchingRequestedStateToReadItems {
         @Builder.Default
-        private List<UpdateReceivedMatchingRequestedStateToReadItem> items = new ArrayList<>();
+        private List<UpdateReceivedMatchingRequestedStateToReadItem> updateReceivedMatchingRequestedStateToReadItems = new ArrayList<>();
     }
 
     @Builder
@@ -47,7 +47,7 @@ public class MatchingResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateReceivedMatchingRequestedStateToReadItem {
-        private Long memberId;
+        private Long matchingId;
         private ReceiverReadStatus receiverReadStatus;
     }
 

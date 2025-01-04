@@ -74,7 +74,7 @@ public class MatchingMapper {
             final List<UpdateReceivedMatchingRequestedStateToReadItem> items
     ) {
         return UpdateReceivedMatchingRequestedStateToReadItems.builder()
-                .items(items)
+                .updateReceivedMatchingRequestedStateToReadItems(items)
                 .build();
     }
 
@@ -82,7 +82,7 @@ public class MatchingMapper {
             final List<UpdateReceivedMatchingCompletedStateReadItem> items
     ) {
         return UpdateReceivedMatchingCompletedStateReadItems.builder()
-                .items(items)
+                .updateReceivedMatchingCompletedStateReadItems(items)
                 .build();
     }
 }

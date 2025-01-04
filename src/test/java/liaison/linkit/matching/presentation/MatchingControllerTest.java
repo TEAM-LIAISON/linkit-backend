@@ -9,6 +9,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -28,9 +29,14 @@ import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.matching.service.MatchingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -108,6 +114,32 @@ public class MatchingControllerTest extends ControllerTest {
                         .param("page", String.valueOf(page))
                         .param("size", String.valueOf(size))
                         .contentType(MediaType.APPLICATION_JSON)
+                        .characterEncoding("UTF-8")
+        );
+    }
+
+    private ResultActions performUpdateReceivedMatchingRequestedStateRead(
+            final UpdateReceivedMatchingReadRequest request
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/requested/read")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .characterEncoding("UTF-8")
+        );
+    }
+
+    private ResultActions performUpdateReceivedMatchingCompletedStateRead(
+            final UpdateReceivedMatchingReadRequest request
+    ) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/completed/read")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
                         .characterEncoding("UTF-8")
         );
     }
@@ -559,4 +591,141 @@ public class MatchingControllerTest extends ControllerTest {
                 )
                 .andReturn();
     }
+
+    @DisplayName("매칭 관리 수신함에서 Requested 상태 매칭을 읽음 처리할 수 있다.")
+    @Test
+    void updateReceivedMatchingRequestedStateRead() throws Exception {
+        // given
+        final UpdateReceivedMatchingReadRequest request = UpdateReceivedMatchingReadRequest.builder()
+                .matchingIds(Arrays.asList(
+                        1L,
+                        2L
+                ))
+                .build();
+
+        final UpdateReceivedMatchingRequestedStateToReadItems updateReceivedMatchingRequestedStateToReadItems
+                = UpdateReceivedMatchingRequestedStateToReadItems.builder()
+                .updateReceivedMatchingRequestedStateToReadItems(Arrays.asList(
+                        UpdateReceivedMatchingRequestedStateToReadItem.builder()
+                                .matchingId(1L)
+                                .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
+                                .build(),
+                        UpdateReceivedMatchingRequestedStateToReadItem.builder()
+                                .matchingId(2L)
+                                .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
+                                .build()
+                ))
+                .build();
+
+        // when
+        when(matchingService.updateReceivedMatchingRequestedStateToRead(anyLong(), any())).thenReturn(updateReceivedMatchingRequestedStateToReadItems);
+
+        final ResultActions resultActions = performUpdateReceivedMatchingRequestedStateRead(request);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("matchingIds")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("매칭 ID 목록. 읽음 처리할 매칭 (MatchingStatusType -> REQUESTED && ReceiverReadStatus -> UNREAD_REQUESTED_MATCHING)인 항목들")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부"),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드"),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지"),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("결과 데이터"),
+                                        fieldWithPath("result.updateReceivedMatchingRequestedStateToReadItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("업데이트된 매칭 항목 목록"),
+                                        fieldWithPath("result.updateReceivedMatchingRequestedStateToReadItems[].matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("업데이트된 매칭 ID"),
+                                        fieldWithPath("result.updateReceivedMatchingRequestedStateToReadItems[].receiverReadStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("업데이트된 매칭의 읽음 상태")
+                                ))).andReturn();
+    }
+
+    @DisplayName("매칭 관리 수신함에서 Completed 상태 매칭을 읽음 처리할 수 있다.")
+    @Test
+    void updateReceivedMatchingCompletedStateRead() throws Exception {
+        // given
+        final UpdateReceivedMatchingReadRequest request = UpdateReceivedMatchingReadRequest.builder()
+                .matchingIds(Arrays.asList(
+                        1L,
+                        2L
+                ))
+                .build();
+
+        final UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingCompletedStateReadItems
+                = UpdateReceivedMatchingCompletedStateReadItems.builder()
+                .updateReceivedMatchingCompletedStateReadItems(Arrays.asList(
+                        UpdateReceivedMatchingCompletedStateReadItem.builder()
+                                .matchingId(1L)
+                                .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
+                                .build(),
+                        UpdateReceivedMatchingCompletedStateReadItem.builder()
+                                .matchingId(2L)
+                                .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
+                                .build()
+                ))
+                .build();
+
+        // when
+        when(matchingService.updateReceivedMatchingCompletedStateToRead(anyLong(), any())).thenReturn(updateReceivedMatchingCompletedStateReadItems);
+
+        final ResultActions resultActions = performUpdateReceivedMatchingCompletedStateRead(request);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("matchingIds")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("매칭 ID 목록. 읽음 처리할 매칭 (MatchingStatusType -> REQUESTED && ReceiverReadStatus -> UNREAD_REQUESTED_MATCHING)인 항목들")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부"),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드"),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지"),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("결과 데이터"),
+                                        fieldWithPath("result.updateReceivedMatchingCompletedStateReadItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("업데이트된 매칭 항목 목록"),
+                                        fieldWithPath("result.updateReceivedMatchingCompletedStateReadItems[].matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("업데이트된 매칭 ID"),
+                                        fieldWithPath("result.updateReceivedMatchingCompletedStateReadItems[].receiverReadStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("업데이트된 매칭의 읽음 상태")
+                                ))).andReturn();
+    }
+
 }

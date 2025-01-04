@@ -61,7 +61,7 @@ public class MatchingController {
     }
 
     // 매칭 수신함에서 (요청온 매칭) 읽음처리
-    @GetMapping("/received/menu/requested/read")
+    @PostMapping("/received/menu/requested/read")
     @MemberOnly
     public CommonResponse<UpdateReceivedMatchingRequestedStateToReadItems> updateReceivedMatchingRequestedStateRead(
             @Auth final Accessor accessor,
@@ -71,7 +71,7 @@ public class MatchingController {
     }
 
     // 매칭 수신함에서 (성사된 매칭) 읽음처리
-    @GetMapping("/received/menu/completed/read")
+    @PostMapping("/received/menu/completed/read")
     @MemberOnly
     public CommonResponse<UpdateReceivedMatchingCompletedStateReadItems> updateReceivedMatchingCompletedStateRead(
             @Auth final Accessor accessor,
