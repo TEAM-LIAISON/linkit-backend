@@ -41,9 +41,9 @@ public class S3Uploader {
     private static final String PROFILE_ACTIVITY_FOLDER = "profile/activity/";
     private static final String PROFILE_PORTFOLIO_MAIN_FOLDER = "profile/portfolio/main/";
     private static final String PROFILE_PORTFOLIO_SUB_FOLDER = "profile/portfolio/sub/";
-    private static final String PROFILE_EDUCATION_FOLDER = "/profile/education/";
-    private static final String PROFILE_AWARDS_FOLDER = "/profile/awards/";
-    private static final String PROFILE_LICENSE_FOLDER = "/profile/license/";
+    private static final String PROFILE_EDUCATION_FOLDER = "profile/education/";
+    private static final String PROFILE_AWARDS_FOLDER = "profile/awards/";
+    private static final String PROFILE_LICENSE_FOLDER = "profile/license/";
 
     private static final String TEAM_MAIN_FOLDER = "team/main/";
     private static final String TEAM_LOG_FOLDER = "team/log/";
