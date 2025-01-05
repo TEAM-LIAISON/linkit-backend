@@ -13,6 +13,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -52,6 +53,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceiv
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.matching.service.MatchingService;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -197,6 +199,11 @@ public class MatchingControllerTest extends ControllerTest {
                                 .profileImagePath("발신자 프로필 이미지 경로")
                                 .memberName("발신자 회원 이름")
                                 .emailId("발신자 회원 유저 아이디")
+                                .profilePositionDetail(
+                                        ProfilePositionDetail.builder()
+                                                .majorPosition("발신자 포지션 대분류")
+                                                .build()
+                                )
                                 .build()
                 )
                 .senderTeamInformation(
@@ -218,6 +225,11 @@ public class MatchingControllerTest extends ControllerTest {
                                 .profileImagePath("수신자 프로필 이미지 경로")
                                 .memberName("수신자 회원 이름")
                                 .emailId("수신자 회원 유저 아이디")
+                                .profilePositionDetail(
+                                        ProfilePositionDetail.builder()
+                                                .majorPosition("수신자 포지션 대분류")
+                                                .build()
+                                )
                                 .build()
                 )
                 .build();
@@ -235,6 +247,10 @@ public class MatchingControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
                         restDocs.document(
+                                pathParameters(
+                                        parameterWithName("emailId")
+                                                .description("수신자 유저 아이디")
+                                ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
                                                 .type(JsonFieldType.BOOLEAN)
@@ -320,6 +336,11 @@ public class MatchingControllerTest extends ControllerTest {
                                 .profileImagePath("발신자 프로필 이미지 경로")
                                 .memberName("발신자 회원 이름")
                                 .emailId("발신자 회원 유저 아이디")
+                                .profilePositionDetail(
+                                        ProfilePositionDetail.builder()
+                                                .majorPosition("발신자 포지션 대분류")
+                                                .build()
+                                )
                                 .build()
                 )
                 .senderTeamInformation(
@@ -357,6 +378,10 @@ public class MatchingControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
                         restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamCode")
+                                                .description("수신자 팀 아이디 (팀 코드)")
+                                ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
                                                 .type(JsonFieldType.BOOLEAN)
