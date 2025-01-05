@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
+import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
 
@@ -88,6 +89,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     .leftJoin(qTeamMemberAnnouncement).on(qTeamMemberAnnouncement.team.eq(qTeam))
 
                     .where(
+                            qTeam.status.eq(StatusType.USABLE),
+                            qTeam.isTeamPublic.eq(true),
                             hasScaleNames(scaleName),
                             hasCityName(cityName),
                             hasTeamStateNames(teamStateName)
@@ -119,6 +122,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
                     .leftJoin(qTeamMemberAnnouncement).on(qTeamMemberAnnouncement.team.eq(qTeam))
                     .where(
+                            qTeam.status.eq(StatusType.USABLE),
+                            qTeam.isTeamPublic.eq(true),
                             hasScaleNames(scaleName),
                             hasCityName(cityName),
                             hasTeamStateNames(teamStateName)
@@ -140,6 +145,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             return null;
         }
         QScale qScale = QScale.scale;
+
         return qScale.scaleName.in(scaleName);
     }
 
@@ -148,6 +154,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             return null;
         }
         QRegion qRegion = QRegion.region;
+
         return qRegion.cityName.in(cityName);
     }
 
@@ -156,6 +163,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             return null;
         }
         QTeamState qTeamState = QTeamState.teamState;
+
         return qTeamState.teamStateName.in(teamStateName);
     }
 }

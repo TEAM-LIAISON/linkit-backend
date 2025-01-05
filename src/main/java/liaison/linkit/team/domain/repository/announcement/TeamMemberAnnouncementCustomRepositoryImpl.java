@@ -230,6 +230,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             return null;
         }
         QPosition qPosition = QPosition.position;
+
         return qPosition.majorPosition.in(majorPosition);
     }
 
@@ -238,6 +239,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             return null;
         }
         QSkill qSkill = QSkill.skill;
+
         return qSkill.skillName.in(skillName);
     }
 
@@ -246,6 +248,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             return null;
         }
         QRegion qRegion = QRegion.region;
+
         return qRegion.cityName.in(cityName);
     }
 
@@ -254,6 +257,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             return null;
         }
         QScale qScale = QScale.scale;
+
         return qScale.scaleName.in(scaleName);
     }
 }

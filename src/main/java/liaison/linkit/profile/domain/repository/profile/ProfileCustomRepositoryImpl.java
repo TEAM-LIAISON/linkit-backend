@@ -170,6 +170,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
                     // 조건
                     .where(
+                            qProfile.isProfilePublic.eq(true),
                             qProfile.status.eq(StatusType.USABLE),
                             hasMajorPositions(majorPosition),
                             hasSkillNames(skillName),
@@ -207,6 +208,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                     .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
                     .leftJoin(qProfileSkill.skill, qSkill)
                     .where(
+                            qProfile.isProfilePublic.eq(true),
                             qProfile.status.eq(StatusType.USABLE),
                             hasMajorPositions(majorPosition),
                             hasSkillNames(skillName),
@@ -229,7 +231,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             return null;
         }
 
-        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
         QPosition qPosition = QPosition.position;
 
         return qPosition.majorPosition.in(majorPositions);
@@ -239,7 +240,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         if (skillName == null || skillName.isEmpty()) {
             return null;
         }
-        QProfileSkill qProfileSkill = QProfileSkill.profileSkill;
         QSkill qSkill = QSkill.skill;
 
         return qSkill.skillName.in(skillName);
@@ -249,7 +249,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         if (cityName == null || cityName.isEmpty()) {
             return null;
         }
-        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
         QRegion qRegion = QRegion.region;
 
         return qRegion.cityName.in(cityName);
@@ -259,7 +258,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         if (profileStateName == null || profileStateName.isEmpty()) {
             return null;
         }
-        QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
         QProfileState qProfileState = QProfileState.profileState;
 
         return qProfileState.profileStateName.in(profileStateName);
