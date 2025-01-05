@@ -49,7 +49,7 @@ public class MatchingController {
     }
 
     // 팀 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
-    @GetMapping("/{teamCode}/select/request/menu")
+    @GetMapping("/team/{teamCode}/select/request/menu")
     @MemberOnly
     public CommonResponse<MatchingResponseDTO.SelectMatchingRequestToTeamMenu> selectMatchingRequestToTeamMenu(
             @Auth final Accessor accessor,
