@@ -1,8 +1,17 @@
 package liaison.linkit.chat.presentation;
 
+import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.MemberOnly;
+import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
+import liaison.linkit.chat.service.ChatService;
+import liaison.linkit.common.presentation.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ChatController {
 
-    //    private final ChatService chatService;
+    private final ChatService chatService;
     private final SimpMessagingTemplate messagingTemplate;
 
 //    @MessageMapping("/chat/message")
@@ -21,16 +30,16 @@ public class ChatController {
 //                                  @Auth Accessor accessor) {
 //        chatService.sendMessage(messageRequest, accessor.getMemberId());
 //    }
-//
-//    // 새로운 채팅방 생성
-//    @PostMapping("/room")
-//    @MemberOnly
-//    public CommonResponse<ChatResponseDTO.CreateChatRoomResponse> createChatRoom(
-//            @RequestBody CreateChatRoomRequest request,
-//            @Auth Accessor accessor
-//    ) {
-//        return CommonResponse.onSuccess(chatService.createChatRoom(request, accessor.getMemberId()));
-//    }
+
+    // 새로운 채팅방 생성
+    @PostMapping("/room")
+    @MemberOnly
+    public CommonResponse<ChatResponseDTO.CreateChatRoomResponse> createChatRoom(
+            @RequestBody CreateChatRoomRequest request,
+            @Auth Accessor accessor
+    ) {
+        return CommonResponse.onSuccess(chatService.createChatRoom(request, accessor.getMemberId()));
+    }
 
 //    @GetMapping("/rooms")
 //    @MemberOnly

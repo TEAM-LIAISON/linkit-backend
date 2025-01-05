@@ -14,8 +14,10 @@ public class ChatMapper {
                 .chatRoomId(chatRoom.getId())
                 .participantAId(chatRoom.getParticipantAId())
                 .participantAType(chatRoom.getParticipantAType())
+                .participantAName(chatRoom.getParticipantAName())
                 .participantBId(chatRoom.getParticipantBId())
                 .participantBType(chatRoom.getParticipantBType())
+                .participantBName(chatRoom.getParticipantBName())
                 .lastMessage(null)
                 .unreadCount(0L)
                 .build();
