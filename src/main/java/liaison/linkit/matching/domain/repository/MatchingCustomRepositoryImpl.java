@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.QMatching;
+import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.team.domain.team.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -194,6 +195,20 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
         return new PageImpl<>(content, pageable, total);
     }
+
+    @Override
+    public boolean isCompletedMatching(final Long matchingId) {
+        QMatching qMatching = QMatching.matching;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qMatching)
+                .where(qMatching.id.eq(matchingId)
+                        .and(qMatching.matchingStatusType.eq(MatchingStatusType.COMPLETED))
+                )
+                .fetchFirst() != null;
+    }
+
 
     @Override
     public int countByReceiverTeamCodes(final List<String> receiverTeamCodes) {

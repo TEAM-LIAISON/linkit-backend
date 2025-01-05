@@ -99,6 +99,7 @@ public class TeamResponseDTO {
         private int teamScrapCount;
 
         private String teamName;
+        private String teamCode;
         private String teamShortDescription;
         private String teamLogoImagePath;
 

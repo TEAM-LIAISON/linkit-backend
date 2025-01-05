@@ -483,6 +483,7 @@ public class TeamControllerTest extends ControllerTest {
                 .isTeamScrap(false)
                 .teamScrapCount(200)
                 .teamName("팀 이름")
+                .teamCode("팀 아이디 (팀 코드)")
                 .teamShortDescription("팀 한 줄 소개")
                 .teamLogoImagePath("팀 로고 이미지 경로")
                 .teamScaleItem(
@@ -554,6 +555,9 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamInformMenu.teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
+                                        fieldWithPath("result.teamInformMenu.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.teamInformMenu.teamShortDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 한 줄 소개"),
@@ -614,6 +618,7 @@ public class TeamControllerTest extends ControllerTest {
                                         .isTeamScrap(false)
                                         .teamScrapCount(200)
                                         .teamName("팀 이름")
+                                        .teamName("팀 아이디 (팀 코드)")
                                         .teamShortDescription("팀 한 줄 소개")
                                         .teamLogoImagePath("팀 로고 이미지 경로")
                                         .teamScaleItem(
@@ -642,6 +647,7 @@ public class TeamControllerTest extends ControllerTest {
                                         .isTeamScrap(false)
                                         .teamScrapCount(100)
                                         .teamName("팀 이름")
+                                        .teamCode("팀 아이디 (팀 코드)")
                                         .teamShortDescription("팀 한 줄 소개 2")
                                         .teamLogoImagePath("팀 로고 이미지 경로 2")
                                         .teamScaleItem(
@@ -706,6 +712,9 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamInformMenus[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
+                                        fieldWithPath("result.teamInformMenus[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.teamInformMenus[].teamShortDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 한 줄 소개"),

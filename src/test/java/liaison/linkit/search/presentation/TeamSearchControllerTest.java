@@ -85,6 +85,7 @@ public class TeamSearchControllerTest extends ControllerTest {
                 .isTeamScrap(true)
                 .teamScrapCount(100)
                 .teamName("팀 이름 1")
+                .teamCode("팀 아이디 (팀 코드)")
                 .teamShortDescription("팀 한 줄 소개 1")
                 .teamLogoImagePath("팀 로고 이미지 경로 1")
                 .teamScaleItem(TeamScaleItem.builder().teamScaleName("1인").build())
@@ -170,6 +171,9 @@ public class TeamSearchControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
+                                        fieldWithPath("result.content[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.content[].teamShortDescription")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 한 줄 소개"),

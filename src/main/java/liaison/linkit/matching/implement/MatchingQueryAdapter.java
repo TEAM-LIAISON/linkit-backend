@@ -53,6 +53,10 @@ public class MatchingQueryAdapter {
         return matchingRepository.findRequestedByTeam(teams, pageable);
     }
 
+    public boolean isCompletedMatching(final Long matchingId) {
+        return matchingRepository.isCompletedMatching(matchingId);
+    }
+
     public int countByReceiverTeamCodes(final List<String> receiverTeamCodes) {
         return matchingRepository.countByReceiverTeamCodes(receiverTeamCodes);
     }

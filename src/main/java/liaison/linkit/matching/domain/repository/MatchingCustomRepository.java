@@ -35,6 +35,8 @@ public interface MatchingCustomRepository {
             final Pageable pageable
     );
 
+    boolean isCompletedMatching(final Long matchingId);
+
     int countByReceiverTeamCodes(final List<String> receiverTeamCodes);
 
     int countByReceiverAnnouncementIds(final List<Long> receiverAnnouncementIds);

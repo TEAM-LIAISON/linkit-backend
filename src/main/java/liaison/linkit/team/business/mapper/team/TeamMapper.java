@@ -74,6 +74,7 @@ public class TeamMapper {
                 .isTeamScrap(isTeamScrap)
                 .teamScrapCount(teamScrapCount)
                 .teamName(team.getTeamName())
+                .teamCode(team.getTeamCode())
                 .teamShortDescription(team.getTeamShortDescription())
                 .teamLogoImagePath(team.getTeamLogoImagePath())
                 .teamScaleItem(teamScaleItem)
