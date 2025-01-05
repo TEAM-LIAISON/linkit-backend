@@ -25,11 +25,11 @@ public class ChatResponseDTO {
     public static class CreateChatRoomResponse {
         private Long chatRoomId;
 
-        private Long participantAId;
+        private String participantAId;
         private ParticipantType participantAType;
         private String participantAName;                // Profile인 경우 회원 이름, Team인 경우 팀 이름
 
-        private Long participantBId;
+        private String participantBId;
         private ParticipantType participantBType;
         private String participantBName;                // Profile인 경우 회원 이름, Team인 경우 팀 이름
 

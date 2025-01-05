@@ -103,6 +103,7 @@ public class TeamSearchControllerTest extends ControllerTest {
                 .isTeamScrap(false)
                 .teamScrapCount(200)
                 .teamName("팀 이름 2")
+                .teamCode("팀 아이디 2(팀 코드)")
                 .teamShortDescription("팀 한 줄 소개 2")
                 .teamLogoImagePath("팀 로고 이미지 경로 2")
                 .teamScaleItem(TeamScaleItem.builder().teamScaleName("2~5인").build())

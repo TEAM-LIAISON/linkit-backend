@@ -8,6 +8,8 @@ public interface TeamMemberCustomRepository {
 
     List<TeamMember> getTeamMembers(final Long teamId);
 
+    Long getTeamOwnerMemberId(final Team team);
+
     boolean isMemberOfTeam(final Long teamId, final Long memberId);
 
     boolean existsTeamByMemberId(final Long memberId);

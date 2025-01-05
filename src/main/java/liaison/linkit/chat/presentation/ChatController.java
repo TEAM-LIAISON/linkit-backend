@@ -1,36 +1,20 @@
-//package liaison.linkit.chat.presentation;
-//
-//import java.util.List;
-//import liaison.linkit.auth.Auth;
-//import liaison.linkit.auth.MemberOnly;
-//import liaison.linkit.auth.domain.Accessor;
-//import liaison.linkit.chat.domain.ChatMessage;
-//import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
-//import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
-//import liaison.linkit.chat.service.ChatService;
-//import liaison.linkit.common.presentation.CommonResponse;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.messaging.handler.annotation.Header;
-//import org.springframework.messaging.handler.annotation.MessageMapping;
-//import org.springframework.messaging.handler.annotation.Payload;
-//import org.springframework.messaging.simp.SimpMessagingTemplate;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.PathVariable;
-//import org.springframework.web.bind.annotation.PostMapping;
-//import org.springframework.web.bind.annotation.RequestBody;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//@RestController
-//@RequiredArgsConstructor
-//@RequestMapping("/api/v1/chat")
-//@Slf4j
-//public class ChatController {
-//
-//    private final ChatService chatService;
-//    private final SimpMessagingTemplate messagingTemplate;
-//
+package liaison.linkit.chat.presentation;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/chat")
+@Slf4j
+public class ChatController {
+
+    //    private final ChatService chatService;
+    private final SimpMessagingTemplate messagingTemplate;
+
 //    @MessageMapping("/chat/message")
 //    public void handleChatMessage(@Payload ChatMessageRequest messageRequest,
 //                                  @Header("Authorization") String token,
@@ -47,7 +31,7 @@
 //    ) {
 //        return CommonResponse.onSuccess(chatService.createChatRoom(request, accessor.getMemberId()));
 //    }
-//
+
 //    @GetMapping("/rooms")
 //    @MemberOnly
 //    public CommonResponse<List<ChatRoomSummary>> getChatRooms(
@@ -66,4 +50,4 @@
 //                chatService.getChatMessages(roomId, accessor.getMemberId())
 //        );
 //    }
-//}
+}

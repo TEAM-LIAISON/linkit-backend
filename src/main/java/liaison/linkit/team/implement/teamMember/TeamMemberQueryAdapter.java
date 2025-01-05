@@ -16,6 +16,10 @@ public class TeamMemberQueryAdapter {
         return teamMemberRepository.getTeamMembers(teamId);
     }
 
+    public Long getTeamOwnerMemberId(final Team team) {
+        return teamMemberRepository.getTeamOwnerMemberId(team);
+    }
+
     public boolean isMemberOfTeam(final Long teamId, final Long memberId) {
         return teamMemberRepository.isMemberOfTeam(teamId, memberId);
     }

@@ -28,6 +28,20 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
     }
 
     @Override
+    public Long getTeamOwnerMemberId(final Team team) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        return jpaQueryFactory
+                .select(qTeamMember.member.id)
+                .from(qTeamMember)
+                .where(
+                        qTeamMember.team.eq(team) // 팀 조건
+                                .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_OWNER)) // 오너 조건
+                )
+                .fetchOne(); // 단일 결과 반환
+    }
+
+    @Override
     public boolean isMemberOfTeam(Long teamId, Long memberId) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
 

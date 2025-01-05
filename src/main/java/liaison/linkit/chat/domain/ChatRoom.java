@@ -30,15 +30,27 @@ public class ChatRoom extends BaseDateTimeEntity {
     @Column(nullable = false)
     private String participantAId;
 
-    // 채팅방의 두 번째 참여자 ID (Profile의 경우 emailId, Team의 경우 teamCode)
     @Column(nullable = false)
-    private String participantBId;
+    private Long participantAMemberId;
+
+    @Column(nullable = false)
+    private String participantAName;
 
     // 첫 번째 참여자의 유형 (PROFILE 또는 TEAM)
     @Enumerated(EnumType.STRING)
     @Column(name = "participant_a_type", nullable = false)
     private ParticipantType participantAType;
 
+    // 채팅방의 두 번째 참여자 ID (Profile의 경우 emailId, Team의 경우 teamCode, TeamMemberAnnouncement의 경우 AnnouncementId)
+    @Column(nullable = false)
+    private String participantBId;
+
+    @Column(nullable = false)
+    private Long participantBMemberId;
+
+    @Column(nullable = false)
+    private String participantBName;
+    
     // 두 번째 참여자의 유형 (PROFILE 또는 TEAM)
     @Enumerated(EnumType.STRING)
     @Column(name = "participant_b_type", nullable = false)

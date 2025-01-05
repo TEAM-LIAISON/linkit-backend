@@ -13,7 +13,9 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum ChatErrorCode implements BaseErrorCode {
-    MATCHING_STATE_CHAT_BAD_REQUEST(BAD_REQUEST, "CHATTING_400_1", "성사되지 않은 매칭에 대하여 채팅방을 생성할 수 없습니다.");
+    MATCHING_STATE_CHAT_BAD_REQUEST(BAD_REQUEST, "CHATTING_400_1", "성사되지 않은 매칭에 대하여 채팅방을 생성할 수 없습니다."),
+    CREATE_CHAT_SENDER_BAD_REQUEST(BAD_REQUEST, "CHATTING_400_2", "발신함에서 채팅방을 생성하는 과정에서 잘못된 요청이 발생했습니다."),
+    CREATE_CHAT_RECEIVER_BAD_REQUEST(BAD_REQUEST, "CHATTING_400_3", "수신함에서 채팅방을 생성하는 과정에서 잘못된 요청이 발생했습니다.");
 
     private final Integer status;
     private final String code;
