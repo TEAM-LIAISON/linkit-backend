@@ -26,11 +26,20 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReques
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToTeamMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
+import liaison.linkit.profile.domain.position.ProfilePosition;
+import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
@@ -58,6 +67,89 @@ public class MatchingService {
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final MemberQueryAdapter memberQueryAdapter;
+    private final ProfileQueryAdapter profileQueryAdapter;
+    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
+    private final ProfilePositionMapper profilePositionMapper;
+
+    @Transactional(readOnly = true)
+    public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(
+            final Long memberId, final String emailId
+    ) {
+        // 1. 프로필 조회
+        final Profile senderProfile = profileQueryAdapter.findByMemberId(memberId);
+
+        ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+            senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+
+        // 2. 팀 정보 조회 및 변환
+        List<SenderTeamInformation> senderTeamInformations = new ArrayList<>();
+        boolean isTeamInformationExists = false;
+
+        if (teamMemberQueryAdapter.existsTeamOwnerByMemberId(memberId)) {
+            isTeamInformationExists = true;
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            senderTeamInformations = teams.stream()
+                    .map(team -> SenderTeamInformation.builder()
+                            .teamCode(team.getTeamCode())
+                            .teamName(team.getTeamName())
+                            .teamLogoImagePath(team.getTeamLogoImagePath())
+                            .build())
+                    .toList();
+        }
+
+        final Profile receiverProfile = profileQueryAdapter.findByEmailId(emailId);
+        ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
+
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
+            receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+
+        return matchingMapper.toSelectMatchingRequestToProfileMenu(
+                isTeamInformationExists,
+                senderProfile,
+                senderProfilePositionDetail,
+                senderTeamInformations,
+                receiverProfile,
+                receiverProfilePositionDetail
+        );
+    }
+
+    @Transactional(readOnly = true)
+    public SelectMatchingRequestToTeamMenu selectMatchingRequestToTeamMenu(final Long memberId, final String teamCode) {
+        // 1. 프로필 조회
+        final Profile senderProfile = profileQueryAdapter.findByMemberId(memberId);
+
+        ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+            senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+
+        // 2. 팀 정보 조회 및 변환
+        List<SenderTeamInformation> senderTeamInformations = new ArrayList<>();
+        boolean isTeamInformationExists = false;
+
+        if (teamMemberQueryAdapter.existsTeamOwnerByMemberId(memberId)) {
+            isTeamInformationExists = true;
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            senderTeamInformations = teams.stream()
+                    .map(team -> SenderTeamInformation.builder()
+                            .teamCode(team.getTeamCode())
+                            .teamName(team.getTeamName())
+                            .teamLogoImagePath(team.getTeamLogoImagePath())
+                            .build())
+                    .toList();
+        }
+
+        final Team receiverTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        return matchingMapper.toSelectMatchingRequestTeamMenu(isTeamInformationExists, senderProfile, senderProfilePositionDetail, senderTeamInformations, receiverTeam);
+    }
 
     @Transactional(readOnly = true)
     public MatchingMenu getMatchingNotificationMenu(

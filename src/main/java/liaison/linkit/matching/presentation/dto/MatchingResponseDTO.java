@@ -8,6 +8,7 @@ import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,86 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MatchingResponseDTO {
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SelectMatchingRequestToTeamMenu {
+        private Boolean isTeamInformationExists;
+
+        @Builder.Default
+        private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
+
+        @Builder.Default
+        private List<SenderTeamInformation> senderTeamInformation = new ArrayList<>();
+
+        @Builder.Default
+        private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SelectMatchingRequestToProfileMenu {
+        private Boolean isTeamInformationExists;
+
+        @Builder.Default
+        private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
+
+        @Builder.Default
+        private List<SenderTeamInformation> senderTeamInformation = new ArrayList<>();
+
+        @Builder.Default
+        private ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SenderProfileInformation {
+        private String profileImagePath;
+        private String memberName;
+        private String emailId;
+
+        @Builder.Default
+        private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReceiverProfileInformation {
+        private String profileImagePath;
+        private String memberName;
+        private String emailId;
+
+        @Builder.Default
+        private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SenderTeamInformation {
+        private String teamCode;                    // 팀 코드
+        private String teamName;                    // 팀 이름
+        private String teamLogoImagePath;           // 팀 로고 이미지 경로
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReceiverTeamInformation {
+        private String teamCode;                    // 팀 코드
+        private String teamName;                    // 팀 이름
+        private String teamLogoImagePath;           // 팀 로고 이미지 경로
+    }
 
     @Builder
     @Getter

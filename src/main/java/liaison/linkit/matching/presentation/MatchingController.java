@@ -12,6 +12,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.matching.service.MatchingService;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,9 +36,25 @@ public class MatchingController {
 
     private final MatchingService matchingService;
 
-    // 2. 수신함 정보
+    // 프로필 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
+    @GetMapping("/{emailId}/select/request/menu")
+    @MemberOnly
+    public CommonResponse<SelectMatchingRequestToProfileMenu> selectMatchingRequestToProfileMenu(
+            @Auth final Accessor accessor,
+            @PathVariable final String emailId
+    ) {
+        return CommonResponse.onSuccess(matchingService.selectMatchingRequestToProfileMenu(accessor.getMemberId(), emailId));
+    }
 
-    // 3. 발신함 정보
+    // 팀 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
+    @GetMapping("/{teamCode}/select/request/menu")
+    @MemberOnly
+    public CommonResponse<MatchingResponseDTO.SelectMatchingRequestToTeamMenu> selectMatchingRequestToTeamMenu(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamCode
+    ) {
+        return CommonResponse.onSuccess(matchingService.selectMatchingRequestToTeamMenu(accessor.getMemberId(), teamCode));
+    }
 
     // 상단 메뉴
     @GetMapping("/notification/menu")

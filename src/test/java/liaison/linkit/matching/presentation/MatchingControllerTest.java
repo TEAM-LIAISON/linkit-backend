@@ -41,6 +41,8 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReques
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
@@ -92,11 +94,23 @@ public class MatchingControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performGetReceivedMatchingMenu(
-            ReceiverType receiverType,
-            int page,
-            int size
-    ) throws Exception {
+    private ResultActions performGetSelectMatchingRequestToProfileMenu(final String emailId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/matching/{emailId}/select/request/menu", emailId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performGetSelectMatchingRequestToTeamMenu(final String teamCode) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/matching/{teamCode}/select/request/menu", teamCode)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performGetReceivedMatchingMenu(ReceiverType receiverType, int page, int size) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/matching/received/menu")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -109,11 +123,7 @@ public class MatchingControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performGetMatchingRequestedMenu(
-            SenderType senderType,
-            int page,
-            int size
-    ) throws Exception {
+    private ResultActions performGetMatchingRequestedMenu(SenderType senderType, int page, int size) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/matching/requested/menu")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -126,9 +136,7 @@ public class MatchingControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performUpdateReceivedMatchingRequestedStateRead(
-            final UpdateReceivedMatchingReadRequest request
-    ) throws Exception {
+    private ResultActions performUpdateReceivedMatchingRequestedStateRead(final UpdateReceivedMatchingReadRequest request) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/requested/read")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -139,9 +147,7 @@ public class MatchingControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performUpdateReceivedMatchingCompletedStateRead(
-            final UpdateReceivedMatchingReadRequest request
-    ) throws Exception {
+    private ResultActions performUpdateReceivedMatchingCompletedStateRead(final UpdateReceivedMatchingReadRequest request) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/completed/read")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -172,6 +178,81 @@ public class MatchingControllerTest extends ControllerTest {
                         .content(objectMapper.writeValueAsString(request))
                         .characterEncoding("UTF-8")
         );
+    }
+
+    @DisplayName("매칭 요청을 보낼 프로필의 정보 목록을 조회할 수 있다.")
+    @Test
+    void getSelectMatchingRequestToProfileMenu() throws Exception {
+        // given
+        final SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu = SelectMatchingRequestToProfileMenu.builder()
+                .isTeamInformationExists(true)
+                .senderTeamInformation(
+                        Arrays.asList(
+                                SenderTeamInformation.builder()
+                                        .teamCode("팀 아이디 (팀 코드)")
+                                        .teamName("팀 이름")
+                                        .teamLogoImagePath("팀 로고 이미지 경로")
+                                        .build()
+                        )
+                )
+                .build();
+
+        // when
+        when(matchingService.selectMatchingRequestToProfileMenu(anyLong(), any())).thenReturn(selectMatchingRequestToProfileMenu);
+
+        final ResultActions resultActions = performGetSelectMatchingRequestToProfileMenu();
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("결과 데이터"),
+                                        fieldWithPath("result.isTeamInformationExists")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 정보 존재 여부"),
+                                        fieldWithPath("result.profileImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 이미지 경로"),
+                                        fieldWithPath("result.memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이름"),
+                                        fieldWithPath("result.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 유저 아이디"),
+                                        fieldWithPath("result.senderTeamInformation")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("팀 정보 목록"),
+                                        fieldWithPath("result.senderTeamInformation[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)"),
+                                        fieldWithPath("result.senderTeamInformation[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 이름"),
+                                        fieldWithPath("result.senderTeamInformation[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 로고 이미지 경로")
+                                )
+                        )
+                ).andReturn();
     }
 
     @DisplayName("매칭 관리 상단 정보를 조회할 수 있다.")

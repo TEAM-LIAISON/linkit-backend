@@ -11,14 +11,81 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReques
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToTeamMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderProfileInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
+import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.domain.team.Team;
 
 @Mapper
 public class MatchingMapper {
+
+    public SelectMatchingRequestToProfileMenu toSelectMatchingRequestToProfileMenu(
+            final Boolean isTeamInformationExists,
+            final Profile profile,
+            final ProfilePositionDetail senderProfilePositionDetail,
+            final List<SenderTeamInformation> senderTeamInformations,
+            final Profile receiverProfile,
+            final ProfilePositionDetail receiverProfilePositionDetail
+    ) {
+        return SelectMatchingRequestToProfileMenu.builder()
+                .isTeamInformationExists(isTeamInformationExists)
+                .senderProfileInformation(
+                        SenderProfileInformation.builder()
+                                .profileImagePath(profile.getProfileImagePath())
+                                .memberName(profile.getMember().getMemberBasicInform().getMemberName())
+                                .emailId(profile.getMember().getEmailId())
+                                .profilePositionDetail(senderProfilePositionDetail)
+                                .build()
+                )
+                .senderTeamInformation(senderTeamInformations)
+                .receiverProfileInformation(
+                        ReceiverProfileInformation.builder()
+                                .profileImagePath(receiverProfile.getProfileImagePath())
+                                .memberName(receiverProfile.getMember().getMemberBasicInform().getMemberName())
+                                .emailId(receiverProfile.getMember().getEmailId())
+                                .profilePositionDetail(receiverProfilePositionDetail)
+                                .build()
+                )
+                .build();
+    }
+
+    public SelectMatchingRequestToTeamMenu toSelectMatchingRequestTeamMenu(
+            final Boolean isTeamInformationExists,
+            final Profile senderProfile,
+            final ProfilePositionDetail senderProfilePositionDetail,
+            final List<SenderTeamInformation> senderTeamInformations,
+            final Team receiverTeam
+    ) {
+        return SelectMatchingRequestToTeamMenu.builder()
+                .isTeamInformationExists(isTeamInformationExists)
+                .senderProfileInformation(
+                        SenderProfileInformation.builder()
+                                .profileImagePath(senderProfile.getProfileImagePath())
+                                .memberName(senderProfile.getMember().getMemberBasicInform().getMemberName())
+                                .emailId(senderProfile.getMember().getEmailId())
+                                .profilePositionDetail(senderProfilePositionDetail)
+                                .build()
+                )
+                .senderTeamInformation(senderTeamInformations)
+                .receiverTeamInformation(
+                        ReceiverTeamInformation.builder()
+                                .teamLogoImagePath(receiverTeam.getTeamLogoImagePath())
+                                .teamName(receiverTeam.getTeamName())
+                                .teamCode(receiverTeam.getTeamCode())
+                                .build()
+                )
+                .build();
+    }
 
     public RequestedMatchingMenu toMatchingRequestedMenu(
             final Matching requestedMatchingItem
