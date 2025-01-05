@@ -17,6 +17,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceiv
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,17 +33,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/matching")
+@Slf4j
 public class MatchingController {
 
     private final MatchingService matchingService;
 
     // 프로필 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
-    @GetMapping("/{emailId}/select/request/menu")
-    @MemberOnly
+    @GetMapping("/profile/{emailId}/select/request/menu")
     public CommonResponse<SelectMatchingRequestToProfileMenu> selectMatchingRequestToProfileMenu(
             @Auth final Accessor accessor,
             @PathVariable final String emailId
     ) {
+        log.info("selectMatchingRequestToProfileMenu");
         return CommonResponse.onSuccess(matchingService.selectMatchingRequestToProfileMenu(accessor.getMemberId(), emailId));
     }
 

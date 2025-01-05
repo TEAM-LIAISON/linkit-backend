@@ -40,8 +40,10 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReques
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
@@ -70,6 +72,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 public class MatchingControllerTest extends ControllerTest {
+
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
     private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
@@ -96,7 +99,7 @@ public class MatchingControllerTest extends ControllerTest {
 
     private ResultActions performGetSelectMatchingRequestToProfileMenu(final String emailId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/matching/{emailId}/select/request/menu", emailId)
+                RestDocumentationRequestBuilders.get("/api/v1/matching/profile/{emailId}/select/request/menu", emailId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -183,24 +186,44 @@ public class MatchingControllerTest extends ControllerTest {
     @DisplayName("매칭 요청을 보낼 프로필의 정보 목록을 조회할 수 있다.")
     @Test
     void getSelectMatchingRequestToProfileMenu() throws Exception {
+
         // given
         final SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu = SelectMatchingRequestToProfileMenu.builder()
                 .isTeamInformationExists(true)
+                .senderProfileInformation(
+                        SenderProfileInformation.builder()
+                                .profileImagePath("발신자 프로필 이미지 경로")
+                                .memberName("발신자 회원 이름")
+                                .emailId("발신자 회원 유저 아이디")
+                                .build()
+                )
                 .senderTeamInformation(
                         Arrays.asList(
                                 SenderTeamInformation.builder()
-                                        .teamCode("팀 아이디 (팀 코드)")
-                                        .teamName("팀 이름")
-                                        .teamLogoImagePath("팀 로고 이미지 경로")
+                                        .teamCode("발신자 팀 아이디 1 (팀 코드)")
+                                        .teamName("발신자 팀 이름 1")
+                                        .teamLogoImagePath("발신자 팀 로고 이미지 경로 1")
+                                        .build(),
+                                SenderTeamInformation.builder()
+                                        .teamCode("발신자 팀 아이디 2 (팀 코드)")
+                                        .teamName("발신자 팀 이름 2")
+                                        .teamLogoImagePath("발신자 팀 로고 이미지 경로 2")
                                         .build()
                         )
+                )
+                .receiverProfileInformation(
+                        ReceiverProfileInformation.builder()
+                                .profileImagePath("수신자 프로필 이미지 경로")
+                                .memberName("수신자 회원 이름")
+                                .emailId("수신자 회원 유저 아이디")
+                                .build()
                 )
                 .build();
 
         // when
         when(matchingService.selectMatchingRequestToProfileMenu(anyLong(), any())).thenReturn(selectMatchingRequestToProfileMenu);
 
-        final ResultActions resultActions = performGetSelectMatchingRequestToProfileMenu();
+        final ResultActions resultActions = performGetSelectMatchingRequestToProfileMenu("liaison");
 
         // then
         final MvcResult mvcResult = resultActions
@@ -228,28 +251,57 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .description("결과 데이터"),
                                         fieldWithPath("result.isTeamInformationExists")
                                                 .type(JsonFieldType.BOOLEAN)
-                                                .description("팀 정보 존재 여부"),
-                                        fieldWithPath("result.profileImagePath")
+                                                .description("팀 정보가 존재하는지 여부"),
+                                        fieldWithPath("result.senderProfileInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("발신자 프로필 정보"),
+                                        fieldWithPath("result.senderProfileInformation.profileImagePath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("프로필 이미지 경로"),
-                                        fieldWithPath("result.memberName")
+                                                .description("발신자 프로필 이미지 경로"),
+                                        fieldWithPath("result.senderProfileInformation.memberName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("회원 이름"),
-                                        fieldWithPath("result.emailId")
+                                                .description("발신자 회원 이름"),
+                                        fieldWithPath("result.senderProfileInformation.emailId")
                                                 .type(JsonFieldType.STRING)
-                                                .description("회원 유저 아이디"),
+                                                .description("발신자 회원 유저 아이디"),
+                                        fieldWithPath("result.senderProfileInformation.profilePositionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("발신자 프로필 포지션 상세 정보"),
+                                        fieldWithPath("result.senderProfileInformation.profilePositionDetail.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .optional()
+                                                .description("발신자 프로필 대분류 포지션 (없을 수 있음)"),
                                         fieldWithPath("result.senderTeamInformation")
                                                 .type(JsonFieldType.ARRAY)
-                                                .description("팀 정보 목록"),
+                                                .description("발신자 팀 정보"),
                                         fieldWithPath("result.senderTeamInformation[].teamCode")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 아이디 (팀 코드)"),
+                                                .description("발신자 팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.senderTeamInformation[].teamName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 이름"),
+                                                .description("발신자 팀 이름"),
                                         fieldWithPath("result.senderTeamInformation[].teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 로고 이미지 경로")
+                                                .description("발신자 팀 로고 이미지 경로"),
+                                        fieldWithPath("result.receiverProfileInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 프로필 정보"),
+                                        fieldWithPath("result.receiverProfileInformation.profileImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 프로필 이미지 경로"),
+                                        fieldWithPath("result.receiverProfileInformation.memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 회원 이름"),
+                                        fieldWithPath("result.receiverProfileInformation.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 회원 유저 아이디"),
+                                        fieldWithPath("result.receiverProfileInformation.profilePositionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 프로필 포지션 상세 정보"),
+                                        fieldWithPath("result.receiverProfileInformation.profilePositionDetail.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .optional()
+                                                .description("수신자 프로필 대분류 포지션 (없을 수 있음)")
                                 )
                         )
                 ).andReturn();

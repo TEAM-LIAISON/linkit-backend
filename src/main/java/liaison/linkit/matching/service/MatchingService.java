@@ -46,6 +46,7 @@ import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAda
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -55,6 +56,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MatchingService {
 
     private final MatchingCommandAdapter matchingCommandAdapter;
@@ -70,14 +72,14 @@ public class MatchingService {
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
     private final ProfilePositionMapper profilePositionMapper;
-
-    @Transactional(readOnly = true)
+    
     public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(
             final Long memberId, final String emailId
     ) {
         // 1. 프로필 조회
         final Profile senderProfile = profileQueryAdapter.findByMemberId(memberId);
 
+        log.info("Selecting matching request to profile {}", senderProfile);
         ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
 
         if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
@@ -102,8 +104,8 @@ public class MatchingService {
         }
 
         final Profile receiverProfile = profileQueryAdapter.findByEmailId(emailId);
+        log.info("Selecting matching request to profile {}", receiverProfile);
         ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
-
         if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
             final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
             receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
