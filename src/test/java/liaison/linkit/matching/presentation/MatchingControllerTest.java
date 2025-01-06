@@ -32,9 +32,12 @@ import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.AddMatchingRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteReceivedMatchingRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteRequestedMatchingRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.AddMatchingResponse;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItem;
@@ -92,6 +95,16 @@ public class MatchingControllerTest extends ControllerTest {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
+    }
+
+    private ResultActions performPostAddMatching(final AddMatchingRequest addMatchingRequest) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/matching")
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(addMatchingRequest))
+        );
     }
 
     private ResultActions performGetMatchingNotificationMenu() throws Exception {
@@ -188,6 +201,249 @@ public class MatchingControllerTest extends ControllerTest {
         );
     }
 
+    @DisplayName("매칭 요청을 보낼 수 있다.")
+    @Test
+    void addMatching() throws Exception {
+        // given
+        final AddMatchingRequest addMatchingRequest = AddMatchingRequest.builder()
+                .senderType(SenderType.PROFILE)
+                .receiverType(ReceiverType.PROFILE)
+                .senderEmailId("발신자 유저 아이디")
+                .senderTeamCode("발신자 팀 아이디 (팀 코드)")
+                .receiverEmailId("수신자 유저 아이디")
+                .receiverTeamCode("수신자 팀 아이디 (팀 코드)")
+                .receiverAnnouncementId(1L)
+                .requestMessage("매칭 요청 메시지입니다.")
+                .build();
+
+        final MatchingResponseDTO.AddMatchingResponse addMatchingResponse = AddMatchingResponse.builder()
+                .matchingId(1L)
+                .senderType(SenderType.PROFILE)
+                .receiverType(ReceiverType.PROFILE)
+                .senderProfileInformation(
+                        SenderProfileInformation.builder()
+                                .profileImagePath("발신자 프로필 이미지 경로")
+                                .memberName("발신자 이름")
+                                .emailId("발신자 유저 아이디")
+                                .profilePositionDetail(
+                                        ProfilePositionDetail.builder()
+                                                .majorPosition("발신자 포지션 대분류")
+                                                .subPosition("발신자 포지션 소분류")
+                                                .build()
+                                )
+                                .build()
+                )
+                .senderTeamInformation(
+                        SenderTeamInformation.builder()
+                                .teamLogoImagePath("발신자 팀 로고 이미지 경로")
+                                .teamCode("발신자 팀 아이디 (팀 코드)")
+                                .teamName("발신자 팀 이름")
+                                .teamScaleItem(
+                                        TeamScaleItem.builder()
+                                                .teamScaleName("발신자 팀 규모명")
+                                                .build()
+                                )
+                                .build()
+                )
+                .receiverProfileInformation(
+                        ReceiverProfileInformation.builder()
+                                .profileImagePath("수신자 프로필 이미지 경로")
+                                .memberName("수신자 이름")
+                                .emailId("수신자 유저 아이디")
+                                .profilePositionDetail(
+                                        ProfilePositionDetail.builder()
+                                                .majorPosition("수신자 포지션 대분류")
+                                                .subPosition("수신자 포지션 소분류")
+                                                .build()
+                                )
+                                .build()
+                )
+                .receiverTeamInformation(
+                        ReceiverTeamInformation.builder()
+                                .teamLogoImagePath("수신자 팀 로고 이미지 경로")
+                                .teamCode("수신자 팀 아이디 (팀 코드)")
+                                .teamName("수신자 팀 이름")
+                                .teamScaleItem(
+                                        TeamScaleItem.builder()
+                                                .teamScaleName("수신자 팀 규모명")
+                                                .build()
+                                )
+                                .build()
+                )
+                .requestMessage("매칭 요청 메시지")
+                .matchingStatusType(MatchingStatusType.REQUESTED)
+                .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
+                .build();
+        // when
+        when(matchingService.addMatching(anyLong(), any())).thenReturn(addMatchingResponse);
+
+        final ResultActions resultActions = performPostAddMatching(addMatchingRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                requestFields(
+                                        fieldWithPath("senderType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 타입 - [PROFILE, TEAM]")
+                                                .attributes(field("constraint", "PROFILE 또는 TEAM")),
+                                        fieldWithPath("receiverType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 타입 - [PROFILE, TEAM, ANNOUNCEMENT]")
+                                                .attributes(field("constraint", "PROFILE, TEAM 또는 ANNOUNCEMENT")),
+                                        fieldWithPath("senderEmailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 유저 아이디")
+                                                .optional(),
+                                        fieldWithPath("senderTeamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 팀 아이디")
+                                                .optional(),
+                                        fieldWithPath("receiverEmailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 유저 아이디")
+                                                .optional(),
+                                        fieldWithPath("receiverTeamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 팀 아이디")
+                                                .optional(),
+                                        fieldWithPath("receiverAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("수신자 공고 아이디")
+                                                .optional(),
+                                        fieldWithPath("requestMessage")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 요청 메시지")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부"),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("응답 코드"),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("응답 메시지"),
+                                        fieldWithPath("result.matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("매칭 ID (PK)"),
+                                        fieldWithPath("result.senderType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 타입 - [PROFILE, TEAM]"),
+                                        fieldWithPath("result.receiverType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 타입 - [PROFILE, TEAM, ANNOUNCEMENT]"),
+
+                                        // ----- senderProfileInformation
+                                        fieldWithPath("result.senderProfileInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("발신자 프로필 정보"),
+                                        fieldWithPath("result.senderProfileInformation.profileImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 프로필 이미지 경로"),
+                                        fieldWithPath("result.senderProfileInformation.memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 이름"),
+                                        fieldWithPath("result.senderProfileInformation.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 유저 아이디"),
+                                        fieldWithPath("result.senderProfileInformation.profilePositionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("발신자 프로필 포지션 상세 정보"),
+                                        fieldWithPath("result.senderProfileInformation.profilePositionDetail.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .optional()
+                                                .description("발신자 포지션 대분류 (null 가능)"),
+                                        fieldWithPath("result.senderProfileInformation.profilePositionDetail.subPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .optional()
+                                                .description("발신자 포지션 소분류 (null 가능)"),
+
+                                        // ----- senderTeamInformation
+                                        fieldWithPath("result.senderTeamInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("발신자 팀 정보"),
+                                        fieldWithPath("result.senderTeamInformation.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 팀 아이디 (팀 코드)"),
+                                        fieldWithPath("result.senderTeamInformation.teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 팀 이름"),
+                                        fieldWithPath("result.senderTeamInformation.teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 팀 로고 이미지 경로"),
+                                        fieldWithPath("result.senderTeamInformation.teamScaleItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("발신자 팀 규모 정보"),
+                                        fieldWithPath("result.senderTeamInformation.teamScaleItem.teamScaleName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 팀 규모명"),
+
+                                        // ----- receiverProfileInformation
+                                        fieldWithPath("result.receiverProfileInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 프로필 정보"),
+                                        fieldWithPath("result.receiverProfileInformation.profileImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 프로필 이미지 경로"),
+                                        fieldWithPath("result.receiverProfileInformation.memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 이름"),
+                                        fieldWithPath("result.receiverProfileInformation.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 유저 아이디"),
+                                        fieldWithPath("result.receiverProfileInformation.profilePositionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 프로필 포지션 상세 정보"),
+                                        fieldWithPath("result.receiverProfileInformation.profilePositionDetail.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .optional()
+                                                .description("수신자 포지션 대분류 (null 가능)"),
+                                        fieldWithPath("result.receiverProfileInformation.profilePositionDetail.subPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .optional()
+                                                .description("수신자 포지션 소분류 (null 가능)"),
+
+                                        // ----- receiverTeamInformation
+                                        fieldWithPath("result.receiverTeamInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 팀 정보"),
+                                        fieldWithPath("result.receiverTeamInformation.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 팀 아이디 (팀 코드)"),
+                                        fieldWithPath("result.receiverTeamInformation.teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 팀 이름"),
+                                        fieldWithPath("result.receiverTeamInformation.teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 팀 로고 이미지 경로"),
+                                        fieldWithPath("result.receiverTeamInformation.teamScaleItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 팀 규모 정보"),
+                                        fieldWithPath("result.receiverTeamInformation.teamScaleItem.teamScaleName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 팀 규모명"),
+
+                                        // ----- 추가 필드
+                                        fieldWithPath("result.requestMessage")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 요청 메시지"),
+                                        fieldWithPath("result.matchingStatusType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 상태 - [REQUESTED, COMPLETED 등]"),
+                                        fieldWithPath("result.receiverReadStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 읽음 상태 - [UNREAD_REQUESTED_MATCHING, READ_COMPLETED_MATCHING 등]")
+                                )
+                        )
+                ).andReturn();
+    }
 
     @DisplayName("프로필 뷰어에 매칭 요청을 보낼 프로필의 정보 목록을 조회할 수 있다.")
     @Test
@@ -512,7 +768,7 @@ public class MatchingControllerTest extends ControllerTest {
                 ).andReturn();
     }
 
-    @DisplayName("매칭 관리 상단 정보를 조회할 수 있다.")
+    @DisplayName("매칭 관리 상단 메뉴 정보를 조회할 수 있다.")
     @Test
     void getMatchingNotificationMenu() throws Exception {
         // given
@@ -1548,4 +1804,5 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .description("삭제된 매칭의 삭제 상태")
                                 ))).andReturn();
     }
+
 }

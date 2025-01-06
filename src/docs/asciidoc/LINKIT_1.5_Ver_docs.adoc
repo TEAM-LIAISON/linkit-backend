@@ -1454,6 +1454,18 @@ include::{snippets}/notification-controller-test/get-notification-items/response
 
 == #[매칭 관리]#
 
+=== 매칭 요청 보내기
+
+====
+*요청*
+include::{snippets}/matching-controller-test/add-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/add-matching/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/add-matching/http-response.adoc[]
+include::{snippets}/matching-controller-test/add-matching/response-fields.adoc[]
+====
+
 === 프로필 뷰어에서 매칭 요청 시 모달 정보 (피그마 - 팀원 매칭 정보 01, 02, 03)
 
 ====
@@ -1482,11 +1494,11 @@ include::{snippets}/matching-controller-test/get-select-matching-request-to-team
 
 ====
 *요청*
-include::{snippets}/matching-controller-test/get-matching-menu/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-matching-notification-menu/http-request.adoc[]
 
 *응답*
-include::{snippets}/matching-controller-test/get-matching-menu/http-response.adoc[]
-include::{snippets}/matching-controller-test/get-matching-menu/response-fields.adoc[]
+include::{snippets}/matching-controller-test/get-matching-notification-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-matching-notification-menu/response-fields.adoc[]
 
 ====
 

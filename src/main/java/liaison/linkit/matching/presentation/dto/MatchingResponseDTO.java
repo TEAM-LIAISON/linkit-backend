@@ -144,6 +144,12 @@ public class MatchingResponseDTO {
 
         @Builder.Default
         private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+
+        private String requestMessage;
+
+        private MatchingStatusType matchingStatusType;
+
+        private ReceiverReadStatus receiverReadStatus;
     }
 
     // 발신자 프로필 정보

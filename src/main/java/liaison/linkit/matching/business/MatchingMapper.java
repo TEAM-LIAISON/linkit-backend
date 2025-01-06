@@ -179,6 +179,9 @@ public class MatchingMapper {
                 .senderTeamInformation(senderTeamInformation)
                 .receiverProfileInformation(receiverProfileInformation)
                 .receiverTeamInformation(receiverTeamInformation)
+                .requestMessage(matching.getRequestMessage())
+                .matchingStatusType(matching.getMatchingStatusType())
+                .receiverReadStatus(matching.getReceiverReadStatus())
                 .build();
     }
 
