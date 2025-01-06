@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Adapter
 @RequiredArgsConstructor
 public class TeamScrapCommandAdapter {
-    private TeamScrapRepository teamScrapRepository;
+    private final TeamScrapRepository teamScrapRepository;
 
     public TeamScrap addTeamScrap(final TeamScrap teamScrap) {
         return teamScrapRepository.save(teamScrap);

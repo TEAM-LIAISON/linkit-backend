@@ -73,10 +73,13 @@ public class TeamScrapService {
 
         if (scrapExists) {
             handleExistingScrap(memberId, teamCode, shouldAddScrap);
+            log.info("Team scrap updated for member " + memberId);
         } else {
+            log.info("Team scrap does not exist");
             handleNonExistingScrap(memberId, teamCode, shouldAddScrap);
         }
 
+        log.info("Team scrap updated for member " + memberId);
         return teamScrapMapper.toUpdateTeamScrap(teamCode, shouldAddScrap);
     }
 
@@ -129,12 +132,18 @@ public class TeamScrapService {
 
     // 스크랩이 존재하지 않는 경우 처리 메서드
     private void handleNonExistingScrap(Long memberId, String teamCode, boolean shouldAddScrap) {
+        log.info("handleNonExistingScrap 실행");
         if (shouldAddScrap) {
+            log.info("shouldAddScrap true");
             Member member = memberQueryAdapter.findById(memberId);
+            log.info("memberId : " + memberId);
             Team team = teamQueryAdapter.findByTeamCode(teamCode);
+            log.info("teamCode : " + teamCode);
             TeamScrap teamScrap = new TeamScrap(null, member, team);
+            log.info("teamScrap : " + teamScrap);
             teamScrapCommandAdapter.addTeamScrap(teamScrap);
         } else {
+            log.info("shouldAddScrap false");
             throw BadRequestTeamScrapException.EXCEPTION;
         }
     }

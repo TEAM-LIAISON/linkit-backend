@@ -71,7 +71,8 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
     public boolean existsByMemberIdAndTeamCode(final Long memberId, final String teamCode) {
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
-        Integer count = jpaQueryFactory.selectOne().from(qTeamScrap)
+        Integer count = jpaQueryFactory.selectOne()
+                .from(qTeamScrap)
                 .where(qTeamScrap.member.id.eq(memberId)
                         .and(qTeamScrap.team.teamCode.eq(teamCode)))
                 .fetchFirst();
