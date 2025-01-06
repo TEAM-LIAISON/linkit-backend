@@ -1,9 +1,12 @@
 package liaison.linkit.chat.business;
 
+import java.util.stream.Collectors;
+import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.common.annotation.Mapper;
+import org.springframework.data.domain.Page;
 
 @Mapper
 public class ChatMapper {
@@ -23,4 +26,29 @@ public class ChatMapper {
                 .build();
     }
 
+    public ChatResponseDTO.ChatMessageHistoryResponse toChatMessageHistoryResponse(
+            final Page<ChatMessage> messagePage
+    ) {
+        return ChatResponseDTO.ChatMessageHistoryResponse.builder()
+                .totalElements(messagePage.getTotalElements())
+                .totalPages(messagePage.getTotalPages())
+                .hasNext(messagePage.hasNext())
+                .messages(messagePage.getContent().stream()
+                        .map(this::toChatMessageResponse)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public ChatResponseDTO.ChatMessageResponse toChatMessageResponse(
+            final ChatMessage message
+    ) {
+        return ChatResponseDTO.ChatMessageResponse.builder()
+                .messageId(message.getId())
+                .chatRoomId(message.getChatRoomId())
+                .senderMemberId(message.getSenderMemberId())
+                .content(message.getContent())
+                .timestamp(message.getTimestamp())
+                .isRead(message.isRead())
+                .build();
+    }
 }

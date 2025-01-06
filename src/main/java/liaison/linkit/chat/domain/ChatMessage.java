@@ -12,6 +12,7 @@ import lombok.Builder;
 
 @Document(collection = "chat_messages")
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class ChatMessage {
@@ -23,10 +24,7 @@ public class ChatMessage {
     private Long chatRoomId;
 
     // 실제 메시지를 보낸 회원의 ID
-    private Long senderId;
-
-    // 발신자 엔티티 ID (Profile인 경우 memberId, Team인 경우 teamId)
-    private Long senderEntityId;
+    private Long senderMemberId;
 
     // 메시지 내용
     private String content;
@@ -37,15 +35,21 @@ public class ChatMessage {
     // 메시지 읽음 여부
     private boolean isRead;
 
+    public void markAsRead() {
+        this.isRead = true;
+    }
+
     /**
      * 채팅 메시지 생성을 위한 빌더 패턴 생성자
      */
     @Builder
-    public ChatMessage(Long chatRoomId, Long senderId,
-                       Long senderEntityId, String content) {
+    public ChatMessage(
+            final Long chatRoomId,
+            final Long senderMemberId,
+            final String content
+    ) {
         this.chatRoomId = chatRoomId;
-        this.senderId = senderId;
-        this.senderEntityId = senderEntityId;
+        this.senderMemberId = senderMemberId;
         this.content = content;
         this.timestamp = LocalDateTime.now();
         this.isRead = false;

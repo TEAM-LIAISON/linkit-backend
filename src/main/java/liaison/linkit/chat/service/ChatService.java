@@ -1,14 +1,20 @@
 package liaison.linkit.chat.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import liaison.linkit.chat.business.ChatMapper;
+import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
+import liaison.linkit.chat.domain.repository.chatMessage.ChatMessageRepository;
 import liaison.linkit.chat.domain.type.CreateChatLocation;
+import liaison.linkit.chat.exception.ChatRoomUnauthorizedException;
 import liaison.linkit.chat.exception.CreateChatReceiverBadRequestException;
 import liaison.linkit.chat.exception.CreateChatSenderBadRequestException;
 import liaison.linkit.chat.exception.MatchingStateChatBadRequestException;
 import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
+import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
+import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.matching.domain.type.ReceiverType;
@@ -25,7 +31,9 @@ import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,49 +43,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ChatService {
 
-    private final ChatRoomCommandAdapter chatRoomCommandAdapter;
+    private final SimpMessageSendingOperations messagingTemplate;
 
-    private final SimpMessagingTemplate messagingTemplate;
     private final ChatMapper chatMapper;
-    private final MatchingQueryAdapter matchingQueryAdapter;
+
+    private final ChatMessageRepository chatMessageRepository;
+
+    private final MemberQueryAdapter memberQueryAdapter;
+    private final ChatRoomQueryAdapter chatRoomQueryAdapter;
     private final ProfileQueryAdapter profileQueryAdapter;
     private final TeamQueryAdapter teamQueryAdapter;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
-    private final MemberQueryAdapter memberQueryAdapter;
+    private final MatchingQueryAdapter matchingQueryAdapter;
 
-    /**
-     * 채팅 메시지 전송 처리
-     *
-     * @param request  채팅 메시지 요청 정보
-     * @param senderId 실제 메시지를 보내는 회원의 ID
-     */
-//    public void sendMessage(ChatMessageRequest request, Long senderId) {
-//        // 채팅방 존재 여부 확인
-//        ChatRoom chatRoom = chatRoomRepository.findById(request.getChatRoomId())
-//                .orElseThrow(() -> new ChatRoomNotFoundException());
-//
-//        // 발신자의 채팅방 접근 권한 확인
-//        validateChatAccess(chatRoom, senderId, request.getSenderTeamId());
-//
-//        // 채팅 메시지 생성
-//        ChatMessage message = ChatMessage.builder()
-//                .chatRoomId(chatRoom.getId())
-//                .senderId(senderId)
-//                .senderType(request.getSenderType())
-//                .senderEntityId(request.getSenderEntityId())
-//                .content(request.getContent())
-//                .build();
-//
-//        // 메시지 저장
-//        ChatMessage savedMessage = chatMessageRepository.save(message);
-//
-//        // WebSocket을 통해 구독자들에게 실시간 메시지 전송
-//        messagingTemplate.convertAndSend(
-//                "/topic/chat/room/" + chatRoom.getId(),
-//                savedMessage
-//        );
-//    }
+    private final ChatRoomCommandAdapter chatRoomCommandAdapter;
 
     /**
      * 새로운 채팅방 생성
@@ -294,5 +274,70 @@ public class ChatService {
         ChatRoom saved = chatRoomCommandAdapter.createChatRoom(chatRoom);
 
         return chatMapper.toCreateChatRoomResponse(saved);
+    }
+
+    // 메시지 처리
+    public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId) {
+        // 1. 채팅방 존재 및 접근 권한 확인
+        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatMessageRequest.getChatRoomId());
+        if (!chatRoom.canAccessChat(memberId, chatMessageRequest.getSenderEntityId())) {
+            throw ChatRoomUnauthorizedException.EXCEPTION;
+        }
+
+        // 2. 메시지 생성 및 저장
+        ChatMessage chatMessage = ChatMessage.builder()
+                .chatRoomId(chatMessageRequest.getChatRoomId())
+                .senderMemberId(memberId)
+                .content(chatMessageRequest.getContent())
+                .timestamp(LocalDateTime.now())
+                .isRead(false)
+                .build();
+
+        chatMessageRepository.save(chatMessage);
+
+        // 3. 채팅방 마지막 메시지 업데이트
+        chatRoom.updateLastMessage(chatMessage.getContent(), chatMessage.getTimestamp());
+        chatRoomCommandAdapter.save(chatRoom);
+
+        // 4. 구독자들에게 메시지 발송
+        ChatResponseDTO.ChatMessageResponse messageResponse = chatMapper.toChatMessageResponse(chatMessage);
+        messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageRequest.getChatRoomId(), messageResponse);
+    }
+
+    /**
+     * 채팅방의 이전 메시지 내역 조회
+     */
+    @Transactional(readOnly = true)
+    public ChatResponseDTO.ChatMessageHistoryResponse getChatMessages(
+            final Long chatRoomId,
+            final Long memberId,
+            final Pageable pageable
+    ) {
+        // 1. 채팅방 존재 여부 및 접근 권한 확인
+        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
+
+        // 2. 메시지 조회 및 읽음 처리
+        Page<ChatMessage> messages = chatMessageRepository.findByChatRoomIdOrderByTimestampDesc(
+                chatRoomId,
+                pageable
+        );
+
+        // 3. 읽지 않은 메시지 읽음 처리
+        updateUnreadMessages(chatRoomId, memberId);
+
+        return chatMapper.toChatMessageHistoryResponse(messages);
+    }
+
+    /**
+     * 읽지 않은 메시지 읽음 처리
+     */
+    private void updateUnreadMessages(final Long chatRoomId, final Long memberId) {
+        List<ChatMessage> unreadMessages = chatMessageRepository.findByChatRoomIdAndIsReadFalseAndSenderMemberIdNot(
+                chatRoomId,
+                memberId
+        );
+
+        unreadMessages.forEach(ChatMessage::markAsRead);
+        chatMessageRepository.saveAll(unreadMessages);
     }
 }

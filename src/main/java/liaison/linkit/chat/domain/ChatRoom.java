@@ -9,6 +9,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import java.time.LocalDateTime;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -50,7 +51,7 @@ public class ChatRoom extends BaseDateTimeEntity {
 
     @Column(nullable = false)
     private String participantBName;
-    
+
     // 두 번째 참여자의 유형 (PROFILE 또는 TEAM)
     @Enumerated(EnumType.STRING)
     @Column(name = "participant_b_type", nullable = false)
@@ -88,5 +89,16 @@ public class ChatRoom extends BaseDateTimeEntity {
         }
         // Team으로 참여한 경우 해당 teamId를 가진 팀의 채팅방만 접근 가능
         return isParticipant(teamId, ParticipantType.TEAM);
+    }
+
+    @Column
+    private String lastMessage;
+
+    @Column
+    private LocalDateTime lastMessageTime;
+
+    public void updateLastMessage(String message, LocalDateTime timestamp) {
+        this.lastMessage = message;
+        this.lastMessageTime = timestamp;
     }
 }

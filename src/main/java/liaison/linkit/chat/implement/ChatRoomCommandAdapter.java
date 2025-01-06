@@ -14,4 +14,7 @@ public class ChatRoomCommandAdapter {
         return chatRoomRepository.save(chatRoom);
     }
 
+    public void save(final ChatRoom chatRoom) {
+        chatRoomRepository.save(chatRoom);
+    }
 }

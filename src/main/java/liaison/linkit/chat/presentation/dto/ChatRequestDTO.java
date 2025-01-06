@@ -30,4 +30,14 @@ public class ChatRequestDTO {
         private String receiverTeamCode;                            // 매칭 요청 수신자 팀 아이디
         private Long receiverAnnouncementId;                        // 매칭 요청 수신자 공고 아이디
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatMessageRequest {
+        private Long chatRoomId;
+        private Long senderEntityId;  // Profile/Team의 ID
+        private String content;
+    }
 }
