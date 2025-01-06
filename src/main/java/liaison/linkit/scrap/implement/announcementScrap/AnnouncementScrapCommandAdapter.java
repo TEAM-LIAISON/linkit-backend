@@ -9,8 +9,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AnnouncementScrapCommandAdapter {
     private final AnnouncementScrapRepository teamMemberAnnouncementScrapRepository;
-
-
+    
     public AnnouncementScrap addAnnouncementScrap(final AnnouncementScrap announcementScrap) {
         return teamMemberAnnouncementScrapRepository.save(announcementScrap);
     }
