@@ -8,9 +8,12 @@ import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
+import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.exception.CompletedMatchingReadBadRequestException;
+import liaison.linkit.matching.exception.MatchingReceiverBadRequestException;
 import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
+import liaison.linkit.matching.exception.MatchingSenderBadRequestException;
 import liaison.linkit.matching.exception.ReceivedMatchingReadBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
@@ -471,11 +474,50 @@ public class MatchingService {
             throw MatchingRelationBadRequestException.EXCEPTION;
         }
 
+        if (addMatchingRequest.getSenderType().equals(SenderType.PROFILE)) {
+            if (addMatchingRequest.getSenderEmailId() == null) {
+                throw MatchingSenderBadRequestException.EXCEPTION;
+            }
+        }
+
+        if (addMatchingRequest.getSenderType().equals(SenderType.TEAM)) {
+            if (addMatchingRequest.getSenderTeamCode() == null) {
+                throw MatchingSenderBadRequestException.EXCEPTION;
+            }
+        }
+
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.PROFILE)) {
+            if (addMatchingRequest.getReceiverEmailId() == null) {
+                throw MatchingReceiverBadRequestException.EXCEPTION;
+            }
+        }
+
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.TEAM)) {
+            if (addMatchingRequest.getReceiverTeamCode() == null) {
+                throw MatchingReceiverBadRequestException.EXCEPTION;
+            }
+        }
+
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            if (addMatchingRequest.getReceiverAnnouncementId() == null) {
+                throw MatchingReceiverBadRequestException.EXCEPTION;
+            }
+        }
+
         final Matching matching = Matching.builder()
                 .id(null)
                 .senderType(addMatchingRequest.getSenderType())
                 .receiverType(addMatchingRequest.getReceiverType())
+                .senderEmailId(addMatchingRequest.getSenderEmailId())
+                .senderTeamCode(addMatchingRequest.getSenderTeamCode())
+                .receiverEmailId(addMatchingRequest.getReceiverEmailId())
+                .receiverTeamCode(addMatchingRequest.getReceiverTeamCode())
+                .receiverAnnouncementId(addMatchingRequest.getReceiverAnnouncementId())
                 .requestMessage(addMatchingRequest.getRequestMessage())
+                .matchingStatusType(MatchingStatusType.REQUESTED)
+                .senderDeleteStatus(SenderDeleteStatus.REMAINING)
+                .receiverDeleteStatus(ReceiverDeleteStatus.REMAINING)
+                .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
                 .build();
 
         return matchingMapper.toAddMatchingResponse(matching);

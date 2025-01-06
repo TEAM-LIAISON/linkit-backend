@@ -127,6 +127,7 @@ class ProfileControllerTest extends ControllerTest {
                 .memberName("권동민")
                 .emailId("이메일 아이디")
                 .isProfilePublic(true)
+                .profileScrapCount(100)
                 .majorPosition("포지션 대분류")
                 .regionDetail(regionDetail)
                 .profileTeamInforms(Arrays.asList(
@@ -197,7 +198,10 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.isProfileScrap")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로필 스크랩 여부 (자기 자신의 조회는 무조건 false)"),
-
+                                        fieldWithPath("result.profileInformMenu.profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 전체 개수"),
+                                        
                                         fieldWithPath("result.profileInformMenu.profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),
@@ -297,6 +301,7 @@ class ProfileControllerTest extends ControllerTest {
                 .memberName("권동민")
                 .emailId("이메일 아이디")
                 .isProfilePublic(true)
+                .profileScrapCount(100)
                 .majorPosition("포지션 대분류")
                 .regionDetail(regionDetail)
                 .profileTeamInforms(Arrays.asList(
@@ -453,6 +458,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.isProfileScrap")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로필 스크랩 유무 (로그아웃 상태 -> 무조건 false)"),
+                                        fieldWithPath("result.profileInformMenu.profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 전체 개수"),
                                         fieldWithPath("result.profileInformMenu.profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),

@@ -188,6 +188,7 @@ public class MatchingControllerTest extends ControllerTest {
         );
     }
 
+
     @DisplayName("프로필 뷰어에 매칭 요청을 보낼 프로필의 정보 목록을 조회할 수 있다.")
     @Test
     void getSelectMatchingRequestToProfileMenu() throws Exception {

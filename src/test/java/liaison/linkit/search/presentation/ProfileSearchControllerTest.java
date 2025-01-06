@@ -88,6 +88,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
                         )
                 )
                 .isProfileScrap(true)
+                .profileScrapCount(100)
                 .profileImagePath("프로필 이미지 경로 1")
                 .memberName("회원 이름 1")
                 .emailId("이메일 ID 1")
@@ -124,6 +125,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
                         )
                 )
                 .isProfileScrap(false)
+                .profileScrapCount(200)
                 .profileImagePath("프로필 이미지 경로 2")
                 .memberName("회원 이름 2")
                 .emailId("이메일 ID 2")
@@ -223,6 +225,9 @@ public class ProfileSearchControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].isProfileScrap")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로필 스크랩 여부 (로그인, 로그아웃 상태 반영 & 스크랩 여부 반영)"),
+                                        fieldWithPath("result.content[].profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 전체 개수"),
                                         fieldWithPath("result.content[].profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),

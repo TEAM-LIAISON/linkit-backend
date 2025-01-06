@@ -44,11 +44,11 @@ public class MatchingRequestDTO {
         private SenderType senderType;                  //     PROFILE, TEAM
         private ReceiverType receiverType;              //     PROFILE, TEAM, ANNOUNCEMENT
 
-        private Long senderEmailId;                     //     발신자 유저 아이디
-        private Long senderTeamCode;                    //     발신자 팀 아이디
+        private String senderEmailId;                     //     발신자 유저 아이디
+        private String senderTeamCode;                    //     발신자 팀 아이디
 
-        private Long receiverEmailId;                   //     수신자 유저 아이디
-        private Long receiverTeamCode;                  //     수신자 팀 아이디
+        private String receiverEmailId;                   //     수신자 유저 아이디
+        private String receiverTeamCode;                  //     수신자 팀 아이디
         private Long receiverAnnouncementId;            //     수신자 공고 아이디
 
         private String requestMessage;                  //     매칭 요청 메시지

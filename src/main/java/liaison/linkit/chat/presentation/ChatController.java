@@ -9,7 +9,6 @@ import liaison.linkit.chat.service.ChatService;
 import liaison.linkit.common.presentation.CommonResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
     private final ChatService chatService;
-    private final SimpMessagingTemplate messagingTemplate;
 
 //    @MessageMapping("/chat/message")
 //    public void handleChatMessage(@Payload ChatMessageRequest messageRequest,
