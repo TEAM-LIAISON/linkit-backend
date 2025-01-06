@@ -68,10 +68,13 @@ public class ChatService {
      */
     public ChatResponseDTO.CreateChatRoomResponse createChatRoom(final CreateChatRoomRequest createChatRoomRequest, final Long memberId) {
 
+        // 채팅방을 열게하는 매칭의 매칭 ID
         final Long matchingId = createChatRoomRequest.getMatchingId();
 
+        // 채팅방 생성을 요청한 회원의 프로필
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
+        // 매칭 성사된 매칭에 대해서만 채팅방을 열어주도록 설정
         if (!matchingQueryAdapter.isCompletedMatching(matchingId)) {
             throw MatchingStateChatBadRequestException.EXCEPTION;
         }

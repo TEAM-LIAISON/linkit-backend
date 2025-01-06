@@ -180,10 +180,10 @@ public class ChatControllerTest extends ControllerTest {
                                         fieldWithPath("result.participantBName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("참여자 B의 이름 (Profile - memberName, Team - teamName)"),
-                                        fieldWithPath("result.lastMessage.content")
+                                        fieldWithPath("result.lastMessage")
                                                 .type(JsonFieldType.STRING)
                                                 .description("채팅 마지막 메시지 내용"),
-                                        fieldWithPath("result.lastMessage.timestamp")
+                                        fieldWithPath("result.lastMessageTime")
                                                 .type(JsonFieldType.STRING)
                                                 .description("마지막 메시지 전송 시간"),
                                         fieldWithPath("result.unreadCount")

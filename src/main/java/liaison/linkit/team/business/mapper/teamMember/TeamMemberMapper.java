@@ -26,7 +26,7 @@ public class TeamMemberMapper {
         return TeamMember.builder()
                 .member(member)
                 .team(team)
-                .teamMemberType(TeamMemberType.TEAM_MANAGER)
+                .teamMemberType(TeamMemberType.TEAM_OWNER)
                 .build();
     }
 
