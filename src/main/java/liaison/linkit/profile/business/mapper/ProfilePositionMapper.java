@@ -13,6 +13,7 @@ public class ProfilePositionMapper {
         return ProfileResponseDTO.ProfilePositionDetail
                 .builder()
                 .majorPosition(profilePosition.getPosition().getMajorPosition())
+                .subPosition(profilePosition.getPosition().getSubPosition())
                 .build();
     }
 }

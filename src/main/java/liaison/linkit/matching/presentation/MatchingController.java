@@ -9,7 +9,7 @@ import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
@@ -60,7 +60,7 @@ public class MatchingController {
 
     // 상단 메뉴
     @GetMapping("/notification/menu")
-    public CommonResponse<MatchingMenu> getMatchingMenu(
+    public CommonResponse<MatchingNotificationMenu> getMatchingNotificationMenu(
             @Auth final Accessor accessor
     ) {
         return CommonResponse.onSuccess(matchingService.getMatchingNotificationMenu(accessor.getMemberId()));
@@ -133,7 +133,6 @@ public class MatchingController {
         Page<RequestedMatchingMenu> requestedMatchingMenus = matchingService.getRequestedMatchingMenuResponse(accessor.getMemberId(), senderType, pageable);
         return CommonResponse.onSuccess(requestedMatchingMenus);
     }
-
 
     // 매칭 요청 보내기
     @PostMapping

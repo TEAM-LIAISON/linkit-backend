@@ -3,13 +3,18 @@ package liaison.linkit.matching.business;
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.matching.domain.Matching;
+import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
+import liaison.linkit.matching.domain.type.ReceiverReadStatus;
+import liaison.linkit.matching.domain.type.SenderDeleteStatus;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.AddMatchingResponse;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverTeamInformation;
@@ -29,6 +34,24 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 
 @Mapper
 public class MatchingMapper {
+
+    public Matching toMatching(MatchingRequestDTO.AddMatchingRequest addMatchingRequest) {
+        return Matching.builder()
+                .id(null)
+                .senderType(addMatchingRequest.getSenderType())
+                .senderEmailId(addMatchingRequest.getSenderEmailId())
+                .senderTeamCode(addMatchingRequest.getSenderTeamCode())
+                .receiverType(addMatchingRequest.getReceiverType())
+                .receiverEmailId(addMatchingRequest.getReceiverEmailId())
+                .receiverTeamCode(addMatchingRequest.getReceiverTeamCode())
+                .receiverAnnouncementId(addMatchingRequest.getReceiverAnnouncementId())
+                .requestMessage(addMatchingRequest.getRequestMessage())
+                .matchingStatusType(MatchingStatusType.REQUESTED)
+                .senderDeleteStatus(SenderDeleteStatus.REMAINING)
+                .receiverDeleteStatus(ReceiverDeleteStatus.REMAINING)
+                .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
+                .build();
+    }
 
     public SelectMatchingRequestToProfileMenu toSelectMatchingRequestToProfileMenu(
             final Boolean isTeamInformationExists,
@@ -97,11 +120,7 @@ public class MatchingMapper {
                 .matchingId(requestedMatchingItem.getId())
                 .senderType(requestedMatchingItem.getSenderType())
                 .receiverType(requestedMatchingItem.getReceiverType())
-                .senderEmailId(requestedMatchingItem.getSenderEmailId())
-                .senderTeamCode(requestedMatchingItem.getSenderTeamCode())
-                .receiverEmailId(requestedMatchingItem.getReceiverEmailId())
-                .receiverTeamCode(requestedMatchingItem.getReceiverTeamCode())
-                .receiverAnnouncementId(requestedMatchingItem.getReceiverAnnouncementId())
+
                 .requestMessage(requestedMatchingItem.getRequestMessage())
                 .matchingStatusType(requestedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(requestedMatchingItem.getReceiverReadStatus())
@@ -115,30 +134,85 @@ public class MatchingMapper {
                 .matchingId(receivedMatchingItem.getId())
                 .senderType(receivedMatchingItem.getSenderType())
                 .receiverType(receivedMatchingItem.getReceiverType())
-                .senderEmailId(receivedMatchingItem.getSenderEmailId())
-                .senderTeamCode(receivedMatchingItem.getSenderTeamCode())
-                .receiverEmailId(receivedMatchingItem.getReceiverEmailId())
-                .receiverTeamCode(receivedMatchingItem.getReceiverTeamCode())
-                .receiverAnnouncementId(receivedMatchingItem.getReceiverAnnouncementId())
+
                 .requestMessage(receivedMatchingItem.getRequestMessage())
                 .matchingStatusType(receivedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(receivedMatchingItem.getReceiverReadStatus())
                 .build();
     }
 
-    public MatchingResponseDTO.AddMatchingResponse toAddMatchingResponse(final Matching matching) {
+    public MatchingResponseDTO.AddMatchingResponse toAddMatchingResponse(
+            final Matching matching,
+            final SenderProfileInformation senderProfileInformation,
+            final SenderTeamInformation senderTeamInformation,
+            final ReceiverProfileInformation receiverProfileInformation,
+            final ReceiverTeamInformation receiverTeamInformation
+    ) {
+
         return AddMatchingResponse.builder()
+                .matchingId(matching.getId())
                 .senderType(matching.getSenderType())
                 .receiverType(matching.getReceiverType())
-                .receiverEmailId(matching.getReceiverEmailId())
+                .senderProfileInformation(senderProfileInformation)
+                .senderTeamInformation(senderTeamInformation)
+                .receiverProfileInformation(receiverProfileInformation)
+                .receiverTeamInformation(receiverTeamInformation)
                 .build();
     }
 
-    public MatchingMenu toMatchingMenuResponse(
+    public MatchingResponseDTO.SenderProfileInformation toSenderProfileInformation(
+            final Profile senderProfile,
+            final ProfilePositionDetail senderProfilePositionDetail
+    ) {
+        return SenderProfileInformation.builder()
+                .profileImagePath(senderProfile.getProfileImagePath())
+                .emailId(senderProfile.getMember().getEmailId())
+                .memberName(senderProfile.getMember().getMemberBasicInform().getMemberName())
+                .profilePositionDetail(senderProfilePositionDetail)
+                .build();
+    }
+
+    public MatchingResponseDTO.SenderTeamInformation toSenderTeamInformation(
+            final Team senderTeam,
+            final TeamScaleItem senderTeamScaleItem
+    ) {
+        return SenderTeamInformation.builder()
+                .teamLogoImagePath(senderTeam.getTeamLogoImagePath())
+                .teamName(senderTeam.getTeamName())
+                .teamCode(senderTeam.getTeamCode())
+                .teamScaleItem(senderTeamScaleItem)
+                .build();
+    }
+
+    public MatchingResponseDTO.ReceiverProfileInformation toReceiverProfileInformation(
+            final Profile receiverProfile,
+            final ProfilePositionDetail receiverProfilePositionDetail
+    ) {
+        return ReceiverProfileInformation.builder()
+                .profileImagePath(receiverProfile.getProfileImagePath())
+                .emailId(receiverProfile.getMember().getEmailId())
+                .memberName(receiverProfile.getMember().getMemberBasicInform().getMemberName())
+                .profilePositionDetail(receiverProfilePositionDetail)
+                .build();
+    }
+
+    public MatchingResponseDTO.ReceiverTeamInformation toReceiverTeamInformation(
+            final Team receiverTeam,
+            final TeamScaleItem receiverTeamScaleItem
+    ) {
+        return ReceiverTeamInformation.builder()
+                .teamLogoImagePath(receiverTeam.getTeamLogoImagePath())
+                .teamName(receiverTeam.getTeamName())
+                .teamCode(receiverTeam.getTeamCode())
+                .teamScaleItem(receiverTeamScaleItem)
+                .build();
+    }
+
+    public MatchingNotificationMenu toMatchingMenuResponse(
             final int receivedMatchingNotificationCount,
             final int requestedMatchingNotificationCount
     ) {
-        return MatchingMenu.builder()
+        return MatchingNotificationMenu.builder()
                 .receivedMatchingNotificationCount(receivedMatchingNotificationCount)
                 .requestedMatchingNotificationCount(requestedMatchingNotificationCount)
                 .build();

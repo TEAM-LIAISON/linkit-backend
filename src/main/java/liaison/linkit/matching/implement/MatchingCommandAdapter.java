@@ -14,4 +14,8 @@ public class MatchingCommandAdapter {
     public void updateAll(final List<Matching> matchings) {
         matchingRepository.saveAll(matchings);
     }
+
+    public void addMatching(final Matching matching) {
+        matchingRepository.save(matching);
+    }
 }

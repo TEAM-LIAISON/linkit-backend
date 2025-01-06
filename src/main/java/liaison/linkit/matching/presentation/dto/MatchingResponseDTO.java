@@ -53,149 +53,28 @@ public class MatchingResponseDTO {
         private ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
     }
 
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SenderProfileInformation {
-        private String profileImagePath;
-        private String memberName;
-        private String emailId;
-
-        @Builder.Default
-        private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ReceiverProfileInformation {
-        private String profileImagePath;
-        private String memberName;
-        private String emailId;
-
-        @Builder.Default
-        private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SenderTeamInformation {
-        private String teamCode;                    // 팀 코드
-        private String teamName;                    // 팀 이름
-        private String teamLogoImagePath;           // 팀 로고 이미지 경로
-
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
-    }
-
-    @Getter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ReceiverTeamInformation {
-        private String teamCode;                    // 팀 코드
-        private String teamName;                    // 팀 이름
-        private String teamLogoImagePath;           // 팀 로고 이미지 경로
-
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DeleteRequestedMatchingItems {
-        @Builder.Default
-        private List<DeleteRequestedMatchingItem> deleteRequestedMatchingItems = new ArrayList<>();
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DeleteRequestedMatchingItem {
-        private Long matchingId;
-        private SenderDeleteStatus senderDeleteStatus;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DeleteReceivedMatchingItems {
-        @Builder.Default
-        private List<DeleteReceivedMatchingItem> deleteReceivedMatchingItems = new ArrayList<>();
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DeleteReceivedMatchingItem {
-        private Long matchingId;
-        private ReceiverDeleteStatus receiverDeleteStatus;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateReceivedMatchingCompletedStateReadItems {
-        @Builder.Default
-        private List<UpdateReceivedMatchingCompletedStateReadItem> updateReceivedMatchingCompletedStateReadItems = new ArrayList<>();
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateReceivedMatchingCompletedStateReadItem {
-        private Long matchingId;
-        private ReceiverReadStatus receiverReadStatus;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateReceivedMatchingRequestedStateToReadItems {
-        @Builder.Default
-        private List<UpdateReceivedMatchingRequestedStateToReadItem> updateReceivedMatchingRequestedStateToReadItems = new ArrayList<>();
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class UpdateReceivedMatchingRequestedStateToReadItem {
-        private Long matchingId;
-        private ReceiverReadStatus receiverReadStatus;
-    }
-
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ReceivedMatchingMenu {
-
-        // 부가적인 사용자 정보 (이름, 로고 이미지 경로) 등은 추가 필요
-
         private Long matchingId;
 
         private SenderType senderType;
+
         private ReceiverType receiverType;
 
-        private String senderEmailId;
-        private String senderTeamCode;
+        @Builder.Default
+        private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
 
-        private String receiverEmailId;
-        private String receiverTeamCode;
-        private Long receiverAnnouncementId;
+        @Builder.Default
+        private SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
+
+        @Builder.Default
+        private ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+
+        @Builder.Default
+        private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
 
         private String requestMessage;
 
@@ -212,14 +91,20 @@ public class MatchingResponseDTO {
         private Long matchingId;
 
         private SenderType senderType;
+
         private ReceiverType receiverType;
 
-        private String senderEmailId;
-        private String senderTeamCode;
+        @Builder.Default
+        private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
 
-        private String receiverEmailId;
-        private String receiverTeamCode;
-        private Long receiverAnnouncementId;
+        @Builder.Default
+        private SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
+
+        @Builder.Default
+        private ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+
+        @Builder.Default
+        private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
 
         private String requestMessage;
 
@@ -228,27 +113,173 @@ public class MatchingResponseDTO {
         private ReceiverReadStatus receiverReadStatus;
     }
 
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class MatchingMenu {
-        private int receivedMatchingNotificationCount;                  // 수신함에서 매칭 성사가 안된 안읽은 요청의 개수 + 매칭 성사가 되고 나서 내가 아직 읽지 않은 요청의 개수
-        private int requestedMatchingNotificationCount;                 // 발신함에서 매칭 성사가 되었는데, 안읽은 요청의 개수
-    }
-
+    // 매칭 요청 응답
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddMatchingResponse {
+        private Long matchingId;
+
         private SenderType senderType;
         private ReceiverType receiverType;
-        private String senderEmailId;
-        private String senderTeamCode;
-        private String receiverEmailId;
-        private String receiverTeamCode;
-        private Long receiverAnnouncementId;
-        private String requestMessage;
+
+        @Builder.Default
+        private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
+
+        @Builder.Default
+        private SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
+
+        @Builder.Default
+        private ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+
+        @Builder.Default
+        private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+    }
+
+    // 발신자 프로필 정보
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SenderProfileInformation {
+        private String profileImagePath;
+        private String memberName;
+        private String emailId;
+
+        @Builder.Default
+        private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+    }
+
+    // 발신자 팀 정보
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SenderTeamInformation {
+        private String teamCode;                    // 팀 코드
+        private String teamName;                    // 팀 이름
+        private String teamLogoImagePath;           // 팀 로고 이미지 경로
+
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+    }
+
+    // 수신자 프로필 정보
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReceiverProfileInformation {
+        private String profileImagePath;
+        private String memberName;
+        private String emailId;
+
+        @Builder.Default
+        private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+    }
+
+    // 수신자 팀 정보
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReceiverTeamInformation {
+        private String teamCode;                    // 팀 코드
+        private String teamName;                    // 팀 이름
+        private String teamLogoImagePath;           // 팀 로고 이미지 경로
+
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();  // 팀 규모
+    }
+
+    // 매칭 알림 메뉴
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class MatchingNotificationMenu {
+        private int receivedMatchingNotificationCount;                  // 수신함에서 매칭 성사가 안된 안읽은 요청의 개수 + 매칭 성사가 되고 나서 내가 아직 읽지 않은 요청의 개수
+        private int requestedMatchingNotificationCount;                 // 발신함에서 매칭 성사가 되었는데, 안읽은 요청의 개수
+    }
+
+    // 발신함 삭제 응답
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteRequestedMatchingItems {
+        @Builder.Default
+        private List<DeleteRequestedMatchingItem> deleteRequestedMatchingItems = new ArrayList<>();
+    }
+
+    // 발신함 삭제 개별 응답
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteRequestedMatchingItem {
+        private Long matchingId;
+        private SenderDeleteStatus senderDeleteStatus;
+    }
+
+    // 수신함 삭제 응답
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteReceivedMatchingItems {
+        @Builder.Default
+        private List<DeleteReceivedMatchingItem> deleteReceivedMatchingItems = new ArrayList<>();
+    }
+
+    // 수신함 삭제 개별 응답
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteReceivedMatchingItem {
+        private Long matchingId;
+        private ReceiverDeleteStatus receiverDeleteStatus;
+    }
+
+    // 수신함에서 성사된 매칭 읽음 처리 응답
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReceivedMatchingCompletedStateReadItems {
+        @Builder.Default
+        private List<UpdateReceivedMatchingCompletedStateReadItem> updateReceivedMatchingCompletedStateReadItems = new ArrayList<>();
+    }
+
+    // 수신함에서 성사된 매칭 읽음 처리 개별 응답
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReceivedMatchingCompletedStateReadItem {
+        private Long matchingId;
+        private ReceiverReadStatus receiverReadStatus;
+    }
+
+    // 수신함에서 요청 온 매칭 읽음 처리 응답
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReceivedMatchingRequestedStateToReadItems {
+        @Builder.Default
+        private List<UpdateReceivedMatchingRequestedStateToReadItem> updateReceivedMatchingRequestedStateToReadItems = new ArrayList<>();
+    }
+
+    // 수신함에서 요청 온 매칭 읽음 처리 개별 응답
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReceivedMatchingRequestedStateToReadItem {
+        private Long matchingId;
+        private ReceiverReadStatus receiverReadStatus;
     }
 }

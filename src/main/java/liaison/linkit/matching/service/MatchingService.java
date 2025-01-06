@@ -8,12 +8,14 @@ import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
-import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.exception.CannotRequestMyAnnouncementException;
+import liaison.linkit.matching.exception.CannotRequestMyProfileException;
 import liaison.linkit.matching.exception.CompletedMatchingReadBadRequestException;
 import liaison.linkit.matching.exception.MatchingReceiverBadRequestException;
 import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
 import liaison.linkit.matching.exception.MatchingSenderBadRequestException;
+import liaison.linkit.matching.exception.NotAllowMatchingBadRequestException;
 import liaison.linkit.matching.exception.ReceivedMatchingReadBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
@@ -26,11 +28,14 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceiv
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToTeamMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
@@ -82,11 +87,14 @@ public class MatchingService {
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
     private final TeamScaleMapper teamScaleMapper;
 
-    public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(
-            final Long memberId, final String emailId
-    ) {
+    @Transactional(readOnly = true)
+    public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long memberId, final String emailId) {
         // 1. 프로필 조회
         final Profile senderProfile = profileQueryAdapter.findByMemberId(memberId);
+
+        if (senderProfile.getMember().getEmailId().equals(emailId)) {
+            throw NotAllowMatchingBadRequestException.EXCEPTION;
+        }
 
         log.info("Selecting matching request to profile {}", senderProfile);
         ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
@@ -177,10 +185,9 @@ public class MatchingService {
         return matchingMapper.toSelectMatchingRequestTeamMenu(isTeamInformationExists, senderProfile, senderProfilePositionDetail, senderTeamInformations, receiverTeam, receiveTeamScaleItem);
     }
 
+    // 매칭 상단 알림 조회 (수정 필요)
     @Transactional(readOnly = true)
-    public MatchingMenu getMatchingNotificationMenu(
-            final Long memberId
-    ) {
+    public MatchingNotificationMenu getMatchingNotificationMenu(final Long memberId) {
         int receivedMatchingNotificationCount = 0;
         int requestedMatchingNotificationCount = 0;
 
@@ -223,11 +230,7 @@ public class MatchingService {
         return matchingMapper.toMatchingMenuResponse(receivedMatchingNotificationCount, requestedMatchingNotificationCount);
     }
 
-    public Page<ReceivedMatchingMenu> getReceivedMatchingMenuResponse(
-            final Long memberId,
-            final ReceiverType receiverType,
-            Pageable pageable
-    ) {
+    public Page<ReceivedMatchingMenu> getReceivedMatchingMenuResponse(final Long memberId, final ReceiverType receiverType, Pageable pageable) {
         List<Matching> combinedMatchingItems = new ArrayList<>();
 
         // Profile 케이스
@@ -286,11 +289,7 @@ public class MatchingService {
         );
     }
 
-    public Page<RequestedMatchingMenu> getRequestedMatchingMenuResponse(
-            final Long memberId,
-            final SenderType senderType,
-            Pageable pageable
-    ) {
+    public Page<RequestedMatchingMenu> getRequestedMatchingMenuResponse(final Long memberId, final SenderType senderType, Pageable pageable) {
         List<Matching> combinedMatchingItems = new ArrayList<>();
 
         // Profile 케이스
@@ -327,10 +326,7 @@ public class MatchingService {
         );
     }
 
-    public UpdateReceivedMatchingRequestedStateToReadItems updateReceivedMatchingRequestedStateToRead(
-            final Long memberId,
-            final UpdateReceivedMatchingReadRequest request
-    ) {
+    public UpdateReceivedMatchingRequestedStateToReadItems updateReceivedMatchingRequestedStateToRead(final Long memberId, final UpdateReceivedMatchingReadRequest request) {
         List<Long> matchingIds = request.getMatchingIds();
 
         if (matchingIds == null || matchingIds.isEmpty()) {
@@ -363,10 +359,7 @@ public class MatchingService {
         return matchingMapper.toUpdateMatchingReceivedToReadItems(updateReceivedMatchingRequestedStateToReadItems);
     }
 
-    public UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingCompletedStateToRead(
-            final Long memberId,
-            final UpdateReceivedMatchingReadRequest request
-    ) {
+    public UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingCompletedStateToRead(final Long memberId, final UpdateReceivedMatchingReadRequest request) {
         List<Long> matchingIds = request.getMatchingIds();
 
         if (matchingIds == null || matchingIds.isEmpty()) {
@@ -395,10 +388,7 @@ public class MatchingService {
         return matchingMapper.toUpdateMatchingCompletedToReadItems(updateReceivedMatchingCompletedStateReadItems);
     }
 
-    public DeleteRequestedMatchingItems deleteRequestedMatchingItems(
-            final Long memberId,
-            final DeleteRequestedMatchingRequest request
-    ) {
+    public DeleteRequestedMatchingItems deleteRequestedMatchingItems(final Long memberId, final DeleteRequestedMatchingRequest request) {
         List<Long> matchingIds = request.getMatchingIds();
 
         if (matchingIds == null || matchingIds.isEmpty()) {
@@ -422,10 +412,7 @@ public class MatchingService {
         return matchingMapper.toDeleteRequestedMatchingItems(deleteRequestedMatchingItems);
     }
 
-    public DeleteReceivedMatchingItems deleteReceivedMatchingItems(
-            final Long memberId,
-            final DeleteReceivedMatchingRequest request
-    ) {
+    public DeleteReceivedMatchingItems deleteReceivedMatchingItems(final Long memberId, final DeleteReceivedMatchingRequest request) {
         List<Long> matchingIds = request.getMatchingIds();
 
         if (matchingIds == null || matchingIds.isEmpty()) {
@@ -449,26 +436,15 @@ public class MatchingService {
         return matchingMapper.toDeleteReceivedMatchingItems(deleteReceivedMatchingItems);
     }
 
-    private RequestedMatchingMenu toMatchingRequestedMenu(
-            final Matching requestedMatchingItem
-    ) {
-        return matchingMapper.toMatchingRequestedMenu(
-                requestedMatchingItem
-        );
+    private RequestedMatchingMenu toMatchingRequestedMenu(final Matching requestedMatchingItem) {
+        return matchingMapper.toMatchingRequestedMenu(requestedMatchingItem);
     }
 
-    private ReceivedMatchingMenu toMatchingReceivedMenu(
-            final Matching receivedMatchingItem
-    ) {
-        return matchingMapper.toMatchingReceivedMenu(
-                receivedMatchingItem
-        );
+    private ReceivedMatchingMenu toMatchingReceivedMenu(final Matching receivedMatchingItem) {
+        return matchingMapper.toMatchingReceivedMenu(receivedMatchingItem);
     }
 
-    public MatchingResponseDTO.AddMatchingResponse addMatching(
-            final Long memberId,
-            final MatchingRequestDTO.AddMatchingRequest addMatchingRequest
-    ) {
+    public MatchingResponseDTO.AddMatchingResponse addMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest addMatchingRequest) {
 
         if (addMatchingRequest.getSenderTeamCode() != null && addMatchingRequest.getReceiverAnnouncementId() != null) {
             throw MatchingRelationBadRequestException.EXCEPTION;
@@ -490,11 +466,20 @@ public class MatchingService {
             if (addMatchingRequest.getReceiverEmailId() == null) {
                 throw MatchingReceiverBadRequestException.EXCEPTION;
             }
+
+            final Profile profile = profileQueryAdapter.findByEmailId(addMatchingRequest.getReceiverEmailId());
+            if (profile.getMember().getId().equals(memberId)) {
+                throw CannotRequestMyProfileException.EXCEPTION;
+            }
         }
 
         if (addMatchingRequest.getReceiverType().equals(ReceiverType.TEAM)) {
             if (addMatchingRequest.getReceiverTeamCode() == null) {
                 throw MatchingReceiverBadRequestException.EXCEPTION;
+            }
+
+            if (teamMemberQueryAdapter.findMembersByTeamCode(addMatchingRequest.getReceiverTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
+                throw CannotRequestMyProfileException.EXCEPTION;
             }
         }
 
@@ -502,24 +487,65 @@ public class MatchingService {
             if (addMatchingRequest.getReceiverAnnouncementId() == null) {
                 throw MatchingReceiverBadRequestException.EXCEPTION;
             }
+            final Team team = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(addMatchingRequest.getReceiverAnnouncementId()).getTeam();
+            if (teamMemberQueryAdapter.findMembersByTeamCode(team.getTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
+                throw CannotRequestMyAnnouncementException.EXCEPTION;
+            }
         }
 
-        final Matching matching = Matching.builder()
-                .id(null)
-                .senderType(addMatchingRequest.getSenderType())
-                .receiverType(addMatchingRequest.getReceiverType())
-                .senderEmailId(addMatchingRequest.getSenderEmailId())
-                .senderTeamCode(addMatchingRequest.getSenderTeamCode())
-                .receiverEmailId(addMatchingRequest.getReceiverEmailId())
-                .receiverTeamCode(addMatchingRequest.getReceiverTeamCode())
-                .receiverAnnouncementId(addMatchingRequest.getReceiverAnnouncementId())
-                .requestMessage(addMatchingRequest.getRequestMessage())
-                .matchingStatusType(MatchingStatusType.REQUESTED)
-                .senderDeleteStatus(SenderDeleteStatus.REMAINING)
-                .receiverDeleteStatus(ReceiverDeleteStatus.REMAINING)
-                .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
-                .build();
+        final Matching matching = matchingMapper.toMatching(addMatchingRequest);
+        matchingCommandAdapter.addMatching(matching);
 
-        return matchingMapper.toAddMatchingResponse(matching);
+        SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
+        SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
+        ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+
+        if (addMatchingRequest.getSenderType().equals(SenderType.PROFILE)) {
+            final Profile senderProfile = profileQueryAdapter.findByEmailId(addMatchingRequest.getSenderEmailId());
+            ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+                final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+                senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+
+            senderProfileInformation = matchingMapper.toSenderProfileInformation(senderProfile, senderProfilePositionDetail);
+        }
+
+        if (addMatchingRequest.getSenderType().equals(SenderType.TEAM)) {
+            final Team senderTeam = teamQueryAdapter.findByTeamCode(addMatchingRequest.getSenderTeamCode());
+            TeamScaleItem senderTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(senderTeam.getId())) {
+                final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(senderTeam.getId());
+                senderTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+
+            senderTeamInformation = matchingMapper.toSenderTeamInformation(senderTeam, senderTeamScaleItem);
+        }
+
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.PROFILE)) {
+            final Profile receiverProfile = profileQueryAdapter.findByEmailId(addMatchingRequest.getReceiverEmailId());
+            ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
+                final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
+                receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+
+            receiverProfileInformation = matchingMapper.toReceiverProfileInformation(receiverProfile, receiverProfilePositionDetail);
+        }
+
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.TEAM)) {
+            final Team receiverTeam = teamQueryAdapter.findByTeamCode(addMatchingRequest.getSenderTeamCode());
+            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+                final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+
+            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+        }
+
+        return matchingMapper.toAddMatchingResponse(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation);
     }
 }

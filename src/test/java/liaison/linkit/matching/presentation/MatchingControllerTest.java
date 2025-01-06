@@ -39,7 +39,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceiv
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverTeamInformation;
@@ -499,15 +499,15 @@ public class MatchingControllerTest extends ControllerTest {
 
     @DisplayName("매칭 관리 상단 정보를 조회할 수 있다.")
     @Test
-    void getMatchingMenu() throws Exception {
+    void getMatchingNotificationMenu() throws Exception {
         // given
-        final MatchingMenu matchingMenu = MatchingMenu.builder()
+        final MatchingNotificationMenu matchingNotificationMenu = MatchingNotificationMenu.builder()
                 .receivedMatchingNotificationCount(10)
                 .requestedMatchingNotificationCount(12)
                 .build();
 
         // when
-        when(matchingService.getMatchingNotificationMenu(any())).thenReturn(matchingMenu);
+        when(matchingService.getMatchingNotificationMenu(any())).thenReturn(matchingNotificationMenu);
 
         final ResultActions resultActions = performGetMatchingNotificationMenu();
 
@@ -543,13 +543,13 @@ public class MatchingControllerTest extends ControllerTest {
                 ).andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<MatchingMenu> actual = objectMapper.readValue(
+        final CommonResponse<MatchingNotificationMenu> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<MatchingMenu>>() {
+                new TypeReference<CommonResponse<MatchingNotificationMenu>>() {
                 }
         );
 
-        final CommonResponse<MatchingMenu> expected = CommonResponse.onSuccess(matchingMenu);
+        final CommonResponse<MatchingNotificationMenu> expected = CommonResponse.onSuccess(matchingNotificationMenu);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }

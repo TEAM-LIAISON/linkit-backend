@@ -132,6 +132,7 @@ public class ProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfilePositionDetail {
         private String majorPosition;
+        private String subPosition;
     }
 
     @Builder
