@@ -1,6 +1,7 @@
 package liaison.linkit.matching.exception;
 
 import static liaison.linkit.common.consts.LinkitStatic.BAD_REQUEST;
+import static liaison.linkit.common.consts.LinkitStatic.NOT_FOUND;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -21,7 +22,10 @@ public enum MatchingErrorCode implements BaseErrorCode {
     CANNOT_REQUEST_MY_PROFILE(BAD_REQUEST, "MATCHING_400_6", "나의 프로필에 매칭 요청을 보낼 수 없습니다."),
     CANNOT_REQUEST_MY_TEAM(BAD_REQUEST, "MATCHING_400_7", "내가 속한 팀에 매칭 요청을 보낼 수 없습니다."),
     CANNOT_REQUEST_MY_ANNOUNCEMENT(BAD_REQUEST, "MATCHING_400_8", "내가 속한 팀의 공고에 매칭 요청을 보낼 수 없습니다."),
-    NOT_ALLOW_MATCHING_BAD_REQUEST(BAD_REQUEST, "MATCHING_400_6", "허용되지 않은 매칭 요청입니다.");
+    NOT_ALLOW_MATCHING_BAD_REQUEST(BAD_REQUEST, "MATCHING_400_9", "허용되지 않은 매칭 요청입니다."),
+    MATCHING_STATUS_TYPE_BAD_REQUEST(BAD_REQUEST, "MATCHING_400_10", "잘못된 매칭 수락 및 거절 요청입니다."),
+
+    MATCHING_NOT_FOUND(NOT_FOUND, "MATCHING_404_1", "해당하는 매칭을 찾을 수 없습니다.");
 
     private final Integer status;
     private final String code;

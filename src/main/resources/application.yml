@@ -52,7 +52,7 @@ spring:
 
   batch:
     job:
-      enabled: true
+      enabled: false
     jdbc:
       initialize-schema: never
 

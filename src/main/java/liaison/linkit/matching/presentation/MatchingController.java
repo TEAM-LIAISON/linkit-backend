@@ -58,12 +58,13 @@ public class MatchingController {
         return CommonResponse.onSuccess(matchingService.selectMatchingRequestToTeamMenu(accessor.getMemberId(), teamCode));
     }
 
-    // 상단 메뉴
-    @GetMapping("/notification/menu")
-    public CommonResponse<MatchingNotificationMenu> getMatchingNotificationMenu(
-            @Auth final Accessor accessor
+    // 매칭 요청 보내기
+    @PostMapping
+    public CommonResponse<MatchingResponseDTO.AddMatchingResponse> addMatching(
+            @Auth final Accessor accessor,
+            @RequestBody final MatchingRequestDTO.AddMatchingRequest addMatchingRequest
     ) {
-        return CommonResponse.onSuccess(matchingService.getMatchingNotificationMenu(accessor.getMemberId()));
+        return CommonResponse.onSuccess(matchingService.addMatching(accessor.getMemberId(), addMatchingRequest));
     }
 
     // 매칭 수신함
@@ -110,14 +111,15 @@ public class MatchingController {
         return CommonResponse.onSuccess(matchingService.deleteReceivedMatchingItems(accessor.getMemberId(), request));
     }
 
-    // 매칭 발신함에서 삭제 처리
-    @PostMapping("/requested/menu/delete")
+    // 매칭 수신함에서 수락하기/거절하기
+    @PostMapping("/{matchingId}")
     @MemberOnly
-    public CommonResponse<MatchingResponseDTO.DeleteRequestedMatchingItems> deleteRequestedMatchingItems(
+    public CommonResponse<MatchingResponseDTO.UpdateMatchingStatusTypeResponse> updateMatchingStatusTypeResponse(
             @Auth final Accessor accessor,
-            @RequestBody final MatchingRequestDTO.DeleteRequestedMatchingRequest request
+            @PathVariable final Long matchingId,
+            @RequestBody final MatchingRequestDTO.UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
     ) {
-        return CommonResponse.onSuccess(matchingService.deleteRequestedMatchingItems(accessor.getMemberId(), request));
+        return CommonResponse.onSuccess(matchingService.updateMatchingStatusTypeResponse(accessor.getMemberId(), matchingId, updateMatchingStatusTypeRequest));
     }
 
     // 매칭 발신함
@@ -134,12 +136,21 @@ public class MatchingController {
         return CommonResponse.onSuccess(requestedMatchingMenus);
     }
 
-    // 매칭 요청 보내기
-    @PostMapping
-    public CommonResponse<MatchingResponseDTO.AddMatchingResponse> addMatching(
+    // 매칭 발신함에서 삭제 처리
+    @PostMapping("/requested/menu/delete")
+    @MemberOnly
+    public CommonResponse<MatchingResponseDTO.DeleteRequestedMatchingItems> deleteRequestedMatchingItems(
             @Auth final Accessor accessor,
-            @RequestBody final MatchingRequestDTO.AddMatchingRequest addMatchingRequest
+            @RequestBody final MatchingRequestDTO.DeleteRequestedMatchingRequest request
     ) {
-        return CommonResponse.onSuccess(matchingService.addMatching(accessor.getMemberId(), addMatchingRequest));
+        return CommonResponse.onSuccess(matchingService.deleteRequestedMatchingItems(accessor.getMemberId(), request));
+    }
+
+    // 상단 메뉴
+    @GetMapping("/notification/menu")
+    public CommonResponse<MatchingNotificationMenu> getMatchingNotificationMenu(
+            @Auth final Accessor accessor
+    ) {
+        return CommonResponse.onSuccess(matchingService.getMatchingNotificationMenu(accessor.getMemberId()));
     }
 }

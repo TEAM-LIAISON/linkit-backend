@@ -87,6 +87,15 @@ public class MatchingResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class UpdateMatchingStatusTypeResponse {
+        private Long matchingId;
+        private MatchingStatusType matchingStatusType;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class RequestedMatchingMenu {
         private Long matchingId;
 

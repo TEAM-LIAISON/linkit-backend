@@ -2,6 +2,8 @@ package liaison.linkit.matching.domain.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 import liaison.linkit.matching.domain.Matching;
@@ -18,7 +20,23 @@ import org.springframework.data.support.PageableExecutionUtils;
 @RequiredArgsConstructor
 @Slf4j
 public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
+
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
+
+    @Override
+    public Optional<Matching> findByMatchingId(final Long matchingId) {
+        QMatching qMatching = QMatching.matching;
+
+        Matching result = jpaQueryFactory
+                .selectFrom(qMatching)
+                .where(qMatching.id.eq(matchingId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
 
     @Override
     public List<Matching> findAllByIds(final List<Long> matchingIds) {
@@ -248,5 +266,26 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
         // null이 반환될 수 있으므로 null 체크 후 int 변환
         return count != null ? count.intValue() : 0;
+    }
+
+    @Override
+    public void updateMatchingStatusType(final Matching matching, final MatchingStatusType matchingStatusType) {
+        QMatching qMatching = QMatching.matching;
+
+        // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
+        long updatedCount = jpaQueryFactory
+                .update(qMatching)
+                .set(qMatching.matchingStatusType, matchingStatusType)
+                .where(qMatching.id.eq(matching.getId()))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) { // 업데이트 성공 확인
+            matching.setMatchingStatusType(matchingStatusType);
+        } else {
+            throw new IllegalStateException("프로필 로그 업데이트 실패");
+        }
     }
 }

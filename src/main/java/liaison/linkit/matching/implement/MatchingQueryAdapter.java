@@ -4,6 +4,7 @@ import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.repository.MatchingRepository;
+import liaison.linkit.matching.exception.MatchingNotFoundException;
 import liaison.linkit.team.domain.team.Team;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,11 @@ import org.springframework.data.domain.Pageable;
 @RequiredArgsConstructor
 public class MatchingQueryAdapter {
     private final MatchingRepository matchingRepository;
+
+    public Matching findByMatchingId(final Long matchingId) {
+        return matchingRepository.findByMatchingId(matchingId)
+                .orElseThrow(() -> MatchingNotFoundException.EXCEPTION);
+    }
 
     public List<Matching> findAllByIds(final List<Long> matchingIds) {
         return matchingRepository.findAllByIds(matchingIds);

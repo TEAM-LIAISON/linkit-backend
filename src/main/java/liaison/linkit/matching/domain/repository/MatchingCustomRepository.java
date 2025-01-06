@@ -1,12 +1,16 @@
 package liaison.linkit.matching.domain.repository;
 
 import java.util.List;
+import java.util.Optional;
 import liaison.linkit.matching.domain.Matching;
+import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.team.domain.team.Team;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface MatchingCustomRepository {
+
+    Optional<Matching> findByMatchingId(final Long matchingId);
 
     List<Matching> findAllByIds(final List<Long> matchingIds);
 
@@ -41,4 +45,5 @@ public interface MatchingCustomRepository {
 
     int countByReceiverAnnouncementIds(final List<Long> receiverAnnouncementIds);
 
+    void updateMatchingStatusType(final Matching matching, final MatchingStatusType matchingStatusType);
 }

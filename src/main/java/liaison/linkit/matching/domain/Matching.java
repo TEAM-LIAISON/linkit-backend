@@ -95,4 +95,8 @@ public class Matching extends BaseDateTimeEntity {
     public void setSenderDeleteStatus(final SenderDeleteStatus senderDeleteStatus) {
         this.senderDeleteStatus = senderDeleteStatus;
     }
+
+    public void setMatchingStatusType(final MatchingStatusType matchingStatusType) {
+        this.matchingStatusType = matchingStatusType;
+    }
 }

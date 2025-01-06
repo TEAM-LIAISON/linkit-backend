@@ -15,6 +15,7 @@ import liaison.linkit.matching.exception.CompletedMatchingReadBadRequestExceptio
 import liaison.linkit.matching.exception.MatchingReceiverBadRequestException;
 import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
 import liaison.linkit.matching.exception.MatchingSenderBadRequestException;
+import liaison.linkit.matching.exception.MatchingStatusTypeBadRequestException;
 import liaison.linkit.matching.exception.NotAllowMatchingBadRequestException;
 import liaison.linkit.matching.exception.ReceivedMatchingReadBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
@@ -22,6 +23,7 @@ import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteReceivedMatchingRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteRequestedMatchingRequest;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateMatchingStatusTypeRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItem;
@@ -37,6 +39,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchi
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToTeamMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateMatchingStatusTypeResponse;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
@@ -388,6 +391,18 @@ public class MatchingService {
         return matchingMapper.toUpdateMatchingCompletedToReadItems(updateReceivedMatchingCompletedStateReadItems);
     }
 
+    public UpdateMatchingStatusTypeResponse updateMatchingStatusTypeResponse(final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest) {
+        if (updateMatchingStatusTypeRequest == null || updateMatchingStatusTypeRequest.getMatchingStatusType().equals(MatchingStatusType.REQUESTED)) {
+            throw MatchingStatusTypeBadRequestException.EXCEPTION;
+        }
+
+        final Matching matching = matchingQueryAdapter.findByMatchingId(matchingId);
+
+        matchingCommandAdapter.updateMatchingStatusType(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
+
+        return matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
+    }
+
     public DeleteRequestedMatchingItems deleteRequestedMatchingItems(final Long memberId, final DeleteRequestedMatchingRequest request) {
         List<Long> matchingIds = request.getMatchingIds();
 
@@ -434,14 +449,6 @@ public class MatchingService {
                 .toList();
 
         return matchingMapper.toDeleteReceivedMatchingItems(deleteReceivedMatchingItems);
-    }
-
-    private RequestedMatchingMenu toMatchingRequestedMenu(final Matching requestedMatchingItem) {
-        return matchingMapper.toMatchingRequestedMenu(requestedMatchingItem);
-    }
-
-    private ReceivedMatchingMenu toMatchingReceivedMenu(final Matching receivedMatchingItem) {
-        return matchingMapper.toMatchingReceivedMenu(receivedMatchingItem);
     }
 
     public MatchingResponseDTO.AddMatchingResponse addMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest addMatchingRequest) {
@@ -547,5 +554,144 @@ public class MatchingService {
         }
 
         return matchingMapper.toAddMatchingResponse(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation);
+    }
+
+    private ReceivedMatchingMenu toMatchingReceivedMenu(final Matching matching) {
+        // 발신자
+        SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
+        SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
+
+        // 수신자
+        ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+
+        // (A) 발신자 정보 설정
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            // 1) senderEmailId로 Profile 조회
+            Profile senderProfile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
+            // 2) 프로필 포지션 조회
+            ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+                ProfilePosition profilePosition =
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+                senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+            // 3) senderProfileInfo 구성
+            senderProfileInformation = matchingMapper.toSenderProfileInformation(senderProfile, senderProfilePositionDetail);
+        } else {
+            // 1) senderTeamCode로 Team 조회
+            Team senderTeam = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
+            // 2) 팀 규모 조회
+            TeamScaleItem senderTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(senderTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(senderTeam.getId());
+                senderTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            // 3) senderTeamInfo 구성
+            senderTeamInformation = matchingMapper.toSenderTeamInformation(senderTeam, senderTeamScaleItem);
+        }
+
+        // (B) 수신자 정보 설정
+        if (matching.getReceiverType() == ReceiverType.PROFILE) {
+            // 1) receiverEmailId로 Profile 조회
+            Profile receiverProfile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+            // 2) 프로필 포지션 조회
+            ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
+                ProfilePosition profilePosition =
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
+                receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+            // 3) receiverProfileInfo 구성
+            receiverProfileInformation = matchingMapper.toReceiverProfileInformation(receiverProfile, receiverProfilePositionDetail);
+        } else if (matching.getReceiverType() == ReceiverType.TEAM) {
+            // 1) receiverTeamCode로 Team 조회
+            Team receiverTeam = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            // 2) 팀 규모 조회
+            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            // 3) receiverTeamInfo 구성
+            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+        } else if (matching.getReceiverType() == ReceiverType.ANNOUNCEMENT) {
+            Team receiverTeam = teamMemberAnnouncementQueryAdapter
+                    .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
+                    .getTeam();
+            // 팀 규모
+            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+        }
+
+        // (C) ReceivedMatchingMenu 빌드
+        return matchingMapper.toMatchingReceivedMenu(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation);
+    }
+
+    private RequestedMatchingMenu toMatchingRequestedMenu(final Matching matching) {
+        // 발신자
+        SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
+        SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
+
+        // 수신자
+        ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+
+        // (A) 발신자 정보 설정 (senderXxx)
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            Profile senderProfile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
+            ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+                ProfilePosition profilePosition =
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+                senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+            senderProfileInformation = matchingMapper.toSenderProfileInformation(senderProfile, senderProfilePositionDetail);
+        } else {
+            Team senderTeam = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
+            TeamScaleItem senderTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(senderTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(senderTeam.getId());
+                senderTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            senderTeamInformation = matchingMapper.toSenderTeamInformation(senderTeam, senderTeamScaleItem);
+        }
+
+        // (B) 수신자 정보 설정 (receiverXxx)
+        if (matching.getReceiverType() == ReceiverType.PROFILE) {
+            Profile receiverProfile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+            ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
+                ProfilePosition profilePosition =
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
+                receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+            receiverProfileInformation = matchingMapper.toReceiverProfileInformation(receiverProfile, receiverProfilePositionDetail);
+        } else if (matching.getReceiverType() == ReceiverType.TEAM) {
+            Team receiverTeam = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+        } else if (matching.getReceiverType() == ReceiverType.ANNOUNCEMENT) {
+            Team receiverTeam = teamMemberAnnouncementQueryAdapter
+                    .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
+                    .getTeam();
+            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+        }
+
+        // (C) RequestedMatchingMenu 빌드
+        return matchingMapper.toMatchingRequestedMenu(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation);
     }
 }

@@ -23,6 +23,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchi
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToTeamMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateMatchingStatusTypeResponse;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
@@ -114,27 +115,48 @@ public class MatchingMapper {
     }
 
     public RequestedMatchingMenu toMatchingRequestedMenu(
-            final Matching requestedMatchingItem
+            final Matching requestedMatchingItem,
+            final SenderProfileInformation senderProfileInformation,
+            final SenderTeamInformation senderTeamInformation,
+            final ReceiverProfileInformation receiverProfileInformation,
+            final ReceiverTeamInformation receiverTeamInformation
     ) {
         return RequestedMatchingMenu.builder()
                 .matchingId(requestedMatchingItem.getId())
                 .senderType(requestedMatchingItem.getSenderType())
                 .receiverType(requestedMatchingItem.getReceiverType())
-
+                .senderProfileInformation(senderProfileInformation)
+                .senderTeamInformation(senderTeamInformation)
+                .receiverProfileInformation(receiverProfileInformation)
+                .receiverTeamInformation(receiverTeamInformation)
                 .requestMessage(requestedMatchingItem.getRequestMessage())
                 .matchingStatusType(requestedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(requestedMatchingItem.getReceiverReadStatus())
                 .build();
     }
 
+    public UpdateMatchingStatusTypeResponse toUpdateMatchingStatusTypeResponse(final Matching matching, final MatchingStatusType matchingStatusType) {
+        return UpdateMatchingStatusTypeResponse.builder()
+                .matchingId(matching.getId())
+                .matchingStatusType(matchingStatusType)
+                .build();
+    }
+
     public ReceivedMatchingMenu toMatchingReceivedMenu(
-            final Matching receivedMatchingItem
+            final Matching receivedMatchingItem,
+            final SenderProfileInformation senderProfileInformation,
+            final SenderTeamInformation senderTeamInformation,
+            final ReceiverProfileInformation receiverProfileInformation,
+            final ReceiverTeamInformation receiverTeamInformation
     ) {
         return ReceivedMatchingMenu.builder()
                 .matchingId(receivedMatchingItem.getId())
                 .senderType(receivedMatchingItem.getSenderType())
                 .receiverType(receivedMatchingItem.getReceiverType())
-
+                .senderProfileInformation(senderProfileInformation)
+                .senderTeamInformation(senderTeamInformation)
+                .receiverProfileInformation(receiverProfileInformation)
+                .receiverTeamInformation(receiverTeamInformation)
                 .requestMessage(receivedMatchingItem.getRequestMessage())
                 .matchingStatusType(receivedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(receivedMatchingItem.getReceiverReadStatus())

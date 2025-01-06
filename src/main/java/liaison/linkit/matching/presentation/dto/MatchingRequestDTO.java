@@ -1,6 +1,7 @@
 package liaison.linkit.matching.presentation.dto;
 
 import java.util.List;
+import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.AccessLevel;
@@ -52,5 +53,13 @@ public class MatchingRequestDTO {
         private Long receiverAnnouncementId;            //     수신자 공고 아이디
 
         private String requestMessage;                  //     매칭 요청 메시지
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateMatchingStatusTypeRequest {
+        private MatchingStatusType matchingStatusType;
     }
 }
