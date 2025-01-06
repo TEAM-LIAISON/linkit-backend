@@ -162,9 +162,12 @@ public class ProfileService {
 
     // 로그인한 사용자가 프로필을 조회한다.
     public ProfileResponseDTO.ProfileDetail getLoggedInProfileDetail(final Long memberId, final String emailId) {
+        // 조회 요청을 한 회원
         final Member member = memberQueryAdapter.findById(memberId);
 
+        // 조회 요청을 보낸 회원이 조회하고자 한 프로필
         final Profile targetProfile = profileQueryAdapter.findByEmailId(emailId);
+        final Member targetMember = targetProfile.getMember();
 
         boolean isMyProfile = false;
         if (targetProfile.getMember().equals(member)) {
@@ -222,11 +225,11 @@ public class ProfileService {
         }
 
         log.info("보유스킬 DTO 조회");
-        final List<ProfileSkill> profileSkills = profileSkillQueryAdapter.getProfileSkills(memberId);
+        final List<ProfileSkill> profileSkills = profileSkillQueryAdapter.getProfileSkills(targetMember.getId());
         final List<ProfileSkillItem> profileSkillItems = profileSkillMapper.profileSkillsToProfileSkillItems(profileSkills);
 
         log.info("이력 DTO 조회");
-        final List<ProfileActivity> profileActivities = profileActivityQueryAdapter.getProfileActivities(memberId);
+        final List<ProfileActivity> profileActivities = profileActivityQueryAdapter.getProfileActivities(targetMember.getId());
         final List<ProfileActivityItem> profileActivityItems = profileActivityMapper.profileActivitiesToProfileActivityItems(profileActivities);
 
         log.info("포트폴리오 DTO 조회");
@@ -239,11 +242,11 @@ public class ProfileService {
         final List<ProfileEducationItem> profileEducationItems = profileEducationMapper.profileEducationsToProfileProfileEducationItems(profileEducations);
 
         log.info("수상 DTO 조회");
-        final List<ProfileAwards> profileAwards = profileAwardsQueryAdapter.getProfileAwardsGroup(memberId);
+        final List<ProfileAwards> profileAwards = profileAwardsQueryAdapter.getProfileAwardsGroup(targetMember.getId());
         final List<ProfileAwardsItem> profileAwardsItems = profileAwardsMapper.profileEducationsToProfileProfileEducationItems(profileAwards);
 
         log.info("자격증 DTO 조회");
-        final List<ProfileLicense> profileLicenses = profileLicenseQueryAdapter.getProfileLicenses(memberId);
+        final List<ProfileLicense> profileLicenses = profileLicenseQueryAdapter.getProfileLicenses(targetMember.getId());
         final List<ProfileLicenseItem> profileLicenseItems = profileLicenseMapper.profileLicensesToProfileLicenseItems(profileLicenses);
 
         log.info("링크 DTO 조회");
@@ -270,7 +273,6 @@ public class ProfileService {
     public ProfileResponseDTO.ProfileDetail getLoggedOutProfileDetail(final String emailId) {
         log.info("이메일 ID = {}에 대한 상세 조회 요청이 발생했습니다.", emailId);
         final Profile targetProfile = profileQueryAdapter.findByEmailId(emailId);
-
         final Member targetMember = targetProfile.getMember();
 
         RegionDetail regionDetail = new RegionDetail();
