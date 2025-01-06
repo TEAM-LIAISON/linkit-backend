@@ -313,9 +313,6 @@ public class ChatService {
             final Long memberId,
             final Pageable pageable
     ) {
-        // 1. 채팅방 존재 여부 및 접근 권한 확인
-        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
-
         // 2. 메시지 조회 및 읽음 처리
         Page<ChatMessage> messages = chatMessageRepository.findByChatRoomIdOrderByTimestampDesc(
                 chatRoomId,

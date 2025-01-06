@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
+import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.region.QRegion;
 
 import liaison.linkit.team.domain.region.QTeamRegion;

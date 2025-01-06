@@ -38,8 +38,7 @@ public class ChatController {
     ) {
         return CommonResponse.onSuccess(chatService.createChatRoom(request, accessor.getMemberId()));
     }
-
-
+    
     // 웹소켓 메시지 처리
     @MessageMapping("/chat/message")
     public void message(

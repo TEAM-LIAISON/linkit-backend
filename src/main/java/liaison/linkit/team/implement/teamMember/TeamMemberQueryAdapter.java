@@ -2,6 +2,7 @@ package liaison.linkit.team.implement.teamMember;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
+import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberRepository;
@@ -42,5 +43,9 @@ public class TeamMemberQueryAdapter {
 
     public TeamMember getTeamMemberByTeamCodeAndEmailId(final String teamCode, final String emailId) {
         return teamMemberRepository.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
+    }
+
+    public List<Member> findMembersByTeamCode(final String teamCode) {
+        return teamMemberRepository.findMembersByTeamCode(teamCode);
     }
 }

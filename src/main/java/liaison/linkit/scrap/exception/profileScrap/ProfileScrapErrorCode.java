@@ -17,6 +17,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ProfileScrapErrorCode implements BaseErrorCode {
     PROFILE_SCRAP_BAD_REQUEST(BAD_REQUEST, "PROFILE_SCRAP_400_1", "잘못된 프로필 스크랩 요청입니다."),
+    MY_PROFILE_BAD_REQUEST(BAD_REQUEST, "PROFILE_400_2", "나의 프로필을 스크랩할 수 없습니다."),
     FORBIDDEN_PROFILE_SCRAP(FORBIDDEN, "PROFILE_SCRAP_403_1", "내 프로필을 스크랩 할 수 없습니다."),
     PROFILE_SCRAP_NOT_FOUND(NOT_FOUND, "PROFILE_SCRAP_404_1", "프로필에 대한 스크랩 기록이 없습니다."),
     TOO_MANY_PROFILE_SCRAP_REQUEST(TOO_MANY_REQUESTS, "PRIVATE_SCRAP_429_1", "프로필 최대 스크랩 개수를 초과하였습니다.");

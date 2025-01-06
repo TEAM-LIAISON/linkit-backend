@@ -9,7 +9,7 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.scrap.business.mapper.TeamScrapMapper;
 import liaison.linkit.scrap.domain.TeamScrap;
-import liaison.linkit.scrap.exception.teamScrap.BadRequestTeamScrapException;
+import liaison.linkit.scrap.exception.teamScrap.TeamScrapBadRequestException;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapCommandAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapRequestDTO.UpdateTeamScrapRequest;
@@ -126,7 +126,7 @@ public class TeamScrapService {
         if (!shouldAddScrap) {
             teamScrapCommandAdapter.deleteByMemberIdAndTeamCode(memberId, teamCode);
         } else {
-            throw BadRequestTeamScrapException.EXCEPTION;
+            throw TeamScrapBadRequestException.EXCEPTION;
         }
     }
 
@@ -144,7 +144,7 @@ public class TeamScrapService {
             teamScrapCommandAdapter.addTeamScrap(teamScrap);
         } else {
             log.info("shouldAddScrap false");
-            throw BadRequestTeamScrapException.EXCEPTION;
+            throw TeamScrapBadRequestException.EXCEPTION;
         }
     }
 

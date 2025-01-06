@@ -20,7 +20,6 @@ import jakarta.servlet.http.Cookie;
 import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
 import liaison.linkit.chat.domain.type.CreateChatLocation;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
-import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessage;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.chat.service.ChatService;
 import liaison.linkit.global.ControllerTest;
@@ -96,12 +95,8 @@ public class ChatControllerTest extends ControllerTest {
                 .participantBId("참여자 B의 ID (Profile - emailId, Team - teamCode)")
                 .participantBType(ParticipantType.TEAM)
                 .participantBName("참여자 B의 이름 (Profile - memberName, Team - teamName)")
-                .lastMessage(
-                        ChatMessage.builder()
-                                .content("채팅 마지막 메시지 내용")
-                                .timestamp("전송 시간")
-                                .build()
-                )
+                .lastMessage("채팅방 마지막 메시지")
+                .lastMessageTime("마지막 메시지 발송 시간")
                 .unreadCount(0L)
                 .build();
 

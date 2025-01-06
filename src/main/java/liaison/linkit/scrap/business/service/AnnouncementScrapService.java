@@ -10,8 +10,8 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.scrap.business.mapper.AnnouncementScrapMapper;
 import liaison.linkit.scrap.domain.AnnouncementScrap;
-import liaison.linkit.scrap.exception.announcementScrap.BadRequestAnnouncementScrapException;
-import liaison.linkit.scrap.exception.profileScrap.BadRequestProfileScrapException;
+import liaison.linkit.scrap.exception.announcementScrap.AnnouncementScrapBadRequestException;
+import liaison.linkit.scrap.exception.profileScrap.ProfileScrapBadRequestException;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommandAdapter;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapRequestDTO.UpdateAnnouncementScrapRequest;
@@ -151,7 +151,7 @@ public class AnnouncementScrapService {
         if (!shouldAddScrap) {
             announcementScrapCommandAdapter.deleteByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
         } else {
-            throw BadRequestAnnouncementScrapException.EXCEPTION;
+            throw AnnouncementScrapBadRequestException.EXCEPTION;
         }
     }
 
@@ -163,7 +163,7 @@ public class AnnouncementScrapService {
             AnnouncementScrap announcementScrap = new AnnouncementScrap(null, member, teamMemberAnnouncement);
             announcementScrapCommandAdapter.addAnnouncementScrap(announcementScrap);
         } else {
-            throw BadRequestProfileScrapException.EXCEPTION;
+            throw ProfileScrapBadRequestException.EXCEPTION;
         }
     }
 }
