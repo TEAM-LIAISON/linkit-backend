@@ -25,6 +25,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceiv
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 
 @Mapper
 public class MatchingMapper {
@@ -64,7 +65,8 @@ public class MatchingMapper {
             final Profile senderProfile,
             final ProfilePositionDetail senderProfilePositionDetail,
             final List<SenderTeamInformation> senderTeamInformations,
-            final Team receiverTeam
+            final Team receiverTeam,
+            final TeamScaleItem teamScaleItem
     ) {
         return SelectMatchingRequestToTeamMenu.builder()
                 .isTeamInformationExists(isTeamInformationExists)
@@ -82,6 +84,7 @@ public class MatchingMapper {
                                 .teamLogoImagePath(receiverTeam.getTeamLogoImagePath())
                                 .teamName(receiverTeam.getTeamName())
                                 .teamCode(receiverTeam.getTeamCode())
+                                .teamScaleItem(teamScaleItem)
                                 .build()
                 )
                 .build();

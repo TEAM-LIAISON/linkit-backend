@@ -120,7 +120,11 @@ public class ProfileScrapService {
                 profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
                 log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
             }
-            final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+
+            final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
+
+            final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, profileScrapCount, profile, profilePositionDetail, regionDetail,
+                    profileTeamInforms);
             profileInformMenus.add(profileInformMenu);
         }
 

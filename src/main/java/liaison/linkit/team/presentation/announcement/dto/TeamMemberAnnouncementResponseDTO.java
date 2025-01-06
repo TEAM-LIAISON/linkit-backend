@@ -39,6 +39,7 @@ public class TeamMemberAnnouncementResponseDTO {
 
         private int announcementDDay;           // 디데이
         private String announcementTitle;       // 공고 제목
+
         private Boolean isAnnouncementScrap;    // 공고 스크랩 여부
         private int announcementScrapCount;     // 공고 스크랩 수
 

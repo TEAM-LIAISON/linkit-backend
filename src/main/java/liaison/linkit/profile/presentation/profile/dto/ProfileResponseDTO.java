@@ -78,6 +78,7 @@ public class ProfileResponseDTO {
         private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
 
         private Boolean isProfileScrap;
+        private int profileScrapCount;
 
         private String profileImagePath;
         private String memberName;

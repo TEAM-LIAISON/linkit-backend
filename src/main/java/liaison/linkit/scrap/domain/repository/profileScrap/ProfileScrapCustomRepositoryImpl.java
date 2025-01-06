@@ -91,6 +91,18 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
                 .fetchFirst();
 
         return count != null;
+    }
 
+    @Override
+    public int countTotalProfileScrapByEmailId(final String emailId) {
+        QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
+
+        Long count = jpaQueryFactory
+                .select(qProfileScrap.count())
+                .from(qProfileScrap)
+                .where(qProfileScrap.profile.member.emailId.eq(emailId))
+                .fetchOne();
+
+        return count != null ? count.intValue() : 0;
     }
 }

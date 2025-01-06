@@ -9,21 +9,25 @@ import lombok.RequiredArgsConstructor;
 @Adapter
 @RequiredArgsConstructor
 public class ProfileScrapQueryAdapter {
-    private final ProfileScrapRepository privateScrapRepository;
+    private final ProfileScrapRepository profileScrapRepository;
 
     public List<ProfileScrap> getAllProfileScrapByMemberId(final Long memberId) {
-        return privateScrapRepository.getAllProfileScrapByMemberId(memberId);
+        return profileScrapRepository.getAllProfileScrapByMemberId(memberId);
     }
 
     public boolean existsByMemberId(final Long memberId) {
-        return privateScrapRepository.existsByMemberId(memberId);
+        return profileScrapRepository.existsByMemberId(memberId);
     }
 
     public boolean existsByProfileId(final Long profileId) {
-        return privateScrapRepository.existsByProfileId(profileId);
+        return profileScrapRepository.existsByProfileId(profileId);
     }
 
     public boolean existsByMemberIdAndEmailId(final Long memberId, final String emailId) {
-        return privateScrapRepository.existsByMemberIdAndEmailId(memberId, emailId);
+        return profileScrapRepository.existsByMemberIdAndEmailId(memberId, emailId);
+    }
+
+    public int countTotalProfileScrapByEmailId(final String emailId) {
+        return profileScrapRepository.countTotalProfileScrapByEmailId(emailId);
     }
 }

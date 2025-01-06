@@ -9,6 +9,7 @@ import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -86,6 +87,9 @@ public class MatchingResponseDTO {
         private String teamCode;                    // 팀 코드
         private String teamName;                    // 팀 이름
         private String teamLogoImagePath;           // 팀 로고 이미지 경로
+
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();
     }
 
     @Getter
@@ -96,6 +100,9 @@ public class MatchingResponseDTO {
         private String teamCode;                    // 팀 코드
         private String teamName;                    // 팀 이름
         private String teamLogoImagePath;           // 팀 로고 이미지 경로
+
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();
     }
 
     @Builder

@@ -54,6 +54,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceiv
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.matching.service.MatchingService;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -212,11 +213,21 @@ public class MatchingControllerTest extends ControllerTest {
                                         .teamCode("발신자 팀 아이디 1 (팀 코드)")
                                         .teamName("발신자 팀 이름 1")
                                         .teamLogoImagePath("발신자 팀 로고 이미지 경로 1")
+                                        .teamScaleItem(
+                                                TeamScaleItem.builder()
+                                                        .teamScaleName("팀 규모 이름")
+                                                        .build()
+                                        )
                                         .build(),
                                 SenderTeamInformation.builder()
                                         .teamCode("발신자 팀 아이디 2 (팀 코드)")
                                         .teamName("발신자 팀 이름 2")
                                         .teamLogoImagePath("발신자 팀 로고 이미지 경로 2")
+                                        .teamScaleItem(
+                                                TeamScaleItem.builder()
+                                                        .teamScaleName("팀 규모 이름")
+                                                        .build()
+                                        )
                                         .build()
                         )
                 )
@@ -301,6 +312,12 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.senderTeamInformation[].teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("발신자 팀 로고 이미지 경로"),
+                                        fieldWithPath("result.senderTeamInformation[].teamScaleItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("발신자 팀 규모 정보"),
+                                        fieldWithPath("result.senderTeamInformation[].teamScaleItem.teamScaleName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 팀 규모 이름"),
                                         fieldWithPath("result.receiverProfileInformation")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("수신자 프로필 정보"),
@@ -349,11 +366,21 @@ public class MatchingControllerTest extends ControllerTest {
                                         .teamCode("발신자 팀 아이디 1 (팀 코드)")
                                         .teamName("발신자 팀 이름 1")
                                         .teamLogoImagePath("발신자 팀 로고 이미지 경로 1")
+                                        .teamScaleItem(
+                                                TeamScaleItem.builder()
+                                                        .teamScaleName("팀 규모 이름")
+                                                        .build()
+                                        )
                                         .build(),
                                 SenderTeamInformation.builder()
                                         .teamCode("발신자 팀 아이디 2 (팀 코드)")
                                         .teamName("발신자 팀 이름 2")
                                         .teamLogoImagePath("발신자 팀 로고 이미지 경로 2")
+                                        .teamScaleItem(
+                                                TeamScaleItem.builder()
+                                                        .teamScaleName("팀 규모 이름")
+                                                        .build()
+                                        )
                                         .build()
                         )
                 )
@@ -362,6 +389,11 @@ public class MatchingControllerTest extends ControllerTest {
                                 .teamCode("발신자 팀 아이디 1 (팀 코드)")
                                 .teamName("발신자 팀 이름 1")
                                 .teamLogoImagePath("발신자 팀 로고 이미지 경로 1")
+                                .teamScaleItem(
+                                        TeamScaleItem.builder()
+                                                .teamScaleName("팀 규모 이름")
+                                                .build()
+                                )
                                 .build()
                 )
                 .build();
@@ -420,6 +452,7 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .optional()
                                                 .description("발신자 프로필 대분류 포지션 (없을 수 있음)"),
+
                                         fieldWithPath("result.senderTeamInformation")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("발신자 팀 정보"),
@@ -432,6 +465,14 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.senderTeamInformation[].teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("발신자 팀 로고 이미지 경로"),
+
+                                        fieldWithPath("result.senderTeamInformation[].teamScaleItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("발신자 팀 규모 정보"),
+                                        fieldWithPath("result.senderTeamInformation[].teamScaleItem.teamScaleName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("발신자 팀 규모 이름"),
+
                                         fieldWithPath("result.receiverTeamInformation")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("수신자 프로필 정보"),
@@ -443,7 +484,13 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .description("수신자 팀 이름 (팀 이름)"),
                                         fieldWithPath("result.receiverTeamInformation.teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("수신자 팀 로고 이미지 경로")
+                                                .description("수신자 팀 로고 이미지 경로"),
+                                        fieldWithPath("result.receiverTeamInformation.teamScaleItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 팀 규모 정보"),
+                                        fieldWithPath("result.receiverTeamInformation.teamScaleItem.teamScaleName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수신자 팀 규모 이름")
                                 )
                         )
                 ).andReturn();

@@ -40,11 +40,15 @@ import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -72,7 +76,9 @@ public class MatchingService {
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
     private final ProfilePositionMapper profilePositionMapper;
-    
+    private final TeamScaleQueryAdapter teamScaleQueryAdapter;
+    private final TeamScaleMapper teamScaleMapper;
+
     public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(
             final Long memberId, final String emailId
     ) {
@@ -140,17 +146,32 @@ public class MatchingService {
             isTeamInformationExists = true;
             final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
             senderTeamInformations = teams.stream()
-                    .map(team -> SenderTeamInformation.builder()
-                            .teamCode(team.getTeamCode())
-                            .teamName(team.getTeamName())
-                            .teamLogoImagePath(team.getTeamLogoImagePath())
-                            .build())
-                    .toList();
+                    .map(team -> {
+                        TeamScaleItem teamScaleItem = new TeamScaleItem();
+                        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
+                            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+                            teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                        }
+
+                        return SenderTeamInformation.builder()
+                                .teamCode(team.getTeamCode())
+                                .teamName(team.getTeamName())
+                                .teamLogoImagePath(team.getTeamLogoImagePath())
+                                .teamScaleItem(teamScaleItem)
+                                .build();
+                    }).toList();
+
         }
 
         final Team receiverTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
-        return matchingMapper.toSelectMatchingRequestTeamMenu(isTeamInformationExists, senderProfile, senderProfilePositionDetail, senderTeamInformations, receiverTeam);
+        TeamScaleItem receiveTeamScaleItem = null;
+        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+            receiveTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+        }
+
+        return matchingMapper.toSelectMatchingRequestTeamMenu(isTeamInformationExists, senderProfile, senderProfilePositionDetail, senderTeamInformations, receiverTeam, receiveTeamScaleItem);
     }
 
     @Transactional(readOnly = true)

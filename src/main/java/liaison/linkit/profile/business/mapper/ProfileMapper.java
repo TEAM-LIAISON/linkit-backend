@@ -69,6 +69,7 @@ public class ProfileMapper {
     public ProfileResponseDTO.ProfileInformMenu toProfileInformMenu(
             final List<ProfileCurrentStateItem> profileCurrentStateItems,
             final boolean isProfileScrap,
+            final int profileScrapCount,
             final Profile profile,
             final ProfilePositionDetail profilePositionDetail,
             final RegionDetail regionDetail,
@@ -78,6 +79,7 @@ public class ProfileMapper {
                 .builder()
                 .profileCurrentStates(profileCurrentStateItems)
                 .isProfileScrap(isProfileScrap)
+                .profileScrapCount(profileScrapCount)
                 .profileImagePath(profile.getProfileImagePath())
                 .memberName(profile.getMember().getMemberBasicInform().getMemberName())
                 .emailId(profile.getMember().getEmailId())

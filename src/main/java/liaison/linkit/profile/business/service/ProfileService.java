@@ -138,9 +138,19 @@ public class ProfileService {
             log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
         }
 
+        final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
+
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(profile);
         log.info("profileCompletionMenu = {}", profileCompletionMenu);
-        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, false, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(
+                profileCurrentStateItems,
+                false,
+                profileScrapCount,
+                profile,
+                profilePositionDetail,
+                regionDetail,
+                profileTeamInforms
+        );
         log.info("profileInformMenu = {}", profileInformMenu);
         final ProfileBooleanMenu profileBooleanMenu = profileMapper.toProfileBooleanMenu(profile);
         log.info("profileBooleanMenu = {}", profileBooleanMenu);
@@ -191,8 +201,18 @@ public class ProfileService {
             log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
         }
 
+        final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(targetProfile.getMember().getEmailId());
+
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(targetProfile);
-        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, targetProfile, profilePositionDetail, regionDetail, profileTeamInforms);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(
+                profileCurrentStateItems,
+                isProfileScrap,
+                profileScrapCount,
+                targetProfile,
+                profilePositionDetail,
+                regionDetail,
+                profileTeamInforms
+        );
 
         log.info("대표 로그 DTO 조회");
         ProfileLogItem profileLogItem = new ProfileLogItem();
@@ -280,8 +300,11 @@ public class ProfileService {
             log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
         }
 
+        final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(emailId);
+
         final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(targetProfile);
-        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, false, targetProfile, profilePositionDetail, regionDetail, profileTeamInforms);
+        final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, false, profileScrapCount, targetProfile, profilePositionDetail, regionDetail,
+                profileTeamInforms);
 
         log.info("대표 로그 DTO 조회");
         ProfileLogItem profileLogItem = new ProfileLogItem();
