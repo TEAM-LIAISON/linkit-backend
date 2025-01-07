@@ -9,6 +9,8 @@ import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -76,6 +78,9 @@ public class MatchingResponseDTO {
         @Builder.Default
         private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
 
+        @Builder.Default
+        private ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
+
         private String requestMessage;
 
         private MatchingStatusType matchingStatusType;
@@ -115,6 +120,9 @@ public class MatchingResponseDTO {
         @Builder.Default
         private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
 
+        @Builder.Default
+        private ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
+
         private String requestMessage;
 
         private MatchingStatusType matchingStatusType;
@@ -144,6 +152,9 @@ public class MatchingResponseDTO {
 
         @Builder.Default
         private ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+
+        @Builder.Default
+        private ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
 
         private String requestMessage;
 
@@ -206,6 +217,20 @@ public class MatchingResponseDTO {
 
         @Builder.Default
         private TeamScaleItem teamScaleItem = new TeamScaleItem();  // 팀 규모
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReceiverAnnouncementInformation {
+        private String announcementTitle;
+
+        @Builder.Default
+        private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
     }
 
     // 매칭 알림 메뉴

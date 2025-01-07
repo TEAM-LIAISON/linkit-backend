@@ -16,6 +16,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReques
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverAnnouncementInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
@@ -30,7 +31,10 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceiv
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 
 @Mapper
@@ -119,7 +123,8 @@ public class MatchingMapper {
             final SenderProfileInformation senderProfileInformation,
             final SenderTeamInformation senderTeamInformation,
             final ReceiverProfileInformation receiverProfileInformation,
-            final ReceiverTeamInformation receiverTeamInformation
+            final ReceiverTeamInformation receiverTeamInformation,
+            final ReceiverAnnouncementInformation receiverAnnouncementInformation
     ) {
         return RequestedMatchingMenu.builder()
                 .matchingId(requestedMatchingItem.getId())
@@ -129,6 +134,7 @@ public class MatchingMapper {
                 .senderTeamInformation(senderTeamInformation)
                 .receiverProfileInformation(receiverProfileInformation)
                 .receiverTeamInformation(receiverTeamInformation)
+                .receiverAnnouncementInformation(receiverAnnouncementInformation)
                 .requestMessage(requestedMatchingItem.getRequestMessage())
                 .matchingStatusType(requestedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(requestedMatchingItem.getReceiverReadStatus())
@@ -147,7 +153,8 @@ public class MatchingMapper {
             final SenderProfileInformation senderProfileInformation,
             final SenderTeamInformation senderTeamInformation,
             final ReceiverProfileInformation receiverProfileInformation,
-            final ReceiverTeamInformation receiverTeamInformation
+            final ReceiverTeamInformation receiverTeamInformation,
+            final ReceiverAnnouncementInformation receiverAnnouncementInformation
     ) {
         return ReceivedMatchingMenu.builder()
                 .matchingId(receivedMatchingItem.getId())
@@ -157,6 +164,7 @@ public class MatchingMapper {
                 .senderTeamInformation(senderTeamInformation)
                 .receiverProfileInformation(receiverProfileInformation)
                 .receiverTeamInformation(receiverTeamInformation)
+                .receiverAnnouncementInformation(receiverAnnouncementInformation)
                 .requestMessage(receivedMatchingItem.getRequestMessage())
                 .matchingStatusType(receivedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(receivedMatchingItem.getReceiverReadStatus())
@@ -168,7 +176,8 @@ public class MatchingMapper {
             final SenderProfileInformation senderProfileInformation,
             final SenderTeamInformation senderTeamInformation,
             final ReceiverProfileInformation receiverProfileInformation,
-            final ReceiverTeamInformation receiverTeamInformation
+            final ReceiverTeamInformation receiverTeamInformation,
+            final ReceiverAnnouncementInformation receiverAnnouncementInformation
     ) {
 
         return AddMatchingResponse.builder()
@@ -179,6 +188,7 @@ public class MatchingMapper {
                 .senderTeamInformation(senderTeamInformation)
                 .receiverProfileInformation(receiverProfileInformation)
                 .receiverTeamInformation(receiverTeamInformation)
+                .receiverAnnouncementInformation(receiverAnnouncementInformation)
                 .requestMessage(matching.getRequestMessage())
                 .matchingStatusType(matching.getMatchingStatusType())
                 .receiverReadStatus(matching.getReceiverReadStatus())
@@ -230,6 +240,18 @@ public class MatchingMapper {
                 .teamName(receiverTeam.getTeamName())
                 .teamCode(receiverTeam.getTeamCode())
                 .teamScaleItem(receiverTeamScaleItem)
+                .build();
+    }
+
+    public MatchingResponseDTO.ReceiverAnnouncementInformation toReceiverAnnouncementInformation(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final AnnouncementPositionItem announcementPositionItem,
+            final List<AnnouncementSkillName> announcementSkillNames
+    ) {
+        return ReceiverAnnouncementInformation.builder()
+                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+                .announcementPositionItem(announcementPositionItem)
+                .announcementSkillNames(announcementSkillNames)
                 .build();
     }
 

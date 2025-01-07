@@ -32,6 +32,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReques
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverAnnouncementInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
@@ -51,14 +52,22 @@ import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
+import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
+import liaison.linkit.team.domain.announcement.AnnouncementPosition;
+import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
+import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -89,6 +98,10 @@ public class MatchingService {
     private final ProfilePositionMapper profilePositionMapper;
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
     private final TeamScaleMapper teamScaleMapper;
+    private final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter;
+    private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
+    private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
+    private final AnnouncementSkillMapper announcementSkillMapper;
 
     @Transactional(readOnly = true)
     public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long memberId, final String emailId) {
@@ -507,6 +520,7 @@ public class MatchingService {
         SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
         ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
         ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+        ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
 
         if (addMatchingRequest.getSenderType().equals(SenderType.PROFILE)) {
             final Profile senderProfile = profileQueryAdapter.findByEmailId(addMatchingRequest.getSenderEmailId());
@@ -553,7 +567,24 @@ public class MatchingService {
             receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
         }
 
-        return matchingMapper.toAddMatchingResponse(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation);
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            final TeamMemberAnnouncement receiverAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(addMatchingRequest.getReceiverAnnouncementId());
+
+            // 포지션 조회
+            AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+            if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId())) {
+                AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId());
+                announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
+            }
+
+            // 스킬 조회
+            List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(receiverAnnouncement.getId());
+            List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+
+            receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
+        }
+
+        return matchingMapper.toAddMatchingResponse(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
     }
 
     private ReceivedMatchingMenu toMatchingReceivedMenu(final Matching matching) {
@@ -564,6 +595,7 @@ public class MatchingService {
         // 수신자
         ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
         ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+        ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
 
         // (A) 발신자 정보 설정
         if (matching.getSenderType() == SenderType.PROFILE) {
@@ -616,20 +648,25 @@ public class MatchingService {
             // 3) receiverTeamInfo 구성
             receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
         } else if (matching.getReceiverType() == ReceiverType.ANNOUNCEMENT) {
-            Team receiverTeam = teamMemberAnnouncementQueryAdapter
-                    .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
-                    .getTeam();
-            // 팀 규모
-            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
-            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
-                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
-                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            final TeamMemberAnnouncement receiverAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
+
+            // 포지션 조회
+            AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+            if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId())) {
+                AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId());
+                announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
             }
-            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+
+            // 스킬 조회
+            List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(receiverAnnouncement.getId());
+            List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+
+            receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
+
         }
 
         // (C) ReceivedMatchingMenu 빌드
-        return matchingMapper.toMatchingReceivedMenu(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation);
+        return matchingMapper.toMatchingReceivedMenu(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
     }
 
     private RequestedMatchingMenu toMatchingRequestedMenu(final Matching matching) {
@@ -640,6 +677,7 @@ public class MatchingService {
         // 수신자
         ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
         ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+        ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
 
         // (A) 발신자 정보 설정 (senderXxx)
         if (matching.getSenderType() == SenderType.PROFILE) {
@@ -680,18 +718,23 @@ public class MatchingService {
             }
             receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
         } else if (matching.getReceiverType() == ReceiverType.ANNOUNCEMENT) {
-            Team receiverTeam = teamMemberAnnouncementQueryAdapter
-                    .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
-                    .getTeam();
-            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
-            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
-                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
-                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            final TeamMemberAnnouncement receiverAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
+
+            // 포지션 조회
+            AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+            if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId())) {
+                AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId());
+                announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
             }
-            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+
+            // 스킬 조회
+            List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(receiverAnnouncement.getId());
+            List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+
+            receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
         }
 
         // (C) RequestedMatchingMenu 빌드
-        return matchingMapper.toMatchingRequestedMenu(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation);
+        return matchingMapper.toMatchingRequestedMenu(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
     }
 }

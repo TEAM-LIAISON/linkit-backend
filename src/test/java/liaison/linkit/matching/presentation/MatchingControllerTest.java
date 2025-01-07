@@ -45,6 +45,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReques
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverAnnouncementInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverTeamInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
@@ -59,6 +60,8 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceiv
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.matching.service.MatchingService;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -282,6 +285,27 @@ public class MatchingControllerTest extends ControllerTest {
                                 )
                                 .build()
                 )
+                .receiverAnnouncementInformation(
+                        ReceiverAnnouncementInformation.builder()
+                                .announcementTitle("공고 제목")
+                                .announcementPositionItem(
+                                        AnnouncementPositionItem.builder()
+                                                .majorPosition("공고 포지션 대분류")
+                                                .subPosition("공고 포지션 소분류")
+                                                .build()
+                                )
+                                .announcementSkillNames(
+                                        Arrays.asList(
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 1")
+                                                        .build(),
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 2")
+                                                        .build()
+                                        )
+                                )
+                                .build()
+                )
                 .requestMessage("매칭 요청 메시지")
                 .matchingStatusType(MatchingStatusType.REQUESTED)
                 .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
@@ -441,6 +465,29 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.receiverTeamInformation.teamScaleItem.teamScaleName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("수신자 팀 규모명"),
+
+                                        // ----- receiverAnnouncementInformation 추가
+                                        fieldWithPath("result.receiverAnnouncementInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 공고 정보"),
+                                        fieldWithPath("result.receiverAnnouncementInformation.announcementTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 제목"),
+                                        fieldWithPath("result.receiverAnnouncementInformation.announcementPositionItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("공고 포지션 정보"),
+                                        fieldWithPath("result.receiverAnnouncementInformation.announcementPositionItem.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 포지션 대분류"),
+                                        fieldWithPath("result.receiverAnnouncementInformation.announcementPositionItem.subPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 포지션 소분류"),
+                                        fieldWithPath("result.receiverAnnouncementInformation.announcementSkillNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("공고 요구 스킬 목록"),
+                                        fieldWithPath("result.receiverAnnouncementInformation.announcementSkillNames[].announcementSkillName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 요구 스킬 이름"),
 
                                         // ----- 추가 필드
                                         fieldWithPath("result.requestMessage")
@@ -953,6 +1000,27 @@ public class MatchingControllerTest extends ControllerTest {
                                 )
                                 .build()
                 )
+                .receiverAnnouncementInformation(
+                        ReceiverAnnouncementInformation.builder()
+                                .announcementTitle("공고 제목")
+                                .announcementPositionItem(
+                                        AnnouncementPositionItem.builder()
+                                                .majorPosition("공고 포지션 대분류")
+                                                .subPosition("공고 포지션 소분류")
+                                                .build()
+                                )
+                                .announcementSkillNames(
+                                        Arrays.asList(
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 1")
+                                                        .build(),
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 2")
+                                                        .build()
+                                        )
+                                )
+                                .build()
+                )
                 .requestMessage("매칭 요청 메시지")
                 .matchingStatusType(MatchingStatusType.REQUESTED)
                 .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
@@ -1009,6 +1077,27 @@ public class MatchingControllerTest extends ControllerTest {
                                         TeamScaleItem.builder()
                                                 .teamScaleName("수신자 팀 규모명")
                                                 .build()
+                                )
+                                .build()
+                )
+                .receiverAnnouncementInformation(
+                        ReceiverAnnouncementInformation.builder()
+                                .announcementTitle("공고 제목")
+                                .announcementPositionItem(
+                                        AnnouncementPositionItem.builder()
+                                                .majorPosition("공고 포지션 대분류")
+                                                .subPosition("공고 포지션 소분류")
+                                                .build()
+                                )
+                                .announcementSkillNames(
+                                        Arrays.asList(
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 1")
+                                                        .build(),
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 2")
+                                                        .build()
+                                        )
                                 )
                                 .build()
                 )
@@ -1166,6 +1255,29 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("수신자 팀 규모명"),
 
+                                        // ----- receiverAnnouncementInformation 추가
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 공고 정보"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 제목"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementPositionItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("공고 포지션 정보"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementPositionItem.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 포지션 대분류"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementPositionItem.subPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 포지션 소분류"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementSkillNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("공고 요구 스킬 목록"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementSkillNames[].announcementSkillName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 요구 스킬 이름"),
+
                                         // ----- 추가 필드
                                         fieldWithPath("result.content[].requestMessage")
                                                 .type(JsonFieldType.STRING)
@@ -1311,6 +1423,27 @@ public class MatchingControllerTest extends ControllerTest {
                                 )
                                 .build()
                 )
+                .receiverAnnouncementInformation(
+                        ReceiverAnnouncementInformation.builder()
+                                .announcementTitle("공고 제목")
+                                .announcementPositionItem(
+                                        AnnouncementPositionItem.builder()
+                                                .majorPosition("공고 포지션 대분류")
+                                                .subPosition("공고 포지션 소분류")
+                                                .build()
+                                )
+                                .announcementSkillNames(
+                                        Arrays.asList(
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 1")
+                                                        .build(),
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 2")
+                                                        .build()
+                                        )
+                                )
+                                .build()
+                )
                 .requestMessage("매칭 요청 메시지")
                 .matchingStatusType(MatchingStatusType.REQUESTED)
                 .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
@@ -1367,6 +1500,27 @@ public class MatchingControllerTest extends ControllerTest {
                                         TeamScaleItem.builder()
                                                 .teamScaleName("수신자 팀 규모명")
                                                 .build()
+                                )
+                                .build()
+                )
+                .receiverAnnouncementInformation(
+                        ReceiverAnnouncementInformation.builder()
+                                .announcementTitle("공고 제목")
+                                .announcementPositionItem(
+                                        AnnouncementPositionItem.builder()
+                                                .majorPosition("공고 포지션 대분류")
+                                                .subPosition("공고 포지션 소분류")
+                                                .build()
+                                )
+                                .announcementSkillNames(
+                                        Arrays.asList(
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 1")
+                                                        .build(),
+                                                AnnouncementSkillName.builder()
+                                                        .announcementSkillName("공고 요구 스킬 2")
+                                                        .build()
+                                        )
                                 )
                                 .build()
                 )
@@ -1523,6 +1677,29 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].receiverTeamInformation.teamScaleItem.teamScaleName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("수신자 팀 규모명"),
+
+                                        // ----- receiverAnnouncementInformation 추가
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("수신자 공고 정보"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 제목"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementPositionItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("공고 포지션 정보"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementPositionItem.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 포지션 대분류"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementPositionItem.subPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 포지션 소분류"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementSkillNames")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("공고 요구 스킬 목록"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.announcementSkillNames[].announcementSkillName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 요구 스킬 이름"),
 
                                         // ★ 일반 필드
                                         fieldWithPath("result.content[].requestMessage")
