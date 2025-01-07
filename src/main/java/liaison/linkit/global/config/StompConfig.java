@@ -21,8 +21,8 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic"); // 클라이언트로 브로드캐스트되는 경로를 "/topic"으로 설정
-        config.setApplicationDestinationPrefixes("/app"); // 클라이언트가 서버로 송신할 때 사용하는 prefix 설정
+        config.enableSimpleBroker("/sub");                       // /sub 경로로 브로드캐스트
+        config.setApplicationDestinationPrefixes("/pub");                           // /pub 경로로 서버 수신
     }
 
     /**
@@ -46,4 +46,8 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
         registration.interceptors(stompHandler); // StompHandler를 인터셉터로 추가
     }
 
+//    @Override
+//    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+//        registration.setMessageSizeLimit(128 * 1024);
+//    }
 }

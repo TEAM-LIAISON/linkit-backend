@@ -37,7 +37,6 @@ public class ChatRequestDTO {
     @AllArgsConstructor
     public static class ChatMessageRequest {
         private Long chatRoomId;
-        private Long senderEntityId;  // Profile/Team의 ID
         private String content;
     }
 }

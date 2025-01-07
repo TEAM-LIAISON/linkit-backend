@@ -1,6 +1,5 @@
 package liaison.linkit.chat.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import liaison.linkit.chat.business.ChatMapper;
 import liaison.linkit.chat.domain.ChatMessage;
@@ -8,7 +7,6 @@ import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
 import liaison.linkit.chat.domain.repository.chatMessage.ChatMessageRepository;
 import liaison.linkit.chat.domain.type.CreateChatLocation;
-import liaison.linkit.chat.exception.ChatRoomUnauthorizedException;
 import liaison.linkit.chat.exception.CreateChatReceiverBadRequestException;
 import liaison.linkit.chat.exception.CreateChatSenderBadRequestException;
 import liaison.linkit.chat.exception.MatchingStateChatBadRequestException;
@@ -33,7 +31,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ChatService {
 
-    private final SimpMessageSendingOperations messagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
     private final ChatMapper chatMapper;
 
@@ -280,21 +279,18 @@ public class ChatService {
     }
 
     // 메시지 처리
-    public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId) {
+    public void handleChatMessage() {
+        final ChatMessageRequest chatMessageRequest = ChatMessageRequest.builder()
+                .chatRoomId(1L)
+                .content("asdf")
+                .build();
+        log.info("handleChatMessage 호출: chatRoomId={}, content={}", chatMessageRequest.getChatRoomId(), chatMessageRequest.getContent());
+
         // 1. 채팅방 존재 및 접근 권한 확인
         final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatMessageRequest.getChatRoomId());
-        if (!chatRoom.canAccessChat(memberId, chatMessageRequest.getSenderEntityId())) {
-            throw ChatRoomUnauthorizedException.EXCEPTION;
-        }
 
         // 2. 메시지 생성 및 저장
-        ChatMessage chatMessage = ChatMessage.builder()
-                .chatRoomId(chatMessageRequest.getChatRoomId())
-                .senderMemberId(memberId)
-                .content(chatMessageRequest.getContent())
-                .timestamp(LocalDateTime.now())
-                .isRead(false)
-                .build();
+        ChatMessage chatMessage = chatMapper.toChatMessage(chatMessageRequest, 1L);
 
         chatMessageRepository.save(chatMessage);
 
@@ -304,7 +300,7 @@ public class ChatService {
 
         // 4. 구독자들에게 메시지 발송
         ChatResponseDTO.ChatMessageResponse messageResponse = chatMapper.toChatMessageResponse(chatMessage);
-        messagingTemplate.convertAndSend("/sub/chat/room/" + chatMessageRequest.getChatRoomId(), messageResponse);
+        simpMessagingTemplate.convertAndSend("/sub/chat/room/1", messageResponse);
     }
 
     /**

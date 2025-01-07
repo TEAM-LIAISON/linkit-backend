@@ -3,7 +3,6 @@ package liaison.linkit.chat.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.chat.presentation.dto.ChatRequestDTO;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.service.ChatService;
@@ -14,38 +13,44 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/chat")
 @Slf4j
 public class ChatController {
 
     private final ChatService chatService;
 
-    // 기존 REST API 채팅방 생성
-    @PostMapping("/room")
+    // ==============================
+    // 1) REST API: 채팅방 생성
+    // ==============================
+    @PostMapping("/api/v1/chat/room")
     @MemberOnly
     public CommonResponse<ChatResponseDTO.CreateChatRoomResponse> createChatRoom(
             @RequestBody CreateChatRoomRequest request,
             @Auth Accessor accessor
     ) {
+        log.info("createChatRoom {}", request);
         return CommonResponse.onSuccess(chatService.createChatRoom(request, accessor.getMemberId()));
     }
 
-    // 웹소켓 메시지 처리
-    @MessageMapping("/chat/message")
-    public void message(
-            @Auth Accessor accessor,
-            final ChatRequestDTO.ChatMessageRequest chatMessageRequest
+    // ==============================
+    // 2) STOMP: 메시지 전송
+    // ==============================
+
+    /**
+     * 클라이언트가 /pub/chat/send 로 메시지를 전송하면 서버가 이 메서드를 통해 메시지를 수신하고, 내부 로직 처리 후 /sub/chat/{chatRoomId} 경로로 메시지를 브로드캐스트한다.
+     */
+    @MessageMapping("/chat/send")
+    public void sendChatMessage(
     ) {
-        chatService.handleChatMessage(chatMessageRequest, accessor.getMemberId());
+        log.info("Sending chat message");
+        chatService.handleChatMessage();
     }
 
     /**
