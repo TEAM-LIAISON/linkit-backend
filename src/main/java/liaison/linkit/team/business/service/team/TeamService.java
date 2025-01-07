@@ -105,7 +105,7 @@ public class TeamService {
         log.info("Saved team {}", savedTeam.getId());
         // 사용자가 새로운 이미지를 업로드
         String teamLogoImagePath = null;
-        if (!teamLogoImage.isEmpty() && imageValidator.validatingImageUpload(teamLogoImage)) {
+        if (imageValidator.validatingImageUpload(teamLogoImage)) {
             // 팀 로고 이미지 업로드
             teamLogoImagePath = s3Uploader.uploadTeamLogoImage(new ImageFile(teamLogoImage));
 
