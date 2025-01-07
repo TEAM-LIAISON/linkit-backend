@@ -46,6 +46,7 @@ public class TeamMemberMapper {
     public ProfileTeamInform toProfileTeamInform(final Team team) {
         return ProfileTeamInform.builder()
                 .teamName(team.getTeamName())
+                .teamCode(team.getTeamCode())
                 .teamLogoImagePath(team.getTeamLogoImagePath())
                 .build();
     }

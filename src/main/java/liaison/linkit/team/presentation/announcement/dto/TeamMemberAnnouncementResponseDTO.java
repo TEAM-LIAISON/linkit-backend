@@ -30,6 +30,7 @@ public class TeamMemberAnnouncementResponseDTO {
 
         private String teamLogoImagePath;
         private String teamName;
+        private String teamCode;
 
         @Builder.Default
         private TeamScaleItem teamScaleItem = new TeamScaleItem();

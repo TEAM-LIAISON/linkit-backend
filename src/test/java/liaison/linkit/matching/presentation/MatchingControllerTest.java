@@ -35,6 +35,7 @@ import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.AddMatchingRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteReceivedMatchingRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteRequestedMatchingRequest;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateMatchingStatusTypeRequest;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.AddMatchingResponse;
@@ -51,6 +52,7 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchi
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToTeamMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderProfileInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateMatchingStatusTypeResponse;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
@@ -104,6 +106,16 @@ public class MatchingControllerTest extends ControllerTest {
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(addMatchingRequest))
+        );
+    }
+
+    private ResultActions performPostUpdateMatchingStatusType(final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/matching/{matchingId}", matchingId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateMatchingStatusTypeRequest))
         );
     }
 
@@ -440,6 +452,65 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.receiverReadStatus")
                                                 .type(JsonFieldType.STRING)
                                                 .description("수신자 읽음 상태 - [UNREAD_REQUESTED_MATCHING, READ_COMPLETED_MATCHING 등]")
+                                )
+                        )
+                ).andReturn();
+    }
+
+    @DisplayName("매칭 요청에 대해 수신자가 수락하거나 거절할 수 있다.")
+    @Test
+    void updateMatchingStatusTypeResponse() throws Exception {
+        // given
+        final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest = UpdateMatchingStatusTypeRequest.builder()
+                .matchingStatusType(MatchingStatusType.COMPLETED)
+                .build();
+
+        final UpdateMatchingStatusTypeResponse updateMatchingStatusTypeResponse = UpdateMatchingStatusTypeResponse.builder()
+                .matchingId(1L)
+                .matchingStatusType(MatchingStatusType.COMPLETED)
+                .build();
+        // when
+        when(matchingService.updateMatchingStatusType(anyLong(), anyLong(), any())).thenReturn(updateMatchingStatusTypeResponse);
+
+        final ResultActions resultActions = performPostUpdateMatchingStatusType(1L, updateMatchingStatusTypeRequest);
+        // then
+
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("matchingId")
+                                                .description("매칭 ID (PK)")
+                                ),
+                                requestFields(
+                                        fieldWithPath("matchingStatusType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 상태 타입 (COMPLETED, DENIED, REQUESTED)")
+                                                .attributes(field("constraint", "(COMPLETED, DENIED) 2개 중에 1개"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        subsectionWithPath("result.matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("업데이트된 매칭 아이디 (PK)"),
+                                        subsectionWithPath("result.matchingStatusType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("변경된 매칭의 상태")
                                 )
                         )
                 ).andReturn();

@@ -58,7 +58,7 @@ public class MatchingController {
         return CommonResponse.onSuccess(matchingService.selectMatchingRequestToTeamMenu(accessor.getMemberId(), teamCode));
     }
 
-    // 매칭 요청 보내기
+    // 매칭 요청 보내기 (명세 완료)
     @PostMapping
     @MemberOnly
     public CommonResponse<MatchingResponseDTO.AddMatchingResponse> addMatching(
@@ -120,7 +120,7 @@ public class MatchingController {
             @PathVariable final Long matchingId,
             @RequestBody final MatchingRequestDTO.UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
     ) {
-        return CommonResponse.onSuccess(matchingService.updateMatchingStatusTypeResponse(accessor.getMemberId(), matchingId, updateMatchingStatusTypeRequest));
+        return CommonResponse.onSuccess(matchingService.updateMatchingStatusType(accessor.getMemberId(), matchingId, updateMatchingStatusTypeRequest));
     }
 
     // 매칭 발신함 (명세 완료)

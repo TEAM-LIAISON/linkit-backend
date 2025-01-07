@@ -1,0 +1,100 @@
+= WebSocket Chat API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+[[chat-websocket]]
+== WebSocket 연결
+
+=== 연결 정보
+[cols="2,5"]
+|===
+| WebSocket URL | ws://localhost:8080/ws-stomp
+| Protocol | STOMP over WebSocket
+|===
+
+=== 연결 헤더
+[source,http]
+----
+Authorization: Bearer {jwt_token}
+----
+
+=== 채팅방 구독
+[source,http]
+----
+SUBSCRIBE /sub/chat/room/{chatRoomId}
+----
+
+==== 구독 시 수신되는 메시지 형식
+[source,json]
+----
+{
+    "messageId": "string",
+    "chatRoomId": "number",
+    "senderMemberId": "number",
+    "content": "string",
+    "timestamp": "string",
+    "isRead": "boolean"
+}
+----
+
+=== 메시지 전송
+[source,http]
+----
+SEND /pub/chat/message
+----
+
+==== 전송 메시지 형식
+[source,json]
+----
+{
+    "chatRoomId": "number",
+    "senderEntityId": "number",
+    "content": "string"
+}
+----
+
+=== 에러 코드
+[cols="2,3,5"]
+|===
+| 코드 | 상태 | 설명
+| CHAT_001 | 401 | 인증되지 않은 사용자
+| CHAT_002 | 403 | 채팅방 접근 권한 없음
+| CHAT_003 | 404 | 존재하지 않는 채팅방
+|===
+
+=== WebSocket 연결 예시 (JavaScript)
+[source,javascript]
+----
+// WebSocket 연결
+const sock = new SockJS('http://localhost:8080/ws-stomp');
+const stomp = Stomp.over(sock);
+
+// 연결
+stomp.connect({
+    'Authorization': 'Bearer ' + token
+}, frame => {
+    console.log('Connected: ' + frame);
+    
+    // 채팅방 구독
+    stomp.subscribe(`/sub/chat/room/${chatRoomId}`, message => {
+        const received = JSON.parse(message.body);
+        console.log(received);
+    });
+});
+
+// 메시지 전송
+function sendMessage(content) {
+    stomp.send("/pub/chat/message", 
+        {'Authorization': 'Bearer ' + token},
+        JSON.stringify({
+            chatRoomId: chatRoomId,
+            senderEntityId: senderEntityId,
+            content: content
+        })
+    );
+}
+---- 

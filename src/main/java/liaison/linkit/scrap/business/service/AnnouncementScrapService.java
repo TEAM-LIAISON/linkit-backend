@@ -131,6 +131,7 @@ public class AnnouncementScrapService {
             final AnnouncementInformMenu announcementInformMenu = teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
                     team.getTeamLogoImagePath(),
                     team.getTeamName(),
+                    team.getTeamCode(),
                     teamScaleItem,
                     regionDetail,
                     teamMemberAnnouncement,

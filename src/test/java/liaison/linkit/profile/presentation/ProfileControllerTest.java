@@ -133,10 +133,12 @@ class ProfileControllerTest extends ControllerTest {
                 .profileTeamInforms(Arrays.asList(
                         ProfileTeamInform.builder()
                                 .teamName("리에종")
+                                .teamCode("팀 아이디 (팀 코드)")
                                 .teamLogoImagePath("팀 로고 이미지 경로")
                                 .build(),
                         ProfileTeamInform.builder()
                                 .teamName("팀명 2")
+                                .teamCode("팀 아이디 2(팀 코드)")
                                 .teamLogoImagePath("팀 로고 이미지 경로 2")
                                 .build()
                 ))
@@ -201,7 +203,7 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.profileScrapCount")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("프로필 스크랩 전체 개수"),
-                                        
+
                                         fieldWithPath("result.profileInformMenu.profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),
@@ -230,6 +232,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 아이디"),
                                         fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로"),
@@ -307,10 +312,12 @@ class ProfileControllerTest extends ControllerTest {
                 .profileTeamInforms(Arrays.asList(
                         ProfileTeamInform.builder()
                                 .teamName("리에종")
+                                .teamCode("팀 아이디 (팀 코드)")
                                 .teamLogoImagePath("팀 로고 이미지 경로")
                                 .build(),
                         ProfileTeamInform.builder()
                                 .teamName("팀명 2")
+                                .teamCode("팀 아이디 2(팀 코드)")
                                 .teamLogoImagePath("팀 로고 이미지 경로 2")
                                 .build()
                 ))
@@ -490,6 +497,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로"),

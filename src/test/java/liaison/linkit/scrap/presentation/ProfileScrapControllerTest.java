@@ -184,10 +184,12 @@ public class ProfileScrapControllerTest extends ControllerTest {
                                                 Arrays.asList(
                                                         ProfileTeamInform.builder()
                                                                 .teamName("소속 팀 이름 1")
+                                                                .teamCode("소속 팀 아이디 1")
                                                                 .teamLogoImagePath("소속 팀 로고 이미지 1")
                                                                 .build(),
                                                         ProfileTeamInform.builder()
                                                                 .teamName("소속 팀 이름 2")
+                                                                .teamCode("소속 팀 아이디 2")
                                                                 .teamLogoImagePath("소속 팀 로고 이미지 2")
                                                                 .build()
                                                 )
@@ -221,10 +223,12 @@ public class ProfileScrapControllerTest extends ControllerTest {
                                                 Arrays.asList(
                                                         ProfileTeamInform.builder()
                                                                 .teamName("소속 팀 이름 1")
+                                                                .teamCode("소속 팀 아이디 1")
                                                                 .teamLogoImagePath("소속 팀 로고 이미지 1")
                                                                 .build(),
                                                         ProfileTeamInform.builder()
                                                                 .teamName("소속 팀 이름 2")
+                                                                .teamCode("소속 팀 아이디 2")
                                                                 .teamLogoImagePath("소속 팀 로고 이미지 2")
                                                                 .build()
                                                 )
@@ -293,6 +297,9 @@ public class ProfileScrapControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenus[].profileTeamInforms[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("소속 팀 이름"),
+                                        fieldWithPath("result.profileInformMenus[].profileTeamInforms[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소속 팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.profileInformMenus[].profileTeamInforms[].teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("소속 팀 로고 이미지 경로")

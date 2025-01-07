@@ -35,6 +35,7 @@ public class TeamController {
             @RequestPart(required = false) MultipartFile teamLogoImage,
             @RequestPart @Valid TeamRequestDTO.AddTeamRequest addTeamRequest
     ) {
+        log.info("Creating team");
         return CommonResponse.onSuccess(teamService.createTeam(accessor.getMemberId(), teamLogoImage, addTeamRequest));
     }
 

@@ -391,7 +391,7 @@ public class MatchingService {
         return matchingMapper.toUpdateMatchingCompletedToReadItems(updateReceivedMatchingCompletedStateReadItems);
     }
 
-    public UpdateMatchingStatusTypeResponse updateMatchingStatusTypeResponse(final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest) {
+    public UpdateMatchingStatusTypeResponse updateMatchingStatusType(final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest) {
         if (updateMatchingStatusTypeRequest == null || updateMatchingStatusTypeRequest.getMatchingStatusType().equals(MatchingStatusType.REQUESTED)) {
             throw MatchingStatusTypeBadRequestException.EXCEPTION;
         }

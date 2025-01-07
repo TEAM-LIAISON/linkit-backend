@@ -79,7 +79,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
         // given
         AnnouncementInformMenu announcementInformMenu1 = AnnouncementInformMenu.builder()
                 .teamLogoImagePath("팀 로고 이미지 경로")
-                .teamName("팀 이름")
+                .teamName("팀 이름 1")
+                .teamCode("팀 아이디 1(팀 코드)")
                 .teamScaleItem(
                         TeamScaleItem.builder()
                                 .teamScaleName("팀 규모 이름 (1인)")
@@ -116,6 +117,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
         AnnouncementInformMenu announcementInformMenu2 = AnnouncementInformMenu.builder()
                 .teamLogoImagePath("팀 로고 이미지 경로 2")
                 .teamName("팀 이름 2")
+                .teamCode("팀 아이디 2(팀 코드)")
                 .teamScaleItem(
                         TeamScaleItem.builder()
                                 .teamScaleName("팀 규모 이름 (1인)")
@@ -222,6 +224,9 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
+                                        fieldWithPath("result.content[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.content[].teamScaleItem.teamScaleName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 규모 이름"),

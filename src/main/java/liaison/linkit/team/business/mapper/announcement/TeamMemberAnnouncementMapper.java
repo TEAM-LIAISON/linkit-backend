@@ -30,6 +30,7 @@ public class TeamMemberAnnouncementMapper {
     public AnnouncementInformMenu toTeamMemberAnnouncementInform(
             final String teamLogoImagePath,
             final String teamName,
+            final String teamCode,
             final TeamScaleItem teamScaleItem,
             final RegionDetail regionDetail,
             final TeamMemberAnnouncement teamMemberAnnouncement,
@@ -43,6 +44,7 @@ public class TeamMemberAnnouncementMapper {
         return AnnouncementInformMenu.builder()
                 .teamLogoImagePath(teamLogoImagePath)
                 .teamName(teamName)
+                .teamCode(teamCode)
                 .teamScaleItem(teamScaleItem)
                 .regionDetail(regionDetail)
                 .announcementDDay(announcementDDay)

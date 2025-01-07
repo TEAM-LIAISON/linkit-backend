@@ -1466,6 +1466,19 @@ include::{snippets}/matching-controller-test/add-matching/http-response.adoc[]
 include::{snippets}/matching-controller-test/add-matching/response-fields.adoc[]
 ====
 
+=== 매칭 요청 수락/거절하기
+
+====
+*요청*
+include::{snippets}/matching-controller-test/update-matching-status-type-response/http-request.adoc[]
+include::{snippets}/matching-controller-test/update-matching-status-type-response/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/update-matching-status-type-response/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/update-matching-status-type-response/http-response.adoc[]
+include::{snippets}/matching-controller-test/update-matching-status-type-response/response-fields.adoc[]
+====
+
 === 프로필 뷰어에서 매칭 요청 시 모달 정보 (피그마 - 팀원 매칭 정보 01, 02, 03)
 
 ====

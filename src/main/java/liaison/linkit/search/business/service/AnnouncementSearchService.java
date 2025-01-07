@@ -112,6 +112,7 @@ public class AnnouncementSearchService {
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
                 team.getTeamLogoImagePath(),
                 team.getTeamName(),
+                team.getTeamCode(),
                 teamScaleItem,
                 regionDetail,
                 teamMemberAnnouncement,
@@ -162,6 +163,7 @@ public class AnnouncementSearchService {
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
                 team.getTeamLogoImagePath(),
                 team.getTeamName(),
+                team.getTeamCode(),
                 teamScaleItem,
                 regionDetail,
                 teamMemberAnnouncement,

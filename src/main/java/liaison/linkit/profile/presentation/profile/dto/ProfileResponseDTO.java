@@ -100,6 +100,7 @@ public class ProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfileTeamInform {
         private String teamName;
+        private String teamCode;
         private String teamLogoImagePath;
     }
 

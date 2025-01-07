@@ -94,7 +94,7 @@ public class TeamService {
     ) {
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
-
+        log.info("Creating team {}", memberId);
         if (teamQueryAdapter.existsByTeamCode(addTeamRequest.getTeamCode())) {
             throw DuplicateTeamCodeException.EXCEPTION;
         }
@@ -102,7 +102,7 @@ public class TeamService {
         // 팀 생성
         final Team team = teamMapper.toTeam(addTeamRequest);
         final Team savedTeam = teamCommandAdapter.add(team);
-
+        log.info("Saved team {}", savedTeam.getId());
         // 사용자가 새로운 이미지를 업로드
         String teamLogoImagePath = null;
         if (!teamLogoImage.isEmpty() && imageValidator.validatingImageUpload(teamLogoImage)) {
