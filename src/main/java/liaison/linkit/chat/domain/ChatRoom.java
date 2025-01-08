@@ -27,6 +27,9 @@ public class ChatRoom extends BaseDateTimeEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private Long matchingId;
+
     // 채팅방의 첫 번째 참여자 ID (Profile의 경우 emailId, Team의 경우 teamCode)
     @Column(nullable = false)
     private String participantAId;

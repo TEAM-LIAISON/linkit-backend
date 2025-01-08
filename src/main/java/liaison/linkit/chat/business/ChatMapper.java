@@ -1,11 +1,14 @@
 package liaison.linkit.chat.business;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.common.annotation.Mapper;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,7 @@ public class ChatMapper {
     ) {
         return CreateChatRoomResponse.builder()
                 .chatRoomId(chatRoom.getId())
+                .matchingId(chatRoom.getMatchingId())
                 .participantAId(chatRoom.getParticipantAId())
                 .participantAType(chatRoom.getParticipantAType())
                 .participantAName(chatRoom.getParticipantAName())
@@ -61,6 +65,12 @@ public class ChatMapper {
                 .content(chatMessageRequest.getContent())
                 .timestamp(LocalDateTime.now())
                 .isRead(false)
+                .build();
+    }
+
+    public ChatLeftMenu toChatLeftMenu(final List<ChatRoomSummary> chatRoomSummaries) {
+        return ChatLeftMenu.builder()
+                .chatRoomSummaries(chatRoomSummaries)
                 .build();
     }
 }

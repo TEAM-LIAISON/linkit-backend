@@ -13,13 +13,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @Slf4j
 public class ChatController {
@@ -59,7 +59,7 @@ public class ChatController {
      * @param chatRoomId 채팅방 ID
      * @param pageable   페이징 정보 (size: 한 번에 가져올 메시지 수, page: 페이지 번호)
      */
-    @GetMapping("/room/{chatRoomId}/messages")
+    @GetMapping("/api/v1/chat/room/{chatRoomId}/messages")
     @MemberOnly
     public CommonResponse<ChatResponseDTO.ChatMessageHistoryResponse> getChatMessages(
             @PathVariable final Long chatRoomId,
@@ -74,4 +74,11 @@ public class ChatController {
     // ==============================
     // 4) REST API: 채팅방 왼쪽 메뉴 조회
     // ==============================
+    @GetMapping("/api/v1/chat/left/menu")
+    @MemberOnly
+    public CommonResponse<ChatResponseDTO.ChatLeftMenu> getChatLeftMenu(
+            @Auth final Accessor accessor
+    ) {
+        return CommonResponse.onSuccess(chatService.getChatLeftMenu(accessor.getMemberId()));
+    }
 }

@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +20,39 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatLeftMenu {
+        private List<ChatRoomSummary> chatRoomSummaries = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatRoomSummary {
         private Long chatRoomId;
+
+        @Builder.Default
+        private ChatPartnerInformation chatPartnerInformation = new ChatPartnerInformation();
+
+        private Long unreadCount;                   // 읽지 않은 메시지 수
+        private boolean isOnline;                   // 상대방 온라인 상태
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatPartnerInformation {
+        private String chatPartnerName;             // 상대방 이름
+        private String chatPartnerImageUrl;         // 상대방 프로필 이미지
+
+        @Builder.Default
+        private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+
+        @Builder.Default
+        private RegionDetail regionDetail = new RegionDetail();
+
+        private String lastMessage;                 // 마지막 메시지
+        private LocalDateTime lastMessageTime;      // 마지막 메시지 시간
     }
 
     @Builder
@@ -27,6 +61,8 @@ public class ChatResponseDTO {
     @AllArgsConstructor
     public static class CreateChatRoomResponse {
         private Long chatRoomId;
+
+        private Long matchingId;
 
         private String participantAId;
         private ParticipantType participantAType;

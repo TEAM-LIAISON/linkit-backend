@@ -1,5 +1,6 @@
 package liaison.linkit.chat.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.chat.business.ChatMapper;
 import liaison.linkit.chat.domain.ChatMessage;
@@ -8,6 +9,7 @@ import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
 import liaison.linkit.chat.domain.repository.chatMessage.ChatMessageRepository;
 import liaison.linkit.chat.domain.type.CreateChatLocation;
 import liaison.linkit.chat.exception.CreateChatReceiverBadRequestException;
+import liaison.linkit.chat.exception.CreateChatRoomBadRequestException;
 import liaison.linkit.chat.exception.CreateChatSenderBadRequestException;
 import liaison.linkit.chat.exception.MatchingStateChatBadRequestException;
 import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
@@ -15,13 +17,24 @@ import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatPartnerInformation;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
+import liaison.linkit.common.business.RegionMapper;
+import liaison.linkit.common.implement.RegionQueryAdapter;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.global.util.SessionRegistry;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
+import liaison.linkit.profile.domain.position.ProfilePosition;
 import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.domain.region.ProfileRegion;
+import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
@@ -31,7 +44,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,6 +69,11 @@ public class ChatService {
     private final MatchingQueryAdapter matchingQueryAdapter;
 
     private final ChatRoomCommandAdapter chatRoomCommandAdapter;
+    private final SessionRegistry sessionRegistry;
+    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
+    private final ProfilePositionMapper profilePositionMapper;
+    private final RegionQueryAdapter regionQueryAdapter;
+    private final RegionMapper regionMapper;
 
     /**
      * 새로운 채팅방 생성
@@ -78,13 +95,19 @@ public class ChatService {
             throw MatchingStateChatBadRequestException.EXCEPTION;
         }
 
+        if (chatRoomQueryAdapter.existsChatRoomByMatchingId(createChatRoomRequest.getMatchingId())) {
+            throw CreateChatRoomBadRequestException.EXCEPTION;
+        }
+
         // 2) 수신함(RECEIVED) or 발신함(SENT) 분기
-        if (createChatRoomRequest.getCreateChatLocation().equals(CreateChatLocation.RECEIVED)) {
-            validateReceiverLogic(createChatRoomRequest, memberId, profile);
-            return buildAndSaveChatRoomAsReceiver(createChatRoomRequest, memberId, profile);
-        } else {
-            validateSenderLogic(createChatRoomRequest, memberId, profile);
-            return buildAndSaveChatRoomAsSender(createChatRoomRequest, memberId, profile);
+        {
+            if (createChatRoomRequest.getCreateChatLocation().equals(CreateChatLocation.RECEIVED)) {
+                validateReceiverLogic(createChatRoomRequest, memberId, profile);
+                return buildAndSaveChatRoomAsReceiver(createChatRoomRequest, memberId, profile);
+            } else {
+                validateSenderLogic(createChatRoomRequest, memberId, profile);
+                return buildAndSaveChatRoomAsSender(createChatRoomRequest, memberId, profile);
+            }
         }
     }
 
@@ -174,6 +197,7 @@ public class ChatService {
         }
 
         ChatRoom chatRoom = ChatRoom.builder()
+                .matchingId(request.getMatchingId())
                 .participantAId(participantAId)
                 .participantAMemberId(participantAMemberId)
                 .participantAName(participantAName)
@@ -263,6 +287,7 @@ public class ChatService {
         }
 
         ChatRoom chatRoom = ChatRoom.builder()
+                .matchingId(request.getMatchingId())
                 .participantAId(participantAId)
                 .participantAMemberId(participantAMemberId)
                 .participantAName(participantAName)
@@ -322,6 +347,78 @@ public class ChatService {
         updateUnreadMessages(chatRoomId, memberId);
 
         return chatMapper.toChatMessageHistoryResponse(messages);
+    }
+
+    @Transactional(readOnly = true)
+    public ChatResponseDTO.ChatLeftMenu getChatLeftMenu(
+            final Long memberId
+    ) {
+        final List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
+
+        final List<ChatRoomSummary> chatRoomSummaries = new ArrayList<>();
+        for (ChatRoom chatRoom : chatRooms) {
+            if (chatRoom.getParticipantAMemberId().equals(memberId)) {
+                final Member chatPartnerMember = memberQueryAdapter.findById(chatRoom.getParticipantBMemberId());
+                final Profile chatPartnerProfile = chatPartnerMember.getProfile();
+
+                ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+                if (profilePositionQueryAdapter.existsProfilePositionByProfileId(chatPartnerProfile.getId())) {
+                    final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(chatPartnerProfile.getId());
+                    profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                }
+
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsProfileRegionByProfileId((chatPartnerProfile.getId()))) {
+                    final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(chatPartnerProfile.getId());
+                    regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+                }
+
+                ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
+                        .chatRoomId(chatRoom.getId())
+                        .chatPartnerInformation(
+                                ChatPartnerInformation.builder()
+                                        .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                                        .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                        .profilePositionDetail(profilePositionDetail)
+                                        .regionDetail(regionDetail)
+                                        .build()
+                        )
+                        .build();
+
+                chatRoomSummaries.add(chatRoomSummary);
+            } else {
+                final Member chatPartnerMember = memberQueryAdapter.findById(chatRoom.getParticipantAMemberId());
+                final Profile chatPartnerProfile = chatPartnerMember.getProfile();
+
+                ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+                if (profilePositionQueryAdapter.existsProfilePositionByProfileId(chatPartnerProfile.getId())) {
+                    final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(chatPartnerProfile.getId());
+                    profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                }
+
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsProfileRegionByProfileId((chatPartnerProfile.getId()))) {
+                    final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(chatPartnerProfile.getId());
+                    regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+                }
+
+                ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
+                        .chatRoomId(chatRoom.getId())
+                        .chatPartnerInformation(
+                                ChatPartnerInformation.builder()
+                                        .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                                        .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                        .profilePositionDetail(profilePositionDetail)
+                                        .regionDetail(regionDetail)
+                                        .build()
+                        )
+                        .build();
+
+                chatRoomSummaries.add(chatRoomSummary);
+            }
+        }
+
+        return chatMapper.toChatLeftMenu(chatRoomSummaries);
     }
 
     /**
