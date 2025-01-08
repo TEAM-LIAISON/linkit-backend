@@ -1,12 +1,15 @@
 package liaison.linkit.global.util;
 
 import java.util.List;
+import liaison.linkit.chat.event.ChatEvent.UserConnectedEvent;
+import liaison.linkit.chat.event.ChatEvent.UserDisconnectedEvent;
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -24,6 +27,8 @@ public class StompHandler implements ChannelInterceptor {
 
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final SessionRegistry sessionRegistry;
+    private final ApplicationEventPublisher eventPublisher;
     private static final String REFRESH_TOKEN = "refreshToken";
 
     @Override
@@ -57,8 +62,14 @@ public class StompHandler implements ChannelInterceptor {
 
                 // 사용자 ID 추출
                 Long memberId = Long.valueOf(jwtProvider.getSubject(accessToken));
-
                 log.info("인증된 사용자 ID: {}", memberId);
+
+                String sessionId = headerAccessor.getSessionId();
+                log.info("sessionId: {}", sessionId);
+
+                // 세션 등록
+                sessionRegistry.registerSession(sessionId, memberId);
+                log.info("세션 등록: sessionId={}, memberId={}", sessionId, memberId);
             } catch (RefreshTokenExpiredException e) {
                 log.error("Refresh Token이 만료되었습니다: {}", e.getMessage());
                 throw e;
@@ -94,11 +105,25 @@ public class StompHandler implements ChannelInterceptor {
 
     @EventListener
     public void handleWebSocketConnectionListener(SessionConnectedEvent event) {
-        log.info("사용자 입장: {}", event.getMessage());
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = headerAccessor.getSessionId();
+        Long memberId = sessionRegistry.getMemberIdBySession(sessionId);
+
+        if (memberId != null) {
+            eventPublisher.publishEvent(new UserConnectedEvent(memberId, sessionId));
+        }
     }
 
     @EventListener
     public void handleWebSocketDisconnectionListener(SessionDisconnectEvent event) {
-        log.info("사용자 퇴장: {}", event.getMessage());
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        String sessionId = headerAccessor.getSessionId();
+
+        // 세션 제거 및 오프라인 처리
+        Long memberId = sessionRegistry.removeSession(sessionId);
+        if (memberId != null) {
+            eventPublisher.publishEvent(new UserDisconnectedEvent(memberId, sessionId));
+            log.info("세션 종료 처리: sessionId={}, memberId={}", sessionId, memberId);
+        }
     }
 }

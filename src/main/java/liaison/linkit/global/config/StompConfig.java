@@ -8,6 +8,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -44,10 +45,17 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompHandler); // StompHandler를 인터셉터로 추가
+        registration.taskExecutor()
+                .corePoolSize(4)
+                .maxPoolSize(10)
+                .queueCapacity(50);
     }
 
-//    @Override
-//    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-//        registration.setMessageSizeLimit(128 * 1024);
-//    }
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        registration.setMessageSizeLimit(64 * 1024)     // 64KB
+                .setSendTimeLimit(20 * 1000)        // 20 seconds
+                .setSendBufferSizeLimit(512 * 1024) // 512KB
+                .setTimeToFirstMessage(60 * 1000);  // 60 seconds
+    }
 }
