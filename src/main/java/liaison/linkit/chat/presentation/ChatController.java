@@ -3,6 +3,7 @@ package liaison.linkit.chat.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
+import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.service.ChatService;
@@ -12,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @Slf4j
 public class ChatController {
-
     private final ChatService chatService;
 
     // ==============================
@@ -48,9 +50,11 @@ public class ChatController {
      */
     @MessageMapping("/chat/send")
     public void sendChatMessage(
+            @Payload ChatMessageRequest chatMessageRequest,
+            @Header(name = "memberId", required = true) Long memberId
     ) {
-        log.info("Sending chat message");
-        chatService.handleChatMessage();
+        log.info("sendChatMessage Content = {}", chatMessageRequest.getContent());
+        chatService.handleChatMessage(chatMessageRequest, memberId);
     }
 
     /**

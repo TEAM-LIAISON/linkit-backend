@@ -12,13 +12,17 @@ import liaison.linkit.chat.exception.CreateChatReceiverBadRequestException;
 import liaison.linkit.chat.exception.CreateChatRoomBadRequestException;
 import liaison.linkit.chat.exception.CreateChatSenderBadRequestException;
 import liaison.linkit.chat.exception.MatchingStateChatBadRequestException;
+import liaison.linkit.chat.exception.SendChatMessageBadRequestException;
 import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
-import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageHistoryResponse;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatPartnerInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -82,7 +86,7 @@ public class ChatService {
      * @param memberId              채팅방 생성을 요청한 회원의 ID
      * @return 생성된 채팅방 정보
      */
-    public ChatResponseDTO.CreateChatRoomResponse createChatRoom(final CreateChatRoomRequest createChatRoomRequest, final Long memberId) {
+    public CreateChatRoomResponse createChatRoom(final CreateChatRoomRequest createChatRoomRequest, final Long memberId) {
 
         // 채팅방을 열게하는 매칭의 매칭 ID
         final Long matchingId = createChatRoomRequest.getMatchingId();
@@ -145,7 +149,7 @@ public class ChatService {
     }
 
     // (수신함에서) 채팅방 생성
-    private ChatResponseDTO.CreateChatRoomResponse buildAndSaveChatRoomAsReceiver(
+    private CreateChatRoomResponse buildAndSaveChatRoomAsReceiver(
             CreateChatRoomRequest request,
             Long memberId,
             Profile profile
@@ -157,7 +161,7 @@ public class ChatService {
         String participantBId;
         Long participantBMemberId = memberId;
         String participantBName;
-        ChatRoom.ParticipantType participantBType;
+        ParticipantType participantBType;
 
         if (request.getReceiverType().equals(ReceiverType.PROFILE)) {
             participantBId = profile.getMember().getEmailId();
@@ -180,20 +184,20 @@ public class ChatService {
         String participantAId;
         Long participantAMemberId;
         String participantAName;
-        ChatRoom.ParticipantType participantAType;
+        ParticipantType participantAType;
 
         if (request.getSenderType().equals(SenderType.PROFILE)) {
             participantAId = request.getSenderEmailId();
             final Member member = memberQueryAdapter.findByEmailId(participantAId);
             participantAMemberId = member.getId();
             participantAName = member.getMemberBasicInform().getMemberName();
-            participantAType = ChatRoom.ParticipantType.PROFILE;
+            participantAType = ParticipantType.PROFILE;
         } else { // TEAM
             participantAId = request.getSenderTeamCode();
             final Team team = teamQueryAdapter.findByTeamCode(participantAId);
             participantAMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(team);
             participantAName = team.getTeamName();
-            participantAType = ChatRoom.ParticipantType.TEAM;
+            participantAType = ParticipantType.TEAM;
         }
 
         ChatRoom chatRoom = ChatRoom.builder()
@@ -232,7 +236,7 @@ public class ChatService {
     }
 
     // 발신함에서 채팅방 생성
-    private ChatResponseDTO.CreateChatRoomResponse buildAndSaveChatRoomAsSender(
+    private CreateChatRoomResponse buildAndSaveChatRoomAsSender(
             CreateChatRoomRequest request,
             Long memberId,
             Profile profile
@@ -244,18 +248,18 @@ public class ChatService {
         String participantAId;
         Long participantAMemberId = memberId;
         String participantAName;
-        ChatRoom.ParticipantType participantAType;
+        ParticipantType participantAType;
 
         if (request.getSenderType().equals(SenderType.PROFILE)) {
             participantAId = profile.getMember().getEmailId();
             final Member member = memberQueryAdapter.findById(memberId);
             participantAName = member.getMemberBasicInform().getMemberName();
-            participantAType = ChatRoom.ParticipantType.PROFILE;
+            participantAType = ParticipantType.PROFILE;
         } else { // TEAM
             participantAId = request.getSenderTeamCode();
             final Team team = teamQueryAdapter.findByTeamCode(participantAId);
             participantAName = team.getTeamName();
-            participantAType = ChatRoom.ParticipantType.TEAM;
+            participantAType = ParticipantType.TEAM;
         }
 
         // ---- participantB : 수신자 ----
@@ -263,27 +267,27 @@ public class ChatService {
         String participantBId;
         Long participantBMemberId;
         String participantBName;
-        ChatRoom.ParticipantType participantBType;
+        ParticipantType participantBType;
 
         if (request.getReceiverType().equals(ReceiverType.PROFILE)) {
             participantBId = request.getReceiverEmailId();
             final Member member = memberQueryAdapter.findByEmailId(participantBId);
             participantBMemberId = member.getId();
             participantBName = member.getMemberBasicInform().getMemberName();
-            participantBType = ChatRoom.ParticipantType.PROFILE;
+            participantBType = ParticipantType.PROFILE;
         } else if (request.getReceiverType().equals(ReceiverType.TEAM)) {
             participantBId = request.getReceiverTeamCode();
             final Team team = teamQueryAdapter.findByTeamCode(participantBId);
             participantBMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(team);
             participantBName = team.getTeamName();
-            participantBType = ChatRoom.ParticipantType.TEAM;
+            participantBType = ParticipantType.TEAM;
         } else {
 
             final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.findById(request.getReceiverAnnouncementId());
             participantBId = teamMemberAnnouncement.getTeam().getTeamCode();
             participantBMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(teamMemberAnnouncement.getTeam());
             participantBName = teamMemberAnnouncement.getTeam().getTeamName();
-            participantBType = ChatRoom.ParticipantType.TEAM;
+            participantBType = ParticipantType.TEAM;
         }
 
         ChatRoom chatRoom = ChatRoom.builder()
@@ -304,18 +308,29 @@ public class ChatService {
     }
 
     // 메시지 처리
-    public void handleChatMessage() {
-        final ChatMessageRequest chatMessageRequest = ChatMessageRequest.builder()
-                .chatRoomId(1L)
-                .content("asdf")
-                .build();
+    public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId) {
         log.info("handleChatMessage 호출: chatRoomId={}, content={}", chatMessageRequest.getChatRoomId(), chatMessageRequest.getContent());
 
         // 1. 채팅방 존재 및 접근 권한 확인
         final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatMessageRequest.getChatRoomId());
 
         // 2. 메시지 생성 및 저장
-        ChatMessage chatMessage = chatMapper.toChatMessage(chatMessageRequest, 1L);
+        ChatMessage chatMessage = null;
+        if (chatRoom.getParticipantAMemberId().equals(memberId)) {
+            chatMessage = chatMapper.toChatMessage(
+                    chatMessageRequest,
+                    chatRoom.getParticipantAId(),
+                    chatRoom.getParticipantAType()
+            );
+        } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
+            chatMessage = chatMapper.toChatMessage(
+                    chatMessageRequest,
+                    chatRoom.getParticipantBId(),
+                    chatRoom.getParticipantBType()
+            );
+        } else {
+            throw SendChatMessageBadRequestException.EXCEPTION;
+        }
 
         chatMessageRepository.save(chatMessage);
 
@@ -324,7 +339,7 @@ public class ChatService {
         chatRoomCommandAdapter.save(chatRoom);
 
         // 4. 구독자들에게 메시지 발송
-        ChatResponseDTO.ChatMessageResponse messageResponse = chatMapper.toChatMessageResponse(chatMessage);
+        ChatMessageResponse messageResponse = chatMapper.toChatMessageResponse(chatMessage);
         simpMessagingTemplate.convertAndSend("/sub/chat/room/1", messageResponse);
     }
 
@@ -332,7 +347,7 @@ public class ChatService {
      * 채팅방의 이전 메시지 내역 조회
      */
     @Transactional(readOnly = true)
-    public ChatResponseDTO.ChatMessageHistoryResponse getChatMessages(
+    public ChatMessageHistoryResponse getChatMessages(
             final Long chatRoomId,
             final Long memberId,
             final Pageable pageable
@@ -350,7 +365,7 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public ChatResponseDTO.ChatLeftMenu getChatLeftMenu(
+    public ChatLeftMenu getChatLeftMenu(
             final Long memberId
     ) {
         final List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
@@ -425,9 +440,8 @@ public class ChatService {
      * 읽지 않은 메시지 읽음 처리
      */
     private void updateUnreadMessages(final Long chatRoomId, final Long memberId) {
-        List<ChatMessage> unreadMessages = chatMessageRepository.findByChatRoomIdAndIsReadFalseAndSenderMemberIdNot(
-                chatRoomId,
-                memberId
+        List<ChatMessage> unreadMessages = chatMessageRepository.findByChatRoomIdAndIsReadFalseAndReceiverParticipantId(
+                chatRoomId
         );
 
         unreadMessages.forEach(ChatMessage::markAsRead);

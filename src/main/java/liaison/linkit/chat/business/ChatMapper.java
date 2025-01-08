@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
+import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
@@ -51,17 +52,23 @@ public class ChatMapper {
         return ChatResponseDTO.ChatMessageResponse.builder()
                 .messageId(message.getId())
                 .chatRoomId(message.getChatRoomId())
-                .senderMemberId(message.getSenderMemberId())
+                .messageSenderType(message.getMessageSenderType())
+                .messageSenderId(message.getMessageSenderId())
                 .content(message.getContent())
                 .timestamp(message.getTimestamp())
                 .isRead(message.isRead())
                 .build();
     }
 
-    public ChatMessage toChatMessage(final ChatMessageRequest chatMessageRequest, final Long senderMemberId) {
+    public ChatMessage toChatMessage(
+            final ChatMessageRequest chatMessageRequest,
+            final String participantId,
+            final ParticipantType participantType
+    ) {
         return ChatMessage.builder()
                 .chatRoomId(chatMessageRequest.getChatRoomId())
-                .senderMemberId(senderMemberId)
+                .messageSenderId(participantId)
+                .messageSenderType(participantType)
                 .content(chatMessageRequest.getContent())
                 .timestamp(LocalDateTime.now())
                 .isRead(false)

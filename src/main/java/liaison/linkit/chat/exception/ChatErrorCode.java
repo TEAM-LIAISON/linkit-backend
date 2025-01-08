@@ -19,6 +19,7 @@ public enum ChatErrorCode implements BaseErrorCode {
     CREATE_CHAT_SENDER_BAD_REQUEST(BAD_REQUEST, "CHATTING_400_2", "발신함에서 채팅방을 생성하는 과정에서 잘못된 요청이 발생했습니다."),
     CREATE_CHAT_RECEIVER_BAD_REQUEST(BAD_REQUEST, "CHATTING_400_3", "수신함에서 채팅방을 생성하는 과정에서 잘못된 요청이 발생했습니다."),
     CREATE_CHAT_ROOM_BAD_REQUEST(BAD_REQUEST, "CHATTING_400_4", "채팅방이 이미 존재합니다. 새롭게 채팅방을 생성할 수 없습니다."),
+    SEND_CHAT_MESSAGE_BAD_REQUEST(BAD_REQUEST, "CHATTING_400_5", "올바르지 않은 채팅 메시지 전송입니다."),
     CHAT_ROOM_UNAUTHORIZED(UNAUTHORIZED, "CHATTING_401_1", "해당 채팅방에 접근할 수 없습니다."),
     CHAT_ROOM_NOT_FOUND(NOT_FOUND, "CHATTING_404_1", "조회하고자 하는 채팅방을 찾을 수 없습니다.");
 

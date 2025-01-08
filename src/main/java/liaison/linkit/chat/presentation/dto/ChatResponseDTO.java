@@ -77,6 +77,7 @@ public class ChatResponseDTO {
         private Long unreadCount;                       // 읽지 않은 메시지 수
     }
 
+    // 채팅 내역에 대한 응답
     @Getter
     @Builder
     @NoArgsConstructor
@@ -90,16 +91,20 @@ public class ChatResponseDTO {
         private List<ChatMessageResponse> messages = new ArrayList<>();
     }
 
+    // 개별 메시지에 대한 응답
     @Getter
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatMessageResponse {
-        private String messageId;               // 메시지 ID
-        private Long chatRoomId;                // 채팅방 ID
-        private Long senderMemberId;            // 발신자 회원 ID
-        private String content;                 // 메시지 내용
-        private LocalDateTime timestamp;        // 전송 시간
-        private boolean isRead;                 // 읽음 여부
+        private String messageId;                   // 메시지 ID
+        private Long chatRoomId;                    // 채팅방 ID
+
+        private ParticipantType messageSenderType;
+        private String messageSenderId;
+
+        private String content;                     // 메시지 내용
+        private LocalDateTime timestamp;            // 전송 시간
+        private boolean isRead;                     // 읽음 여부
     }
 }

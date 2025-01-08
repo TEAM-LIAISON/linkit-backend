@@ -63,16 +63,6 @@ SEND /pub/chat/message
 }
 ----
 
-=== 에러 코드
-
-[cols="2,3,5"]
-|===
-| 코드 | 상태 | 설명
-| CHAT_001 | 401 | 인증되지 않은 사용자
-| CHAT_002 | 403 | 채팅방 접근 권한 없음
-| CHAT_003 | 404 | 존재하지 않는 채팅방
-|===
-
 === WebSocket 연결 예시 (JavaScript)
 
 [source,javascript]

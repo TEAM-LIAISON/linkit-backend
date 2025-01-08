@@ -16,6 +16,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -71,11 +72,45 @@ public class StompHandler implements ChannelInterceptor {
                 sessionRegistry.registerSession(sessionId, memberId);
                 log.info("세션 등록: sessionId={}, memberId={}", sessionId, memberId);
             } catch (RefreshTokenExpiredException e) {
-                log.error("Refresh Token이 만료되었습니다: {}", e.getMessage());
                 throw e;
             } catch (Exception e) {
-                log.error("토큰 검증 중 오류 발생: {}", e.getMessage());
                 throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            }
+        }
+
+        if (StompCommand.SEND.equals(headerAccessor.getCommand())) {
+            log.info("STOMP SEND 요청 수신");
+            List<String> authorization = headerAccessor.getNativeHeader("Authorization");
+            if (authorization == null || authorization.isEmpty()) {
+                throw new IllegalArgumentException("Authorization 헤더가 필요합니다.");
+            }
+
+            String bearerToken = authorization.get(0);
+            if (!bearerToken.startsWith("Bearer ")) {
+                throw new IllegalArgumentException("Bearer 토큰 형식이어야 합니다.");
+            }
+
+            String accessToken = bearerToken.substring(7);
+            String refreshToken = extractRefreshToken(headerAccessor);
+
+            try {
+                jwtProvider.validateTokens(new MemberTokens(accessToken, refreshToken));
+            } catch (RefreshTokenExpiredException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
+            }
+
+            String destination = headerAccessor.getDestination();
+            if ("/pub/chat/send".equals(destination)) {
+                String memberId = jwtProvider.getSubject(accessToken);
+
+                headerAccessor.setNativeHeader("memberId", memberId);
+
+                // 수정된 헤더로 새 메시지 생성
+                return MessageBuilder
+                        .createMessage(message.getPayload(), headerAccessor.getMessageHeaders());
+
             }
         }
 
@@ -112,6 +147,8 @@ public class StompHandler implements ChannelInterceptor {
         if (memberId != null) {
             eventPublisher.publishEvent(new UserConnectedEvent(memberId, sessionId));
         }
+
+        log.info("세션 시작 처리: sessionId={}, memberId={}", sessionId, memberId);
     }
 
     @EventListener
