@@ -70,4 +70,8 @@ public class ChatController {
                 chatService.getChatMessages(chatRoomId, accessor.getMemberId(), pageable)
         );
     }
+
+    // ==============================
+    // 4) REST API: 채팅방 왼쪽 메뉴 조회
+    // ==============================
 }

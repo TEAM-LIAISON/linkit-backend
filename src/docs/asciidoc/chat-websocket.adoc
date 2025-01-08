@@ -7,28 +7,33 @@
 :sectlinks:
 
 [[chat-websocket]]
-== WebSocket 연결
+== 웹소켓 연결 및 채팅
 
 === 연결 정보
+
 [cols="2,5"]
 |===
-| WebSocket URL | ws://localhost:8080/ws-stomp
+| WebSocket URL | ws://dev.liaison-dev.site/stomp/linkit/chat
 | Protocol | STOMP over WebSocket
 |===
 
 === 연결 헤더
+
 [source,http]
 ----
 Authorization: Bearer {jwt_token}
+Cookie: refreshToken=...
 ----
 
 === 채팅방 구독
+
 [source,http]
 ----
 SUBSCRIBE /sub/chat/room/{chatRoomId}
 ----
 
 ==== 구독 시 수신되는 메시지 형식
+
 [source,json]
 ----
 {
@@ -42,22 +47,24 @@ SUBSCRIBE /sub/chat/room/{chatRoomId}
 ----
 
 === 메시지 전송
+
 [source,http]
 ----
 SEND /pub/chat/message
 ----
 
 ==== 전송 메시지 형식
+
 [source,json]
 ----
 {
     "chatRoomId": "number",
-    "senderEntityId": "number",
     "content": "string"
 }
 ----
 
 === 에러 코드
+
 [cols="2,3,5"]
 |===
 | 코드 | 상태 | 설명
@@ -67,6 +74,7 @@ SEND /pub/chat/message
 |===
 
 === WebSocket 연결 예시 (JavaScript)
+
 [source,javascript]
 ----
 // WebSocket 연결
