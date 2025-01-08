@@ -13,16 +13,12 @@ public class TeamHistoryQueryAdapter {
 
     private final TeamHistoryRepository teamHistoryRepository;
 
-    public List<TeamHistory> getTeamHistories(final String teamName) {
-        return teamHistoryRepository.getTeamHistories(teamName);
+    public List<TeamHistory> getTeamHistories(final String teamCode) {
+        return teamHistoryRepository.getTeamHistories(teamCode);
     }
 
     public TeamHistory getTeamHistory(final Long teamHistoryId) {
         return teamHistoryRepository.findById(teamHistoryId)
                 .orElseThrow(() -> TeamHistoryNotFoundException.EXCEPTION);
-    }
-
-    public boolean existsByTeamId(final Long teamId) {
-        return teamHistoryRepository.existsByTeamId(teamId);
     }
 }

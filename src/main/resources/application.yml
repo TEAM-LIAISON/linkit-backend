@@ -44,7 +44,7 @@ spring:
         use_sql_comments: false
         default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 
   mvc:
     path match:
@@ -52,14 +52,15 @@ spring:
 
   batch:
     job:
-      enabled: true
+      enabled: false
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
 
     #  flyway:
     #    enabled: true
     #    baseline-on-migrate: true
     #    baseline-version: 0
+
   sql:
     init:
       mode: always
@@ -70,3 +71,7 @@ spring:
       file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
       max-file-size: 2MB # 한개 파일의 최대 사이즈 (default: 1MB)
       max-request-size: 2MB # 한개 요청의 최대 사이즈 (default: 10MB)
+#
+#logging:
+#  level:
+#    root: debug

@@ -18,7 +18,7 @@ import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.search.business.service.AnnouncementSearchService;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInform;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
@@ -77,9 +77,10 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
     @Test
     void searchAnnouncements() throws Exception {
         // given
-        AnnouncementInform announcementInform1 = AnnouncementInform.builder()
+        AnnouncementInformMenu announcementInformMenu1 = AnnouncementInformMenu.builder()
                 .teamLogoImagePath("팀 로고 이미지 경로")
-                .teamName("팀 이름")
+                .teamName("팀 이름 1")
+                .teamCode("팀 아이디 1(팀 코드)")
                 .teamScaleItem(
                         TeamScaleItem.builder()
                                 .teamScaleName("팀 규모 이름 (1인)")
@@ -113,9 +114,10 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                 )
                 .build();
 
-        AnnouncementInform announcementInform2 = AnnouncementInform.builder()
+        AnnouncementInformMenu announcementInformMenu2 = AnnouncementInformMenu.builder()
                 .teamLogoImagePath("팀 로고 이미지 경로 2")
                 .teamName("팀 이름 2")
+                .teamCode("팀 아이디 2(팀 코드)")
                 .teamScaleItem(
                         TeamScaleItem.builder()
                                 .teamScaleName("팀 규모 이름 (1인)")
@@ -149,8 +151,8 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                 )
                 .build();
 
-        List<AnnouncementInform> announcementInforms = Arrays.asList(announcementInform1, announcementInform2);
-        Page<AnnouncementInform> announcementInformPage = new PageImpl<>(announcementInforms, PageRequest.of(0, 20), announcementInforms.size());
+        List<AnnouncementInformMenu> announcementInformMenus = Arrays.asList(announcementInformMenu1, announcementInformMenu2);
+        Page<AnnouncementInformMenu> announcementInformPage = new PageImpl<>(announcementInformMenus, PageRequest.of(0, 20), announcementInformMenus.size());
 
         // when
         when(announcementSearchService.searchAnnouncementsInLogoutState(
@@ -222,6 +224,9 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름"),
+                                        fieldWithPath("result.content[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.content[].teamScaleItem.teamScaleName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 규모 이름"),

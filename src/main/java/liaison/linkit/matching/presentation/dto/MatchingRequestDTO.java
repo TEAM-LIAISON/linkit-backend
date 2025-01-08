@@ -1,5 +1,7 @@
 package liaison.linkit.matching.presentation.dto;
 
+import java.util.List;
+import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.AccessLevel;
@@ -15,17 +17,49 @@ public class MatchingRequestDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class DeleteRequestedMatchingRequest {
+        private List<Long> matchingIds;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteReceivedMatchingRequest {
+        private List<Long> matchingIds;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateReceivedMatchingReadRequest {
+        private List<Long> matchingIds;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class AddMatchingRequest {
         private SenderType senderType;                  //     PROFILE, TEAM
         private ReceiverType receiverType;              //     PROFILE, TEAM, ANNOUNCEMENT
 
-        private Long senderEmailId;
-        private Long senderTeamCode;
+        private String senderEmailId;                     //     발신자 유저 아이디
+        private String senderTeamCode;                    //     발신자 팀 아이디
 
-        private Long receiverProfileId;
-        private Long receiverTeamCode;
-        private Long receiverAnnouncementId;
+        private String receiverEmailId;                   //     수신자 유저 아이디
+        private String receiverTeamCode;                  //     수신자 팀 아이디
+        private Long receiverAnnouncementId;            //     수신자 공고 아이디
 
-        private String requestMessage;
+        private String requestMessage;                  //     매칭 요청 메시지
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateMatchingStatusTypeRequest {
+        private MatchingStatusType matchingStatusType;
     }
 }

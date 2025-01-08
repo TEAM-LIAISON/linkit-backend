@@ -78,6 +78,7 @@ public class ProfileResponseDTO {
         private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
 
         private Boolean isProfileScrap;
+        private int profileScrapCount;
 
         private String profileImagePath;
         private String memberName;
@@ -99,6 +100,7 @@ public class ProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfileTeamInform {
         private String teamName;
+        private String teamCode;
         private String teamLogoImagePath;
     }
 
@@ -131,6 +133,7 @@ public class ProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfilePositionDetail {
         private String majorPosition;
+        private String subPosition;
     }
 
     @Builder

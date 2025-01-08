@@ -2,15 +2,19 @@ package liaison.linkit.scrap.validation;
 
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.scrap.exception.announcementScrap.ForbiddenAnnouncementScrapException;
-import liaison.linkit.scrap.exception.profileScrap.ForbiddenProfileScrapException;
-import liaison.linkit.scrap.exception.profileScrap.ProfileScrapManyRequestException;
 import liaison.linkit.scrap.exception.announcementScrap.AnnouncementScrapManyRequestException;
-import liaison.linkit.scrap.exception.teamScrap.ForbiddenTeamScrapException;
+import liaison.linkit.scrap.exception.announcementScrap.MyAnnouncementBadRequestException;
+import liaison.linkit.scrap.exception.profileScrap.MyProfileBadRequestException;
+import liaison.linkit.scrap.exception.profileScrap.ProfileScrapManyRequestException;
+import liaison.linkit.scrap.exception.teamScrap.MyTeamBadRequestException;
 import liaison.linkit.scrap.exception.teamScrap.TeamScrapManyRequestException;
-import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
+import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
+import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.team.TeamQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +29,9 @@ public class ScrapValidator {
     private final ProfileScrapQueryAdapter profileScrapQueryAdapter;
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
     private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
+    private final TeamQueryAdapter teamQueryAdapter;
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
+    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
 
     // 프로필 스크랩 최대 개수 판단 메서드
     public void validateMemberMaxProfileScrap(final Long memberId) {
@@ -66,20 +73,24 @@ public class ScrapValidator {
 
     // 자신의 프로필에 대한 스크랩을 하지 못한다.
     public void validateSelfProfileScrap(final Long memberId, final String emailId) {
-        if (profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, emailId)) {
-            throw ForbiddenProfileScrapException.EXCEPTION;
+        if (memberQueryAdapter.findById(memberId).equals(memberQueryAdapter.findByEmailId(emailId))) {
+            throw MyProfileBadRequestException.EXCEPTION;
         }
     }
 
-    public void validateSelfTeamScrap(final Long memberId, final String teamName) {
-        if (teamScrapQueryAdapter.existsByMemberIdAndTeamName(memberId, teamName)) {
-            throw ForbiddenTeamScrapException.EXCEPTION;
+    // 자신이 속한 팀이라면 스크랩을 하지 못한다.
+    public void validateSelfTeamScrap(final Long memberId, final String teamCode) {
+        if (teamMemberQueryAdapter.findMembersByTeamCode(teamCode).contains(memberQueryAdapter.findById(memberId))) {
+            throw MyTeamBadRequestException.EXCEPTION;
         }
     }
 
+    // 자신이 속한 팀에서 올린 공고라면 스크랩을 하지 못한다.
     public void validateSelfTeamMemberAnnouncementScrap(final Long memberId, final Long teamMemberAnnouncementId) {
-        if (announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId)) {
-            throw ForbiddenAnnouncementScrapException.EXCEPTION;
+        final Team team = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId).getTeam();
+
+        if (teamMemberQueryAdapter.findMembersByTeamCode(team.getTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
+            throw MyAnnouncementBadRequestException.EXCEPTION;
         }
     }
 

@@ -20,12 +20,12 @@ public class TeamHistoryCustomRepositoryImpl implements TeamHistoryCustomReposit
     private EntityManager entityManager; // EntityManager 주입
 
     @Override
-    public List<TeamHistory> getTeamHistories(final String teamName) {
+    public List<TeamHistory> getTeamHistories(final String teamCode) {
         QTeamHistory qTeamHistory = QTeamHistory.teamHistory;
 
         return queryFactory
                 .selectFrom(qTeamHistory)
-                .where(qTeamHistory.team.teamName.eq(teamName))
+                .where(qTeamHistory.team.teamCode.eq(teamCode))
                 .fetch();
     }
 
@@ -57,14 +57,4 @@ public class TeamHistoryCustomRepositoryImpl implements TeamHistoryCustomReposit
         }
     }
 
-    @Override
-    public boolean existsByTeamId(final Long teamId) {
-        QTeamHistory qTeamHistory = QTeamHistory.teamHistory;
-
-        return queryFactory
-                .selectOne()
-                .from(qTeamHistory)
-                .where(qTeamHistory.team.id.eq(teamId))
-                .fetchFirst() != null;
-    }
 }

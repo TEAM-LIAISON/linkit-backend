@@ -7,7 +7,6 @@ import liaison.linkit.scrap.domain.ProfileScrap;
 import liaison.linkit.scrap.domain.QProfileScrap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -28,7 +27,6 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
 
     // 스크랩 주체 회원이 스크랩한 모든 프로필 스크랩 객체를 조회한다.
     @Override
-    @Transactional
     public void deleteByMemberId(final Long memberId) {
         QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
 
@@ -39,7 +37,6 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
     }
 
     @Override
-    @Transactional
     public void deleteByMemberIdAndEmailId(final Long memberId, final String emailId) {
 
         QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
@@ -91,6 +88,18 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
                 .fetchFirst();
 
         return count != null;
+    }
 
+    @Override
+    public int countTotalProfileScrapByEmailId(final String emailId) {
+        QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
+
+        Long count = jpaQueryFactory
+                .select(qProfileScrap.count())
+                .from(qProfileScrap)
+                .where(qProfileScrap.profile.member.emailId.eq(emailId))
+                .fetchOne();
+
+        return count != null ? count.intValue() : 0;
     }
 }

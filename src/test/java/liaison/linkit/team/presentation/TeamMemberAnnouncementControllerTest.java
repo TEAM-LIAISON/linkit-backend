@@ -77,34 +77,34 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     }
 
     // 팀원 공고 뷰어 전체 조회
-    private ResultActions performGetLoggedOutTeamMemberAnnouncementViewItems(final String teamName) throws Exception {
+    private ResultActions performGetLoggedOutTeamMemberAnnouncementViewItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/announcement/view", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/announcement/view", teamCode)
         );
     }
 
     // 팀원 공고 전체 조회
-    private ResultActions performGetTeamMemberAnnouncementItems(final String teamName) throws Exception {
+    private ResultActions performGetTeamMemberAnnouncementItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/announcement", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/announcement", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
     // 팀원 공고 단일 조회
-    private ResultActions performGetTeamMemberAnnouncementDetail(final String teamName, final Long teamMemberAnnouncementId) throws Exception {
+    private ResultActions performGetTeamMemberAnnouncementDetail(final String teamCode, final Long teamMemberAnnouncementId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/announcement/{teamMemberAnnouncementId}", teamName, teamMemberAnnouncementId)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/announcement/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
     // 팀원 공고 생성
-    private ResultActions performAddTeamMemberAnnouncement(final String teamName, final AddTeamMemberAnnouncementRequest request) throws Exception {
+    private ResultActions performAddTeamMemberAnnouncement(final String teamCode, final AddTeamMemberAnnouncementRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/announcement", teamName)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/announcement", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -114,9 +114,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     }
 
     // 팀원 공고 수정
-    private ResultActions performUpdateTeamMemberAnnouncement(final String teamName, final Long teamMemberAnnouncementId, final UpdateTeamMemberAnnouncementRequest request) throws Exception {
+    private ResultActions performUpdateTeamMemberAnnouncement(final String teamCode, final Long teamMemberAnnouncementId, final UpdateTeamMemberAnnouncementRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/announcement/{teamMemberAnnouncementId}", teamName, teamMemberAnnouncementId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/announcement/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,17 +124,17 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     }
 
     // 팀원 공고 삭제
-    private ResultActions performRemoveTeamMemberAnnouncement(final String teamName, final Long teamMemberAnnouncementId) throws Exception {
+    private ResultActions performRemoveTeamMemberAnnouncement(final String teamCode, final Long teamMemberAnnouncementId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamName}/announcement/{teamMemberAnnouncementId}", teamName, teamMemberAnnouncementId)
+                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamCode}/announcement/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
 
     // 팀원 공고 공개/비공개 여부 수정
-    private ResultActions performUpdateTeamMemberAnnouncementPublicState(final String teamName, final Long teamMemberAnnouncementId) throws Exception {
+    private ResultActions performUpdateTeamMemberAnnouncementPublicState(final String teamCode, final Long teamMemberAnnouncementId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/announcement/state/{teamMemberAnnouncementId}", teamName, teamMemberAnnouncementId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/announcement/state/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
@@ -202,8 +202,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -326,8 +326,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess").type(JsonFieldType.BOOLEAN).description("요청 성공 여부"),
@@ -409,8 +409,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamMemberAnnouncementId")
                                                 .description("팀원 공고 ID")
                                 ),
@@ -528,8 +528,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 requestFields(
                                         fieldWithPath("announcementTitle")
@@ -686,8 +686,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamMemberAnnouncementId")
                                                 .description("팀원 공고 ID")
                                 ),
@@ -840,8 +840,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamMemberAnnouncementId")
                                                 .description("팀원 공고 ID")
                                 ),
@@ -899,8 +899,8 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamMemberAnnouncementId")
                                                 .description("팀원 공고 ID")
                                 ),

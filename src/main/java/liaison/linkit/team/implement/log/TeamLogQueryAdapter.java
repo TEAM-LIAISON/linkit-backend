@@ -30,8 +30,8 @@ public class TeamLogQueryAdapter {
                 .orElseThrow(() -> TeamLogNotFoundException.EXCEPTION);
     }
 
-    public boolean existingRepresentativeTeamLogByTeam(final Long teamId) {
-        return teamLogRepository.existingRepresentativeTeamLogByTeam(teamId);
+    public boolean existsRepresentativeTeamLogByTeam(final Long teamId) {
+        return teamLogRepository.existsRepresentativeTeamLogByTeam(teamId);
     }
 
 }

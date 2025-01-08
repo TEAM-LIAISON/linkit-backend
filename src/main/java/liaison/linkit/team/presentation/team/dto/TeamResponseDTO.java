@@ -61,6 +61,8 @@ public class TeamResponseDTO {
 
         private String teamName;
 
+        private String teamCode;
+
         private String teamShortDescription;
 
         @Builder.Default
@@ -79,6 +81,15 @@ public class TeamResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class TeamInformMenus {
+        @Builder.Default
+        private List<TeamResponseDTO.TeamInformMenu> teamInformMenus = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TeamInformMenu {
 
         @Builder.Default
@@ -88,6 +99,7 @@ public class TeamResponseDTO {
         private int teamScrapCount;
 
         private String teamName;
+        private String teamCode;
         private String teamShortDescription;
         private String teamLogoImagePath;
 

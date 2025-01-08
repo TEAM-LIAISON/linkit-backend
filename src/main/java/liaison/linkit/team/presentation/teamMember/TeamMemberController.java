@@ -20,27 +20,28 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/team/{teamName}")
+@RequestMapping("/api/v1/team/{teamCode}")
 @Slf4j
 public class TeamMemberController {
 
     private final TeamMemberService teamMemberService;
 
     // 팀원 뷰어 전체 조회
+    // 수락한 팀원만 뜨도록
     @GetMapping("/members/view")
     public CommonResponse<TeamMemberViewItems> getTeamMemberViewItems(
-            @PathVariable final String teamName
+            @PathVariable final String teamCode
     ) {
-        return CommonResponse.onSuccess(teamMemberService.getTeamMemberViewItems(teamName));
+        return CommonResponse.onSuccess(teamMemberService.getTeamMemberViewItems(teamCode));
     }
 
     // 팀원 목록 조회
     @GetMapping("/members/edit")
     public CommonResponse<TeamMemberItems> getTeamMemberItems(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName
+            @PathVariable final String teamCode
     ) {
-        return CommonResponse.onSuccess(teamMemberService.getTeamMemberItems(accessor.getMemberId(), teamName));
+        return CommonResponse.onSuccess(teamMemberService.getTeamMemberItems(accessor.getMemberId(), teamCode));
     }
 
     // 뷰어 및 관리자를 선택해서 팀 구성원 추가하기
@@ -48,10 +49,10 @@ public class TeamMemberController {
     @MemberOnly
     public CommonResponse<TeamMemberResponseDTO.AddTeamMemberResponse> addTeamMember(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName,
+            @PathVariable final String teamCode,
             @RequestBody TeamMemberRequestDTO.AddTeamMemberRequest addTeamMemberRequest
     ) throws Exception {
-        return CommonResponse.onSuccess(teamMemberService.addTeamMember(accessor.getMemberId(), teamName, addTeamMemberRequest));
+        return CommonResponse.onSuccess(teamMemberService.addTeamMember(accessor.getMemberId(), teamCode, addTeamMemberRequest));
     }
 
     // 뷰어 및 관리자 변경 요청
@@ -59,11 +60,11 @@ public class TeamMemberController {
     @MemberOnly
     public CommonResponse<TeamMemberResponseDTO.UpdateTeamMemberTypeResponse> updateTeamMemberType(
             @Auth final Accessor accessor,
-            @PathVariable final String teamName,
+            @PathVariable final String teamCode,
             @PathVariable final String emailId,
             @RequestBody TeamMemberRequestDTO.UpdateTeamMemberTypeRequest updateTeamMemberTypeRequest
     ) {
-        return CommonResponse.onSuccess(teamMemberService.updateTeamMemberType(accessor.getMemberId(), teamName, emailId, updateTeamMemberTypeRequest));
+        return CommonResponse.onSuccess(teamMemberService.updateTeamMemberType(accessor.getMemberId(), teamCode, emailId, updateTeamMemberTypeRequest));
     }
 
 }

@@ -16,4 +16,6 @@ public interface ProfileScrapCustomRepository {
     boolean existsByProfileId(final Long profileId);
 
     boolean existsByMemberIdAndEmailId(final Long memberId, final String emailId);
+
+    int countTotalProfileScrapByEmailId(final String emailId);
 }

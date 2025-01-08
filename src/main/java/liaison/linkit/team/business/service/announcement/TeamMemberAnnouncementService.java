@@ -55,8 +55,8 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamName) {
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamCode) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
         return teamMemberAnnouncementMapper.toLoggedInTeamMemberAnnouncementViewItems(
                 memberId,
@@ -69,8 +69,8 @@ public class TeamMemberAnnouncementService {
     }
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedOutTeamMemberAnnouncementViewItems(final String teamName) {
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedOutTeamMemberAnnouncementViewItems(final String teamCode) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
 
         return teamMemberAnnouncementMapper.toLoggedOutTeamMemberAnnouncementViewItems(
@@ -83,8 +83,8 @@ public class TeamMemberAnnouncementService {
     }
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems getTeamMemberAnnouncementItems(final Long memberId, final String teamName) {
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems getTeamMemberAnnouncementItems(final Long memberId, final String teamCode) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
 
         // 조회한 TeamMemberAnnouncement 리스트를 TeamMemberAnnouncementItems 매핑
@@ -116,7 +116,7 @@ public class TeamMemberAnnouncementService {
     }
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail getTeamMemberAnnouncementDetailInLogoutState(final String teamName, final Long teamMemberAnnouncementId) {
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail getTeamMemberAnnouncementDetailInLogoutState(final String teamCode, final Long teamMemberAnnouncementId) {
         final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
 
         // 포지션 조회
@@ -135,7 +135,7 @@ public class TeamMemberAnnouncementService {
     }
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail getTeamMemberAnnouncementDetailInLoginState(final Long memberId, final String teamName, final Long teamMemberAnnouncementId) {
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail getTeamMemberAnnouncementDetailInLoginState(final Long memberId, final String teamCode, final Long teamMemberAnnouncementId) {
         final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
 
         // 포지션 조회
@@ -156,10 +156,10 @@ public class TeamMemberAnnouncementService {
 
     // 팀원 공고 생성 메서드
     public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse addTeamMemberAnnouncement(
-            final Long memberId, final String teamName, final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
+            final Long memberId, final String teamCode, final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
     ) {
-        log.info("memberId = {}의 팀 이름 = {}에 대한 팀원 공고 추가 요청이 서비스 계층에 발생했습니다.", memberId, teamName);
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 추가 요청이 서비스 계층에 발생했습니다.", memberId, teamCode);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementMapper.toAddTeamMemberAnnouncement(team, addTeamMemberAnnouncementRequest);
         final TeamMemberAnnouncement savedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.addTeamMemberAnnouncement(teamMemberAnnouncement);
 
@@ -192,11 +192,11 @@ public class TeamMemberAnnouncementService {
     // 팀원 공고 수정 메서드
     public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse updateTeamMemberAnnouncement(
             final Long memberId,
-            final String teamName,
+            final String teamCode,
             final Long teamMemberAnnouncementId,
             final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
     ) {
-        log.info("memberId = {}의 팀 이름 = {}의 팀원 공고 ID = {}에 대한 업데이트 요청이 서비스 계층에 발생했습니다.", memberId, teamName, teamMemberAnnouncementId);
+        log.info("memberId = {}의 teamCode = {}의 팀원 공고 ID = {}에 대한 업데이트 요청이 서비스 계층에 발생했습니다.", memberId, teamCode, teamMemberAnnouncementId);
 
         // 1. 기존 팀원 공고 조회
         final TeamMemberAnnouncement existingTeamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
@@ -240,7 +240,7 @@ public class TeamMemberAnnouncementService {
         );
     }
 
-    public TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse removeTeamMemberAnnouncement(final Long memberId, final String teamName, final Long teamMemberAnnouncementId) {
+    public TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse removeTeamMemberAnnouncement(final Long memberId, final String teamCode, final Long teamMemberAnnouncementId) {
         final TeamMemberAnnouncement existingTeamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
 
         // 기존 포지션 삭제
@@ -260,7 +260,7 @@ public class TeamMemberAnnouncementService {
 
     public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse updateTeamMemberAnnouncementPublicState(
             final Long memberId,
-            final String teamName,
+            final String teamCode,
             final Long teamMemberAnnouncementId
     ) {
         final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);

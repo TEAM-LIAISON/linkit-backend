@@ -1,6 +1,6 @@
 package liaison.linkit.matching.domain.type;
 
-public enum SuccessReceiverDeleteStatusType {
+public enum ReceiverDeleteStatus {
     DELETED,
-    REMAINED
+    REMAINING
 }

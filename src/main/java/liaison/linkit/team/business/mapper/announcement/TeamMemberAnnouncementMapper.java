@@ -14,7 +14,7 @@ import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInform;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
@@ -27,9 +27,10 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 @Mapper
 public class TeamMemberAnnouncementMapper {
 
-    public TeamMemberAnnouncementResponseDTO.AnnouncementInform toTeamMemberAnnouncementInform(
+    public AnnouncementInformMenu toTeamMemberAnnouncementInform(
             final String teamLogoImagePath,
             final String teamName,
+            final String teamCode,
             final TeamScaleItem teamScaleItem,
             final RegionDetail regionDetail,
             final TeamMemberAnnouncement teamMemberAnnouncement,
@@ -40,9 +41,10 @@ public class TeamMemberAnnouncementMapper {
             final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
 
-        return AnnouncementInform.builder()
+        return AnnouncementInformMenu.builder()
                 .teamLogoImagePath(teamLogoImagePath)
                 .teamName(teamName)
+                .teamCode(teamCode)
                 .teamScaleItem(teamScaleItem)
                 .regionDetail(regionDetail)
                 .announcementDDay(announcementDDay)

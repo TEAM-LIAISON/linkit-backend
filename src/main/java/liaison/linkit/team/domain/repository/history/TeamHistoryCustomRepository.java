@@ -5,9 +5,7 @@ import liaison.linkit.team.domain.history.TeamHistory;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO.UpdateTeamHistoryRequest;
 
 public interface TeamHistoryCustomRepository {
-    List<TeamHistory> getTeamHistories(final String teamName);
+    List<TeamHistory> getTeamHistories(final String teamCode);
 
     TeamHistory updateTeamHistory(final Long teamHistoryId, final UpdateTeamHistoryRequest updateTeamHistoryRequest);
-
-    boolean existsByTeamId(final Long teamId);
 }

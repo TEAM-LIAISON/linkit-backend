@@ -127,15 +127,18 @@ class ProfileControllerTest extends ControllerTest {
                 .memberName("권동민")
                 .emailId("이메일 아이디")
                 .isProfilePublic(true)
+                .profileScrapCount(100)
                 .majorPosition("포지션 대분류")
                 .regionDetail(regionDetail)
                 .profileTeamInforms(Arrays.asList(
                         ProfileTeamInform.builder()
                                 .teamName("리에종")
+                                .teamCode("팀 아이디 (팀 코드)")
                                 .teamLogoImagePath("팀 로고 이미지 경로")
                                 .build(),
                         ProfileTeamInform.builder()
                                 .teamName("팀명 2")
+                                .teamCode("팀 아이디 2(팀 코드)")
                                 .teamLogoImagePath("팀 로고 이미지 경로 2")
                                 .build()
                 ))
@@ -197,6 +200,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.isProfileScrap")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로필 스크랩 여부 (자기 자신의 조회는 무조건 false)"),
+                                        fieldWithPath("result.profileInformMenu.profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 전체 개수"),
 
                                         fieldWithPath("result.profileInformMenu.profileImagePath")
                                                 .type(JsonFieldType.STRING)
@@ -226,6 +232,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 아이디"),
                                         fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로"),
@@ -297,15 +306,18 @@ class ProfileControllerTest extends ControllerTest {
                 .memberName("권동민")
                 .emailId("이메일 아이디")
                 .isProfilePublic(true)
+                .profileScrapCount(100)
                 .majorPosition("포지션 대분류")
                 .regionDetail(regionDetail)
                 .profileTeamInforms(Arrays.asList(
                         ProfileTeamInform.builder()
                                 .teamName("리에종")
+                                .teamCode("팀 아이디 (팀 코드)")
                                 .teamLogoImagePath("팀 로고 이미지 경로")
                                 .build(),
                         ProfileTeamInform.builder()
                                 .teamName("팀명 2")
+                                .teamCode("팀 아이디 2(팀 코드)")
                                 .teamLogoImagePath("팀 로고 이미지 경로 2")
                                 .build()
                 ))
@@ -453,6 +465,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.isProfileScrap")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("프로필 스크랩 유무 (로그아웃 상태 -> 무조건 false)"),
+                                        fieldWithPath("result.profileInformMenu.profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 전체 개수"),
                                         fieldWithPath("result.profileInformMenu.profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),
@@ -482,6 +497,9 @@ class ProfileControllerTest extends ControllerTest {
                                         fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 아이디 (팀 코드)"),
                                         fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로"),

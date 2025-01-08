@@ -2,10 +2,10 @@ package liaison.linkit.team.implement.team;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.team.domain.team.Team;
-import liaison.linkit.team.domain.state.TeamCurrentState;
 import liaison.linkit.team.domain.repository.currentState.TeamCurrentStateRepository;
 import liaison.linkit.team.domain.repository.team.TeamRepository;
+import liaison.linkit.team.domain.state.TeamCurrentState;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.exception.team.TeamNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,8 +28,8 @@ public class TeamQueryAdapter {
         return teamRepository.findById(teamId).orElseThrow(() -> TeamNotFoundException.EXCEPTION);
     }
 
-    public Team findByTeamName(final String teamName) {
-        return teamRepository.findByTeamName(teamName)
+    public Team findByTeamCode(final String teamCode) {
+        return teamRepository.findByTeamCode(teamCode)
                 .orElseThrow(() -> TeamNotFoundException.EXCEPTION);
     }
 

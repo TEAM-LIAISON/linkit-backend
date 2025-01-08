@@ -17,10 +17,20 @@ public class TeamMemberAnnouncementResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AnnouncementInform {
+    public static class AnnouncementInformMenus {
+        @Builder.Default
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu> announcementInformMenus = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AnnouncementInformMenu {
 
         private String teamLogoImagePath;
         private String teamName;
+        private String teamCode;
 
         @Builder.Default
         private TeamScaleItem teamScaleItem = new TeamScaleItem();
@@ -30,6 +40,7 @@ public class TeamMemberAnnouncementResponseDTO {
 
         private int announcementDDay;           // 디데이
         private String announcementTitle;       // 공고 제목
+
         private Boolean isAnnouncementScrap;    // 공고 스크랩 여부
         private int announcementScrapCount;     // 공고 스크랩 수
 

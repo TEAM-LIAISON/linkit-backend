@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface TeamCustomRepository {
-    Optional<Team> findByTeamName(final String teamName);
+    Optional<Team> findByTeamCode(final String teamCode);
 
     boolean existsByTeamCode(final String teamCode);
 

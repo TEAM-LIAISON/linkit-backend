@@ -7,6 +7,7 @@ import jakarta.persistence.PersistenceContext;
 import java.util.Collections;
 import java.util.List;
 import liaison.linkit.common.domain.QPosition;
+import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
 import liaison.linkit.profile.domain.skill.QSkill;
@@ -172,6 +173,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 .leftJoin(qAnnouncementSkill.skill, qSkill)
 
                 .where(
+                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
+                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
                         hasMajorPositions(majorPosition),
                         hasSkillNames(skillName),
                         hasCityName(cityName),
@@ -213,6 +216,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 .leftJoin(qAnnouncementSkill.skill, qSkill)
 
                 .where(
+                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
+                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
                         hasMajorPositions(majorPosition),
                         hasSkillNames(skillName),
                         hasCityName(cityName),
@@ -230,6 +235,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             return null;
         }
         QPosition qPosition = QPosition.position;
+
         return qPosition.majorPosition.in(majorPosition);
     }
 
@@ -238,6 +244,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             return null;
         }
         QSkill qSkill = QSkill.skill;
+
         return qSkill.skillName.in(skillName);
     }
 
@@ -246,6 +253,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             return null;
         }
         QRegion qRegion = QRegion.region;
+
         return qRegion.cityName.in(cityName);
     }
 
@@ -254,6 +262,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             return null;
         }
         QScale qScale = QScale.scale;
+
         return qScale.scaleName.in(scaleName);
     }
 }

@@ -94,7 +94,7 @@ public class TeamService {
     ) {
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
-
+        log.info("Creating team {}", memberId);
         if (teamQueryAdapter.existsByTeamCode(addTeamRequest.getTeamCode())) {
             throw DuplicateTeamCodeException.EXCEPTION;
         }
@@ -102,10 +102,10 @@ public class TeamService {
         // 팀 생성
         final Team team = teamMapper.toTeam(addTeamRequest);
         final Team savedTeam = teamCommandAdapter.add(team);
-
+        log.info("Saved team {}", savedTeam.getId());
         // 사용자가 새로운 이미지를 업로드
         String teamLogoImagePath = null;
-        if (!teamLogoImage.isEmpty() && imageValidator.validatingImageUpload(teamLogoImage)) {
+        if (imageValidator.validatingImageUpload(teamLogoImage)) {
             // 팀 로고 이미지 업로드
             teamLogoImagePath = s3Uploader.uploadTeamLogoImage(new ImageFile(teamLogoImage));
 
@@ -152,17 +152,17 @@ public class TeamService {
 
     public UpdateTeamResponse updateTeam(
             final Long memberId,
-            final String teamName,
+            final String teamCode,
             final MultipartFile teamLogoImage,
             final UpdateTeamRequest updateTeamRequest
     ) {
         String teamLogoImagePath = null;
 
         // 팀 조회
-        final Team team = teamQueryAdapter.findByTeamName(teamName);
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         // 팀 이름 업데이트
-        team.updateTeam(updateTeamRequest.getTeamName(), updateTeamRequest.getTeamShortDescription(), updateTeamRequest.getIsTeamPublic());
+        team.updateTeam(updateTeamRequest.getTeamName(), updateTeamRequest.getTeamCode(), updateTeamRequest.getTeamShortDescription(), updateTeamRequest.getIsTeamPublic());
 
         // 팀 로고 이미지 처리
         if (teamLogoImage != null && !teamLogoImage.isEmpty()) {
@@ -223,8 +223,8 @@ public class TeamService {
     }
 
     // 로그인한 사용자가 팀을 상세 조회한 케이스
-    public TeamResponseDTO.TeamDetail getLoggedInTeamDetail(final Long memberId, final String teamName) {
-        final Team targetTeam = teamQueryAdapter.findByTeamName(teamName);
+    public TeamResponseDTO.TeamDetail getLoggedInTeamDetail(final Long memberId, final String teamCode) {
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
         // 6. 멤버 여부 확인
         boolean isMyTeam = teamMemberQueryAdapter.isMemberOfTeam(targetTeam.getId(), memberId);
@@ -246,8 +246,8 @@ public class TeamService {
         }
         log.info("팀 지역 정보 조회 성공");
 
-        final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamName(memberId, teamName);
-        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamName(teamName);
+        final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, teamCode);
+        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(teamCode);
 
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
@@ -255,8 +255,8 @@ public class TeamService {
     }
 
     // 로그인하지 않은 사용자가 팀을 상세 조회한 케이스
-    public TeamResponseDTO.TeamDetail getLoggedOutTeamDetail(final String teamName) {
-        final Team targetTeam = teamQueryAdapter.findByTeamName(teamName);
+    public TeamResponseDTO.TeamDetail getLoggedOutTeamDetail(final String teamCode) {
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
         final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
         final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
@@ -274,7 +274,7 @@ public class TeamService {
             regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
         }
         log.info("팀 지역 정보 조회 성공");
-        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamName(teamName);
+        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(teamCode);
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
         return teamMapper.toTeamDetail(false, teamInformMenu);

@@ -23,7 +23,7 @@ import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.Profil
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.scrap.business.mapper.ProfileScrapMapper;
 import liaison.linkit.scrap.domain.ProfileScrap;
-import liaison.linkit.scrap.exception.profileScrap.BadRequestProfileScrapException;
+import liaison.linkit.scrap.exception.profileScrap.ProfileScrapBadRequestException;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapCommandAdapter;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapRequestDTO.UpdateProfileScrapRequest;
@@ -115,12 +115,23 @@ public class ProfileScrapService {
             log.info("대분류 포지션 정보 조회 성공");
 
             List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
-            if (teamMemberQueryAdapter.existsTeamByMemberId(memberId)) {
+            if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
                 final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(memberId);
                 profileTeamInforms = teamMemberMapper.toProfileTeamInforms(myTeams);
                 log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
             }
-            final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+
+            final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
+
+            final ProfileInformMenu profileInformMenu = profileMapper.toProfileInformMenu(
+                    profileCurrentStateItems,
+                    isProfileScrap,
+                    profileScrapCount,
+                    profile,
+                    profilePositionDetail,
+                    regionDetail,
+                    profileTeamInforms
+            );
             profileInformMenus.add(profileInformMenu);
         }
 
@@ -128,23 +139,23 @@ public class ProfileScrapService {
     }
 
     // 스크랩이 존재하는 경우 처리 메서드
-    private void handleExistingScrap(Long memberId, String emailId, boolean shouldAddScrap) {
+    private void handleExistingScrap(final Long memberId, final String emailId, final boolean shouldAddScrap) {
         if (!shouldAddScrap) {
             profileScrapCommandAdapter.deleteByMemberIdAndEmailId(memberId, emailId);
         } else {
-            throw BadRequestProfileScrapException.EXCEPTION;
+            throw ProfileScrapBadRequestException.EXCEPTION;
         }
     }
 
     // 스크랩이 존재하지 않는 경우 처리 메서드
-    private void handleNonExistingScrap(Long memberId, String emailId, boolean shouldAddScrap) {
+    private void handleNonExistingScrap(final Long memberId, final String emailId, final boolean shouldAddScrap) {
         if (shouldAddScrap) {
-            Member member = memberQueryAdapter.findById(memberId);
-            Profile profile = profileQueryAdapter.findByEmailId(emailId);
-            ProfileScrap profileScrap = new ProfileScrap(null, member, profile);
+            final Member member = memberQueryAdapter.findById(memberId);
+            final Profile profile = profileQueryAdapter.findByEmailId(emailId);
+            final ProfileScrap profileScrap = new ProfileScrap(null, member, profile);
             profileScrapCommandAdapter.addProfileScrap(profileScrap);
         } else {
-            throw BadRequestProfileScrapException.EXCEPTION;
+            throw ProfileScrapBadRequestException.EXCEPTION;
         }
     }
 

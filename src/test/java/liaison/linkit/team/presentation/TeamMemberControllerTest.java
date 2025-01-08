@@ -24,7 +24,7 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.team.business.service.teamMember.TeamMemberService;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.team.presentation.teamMember.TeamMemberController;
@@ -38,7 +38,6 @@ import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.Pen
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
-import liaison.linkit.team.business.service.teamMember.TeamMemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,23 +72,23 @@ public class TeamMemberControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
-    private ResultActions performGetTeamMemberViewItems(final String teamName) throws Exception {
+    private ResultActions performGetTeamMemberViewItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/view", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/members/view", teamCode)
         );
     }
 
-    private ResultActions performGetTeamMemberEditItems(final String teamName) throws Exception {
+    private ResultActions performGetTeamMemberEditItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/members/edit", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/members/edit", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performPostTeamMember(final String teamName, final AddTeamMemberRequest request) throws Exception {
+    private ResultActions performPostTeamMember(final String teamCode, final AddTeamMemberRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/member", teamName)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/member", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -97,9 +96,9 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performUpdateTeamMemberType(final String teamName, final String emailId, final UpdateTeamMemberTypeRequest request) throws Exception {
+    private ResultActions performUpdateTeamMemberType(final String teamCode, final String emailId, final UpdateTeamMemberTypeRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamName}/member/type/{emailId}", teamName, emailId)
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/member/type/{emailId}", teamCode, emailId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,60 +112,39 @@ public class TeamMemberControllerTest extends ControllerTest {
         // given
         final TeamMemberViewItems teamMemberViewItems = TeamMemberViewItems
                 .builder()
-                .profileInformMenus(
+                .acceptedTeamMemberItems(
                         Arrays.asList(
-                                TeamMemberResponseDTO.ProfileInformMenu
-                                        .builder()
-                                        .profileCurrentStates(
-                                                Arrays.asList(
-                                                        ProfileCurrentStateItem
-                                                                .builder()
-                                                                .profileStateName("팀원 찾는 중")
-                                                                .build(),
-                                                        ProfileCurrentStateItem
-                                                                .builder()
-                                                                .profileStateName("대회 준비 중")
-                                                                .build()
-                                                )
-                                        )
+                                AcceptedTeamMemberItem.builder()
+                                        .emailId("회원 유저 아이디")
                                         .profileImagePath("프로필 이미지 경로")
                                         .memberName("회원 이름")
-                                        .isProfilePublic(true)
                                         .majorPosition("포지션 대분류")
                                         .regionDetail(
                                                 RegionDetail.builder()
-                                                        .cityName("활동지역 시/도")
-                                                        .divisionName("활동지역 시/군/구")
+                                                        .cityName("지역 시/도")
+                                                        .divisionName("지역 시/군/구")
                                                         .build()
                                         )
+                                        .teamMemberType(TeamMemberType.TEAM_OWNER)
+                                        .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build(),
-                                TeamMemberResponseDTO.ProfileInformMenu
-                                        .builder()
-                                        .profileCurrentStates(
-                                                Arrays.asList(
-                                                        ProfileCurrentStateItem
-                                                                .builder()
-                                                                .profileStateName("팀원 찾는 중")
-                                                                .build(),
-                                                        ProfileCurrentStateItem
-                                                                .builder()
-                                                                .profileStateName("대회 준비 중")
-                                                                .build()
-                                                )
-                                        )
-                                        .profileImagePath("프로필 이미지 경로 2")
-                                        .memberName("회원 이름 2")
-                                        .isProfilePublic(true)
+                                AcceptedTeamMemberItem.builder()
+                                        .emailId("회원 유저 아이디")
+                                        .profileImagePath("프로필 이미지 경로2")
+                                        .memberName("회원 이름")
                                         .majorPosition("포지션 대분류")
                                         .regionDetail(
                                                 RegionDetail.builder()
-                                                        .cityName("활동지역 시/도")
-                                                        .divisionName("활동지역 시/군/구")
+                                                        .cityName("지역 시/도")
+                                                        .divisionName("지역 시/군/구")
                                                         .build()
                                         )
+                                        .teamMemberType(TeamMemberType.TEAM_VIEWER)
+                                        .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build()
                         )
-                ).build();
+                )
+                .build();
 
         // when
         when(teamMemberService.getTeamMemberViewItems(any())).thenReturn(teamMemberViewItems);
@@ -182,8 +160,8 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -199,18 +177,25 @@ public class TeamMemberControllerTest extends ControllerTest {
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("result").type(JsonFieldType.OBJECT).description("결과 데이터"),
-                                        fieldWithPath("result.profileInformMenus").type(JsonFieldType.ARRAY).description("프로필 정보 목록"),
-                                        fieldWithPath("result.profileInformMenus[].profileCurrentStates").type(JsonFieldType.ARRAY).description("프로필 상태 목록"),
-                                        fieldWithPath("result.profileInformMenus[].profileCurrentStates[].profileStateName").type(JsonFieldType.STRING).description("프로필 상태 이름"),
-                                        fieldWithPath("result.profileInformMenus[].profileImagePath").type(JsonFieldType.STRING).description("프로필 이미지 경로"),
-                                        fieldWithPath("result.profileInformMenus[].memberName").type(JsonFieldType.STRING).description("회원 이름"),
-                                        fieldWithPath("result.profileInformMenus[].isProfilePublic").type(JsonFieldType.BOOLEAN).description("프로필 공개 여부"),
-                                        fieldWithPath("result.profileInformMenus[].majorPosition").type(JsonFieldType.STRING).description("포지션 대분류"),
-                                        fieldWithPath("result.profileInformMenus[].regionDetail").type(JsonFieldType.OBJECT).description("지역 상세 정보"),
-                                        fieldWithPath("result.profileInformMenus[].regionDetail.cityName").type(JsonFieldType.STRING).description("활동지역 시/도"),
-                                        fieldWithPath("result.profileInformMenus[].regionDetail.divisionName").type(JsonFieldType.STRING).description("활동지역 시/군/구")
+                                        fieldWithPath("result.acceptedTeamMemberItems").type(JsonFieldType.ARRAY).description("수락된 팀 멤버 목록"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].emailId").type(JsonFieldType.STRING).description("회원의 유저 아이디"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].profileImagePath").type(JsonFieldType.STRING).description("프로필 이미지 경로"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].memberName").type(JsonFieldType.STRING).description("회원 이름"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].majorPosition").type(JsonFieldType.STRING).description("포지션 대분류"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("지역 정보"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("지역 정보 시/도"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("지역 정보 시/군/구"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].teamMemberType").type(JsonFieldType.STRING).description("팀 멤버 유형 (예: TEAM_OWNER, TEAM_VIEWER)"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].teamMemberInviteState").type(JsonFieldType.STRING).description("팀 멤버 초대 상태 (예: ACCEPTED)")
                                 )
-                        )).andReturn();
+                        )
+                ).andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamMemberViewItems> actual = objectMapper.readValue(
@@ -232,16 +217,30 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .acceptedTeamMemberItems(
                         Arrays.asList(
                                 AcceptedTeamMemberItem.builder()
+                                        .emailId("회원 유저 아이디 1")
                                         .profileImagePath("프로필 이미지 경로 1")
                                         .memberName("회원 이름 1")
                                         .majorPosition("포지션 대분류 1")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("지역 시/도")
+                                                        .divisionName("지역 시/군/구")
+                                                        .build()
+                                        )
                                         .teamMemberType(TeamMemberType.TEAM_MANAGER)
                                         .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build(),
                                 AcceptedTeamMemberItem.builder()
+                                        .emailId("회원 유저 아이디 2")
                                         .profileImagePath("프로필 이미지 경로 2")
                                         .memberName("회원 이름 2")
                                         .majorPosition("포지션 대분류 2")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("지역 시/도")
+                                                        .divisionName("지역 시/군/구")
+                                                        .build()
+                                        )
                                         .teamMemberType(TeamMemberType.TEAM_VIEWER)
                                         .teamMemberInviteState(TeamMemberInviteState.ACCEPTED)
                                         .build()
@@ -277,8 +276,8 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -299,6 +298,9 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.acceptedTeamMemberItems")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("초대 수락 완료된 팀 멤버 목록"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원의 유저 아이디"),
                                         fieldWithPath("result.acceptedTeamMemberItems[].profileImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("프로필 이미지 경로"),
@@ -308,6 +310,17 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.acceptedTeamMemberItems[].majorPosition")
                                                 .type(JsonFieldType.STRING)
                                                 .description("포지션 대분류"),
+
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("지역 정보"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("지역 정보 시/도"),
+                                        fieldWithPath("result.acceptedTeamMemberItems[].regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING) // 수정: divisionName은 STRING 타입임
+                                                .description("지역 정보 시/군/구"), // 수정된 설명
+
                                         fieldWithPath("result.acceptedTeamMemberItems[].teamMemberType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 멤버 타입 (예: TEAM_MANAGER, TEAM_VIEWER 등)"),
@@ -347,7 +360,7 @@ public class TeamMemberControllerTest extends ControllerTest {
         // given
         final TeamMemberResponseDTO.AddTeamMemberResponse addTeamMemberResponse =
                 AddTeamMemberResponse.builder()
-                        .teamName("팀 이름")
+                        .teamCode("팀 아이디 (팀 코드)")
                         .invitedTeamMemberEmail("liaison@liaison.liaison")
                         .build();
 
@@ -370,8 +383,8 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 requestFields(
                                         fieldWithPath("teamMemberInvitationEmail")
@@ -400,9 +413,9 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.invitedTeamMemberEmail")
                                                 .type(JsonFieldType.STRING)
                                                 .description("초대된 팀원 이메일"),
-                                        fieldWithPath("result.teamName")
+                                        fieldWithPath("result.teamCode")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 이름")
+                                                .description("팀 아이디 (팀 코드)")
                                 )
                         )).andReturn();
 
@@ -445,8 +458,8 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("emailId")
                                                 .description("팀원의 이메일 ID")
                                 ),

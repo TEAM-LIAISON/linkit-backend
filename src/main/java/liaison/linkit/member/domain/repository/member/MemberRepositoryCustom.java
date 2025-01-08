@@ -7,9 +7,13 @@ import java.util.Optional;
 public interface MemberRepositoryCustom {
     Optional<Member> findBySocialLoginId(final String socialLoginId);
 
+    Optional<Member> findByEmailId(final String emailId);
+
     Optional<Member> updateEmailId(final Long memberId, final String emailId);
 
     boolean existsByEmail(final String email);
+
+    boolean existsByEmailId(final String emailId);
 
     void deleteByMemberId(final Long memberId);
 

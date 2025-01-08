@@ -33,22 +33,21 @@ public class S3Uploader {
     @Value("${cloud.aws.s3.cloud-front-image-domain}")
     private String cloudFrontImageDomain;
 
-    @Value("${cloud.aws.s3.cloud-front-file-domain}")
-    private String cloudFrontFileDomain;
+    private static final String IMAGE_PROFILE_MAIN_FOLDER = "image/profile/main/";
+    private static final String IMAGE_PROFILE_LOG_FOLDER = "image/profile/log/";
 
-    private static final String PROFILE_MAIN_FOLDER = "profile/main/";
-    private static final String PROFILE_LOG_FOLDER = "profile/log/";
-    private static final String PROFILE_ACTIVITY_FOLDER = "profile/activity/";
-    private static final String PROFILE_PORTFOLIO_MAIN_FOLDER = "profile/portfolio/main/";
-    private static final String PROFILE_PORTFOLIO_SUB_FOLDER = "profile/portfolio/sub/";
-    private static final String PROFILE_EDUCATION_FOLDER = "/profile/education/";
-    private static final String PROFILE_AWARDS_FOLDER = "/profile/awards/";
-    private static final String PROFILE_LICENSE_FOLDER = "/profile/license/";
+    private static final String IMAGE_PROFILE_PORTFOLIO_MAIN_FOLDER = "image/profile/portfolio/main/";
+    private static final String IMAGE_PROFILE_PORTFOLIO_SUB_FOLDER = "image/profile/portfolio/sub/";
 
-    private static final String TEAM_MAIN_FOLDER = "team/main/";
-    private static final String TEAM_LOG_FOLDER = "team/log/";
-    private static final String TEAM_PRODUCT_MAIN_FOLDER = "team/product/main/";
-    private static final String TEAM_PRODUCT_SUB_FOLDER = "team/product/sub/";
+    private static final String FILE_PROFILE_ACTIVITY_FOLDER = "image/profile/activity/";
+    private static final String FILE_PROFILE_EDUCATION_FOLDER = "file/profile/education/";
+    private static final String FILE_PROFILE_AWARDS_FOLDER = "file/profile/awards/";
+    private static final String FILE_PROFILE_LICENSE_FOLDER = "file/profile/license/";
+
+    private static final String IMAGE_TEAM_MAIN_FOLDER = "image/team/main/";
+    private static final String IMAGE_TEAM_LOG_FOLDER = "image/team/log/";
+    private static final String IMAGE_TEAM_PRODUCT_MAIN_FOLDER = "image/team/product/main/";
+    private static final String IMAGE_TEAM_PRODUCT_SUB_FOLDER = "image/team/product/sub/";
 
     /**
      * 이미지 삭제
@@ -90,35 +89,35 @@ public class S3Uploader {
      * 프로필 일반 이미지 업로드
      */
     public String uploadProfileMainImage(final ImageFile imageFile) {
-        return uploadImage(imageFile, PROFILE_MAIN_FOLDER);
+        return uploadImage(imageFile, IMAGE_PROFILE_MAIN_FOLDER);
     }
 
     /**
      * 프로필 로그 이미지 업로드
      */
     public String uploadProfileLogBodyImage(final ImageFile imageFile) {
-        return uploadImage(imageFile, PROFILE_LOG_FOLDER);
+        return uploadImage(imageFile, IMAGE_PROFILE_LOG_FOLDER);
     }
 
     /**
      * 프로필 프로젝트 대표 이미지 업로드
      */
     public String uploadProfileProjectRepresentImage(final ImageFile imageFile) {
-        return uploadImage(imageFile, PROFILE_PORTFOLIO_MAIN_FOLDER);
+        return uploadImage(imageFile, IMAGE_PROFILE_PORTFOLIO_MAIN_FOLDER);
     }
 
     /**
      * 프로필 프로젝트 서브 이미지 업로드
      */
     public String uploadProfileProjectSubImage(final ImageFile imageFile) {
-        return uploadImage(imageFile, PROFILE_PORTFOLIO_SUB_FOLDER);
+        return uploadImage(imageFile, IMAGE_PROFILE_PORTFOLIO_SUB_FOLDER);
     }
 
     /**
      * 팀 로고 이미지 업로드
      */
     public String uploadTeamLogoImage(final ImageFile imageFile) {
-        return uploadImage(imageFile, TEAM_MAIN_FOLDER);
+        return uploadImage(imageFile, IMAGE_TEAM_MAIN_FOLDER);
     }
 
 
@@ -126,21 +125,21 @@ public class S3Uploader {
      * 팀 로그 이미지 업로드
      */
     public String uploadTeamLogBodyImage(final ImageFile imageFile) {
-        return uploadImage(imageFile, TEAM_LOG_FOLDER);
+        return uploadImage(imageFile, IMAGE_TEAM_LOG_FOLDER);
     }
 
     /**
      * 팀 프로덕트 대표 이미지 업로드
      */
     public String uploadTeamProductRepresentImage(final ImageFile imageFile) {
-        return uploadImage(imageFile, TEAM_PRODUCT_MAIN_FOLDER);
+        return uploadImage(imageFile, IMAGE_TEAM_PRODUCT_MAIN_FOLDER);
     }
 
     /**
      * 팀 프로덕트 서브 이미지 업로드
      */
     public String uploadTeamProductSubImage(final ImageFile imageFile) {
-        return uploadImage(imageFile, TEAM_PRODUCT_SUB_FOLDER);
+        return uploadImage(imageFile, IMAGE_TEAM_PRODUCT_SUB_FOLDER);
     }
 
 
@@ -148,28 +147,28 @@ public class S3Uploader {
      * 프로필 이력 증명 파일 업로드 [01]
      */
     public String uploadProfileActivityFile(final CertificationFile file) {
-        return uploadFile(file, PROFILE_ACTIVITY_FOLDER);
+        return uploadFile(file, FILE_PROFILE_ACTIVITY_FOLDER);
     }
 
     /**
      * 프로필 학력 증명 파일 업로드 [02]
      */
     public String uploadProfileEducationFile(final CertificationFile file) {
-        return uploadFile(file, PROFILE_EDUCATION_FOLDER);
+        return uploadFile(file, FILE_PROFILE_EDUCATION_FOLDER);
     }
 
     /**
      * 프로필 수상 증명 파일 업로드 [03]
      */
     public String uploadProfileAwardsFile(final CertificationFile file) {
-        return uploadFile(file, PROFILE_AWARDS_FOLDER);
+        return uploadFile(file, FILE_PROFILE_AWARDS_FOLDER);
     }
 
     /**
      * 프로필 자격증 증명 파일 업로드 [04]
      */
     public String uploadProfileLicenseFile(final CertificationFile file) {
-        return uploadFile(file, PROFILE_LICENSE_FOLDER);
+        return uploadFile(file, FILE_PROFILE_LICENSE_FOLDER);
     }
 
     /**
@@ -208,7 +207,7 @@ public class S3Uploader {
         try (final InputStream inputStream = file.getInputStream()) {
             s3Client.putObject(bucket, s3Key, inputStream, metadata);
             log.info("파일 업로드 완료 : {}", s3Key);
-            return "https://" + cloudFrontFileDomain + "/" + s3Key;
+            return "https://" + cloudFrontImageDomain + "/" + s3Key;
         } catch (AmazonServiceException e) {
             log.error("파일 업로드 실패 : {}", s3Key, e);
             throw InvalidFilePathException.EXCEPTION;

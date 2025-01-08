@@ -8,6 +8,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -21,8 +22,8 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic"); // 클라이언트로 브로드캐스트되는 경로를 "/topic"으로 설정
-        config.setApplicationDestinationPrefixes("/app"); // 클라이언트가 서버로 송신할 때 사용하는 prefix 설정
+        config.enableSimpleBroker("/sub");                       // /sub 경로로 브로드캐스트
+        config.setApplicationDestinationPrefixes("/pub");                           // /pub 경로로 서버 수신
     }
 
     /**
@@ -44,6 +45,17 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         registration.interceptors(stompHandler); // StompHandler를 인터셉터로 추가
+        registration.taskExecutor()
+                .corePoolSize(4)
+                .maxPoolSize(10)
+                .queueCapacity(50);
     }
 
+    @Override
+    public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
+        registration.setMessageSizeLimit(64 * 1024)     // 64KB
+                .setSendTimeLimit(20 * 1000)        // 20 seconds
+                .setSendBufferSizeLimit(512 * 1024) // 512KB
+                .setTimeToFirstMessage(60 * 1000);  // 60 seconds
+    }
 }

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Adapter
 @RequiredArgsConstructor
 public class TeamScrapCommandAdapter {
-    private TeamScrapRepository teamScrapRepository;
+    private final TeamScrapRepository teamScrapRepository;
 
     public TeamScrap addTeamScrap(final TeamScrap teamScrap) {
         return teamScrapRepository.save(teamScrap);
@@ -18,7 +18,7 @@ public class TeamScrapCommandAdapter {
         teamScrapRepository.delete(teamScrap);
     }
 
-    public void deleteByMemberIdAndTeamName(final Long memberId, final String teamName) {
-        teamScrapRepository.deleteByMemberIdAndTeamName(memberId, teamName);
+    public void deleteByMemberIdAndTeamCode(final Long memberId, final String teamCode) {
+        teamScrapRepository.deleteByMemberIdAndTeamCode(memberId, teamCode);
     }
 }

@@ -73,7 +73,7 @@ public class TeamSearchService {
         final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
         final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
 
-        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamName(team.getTeamName());
+        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamName());
 
         return teamMapper.toTeamInformMenu(team, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
     }

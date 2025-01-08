@@ -1364,7 +1364,7 @@ include::{snippets}/profile-scrap-controller-test/update-profile-scrap/http-resp
 include::{snippets}/profile-scrap-controller-test/update-profile-scrap/response-fields.adoc[]
 ====
 
-=== 프로필 스크랩 전체 조회
+=== 프로필 스크랩 전체 조회 (매칭 관리)
 
 ====
 *요청*
@@ -1389,6 +1389,17 @@ include::{snippets}/team-scrap-controller-test/update-team-scrap/http-response.a
 include::{snippets}/team-scrap-controller-test/update-team-scrap/response-fields.adoc[]
 ====
 
+=== 팀 스크랩 전체 조회 (매칭 관리)
+
+====
+*요청*
+include::{snippets}/team-scrap-controller-test/get-team-scraps/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-scrap-controller-test/get-team-scraps/http-response.adoc[]
+include::{snippets}/team-scrap-controller-test/get-team-scraps/response-fields.adoc[]
+====
+
 == #[스크랩 - 팀원 공고 스크랩]#
 
 === 팀원 공고 스크랩 및 스크랩 취소
@@ -1403,6 +1414,31 @@ include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap
 include::{snippets}/announcement-scrap-controller-test/update-announcement-scrap/response-fields.adoc[]
 ====
 
+=== 팀원 공고 스크랩 전체 조회 (매칭 관리)
+
+====
+*요청*
+include::{snippets}/announcement-scrap-controller-test/get-announcement-scraps/http-request.adoc[]
+
+*응답*
+include::{snippets}/announcement-scrap-controller-test/get-announcement-scraps/http-response.adoc[]
+include::{snippets}/announcement-scrap-controller-test/get-announcement-scraps/response-fields.adoc[]
+====
+
+== #[채팅]#
+
+=== 신규 채팅방 생성
+
+====
+*요청*
+include::{snippets}/chat-controller-test/create-chat-room/http-request.adoc[]
+include::{snippets}/chat-controller-test/create-chat-room/request-fields.adoc[]
+
+*응답*
+include::{snippets}/chat-controller-test/create-chat-room/http-response.adoc[]
+include::{snippets}/chat-controller-test/create-chat-room/response-fields.adoc[]
+====
+
 == #[알림]#
 
 === 알림 목록 전체 조회 (상단바)
@@ -1414,4 +1450,140 @@ include::{snippets}/notification-controller-test/get-notification-items/http-req
 *응답*
 include::{snippets}/notification-controller-test/get-notification-items/http-response.adoc[]
 include::{snippets}/notification-controller-test/get-notification-items/response-fields.adoc[]
+====
+
+== #[매칭 관리]#
+
+=== 매칭 요청 보내기
+
+====
+*요청*
+include::{snippets}/matching-controller-test/add-matching/http-request.adoc[]
+include::{snippets}/matching-controller-test/add-matching/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/add-matching/http-response.adoc[]
+include::{snippets}/matching-controller-test/add-matching/response-fields.adoc[]
+====
+
+=== 매칭 요청 수락/거절하기
+
+====
+*요청*
+include::{snippets}/matching-controller-test/update-matching-status-type-response/http-request.adoc[]
+include::{snippets}/matching-controller-test/update-matching-status-type-response/path-parameters.adoc[]
+include::{snippets}/matching-controller-test/update-matching-status-type-response/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/update-matching-status-type-response/http-response.adoc[]
+include::{snippets}/matching-controller-test/update-matching-status-type-response/response-fields.adoc[]
+====
+
+=== 프로필 뷰어에서 매칭 요청 시 모달 정보 (피그마 - 팀원 매칭 정보 01, 02, 03)
+
+====
+*요청*
+include::{snippets}/matching-controller-test/get-select-matching-request-to-profile-menu/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-select-matching-request-to-profile-menu/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/get-select-matching-request-to-profile-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-select-matching-request-to-profile-menu/response-fields.adoc[]
+====
+
+=== 팀 뷰어에서 매칭 요청 시 모달 정보 (피그마 - 팀원 매칭 정보 01, 02, 03)
+
+====
+*요청*
+include::{snippets}/matching-controller-test/get-select-matching-request-to-team-menu/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-select-matching-request-to-team-menu/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/get-select-matching-request-to-team-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-select-matching-request-to-team-menu/http-response.adoc[]
+====
+
+=== 매칭 관리 상단 메뉴 알림 조회
+
+====
+*요청*
+include::{snippets}/matching-controller-test/get-matching-notification-menu/http-request.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/get-matching-notification-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-matching-notification-menu/response-fields.adoc[]
+
+====
+
+=== 매칭 관리 수신함 조회 (필터링 포함)
+
+====
+*요청*
+include::{snippets}/matching-controller-test/get-received-matching-menu/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching-menu/query-parameters.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/get-received-matching-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-received-matching-menu/response-fields.adoc[]
+
+====
+
+=== 매칭 관리 발신함 조회 (필터링 포함)
+
+====
+*요청*
+include::{snippets}/matching-controller-test/get-requested-matching-menu/http-request.adoc[]
+include::{snippets}/matching-controller-test/get-requested-matching-menu/query-parameters.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/get-requested-matching-menu/http-response.adoc[]
+include::{snippets}/matching-controller-test/get-requested-matching-menu/response-fields.adoc[]
+====
+
+=== 매칭 관리 수신함에서 요청 받은 매칭에 대해 읽음 처리
+
+====
+*요청*
+include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/http-request.adoc[]
+include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/http-response.adoc[]
+include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/response-fields.adoc[]
+====
+
+=== 매칭 관리 수신함에서 성사된 매칭에 대해 읽음 처리
+
+====
+*요청*
+include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/http-request.adoc[]
+include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/http-response.adoc[]
+include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/response-fields.adoc[]
+====
+
+=== 매칭 관리 수신함에서 매칭 삭제 처리
+
+====
+*요청*
+include::{snippets}/matching-controller-test/delete-received-matching-items/http-request.adoc[]
+include::{snippets}/matching-controller-test/delete-received-matching-items/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/delete-received-matching-items/http-response.adoc[]
+include::{snippets}/matching-controller-test/delete-received-matching-items/response-fields.adoc[]
+====
+
+=== 매칭 관리 발신함에서 매칭 삭제 처리
+
+====
+*요청*
+include::{snippets}/matching-controller-test/delete-requested-matching-items/http-request.adoc[]
+include::{snippets}/matching-controller-test/delete-requested-matching-items/request-fields.adoc[]
+
+*응답*
+include::{snippets}/matching-controller-test/delete-requested-matching-items/http-response.adoc[]
+include::{snippets}/matching-controller-test/delete-requested-matching-items/response-fields.adoc[]
 ====

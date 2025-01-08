@@ -32,6 +32,18 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     @Override
+    public Optional<Member> findByEmailId(final String emailId) {
+        QMember member = QMember.member;
+
+        Member result = jpaQueryFactory
+                .selectFrom(member)
+                .where(member.emailId.eq(emailId))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
+
+    @Override
     public Optional<Member> updateEmailId(final Long memberId, final String emailId) {
         QMember qMember = QMember.member;
 
@@ -63,6 +75,17 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .selectOne()
                 .from(member)
                 .where(member.email.eq(email))
+                .fetchFirst() != null;
+    }
+
+    @Override
+    public boolean existsByEmailId(final String emailId) {
+        QMember member = QMember.member;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(member)
+                .where(member.emailId.eq(emailId))
                 .fetchFirst() != null;
     }
 

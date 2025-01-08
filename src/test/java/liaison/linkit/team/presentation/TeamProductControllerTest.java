@@ -80,31 +80,31 @@ public class TeamProductControllerTest extends ControllerTest {
         given(jwtProvider.getSubject(any())).willReturn("1");
     }
 
-    private ResultActions performGetTeamProductViewItems(final String teamName) throws Exception {
+    private ResultActions performGetTeamProductViewItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/product/view", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/product/view", teamCode)
         );
     }
 
-    private ResultActions performGetTeamProductItems(final String teamName) throws Exception {
+    private ResultActions performGetTeamProductItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/product", teamName)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/product", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performGetTeamProductDetail(final String teamName, final Long teamProductId) throws Exception {
+    private ResultActions performGetTeamProductDetail(final String teamCode, final Long teamProductId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamName}/product/{teamProductId}", teamName, teamProductId)
+                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/product/{teamProductId}", teamCode, teamProductId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performRemoveTeamProduct(final String teamName, final Long teamProductId) throws Exception {
+    private ResultActions performRemoveTeamProduct(final String teamCode, final Long teamProductId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamName}/product/{teamProductId}", teamName, teamProductId)
+                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamCode}/product/{teamProductId}", teamCode, teamProductId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
@@ -204,8 +204,8 @@ public class TeamProductControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -362,8 +362,8 @@ public class TeamProductControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름")
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")
@@ -492,8 +492,8 @@ public class TeamProductControllerTest extends ControllerTest {
                 .andDo(
                         restDocs.document(
                                 pathParameters(
-                                        parameterWithName("teamName")
-                                                .description("팀 이름"),
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)"),
                                         parameterWithName("teamProductId")
                                                 .description("팀 프로덕트 ID")
                                 ),
@@ -671,12 +671,12 @@ public class TeamProductControllerTest extends ControllerTest {
                 )
                 .build();
 
-        final String teamName = "liaison";
+        final String teamCode = "liaison";
         // when
         when(teamProductService.addTeamProduct(anyLong(), any(), any(), any(), any())).thenReturn(addTeamProductResponse);
 
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamName}/product", teamName)
+                RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamCode}/product", teamCode)
                         .file(productRepresentImage)
                         .file(subImage1)
                         .file(subImage2)
@@ -696,8 +696,8 @@ public class TeamProductControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("teamName")
-                                        .description("팀 이름")
+                                parameterWithName("teamCode")
+                                        .description("팀 아이디 (팀 코드)")
                         ),
                         requestParts(
                                 partWithName("addTeamProductRequest")
@@ -899,13 +899,13 @@ public class TeamProductControllerTest extends ControllerTest {
                 )
                 .build();
 
-        final String teamName = "liaison";
+        final String teamCode = "liaison";
         final Long teamProductId = 1L;
         // when
         when(teamProductService.updateTeamProduct(anyLong(), any(), anyLong(), any(), any(), any())).thenReturn(updateTeamProductResponse);
 
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamName}/product/{teamProductId}", teamName, teamProductId)
+                RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamCode}/product/{teamProductId}", teamCode, teamProductId)
                         .file(productRepresentImage)
                         .file(subImage1)
                         .file(subImage2)
@@ -925,8 +925,8 @@ public class TeamProductControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("teamName")
-                                        .description("팀 이름"),
+                                parameterWithName("teamCode")
+                                        .description("팀 아이디 (팀 코드)"),
                                 parameterWithName("teamProductId")
                                         .description("팀 프로덕트 ID")
                         ),
@@ -1060,8 +1060,8 @@ public class TeamProductControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(restDocs.document(
                         pathParameters(
-                                parameterWithName("teamName")
-                                        .description("팀 이름"),
+                                parameterWithName("teamCode")
+                                        .description("팀 아이디 (팀 코드)"),
                                 parameterWithName("teamProductId")
                                         .description("팀 프로덕트 ID")
                         ),

@@ -13,7 +13,7 @@ public class TeamScrapResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateTeamScrap {
-        private String teamName;
+        private String teamCode;
         private Boolean isTeamScrap;
     }
 }

@@ -132,13 +132,10 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfile qProfile = QProfile.profile;
         QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
         QPosition qPosition = QPosition.position;
-
         QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
         QRegion qRegion = QRegion.region;
-
         QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
         QProfileState qProfileState = QProfileState.profileState;
-
         QProfileSkill qProfileSkill = QProfileSkill.profileSkill;
         QSkill qSkill = QSkill.skill;
 
@@ -170,7 +167,11 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                     // Profile과 ProfileSkill 조인
                     .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
                     .leftJoin(qProfileSkill.skill, qSkill)
+
+                    // 조건
                     .where(
+                            qProfile.isProfilePublic.eq(true),
+                            qProfile.status.eq(StatusType.USABLE),
                             hasMajorPositions(majorPosition),
                             hasSkillNames(skillName),
                             hasCityName(cityName),
@@ -178,7 +179,14 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                     )
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
-                    .orderBy(QueryDslUtil.getOrderProfileSpecifier(pageable.getSort(), qProfile, qProfilePosition, qProfileRegion, qProfileCurrentState, qProfileSkill))
+                    .orderBy(QueryDslUtil.getOrderProfileSpecifier(
+                            pageable.getSort(),
+                            qProfile,
+                            qProfilePosition,
+                            qProfileRegion,
+                            qProfileCurrentState,
+                            qProfileSkill
+                    ))
                     .fetch();
 
             // 조회된 데이터 수 로그
@@ -189,9 +197,8 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
             // 카운트 쿼리
             Long totalLong = jpaQueryFactory
-                    .select(qProfile.countDistinct())
+                    .selectDistinct(qProfile.count())
                     .from(qProfile)
-                    // 동일한 조인 설정 적용
                     .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
                     .leftJoin(qProfilePosition.position, qPosition)
                     .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
@@ -201,6 +208,8 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                     .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
                     .leftJoin(qProfileSkill.skill, qSkill)
                     .where(
+                            qProfile.isProfilePublic.eq(true),
+                            qProfile.status.eq(StatusType.USABLE),
                             hasMajorPositions(majorPosition),
                             hasSkillNames(skillName),
                             hasCityName(cityName),
@@ -212,41 +221,45 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
             return PageableExecutionUtils.getPage(content, pageable, () -> total);
         } catch (Exception e) {
-            // 예외 발생 시 에러 로그
             log.error("Error executing findAll method", e);
-            throw e; // 예외를 다시 던져 상위 계층에서 처리하도록 합니다.
+            throw e;
         }
     }
 
-    private BooleanExpression hasMajorPositions(final List<String> majorPosition) {
-        if (majorPosition == null || majorPosition.isEmpty()) {
+    private BooleanExpression hasMajorPositions(final List<String> majorPositions) {
+        if (majorPositions == null || majorPositions.isEmpty()) {
             return null;
         }
+
         QPosition qPosition = QPosition.position;
-        return qPosition.majorPosition.in(majorPosition);
+
+        return qPosition.majorPosition.in(majorPositions);
     }
 
-    private BooleanExpression hasSkillNames(List<String> skillName) {
+    private BooleanExpression hasSkillNames(final List<String> skillName) {
         if (skillName == null || skillName.isEmpty()) {
             return null;
         }
         QSkill qSkill = QSkill.skill;
+
         return qSkill.skillName.in(skillName);
     }
 
-    private BooleanExpression hasCityName(List<String> cityName) {
+    private BooleanExpression hasCityName(final List<String> cityName) {
         if (cityName == null || cityName.isEmpty()) {
             return null;
         }
         QRegion qRegion = QRegion.region;
+
         return qRegion.cityName.in(cityName);
     }
 
-    private BooleanExpression hasProfileStateNames(List<String> profileStateName) {
+    private BooleanExpression hasProfileStateNames(final List<String> profileStateName) {
         if (profileStateName == null || profileStateName.isEmpty()) {
             return null;
         }
         QProfileState qProfileState = QProfileState.profileState;
+
         return qProfileState.profileStateName.in(profileStateName);
     }
 }

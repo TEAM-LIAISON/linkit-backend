@@ -107,7 +107,9 @@ public class ProfileSearchService {
             log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
         }
 
-        return profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+        final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
+
+        return profileMapper.toProfileInformMenu(profileCurrentStateItems, isProfileScrap, profileScrapCount, profile, profilePositionDetail, regionDetail, profileTeamInforms);
     }
 
     private ProfileInformMenu toSearchProfileInformMenuInLogoutState(
@@ -141,6 +143,8 @@ public class ProfileSearchService {
             log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
         }
 
-        return profileMapper.toProfileInformMenu(profileCurrentStateItems, false, profile, profilePositionDetail, regionDetail, profileTeamInforms);
+        final int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
+        
+        return profileMapper.toProfileInformMenu(profileCurrentStateItems, false, profileScrapCount, profile, profilePositionDetail, regionDetail, profileTeamInforms);
     }
 }
