@@ -36,7 +36,7 @@ public class NotificationResponseDTO {
         private LocalDateTime modifiedAt;
 
         // 알림 타입별 상세 정보
-        private NotificationDetails details;
+        private NotificationDetails notificationDetails;
     }
 
     @Getter

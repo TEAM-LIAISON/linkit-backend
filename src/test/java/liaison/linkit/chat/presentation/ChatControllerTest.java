@@ -10,6 +10,9 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,13 +25,16 @@ import java.util.Arrays;
 import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
 import liaison.linkit.chat.domain.type.CreateChatLocation;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageHistoryResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatPartnerInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerProfileDetailInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerTeamDetailInformation;
 import liaison.linkit.chat.service.ChatService;
+import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
@@ -90,6 +96,18 @@ public class ChatControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performGetChatMessages(final Long chatRoomId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/chat/room/{chatRoomId}/messages", chatRoomId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .param("page", "0")
+                        .param("size", "50")
+                        .param("sort", "timestamp,desc")
+                        .accept(MediaType.APPLICATION_JSON)
+        );
+    }
+
     @DisplayName("회원이 수신/발신함에서 새로운 채팅방을 생성할 수 있다.")
     @Test
     void createChatRoom() throws Exception {
@@ -108,6 +126,7 @@ public class ChatControllerTest extends ControllerTest {
 
         final CreateChatRoomResponse createChatRoomResponse = CreateChatRoomResponse.builder()
                 .chatRoomId(1L)
+                .matchingId(1L)
                 .participantAId("참여자 A의 ID (Profile - emailId, Team - teamCode)")
                 .participantAType(ParticipantType.PROFILE)
                 .participantAName("참여자 A의 이름 (Profile - memberName, Team - teamName)")
@@ -178,9 +197,15 @@ public class ChatControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
+
                                         fieldWithPath("result.chatRoomId")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("생성된 채팅방 ID"),
+
+                                        fieldWithPath("result.matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("채팅방 생성의 기반 매칭 ID"),
+
                                         fieldWithPath("result.participantAId")
                                                 .type(JsonFieldType.STRING)
                                                 .description("참여자 A의 ID (Profile - emailId, Team - teamCode)"),
@@ -334,11 +359,129 @@ public class ChatControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.chatRoomId")
+                                        fieldWithPath("result.chatRoomSummaries").type(JsonFieldType.ARRAY).description("채팅방 요약 목록"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatRoomId")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("생성된 채팅방 ID")
+                                                .description("생성된 채팅방 ID"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.chatPartnerName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 상대방 이름"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.chatPartnerImageUrl")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 상대방의 프로필 이미지"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.partnerProfileDetailInformation.profilePositionDetail.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 포지션 대분류"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.partnerProfileDetailInformation.profilePositionDetail.subPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 포지션 소분류"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.partnerProfileDetailInformation.regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 지역 시/도"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.partnerProfileDetailInformation.regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 지역 시/군/구"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.partnerTeamDetailInformation.teamScaleItem.teamScaleName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 규모 (1인, 5인, ...)"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.partnerTeamDetailInformation.regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 활동 지역 시/도"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.partnerTeamDetailInformation.regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 활동 지역 시/군/구"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.lastMessage")
+                                                .type(JsonFieldType.STRING)
+                                                .description("해당 채팅방에서의 마지막 메시지"),
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.lastMessageTime")
+                                                .type(JsonFieldType.STRING)
+                                                .description("마지막 메시지 시간"),
+                                        fieldWithPath("result.chatRoomSummaries[].unreadCount")
+                                                .type(JsonFieldType.NULL)
+                                                .description("읽지 않은 메시지 수"),
+                                        fieldWithPath("result.chatRoomSummaries[].online")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("사용자 온라인 상태")
                                 )
                         )
                 ).andReturn();
     }
+
+    @DisplayName("내가 참여하고 있는 채팅방의 메시지 내역을 조회할 수 있다.")
+    @Test
+    void getChatMessages() throws Exception {
+        // given
+
+        ChatResponseDTO.ChatMessageHistoryResponse chatMessageHistoryResponse = ChatResponseDTO.ChatMessageHistoryResponse.builder()
+                .totalElements(2L)
+                .totalPages(1)
+                .hasNext(false)
+                .messages(
+                        Arrays.asList(
+                                ChatResponseDTO.ChatMessageResponse.builder()
+                                        .messageId("메시지 ID")
+                                        .chatRoomId(1L)
+                                        .messageSenderType(ParticipantType.TEAM)
+                                        .messageSenderId("emailId 또는 teamCode")
+                                        .content("첫 번째 메시지")
+                                        .timestamp(LocalDateTime.now())
+                                        .isRead(false)
+                                        .build(),
+                                ChatResponseDTO.ChatMessageResponse.builder()
+                                        .messageId("메시지 ID")
+                                        .chatRoomId(2L)
+                                        .messageSenderType(ParticipantType.PROFILE)
+                                        .messageSenderId("emailId 또는 teamCode")
+                                        .content("두 번째 메시지")
+                                        .timestamp(LocalDateTime.now())
+                                        .isRead(true)
+                                        .build()
+                        )
+                )
+                .build();
+
+        CommonResponse<ChatMessageHistoryResponse> commonResponse = CommonResponse.onSuccess(chatMessageHistoryResponse);
+
+        // when
+        when(chatService.getChatMessages(anyLong(), anyLong(), any())).thenReturn(chatMessageHistoryResponse);
+
+        // then
+        final ResultActions resultActions = performGetChatMessages(1L)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("chatRoomId")
+                                                .description("채팅방 ID")
+                                ),
+                                queryParameters(
+                                        parameterWithName("page").description("페이지 번호 (기본값: 0)"),
+                                        parameterWithName("size").description("페이지 크기 (기본값: 50)"),
+                                        parameterWithName("sort").description("정렬 기준 (예: timestamp,desc)")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess").type(JsonFieldType.BOOLEAN).description("요청 성공 여부"),
+                                        fieldWithPath("code").type(JsonFieldType.STRING).description("요청 성공 코드"),
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("요청 성공 메시지"),
+                                        fieldWithPath("result.totalElements").type(JsonFieldType.NUMBER).description("전체 메시지 수"),
+                                        fieldWithPath("result.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
+                                        fieldWithPath("result.hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부"),
+                                        fieldWithPath("result.messages").type(JsonFieldType.ARRAY).description("채팅 메시지 목록"),
+                                        fieldWithPath("result.messages[].messageId").type(JsonFieldType.STRING).description("메시지 ID"),
+                                        fieldWithPath("result.messages[].chatRoomId").type(JsonFieldType.NUMBER).description("채팅방 ID"),
+                                        fieldWithPath("result.messages[].content").type(JsonFieldType.STRING).description("메시지 내용"),
+                                        fieldWithPath("result.messages[].timestamp").type(JsonFieldType.STRING).description("메시지 전송 시간"),
+                                        fieldWithPath("result.messages[].messageSenderType").type(JsonFieldType.STRING).description("메시지 발신자 타입 (Profile / TEAM)"),
+                                        fieldWithPath("result.messages[].messageSenderId").type(JsonFieldType.STRING).description("메시지 발신자 ID"),
+                                        fieldWithPath("result.messages[].read").type(JsonFieldType.BOOLEAN).description("메시지 읽음 여부")
+                                )
+                        )
+                );
+
+        // 추가적인 검증이 필요하다면 여기서 수행
+    }
+
 }

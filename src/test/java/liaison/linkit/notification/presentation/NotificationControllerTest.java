@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -36,6 +35,8 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -63,9 +64,10 @@ public class NotificationControllerTest extends ControllerTest {
 
     private ResultActions performGetNotificationItems() throws Exception {
         return mockMvc.perform(
-                get("/api/v1/notification")
+                RestDocumentationRequestBuilders.get("/api/v1/notifications") // 실제 엔드포인트로 변경 필요
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
+                        .accept(MediaType.APPLICATION_JSON)
         );
     }
 
@@ -73,7 +75,7 @@ public class NotificationControllerTest extends ControllerTest {
     @Test
     void getNotificationItems() throws Exception {
         // given
-        final NotificationResponseDTO.NotificationItems notificationItems = NotificationItems.builder()
+        final NotificationItems notificationItems = NotificationItems.builder()
                 .notificationItems(Arrays.asList(
                         NotificationItem.builder()
                                 .id("알림 ID 1")
@@ -81,13 +83,51 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationStatus(NotificationStatus.PENDING)
                                 .createdAt(LocalDateTime.now())
                                 .modifiedAt(LocalDateTime.now())
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.builder()
+                                                .teamName("테스트 팀")
+                                                .build()
+                                )
                                 .build(),
                         NotificationItem.builder()
                                 .id("알림 ID 2")
-                                .notificationType(NotificationType.TEAM_INVITATION)
-                                .notificationStatus(NotificationStatus.PENDING)
+                                .notificationType(NotificationType.CHATTING)
+                                .notificationStatus(NotificationStatus.READ)
                                 .createdAt(LocalDateTime.now())
                                 .modifiedAt(LocalDateTime.now())
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.builder()
+                                                .senderName("보낸 사람 이름")
+                                                .receiverName("받는 사람 이름")
+                                                .lastMessage("마지막 메시지 내용")
+                                                .build()
+                                )
+                                .build(),
+                        NotificationItem.builder()
+                                .id("알림 ID 3")
+                                .notificationType(NotificationType.MATCHING)
+                                .notificationStatus(NotificationStatus.SENT)
+                                .createdAt(LocalDateTime.now())
+                                .modifiedAt(LocalDateTime.now())
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.builder()
+                                                .matchingSenderName("매칭 발신자 이름")
+                                                .matchingReceiverName("매칭 수신자 이름")
+                                                .matchingStatus("매칭 완료")
+                                                .build()
+                                )
+                                .build(),
+                        NotificationItem.builder()
+                                .id("알림 ID 4")
+                                .notificationType(NotificationType.SYSTEM)
+                                .notificationStatus(NotificationStatus.READ)
+                                .createdAt(LocalDateTime.now())
+                                .modifiedAt(LocalDateTime.now())
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.builder()
+                                                .systemMessage("시스템 메시지 내용")
+                                                .build()
+                                )
                                 .build()
                 ))
                 .build();
@@ -97,10 +137,9 @@ public class NotificationControllerTest extends ControllerTest {
 
         final ResultActions resultActions = performGetNotificationItems();
 
-        // then
         final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
                 .andExpect(jsonPath("$.code").value("1000"))
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
@@ -140,9 +179,49 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .description("알림 생성 시간"),
                                         fieldWithPath("result.notificationItems[].modifiedAt")
                                                 .type(JsonFieldType.STRING)
-                                                .description("알림 수정 시간")
+                                                .description("알림 수정 시간"),
+                                        fieldWithPath("result.notificationItems[].notificationDetails")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("알림 타입별 상세 정보"),
+                                        // TEAM_INVITATION 관련 필드
+                                        fieldWithPath("result.notificationItems[].notificationDetails.teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 이름 (팀 초대 알림인 경우)")
+                                                .optional(),
+                                        // CHATTING 관련 필드
+                                        fieldWithPath("result.notificationItems[].notificationDetails.senderName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("메시지 발신자 이름 (채팅 알림인 경우)")
+                                                .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.receiverName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("메시지 수신자 이름 (채팅 알림인 경우)")
+                                                .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.lastMessage")
+                                                .type(JsonFieldType.STRING)
+                                                .description("마지막 메시지 내용 (채팅 알림인 경우)")
+                                                .optional(),
+                                        // MATCHING 알림 관련 필드
+                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingSenderName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 발신자 이름 (매칭 알림인 경우)")
+                                                .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingReceiverName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 수신자 이름 (매칭 알림인 경우)")
+                                                .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 상태 (매칭 알림인 경우)")
+                                                .optional(),
+                                        // SYSTEM 알림 관련 필드
+                                        fieldWithPath("result.notificationItems[].notificationDetails.systemMessage")
+                                                .type(JsonFieldType.STRING)
+                                                .description("시스템 메시지 (시스템 알림인 경우)")
+                                                .optional()
                                 )
-                        )).andReturn();
+                        )
+                ).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
