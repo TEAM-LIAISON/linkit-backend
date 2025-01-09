@@ -3,7 +3,8 @@ package liaison.linkit.chat.presentation.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
+
+import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;

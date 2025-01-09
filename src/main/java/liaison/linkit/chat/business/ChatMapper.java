@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
-import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
+
+import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;

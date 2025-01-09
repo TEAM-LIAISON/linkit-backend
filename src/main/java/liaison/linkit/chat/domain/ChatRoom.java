@@ -10,7 +10,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
+import liaison.linkit.global.type.StatusType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,6 +47,8 @@ public class ChatRoom extends BaseDateTimeEntity {
     @Column(name = "participant_a_type", nullable = false)
     private ParticipantType participantAType;
 
+    private StatusType participantAStatus;
+
     // 채팅방의 두 번째 참여자 ID (Profile의 경우 emailId, Team의 경우 teamCode, TeamMemberAnnouncement의 경우 AnnouncementId)
     @Column(nullable = false)
     private String participantBId;
@@ -60,39 +64,7 @@ public class ChatRoom extends BaseDateTimeEntity {
     @Column(name = "participant_b_type", nullable = false)
     private ParticipantType participantBType;
 
-    // 채팅 참여자 유형을 정의하는 열거형
-    public enum ParticipantType {
-        PROFILE,    // 개인 프로필로 참여
-        TEAM        // 팀의 대표로 참여
-    }
-
-    /**
-     * 주어진 ID와 타입이 채팅방의 참여자인지 확인
-     *
-     * @param id   확인할 참여자 ID
-     * @param type 확인할 참여자 타입
-     * @return 채팅방 참여자이면 true, 아니면 false
-     */
-    public boolean isParticipant(Long id, ParticipantType type) {
-        return (participantAId.equals(id) && participantAType == type) ||
-                (participantBId.equals(id) && participantBType == type);
-    }
-
-    /**
-     * 채팅방 접근 권한 확인
-     *
-     * @param memberId 접근을 시도하는 회원 ID
-     * @param teamId   접근을 시도하는 팀 ID (팀으로 접근하는 경우)
-     * @return 접근 권한이 있으면 true, 없으면 false
-     */
-    public boolean canAccessChat(Long memberId, Long teamId) {
-        // Profile로 참여한 경우 해당 memberId를 가진 사용자는 직접 접근 가능
-        if (isParticipant(memberId, ParticipantType.PROFILE)) {
-            return true;
-        }
-        // Team으로 참여한 경우 해당 teamId를 가진 팀의 채팅방만 접근 가능
-        return isParticipant(teamId, ParticipantType.TEAM);
-    }
+    private StatusType participantBStatus;
 
     @Column
     private String lastMessage;

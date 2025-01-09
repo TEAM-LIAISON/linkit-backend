@@ -3,7 +3,8 @@ package liaison.linkit.chat.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
-import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
+
+import liaison.linkit.chat.domain.type.ParticipantType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
