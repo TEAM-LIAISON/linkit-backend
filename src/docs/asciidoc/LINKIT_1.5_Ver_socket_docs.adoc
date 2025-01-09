@@ -1,0 +1,78 @@
+= 실시간 채팅/알림 API 명세서
+:doctype: book
+:icons: font
+:toc: left
+:source-highlighter: highlightjs
+:sectnums:
+:sectlinks:
+
+[[notification-websocket]]
+== 웹소켓 활용 채팅 및 알림 기능
+
+=== 웹소켓 연결
+
+[cols="2,5"]
+|===
+| 웹소켓 연결 URL | ws://dev.liaison-dev.site/stomp/linkit
+| 프로토콜 | STOMP over WebSocket
+|===
+
+[source,http]
+----
+Authorization: Bearer {accessToken}
+Cookie: {refreshToken}
+----
+
+[source,json]
+----
+// 전송 예시
+{
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM2Mzk3OTE0LCJleHAiOjE3MzY0MDE1MTR9.ax6k9jeG4rTJmOP9fhebYRd50Ahmj7s9UtMegBhPEIY",
+    "Cookie": "refreshToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzYzOTc5MTQsImV4cCI6MTczNjQwMTUxNH0.oPRKUXG2GYr05WWnp-ovillY33iRBqkxT_YdJeVov3M; Path=/; Max-Age=604800; Expires=Thu, 16 Jan 2025 04:45:14 GMT; Secure; HttpOnly; SameSite=None"
+}
+----
+
+=== 채팅방 구독 연결
+
+[source,http]
+----
+Authorization: Bearer {accessToken}
+Cookie: {refreshToken}
+----
+
+==== 채팅방 구독
+
+[source,http]
+----
+SUBSCRIBE /sub/chat/{chatRoomId}
+----
+
+=== 채팅 메시지 전송
+
+[source,http]
+----
+Authorization: Bearer {accessToken}
+Cookie: {refreshToken}
+----
+
+==== 채팅 메시지 전송
+
+[source,http]
+----
+SEND /pub/chat/send/{chatRoomId}
+----
+
+=== 회원 알림 구독 연결
+
+[source,http]
+----
+Authorization: Bearer {accessToken}
+Cookie: {refreshToken}
+----
+
+==== 회원 알림 구독
+
+[source,http]
+----
+SUBSCRIBE /sub/notification/{emailId}
+----

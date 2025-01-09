@@ -22,8 +22,8 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/sub");                       // /sub 경로로 브로드캐스트
-        config.setApplicationDestinationPrefixes("/pub");                           // /pub 경로로 서버 수신
+        config.enableSimpleBroker("/sub/chat", "/sub/notification");                       // /sub 경로로 브로드캐스트
+        config.setApplicationDestinationPrefixes("/pub");                                                   // /pub 경로로 서버 수신
     }
 
     /**
@@ -31,11 +31,11 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/stomp/linkit/chat") // WebSocket 엔드포인트 정의
+        registry.addEndpoint("/stomp/linkit") // WebSocket 엔드포인트 정의
                 .setAllowedOrigins("*") // 모든 Origin에서의 요청을 허용 (CORS 설정)
                 .withSockJS(); // SockJS를 사용하여 WebSocket 지원이 제한된 환경에서도 작동 가능
 
-        registry.addEndpoint("/stomp/linkit/chat") // 동일한 엔드포인트 정의
+        registry.addEndpoint("/stomp/linkit") // 동일한 엔드포인트 정의
                 .setAllowedOriginPatterns("*"); // CORS 허용 패턴 설정
     }
 

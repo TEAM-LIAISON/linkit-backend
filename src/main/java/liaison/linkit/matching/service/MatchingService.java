@@ -45,7 +45,11 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceiv
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
+import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
+import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
 import liaison.linkit.profile.domain.position.ProfilePosition;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -102,6 +106,8 @@ public class MatchingService {
     private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
     private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
     private final AnnouncementSkillMapper announcementSkillMapper;
+
+    private final NotificationService notificationService;
 
     @Transactional(readOnly = true)
     public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long memberId, final String emailId) {
@@ -584,6 +590,20 @@ public class MatchingService {
             receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
         }
 
+        NotificationDetails notificationDetails = NotificationDetails.matching(
+                getSenderName(matching),
+                getReceiverName(matching),
+                matching.getMatchingStatusType().name()
+        );
+
+        Long receiverMemberId = getReceiverMemberId(matching);
+
+        notificationService.sendNotification(
+                receiverMemberId,
+                NotificationType.MATCHING,
+                notificationDetails
+        );
+
         return matchingMapper.toAddMatchingResponse(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
     }
 
@@ -736,5 +756,57 @@ public class MatchingService {
 
         // (C) RequestedMatchingMenu 빌드
         return matchingMapper.toMatchingRequestedMenu(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
+    }
+
+
+    // 발신자 이름 조회 헬퍼 메서드
+    private String getSenderName(Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            Member member = memberQueryAdapter.findByEmailId(matching.getSenderEmailId());
+            return member.getMemberBasicInform().getMemberName();
+        } else {
+            Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
+            return team.getTeamName();
+        }
+    }
+
+    // 수신자 이름 조회 헬퍼 메서드
+    private String getReceiverName(Matching matching) {
+        switch (matching.getReceiverType()) {
+            case PROFILE -> {
+                Member member = memberQueryAdapter.findByEmailId(matching.getSenderEmailId());
+                return member.getMemberBasicInform().getMemberName();
+            }
+            case TEAM -> {
+                Team team = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+                return team.getTeamName();
+            }
+            case ANNOUNCEMENT -> {
+                TeamMemberAnnouncement announcement = teamMemberAnnouncementQueryAdapter
+                        .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
+                return announcement.getTeam().getTeamName();
+            }
+            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+        }
+    }
+
+    // 수신자 memberId 조회 헬퍼 메서드
+    private Long getReceiverMemberId(Matching matching) {
+        switch (matching.getReceiverType()) {
+            case PROFILE -> {
+                Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+                return profile.getMember().getId();
+            }
+            case TEAM, ANNOUNCEMENT -> {
+                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
+                        ? matching.getReceiverTeamCode()
+                        : teamMemberAnnouncementQueryAdapter
+                                .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
+                                .getTeam()
+                                .getTeamCode();
+                return teamMemberQueryAdapter.findTeamOwnerByTeamCode(teamCode).getId();
+            }
+            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+        }
     }
 }

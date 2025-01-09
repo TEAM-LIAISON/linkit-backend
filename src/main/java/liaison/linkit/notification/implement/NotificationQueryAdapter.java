@@ -14,10 +14,10 @@ public class NotificationQueryAdapter {
     private final NotificationRepository notificationRepository;
 
     public Notification getNotificationByMember(final String memberId) {
-        return notificationRepository.getNotificationByMemberId(memberId);
+        return notificationRepository.getNotificationByReceiverMemberId(memberId);
     }
 
     public List<Notification> getNotificationsByMember(final String memberId) {
-        return notificationRepository.getNotificationsByMemberId(memberId);
+        return notificationRepository.getNotificationsByReceiverMemberId(memberId);
     }
 }

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.TypeAlias;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "notifications")
 @TypeAlias("Notification")
@@ -25,9 +26,13 @@ public class Notification {
     @Id
     private String id;
 
-    private String memberId;                        // 어떤 회원에게 필요한 알림인지
+    @Field("receiver_member_id")
+    private Long receiverMemberId;
 
+    @Field("notification_type")
     private NotificationType notificationType;      // 알림 타입
+
+    @Field("notification_status")
     private NotificationStatus notificationStatus;  // 알림 상태
 
     private LocalDateTime createdAt;                // 생성 시간
@@ -36,6 +41,7 @@ public class Notification {
     private InvitationDetails invitationDetails;
     private ChatDetails chatDetails;
     private MatchingDetails matchingDetails;
+    private SystemDetails systemDetails;
 
     @Data
     @Builder
@@ -61,5 +67,29 @@ public class Notification {
     public static class MatchingDetails {
         private String matchingSenderName;          // 매칭 요청 발신자 이름
         private String matchingReceiverName;        // 매칭 요청 수신자 이름
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor(access = PROTECTED)
+    @AllArgsConstructor
+    public static class SystemDetails {
+        private String systemMessage;
+    }
+
+    public void setMatchingDetails(final MatchingDetails matchingDetails) {
+        this.matchingDetails = matchingDetails;
+    }
+
+    public void setChatDetails(final ChatDetails chatDetails) {
+        this.chatDetails = chatDetails;
+    }
+
+    public void setInvitationDetails(final InvitationDetails invitationDetails) {
+        this.invitationDetails = invitationDetails;
+    }
+
+    public void setSystemDetails(final SystemDetails systemDetails) {
+        this.systemDetails = systemDetails;
     }
 }

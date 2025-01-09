@@ -48,4 +48,8 @@ public class TeamMemberQueryAdapter {
     public List<Member> findMembersByTeamCode(final String teamCode) {
         return teamMemberRepository.findMembersByTeamCode(teamCode);
     }
+
+    public Member findTeamOwnerByTeamCode(final String teamCode) {
+        return teamMemberRepository.findTeamOwnerByTeamCode(teamCode);
+    }
 }

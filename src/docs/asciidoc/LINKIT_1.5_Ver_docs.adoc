@@ -1,10 +1,10 @@
 = LINKIT API 명세서 Version 1.5
 :doctype: book
+:icons: font
 :toc: left
 :sectnums:
 :sectlinks:
 :source-highlighter: highlightjs
-:icons: font
 
 - 링킷 개발용 API 서버 도메인 네임 = https://dev.liaison-dev.site
 

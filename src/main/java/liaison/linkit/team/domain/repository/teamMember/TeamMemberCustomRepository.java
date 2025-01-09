@@ -24,4 +24,6 @@ public interface TeamMemberCustomRepository {
     TeamMember getTeamMemberByTeamCodeAndEmailId(final String teamCode, final String emailId);
 
     List<Member> findMembersByTeamCode(final String teamCode);
+
+    Member findTeamOwnerByTeamCode(final String teamCode);
 }
