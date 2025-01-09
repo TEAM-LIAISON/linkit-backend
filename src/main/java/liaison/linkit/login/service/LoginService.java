@@ -111,6 +111,7 @@ public class LoginService {
                         null, member, null, false, 0, false, false, false, false, false, false, false, false
                 ));
 
+                // 초기 알림 발생 로직 필요
                 // 팀원 초대를 받은 신규 회원인 경우 알림 데이터 추가
                 if (teamMemberInvitationQueryAdapter.existsByEmail(email)) {
                     final List<Team> invitationTeams = teamMemberInvitationQueryAdapter.getTeamsByEmail(email);

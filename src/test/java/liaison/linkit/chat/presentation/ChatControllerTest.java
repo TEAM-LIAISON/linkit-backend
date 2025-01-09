@@ -22,8 +22,8 @@ import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
 import liaison.linkit.chat.domain.type.CreateChatLocation;
+import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
@@ -480,8 +480,6 @@ public class ChatControllerTest extends ControllerTest {
                                 )
                         )
                 );
-
-        // 추가적인 검증이 필요하다면 여기서 수행
     }
 
 }

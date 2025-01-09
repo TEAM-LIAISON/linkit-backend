@@ -43,7 +43,7 @@ public class MemberBasicInformRequestDTO {
 
         @NotNull(message = "광고성 정보 수신 동의를 선택해주세요")
         private Boolean isMarketingAgree;
-        
+
     }
 
     @Builder
@@ -78,6 +78,7 @@ public class MemberBasicInformRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MailReAuthenticationRequest {
+        @NotNull(message = "변경하고자 하는 이메일을 입력해주세요")
         private String email;
     }
 
@@ -86,7 +87,11 @@ public class MemberBasicInformRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AuthCodeVerificationRequest {
+
+        @NotNull(message = "변경하고자 하는 이메일을 입력해주세요")
         private String changeRequestEmail;
+
+        @NotNull(message = "이메일로 발송된 인증코드를 입력해주세요")
         private String authCode;
     }
 }
