@@ -142,6 +142,7 @@ public class TeamMemberAnnouncementMapper {
     public TeamMemberAnnouncement toAddTeamMemberAnnouncement(final Team team, final AddTeamMemberAnnouncementRequest request) {
         return TeamMemberAnnouncement
                 .builder()
+                .id(null)
                 .team(team)
                 .announcementTitle(request.getAnnouncementTitle())
                 .announcementStartDate(request.getAnnouncementStartDate())
@@ -153,6 +154,8 @@ public class TeamMemberAnnouncementMapper {
                 .preferredQualifications(request.getPreferredQualifications())
                 .joiningProcess(request.getJoiningProcess())
                 .benefits(request.getBenefits())
+                .isAnnouncementPublic(true)
+                .isAnnouncementInProgress(true)
                 .build();
     }
 
