@@ -23,6 +23,8 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatPartnerInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerProfileDetailInformation;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerTeamDetailInformation;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -39,11 +41,16 @@ import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.region.TeamRegion;
+import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -78,6 +85,8 @@ public class ChatService {
     private final ProfilePositionMapper profilePositionMapper;
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
+    private final TeamScaleQueryAdapter teamScaleQueryAdapter;
+    private final TeamScaleMapper teamScaleMapper;
 
     /**
      * 새로운 채팅방 생성
@@ -374,62 +383,206 @@ public class ChatService {
         for (ChatRoom chatRoom : chatRooms) {
             if (chatRoom.getParticipantAMemberId().equals(memberId)) {
                 final Member chatPartnerMember = memberQueryAdapter.findById(chatRoom.getParticipantBMemberId());
-                final Profile chatPartnerProfile = chatPartnerMember.getProfile();
 
-                ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
-                if (profilePositionQueryAdapter.existsProfilePositionByProfileId(chatPartnerProfile.getId())) {
-                    final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(chatPartnerProfile.getId());
-                    profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                if (chatRoom.getParticipantBType().equals(ParticipantType.PROFILE)) {
+                    final Profile chatPartnerProfile = chatPartnerMember.getProfile();
+
+                    ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+                    if (profilePositionQueryAdapter.existsProfilePositionByProfileId(chatPartnerProfile.getId())) {
+                        final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(chatPartnerProfile.getId());
+                        profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                    }
+
+                    RegionDetail regionDetail = new RegionDetail();
+                    if (regionQueryAdapter.existsProfileRegionByProfileId((chatPartnerProfile.getId()))) {
+                        final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(chatPartnerProfile.getId());
+                        regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+                    }
+
+                    ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
+                            .chatRoomId(chatRoom.getId())
+                            .chatPartnerInformation(
+                                    ChatPartnerInformation.builder()
+                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .partnerProfileDetailInformation(
+                                                    PartnerProfileDetailInformation.builder()
+                                                            .profilePositionDetail(profilePositionDetail)
+                                                            .regionDetail(regionDetail)
+                                                            .build()
+                                            )
+                                            .build()
+                            )
+                            .build();
+
+                    chatRoomSummaries.add(chatRoomSummary);
+                } else if (chatRoom.getParticipantBType().equals(ParticipantType.TEAM)) {
+                    final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantBId());
+
+                    TeamScaleItem teamScaleItem = new TeamScaleItem();
+                    if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
+                        final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(chatPartnerTeam.getId());
+                        teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                    }
+
+                    RegionDetail regionDetail = new RegionDetail();
+                    if (regionQueryAdapter.existsTeamRegionByTeamId((chatPartnerTeam.getId()))) {
+                        final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(chatPartnerTeam.getId());
+                        regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+                    }
+
+                    ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
+                            .chatRoomId(chatRoom.getId())
+                            .chatPartnerInformation(
+                                    ChatPartnerInformation.builder()
+                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .partnerTeamDetailInformation(
+                                                    PartnerTeamDetailInformation.builder()
+                                                            .teamScaleItem(teamScaleItem)
+                                                            .regionDetail(regionDetail)
+                                                            .build()
+                                            )
+                                            .build()
+                            )
+                            .build();
+
+                    chatRoomSummaries.add(chatRoomSummary);
+                } else {
+                    final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(
+                            teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(Long.valueOf(chatRoom.getParticipantBId())).getTeam().getTeamCode());
+                    TeamScaleItem teamScaleItem = new TeamScaleItem();
+                    if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
+                        final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(chatPartnerTeam.getId());
+                        teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                    }
+
+                    RegionDetail regionDetail = new RegionDetail();
+                    if (regionQueryAdapter.existsTeamRegionByTeamId((chatPartnerTeam.getId()))) {
+                        final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(chatPartnerTeam.getId());
+                        regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+                    }
+
+                    ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
+                            .chatRoomId(chatRoom.getId())
+                            .chatPartnerInformation(
+                                    ChatPartnerInformation.builder()
+                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .partnerTeamDetailInformation(
+                                                    PartnerTeamDetailInformation.builder()
+                                                            .teamScaleItem(teamScaleItem)
+                                                            .regionDetail(regionDetail)
+                                                            .build()
+                                            )
+                                            .build()
+                            )
+                            .build();
+
+                    chatRoomSummaries.add(chatRoomSummary);
                 }
 
-                RegionDetail regionDetail = new RegionDetail();
-                if (regionQueryAdapter.existsProfileRegionByProfileId((chatPartnerProfile.getId()))) {
-                    final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(chatPartnerProfile.getId());
-                    regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
-                }
 
-                ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
-                        .chatRoomId(chatRoom.getId())
-                        .chatPartnerInformation(
-                                ChatPartnerInformation.builder()
-                                        .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                        .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
-                                        .profilePositionDetail(profilePositionDetail)
-                                        .regionDetail(regionDetail)
-                                        .build()
-                        )
-                        .build();
-
-                chatRoomSummaries.add(chatRoomSummary);
             } else {
                 final Member chatPartnerMember = memberQueryAdapter.findById(chatRoom.getParticipantAMemberId());
-                final Profile chatPartnerProfile = chatPartnerMember.getProfile();
 
-                ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
-                if (profilePositionQueryAdapter.existsProfilePositionByProfileId(chatPartnerProfile.getId())) {
-                    final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(chatPartnerProfile.getId());
-                    profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                if (chatRoom.getParticipantAType().equals(ParticipantType.PROFILE)) {
+                    final Profile chatPartnerProfile = chatPartnerMember.getProfile();
+
+                    ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+                    if (profilePositionQueryAdapter.existsProfilePositionByProfileId(chatPartnerProfile.getId())) {
+                        final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(chatPartnerProfile.getId());
+                        profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                    }
+
+                    RegionDetail regionDetail = new RegionDetail();
+                    if (regionQueryAdapter.existsProfileRegionByProfileId((chatPartnerProfile.getId()))) {
+                        final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(chatPartnerProfile.getId());
+                        regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+                    }
+
+                    ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
+                            .chatRoomId(chatRoom.getId())
+                            .chatPartnerInformation(
+                                    ChatPartnerInformation.builder()
+                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .partnerProfileDetailInformation(
+                                                    PartnerProfileDetailInformation.builder()
+                                                            .profilePositionDetail(profilePositionDetail)
+                                                            .regionDetail(regionDetail)
+                                                            .build()
+                                            )
+                                            .build()
+                            )
+                            .build();
+
+                    chatRoomSummaries.add(chatRoomSummary);
+                } else if (chatRoom.getParticipantAType().equals(ParticipantType.TEAM)) {
+                    final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantAId());
+
+                    TeamScaleItem teamScaleItem = new TeamScaleItem();
+                    if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
+                        final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(chatPartnerTeam.getId());
+                        teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                    }
+
+                    RegionDetail regionDetail = new RegionDetail();
+                    if (regionQueryAdapter.existsTeamRegionByTeamId((chatPartnerTeam.getId()))) {
+                        final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(chatPartnerTeam.getId());
+                        regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+                    }
+
+                    ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
+                            .chatRoomId(chatRoom.getId())
+                            .chatPartnerInformation(
+                                    ChatPartnerInformation.builder()
+                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .partnerTeamDetailInformation(
+                                                    PartnerTeamDetailInformation.builder()
+                                                            .teamScaleItem(teamScaleItem)
+                                                            .regionDetail(regionDetail)
+                                                            .build()
+                                            )
+                                            .build()
+                            )
+                            .build();
+
+                    chatRoomSummaries.add(chatRoomSummary);
+                } else {
+                    final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(
+                            teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(Long.valueOf(chatRoom.getParticipantAId())).getTeam().getTeamCode());
+                    TeamScaleItem teamScaleItem = new TeamScaleItem();
+                    if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
+                        final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(chatPartnerTeam.getId());
+                        teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                    }
+
+                    RegionDetail regionDetail = new RegionDetail();
+                    if (regionQueryAdapter.existsTeamRegionByTeamId((chatPartnerTeam.getId()))) {
+                        final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(chatPartnerTeam.getId());
+                        regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+                    }
+
+                    ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
+                            .chatRoomId(chatRoom.getId())
+                            .chatPartnerInformation(
+                                    ChatPartnerInformation.builder()
+                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .partnerTeamDetailInformation(
+                                                    PartnerTeamDetailInformation.builder()
+                                                            .teamScaleItem(teamScaleItem)
+                                                            .regionDetail(regionDetail)
+                                                            .build()
+                                            )
+                                            .build()
+                            )
+                            .build();
+
+                    chatRoomSummaries.add(chatRoomSummary);
                 }
-
-                RegionDetail regionDetail = new RegionDetail();
-                if (regionQueryAdapter.existsProfileRegionByProfileId((chatPartnerProfile.getId()))) {
-                    final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(chatPartnerProfile.getId());
-                    regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
-                }
-
-                ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
-                        .chatRoomId(chatRoom.getId())
-                        .chatPartnerInformation(
-                                ChatPartnerInformation.builder()
-                                        .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                        .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
-                                        .profilePositionDetail(profilePositionDetail)
-                                        .regionDetail(regionDetail)
-                                        .build()
-                        )
-                        .build();
-
-                chatRoomSummaries.add(chatRoomSummary);
             }
         }
 
