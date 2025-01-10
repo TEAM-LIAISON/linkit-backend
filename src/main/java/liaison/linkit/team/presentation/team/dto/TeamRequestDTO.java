@@ -23,6 +23,7 @@ public class TeamRequestDTO {
         @NotBlank(message = "팀 이름을 입력해주세요.")
         private String teamName;
 
+        @NotBlank(message = "팀 아이디를 입력해주세요.")
         @Pattern(
                 regexp = "^[A-Za-z][A-Za-z0-9]*$",
                 message = "팀 아이디는 영어로 시작해야 하며, 영어 대소문자와 숫자만 사용할 수 있습니다."

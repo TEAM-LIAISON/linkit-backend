@@ -49,12 +49,13 @@ public class AnnouncementSearchController {
             @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         if (accessor.isMember()) {
+            log.info("Searching announcements for member (login state)");
             Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
             Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncementsInLoginState(accessor.getMemberId(), majorPosition, skillName, cityName, scaleName, pageable);
             return CommonResponse.onSuccess(announcements);
         } else {
+            log.info("Searching announcements for member (logout state)");
             Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-            log.info("c e");
             Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncementsInLogoutState(majorPosition, skillName, cityName, scaleName, pageable);
             return CommonResponse.onSuccess(announcements);
         }

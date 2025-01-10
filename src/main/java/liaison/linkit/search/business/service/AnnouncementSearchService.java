@@ -57,6 +57,9 @@ public class AnnouncementSearchService {
             Pageable pageable
     ) {
         Page<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.findAll(majorPosition, skillName, cityName, scaleName, pageable);
+
+        log.info(announcements.toString());
+
         return announcements.map(
                 teamMemberAnnouncement -> toSearchAnnouncementInformInLoginState(memberId, teamMemberAnnouncement)
         );
@@ -131,12 +134,16 @@ public class AnnouncementSearchService {
     ) {
         final Team team = teamMemberAnnouncement.getTeam();
 
+        log.info("error 1");
+
         // 팀 규모 조회
         TeamScaleItem teamScaleItem = null;
         if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
             final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
             teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
         }
+
+        log.info("error 2");
 
         // 팀 지역 조회
         RegionDetail regionDetail = new RegionDetail();
@@ -145,6 +152,8 @@ public class AnnouncementSearchService {
             regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
         }
 
+        log.info("error 3");
+
         // 포지션 조회
         AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
         if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
@@ -152,13 +161,20 @@ public class AnnouncementSearchService {
             announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
         }
 
+        log.info("error 4");
+
         // 스킬 조회
         List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
+        log.info("error 5");
         List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-
+        log.info("error 6");
         final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+        log.info("error 7");
         final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
+        log.info("error 8");
         final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+
+        log.info("error 9");
 
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
                 team.getTeamLogoImagePath(),

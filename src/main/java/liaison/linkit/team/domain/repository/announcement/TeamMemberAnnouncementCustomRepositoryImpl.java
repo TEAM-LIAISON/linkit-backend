@@ -198,7 +198,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
         // 카운트 쿼리
         Long totalLong = jpaQueryFactory
-                .select(qTeamMemberAnnouncement.countDistinct())
+                .selectDistinct(qTeamMemberAnnouncement.count())
                 .from(qTeamMemberAnnouncement)
 
                 .leftJoin(qTeamMemberAnnouncement.team, qTeam)
@@ -226,6 +226,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 .fetchOne();
 
         long total = (totalLong == null) ? 0L : totalLong;
+
+        log.info("Fetched {} announcements from database", total);
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }

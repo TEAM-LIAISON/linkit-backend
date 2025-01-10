@@ -155,6 +155,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             List<Profile> content = jpaQueryFactory
                     .selectDistinct(qProfile)
                     .from(qProfile)
+
                     // Profile과 ProfilePosition 조인
                     .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
                     .leftJoin(qProfilePosition.position, qPosition)
@@ -199,6 +200,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             Long totalLong = jpaQueryFactory
                     .selectDistinct(qProfile.count())
                     .from(qProfile)
+
                     .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
                     .leftJoin(qProfilePosition.position, qPosition)
                     .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
