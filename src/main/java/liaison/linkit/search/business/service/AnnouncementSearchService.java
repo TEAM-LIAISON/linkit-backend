@@ -161,20 +161,12 @@ public class AnnouncementSearchService {
             announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
         }
 
-        log.info("error 4");
-
         // 스킬 조회
         List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-        log.info("error 5");
         List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-        log.info("error 6");
         final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-        log.info("error 7");
         final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
-        log.info("error 8");
         final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
-
-        log.info("error 9");
 
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
                 team.getTeamLogoImagePath(),
