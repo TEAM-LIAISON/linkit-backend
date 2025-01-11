@@ -42,6 +42,7 @@ public class TeamMemberAnnouncementMapper {
     ) {
 
         return AnnouncementInformMenu.builder()
+                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .teamLogoImagePath(teamLogoImagePath)
                 .teamName(teamName)
                 .teamCode(teamCode)

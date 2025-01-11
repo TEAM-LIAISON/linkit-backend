@@ -199,6 +199,14 @@ include::{snippets}/member-controller-test/update-consent-marketing/response-fie
 
 ====
 
+== #[홈화면]#
+
+=== 홈화면_전체 데이터 조회
+
+====
+
+====
+
 == #[프로필 - 내 프로필 조회]#
 
 === 내 프로필_프로필 상세 조회

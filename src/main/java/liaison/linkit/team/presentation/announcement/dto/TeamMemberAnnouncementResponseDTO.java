@@ -27,6 +27,7 @@ public class TeamMemberAnnouncementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementInformMenu {
+        private Long teamMemberAnnouncementId;
 
         private String teamLogoImagePath;
         private String teamName;
