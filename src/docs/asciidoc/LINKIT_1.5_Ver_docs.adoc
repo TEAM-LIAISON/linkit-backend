@@ -204,7 +204,9 @@ include::{snippets}/member-controller-test/update-consent-marketing/response-fie
 === 홈화면_전체 데이터 조회
 
 ====
+*요청*
 
+*응답*
 ====
 
 == #[프로필 - 내 프로필 조회]#

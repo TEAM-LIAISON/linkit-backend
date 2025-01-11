@@ -18,7 +18,7 @@ public class TeamMemberRequestDTO {
     public static class AddTeamMemberRequest {
 
         @NotBlank(message = "팀원 초대 이메일을 입력해주세요.")
-        private String teamMemberInvitationEmail;   // 팀원 초대 이메일
+        private String teamMemberInvitationEmail;
 
         @NotBlank(message = "팀원 초대 시 권한을 선택해주세요.")
         private TeamMemberType teamMemberType;
@@ -33,6 +33,6 @@ public class TeamMemberRequestDTO {
 
         @NotBlank(message = "변경하려고하는 팀원의 권한을 선택해주세요.")
         private TeamMemberType teamMemberType;
-        
+
     }
 }

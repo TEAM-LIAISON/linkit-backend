@@ -47,6 +47,7 @@ public class ChatRoom extends BaseDateTimeEntity {
     @Column(name = "participant_a_type", nullable = false)
     private ParticipantType participantAType;
 
+    // USABLE, DELETED
     private StatusType participantAStatus;
 
     // 채팅방의 두 번째 참여자 ID (Profile의 경우 emailId, Team의 경우 teamCode, TeamMemberAnnouncement의 경우 AnnouncementId)
