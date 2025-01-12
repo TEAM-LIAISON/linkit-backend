@@ -2,6 +2,7 @@ package liaison.linkit.matching.business;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
@@ -136,11 +137,12 @@ public class MatchingMapper {
                 .receiverTeamInformation(receiverTeamInformation)
                 .receiverAnnouncementInformation(receiverAnnouncementInformation)
                 .requestMessage(requestedMatchingItem.getRequestMessage())
+                .requestedDate(DateUtils.formatRelativeTime(requestedMatchingItem.getCreatedAt()))
                 .matchingStatusType(requestedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(requestedMatchingItem.getReceiverReadStatus())
                 .build();
     }
-
+    
     public UpdateMatchingStatusTypeResponse toUpdateMatchingStatusTypeResponse(final Matching matching, final MatchingStatusType matchingStatusType) {
         return UpdateMatchingStatusTypeResponse.builder()
                 .matchingId(matching.getId())
@@ -166,6 +168,7 @@ public class MatchingMapper {
                 .receiverTeamInformation(receiverTeamInformation)
                 .receiverAnnouncementInformation(receiverAnnouncementInformation)
                 .requestMessage(receivedMatchingItem.getRequestMessage())
+                .requestedDate(DateUtils.formatRelativeTime(receivedMatchingItem.getCreatedAt()))
                 .matchingStatusType(receivedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(receivedMatchingItem.getReceiverReadStatus())
                 .build();

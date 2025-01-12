@@ -83,6 +83,8 @@ public class MatchingResponseDTO {
 
         private String requestMessage;
 
+        private String requestedDate;
+
         private MatchingStatusType matchingStatusType;
 
         private ReceiverReadStatus receiverReadStatus;
@@ -124,6 +126,8 @@ public class MatchingResponseDTO {
         private ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
 
         private String requestMessage;
+
+        private String requestedDate;
 
         private MatchingStatusType matchingStatusType;
 
