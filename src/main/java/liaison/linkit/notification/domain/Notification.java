@@ -74,7 +74,7 @@ public class Notification {
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
     public static class SystemDetails {
-        private String systemMessage;
+        private String systemMessage;               // 시스템 메시지 발송 문구
     }
 
     public void setMatchingDetails(final MatchingDetails matchingDetails) {

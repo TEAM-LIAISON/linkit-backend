@@ -2,6 +2,7 @@ package liaison.linkit.notification.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.notification.business.NotificationMapper;
 import liaison.linkit.notification.domain.Notification;
 import liaison.linkit.notification.domain.type.NotificationStatus;
@@ -28,6 +29,7 @@ public class NotificationService {
     private final NotificationQueryAdapter notificationQueryAdapter;
     private final NotificationCommandAdapter notificationCommandAdapter;
     private final NotificationMapper notificationMapper;
+    private final MemberQueryAdapter memberQueryAdapter;
 
     public NotificationResponseDTO.NotificationItems getNotificationItems(final String memberId) {
         final List<Notification> notifications = notificationQueryAdapter.getNotificationsByMember(memberId);
@@ -35,6 +37,8 @@ public class NotificationService {
     }
 
     public void sendNotification(final Long receiverMemberId, final NotificationType notificationType, final NotificationDetails notificationDetails) {
+        final String receiverEmailId = memberQueryAdapter.findEmailIdById(receiverMemberId);
+
         Notification notification = Notification.builder()
                 .receiverMemberId(receiverMemberId)
                 .notificationType(notificationType)
@@ -75,12 +79,16 @@ public class NotificationService {
         // WebSocket을 통해 실시간 알림 전송
         NotificationResponseDTO.NotificationItem notificationItem = notificationMapper.toNotificationItem(savedNotification);
 
-        // 수신자별 구독 주소로 알림 전송 (/sub/notification/{receiverMemberId})
-        messagingTemplate.convertAndSendToUser(
-                receiverMemberId.toString(),
-                "/sub/notification",
-                notificationItem
-        );
+        if (receiverEmailId != null) {
+            // 수신자별 구독 주소로 알림 전송
+            messagingTemplate.convertAndSendToUser(
+                    receiverMemberId.toString(),
+                    String.format("/sub/notification/%s", receiverEmailId), // emailId를 동적으로 경로에 삽입
+                    notificationItem
+            );
+        } else {
+            log.warn("수신자의 emailId가 존재하지 않습니다. 알림 전송이 중단되었습니다.");
+        }
     }
 
     public void addInvitationNotificationsForTeams(final Long memberId, final List<Team> invitationTeams) {
