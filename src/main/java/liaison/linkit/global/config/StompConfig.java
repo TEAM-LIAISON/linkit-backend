@@ -32,8 +32,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/stomp/linkit") // WebSocket 엔드포인트 정의
-                .setAllowedOrigins("*") // 모든 Origin에서의 요청을 허용 (CORS 설정)
-                .withSockJS(); // SockJS를 사용하여 WebSocket 지원이 제한된 환경에서도 작동 가능
+                .setAllowedOrigins("*"); // 모든 Origin에서의 요청을 허용 (CORS 설정)
     }
 
     /**
