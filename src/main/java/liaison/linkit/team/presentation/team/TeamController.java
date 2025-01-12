@@ -11,6 +11,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamRespo
 import liaison.linkit.team.business.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -69,6 +70,14 @@ public class TeamController {
     }
 
     // 팀 삭제 요청
+    @DeleteMapping("/team/{teamCode}")
+    @MemberOnly
+    public CommonResponse<TeamResponseDTO.DeleteTeamResponse> deleteTeam(
+            @PathVariable final String teamCode,
+            @Auth final Accessor accessor
+    ) {
+        return CommonResponse.onSuccess(teamService.deleteTeam(accessor.getMemberId(), teamCode));
+    }
 
     // 팀 나가기 요청
 

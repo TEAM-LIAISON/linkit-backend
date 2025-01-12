@@ -18,4 +18,6 @@ public interface TeamCustomRepository {
             final List<String> teamStateName,
             final Pageable pageable
     );
+
+    void updateTeamToDelete(final Team team);
 }

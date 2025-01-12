@@ -52,4 +52,8 @@ public class TeamMemberQueryAdapter {
     public Member findTeamOwnerByTeamCode(final String teamCode) {
         return teamMemberRepository.findTeamOwnerByTeamCode(teamCode);
     }
+
+    public boolean existsTeamMembersByTeamCode(final String teamCode) {
+        return teamMemberRepository.existsTeamMembersByTeamCode(teamCode);
+    }
 }

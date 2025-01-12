@@ -13,4 +13,5 @@ public class TeamCommandAdapter {
     public Team add(final Team team) {
         return teamRepository.save(team);
     }
+    
 }

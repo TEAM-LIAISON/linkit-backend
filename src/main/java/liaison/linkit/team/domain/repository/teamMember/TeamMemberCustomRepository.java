@@ -26,4 +26,6 @@ public interface TeamMemberCustomRepository {
     List<Member> findMembersByTeamCode(final String teamCode);
 
     Member findTeamOwnerByTeamCode(final String teamCode);
+
+    boolean existsTeamMembersByTeamCode(final String teamCode);
 }

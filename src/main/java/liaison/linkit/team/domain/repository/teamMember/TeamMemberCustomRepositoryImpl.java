@@ -146,4 +146,18 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                         .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_OWNER)))
                 .fetchOne();
     }
+
+    @Override
+    public boolean existsTeamMembersByTeamCode(final String teamCode) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qTeamMember)
+                .where(
+                        qTeamMember.team.teamCode.eq(teamCode)
+                                .and(qTeamMember.teamMemberType.in(TeamMemberType.TEAM_OWNER, TeamMemberType.TEAM_VIEWER))
+                )
+                .fetchFirst() != null;
+    }
 }

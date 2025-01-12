@@ -1,11 +1,13 @@
 package liaison.linkit.team.business.mapper.team;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.DeleteTeamResponse;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamItems;
@@ -100,4 +102,10 @@ public class TeamMapper {
                 .build();
     }
 
+    public TeamResponseDTO.DeleteTeamResponse toDeleteTeam(final String teamCode) {
+        return DeleteTeamResponse.builder()
+                .teamCode(teamCode)
+                .deletedAt(LocalDateTime.now())
+                .build();
+    }
 }

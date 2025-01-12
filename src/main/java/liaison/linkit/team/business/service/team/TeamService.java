@@ -23,6 +23,7 @@ import liaison.linkit.team.domain.region.TeamRegion;
 import liaison.linkit.team.domain.scale.Scale;
 import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.state.TeamState;
+import liaison.linkit.team.exception.team.DeleteTeamBadRequestException;
 import liaison.linkit.team.exception.team.DuplicateTeamCodeException;
 import liaison.linkit.team.implement.team.TeamCommandAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
@@ -305,5 +306,22 @@ public class TeamService {
         }
 
         return teamMapper.toTeamItems(teamInformMenus);
+    }
+
+    public TeamResponseDTO.DeleteTeamResponse deleteTeam(final Long memberId, final String teamCode) {
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        if (!teamMemberQueryAdapter.getTeamOwnerMemberId(targetTeam).equals(memberId)) {
+            throw DeleteTeamBadRequestException.EXCEPTION;
+        }
+
+        // 오너를 제외하고 등록된 팀원이 존재하는 경우
+        if (teamMemberQueryAdapter.existsTeamMembersByTeamCode(teamCode)) {
+            // 팀원의 삭제 수락 요청이 모두 처리되어야 팀 삭제가 진행될 수 있다.
+        } else {    // 오너만 해당 팀을 소유하고 있는 경우
+            // 팀 관련 모든 정보를 삭제한다.
+        }
+
+        return teamMapper.toDeleteTeam(teamCode);
     }
 }

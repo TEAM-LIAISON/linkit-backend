@@ -6,17 +6,15 @@ import java.util.List;
 import java.util.Optional;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
-import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.region.QRegion;
-
-import liaison.linkit.team.domain.region.QTeamRegion;
-import liaison.linkit.team.domain.state.QTeamCurrentState;
-import liaison.linkit.team.domain.team.QTeam;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
+import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
+import liaison.linkit.team.domain.state.QTeamCurrentState;
 import liaison.linkit.team.domain.state.QTeamState;
+import liaison.linkit.team.domain.team.QTeam;
+import liaison.linkit.team.domain.team.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -166,5 +164,16 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeamState qTeamState = QTeamState.teamState;
 
         return qTeamState.teamStateName.in(teamStateName);
+    }
+
+    @Override
+    public void updateTeamToDelete(final Team team) {
+        QTeam qTeam = QTeam.team;
+
+        long updatedRows = jpaQueryFactory
+                .update(qTeam)
+                .set(qTeam.status, StatusType.DELETED)
+                .execute();
+
     }
 }
