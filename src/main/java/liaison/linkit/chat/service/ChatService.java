@@ -29,8 +29,10 @@ import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.util.SessionRegistry;
+import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
@@ -87,6 +89,7 @@ public class ChatService {
     private final RegionMapper regionMapper;
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
     private final TeamScaleMapper teamScaleMapper;
+    private final MatchingCommandAdapter matchingCommandAdapter;
 
     /**
      * 새로운 채팅방 생성
@@ -222,6 +225,9 @@ public class ChatService {
                 .build();
 
         ChatRoom saved = chatRoomCommandAdapter.createChatRoom(chatRoom);
+
+        final Matching matching = matchingQueryAdapter.findByMatchingId(request.getMatchingId());
+        matchingCommandAdapter.updateMatchingToCreatedRoomState(matching);
 
         return chatMapper.toCreateChatRoomResponse(saved);
     }

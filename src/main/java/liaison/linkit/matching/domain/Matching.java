@@ -84,6 +84,8 @@ public class Matching extends BaseDateTimeEntity {
     @Column(name = "receiver_read_status", length = 50)
     private ReceiverReadStatus receiverReadStatus;
 
+    private boolean isChatRoomCreated;
+
     public void setReceiverReadStatus(final ReceiverReadStatus receiverReadStatus) {
         this.receiverReadStatus = receiverReadStatus;
     }
@@ -98,5 +100,9 @@ public class Matching extends BaseDateTimeEntity {
 
     public void setMatchingStatusType(final MatchingStatusType matchingStatusType) {
         this.matchingStatusType = matchingStatusType;
+    }
+
+    public void setIsChatRoomCreated(final boolean isChatRoomCreated) {
+        this.isChatRoomCreated = isChatRoomCreated;
     }
 }

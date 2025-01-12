@@ -29,7 +29,7 @@ public class MemberController {
 
     public final MemberService memberService;
 
-    // 회원 기본 정보 수정
+    // [0.1.2] 기본 정보 01
     @PostMapping("/basic-inform")
     @MemberOnly
     public CommonResponse<MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse> updateMemberBasicInform(

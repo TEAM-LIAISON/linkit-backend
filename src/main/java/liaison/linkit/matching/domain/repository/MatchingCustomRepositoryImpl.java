@@ -295,4 +295,29 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
             throw new IllegalStateException("프로필 로그 업데이트 실패");
         }
     }
+
+    @Override
+    public void updateMatchingToCreatedRoomState(final Matching matching) {
+        QMatching qMatching = QMatching.matching;
+
+        // 상태 업데이트 실행
+        long updatedCount = jpaQueryFactory
+                .update(qMatching)
+                .set(qMatching.isChatRoomCreated, true) // 방 생성 상태로 업데이트
+                .where(qMatching.id.eq(matching.getId()))
+                .execute();
+
+        // EntityManager flush/clear를 통해 영속성 컨텍스트 동기화
+        entityManager.flush();
+        entityManager.clear();
+
+        // 상태 업데이트 성공 여부 확인 및 Matching 엔티티에도 동기화
+        if (updatedCount > 0) {
+            matching.setIsChatRoomCreated(true);
+        } else {
+            throw new IllegalStateException(
+                    "Failed to update matching status to ROOM_CREATED for Matching ID: " + matching.getId()
+            );
+        }
+    }
 }

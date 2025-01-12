@@ -1,5 +1,6 @@
 package liaison.linkit.member.presentation.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,13 +17,13 @@ public class MemberBasicInformRequestDTO {
     @AllArgsConstructor
     public static class UpdateMemberBasicInformRequest {
 
-        @NotNull(message = "이름을 입력해주세요")
+        @NotBlank(message = "이름을 입력해주세요")
         private String memberName;
 
-        @NotNull(message = "유저 아이디를 입력해주세요")
+        @NotBlank(message = "유저 아이디를 입력해주세요")
         private String emailId;
 
-        @NotNull(message = "연락처를 입력해주세요")
+        @NotBlank(message = "연락처를 입력해주세요")
         private String contact;
     }
 

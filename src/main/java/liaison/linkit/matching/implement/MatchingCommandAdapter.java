@@ -23,4 +23,8 @@ public class MatchingCommandAdapter {
     public void addMatching(final Matching matching) {
         matchingRepository.save(matching);
     }
+
+    public void updateMatchingToCreatedRoomState(final Matching matching) {
+        matchingRepository.updateMatchingToCreatedRoomState(matching);
+    }
 }
