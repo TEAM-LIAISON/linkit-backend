@@ -14,7 +14,6 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatc
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,24 +81,14 @@ public class MatchingController {
         return CommonResponse.onSuccess(matchingReceivedMenus);
     }
 
-    // 매칭 수신함에서 (요청온 매칭) 읽음처리 (명세 완료)
-    @PostMapping("/received/menu/requested/read")
-    @MemberOnly
-    public CommonResponse<UpdateReceivedMatchingRequestedStateToReadItems> updateReceivedMatchingRequestedStateRead(
-            @Auth final Accessor accessor,
-            @RequestBody final UpdateReceivedMatchingReadRequest request
-    ) {
-        return CommonResponse.onSuccess(matchingService.updateReceivedMatchingRequestedStateToRead(accessor.getMemberId(), request));
-    }
-
     // 매칭 수신함에서 (성사된 매칭) 읽음처리 (명세 완료)
-    @PostMapping("/received/menu/completed/read")
+    @PostMapping("/received/menu/read")
     @MemberOnly
-    public CommonResponse<UpdateReceivedMatchingCompletedStateReadItems> updateReceivedMatchingCompletedStateRead(
+    public CommonResponse<UpdateReceivedMatchingCompletedStateReadItems> updateReceivedMatchingStateRead(
             @Auth final Accessor accessor,
             @RequestBody final UpdateReceivedMatchingReadRequest request
     ) {
-        return CommonResponse.onSuccess(matchingService.updateReceivedMatchingCompletedStateToRead(accessor.getMemberId(), request));
+        return CommonResponse.onSuccess(matchingService.updateReceivedMatchingStateToRead(accessor.getMemberId(), request));
     }
 
     // 매칭 수신함에서 삭제 처리 (명세 완료)

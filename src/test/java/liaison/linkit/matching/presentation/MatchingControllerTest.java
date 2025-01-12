@@ -1879,7 +1879,7 @@ public class MatchingControllerTest extends ControllerTest {
                 .build();
 
         // when
-        when(matchingService.updateReceivedMatchingCompletedStateToRead(anyLong(), any())).thenReturn(updateReceivedMatchingCompletedStateReadItems);
+        when(matchingService.updateReceivedMatchingStateToRead(anyLong(), any())).thenReturn(updateReceivedMatchingCompletedStateReadItems);
 
         final ResultActions resultActions = performUpdateReceivedMatchingCompletedStateRead(request);
 
