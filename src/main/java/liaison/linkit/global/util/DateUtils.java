@@ -25,12 +25,11 @@ public class DateUtils {
     }
 
     // 시간 변환기
-
     /**
      * 과거의 특정 시각(LocalDateTime)으로부터 현재 시각까지의 상대적 경과 시간을 문자열로 반환한다.
      *
      * @param dateTime 과거 시점 (LocalDateTime)
-     * @return 상대 시간 ("n시간 전", "n일 전", "yyyy년 MM월 dd일")
+     * @return 상대 시간 ("방금 전", "n분 전", "n시간 전", "n일 전", "yyyy년 MM월 dd일")
      */
     public static String formatRelativeTime(LocalDateTime dateTime) {
         if (dateTime == null) {
@@ -42,7 +41,6 @@ public class DateUtils {
 
         // 미래 시각인 경우
         if (diffSeconds < 0) {
-            // 필요에 따라 구체적인 예외를 던질 수 있음
             throw new IllegalArgumentException("미래 시각은 지원하지 않습니다.");
         }
 
@@ -51,19 +49,25 @@ public class DateUtils {
             return "방금 전";
         }
 
-        // 1) 시(hour) 단위 판단 (0~24시간 미만)
+        // 1) 분(minute) 단위 판단 (1분 ~ 60분 미만)
+        long diffMinutes = ChronoUnit.MINUTES.between(dateTime, now);
+        if (diffMinutes < 60) {
+            return diffMinutes + "분 전";
+        }
+
+        // 2) 시(hour) 단위 판단 (1시간 ~ 24시간 미만)
         long diffHours = ChronoUnit.HOURS.between(dateTime, now);
         if (diffHours < 24) {
             return diffHours + "시간 전";
         }
 
-        // 2) 일(day) 단위 판단 (1일 ~ 7일 미만)
+        // 3) 일(day) 단위 판단 (1일 ~ 7일 미만)
         long diffDays = ChronoUnit.DAYS.between(dateTime, now);
         if (diffDays < 7) {
             return diffDays + "일 전";
         }
 
-        // 3) 7일 이상인 경우 "yyyy년 MM월 dd일"
+        // 4) 7일 이상인 경우 "yyyy년 MM월 dd일" 형식으로 표시
         return dateTime.format(KOREAN_DATE_FORMATTER);
     }
 }

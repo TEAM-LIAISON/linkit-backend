@@ -83,7 +83,7 @@ public class MatchingResponseDTO {
 
         private String requestMessage;
 
-        private String requestedDate;
+        private String modifiedAt;
 
         private MatchingStatusType matchingStatusType;
 
@@ -127,7 +127,7 @@ public class MatchingResponseDTO {
 
         private String requestMessage;
 
-        private String requestedDate;
+        private String modifiedAt;
 
         private MatchingStatusType matchingStatusType;
 

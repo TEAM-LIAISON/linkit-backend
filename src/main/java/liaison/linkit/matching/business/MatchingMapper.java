@@ -137,12 +137,12 @@ public class MatchingMapper {
                 .receiverTeamInformation(receiverTeamInformation)
                 .receiverAnnouncementInformation(receiverAnnouncementInformation)
                 .requestMessage(requestedMatchingItem.getRequestMessage())
-                .requestedDate(DateUtils.formatRelativeTime(requestedMatchingItem.getCreatedAt()))
+                .modifiedAt(DateUtils.formatRelativeTime(requestedMatchingItem.getModifiedAt()))
                 .matchingStatusType(requestedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(requestedMatchingItem.getReceiverReadStatus())
                 .build();
     }
-    
+
     public UpdateMatchingStatusTypeResponse toUpdateMatchingStatusTypeResponse(final Matching matching, final MatchingStatusType matchingStatusType) {
         return UpdateMatchingStatusTypeResponse.builder()
                 .matchingId(matching.getId())
@@ -168,7 +168,7 @@ public class MatchingMapper {
                 .receiverTeamInformation(receiverTeamInformation)
                 .receiverAnnouncementInformation(receiverAnnouncementInformation)
                 .requestMessage(receivedMatchingItem.getRequestMessage())
-                .requestedDate(DateUtils.formatRelativeTime(receivedMatchingItem.getCreatedAt()))
+                .modifiedAt(DateUtils.formatRelativeTime(receivedMatchingItem.getModifiedAt()))
                 .matchingStatusType(receivedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(receivedMatchingItem.getReceiverReadStatus())
                 .build();

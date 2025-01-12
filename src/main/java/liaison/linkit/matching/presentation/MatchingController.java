@@ -81,7 +81,7 @@ public class MatchingController {
         return CommonResponse.onSuccess(matchingReceivedMenus);
     }
 
-    // 매칭 수신함에서 (성사된 매칭) 읽음처리 (명세 완료)
+    // 매칭 수신함에서 읽음처리 (명세 완료)
     @PostMapping("/received/menu/read")
     @MemberOnly
     public CommonResponse<UpdateReceivedMatchingCompletedStateReadItems> updateReceivedMatchingStateRead(
