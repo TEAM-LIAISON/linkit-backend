@@ -410,6 +410,7 @@ public class MatchingService {
         return matchingMapper.toUpdateMatchingCompletedToReadItems(updateReceivedMatchingCompletedStateReadItems);
     }
 
+    // 수신자가 매칭 요청 상태를 업데이트한다.
     public UpdateMatchingStatusTypeResponse updateMatchingStatusType(final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest) {
         if (updateMatchingStatusTypeRequest == null || updateMatchingStatusTypeRequest.getMatchingStatusType().equals(MatchingStatusType.REQUESTED)) {
             throw MatchingStatusTypeBadRequestException.EXCEPTION;
@@ -418,6 +419,25 @@ public class MatchingService {
         final Matching matching = matchingQueryAdapter.findByMatchingId(matchingId);
 
         matchingCommandAdapter.updateMatchingStatusType(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
+
+        Long receiverMemberId = null;
+
+        if (matching.getReceiverType().equals(ReceiverType.PROFILE)) {
+            receiverMemberId = memberQueryAdapter.findByEmailId(matching.getReceiverEmailId()).getId();
+        } else if (matching.getReceiverType().equals(ReceiverType.TEAM)) {
+            final Team targetTeam = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            receiverMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(targetTeam);
+        } else if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
+            final Team targetTeam = teamMemberAnnouncement.getTeam();
+            receiverMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(targetTeam);
+        }
+
+        notificationService.sendNotification(receiverMemberId, NotificationType.MATCHING, NotificationDetails.matching(
+                getSenderName(matching),
+                getReceiverName(matching),
+                matching.getMatchingStatusType().name()
+        ));
 
         return matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
     }
