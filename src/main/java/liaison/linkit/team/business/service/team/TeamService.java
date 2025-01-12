@@ -165,20 +165,29 @@ public class TeamService {
         // 팀 이름 업데이트
         team.updateTeam(updateTeamRequest.getTeamName(), updateTeamRequest.getTeamCode(), updateTeamRequest.getTeamShortDescription(), updateTeamRequest.getIsTeamPublic());
 
+        log.info("Updating team {}", teamCode);
+
         // 팀 로고 이미지 처리
-        if (teamLogoImage != null && !teamLogoImage.isEmpty()) {
-            if (imageValidator.validatingImageUpload(teamLogoImage)) {
-                // 이전에 업로드한 팀 로고 이미지가 존재
-                if (team.getTeamLogoImagePath() != null) {
-                    s3Uploader.deleteS3Image(team.getTeamLogoImagePath());
+        try {
+            // 팀 로고 이미지 처리
+            if (teamLogoImage != null && !teamLogoImage.isEmpty()) {
+                if (imageValidator.validatingImageUpload(teamLogoImage)) {
+                    // 이전에 업로드한 팀 로고 이미지가 존재
+                    if (team.getTeamLogoImagePath() != null) {
+                        s3Uploader.deleteS3Image(team.getTeamLogoImagePath());
+                    }
+
+                    // 팀 로고 이미지 업로드
+                    teamLogoImagePath = s3Uploader.uploadTeamLogoImage(new ImageFile(teamLogoImage));
+
+                    // 새로운 로고 이미지 저장
+                    team.setTeamLogoImagePath(teamLogoImagePath);
                 }
-
-                // 팀 로고 이미지 업로드
-                teamLogoImagePath = s3Uploader.uploadTeamLogoImage(new ImageFile(teamLogoImage));
-
-                // 새로운 로고 이미지 저장
-                team.setTeamLogoImagePath(teamLogoImagePath);
             }
+        } catch (Exception e) {
+            log.error("팀 로고 이미지 처리 중 오류 발생", e);
+            // 필요에 따라 예외를 다시 던지거나 처리
+            throw e;
         }
 
         // 팀 규모 처리
@@ -191,6 +200,8 @@ public class TeamService {
         teamScaleCommandAdapter.save(teamScale);
         final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
 
+        log.info("Updating team {}", teamCode);
+
         // 팀 지역 처리
         if (teamRegionQueryAdapter.existsTeamRegionByTeamId(team.getId())) {
             teamRegionCommandAdapter.deleteAllByTeamId(team.getId());
@@ -200,6 +211,8 @@ public class TeamService {
         final TeamRegion teamRegion = new TeamRegion(null, team, region);
         teamRegionCommandAdapter.save(teamRegion);
         final RegionDetail regionDetail = regionMapper.toRegionDetail(region);
+
+        log.info("Updating team {}", teamCode);
 
         // 팀 현재 상태 처리
         if (teamCurrentStateQueryAdapter.existsTeamCurrentStatesByTeamId(team.getId())) {
@@ -216,6 +229,8 @@ public class TeamService {
             TeamCurrentState teamCurrentState = new TeamCurrentState(null, team, teamState);
             teamCurrentStates.add(teamCurrentState);
         }
+
+        log.info("Updating team {}", teamCode);
 
         teamCurrentStateCommandAdapter.saveAll(teamCurrentStates);
         List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
@@ -307,6 +322,8 @@ public class TeamService {
 
         return teamMapper.toTeamItems(teamInformMenus);
     }
+
+    // 중간에 팀원 관리 권한이
 
     public TeamResponseDTO.DeleteTeamResponse deleteTeam(final Long memberId, final String teamCode) {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
