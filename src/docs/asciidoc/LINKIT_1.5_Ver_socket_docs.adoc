@@ -20,15 +20,12 @@
 [source,http]
 ----
 Authorization: Bearer {accessToken}
-Cookie: {refreshToken}
 ----
 
 [source,json]
 ----
-// 전송 예시
 {
-    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM2Mzk3OTE0LCJleHAiOjE3MzY0MDE1MTR9.ax6k9jeG4rTJmOP9fhebYRd50Ahmj7s9UtMegBhPEIY",
-    "Cookie": "refreshToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MzYzOTc5MTQsImV4cCI6MTczNjQwMTUxNH0.oPRKUXG2GYr05WWnp-ovillY33iRBqkxT_YdJeVov3M; Path=/; Max-Age=604800; Expires=Thu, 16 Jan 2025 04:45:14 GMT; Secure; HttpOnly; SameSite=None"
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM2Mzk3OTE0LCJleHAiOjE3MzY0MDE1MTR9.ax6k9jeG4rTJmOP9fhebYRd50Ahmj7s9UtMegBhPEIY"
 }
 ----
 
@@ -37,7 +34,6 @@ Cookie: {refreshToken}
 [source,http]
 ----
 Authorization: Bearer {accessToken}
-Cookie: {refreshToken}
 ----
 
 ==== 채팅방 구독
@@ -52,7 +48,6 @@ SUBSCRIBE /sub/chat/{chatRoomId}
 [source,http]
 ----
 Authorization: Bearer {accessToken}
-Cookie: {refreshToken}
 ----
 
 ==== 채팅 메시지 전송
@@ -67,7 +62,6 @@ SEND /pub/chat/send/{chatRoomId}
 [source,http]
 ----
 Authorization: Bearer {accessToken}
-Cookie: {refreshToken}
 ----
 
 ==== 회원 알림 구독

@@ -87,6 +87,7 @@ public class LoginService {
         return accountMapper.toLogin(
                 memberTokens,
                 member.getEmail(),
+                member.getEmailId(),
                 isMemberBasicInform
         );
     }

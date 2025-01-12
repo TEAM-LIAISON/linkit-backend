@@ -11,12 +11,14 @@ public class AccountMapper {
     public AccountResponseDTO.LoginServiceResponse toLogin(
             final MemberTokens memberTokens,
             final String email,
+            final String emailId,
             final boolean isMemberBasicInform
     ) {
         return AccountResponseDTO.LoginServiceResponse.builder()
                 .accessToken(memberTokens.getAccessToken())
                 .refreshToken(memberTokens.getRefreshToken())
                 .email(email)
+                .emailId(emailId)
                 .isMemberBasicInform(isMemberBasicInform)
                 .build();
     }

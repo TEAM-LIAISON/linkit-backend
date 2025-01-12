@@ -167,13 +167,18 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     @Override
-    public void updateTeamToDelete(final Team team) {
+    public void deleteTeamByTeamCode(final String teamCode) {
         QTeam qTeam = QTeam.team;
 
-        long updatedRows = jpaQueryFactory
-                .update(qTeam)
-                .set(qTeam.status, StatusType.DELETED)
-                .execute();
-
+        try {
+            long updatedRows = jpaQueryFactory
+                    .update(qTeam)
+                    .set(qTeam.status, StatusType.DELETED)
+                    .where(qTeam.teamCode.eq(teamCode))
+                    .execute();
+        } catch (Exception e) {
+            log.error("Error occurred while deleting team with teamCode: {}", teamCode, e);
+            throw e; // 필요에 따라 커스텀 예외로 변환하여 던질 수 있습니다.
+        }
     }
 }

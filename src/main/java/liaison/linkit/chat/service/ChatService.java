@@ -349,7 +349,7 @@ public class ChatService {
 
         // 4. 구독자들에게 메시지 발송
         ChatMessageResponse messageResponse = chatMapper.toChatMessageResponse(chatMessage);
-        simpMessagingTemplate.convertAndSend("/sub/chat/room/1", messageResponse);
+        simpMessagingTemplate.convertAndSend("/sub/chat/1", messageResponse);
     }
 
     /**

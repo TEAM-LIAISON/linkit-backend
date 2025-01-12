@@ -67,10 +67,10 @@ spring:
 
   servlet:
     multipart:
-      enabled: true # 멀티파트 업로드 지원여부
+      enabled: true # 멀티파트 업로드 지원 여부
       file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
-      max-file-size: 2MB # 한개 파일의 최대 사이즈 (default: 1MB)
-      max-request-size: 2MB # 한개 요청의 최대 사이즈 (default: 10MB)
+      max-file-size: 10MB # 한 개 파일의 최대 사이즈
+      max-request-size: 10MB # 한 개 요청의 최대 사이즈
 #
 #logging:
 #  level:

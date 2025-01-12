@@ -19,5 +19,5 @@ public interface TeamCustomRepository {
             final Pageable pageable
     );
 
-    void updateTeamToDelete(final Team team);
+    void deleteTeamByTeamCode(final String teamCode);
 }
