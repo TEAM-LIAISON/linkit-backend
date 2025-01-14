@@ -80,6 +80,7 @@ public class TeamController {
     }
 
     // 팀 나가기 요청
+    
 
     // 나의 팀 조회
     @GetMapping("/my/teams")

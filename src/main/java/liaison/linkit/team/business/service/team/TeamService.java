@@ -336,6 +336,8 @@ public class TeamService {
         if (teamMemberQueryAdapter.existsTeamMembersByTeamCode(teamCode)) {
             // 팀원의 삭제 수락 요청이 모두 처리되어야 팀 삭제가 진행될 수 있다.
 
+            // 팀원들에게 요청 알림 발송
+            
         } else {    // 오너만 해당 팀을 소유하고 있는 경우
             teamCommandAdapter.deleteTeam(teamCode);
         }

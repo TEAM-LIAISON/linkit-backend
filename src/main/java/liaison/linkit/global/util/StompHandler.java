@@ -3,9 +3,6 @@ package liaison.linkit.global.util;
 import java.util.List;
 import liaison.linkit.chat.event.ChatEvent.UserConnectedEvent;
 import liaison.linkit.chat.event.ChatEvent.UserDisconnectedEvent;
-import liaison.linkit.common.exception.RefreshTokenExpiredException;
-import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +55,14 @@ public class StompHandler implements ChannelInterceptor {
             } catch (Exception e) {
                 throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
             }
+        }
+
+        if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
+            String destination = headerAccessor.getDestination(); // 구독 경로
+            String sessionId = headerAccessor.getSessionId();     // 세션 ID
+            String user = headerAccessor.getUser() != null ? headerAccessor.getUser().getName() : "Anonymous"; // 사용자 이름 (인증된 경우)
+
+            log.info("SUBSCRIBE: User [{}] subscribed to [{}] with session ID [{}]", user, destination, sessionId);
         }
 
         if (StompCommand.SEND.equals(headerAccessor.getCommand())) {
