@@ -201,12 +201,37 @@ include::{snippets}/member-controller-test/update-consent-marketing/response-fie
 
 == #[홈화면]#
 
-=== 홈화면_전체 데이터 조회
+=== 홈화면_팀원 조회
 
 ====
 *요청*
+include::{snippets}/profile-controller-test/get-home-profile-inform-menus/http-request.adoc[]
 
 *응답*
+include::{snippets}/profile-controller-test/get-home-profile-inform-menus/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-home-profile-inform-menus/response-fields.adoc[]
+====
+
+=== 홈화면_팀 조회
+
+====
+*요청*
+include::{snippets}/team-controller-test/get-home-team-inform-menus/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-controller-test/get-home-team-inform-menus/http-response.adoc[]
+include::{snippets}/team-controller-test/get-home-team-inform-menus/response-fields.adoc[]
+====
+
+=== 홈화면_팀원 공고 조회
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/get-home-announcement-inform-menus/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/get-home-announcement-inform-menus/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-home-announcement-inform-menus/response-fields.adoc[]
 ====
 
 == #[프로필 - 내 프로필 조회]#
@@ -1575,7 +1600,7 @@ include::{snippets}/matching-controller-test/get-requested-matching-menu/http-re
 include::{snippets}/matching-controller-test/get-requested-matching-menu/response-fields.adoc[]
 ====
 
-=== 매칭 관리 수신함에서 요청 받은 매칭에 대해 읽음 처리
+=== 매칭 관리 수신함에서 요청/성사된 매칭에 대해 읽음 처리
 
 ====
 *요청*
@@ -1585,18 +1610,6 @@ include::{snippets}/matching-controller-test/update-received-matching-requested-
 *응답*
 include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/http-response.adoc[]
 include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/response-fields.adoc[]
-====
-
-=== 매칭 관리 수신함에서 성사된 매칭에 대해 읽음 처리
-
-====
-*요청*
-include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/http-request.adoc[]
-include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/request-fields.adoc[]
-
-*응답*
-include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/http-response.adoc[]
-include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/response-fields.adoc[]
 ====
 
 === 매칭 관리 수신함에서 매칭 삭제 처리

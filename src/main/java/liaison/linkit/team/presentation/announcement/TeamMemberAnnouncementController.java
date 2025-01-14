@@ -31,7 +31,6 @@ public class TeamMemberAnnouncementController {
         return CommonResponse.onSuccess(teamMemberAnnouncementService.getHomeAnnouncementInformMenus());
     }
 
-
     // 팀원 공고 뷰어 전체 조회
     @GetMapping("/team/{teamCode}/announcement/view")
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems> getTeamMemberAnnouncementViewItems(

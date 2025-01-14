@@ -62,11 +62,11 @@ public class MatchingResponseDTO {
     public static class ReceivedMatchingMenu {
         private Long matchingId;
 
-        private Boolean isChatRoomCreated;
-
         private SenderType senderType;
 
         private ReceiverType receiverType;
+
+        private Boolean isChatRoomCreated;
 
         @Builder.Default
         private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();

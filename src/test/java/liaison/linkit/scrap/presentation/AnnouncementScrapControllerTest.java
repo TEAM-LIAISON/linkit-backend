@@ -157,6 +157,7 @@ public class AnnouncementScrapControllerTest extends ControllerTest {
         final AnnouncementInformMenus announcementInformMenus = AnnouncementInformMenus.builder()
                 .announcementInformMenus(Arrays.asList(
                         AnnouncementInformMenu.builder()
+                                .teamMemberAnnouncementId(1L)
                                 .teamLogoImagePath("팀 로고 이미지 경로")
                                 .teamName("팀 이름")
                                 .teamScaleItem(
@@ -192,6 +193,7 @@ public class AnnouncementScrapControllerTest extends ControllerTest {
                                 )
                                 .build(),
                         AnnouncementInformMenu.builder()
+                                .teamMemberAnnouncementId(2L)
                                 .teamLogoImagePath("팀 로고 이미지 경로")
                                 .teamName("팀 이름")
                                 .teamScaleItem(
@@ -258,6 +260,10 @@ public class AnnouncementScrapControllerTest extends ControllerTest {
                                         subsectionWithPath("result.announcementInformMenus")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("공고 정보 목록"),
+
+                                        fieldWithPath("result.announcementInformMenus[].teamMemberAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀원 공고 ID"),
 
                                         // announcementInformMenus[].teamLogoImagePath
                                         fieldWithPath("result.announcementInformMenus[].teamLogoImagePath")

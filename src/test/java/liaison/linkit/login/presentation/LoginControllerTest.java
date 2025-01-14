@@ -127,6 +127,10 @@ public class LoginControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("소셜 로그인 이메일")
                                                 .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 유저 아이디")
+                                                .attributes(field("constraint", "문자열")),
                                         fieldWithPath("result.isMemberBasicInform")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("기본 정보 기입 여부 (false: 기본 정보 기입하지 않음)")

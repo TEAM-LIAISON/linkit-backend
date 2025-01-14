@@ -47,6 +47,7 @@ import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRespons
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.profile.ProfileController;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenus;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileScrapMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
@@ -104,6 +105,12 @@ class ProfileControllerTest extends ControllerTest {
                 RestDocumentationRequestBuilders.get("/api/v1/profile/{emailId}", emailId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
+        );
+    }
+
+    private ResultActions performGetHomeProfileInformMenus() throws Exception {
+        return mockMvc.perform(
+                get("/api/v1/home/profile")
         );
     }
 
@@ -701,6 +708,175 @@ class ProfileControllerTest extends ControllerTest {
         final CommonResponse<ProfileDetail> expected = CommonResponse.onSuccess(profileDetail);
 
         // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원/비회원이 홈화면의 팀원을 조회할 수 있다.")
+    @Test
+    void getHomeProfileInformMenus() throws Exception {
+        // given
+        final ProfileResponseDTO.ProfileInformMenus profileInformMenus = ProfileInformMenus.builder()
+                .profileInformMenus(
+                        Arrays.asList(
+                                ProfileInformMenu.builder()
+                                        .profileCurrentStates(
+                                                Arrays.asList(
+                                                        ProfileCurrentStateItem.builder()
+                                                                .profileStateName("팀원 찾는 중")
+                                                                .build(),
+                                                        ProfileCurrentStateItem.builder()
+                                                                .profileStateName("팀 찾는 중")
+                                                                .build()
+                                                )
+                                        )
+                                        .isProfileScrap(true)
+                                        .profileScrapCount(100)
+                                        .profileImagePath("프로필 이미지 경로")
+                                        .memberName("회원 이름")
+                                        .emailId("이메일 ID")
+                                        .isProfilePublic(true)
+                                        .majorPosition("포지션 대분류")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("활동지역 시/도")
+                                                        .divisionName("활동지역 시/군/구")
+                                                        .build()
+                                        )
+                                        .profileTeamInforms(
+                                                Arrays.asList(
+                                                        ProfileTeamInform.builder()
+                                                                .teamName("소속 팀 이름 1")
+                                                                .teamCode("소속 팀 아이디 1")
+                                                                .teamLogoImagePath("소속 팀 로고 이미지 1")
+                                                                .build(),
+                                                        ProfileTeamInform.builder()
+                                                                .teamName("소속 팀 이름 2")
+                                                                .teamCode("소속 팀 아이디 2")
+                                                                .teamLogoImagePath("소속 팀 로고 이미지 2")
+                                                                .build()
+                                                )
+                                        )
+                                        .build(),
+                                ProfileInformMenu.builder()
+                                        .profileCurrentStates(
+                                                Arrays.asList(
+                                                        ProfileCurrentStateItem.builder()
+                                                                .profileStateName("팀원 찾는 중")
+                                                                .build(),
+                                                        ProfileCurrentStateItem.builder()
+                                                                .profileStateName("팀 찾는 중")
+                                                                .build()
+                                                )
+                                        )
+                                        .isProfileScrap(true)
+                                        .profileScrapCount(200)
+                                        .profileImagePath("프로필 이미지 경로 2")
+                                        .memberName("회원 이름 2")
+                                        .emailId("이메일 ID 2")
+                                        .isProfilePublic(true)
+                                        .majorPosition("포지션 대분류")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("활동지역 시/도")
+                                                        .divisionName("활동지역 시/군/구")
+                                                        .build()
+                                        )
+                                        .profileTeamInforms(
+                                                Arrays.asList(
+                                                        ProfileTeamInform.builder()
+                                                                .teamName("소속 팀 이름 1")
+                                                                .teamCode("소속 팀 아이디 1")
+                                                                .teamLogoImagePath("소속 팀 로고 이미지 1")
+                                                                .build(),
+                                                        ProfileTeamInform.builder()
+                                                                .teamName("소속 팀 이름 2")
+                                                                .teamCode("소속 팀 아이디 2")
+                                                                .teamLogoImagePath("소속 팀 로고 이미지 2")
+                                                                .build()
+                                                )
+                                        )
+                                        .build()
+                        )
+                )
+                .build();
+
+        // when
+        when(profileService.getHomeProfileInformMenus()).thenReturn(profileInformMenus);
+
+        final ResultActions resultActions = performGetHomeProfileInformMenus();
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.profileInformMenus[].profileCurrentStates[].profileStateName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 상태 이름"),
+                                        fieldWithPath("result.profileInformMenus[].isProfileScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 스크랩 여부 (자기 자신이 스크랩한 목록 조회는 무조건 true)"),
+                                        fieldWithPath("result.profileInformMenus[].profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 전체 개수"),
+                                        fieldWithPath("result.profileInformMenus[].profileImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 이미지 경로"),
+                                        fieldWithPath("result.profileInformMenus[].memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이름"),
+                                        fieldWithPath("result.profileInformMenus[].emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("이메일 ID"),
+                                        fieldWithPath("result.profileInformMenus[].isProfilePublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 공개 여부"),
+                                        fieldWithPath("result.profileInformMenus[].majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("포지션 대분류"),
+                                        fieldWithPath("result.profileInformMenus[].regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동지역 시/도"),
+                                        fieldWithPath("result.profileInformMenus[].regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동지역 시/군/구"),
+                                        fieldWithPath("result.profileInformMenus[].profileTeamInforms[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소속 팀 이름"),
+                                        fieldWithPath("result.profileInformMenus[].profileTeamInforms[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소속 팀 아이디 (팀 코드)"),
+                                        fieldWithPath("result.profileInformMenus[].profileTeamInforms[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소속 팀 로고 이미지 경로")
+                                )
+                        )).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<ProfileInformMenus> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<ProfileInformMenus>>() {
+                }
+        );
+
+        final CommonResponse<ProfileInformMenus> expected = CommonResponse.onSuccess(profileInformMenus);
+
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }
