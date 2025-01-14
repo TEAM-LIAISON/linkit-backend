@@ -28,6 +28,12 @@ public class TeamController {
 
     private final TeamService teamService;
 
+    // 홈화면에서 팀 조회하기 (최대 4개)
+    @GetMapping("/home/team")
+    public CommonResponse<TeamResponseDTO.TeamInformMenus> getHomeTeamInformMenus() {
+        return CommonResponse.onSuccess(teamService.getHomeTeamInformMenus());
+    }
+
     // 팀 생성하기
     @PostMapping("/team")
     @MemberOnly
@@ -80,7 +86,7 @@ public class TeamController {
     }
 
     // 팀 나가기 요청
-    
+
 
     // 나의 팀 조회
     @GetMapping("/my/teams")

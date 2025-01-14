@@ -10,6 +10,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.DeleteTeamResponse;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenus;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamItems;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 
@@ -59,6 +60,14 @@ public class TeamMapper {
                 .regionDetail(regionDetail)
                 .teamCurrentStates(teamCurrentStateItems)
                 .isTeamPublic(team.isTeamPublic())
+                .build();
+    }
+
+    public TeamResponseDTO.TeamInformMenus toTeamInformMenus(
+            final List<TeamInformMenu> teamInformMenus
+    ) {
+        return TeamInformMenus.builder()
+                .teamInformMenus(teamInformMenus)
                 .build();
     }
 

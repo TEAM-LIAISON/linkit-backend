@@ -324,7 +324,6 @@ public class TeamService {
     }
 
     // 중간에 팀원 관리 권한이
-
     public TeamResponseDTO.DeleteTeamResponse deleteTeam(final Long memberId, final String teamCode) {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
@@ -337,11 +336,63 @@ public class TeamService {
             // 팀원의 삭제 수락 요청이 모두 처리되어야 팀 삭제가 진행될 수 있다.
 
             // 팀원들에게 요청 알림 발송
-            
+
         } else {    // 오너만 해당 팀을 소유하고 있는 경우
             teamCommandAdapter.deleteTeam(teamCode);
         }
 
         return teamMapper.toDeleteTeam(teamCode);
     }
+
+    // 홈화면에서 팀 조회
+    public TeamResponseDTO.TeamInformMenus getHomeTeamInformMenus() {
+        // 최대 4개의 Team 조회
+        List<Team> teams = teamQueryAdapter.findTopTeams(4);
+
+        // Teams -> TeamInformMenus 변환
+        List<TeamResponseDTO.TeamInformMenu> teamInformMenus = teams.stream()
+                .map(this::buildTeamInformMenu)
+                .toList();
+
+        return teamMapper.toTeamInformMenus(teamInformMenus);
+    }
+
+    private TeamResponseDTO.TeamInformMenu buildTeamInformMenu(final Team team) {
+        RegionDetail regionDetail = getRegionDetail(team);
+        List<TeamCurrentStateItem> teamCurrentStateItems = getTeamCurrentStateItems(team);
+        TeamScaleItem teamScaleItem = getTeamScaleItem(team);
+        int teamScrapCount = getTeamScrapCount(team);
+
+        log.info("팀 정보 생성 완료: teamId={}, teamName={}", team.getId(), team.getTeamName());
+
+        return teamMapper.toTeamInformMenu(team, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
+    }
+
+    private RegionDetail getRegionDetail(final Team team) {
+        if (regionQueryAdapter.existsTeamRegionByTeamId(team.getId())) {
+            TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+            log.info("지역 정보 조회 성공: teamId={}", team.getId());
+            return regionMapper.toRegionDetail(teamRegion.getRegion());
+        }
+        return new RegionDetail();
+    }
+
+    private List<TeamCurrentStateItem> getTeamCurrentStateItems(final Team team) {
+        List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(team.getId());
+        log.info("팀 상태 정보 조회 성공: teamId={}", team.getId());
+        return teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
+    }
+
+    private TeamScaleItem getTeamScaleItem(final Team team) {
+        TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+        log.info("팀 규모 정보 조회 성공: teamId={}", team.getId());
+        return teamScaleMapper.toTeamScaleItem(teamScale);
+    }
+
+    private int getTeamScrapCount(final Team team) {
+        int scrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamName());
+        log.info("팀 스크랩 카운트 조회 성공: teamId={}, scrapCount={}", team.getId(), scrapCount);
+        return scrapCount;
+    }
+
 }

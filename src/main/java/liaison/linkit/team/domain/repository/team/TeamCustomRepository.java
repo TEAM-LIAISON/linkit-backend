@@ -20,4 +20,6 @@ public interface TeamCustomRepository {
     );
 
     void deleteTeamByTeamCode(final String teamCode);
+
+    List<Team> findTopTeams(final int limit);
 }

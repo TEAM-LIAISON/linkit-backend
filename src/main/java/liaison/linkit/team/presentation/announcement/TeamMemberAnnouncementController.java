@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamMemberAnnouncementController {
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
+    // 홈화면 팀원 공고 조회
+
     // 팀원 공고 뷰어 전체 조회
     @GetMapping("/view")
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems> getTeamMemberAnnouncementViewItems(
@@ -105,6 +107,7 @@ public class TeamMemberAnnouncementController {
         return CommonResponse.onSuccess(teamMemberAnnouncementService.removeTeamMemberAnnouncement(accessor.getMemberId(), teamCode, teamMemberAnnouncementId));
     }
 
+    // 팀원 공고 공개/비공개 여부 수정
     @PostMapping("/state/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse> updateTeamMemberAnnouncementPublicState(

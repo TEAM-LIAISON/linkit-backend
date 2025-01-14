@@ -47,4 +47,8 @@ public class TeamQueryAdapter {
         log.info("팀 필터링 요청 발생");
         return teamRepository.findAllByFiltering(scaleName, isAnnouncement, cityName, teamStateName, pageable);
     }
+
+    public List<Team> findTopTeams(final int limit) {
+        return teamRepository.findTopTeams(limit);
+    }
 }

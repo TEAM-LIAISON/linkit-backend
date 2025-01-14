@@ -181,4 +181,15 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             throw e; // 필요에 따라 커스텀 예외로 변환하여 던질 수 있습니다.
         }
     }
+
+    @Override
+    public List<Team> findTopTeams(final int limit) {
+        QTeam qTeam = QTeam.team;
+
+        return jpaQueryFactory
+                .selectFrom(qTeam)
+                .orderBy(qTeam.createdAt.desc()) // 최신순으로 정렬
+                .limit(limit)
+                .fetch();
+    }
 }
