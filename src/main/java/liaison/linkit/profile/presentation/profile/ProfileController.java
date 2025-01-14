@@ -46,4 +46,9 @@ public class ProfileController {
             return CommonResponse.onSuccess(profileService.getLoggedOutProfileDetail(emailId));
         }
     }
+
+    @GetMapping("/home/profile")
+    public CommonResponse<ProfileResponseDTO.ProfileInformMenus> getHomeProfileInformMenus() {
+        return CommonResponse.onSuccess(profileService.getHomeProfileInformMenus());
+    }
 }

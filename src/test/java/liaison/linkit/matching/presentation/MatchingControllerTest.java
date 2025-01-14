@@ -174,7 +174,7 @@ public class MatchingControllerTest extends ControllerTest {
 
     private ResultActions performUpdateReceivedMatchingRequestedStateRead(final UpdateReceivedMatchingReadRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/requested/read")
+                RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/read")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1796,22 +1796,22 @@ public class MatchingControllerTest extends ControllerTest {
                 ))
                 .build();
 
-        final UpdateReceivedMatchingRequestedStateToReadItems updateReceivedMatchingRequestedStateToReadItems
-                = UpdateReceivedMatchingRequestedStateToReadItems.builder()
-                .updateReceivedMatchingRequestedStateToReadItems(Arrays.asList(
-                        UpdateReceivedMatchingRequestedStateToReadItem.builder()
+        final UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingCompletedStateReadItems
+                = UpdateReceivedMatchingCompletedStateReadItems.builder()
+                .updateReceivedMatchingCompletedStateReadItems(Arrays.asList(
+                        UpdateReceivedMatchingCompletedStateReadItem.builder()
                                 .matchingId(1L)
                                 .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
                                 .build(),
-                        UpdateReceivedMatchingRequestedStateToReadItem.builder()
+                        UpdateReceivedMatchingCompletedStateReadItem.builder()
                                 .matchingId(2L)
-                                .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
+                                .receiverReadStatus(ReceiverReadStatus.READ_COMPLETED_MATCHING)
                                 .build()
                 ))
                 .build();
 
         // when
-        when(matchingService.updateReceivedMatchingRequestedStateToRead(anyLong(), any())).thenReturn(updateReceivedMatchingRequestedStateToReadItems);
+        when(matchingService.updateReceivedMatchingStateToRead(anyLong(), any())).thenReturn(updateReceivedMatchingCompletedStateReadItems);
 
         final ResultActions resultActions = performUpdateReceivedMatchingRequestedStateRead(request);
 

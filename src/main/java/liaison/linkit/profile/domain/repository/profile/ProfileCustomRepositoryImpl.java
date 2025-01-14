@@ -122,6 +122,17 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     }
 
     @Override
+    public List<Profile> findTopProfiles(final int limit) {
+        QProfile qProfile = QProfile.profile;
+
+        return jpaQueryFactory
+                .selectFrom(qProfile)
+                .orderBy(qProfile.createdAt.desc()) // 최신순으로 정렬
+                .limit(limit)
+                .fetch();
+    }
+
+    @Override
     public Page<Profile> findAll(
             final List<String> majorPosition,
             final List<String> skillName,

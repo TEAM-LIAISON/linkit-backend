@@ -62,6 +62,7 @@ public class LoginControllerTest extends ControllerTest {
     private final static String ACCESS_TOKEN = "accessToken";
     private final static String RENEW_ACCESS_TOKEN = "I'mNewAccessToken!";
     private final static String EMAIL = "linkit@gmail.com";
+    private final static String EMAIL_ID = "linkit";
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -75,10 +76,10 @@ public class LoginControllerTest extends ControllerTest {
         // given
         final AccountRequestDTO.LoginRequest loginRequest = new LoginRequest("code");
         final AccountResponseDTO.LoginServiceResponse loginServiceResponse
-                = new LoginServiceResponse(ACCESS_TOKEN, REFRESH_TOKEN, EMAIL, false);
+                = new LoginServiceResponse(ACCESS_TOKEN, REFRESH_TOKEN, EMAIL, EMAIL_ID, false);
 
         final AccountResponseDTO.LoginResponse loginResponse
-                = new LoginResponse(ACCESS_TOKEN, EMAIL, false);
+                = new LoginResponse(ACCESS_TOKEN, EMAIL, EMAIL_ID, false);
 
         // when
         when(loginService.login(anyString(), anyString())).thenReturn(loginServiceResponse);

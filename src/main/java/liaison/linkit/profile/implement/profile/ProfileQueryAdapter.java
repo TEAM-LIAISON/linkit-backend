@@ -48,4 +48,8 @@ public class ProfileQueryAdapter {
         log.info("queryAdapter에서 실행됨");
         return profileRepository.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
     }
+
+    public List<Profile> findTopProfiles(final int limit) {
+        return profileRepository.findTopProfiles(limit);
+    }
 }
