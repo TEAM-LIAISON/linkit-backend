@@ -7,6 +7,7 @@ import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.business.service.announcement.TeamMemberAnnouncementService;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,15 +21,19 @@ import org.springframework.web.bind.annotation.RestController;
 // 팀원 공고
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/team/{teamCode}/announcement")
+@RequestMapping("/api/v1")
 @Slf4j
 public class TeamMemberAnnouncementController {
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
-    // 홈화면 팀원 공고 조회
+    @GetMapping("/home/announcement")
+    public CommonResponse<AnnouncementInformMenus> getHomeAnnouncementInformMenus() {
+        return CommonResponse.onSuccess(teamMemberAnnouncementService.getHomeAnnouncementInformMenus());
+    }
+
 
     // 팀원 공고 뷰어 전체 조회
-    @GetMapping("/view")
+    @GetMapping("/team/{teamCode}/announcement/view")
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems> getTeamMemberAnnouncementViewItems(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode
@@ -45,7 +50,7 @@ public class TeamMemberAnnouncementController {
     }
 
     // 팀원 공고 전체 조회
-    @GetMapping
+    @GetMapping("/team/{teamCode}/announcement")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems> getTeamMemberAnnouncementItems(
             @Auth final Accessor accessor,
@@ -56,7 +61,7 @@ public class TeamMemberAnnouncementController {
     }
 
     // 팀원 공고 단일 조회
-    @GetMapping("/{teamMemberAnnouncementId}")
+    @GetMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail> getTeamMemberAnnouncementDetail(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -72,7 +77,7 @@ public class TeamMemberAnnouncementController {
     }
 
     // 팀원 공고 생성
-    @PostMapping
+    @PostMapping("/team/{teamCode}/announcement")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse> addTeamMemberAnnouncement(
             @Auth final Accessor accessor,
@@ -84,7 +89,7 @@ public class TeamMemberAnnouncementController {
     }
 
     // 팀원 공고 수정
-    @PostMapping("/{teamMemberAnnouncementId}")
+    @PostMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse> updateTeamMemberAnnouncement(
             @Auth final Accessor accessor,
@@ -97,7 +102,7 @@ public class TeamMemberAnnouncementController {
     }
 
     // 팀원 공고 삭제
-    @DeleteMapping("/{teamMemberAnnouncementId}")
+    @DeleteMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse> removeTeamMemberAnnouncement(
             @Auth final Accessor accessor,
@@ -108,7 +113,7 @@ public class TeamMemberAnnouncementController {
     }
 
     // 팀원 공고 공개/비공개 여부 수정
-    @PostMapping("/state/{teamMemberAnnouncementId}")
+    @PostMapping("/team/{teamCode}/announcement/state/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse> updateTeamMemberAnnouncementPublicState(
             @Auth final Accessor accessor,

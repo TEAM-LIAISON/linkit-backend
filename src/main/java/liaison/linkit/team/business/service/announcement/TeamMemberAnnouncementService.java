@@ -2,7 +2,11 @@ package liaison.linkit.team.business.service.announcement;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.domain.Position;
+import liaison.linkit.common.implement.RegionQueryAdapter;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
@@ -10,10 +14,14 @@ import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAd
 import liaison.linkit.team.business.mapper.announcement.AnnouncementPositionMapper;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
+import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
+import liaison.linkit.team.domain.region.TeamRegion;
+import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
@@ -23,7 +31,10 @@ import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandA
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -53,6 +64,10 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementSkillMapper announcementSkillMapper;
 
     private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
+    private final TeamScaleQueryAdapter teamScaleQueryAdapter;
+    private final TeamScaleMapper teamScaleMapper;
+    private final RegionQueryAdapter regionQueryAdapter;
+    private final RegionMapper regionMapper;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamCode) {
@@ -270,4 +285,83 @@ public class TeamMemberAnnouncementService {
 
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementPublicState(updatedTeamMemberAnnouncement);
     }
+
+    public AnnouncementInformMenus getHomeAnnouncementInformMenus() {
+        // 최대 6개의 TeamMemberAnnouncement 조회
+        List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(6);
+
+        // TeamMemberAnnouncements -> AnnouncementInformMenus 변환
+        List<AnnouncementInformMenu> announcementInformMenus = teamMemberAnnouncements.stream()
+                .map(this::mapToAnnouncementInformMenu)
+                .toList();
+
+        return teamMemberAnnouncementMapper.toAnnouncementInformMenus(announcementInformMenus);
+    }
+
+    private AnnouncementInformMenu mapToAnnouncementInformMenu(final TeamMemberAnnouncement teamMemberAnnouncement) {
+        final Team team = teamMemberAnnouncement.getTeam();
+
+        // 팀 규모 조회
+        TeamScaleItem teamScaleItem = fetchTeamScaleItem(team);
+
+        // 팀 지역 조회
+        RegionDetail regionDetail = fetchRegionDetail(team);
+
+        // 포지션 조회
+        AnnouncementPositionItem announcementPositionItem = fetchAnnouncementPositionItem(teamMemberAnnouncement);
+
+        // 스킬 조회
+        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = fetchAnnouncementSkills(teamMemberAnnouncement);
+
+        // D-Day 계산
+        int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+
+        // 스크랩 수 조회
+        int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+
+        // 결과 변환 및 반환
+        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
+                team.getTeamLogoImagePath(),
+                team.getTeamName(),
+                team.getTeamCode(),
+                teamScaleItem,
+                regionDetail,
+                teamMemberAnnouncement,
+                announcementDDay,
+                false,
+                announcementScrapCount,
+                announcementPositionItem,
+                announcementSkillNames
+        );
+    }
+
+    private TeamScaleItem fetchTeamScaleItem(final Team team) {
+        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
+            TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+            return teamScaleMapper.toTeamScaleItem(teamScale);
+        }
+        return null;
+    }
+
+    private RegionDetail fetchRegionDetail(final Team team) {
+        if (regionQueryAdapter.existsTeamRegionByTeamId(team.getId())) {
+            TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+            return regionMapper.toRegionDetail(teamRegion.getRegion());
+        }
+        return new RegionDetail();
+    }
+
+    private AnnouncementPositionItem fetchAnnouncementPositionItem(final TeamMemberAnnouncement teamMemberAnnouncement) {
+        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
+            AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+            return teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
+        }
+        return new AnnouncementPositionItem();
+    }
+
+    private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> fetchAnnouncementSkills(final TeamMemberAnnouncement teamMemberAnnouncement) {
+        List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
+        return announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+    }
+
 }

@@ -15,6 +15,7 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
@@ -110,6 +111,12 @@ public class TeamMemberAnnouncementMapper {
 
         return TeamMemberAnnouncementViewItems.builder()
                 .teamMemberAnnouncementViewItems(items)
+                .build();
+    }
+
+    public AnnouncementInformMenus toAnnouncementInformMenus(final List<AnnouncementInformMenu> announcementInformMenus) {
+        return AnnouncementInformMenus.builder()
+                .announcementInformMenus(announcementInformMenus)
                 .build();
     }
 

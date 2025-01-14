@@ -24,4 +24,6 @@ public interface TeamMemberAnnouncementCustomRepository {
             final List<String> scaleName,
             final Pageable pageable
     );
+
+    List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit);
 }

@@ -40,4 +40,8 @@ public class TeamMemberAnnouncementQueryAdapter {
     ) {
         return teamMemberAnnouncementRepository.findAll(majorPosition, skillName, cityName, scaleName, pageable);
     }
+
+    public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
+        return teamMemberAnnouncementRepository.findTopTeamMemberAnnouncements(limit);
+    }
 }
