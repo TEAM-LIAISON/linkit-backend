@@ -257,7 +257,7 @@ public class ProfileService {
                 isMyProfile,
                 profileCompletionMenu,
                 profileInformMenu,
-                targetProfile.getMember().getProfileScrapCount(),
+                profileScrapCount,
                 profileLogItem,
                 profileSkillItems,
                 profileActivityItems,
