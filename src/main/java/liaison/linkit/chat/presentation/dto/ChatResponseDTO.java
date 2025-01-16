@@ -3,9 +3,9 @@ package liaison.linkit.chat.presentation.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
 import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.AccessLevel;
@@ -93,11 +93,11 @@ public class ChatResponseDTO {
         private Long matchingId;
 
         private String participantAId;
-        private ParticipantType participantAType;
+        private SenderType participantAType;
         private String participantAName;                // Profile인 경우 회원 이름, Team인 경우 팀 이름
 
         private String participantBId;
-        private ParticipantType participantBType;
+        private SenderType participantBType;
         private String participantBName;                // Profile인 경우 회원 이름, Team인 경우 팀 이름
 
         private String lastMessage;                // 마지막 메시지 정보
@@ -125,16 +125,17 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatMessageResponse {
-        private String messageId;                   // 메시지 ID
-        private Long chatRoomId;                    // 채팅방 ID
+        private String messageId;                               // 메시지 ID
+        private Long chatRoomId;                                // 채팅방 ID
 
-        private Boolean isMyMessage;                // 내가 보낸 메시지인지
+        private String myParticipantType;                       // 나의 참여 타입
+        private ParticipantType messageSenderParticipantType;   // A_TYPE / B_TYPE 구별
 
-        private ParticipantType messageSenderType;  // 채팅방 발신자 타입 (PROFILE/TEAM)
-        private String messageSenderId;             //
+        private String messageSenderLogoImagePath;              // 메시지 발신자 ID
+        private SenderType messageSenderType;                   // 채팅방 발신자 타입 (PROFILE/TEAM)
 
-        private String content;                     // 메시지 내용
-        private LocalDateTime timestamp;            // 전송 시간
-        private boolean isRead;                     // 읽음 여부
+        private String content;                                 // 메시지 내용
+        private LocalDateTime timestamp;                        // 전송 시간
+        private boolean isRead;                                 // 읽음 여부
     }
 }

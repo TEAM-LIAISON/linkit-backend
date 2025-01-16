@@ -10,9 +10,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
-import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.global.type.StatusType;
+import liaison.linkit.matching.domain.type.SenderType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -45,7 +45,7 @@ public class ChatRoom extends BaseDateTimeEntity {
     // 첫 번째 참여자의 유형 (PROFILE 또는 TEAM)
     @Enumerated(EnumType.STRING)
     @Column(name = "participant_a_type", nullable = false)
-    private ParticipantType participantAType;
+    private SenderType participantAType;
 
     // USABLE, DELETED
     @Column(name = "participant_a_status", nullable = false)
@@ -64,7 +64,7 @@ public class ChatRoom extends BaseDateTimeEntity {
     // 두 번째 참여자의 유형 (PROFILE 또는 TEAM)
     @Enumerated(EnumType.STRING)
     @Column(name = "participant_b_type", nullable = false)
-    private ParticipantType participantBType;
+    private SenderType participantBType;
 
     @Column(name = "participant_b_status", nullable = false)
     private StatusType participantBStatus;

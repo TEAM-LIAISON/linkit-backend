@@ -23,7 +23,6 @@ import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import liaison.linkit.chat.domain.type.CreateChatLocation;
-import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
@@ -128,10 +127,10 @@ public class ChatControllerTest extends ControllerTest {
                 .chatRoomId(1L)
                 .matchingId(1L)
                 .participantAId("참여자 A의 ID (Profile - emailId, Team - teamCode)")
-                .participantAType(ParticipantType.PROFILE)
+                .participantAType(SenderType.PROFILE)
                 .participantAName("참여자 A의 이름 (Profile - memberName, Team - teamName)")
                 .participantBId("참여자 B의 ID (Profile - emailId, Team - teamCode)")
-                .participantBType(ParticipantType.TEAM)
+                .participantBType(SenderType.TEAM)
                 .participantBName("참여자 B의 이름 (Profile - memberName, Team - teamName)")
                 .lastMessage("채팅방 마지막 메시지")
                 .lastMessageTime("마지막 메시지 발송 시간")
@@ -421,7 +420,7 @@ public class ChatControllerTest extends ControllerTest {
                                 ChatResponseDTO.ChatMessageResponse.builder()
                                         .messageId("메시지 ID")
                                         .chatRoomId(1L)
-                                        .messageSenderType(ParticipantType.TEAM)
+                                        .messageSenderType(SenderType.TEAM)
                                         .messageSenderId("emailId 또는 teamCode")
                                         .content("첫 번째 메시지")
                                         .timestamp(LocalDateTime.now())
@@ -430,7 +429,7 @@ public class ChatControllerTest extends ControllerTest {
                                 ChatResponseDTO.ChatMessageResponse.builder()
                                         .messageId("메시지 ID")
                                         .chatRoomId(2L)
-                                        .messageSenderType(ParticipantType.PROFILE)
+                                        .messageSenderType(SenderType.PROFILE)
                                         .messageSenderId("emailId 또는 teamCode")
                                         .content("두 번째 메시지")
                                         .timestamp(LocalDateTime.now())

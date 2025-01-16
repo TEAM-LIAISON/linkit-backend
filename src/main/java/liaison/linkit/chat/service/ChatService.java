@@ -174,22 +174,22 @@ public class ChatService {
         String participantBId;
         Long participantBMemberId = memberId;
         String participantBName;
-        ParticipantType participantBType;
+        SenderType participantBType;
 
         if (request.getReceiverType().equals(ReceiverType.PROFILE)) {
             participantBId = profile.getMember().getEmailId();
             participantBName = profile.getMember().getMemberBasicInform().getMemberName();
-            participantBType = ParticipantType.PROFILE;
+            participantBType = SenderType.PROFILE;
         } else if (request.getReceiverType().equals(ReceiverType.TEAM)) {
             participantBId = request.getReceiverTeamCode();
             final Team team = teamQueryAdapter.findByTeamCode(participantBId);
             participantBName = team.getTeamName();
-            participantBType = ParticipantType.TEAM;
+            participantBType = SenderType.TEAM;
         } else {
             final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.findById(request.getReceiverAnnouncementId());
             participantBId = teamMemberAnnouncement.getTeam().getTeamCode();
             participantBName = teamMemberAnnouncement.getTeam().getTeamName();
-            participantBType = ParticipantType.TEAM;
+            participantBType = SenderType.TEAM;
         }
 
         // ---- participantA : 발신자 ----
@@ -197,20 +197,20 @@ public class ChatService {
         String participantAId;
         Long participantAMemberId;
         String participantAName;
-        ParticipantType participantAType;
+        SenderType participantAType;
 
         if (request.getSenderType().equals(SenderType.PROFILE)) {
             participantAId = request.getSenderEmailId();
             final Member member = memberQueryAdapter.findByEmailId(participantAId);
             participantAMemberId = member.getId();
             participantAName = member.getMemberBasicInform().getMemberName();
-            participantAType = ParticipantType.PROFILE;
+            participantAType = SenderType.PROFILE;
         } else { // TEAM
             participantAId = request.getSenderTeamCode();
             final Team team = teamQueryAdapter.findByTeamCode(participantAId);
             participantAMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(team);
             participantAName = team.getTeamName();
-            participantAType = ParticipantType.TEAM;
+            participantAType = SenderType.TEAM;
         }
 
         ChatRoom chatRoom = ChatRoom.builder()
@@ -226,7 +226,7 @@ public class ChatService {
                 .participantBName(participantBName)
                 .participantBType(participantBType)
                 .participantBStatus(StatusType.USABLE)
-                
+
                 .build();
 
         ChatRoom saved = chatRoomCommandAdapter.createChatRoom(chatRoom);
@@ -268,18 +268,18 @@ public class ChatService {
         String participantAId;
         Long participantAMemberId = memberId;
         String participantAName;
-        ParticipantType participantAType;
+        SenderType participantAType;
 
         if (request.getSenderType().equals(SenderType.PROFILE)) {
             participantAId = profile.getMember().getEmailId();
             final Member member = memberQueryAdapter.findById(memberId);
             participantAName = member.getMemberBasicInform().getMemberName();
-            participantAType = ParticipantType.PROFILE;
+            participantAType = SenderType.PROFILE;
         } else { // TEAM
             participantAId = request.getSenderTeamCode();
             final Team team = teamQueryAdapter.findByTeamCode(participantAId);
             participantAName = team.getTeamName();
-            participantAType = ParticipantType.TEAM;
+            participantAType = SenderType.TEAM;
         }
 
         // ---- participantB : 수신자 ----
@@ -287,27 +287,27 @@ public class ChatService {
         String participantBId;
         Long participantBMemberId;
         String participantBName;
-        ParticipantType participantBType;
+        SenderType participantBType;
 
         if (request.getReceiverType().equals(ReceiverType.PROFILE)) {
             participantBId = request.getReceiverEmailId();
             final Member member = memberQueryAdapter.findByEmailId(participantBId);
             participantBMemberId = member.getId();
             participantBName = member.getMemberBasicInform().getMemberName();
-            participantBType = ParticipantType.PROFILE;
+            participantBType = SenderType.PROFILE;
         } else if (request.getReceiverType().equals(ReceiverType.TEAM)) {
             participantBId = request.getReceiverTeamCode();
             final Team team = teamQueryAdapter.findByTeamCode(participantBId);
             participantBMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(team);
             participantBName = team.getTeamName();
-            participantBType = ParticipantType.TEAM;
+            participantBType = SenderType.TEAM;
         } else {
 
             final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.findById(request.getReceiverAnnouncementId());
             participantBId = teamMemberAnnouncement.getTeam().getTeamCode();
             participantBMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(teamMemberAnnouncement.getTeam());
             participantBName = teamMemberAnnouncement.getTeam().getTeamName();
-            participantBType = ParticipantType.TEAM;
+            participantBType = SenderType.TEAM;
         }
 
         ChatRoom chatRoom = ChatRoom.builder()
@@ -334,28 +334,50 @@ public class ChatService {
         // 1. 채팅방 존재 및 접근 권한 확인
         final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatMessageRequest.getChatRoomId());
 
+        String participantALogoImagePath = null;
+        String participantBLogoImagePath = null;
+
+        if (chatRoom.getParticipantAType().equals(SenderType.PROFILE)) {
+            final Profile profile = profileQueryAdapter.findByEmailId(chatRoom.getParticipantAId());
+            participantALogoImagePath = profile.getProfileImagePath();
+        } else if (chatRoom.getParticipantAType().equals(SenderType.TEAM)) {
+            final Team team = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantAId());
+            participantALogoImagePath = team.getTeamLogoImagePath();
+        }
+
+        if (chatRoom.getParticipantBType().equals(SenderType.PROFILE)) {
+            final Profile profile = profileQueryAdapter.findByEmailId(chatRoom.getParticipantBId());
+            participantBLogoImagePath = profile.getProfileImagePath();
+        } else if (chatRoom.getParticipantBType().equals(SenderType.TEAM)) {
+            final Team team = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantBId());
+            participantBLogoImagePath = team.getTeamLogoImagePath();
+        }
+
         // 2. 메시지 생성 및 저장
         ChatMessage chatMessage;
-        
+
         if (chatRoom.getParticipantAMemberId().equals(memberId)) {
             // A가 B에게 보내는 메시지
             chatMessage = chatMapper.toChatMessage(
                     chatMessageRequest,
+                    ParticipantType.A_TYPE,
                     chatRoom.getParticipantAId(),
-                    chatRoom.getParticipantAType(),
-                    chatRoom.getParticipantBId(),
-                    chatRoom.getParticipantBType(),
-                    chatRoom.getParticipantBMemberId()
+                    chatRoom.getParticipantAMemberId(),
+                    chatRoom.getParticipantAName(),
+                    participantALogoImagePath,
+                    chatRoom.getParticipantAType()
+
             );
         } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
             // B가 A에게 보내는 메시지
             chatMessage = chatMapper.toChatMessage(
                     chatMessageRequest,
+                    ParticipantType.B_TYPE,
                     chatRoom.getParticipantBId(),
-                    chatRoom.getParticipantBType(),
-                    chatRoom.getParticipantAId(),
-                    chatRoom.getParticipantAType(),
-                    chatRoom.getParticipantAMemberId()
+                    chatRoom.getParticipantBMemberId(),
+                    chatRoom.getParticipantBName(),
+                    participantBLogoImagePath,
+                    chatRoom.getParticipantBType()
             );
         } else {
             throw SendChatMessageBadRequestException.EXCEPTION;
@@ -370,17 +392,17 @@ public class ChatService {
         // 4. 발신자용 메시지 응답 생성 (isMyMessage = true)
         ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatMessage, true);
         simpMessagingTemplate.convertAndSendToUser(
-            memberId.toString(),
-            "/sub/chat/" + chatRoom.getId(), 
-            senderResponse
+                memberId.toString(),
+                "/sub/chat/" + chatRoom.getId(),
+                senderResponse
         );
 
         // 5. 수신자용 메시지 응답 생성 (isMyMessage = false)
         ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatMessage, false);
         simpMessagingTemplate.convertAndSendToUser(
-            chatMessage.getMessageReceiverMemberId().toString(),
-            "/sub/chat/" + chatRoom.getId(), 
-            receiverResponse
+                chatMessage.getMessageSenderMemberId().toString(),
+                "/sub/chat/" + chatRoom.getId(),
+                receiverResponse
         );
     }
 
@@ -393,6 +415,9 @@ public class ChatService {
             final Long memberId,
             final Pageable pageable
     ) {
+
+        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
+
         // 2. 메시지 조회 및 읽음 처리
         Page<ChatMessage> messages = chatMessageRepository.findByChatRoomIdOrderByTimestampDesc(
                 chatRoomId,
@@ -402,7 +427,7 @@ public class ChatService {
         // 3. 읽지 않은 메시지 읽음 처리
         updateUnreadMessages(chatRoomId, memberId);
 
-        return chatMapper.toChatMessageHistoryResponse(messages);
+        return chatMapper.toChatMessageHistoryResponse(chatRoom, messages, memberId);
     }
 
     @Transactional(readOnly = true)
@@ -416,7 +441,7 @@ public class ChatService {
             if (chatRoom.getParticipantAMemberId().equals(memberId)) {
                 final Member chatPartnerMember = memberQueryAdapter.findById(chatRoom.getParticipantBMemberId());
 
-                if (chatRoom.getParticipantBType().equals(ParticipantType.PROFILE)) {
+                if (chatRoom.getParticipantBType().equals(SenderType.PROFILE)) {
                     final Profile chatPartnerProfile = chatPartnerMember.getProfile();
 
                     ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
@@ -448,7 +473,7 @@ public class ChatService {
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
-                } else if (chatRoom.getParticipantBType().equals(ParticipantType.TEAM)) {
+                } else if (chatRoom.getParticipantBType().equals(SenderType.TEAM)) {
                     final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantBId());
 
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
@@ -518,7 +543,7 @@ public class ChatService {
             } else {
                 final Member chatPartnerMember = memberQueryAdapter.findById(chatRoom.getParticipantAMemberId());
 
-                if (chatRoom.getParticipantAType().equals(ParticipantType.PROFILE)) {
+                if (chatRoom.getParticipantAType().equals(SenderType.PROFILE)) {
                     final Profile chatPartnerProfile = chatPartnerMember.getProfile();
 
                     ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
@@ -550,7 +575,7 @@ public class ChatService {
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
-                } else if (chatRoom.getParticipantAType().equals(ParticipantType.TEAM)) {
+                } else if (chatRoom.getParticipantAType().equals(SenderType.TEAM)) {
                     final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantAId());
 
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
