@@ -63,26 +63,4 @@ public class ChatMessage {
     public void markAsRead() {
         this.isRead = true;
     }
-
-    /**
-     * 채팅 메시지 생성을 위한 빌더 패턴 생성자
-     */
-    @Builder
-    public ChatMessage(
-            final Long chatRoomId,
-            final String messageSenderKeyId,
-            final Long messageSenderMemberId,
-            final String messageSenderName,
-            final SenderType messageSenderType,
-            final String content
-    ) {
-        this.chatRoomId = chatRoomId;
-        this.messageSenderKeyId = messageSenderKeyId;
-        this.messageSenderMemberId = messageSenderMemberId;
-        this.messageSenderName = messageSenderName;
-        this.messageSenderType = messageSenderType;
-        this.content = content;
-        this.timestamp = LocalDateTime.now();
-        this.isRead = false;
-    }
 }

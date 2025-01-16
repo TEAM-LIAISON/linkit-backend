@@ -1,5 +1,7 @@
 package liaison.linkit.chat.business;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
 import liaison.linkit.chat.domain.ChatMessage;
@@ -101,6 +103,8 @@ public class ChatMapper {
                 .messageSenderLogoImagePath(senderLogoImagePath)
                 .messageSenderType(senderType)
                 .content(chatMessageRequest.getContent())
+                .timestamp(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+                .isRead(false)
                 .build();
     }
 
