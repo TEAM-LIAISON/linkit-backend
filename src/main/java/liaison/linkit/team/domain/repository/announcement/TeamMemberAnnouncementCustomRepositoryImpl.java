@@ -273,6 +273,10 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
         return jpaQueryFactory
                 .selectFrom(qTeamMemberAnnouncement)
+                .where(
+                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
+                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+                )
                 .orderBy(qTeamMemberAnnouncement.createdAt.desc()) // 최신순으로 정렬
                 .limit(limit)
                 .fetch();

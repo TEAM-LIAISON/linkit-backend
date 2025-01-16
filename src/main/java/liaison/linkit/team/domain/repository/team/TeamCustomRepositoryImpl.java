@@ -188,8 +188,13 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
         return jpaQueryFactory
                 .selectFrom(qTeam)
+                .where(
+                        qTeam.isTeamPublic.eq(true),
+                        qTeam.status.eq(StatusType.USABLE)
+                )
                 .orderBy(qTeam.createdAt.desc()) // 최신순으로 정렬
                 .limit(limit)
                 .fetch();
     }
+
 }

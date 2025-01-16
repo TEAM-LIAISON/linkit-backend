@@ -127,6 +127,10 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
         return jpaQueryFactory
                 .selectFrom(qProfile)
+                .where(
+                        qProfile.status.eq(StatusType.USABLE)
+                                .and(qProfile.isProfilePublic.eq(true))
+                )
                 .orderBy(qProfile.createdAt.desc()) // 최신순으로 정렬
                 .limit(limit)
                 .fetch();

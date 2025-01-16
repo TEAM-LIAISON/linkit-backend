@@ -28,6 +28,7 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerTeamDetailInf
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.SessionRegistry;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.ReceiverType;
@@ -218,10 +219,14 @@ public class ChatService {
                 .participantAMemberId(participantAMemberId)
                 .participantAName(participantAName)
                 .participantAType(participantAType)
+                .participantAStatus(StatusType.USABLE)
+
                 .participantBId(participantBId)
                 .participantBMemberId(participantBMemberId)
                 .participantBName(participantBName)
                 .participantBType(participantBType)
+                .participantBStatus(StatusType.USABLE)
+                
                 .build();
 
         ChatRoom saved = chatRoomCommandAdapter.createChatRoom(chatRoom);

@@ -48,16 +48,17 @@ public class ChatRoom extends BaseDateTimeEntity {
     private ParticipantType participantAType;
 
     // USABLE, DELETED
+    @Column(name = "participant_a_status", nullable = false)
     private StatusType participantAStatus;
 
     // 채팅방의 두 번째 참여자 ID (Profile의 경우 emailId, Team의 경우 teamCode, TeamMemberAnnouncement의 경우 AnnouncementId)
-    @Column(nullable = false)
+    @Column(name = "participant_b_id", nullable = false)
     private String participantBId;
 
-    @Column(nullable = false)
+    @Column(name = "participant_b_member_id", nullable = false)
     private Long participantBMemberId;
 
-    @Column(nullable = false)
+    @Column(name = "participant_b_name", nullable = false)
     private String participantBName;
 
     // 두 번째 참여자의 유형 (PROFILE 또는 TEAM)
@@ -65,12 +66,13 @@ public class ChatRoom extends BaseDateTimeEntity {
     @Column(name = "participant_b_type", nullable = false)
     private ParticipantType participantBType;
 
+    @Column(name = "participant_b_status", nullable = false)
     private StatusType participantBStatus;
 
-    @Column
+    @Column(name = "last_message")
     private String lastMessage;
 
-    @Column
+    @Column(name = "last_message_time")
     private LocalDateTime lastMessageTime;
 
     public void updateLastMessage(String message, LocalDateTime timestamp) {
