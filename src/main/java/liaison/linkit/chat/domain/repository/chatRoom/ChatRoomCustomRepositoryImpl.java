@@ -34,4 +34,15 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
 
         return count != null;
     }
+
+    @Override
+    public Long getChatRoomIdByMatchingId(final Long matchingId) {
+        QChatRoom qChatRoom = QChatRoom.chatRoom;
+
+        return jpaQueryFactory
+                .select(qChatRoom.id)
+                .from(qChatRoom)
+                .where(qChatRoom.matchingId.eq(matchingId))
+                .fetchOne();
+    }
 }

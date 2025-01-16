@@ -121,6 +121,7 @@ public class MatchingMapper {
 
     public RequestedMatchingMenu toMatchingRequestedMenu(
             final Matching requestedMatchingItem,
+            final Long chatRoomId,
             final SenderProfileInformation senderProfileInformation,
             final SenderTeamInformation senderTeamInformation,
             final ReceiverProfileInformation receiverProfileInformation,
@@ -132,6 +133,7 @@ public class MatchingMapper {
                 .senderType(requestedMatchingItem.getSenderType())
                 .receiverType(requestedMatchingItem.getReceiverType())
                 .isChatRoomCreated(requestedMatchingItem.isChatRoomCreated())
+                .chatRoomId(chatRoomId)
                 .senderProfileInformation(senderProfileInformation)
                 .senderTeamInformation(senderTeamInformation)
                 .receiverProfileInformation(receiverProfileInformation)
@@ -153,6 +155,7 @@ public class MatchingMapper {
 
     public ReceivedMatchingMenu toMatchingReceivedMenu(
             final Matching receivedMatchingItem,
+            final Long chatRoomId,
             final SenderProfileInformation senderProfileInformation,
             final SenderTeamInformation senderTeamInformation,
             final ReceiverProfileInformation receiverProfileInformation,
@@ -164,6 +167,7 @@ public class MatchingMapper {
                 .senderType(receivedMatchingItem.getSenderType())
                 .receiverType(receivedMatchingItem.getReceiverType())
                 .isChatRoomCreated(receivedMatchingItem.isChatRoomCreated())
+                .chatRoomId(chatRoomId)
                 .senderProfileInformation(senderProfileInformation)
                 .senderTeamInformation(senderTeamInformation)
                 .receiverProfileInformation(receiverProfileInformation)

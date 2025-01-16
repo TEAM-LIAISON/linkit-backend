@@ -2,6 +2,7 @@ package liaison.linkit.matching.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.matching.business.MatchingMapper;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
@@ -104,6 +105,7 @@ public class MatchingService {
     private final AnnouncementSkillMapper announcementSkillMapper;
 
     private final NotificationService notificationService;
+    private final ChatRoomQueryAdapter chatRoomQueryAdapter;
 
     @Transactional(readOnly = true)
     public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long memberId, final String emailId) {
@@ -627,6 +629,11 @@ public class MatchingService {
         ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
         ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
 
+        Long chatRoomId = null;
+        if (chatRoomQueryAdapter.existsChatRoomByMatchingId(matching.getId())) {
+            chatRoomId = chatRoomQueryAdapter.getChatRoomIdByMatchingId(matching.getId());
+        }
+
         // (A) 발신자 정보 설정
         if (matching.getSenderType() == SenderType.PROFILE) {
             // 1) senderEmailId로 Profile 조회
@@ -695,8 +702,9 @@ public class MatchingService {
 
         }
 
-        // (C) ReceivedMatchingMenu 빌드
-        return matchingMapper.toMatchingReceivedMenu(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
+        return matchingMapper.toMatchingReceivedMenu(matching,
+                chatRoomId, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation,
+                receiverAnnouncementInformation);
     }
 
     private RequestedMatchingMenu toMatchingRequestedMenu(final Matching matching) {
@@ -708,6 +716,11 @@ public class MatchingService {
         ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
         ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
         ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
+
+        Long chatRoomId = null;
+        if (chatRoomQueryAdapter.existsChatRoomByMatchingId(matching.getId())) {
+            chatRoomId = chatRoomQueryAdapter.getChatRoomIdByMatchingId(matching.getId());
+        }
 
         // (A) 발신자 정보 설정 (senderXxx)
         if (matching.getSenderType() == SenderType.PROFILE) {
@@ -764,8 +777,8 @@ public class MatchingService {
             receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
         }
 
-        // (C) RequestedMatchingMenu 빌드
-        return matchingMapper.toMatchingRequestedMenu(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
+        return matchingMapper.toMatchingRequestedMenu(matching, chatRoomId, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation,
+                receiverAnnouncementInformation);
     }
 
 

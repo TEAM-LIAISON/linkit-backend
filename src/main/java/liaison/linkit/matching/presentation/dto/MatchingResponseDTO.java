@@ -68,6 +68,8 @@ public class MatchingResponseDTO {
 
         private Boolean isChatRoomCreated;
 
+        private Long chatRoomId;
+
         @Builder.Default
         private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
 
@@ -113,6 +115,8 @@ public class MatchingResponseDTO {
         private ReceiverType receiverType;
 
         private Boolean isChatRoomCreated;
+
+        private Long chatRoomId;
 
         @Builder.Default
         private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();

@@ -323,7 +323,7 @@ public class TeamService {
         return teamMapper.toTeamItems(teamInformMenus);
     }
 
-    // 중간에 팀원 관리 권한이
+    // 팀 삭제 요청
     public TeamResponseDTO.DeleteTeamResponse deleteTeam(final Long memberId, final String teamCode) {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 

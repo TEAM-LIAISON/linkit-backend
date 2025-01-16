@@ -85,8 +85,6 @@ public class TeamController {
         return CommonResponse.onSuccess(teamService.deleteTeam(accessor.getMemberId(), teamCode));
     }
 
-    // 팀 나가기 요청
-
 
     // 나의 팀 조회
     @GetMapping("/my/teams")

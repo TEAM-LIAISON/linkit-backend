@@ -28,4 +28,6 @@ public interface TeamMemberCustomRepository {
     Member findTeamOwnerByTeamCode(final String teamCode);
 
     boolean existsTeamMembersByTeamCode(final String teamCode);
+
+    void removeTeamMemberInTeam(final TeamMember teamMember);
 }

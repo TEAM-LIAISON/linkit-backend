@@ -13,4 +13,8 @@ public class TeamMemberCommandAdapter {
     public TeamMember addTeamMember(final TeamMember teamMember) {
         return teamMemberRepository.save(teamMember);
     }
+
+    public void removeTeamMemberInTeam(final TeamMember teamMember) {
+        teamMemberRepository.removeTeamMemberInTeam(teamMember);
+    }
 }

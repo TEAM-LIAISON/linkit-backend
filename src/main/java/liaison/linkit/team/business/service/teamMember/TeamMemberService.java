@@ -20,9 +20,11 @@ import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
+import liaison.linkit.team.exception.teamMember.OwnerTeamMemberOutBadRequestException;
 import liaison.linkit.team.exception.teamMember.TeamMemberForbiddenException;
 import liaison.linkit.team.exception.teamMember.TeamMemberInvitationDuplicateException;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -56,6 +58,7 @@ public class TeamMemberService {
 
     private final TeamMemberInvitationMailService teamMemberInvitationMailService;
     private final RegionMapper regionMapper;
+    private final TeamMemberCommandAdapter teamMemberCommandAdapter;
 
     public TeamMemberViewItems getTeamMemberViewItems(final String teamCode) {
         // 1. 팀 조회
@@ -146,6 +149,20 @@ public class TeamMemberService {
                 .build();
     }
 
+    public TeamMemberResponseDTO.TeamOutResponse getOutTeam(final Long memberId, final String teamCode) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        final String emailId = memberQueryAdapter.findEmailIdById(memberId);
+
+        // 오너의 팀 나가기 요청은 반려된다.
+        if (teamMemberQueryAdapter.getTeamOwnerMemberId(team).equals(memberId)) {
+            throw OwnerTeamMemberOutBadRequestException.EXCEPTION;
+        }
+
+        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
+        teamMemberCommandAdapter.removeTeamMemberInTeam(teamMember);
+
+        return teamMemberMapper.toTeamOutResponse(team.getTeamCode(), emailId);
+    }
 
     private List<AcceptedTeamMemberItem> getAcceptedTeamMemberItems(List<TeamMember> teamMembers) {
         return teamMembers.stream()

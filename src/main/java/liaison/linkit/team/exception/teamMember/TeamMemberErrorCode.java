@@ -1,5 +1,6 @@
 package liaison.linkit.team.exception.teamMember;
 
+import static liaison.linkit.common.consts.LinkitStatic.BAD_REQUEST;
 import static liaison.linkit.common.consts.LinkitStatic.FORBIDDEN;
 
 import java.lang.reflect.Field;
@@ -13,6 +14,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TeamMemberErrorCode implements BaseErrorCode {
+    OWNER_TEAM_MEMBER_OUT_BAD_REQUEST(BAD_REQUEST, "TEAM_MEMBER_400_1", "오너는 팀 나가기를 요청할 수 없습니다,"),
     TEAM_MEMBER_TYPE_FORBIDDEN_REQUEST(FORBIDDEN, "FORBIDDEN_TEAM_MEMBER_TYPE_REQUEST_403_1", "잘못된 팀 관리 권한 요청입니다.");
 
     private final Integer status;

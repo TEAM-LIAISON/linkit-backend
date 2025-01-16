@@ -18,6 +18,7 @@ import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamOutResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
 
 @Mapper
@@ -84,6 +85,13 @@ public class TeamMemberMapper {
                 .regionDetail(regionDetail)
                 .teamMemberType(teamMember.getTeamMemberType())
                 .teamMemberInviteState(teamMemberInviteState)
+                .build();
+    }
+
+    public TeamMemberResponseDTO.TeamOutResponse toTeamOutResponse(final String teamCode, final String emailId) {
+        return TeamOutResponse.builder()
+                .teamCode(teamCode)
+                .emailId(emailId)
                 .build();
     }
 }

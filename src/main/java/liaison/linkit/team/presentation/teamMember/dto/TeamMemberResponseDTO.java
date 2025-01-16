@@ -101,4 +101,13 @@ public class TeamMemberResponseDTO {
         private String emailId;
         private TeamMemberType teamMemberType;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamOutResponse {
+        private String teamCode;
+        private String emailId;
+    }
 }

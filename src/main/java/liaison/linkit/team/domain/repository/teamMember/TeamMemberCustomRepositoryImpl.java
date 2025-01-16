@@ -160,4 +160,14 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 )
                 .fetchFirst() != null;
     }
+
+    @Override
+    public void removeTeamMemberInTeam(final TeamMember teamMember) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+        
+        jpaQueryFactory
+                .delete(qTeamMember)
+                .where(qTeamMember.id.eq(teamMember.getId()))
+                .execute();
+    }
 }
