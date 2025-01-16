@@ -128,8 +128,10 @@ public class ChatResponseDTO {
         private String messageId;                   // 메시지 ID
         private Long chatRoomId;                    // 채팅방 ID
 
-        private ParticipantType messageSenderType;
-        private String messageSenderId;
+        private boolean isMyMessage;                // 내가 보낸 메시지인지
+
+        private ParticipantType messageSenderType;  // 채팅방 발신자 타입 (PROFILE/TEAM)
+        private String messageSenderId;             //
 
         private String content;                     // 메시지 내용
         private LocalDateTime timestamp;            // 전송 시간

@@ -35,6 +35,15 @@ public class ChatMessage {
     @Field("message_sender_id")
     private String messageSenderId;
 
+    @Field("message_receiver_type")
+    private ParticipantType messageReceiverType;
+
+    @Field("message_receiver_id")
+    private String messageReceiverId;
+
+    @Field("message_receiver_member_id")
+    private Long messageReceiverMemberId;
+
     // 메시지 내용
     private String content;
 
@@ -59,13 +68,18 @@ public class ChatMessage {
             final Long chatRoomId,
             final ParticipantType messageSenderType,
             final String messageSenderId,
+            final ParticipantType messageReceiverType,
+            final String messageReceiverId,
+            final Long messageReceiverMemberId,
             final String content
     ) {
         this.chatRoomId = chatRoomId;
-
         this.content = content;
         this.messageSenderType = messageSenderType;
         this.messageSenderId = messageSenderId;
+        this.messageReceiverType = messageReceiverType;
+        this.messageReceiverId = messageReceiverId;
+        this.messageReceiverMemberId = messageReceiverMemberId;
         this.timestamp = LocalDateTime.now();
         this.isRead = false;
     }

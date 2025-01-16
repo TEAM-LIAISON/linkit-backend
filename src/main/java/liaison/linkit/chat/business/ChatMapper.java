@@ -63,22 +63,39 @@ public class ChatMapper {
 
     public ChatMessage toChatMessage(
             final ChatMessageRequest chatMessageRequest,
-            final String participantId,
-            final ParticipantType participantType
+            final String senderId,
+            final ParticipantType senderType,
+            final String receiverId,
+            final ParticipantType receiverType,
+            final Long receiverMemberId
     ) {
         return ChatMessage.builder()
                 .chatRoomId(chatMessageRequest.getChatRoomId())
-                .messageSenderId(participantId)
-                .messageSenderType(participantType)
+                .messageSenderId(senderId)
+                .messageSenderType(senderType)
+                .messageReceiverId(receiverId)
+                .messageReceiverType(receiverType)
+                .messageReceiverMemberId(receiverMemberId)
                 .content(chatMessageRequest.getContent())
-                .timestamp(LocalDateTime.now())
-                .isRead(false)
                 .build();
     }
 
     public ChatLeftMenu toChatLeftMenu(final List<ChatRoomSummary> chatRoomSummaries) {
         return ChatLeftMenu.builder()
                 .chatRoomSummaries(chatRoomSummaries)
+                .build();
+    }
+
+    public ChatResponseDTO.ChatMessageResponse toChatMessageResponse(ChatMessage chatMessage, boolean isMyMessage) {
+        return ChatResponseDTO.ChatMessageResponse.builder()
+                .messageId(chatMessage.getId())
+                .chatRoomId(chatMessage.getChatRoomId())
+                .isMyMessage(isMyMessage)
+                .messageSenderType(chatMessage.getMessageSenderType())
+                .messageSenderId(chatMessage.getMessageSenderId())
+                .content(chatMessage.getContent())
+                .timestamp(chatMessage.getTimestamp())
+                .isRead(chatMessage.isRead())
                 .build();
     }
 }

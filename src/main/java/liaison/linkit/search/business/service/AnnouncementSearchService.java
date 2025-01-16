@@ -97,9 +97,13 @@ public class AnnouncementSearchService {
         }
         log.info("error 3");
         // 포지션 조회
+        log.info("error 3.1.1.");
         AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+        log.info("error 3.1.2.");
         if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
+            log.info("error 3.1");
             AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+            log.info("error 3.2");
             announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
         }
         log.info("error 4");

@@ -335,18 +335,27 @@ public class ChatService {
         final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatMessageRequest.getChatRoomId());
 
         // 2. 메시지 생성 및 저장
-        ChatMessage chatMessage = null;
+        ChatMessage chatMessage;
+        
         if (chatRoom.getParticipantAMemberId().equals(memberId)) {
+            // A가 B에게 보내는 메시지
             chatMessage = chatMapper.toChatMessage(
                     chatMessageRequest,
                     chatRoom.getParticipantAId(),
-                    chatRoom.getParticipantAType()
+                    chatRoom.getParticipantAType(),
+                    chatRoom.getParticipantBId(),
+                    chatRoom.getParticipantBType(),
+                    chatRoom.getParticipantBMemberId()
             );
         } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
+            // B가 A에게 보내는 메시지
             chatMessage = chatMapper.toChatMessage(
                     chatMessageRequest,
                     chatRoom.getParticipantBId(),
-                    chatRoom.getParticipantBType()
+                    chatRoom.getParticipantBType(),
+                    chatRoom.getParticipantAId(),
+                    chatRoom.getParticipantAType(),
+                    chatRoom.getParticipantAMemberId()
             );
         } else {
             throw SendChatMessageBadRequestException.EXCEPTION;
@@ -358,9 +367,21 @@ public class ChatService {
         chatRoom.updateLastMessage(chatMessage.getContent(), chatMessage.getTimestamp());
         chatRoomCommandAdapter.save(chatRoom);
 
-        // 4. 구독자들에게 메시지 발송
-        ChatMessageResponse messageResponse = chatMapper.toChatMessageResponse(chatMessage);
-        simpMessagingTemplate.convertAndSend("/sub/chat/1", messageResponse);
+        // 4. 발신자용 메시지 응답 생성 (isMyMessage = true)
+        ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatMessage, true);
+        simpMessagingTemplate.convertAndSendToUser(
+            memberId.toString(),
+            "/sub/chat/" + chatRoom.getId(), 
+            senderResponse
+        );
+
+        // 5. 수신자용 메시지 응답 생성 (isMyMessage = false)
+        ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatMessage, false);
+        simpMessagingTemplate.convertAndSendToUser(
+            chatMessage.getMessageReceiverMemberId().toString(),
+            "/sub/chat/" + chatRoom.getId(), 
+            receiverResponse
+        );
     }
 
     /**
