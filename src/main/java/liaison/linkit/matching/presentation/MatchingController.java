@@ -1,5 +1,6 @@
 package liaison.linkit.matching.presentation;
 
+import jakarta.mail.MessagingException;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -108,7 +109,7 @@ public class MatchingController {
             @Auth final Accessor accessor,
             @PathVariable final Long matchingId,
             @RequestBody final MatchingRequestDTO.UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
-    ) {
+    ) throws MessagingException {
         return CommonResponse.onSuccess(matchingService.updateMatchingStatusType(accessor.getMemberId(), matchingId, updateMatchingStatusTypeRequest));
     }
 
