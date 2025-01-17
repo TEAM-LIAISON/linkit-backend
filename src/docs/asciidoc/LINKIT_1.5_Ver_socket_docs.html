@@ -657,18 +657,63 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect3">
-<h4 id="_상단바_신규_채팅_구독_빨간점_표시"><a class="link" href="#_상단바_신규_채팅_구독_빨간점_표시">1.5.1. 상단바 신규 채팅 구독 (빨간점 표시)</a></h4>
+<h4 id="_상단바_신규_채팅신규_알림_정보_구독_빨간점_표시"><a class="link" href="#_상단바_신규_채팅신규_알림_정보_구독_빨간점_표시">1.5.1. 상단바 신규 채팅/신규 알림 정보 구독 (빨간점 표시)</a></h4>
+<div class="paragraph">
+<p>이 구독 경로를 통해, 새로 온 채팅 메시지나 알림의 미확인(안 읽음) 개수를 실시간으로 받아볼 수 있습니다.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">SUBSCRIBE /sub/notification/header/{emailId}</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p><strong>Path Parameter</strong>
+- <code>emailId</code>: 이메일 ID (문자열)</p>
+</div>
+<div class="paragraph">
+<p>구독 성공 시, 서버에서 <code>NotificationCountResponse</code> 형태의 메시지가 다음과 같이 전송됩니다:</p>
+</div>
 </div>
 <div class="sect3">
-<h4 id="_상단바_신규_알림_구독_빨간점_표시"><a class="link" href="#_상단바_신규_알림_구독_빨간점_표시">1.5.2. 상단바 신규 알림 구독 (빨간점 표시)</a></h4>
+<h4 id="_notificationcountresponse"><a class="link" href="#_notificationcountresponse">1.5.2. NotificationCountResponse</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unreadChatCount</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">안 읽은 채팅 메시지의 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unreadNotificationCount</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">안 읽은 알림의 개수</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_example_payload"><a class="link" href="#_example_payload">1.5.3. Example Payload</a></h4>
+<div class="paragraph">
+<p>아래는 실제로 전송되는 JSON 예시입니다.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">SUBSCRIBE /sub/chat/header/{emailId}</code></pre>
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "unreadChatCount": 3,
+  "unreadNotificationCount": 2
+}</code></pre>
 </div>
 </div>
 </div>
@@ -678,7 +723,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-01-17 14:14:22 +0900
+Last updated 2025-01-17 21:13:59 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

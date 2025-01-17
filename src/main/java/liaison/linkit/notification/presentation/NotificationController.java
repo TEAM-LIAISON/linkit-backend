@@ -24,6 +24,6 @@ public class NotificationController {
     public CommonResponse<NotificationResponseDTO.NotificationItems> getNotificationItems(
             @Auth final Accessor accessor
     ) {
-        return CommonResponse.onSuccess(notificationService.getNotificationItems(accessor.getMemberId().toString()));
+        return CommonResponse.onSuccess(notificationService.getNotificationItems(accessor.getMemberId()));
     }
 }

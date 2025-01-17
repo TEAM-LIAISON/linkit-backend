@@ -19,6 +19,15 @@ public class NotificationResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class NotificationCountResponse {
+        private long unreadChatCount;
+        private long unreadNotificationCount;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class NotificationItems {
         @Builder.Default
         private List<NotificationItem> notificationItems = new ArrayList<>();

@@ -16,4 +16,7 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
     List<ChatMessage> findByChatRoomIdAndIsReadFalseAndReceiverParticipantId(
             Long chatRoomId
     );
+
+    // [추가] 특정 회원의 '읽지 않은' 메시지 수 카운트 (Derived Query)
+    int countByMessageReceiverMemberIdAndIsReadFalse(Long memberId);
 }

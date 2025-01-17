@@ -31,7 +31,7 @@ public class NotificationService {
     private final NotificationMapper notificationMapper;
     private final MemberQueryAdapter memberQueryAdapter;
 
-    public NotificationResponseDTO.NotificationItems getNotificationItems(final String memberId) {
+    public NotificationResponseDTO.NotificationItems getNotificationItems(final Long memberId) {
         final List<Notification> notifications = notificationQueryAdapter.getNotificationsByMember(memberId);
         return notificationMapper.toNotificationItems(notifications);
     }

@@ -90,7 +90,8 @@ public class ChatMapper {
             final Long senderMemberId,
             final String senderName,
             final String senderLogoImagePath,
-            final SenderType senderType
+            final SenderType senderType,
+            final Long receiverMemberId
     ) {
         return ChatMessage.builder()
                 .chatRoomId(chatMessageRequest.getChatRoomId())
@@ -100,6 +101,7 @@ public class ChatMapper {
                 .messageSenderName(senderName)
                 .messageSenderLogoImagePath(senderLogoImagePath)
                 .messageSenderType(senderType)
+                .messageReceiverMemberId(receiverMemberId)
                 .content(chatMessageRequest.getContent())
                 .timestamp(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                 .isRead(false)

@@ -3,6 +3,7 @@ package liaison.linkit.notification.business;
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.notification.domain.Notification;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationCountResponse;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItem;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItems;
@@ -46,6 +47,13 @@ public class NotificationMapper {
                 .notificationStatus(notification.getNotificationStatus())
                 .createdAt(notification.getCreatedAt())
                 .modifiedAt(notification.getModifiedAt())
+                .build();
+    }
+
+    public NotificationCountResponse toNotificationCount(final long unreadNotificationCount, final long unreadChatCount) {
+        return NotificationCountResponse.builder()
+                .unreadChatCount(unreadChatCount)
+                .unreadNotificationCount(unreadNotificationCount)
                 .build();
     }
 }

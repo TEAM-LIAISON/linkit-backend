@@ -367,8 +367,8 @@ public class ChatService {
                     chatRoom.getParticipantAMemberId(),
                     chatRoom.getParticipantAName(),
                     participantALogoImagePath,
-                    chatRoom.getParticipantAType()
-
+                    chatRoom.getParticipantAType(),
+                    chatRoom.getParticipantBMemberId()
             );
         } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
             // B가 A에게 보내는 메시지
@@ -379,7 +379,8 @@ public class ChatService {
                     chatRoom.getParticipantBMemberId(),
                     chatRoom.getParticipantBName(),
                     participantBLogoImagePath,
-                    chatRoom.getParticipantBType()
+                    chatRoom.getParticipantBType(),
+                    chatRoom.getParticipantAMemberId()
             );
         } else {
             throw SendChatMessageBadRequestException.EXCEPTION;

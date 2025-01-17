@@ -78,16 +78,41 @@ SUBSCRIBE /sub/notification/{emailId}
 Authorization: Bearer {accessToken}
 ----
 
-==== 상단바 신규 채팅 구독 (빨간점 표시)
+==== 상단바 신규 채팅/신규 알림 정보 구독 (빨간점 표시)
+
+이 구독 경로를 통해, 새로 온 채팅 메시지나 알림의 미확인(안 읽음) 개수를 실시간으로 받아볼 수 있습니다.
 
 [source,http]
 ----
 SUBSCRIBE /sub/notification/header/{emailId}
 ----
 
-==== 상단바 신규 알림 구독 (빨간점 표시)
+**Path Parameter**
+- `emailId`: 이메일 ID (문자열)
 
-[source,http]
+구독 성공 시, 서버에서 `NotificationCountResponse` 형태의 메시지가 다음과 같이 전송됩니다:
+
+==== NotificationCountResponse
+
+[cols="1,1,4",options="header"]
+|===
+|필드명 |타입 |설명
+
+|unreadChatCount |int
+|안 읽은 채팅 메시지의 개수
+
+|unreadNotificationCount |int
+|안 읽은 알림의 개수
+|===
+
+==== Example Payload
+
+아래는 실제로 전송되는 JSON 예시입니다.
+
+[source,json]
 ----
-SUBSCRIBE /sub/chat/header/{emailId}
+{
+  "unreadChatCount": 3,
+  "unreadNotificationCount": 2
+}
 ----

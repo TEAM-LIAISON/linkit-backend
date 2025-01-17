@@ -13,11 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 public class NotificationQueryAdapter {
     private final NotificationRepository notificationRepository;
 
-    public Notification getNotificationByMember(final String memberId) {
+    public Notification getNotificationByMember(final Long memberId) {
         return notificationRepository.getNotificationByReceiverMemberId(memberId);
     }
 
-    public List<Notification> getNotificationsByMember(final String memberId) {
+    public List<Notification> getNotificationsByMember(final Long memberId) {
         return notificationRepository.getNotificationsByReceiverMemberId(memberId);
+    }
+
+    public long countUnreadMessages(final Long memberId) {
+        return notificationRepository.countUnreadMessages(memberId);
     }
 }

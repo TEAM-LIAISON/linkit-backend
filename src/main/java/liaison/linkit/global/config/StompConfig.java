@@ -23,10 +23,9 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker(
-                "/sub/chat",                               // 채팅방 구독
+                "/sub/chat",                         // 채팅방 구독
                 "/sub/notification",                                        // 회원 알림 구독
-                "/sub/notification/header",                                 // 상단바 신규 채팅 구독
-                "/sub/chat/header"                                          // 상단바 신규 알림 구독
+                "/sub/header"                                               // 상단바 신규 채팅 구독
         );
         config.setApplicationDestinationPrefixes("/pub");  // /pub 경로로 서버 수신
     }

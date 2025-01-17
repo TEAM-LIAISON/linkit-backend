@@ -48,6 +48,9 @@ public class ChatMessage {
     @Field("message_sender_type")
     private SenderType messageSenderType;
 
+    @Field("message_receiver_member_id")
+    private Long messageReceiverMemberId;   // 채팅 읽었는지 안읽었는지 여부를 판단
+
     // 메시지 내용
     private String content;
 
