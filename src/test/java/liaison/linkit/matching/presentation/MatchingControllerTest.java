@@ -944,6 +944,7 @@ public class MatchingControllerTest extends ControllerTest {
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
                 .isChatRoomCreated(true)
+                .chatRoomId(1L)
                 .senderProfileInformation(
                         SenderProfileInformation.builder()
                                 .profileImagePath("발신자 프로필 이미지 경로")
@@ -1026,6 +1027,7 @@ public class MatchingControllerTest extends ControllerTest {
                 .senderType(SenderType.TEAM)
                 .receiverType(ReceiverType.PROFILE)
                 .isChatRoomCreated(true)
+                .chatRoomId(2L)
                 .senderProfileInformation(
                         SenderProfileInformation.builder()
                                 .profileImagePath("발신자 프로필 이미지 경로")
@@ -1165,6 +1167,10 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].isChatRoomCreated")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("채팅방 생성 여부"),
+
+                                        fieldWithPath("result.content[].chatRoomId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("채팅방이 생성된 경우 해당 채팅방의 ID"),
 
                                         // ----- senderProfileInformation
                                         fieldWithPath("result.content[].senderProfileInformation")
@@ -1379,6 +1385,7 @@ public class MatchingControllerTest extends ControllerTest {
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
                 .isChatRoomCreated(true)
+                .chatRoomId(1L)
                 .senderProfileInformation(
                         SenderProfileInformation.builder()
                                 .profileImagePath("발신자 프로필 이미지 경로")
@@ -1461,6 +1468,7 @@ public class MatchingControllerTest extends ControllerTest {
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
                 .isChatRoomCreated(true)
+                .chatRoomId(2L)
                 .senderProfileInformation(
                         SenderProfileInformation.builder()
                                 .profileImagePath("발신자 프로필 이미지 경로")
@@ -1594,6 +1602,10 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].isChatRoomCreated")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("채팅방 생성 여부"),
+
+                                        fieldWithPath("result.content[].chatRoomId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("채팅방이 생성된 경우 해당 채팅방의 ID"),
 
                                         fieldWithPath("result.content[].senderType")
                                                 .type(JsonFieldType.STRING)

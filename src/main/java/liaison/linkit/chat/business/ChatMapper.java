@@ -71,9 +71,6 @@ public class ChatMapper {
                 // 메시지 발신자의 로고 이미지 경로
                 .messageSenderLogoImagePath(message.getMessageSenderLogoImagePath())
 
-                // 발신자 타입(팀/개인 등)
-                .messageSenderType(message.getMessageSenderType())
-
                 // 메시지 내용
                 .content(message.getContent())
 

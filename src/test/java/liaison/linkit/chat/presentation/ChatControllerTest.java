@@ -23,6 +23,7 @@ import jakarta.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import liaison.linkit.chat.domain.type.CreateChatLocation;
+import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
@@ -420,7 +421,9 @@ public class ChatControllerTest extends ControllerTest {
                                 ChatResponseDTO.ChatMessageResponse.builder()
                                         .messageId("메시지 ID")
                                         .chatRoomId(1L)
-                                        .messageSenderType(SenderType.TEAM)
+                                        .myParticipantType("A_TYPE")
+                                        .messageSenderParticipantType(ParticipantType.A_TYPE)
+                                        .messageSenderLogoImagePath("메시지 발신자의 프로필 로고 이미지 경로")
                                         .content("첫 번째 메시지")
                                         .timestamp(LocalDateTime.now())
                                         .isRead(false)
@@ -428,10 +431,12 @@ public class ChatControllerTest extends ControllerTest {
                                 ChatResponseDTO.ChatMessageResponse.builder()
                                         .messageId("메시지 ID")
                                         .chatRoomId(2L)
-                                        .messageSenderType(SenderType.PROFILE)
+                                        .myParticipantType("B_TYPE")
+                                        .messageSenderParticipantType(ParticipantType.B_TYPE)
+                                        .messageSenderLogoImagePath("메시지 발신자의 프로필 로고 이미지 경로")
                                         .content("두 번째 메시지")
                                         .timestamp(LocalDateTime.now())
-                                        .isRead(true)
+                                        .isRead(false)
                                         .build()
                         )
                 )
@@ -471,9 +476,11 @@ public class ChatControllerTest extends ControllerTest {
                                         fieldWithPath("result.messages[].chatRoomId").type(JsonFieldType.NUMBER).description("채팅방 ID"),
                                         fieldWithPath("result.messages[].content").type(JsonFieldType.STRING).description("메시지 내용"),
                                         fieldWithPath("result.messages[].timestamp").type(JsonFieldType.STRING).description("메시지 전송 시간"),
-                                        fieldWithPath("result.messages[].messageSenderType").type(JsonFieldType.STRING).description("메시지 발신자 타입 (Profile / TEAM)"),
-                                        fieldWithPath("result.messages[].messageSenderId").type(JsonFieldType.STRING).description("메시지 발신자 ID"),
-                                        fieldWithPath("result.messages[].read").type(JsonFieldType.BOOLEAN).description("메시지 읽음 여부")
+                                        fieldWithPath("result.messages[].read").type(JsonFieldType.BOOLEAN).description("메시지 읽음 여부"),
+                                        // 누락된 필드 추가
+                                        fieldWithPath("result.messages[].myParticipantType").type(JsonFieldType.STRING).description("현재 사용자의 참여 타입 (A_TYPE / B_TYPE / 기타)"),
+                                        fieldWithPath("result.messages[].messageSenderParticipantType").type(JsonFieldType.STRING).description("메시지 발신자의 참여 타입 (A_TYPE / B_TYPE / 기타)"),
+                                        fieldWithPath("result.messages[].messageSenderLogoImagePath").type(JsonFieldType.STRING).description("메시지 발신자의 로고 이미지 경로")
                                 )
                         )
                 );

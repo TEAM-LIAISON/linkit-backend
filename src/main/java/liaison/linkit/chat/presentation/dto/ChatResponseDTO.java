@@ -131,8 +131,7 @@ public class ChatResponseDTO {
         private String myParticipantType;                       // 나의 참여 타입
         private ParticipantType messageSenderParticipantType;   // A_TYPE / B_TYPE 구별
 
-        private String messageSenderLogoImagePath;              // 메시지 발신자 ID
-        private SenderType messageSenderType;                   // 채팅방 발신자 타입 (PROFILE/TEAM)
+        private String messageSenderLogoImagePath;              // 메시지 발신자의 로고 이미지 경로
 
         private String content;                                 // 메시지 내용
         private LocalDateTime timestamp;                        // 전송 시간
