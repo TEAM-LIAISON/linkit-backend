@@ -79,4 +79,12 @@ public class ChatRoom extends BaseDateTimeEntity {
         this.lastMessage = message;
         this.lastMessageTime = timestamp;
     }
+
+    public void setParticipantAStatus(final StatusType participantAStatus) {
+        this.participantAStatus = participantAStatus;
+    }
+
+    public void setParticipantBStatus(final StatusType participantBStatus) {
+        this.participantBStatus = participantBStatus;
+    }
 }

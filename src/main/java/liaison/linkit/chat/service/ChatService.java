@@ -8,6 +8,7 @@ import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.domain.repository.chatMessage.ChatMessageRepository;
 import liaison.linkit.chat.domain.type.CreateChatLocation;
 import liaison.linkit.chat.domain.type.ParticipantType;
+import liaison.linkit.chat.exception.ChatRoomLeaveBadRequestException;
 import liaison.linkit.chat.exception.CreateChatReceiverBadRequestException;
 import liaison.linkit.chat.exception.CreateChatRoomBadRequestException;
 import liaison.linkit.chat.exception.CreateChatSenderBadRequestException;
@@ -21,6 +22,7 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageHistoryResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatPartnerInformation;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomLeaveResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerProfileDetailInformation;
@@ -656,5 +658,23 @@ public class ChatService {
 
         unreadMessages.forEach(ChatMessage::markAsRead);
         chatMessageRepository.saveAll(unreadMessages);
+    }
+
+    public ChatRoomLeaveResponse leaveChatRoom(final Long memberId, final Long chatRoomId) {
+        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
+
+        ParticipantType participantType;
+
+        if (chatRoom.getParticipantAMemberId().equals(memberId)) {
+            chatRoom.setParticipantAStatus(StatusType.DELETED);
+            participantType = ParticipantType.A_TYPE;
+        } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
+            chatRoom.setParticipantBStatus(StatusType.DELETED);
+            participantType = ParticipantType.B_TYPE;
+        } else {
+            throw ChatRoomLeaveBadRequestException.EXCEPTION;
+        }
+
+        return chatMapper.toLeaveChatRoom(chatRoomId, participantType);
     }
 }

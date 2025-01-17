@@ -29,6 +29,7 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageHistoryResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatPartnerInformation;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomLeaveResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerProfileDetailInformation;
@@ -105,6 +106,14 @@ public class ChatControllerTest extends ControllerTest {
                         .param("size", "50")
                         .param("sort", "timestamp,desc")
                         .accept(MediaType.APPLICATION_JSON)
+        );
+    }
+
+    private ResultActions performLeaveChatRoom(final Long chatRoomId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/chat/room/{chatRoomId}/leave", chatRoomId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
         );
     }
 
@@ -411,7 +420,6 @@ public class ChatControllerTest extends ControllerTest {
     @Test
     void getChatMessages() throws Exception {
         // given
-
         ChatResponseDTO.ChatMessageHistoryResponse chatMessageHistoryResponse = ChatResponseDTO.ChatMessageHistoryResponse.builder()
                 .totalElements(2L)
                 .totalPages(1)
@@ -486,4 +494,56 @@ public class ChatControllerTest extends ControllerTest {
                 );
     }
 
+    @DisplayName("회원이 참여하고 있는 채팅방을 나갈 수 있다.")
+    @Test
+    void leaveChatRoom() throws Exception {
+        // given
+        final ChatRoomLeaveResponse chatRoomLeaveResponse = ChatRoomLeaveResponse.builder()
+                .chatRoomId(1L)
+                .chatRoomLeaveParticipantType(ParticipantType.A_TYPE)
+                .build();
+
+        // when
+        when(chatService.leaveChatRoom(anyLong(), anyLong())).thenReturn(chatRoomLeaveResponse);
+
+        final ResultActions resultActions = performLeaveChatRoom(1L);
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("chatRoomId")
+                                                .description("채팅방 ID")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+
+                                        // 누락된 필드 추가
+                                        fieldWithPath("result.chatRoomId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("채팅방 ID")
+                                                .attributes(field("constraint", "숫자 값")),
+                                        fieldWithPath("result.chatRoomLeaveParticipantType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅방을 떠난 참여자 타입 (A_TYPE / B_TYPE)")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                ).andReturn();
+    }
 }

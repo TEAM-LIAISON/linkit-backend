@@ -137,4 +137,15 @@ public class ChatResponseDTO {
         private LocalDateTime timestamp;                        // 전송 시간
         private boolean isRead;                                 // 읽음 여부
     }
+
+    // 채팅방 나가기에 대한 응답
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatRoomLeaveResponse {
+        private Long chatRoomId;
+
+        private ParticipantType chatRoomLeaveParticipantType;
+    }
 }

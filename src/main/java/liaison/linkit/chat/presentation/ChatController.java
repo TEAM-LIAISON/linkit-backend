@@ -85,4 +85,13 @@ public class ChatController {
     ) {
         return CommonResponse.onSuccess(chatService.getChatLeftMenu(accessor.getMemberId()));
     }
+
+    @PostMapping("/api/v1/chat/room/{chatRoomId}/leave")
+    @MemberOnly
+    public CommonResponse<ChatResponseDTO.ChatRoomLeaveResponse> leaveChatRoom(
+            @Auth final Accessor accessor,
+            @PathVariable final Long chatRoomId
+    ) {
+        return CommonResponse.onSuccess(chatService.leaveChatRoom(accessor.getMemberId(), chatRoomId));
+    }
 }

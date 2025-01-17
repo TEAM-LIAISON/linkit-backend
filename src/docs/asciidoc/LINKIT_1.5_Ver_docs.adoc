@@ -1342,6 +1342,32 @@ include::{snippets}/team-history-controller-test/update-team-history/http-respon
 include::{snippets}/team-history-controller-test/update-team-history/response-fields.adoc[]
 ====
 
+== #[팀 - 팀 관리]#
+
+=== 팀 나가기 (스스로 나가기)
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/get-out-team/http-request.adoc[]
+include::{snippets}/team-member-controller-test/get-out-team/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/get-out-team/http-response.adoc[]
+include::{snippets}/team-member-controller-test/get-out-team/response-fields.adoc[]
+====
+
+=== 팀 삭제하기
+
+====
+*요청*
+include::{snippets}/team-controller-test/delete-team/http-request.adoc[]
+include::{snippets}/team-controller-test/delete-team/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-controller-test/delete-team/http-response.adoc[]
+include::{snippets}/team-controller-test/delete-team/response-fields.adoc[]
+====
+
 == #[팀원 찾기]#
 
 === 팀원 찾기 (필터링 포함)
@@ -1497,6 +1523,18 @@ include::{snippets}/chat-controller-test/get-chat-messages/query-parameters.adoc
 include::{snippets}/chat-controller-test/get-chat-messages/http-response.adoc[]
 include::{snippets}/chat-controller-test/get-chat-messages/response-fields.adoc[]
 
+====
+
+=== 채팅방 나가기
+
+====
+*요청*
+include::{snippets}/chat-controller-test/leave-chat-room/http-request.adoc[]
+include::{snippets}/chat-controller-test/leave-chat-room/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/chat-controller-test/leave-chat-room/http-response.adoc[]
+include::{snippets}/chat-controller-test/leave-chat-room/response-fields.adoc[]
 ====
 
 == #[알림]#

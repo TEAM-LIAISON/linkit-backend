@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -34,6 +35,7 @@ import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.UpdateTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.AddTeamResponse;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.DeleteTeamResponse;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamDetail;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
@@ -90,6 +92,14 @@ public class TeamControllerTest extends ControllerTest {
     private ResultActions performGetHomeTeamInformMenus() throws Exception {
         return mockMvc.perform(
                 get("/api/v1/home/team")
+        );
+    }
+
+    private ResultActions performDeleteTeam(final String teamCode) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamCode}", teamCode)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
         );
     }
 
@@ -765,6 +775,59 @@ public class TeamControllerTest extends ControllerTest {
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
 
+    }
+
+    @DisplayName("팀 오너가 팀을 최종 삭제한다.")
+    @Test
+    void deleteTeam() throws Exception {
+        // given
+        final DeleteTeamResponse deleteTeamResponse = DeleteTeamResponse.builder()
+                .teamCode("liaison")
+                .deletedAt(LocalDateTime.now())
+                .build();
+
+        // when
+        when(teamService.deleteTeam(anyLong(), any())).thenReturn(deleteTeamResponse);
+
+        final ResultActions resultActions = performDeleteTeam("liaison");
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+
+                                        // 누락된 필드 추가
+                                        fieldWithPath("result.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)")
+                                                .attributes(field("constraint", "숫자 값")),
+                                        fieldWithPath("result.deletedAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 삭제 시간")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                ).andReturn();
     }
 
     @DisplayName("회원이 자신의 팀 목록을 조회한다.")

@@ -10,6 +10,7 @@ import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomLeaveResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.common.annotation.Mapper;
@@ -127,5 +128,12 @@ public class ChatMapper {
         } else {
             return "B_TYPE";
         }
+    }
+
+    public ChatResponseDTO.ChatRoomLeaveResponse toLeaveChatRoom(final Long chatRoomId, final ParticipantType participantType) {
+        return ChatRoomLeaveResponse.builder()
+                .chatRoomId(chatRoomId)
+                .chatRoomLeaveParticipantType(participantType)
+                .build();
     }
 }
