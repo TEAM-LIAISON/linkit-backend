@@ -681,6 +681,8 @@ public class TeamControllerTest extends ControllerTest {
 
         final TeamDetail teamDetail = TeamDetail.builder()
                 .isMyTeam(true)
+                .isTeamInvitationInProgress(true)
+                .isTeamDeleteInProgress(false)
                 .teamInformMenu(teamInformMenu)
                 .build();
 
@@ -717,6 +719,13 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.isMyTeam")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("로그인 사용자가 팀의 멤버인지 여부"),
+                                        fieldWithPath("result.isTeamInvitationInProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("로그인 사용자가 팀원으로 초대 받았는지 여부 (true -> 초대 수락 버튼 on)"),
+                                        fieldWithPath("result.isTeamDeleteInProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("로그인 사용자가 관리자이고, 팀 삭제에 대해서 수락 요청을 진행해아 하는 경우 -> (true)"),
+
                                         fieldWithPath("result.teamInformMenu")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("팀 정보 메뉴 객체"),

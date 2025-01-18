@@ -110,4 +110,22 @@ public class TeamMemberResponseDTO {
         private String teamCode;
         private String emailId;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamJoinResponse {
+        private String teamCode;
+        private String emailId;
+    }
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateManagingTeamStateResponse {
+        private String teamCode;
+    }
 }

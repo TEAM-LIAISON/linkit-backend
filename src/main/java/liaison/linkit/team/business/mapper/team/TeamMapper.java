@@ -120,7 +120,7 @@ public class TeamMapper {
     public TeamResponseDTO.DeleteTeamResponse toDeleteTeam(final String teamCode) {
         return DeleteTeamResponse.builder()
                 .teamCode(teamCode)
-                .deletedAt(LocalDateTime.now())
+                .deletedRequestedAt(LocalDateTime.now())
                 .build();
     }
 }

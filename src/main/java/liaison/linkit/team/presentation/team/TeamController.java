@@ -5,10 +5,10 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.team.business.service.team.TeamService;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
-import liaison.linkit.team.business.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -84,7 +84,6 @@ public class TeamController {
     ) {
         return CommonResponse.onSuccess(teamService.deleteTeam(accessor.getMemberId(), teamCode));
     }
-
 
     // 나의 팀 조회
     @GetMapping("/my/teams")

@@ -16,16 +16,5 @@ public class RegionResponseDTO {
     public static class RegionDetail {
         private String cityName;
         private String divisionName;
-
-        public String getFullRegionDetail() {
-            if (cityName != null && divisionName != null) {
-                return cityName + " " + divisionName;
-            } else if (cityName != null) {
-                return cityName;
-            } else if (divisionName != null) {
-                return divisionName;
-            }
-            return "";
-        }
     }
 }

@@ -44,4 +44,8 @@ public class TeamMemberInvitation extends BaseDateTimeEntity {
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private TeamMemberInviteState teamMemberInviteState;
+
+    public void setTeamMemberInviteState(final TeamMemberInviteState teamMemberInviteState) {
+        this.teamMemberInviteState = teamMemberInviteState;
+    }
 }

@@ -5,6 +5,5 @@ public enum NotificationType {
     MATCHING,
     CHATTING,
     TEAM_INVITATION,
-    TEAM,
-    SYSTEM
+    TEAM
 }

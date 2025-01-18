@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import java.util.List;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -81,5 +82,13 @@ public class TeamRequestDTO {
 
         @NotNull(message = "팀 공개여부를 선택해주세요.")
         private Boolean isTeamPublic;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateManagingTeamStateRequest {
+        private TeamMemberManagingTeamState teamMemberManagingTeamState;
     }
 }

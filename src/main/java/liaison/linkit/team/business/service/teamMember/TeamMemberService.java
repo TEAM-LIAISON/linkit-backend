@@ -6,6 +6,7 @@ import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.mail.service.TeamMemberInvitationMailService;
+import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
 import liaison.linkit.profile.domain.position.ProfilePosition;
@@ -20,20 +21,24 @@ import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
+import liaison.linkit.team.exception.teamMember.ManagingBadRequestException;
 import liaison.linkit.team.exception.teamMember.OwnerTeamMemberOutBadRequestException;
 import liaison.linkit.team.exception.teamMember.TeamMemberForbiddenException;
 import liaison.linkit.team.exception.teamMember.TeamMemberInvitationDuplicateException;
+import liaison.linkit.team.exception.teamMember.TeamMemberInvitationNotFoundException;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.UpdateManagingTeamStateRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.UpdateTeamMemberTypeRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.PendingTeamMemberItem;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateManagingTeamStateResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -188,4 +193,33 @@ public class TeamMemberService {
                 .toList();
     }
 
+    public TeamMemberResponseDTO.TeamJoinResponse joinTeam(final Long memberId, final String teamCode) {
+        final Member member = memberQueryAdapter.findById(memberId);
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        if (!teamMemberInvitationQueryAdapter.existsByEmailAndTeam(member.getEmail(), targetTeam)) {
+            throw TeamMemberInvitationNotFoundException.EXCEPTION;
+        } else {
+            final TeamMemberInvitation teamMemberInvitation = teamMemberInvitationQueryAdapter.getTeamMemberInvitationInPendingState(member.getEmail(), targetTeam);
+            final TeamMember teamMember = teamMemberMapper.toTeamMember(member, targetTeam, teamMemberInvitation.getTeamMemberType());
+            teamMemberCommandAdapter.addTeamMember(teamMember);
+            teamMemberInvitation.setTeamMemberInviteState(TeamMemberInviteState.ACCEPTED);
+        }
+
+        return teamMemberMapper.toTeamJoinResponse(teamCode, member.getEmailId());
+    }
+
+    public UpdateManagingTeamStateResponse updateManagingTeamState(final Long memberId, final String teamCode, final UpdateManagingTeamStateRequest updateManagingTeamStateRequest) {
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
+            throw ManagingBadRequestException.EXCEPTION;
+        }
+
+        final String emailId = memberQueryAdapter.findEmailIdById(memberId);
+
+        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
+
+        teamMemberCommandAdapter.updateTeamMemberManangingTeamState(teamMember, updateManagingTeamStateRequest.getTeamMemberManagingTeamState());
+    }
 }

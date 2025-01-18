@@ -35,6 +35,7 @@ import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.PendingTeamMemberItem;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamJoinResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamOutResponse;
@@ -115,6 +116,13 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performJoinTeam(final String teamCode) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/member/join", teamCode)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
 
     @DisplayName("회원이 팀의 팀 구성원 뷰어를 전체 조회할 수 있다.")
     @Test
@@ -528,6 +536,60 @@ public class TeamMemberControllerTest extends ControllerTest {
         when(teamMemberService.getOutTeam(anyLong(), any())).thenReturn(teamOutResponse);
 
         final ResultActions resultActions = performGetOutTeam("liaison");
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+
+                                        // 누락된 필드 추가
+                                        fieldWithPath("result.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀을 나간 회원의 유저 아이디")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                ).andReturn();
+    }
+
+    @DisplayName("회원이 팀 초대 수락을 할 수 있다.")
+    @Test
+    void joinTeam() throws Exception {
+        // given
+        final TeamJoinResponse teamJoinResponse = TeamJoinResponse.builder()
+                .teamCode("liaison")
+                .emailId("kwondm7")
+                .build();
+
+        // when
+        when(teamMemberService.joinTeam(anyLong(), any())).thenReturn(teamJoinResponse);
+
+        final ResultActions resultActions = performJoinTeam("liaison");
+
         // then
         final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())

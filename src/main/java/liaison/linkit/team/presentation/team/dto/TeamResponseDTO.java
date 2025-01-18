@@ -26,7 +26,7 @@ public class TeamResponseDTO {
 
         // 팀 삭제 상태
         private Boolean isTeamDeleteInProgress;
-        
+
         @Builder.Default
         private TeamInformMenu teamInformMenu = new TeamInformMenu();
     }
@@ -150,13 +150,13 @@ public class TeamResponseDTO {
         final List<TeamInformMenu> teamInformMenus = new ArrayList<>();
     }
 
-    // 팀 삭제 응답
+    // 팀 삭제 요청 응답
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DeleteTeamResponse {
         private String teamCode;
-        private LocalDateTime deletedAt;
+        private LocalDateTime deletedRequestedAt;
     }
 }

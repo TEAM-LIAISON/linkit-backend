@@ -51,4 +51,8 @@ public class TeamQueryAdapter {
     public List<Team> findTopTeams(final int limit) {
         return teamRepository.findTopTeams(limit);
     }
+
+    public boolean isTeamDeleteInProgress(final String teamCode) {
+        return teamRepository.isTeamDeleteInProgress(teamCode);
+    }
 }

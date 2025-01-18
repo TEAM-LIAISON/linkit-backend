@@ -25,4 +25,6 @@ public interface TeamCustomRepository {
     List<Team> findTopTeams(final int limit);
 
     Team updateTeamStatus(final TeamStatus teamStatus, final String teamCode);
+
+    boolean isTeamDeleteInProgress(final String teamCode);
 }

@@ -1356,7 +1356,7 @@ include::{snippets}/team-member-controller-test/get-out-team/http-response.adoc[
 include::{snippets}/team-member-controller-test/get-out-team/response-fields.adoc[]
 ====
 
-=== 팀 삭제하기
+=== 팀 삭제 요청하기 (오너, 관리자에게 허용)
 
 ====
 *요청*
@@ -1367,6 +1367,8 @@ include::{snippets}/team-controller-test/delete-team/path-parameters.adoc[]
 include::{snippets}/team-controller-test/delete-team/http-response.adoc[]
 include::{snippets}/team-controller-test/delete-team/response-fields.adoc[]
 ====
+
+=== 팀 삭제 수락/거절 (모든 관리자의 허락에 의해 삭제 가능하다)
 
 == #[팀원 찾기]#
 

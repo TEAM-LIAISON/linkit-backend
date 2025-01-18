@@ -5,10 +5,12 @@ import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.team.business.service.teamMember.TeamMemberService;
+import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.UpdateManagingTeamStateRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateManagingTeamStateResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -78,6 +80,26 @@ public class TeamMemberController {
         return CommonResponse.onSuccess(teamMemberService.getOutTeam(accessor.getMemberId(), teamCode));
     }
 
+    // 팀 삭제 수락 또는 거절
+    @PostMapping("/managing/teamState")
+    @MemberOnly
+    public CommonResponse<UpdateManagingTeamStateResponse> updateManagingTeamStateResponse(
+            @PathVariable final String teamCode,
+            @Auth final Accessor accessor,
+            @RequestBody final UpdateManagingTeamStateRequest updateManagingTeamStateRequest
+    ) {
+        return CommonResponse.onSuccess(teamMemberService.updateManagingTeamState(accessor.getMemberId(), teamCode, updateManagingTeamStateRequest));
+    }
+
     // 팀원 삭제하기 요청
-    
+
+    // 팀 초대 수락하기
+    @PostMapping("/member/join")
+    @MemberOnly
+    public CommonResponse<TeamMemberResponseDTO.TeamJoinResponse> joinTeam(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamCode
+    ) {
+        return CommonResponse.onSuccess(teamMemberService.joinTeam(accessor.getMemberId(), teamCode));
+    }
 }

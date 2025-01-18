@@ -226,4 +226,16 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             return null;
         }
     }
+
+    @Override
+    public boolean isTeamDeleteInProgress(final String teamCode) {
+        QTeam qTeam = QTeam.team;
+        
+        return jpaQueryFactory
+                .selectOne()
+                .from(qTeam)
+                .where(qTeam.teamCode.eq(teamCode)
+                        .and(qTeam.teamStatus.eq(TeamStatus.DELETE_PENDING)))
+                .fetchFirst() != null;
+    }
 }

@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,6 +42,10 @@ public class TeamMember {
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private TeamMemberType teamMemberType;  // 팀원 권한
+
+    @Column(nullable = false)
+    @Enumerated(value = STRING)
+    private TeamMemberManagingTeamState teamMemberManagingTeamState;    // 팀원의 팀 관리 상태 (ACTIVE, DENY_DELETE, ALLOW_DELETE)
 
     public void updateTeamMemberType(final TeamMemberType teamMemberType) {
         this.teamMemberType = teamMemberType;

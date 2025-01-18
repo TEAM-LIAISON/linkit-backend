@@ -29,6 +29,7 @@ import liaison.linkit.team.domain.region.TeamRegion;
 import liaison.linkit.team.domain.scale.Scale;
 import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.state.TeamState;
+import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.team.exception.team.DeleteTeamBadRequestException;
 import liaison.linkit.team.exception.team.DuplicateTeamCodeException;
 import liaison.linkit.team.implement.team.TeamCommandAdapter;
@@ -125,7 +126,7 @@ public class TeamService {
         }
 
         // 팀원에 추가
-        final TeamMember teamMember = teamMemberMapper.toTeamMember(member, savedTeam);
+        final TeamMember teamMember = teamMemberMapper.toTeamMember(member, savedTeam, TeamMemberType.TEAM_OWNER);
         teamMemberCommandAdapter.addTeamMember(teamMember);
 
         // 팀 규모 저장
@@ -258,7 +259,7 @@ public class TeamService {
 
         // 조회 요청을 진행한 사용자가 teamInvitation 테이블에 존재하는지 여부 판단
         boolean isTeamInvitationInProgress = teamMemberInvitationQueryAdapter.existsByEmailAndTeam(member.getEmail(), targetTeam);
-        boolean isTeamDeleteInProgress = false;
+        boolean isTeamDeleteInProgress = teamQueryAdapter.isTeamDeleteInProgress(teamCode) && isMyTeam;
 
         final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
         final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
@@ -342,7 +343,7 @@ public class TeamService {
     public TeamResponseDTO.DeleteTeamResponse deleteTeam(final Long memberId, final String teamCode) {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
-        if (!teamMemberQueryAdapter.getTeamOwnerMemberId(targetTeam).equals(memberId)) {
+        if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
             throw DeleteTeamBadRequestException.EXCEPTION;
         }
 

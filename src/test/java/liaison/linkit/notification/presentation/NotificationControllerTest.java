@@ -16,13 +16,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.notification.domain.type.NotificationReadStatus;
 import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItem;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItems;
@@ -79,7 +79,9 @@ public class NotificationControllerTest extends ControllerTest {
                 .notificationItems(Arrays.asList(
                         NotificationItem.builder()
                                 .notificationType(NotificationType.TEAM_INVITATION)
+                                .subNotificationType(SubNotificationType.TEAM_INVITATION_REQUESTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("방금 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.builder()
                                                 .teamName("테스트 팀")
@@ -88,32 +90,21 @@ public class NotificationControllerTest extends ControllerTest {
                                 .build(),
                         NotificationItem.builder()
                                 .notificationType(NotificationType.CHATTING)
+                                .subNotificationType(SubNotificationType.NEW_CHAT)
                                 .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("방금 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.builder()
-                                                .senderName("보낸 사람 이름")
-                                                .receiverName("받는 사람 이름")
-                                                .lastMessage("마지막 메시지 내용")
                                                 .build()
                                 )
                                 .build(),
                         NotificationItem.builder()
                                 .notificationType(NotificationType.MATCHING)
-                                .notificationReadStatus(NotificationReadStatus.SENT)
-                                .notificationDetails(
-                                        NotificationResponseDTO.NotificationDetails.builder()
-                                                .matchingSenderName("매칭 발신자 이름")
-                                                .matchingReceiverName("매칭 수신자 이름")
-                                                .matchingStatus("매칭 완료")
-                                                .build()
-                                )
-                                .build(),
-                        NotificationItem.builder()
-                                .notificationType(NotificationType.SYSTEM)
+                                .subNotificationType(SubNotificationType.MATCHING_ACCEPTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.builder()
-                                                .systemMessage("시스템 메시지 내용")
                                                 .build()
                                 )
                                 .build()
@@ -145,6 +136,7 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
+
                                         fieldWithPath("result")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("결과 데이터 객체")
@@ -153,29 +145,44 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("알림 목록 배열")
                                                 .attributes(field("constraint", "배열")),
-                                        fieldWithPath("result.notificationItems[].id")
-                                                .type(JsonFieldType.STRING)
-                                                .description("알림 ID"),
+
                                         fieldWithPath("result.notificationItems[].notificationType")
                                                 .type(JsonFieldType.STRING)
-                                                .description("알림 유형 - 변동 가능성 있음 (MATCHING, CHATTING, TEAM_INVITATION, SYSTEM)"),
+                                                .description("알림 유형 - 변동 가능성 있음 (MATCHING, CHATTING, TEAM_INVITATION, TEAM)"),
+
+                                        fieldWithPath("result.notificationItems[].subNotificationType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("""
+                                                            알림 상세 유형:
+                                                            - MATCHING_REQUESTED: 매칭 요청
+                                                            - MATCHING_ACCEPTED: 매칭 수락
+                                                            - MATCHING_REJECTED: 매칭 거절
+                                                            - NEW_CHAT: 새로운 채팅 메시지 수신
+                                                            - TEAM_INVITATION_REQUESTED: 팀 초대 요청
+                                                            - TEAM_MEMBER_JOINED: 팀에 새로운 멤버 추가
+                                                            - REMOVE_TEAM_REQUESTED: 팀 삭제 요청
+                                                            - REMOVE_TEAM_REJECTED: 팀 삭제 요청 거절
+                                                            - REMOVE_TEAM_COMPLETED: 팀 삭제 완료
+                                                        """),
+
                                         fieldWithPath("result.notificationItems[].notificationReadStatus")
                                                 .type(JsonFieldType.STRING)
-                                                .description("알림 상태 - 변동 가능성 있음 (PENDING, SENT, FAILED, READ)"),
-                                        fieldWithPath("result.notificationItems[].createdAt")
+                                                .description("알림 읽음 여부 (UNREAD, READ)"),
+
+                                        fieldWithPath("result.notificationItems[].notificationOccurTime")
                                                 .type(JsonFieldType.STRING)
-                                                .description("알림 생성 시간"),
-                                        fieldWithPath("result.notificationItems[].modifiedAt")
-                                                .type(JsonFieldType.STRING)
-                                                .description("알림 수정 시간"),
+                                                .description("알림 발생 시간 (STRING)"),
+
                                         fieldWithPath("result.notificationItems[].notificationDetails")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("알림 타입별 상세 정보"),
+
                                         // TEAM_INVITATION 관련 필드
                                         fieldWithPath("result.notificationItems[].notificationDetails.teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름 (팀 초대 알림인 경우)")
                                                 .optional(),
+
                                         // CHATTING 관련 필드
                                         fieldWithPath("result.notificationItems[].notificationDetails.senderName")
                                                 .type(JsonFieldType.STRING)
@@ -189,6 +196,7 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("마지막 메시지 내용 (채팅 알림인 경우)")
                                                 .optional(),
+
                                         // MATCHING 알림 관련 필드
                                         fieldWithPath("result.notificationItems[].notificationDetails.matchingSenderName")
                                                 .type(JsonFieldType.STRING)
@@ -201,11 +209,6 @@ public class NotificationControllerTest extends ControllerTest {
                                         fieldWithPath("result.notificationItems[].notificationDetails.matchingStatus")
                                                 .type(JsonFieldType.STRING)
                                                 .description("매칭 상태 (매칭 알림인 경우)")
-                                                .optional(),
-                                        // SYSTEM 알림 관련 필드
-                                        fieldWithPath("result.notificationItems[].notificationDetails.systemMessage")
-                                                .type(JsonFieldType.STRING)
-                                                .description("시스템 메시지 (시스템 알림인 경우)")
                                                 .optional()
                                 )
                         )

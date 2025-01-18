@@ -14,20 +14,25 @@ import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamJoinResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamOutResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
 
 @Mapper
 public class TeamMemberMapper {
-    public TeamMember toTeamMember(final Member member, final Team team) {
+
+    // 팀원 객체 생성 빌더
+    public TeamMember toTeamMember(final Member member, final Team team, final TeamMemberType teamMemberType) {
         return TeamMember.builder()
                 .member(member)
                 .team(team)
-                .teamMemberType(TeamMemberType.TEAM_OWNER)
+                .teamMemberType(teamMemberType)
+                .teamMemberManagingTeamState(TeamMemberManagingTeamState.ACTIVE)
                 .build();
     }
 
@@ -90,6 +95,13 @@ public class TeamMemberMapper {
 
     public TeamMemberResponseDTO.TeamOutResponse toTeamOutResponse(final String teamCode, final String emailId) {
         return TeamOutResponse.builder()
+                .teamCode(teamCode)
+                .emailId(emailId)
+                .build();
+    }
+
+    public TeamMemberResponseDTO.TeamJoinResponse toTeamJoinResponse(final String teamCode, final String emailId) {
+        return TeamJoinResponse.builder()
                 .teamCode(teamCode)
                 .emailId(emailId)
                 .build();

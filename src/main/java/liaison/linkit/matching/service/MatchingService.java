@@ -984,7 +984,7 @@ public class MatchingService {
                 final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
                 regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
             }
-            return regionDetail.getFullRegionDetail();
+            return buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
         } else {
             final Team team = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
             RegionDetail regionDetail = new RegionDetail();
@@ -992,7 +992,7 @@ public class MatchingService {
                 final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
                 regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
             }
-            return regionDetail.getFullRegionDetail();
+            return buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
         }
     }
 
@@ -1008,7 +1008,7 @@ public class MatchingService {
                     regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
                 }
 
-                return regionDetail.getFullRegionDetail();
+                return buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
             }
             case TEAM, ANNOUNCEMENT -> {
                 String teamCode = matching.getReceiverType() == ReceiverType.TEAM
@@ -1024,7 +1024,7 @@ public class MatchingService {
                     final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
                     regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                 }
-                return regionDetail.getFullRegionDetail();
+                return buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
             }
             default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
         }
@@ -1062,5 +1062,17 @@ public class MatchingService {
             }
             default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
         }
+    }
+
+    // 지역 정보를 문자열로 조합하는 유틸리티 메서드
+    private String buildRegionString(String cityName, String divisionName) {
+        if (cityName != null && divisionName != null) {
+            return cityName + " " + divisionName;
+        } else if (cityName != null) {
+            return cityName;
+        } else if (divisionName != null) {
+            return divisionName;
+        }
+        return "";
     }
 }
