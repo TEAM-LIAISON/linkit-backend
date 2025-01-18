@@ -14,6 +14,7 @@ import liaison.linkit.notification.business.NotificationMapper;
 import liaison.linkit.notification.domain.type.NotificationType;
 import liaison.linkit.notification.domain.type.SubNotificationType;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
+import liaison.linkit.notification.service.HeaderNotificationService;
 import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
@@ -96,6 +97,7 @@ public class TeamService {
     private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
     private final NotificationService notificationService;
     private final NotificationMapper notificationMapper;
+    private final HeaderNotificationService headerNotificationService;
 
 
     // 초기 팀 생성
@@ -366,6 +368,8 @@ public class TeamService {
                                 removeTeamNotificationDetails
                         )
                 );
+
+                headerNotificationService.publishNotificationCount(teamMemberId);
             }
         } else {    // 오너만 해당 팀을 소유하고 있는 경우
             teamCommandAdapter.deleteTeam(teamCode);

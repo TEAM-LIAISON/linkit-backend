@@ -53,6 +53,7 @@ import liaison.linkit.notification.business.NotificationMapper;
 import liaison.linkit.notification.domain.type.NotificationType;
 import liaison.linkit.notification.domain.type.SubNotificationType;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
+import liaison.linkit.notification.service.HeaderNotificationService;
 import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
 import liaison.linkit.profile.domain.position.ProfilePosition;
@@ -119,6 +120,7 @@ public class MatchingService {
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
     private final NotificationMapper notificationMapper;
+    private final HeaderNotificationService headerNotificationService;
 
     @Transactional(readOnly = true)
     public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long memberId, final String emailId) {
@@ -457,6 +459,8 @@ public class MatchingService {
                 )
         );
 
+        headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
+
         // 매칭 성사된 경우, 발신자에게 알림 발송
         NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
                 getSenderName(matching)
@@ -470,6 +474,8 @@ public class MatchingService {
                         senderNotificationDetails
                 )
         );
+
+        headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
 
         return matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
     }
@@ -655,6 +661,8 @@ public class MatchingService {
                         receiverNotificationDetails
                 )
         );
+
+        headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
 
         return matchingMapper.toAddMatchingResponse(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
     }

@@ -31,7 +31,7 @@ public class HeaderNotificationService {
         messagingTemplate.convertAndSend("/sub/notification/header/" + emailId, count);
     }
 
-    private NotificationCountResponse getUnreadCount(Long memberId) {
+    private NotificationCountResponse getUnreadCount(final Long memberId) {
         long unreadNotificationCount = notificationQueryAdapter.countUnreadMessages(memberId);
         long unreadChatCount = chatQueryAdapter.countByMessageReceiverMemberIdAndIsReadFalse(memberId);
 
