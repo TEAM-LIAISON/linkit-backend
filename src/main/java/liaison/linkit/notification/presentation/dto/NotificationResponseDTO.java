@@ -1,11 +1,11 @@
 package liaison.linkit.notification.presentation.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.notification.domain.type.NotificationStatus;
+import liaison.linkit.notification.domain.type.NotificationReadStatus;
 import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,11 +38,10 @@ public class NotificationResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class NotificationItem {
-        private String id;
         private NotificationType notificationType;
-        private NotificationStatus notificationStatus;
-        private LocalDateTime createdAt;
-        private LocalDateTime modifiedAt;
+        private SubNotificationType subNotificationType;
+        private NotificationReadStatus notificationReadStatus;
+        private String notificationOccurTime;
 
         // 알림 타입별 상세 정보
         private NotificationDetails notificationDetails;
@@ -51,68 +50,93 @@ public class NotificationResponseDTO {
     @Getter
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NotificationDetails {
-        // 초대 알림
-        private String teamName;
 
         // 채팅 알림
-        private String senderName;
-        private String receiverName;
-        private String lastMessage;
+        private String chatSenderName;
 
         // 매칭 알림
-        private String matchingSenderName;
-        private String matchingReceiverName;
-        private String matchingStatus;
+        private String matchingTargetName;
 
-        // 시스템 알림
-        private String systemMessage;
+        // 팀 알림 / 팀 초대 알림
+        private String teamMemberName;
+        private String teamName;
 
         @Builder
         private NotificationDetails(
-                String teamName,
-                String senderName, String receiverName, String lastMessage,
-                String matchingSenderName, String matchingReceiverName, String matchingStatus,
-                String systemMessage
+                final String chatSenderName,
+                final String matchingTargetName,
+                final String teamMemberName,
+                final String teamName
         ) {
+            this.chatSenderName = chatSenderName;
+            this.matchingTargetName = matchingTargetName;
+            this.teamMemberName = teamMemberName;
             this.teamName = teamName;
-            this.senderName = senderName;
-            this.receiverName = receiverName;
-            this.lastMessage = lastMessage;
-            this.matchingSenderName = matchingSenderName;
-            this.matchingReceiverName = matchingReceiverName;
-            this.matchingStatus = matchingStatus;
-            this.systemMessage = systemMessage;
         }
 
-        // 초대 알림 생성
-        public static NotificationDetails invitation(String teamName) {
+        // 팀 초대 요청에 대한 알림생성
+        public static NotificationDetails teamInvitationRequested(final String teamName) {
             return NotificationDetails.builder()
                     .teamName(teamName)
                     .build();
         }
 
+        // 팀 초대 완료에 대한 알림 생성
+        public static NotificationDetails teamMemberJoined(final String teamMemberName, final String teamName) {
+            return NotificationDetails.builder()
+                    .teamMemberName(teamMemberName)
+                    .teamName(teamName)
+                    .build();
+        }
+
         // 채팅 알림 생성
-        public static NotificationDetails chat(String senderName, String receiverName, String lastMessage) {
+        public static NotificationDetails chat(final String chatSenderName) {
             return NotificationDetails.builder()
-                    .senderName(senderName)
-                    .receiverName(receiverName)
-                    .lastMessage(lastMessage)
+                    .chatSenderName(chatSenderName)
                     .build();
         }
 
         // 매칭 알림 생성
-        public static NotificationDetails matching(String senderName, String receiverName, String status) {
+        public static NotificationDetails matchingRequested(final String matchingTargetName) {
             return NotificationDetails.builder()
-                    .matchingSenderName(senderName)
-                    .matchingReceiverName(receiverName)
-                    .matchingStatus(status)
+                    .matchingTargetName(matchingTargetName)
                     .build();
         }
 
-        // 매칭 알림 생성
-        public static NotificationDetails system(String systemMessage) {
+        // 매칭 성사 알림 생성
+        public static NotificationDetails matchingAccepted(final String matchingTargetName) {
             return NotificationDetails.builder()
-                    .systemMessage(systemMessage)
+                    .matchingTargetName(matchingTargetName)
+                    .build();
+        }
+
+        // 매칭 거절 알림 생성
+        public static NotificationDetails matchingRejected(final String matchingTargetName) {
+            return NotificationDetails.builder()
+                    .matchingTargetName(matchingTargetName)
+                    .build();
+        }
+
+        // 팀 삭제 요청 알림 생성
+        public static NotificationDetails removeTeamRequested(final String teamMemberName, final String teamName) {
+            return NotificationDetails.builder()
+                    .teamMemberName(teamMemberName)
+                    .teamName(teamName)
+                    .build();
+        }
+
+        // 팀 삭제 요청 거절 알림 생성
+        public static NotificationDetails removeTeamRejected(final String teamMemberName, final String teamName) {
+            return NotificationDetails.builder()
+                    .teamMemberName(teamMemberName)
+                    .teamName(teamName)
+                    .build();
+        }
+
+        // 팀 삭제 요청 거절 알림 생성
+        public static NotificationDetails removeTeamCompleted(final String teamName) {
+            return NotificationDetails.builder()
+                    .teamName(teamName)
                     .build();
         }
     }

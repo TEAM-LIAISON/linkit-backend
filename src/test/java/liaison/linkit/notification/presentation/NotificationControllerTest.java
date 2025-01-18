@@ -21,7 +21,7 @@ import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.notification.domain.type.NotificationStatus;
+import liaison.linkit.notification.domain.type.NotificationReadStatus;
 import liaison.linkit.notification.domain.type.NotificationType;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItem;
@@ -80,7 +80,7 @@ public class NotificationControllerTest extends ControllerTest {
                         NotificationItem.builder()
                                 .id("알림 ID 1")
                                 .notificationType(NotificationType.TEAM_INVITATION)
-                                .notificationStatus(NotificationStatus.PENDING)
+                                .notificationReadStatus(NotificationReadStatus.PENDING)
                                 .createdAt(LocalDateTime.now())
                                 .modifiedAt(LocalDateTime.now())
                                 .notificationDetails(
@@ -92,7 +92,7 @@ public class NotificationControllerTest extends ControllerTest {
                         NotificationItem.builder()
                                 .id("알림 ID 2")
                                 .notificationType(NotificationType.CHATTING)
-                                .notificationStatus(NotificationStatus.READ)
+                                .notificationReadStatus(NotificationReadStatus.READ)
                                 .createdAt(LocalDateTime.now())
                                 .modifiedAt(LocalDateTime.now())
                                 .notificationDetails(
@@ -106,7 +106,7 @@ public class NotificationControllerTest extends ControllerTest {
                         NotificationItem.builder()
                                 .id("알림 ID 3")
                                 .notificationType(NotificationType.MATCHING)
-                                .notificationStatus(NotificationStatus.SENT)
+                                .notificationReadStatus(NotificationReadStatus.SENT)
                                 .createdAt(LocalDateTime.now())
                                 .modifiedAt(LocalDateTime.now())
                                 .notificationDetails(
@@ -120,7 +120,7 @@ public class NotificationControllerTest extends ControllerTest {
                         NotificationItem.builder()
                                 .id("알림 ID 4")
                                 .notificationType(NotificationType.SYSTEM)
-                                .notificationStatus(NotificationStatus.READ)
+                                .notificationReadStatus(NotificationReadStatus.READ)
                                 .createdAt(LocalDateTime.now())
                                 .modifiedAt(LocalDateTime.now())
                                 .notificationDetails(
@@ -171,7 +171,7 @@ public class NotificationControllerTest extends ControllerTest {
                                         fieldWithPath("result.notificationItems[].notificationType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("알림 유형 - 변동 가능성 있음 (MATCHING, CHATTING, TEAM_INVITATION, SYSTEM)"),
-                                        fieldWithPath("result.notificationItems[].notificationStatus")
+                                        fieldWithPath("result.notificationItems[].notificationReadStatus")
                                                 .type(JsonFieldType.STRING)
                                                 .description("알림 상태 - 변동 가능성 있음 (PENDING, SENT, FAILED, READ)"),
                                         fieldWithPath("result.notificationItems[].createdAt")

@@ -3,8 +3,9 @@ package liaison.linkit.notification.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
-import liaison.linkit.notification.domain.type.NotificationStatus;
+import liaison.linkit.notification.domain.type.NotificationReadStatus;
 import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,25 +31,29 @@ public class Notification {
     private Long receiverMemberId;
 
     @Field("notification_type")
-    private NotificationType notificationType;      // 알림 타입
+    private NotificationType notificationType;                  // 알림 타입
 
-    @Field("notification_status")
-    private NotificationStatus notificationStatus;  // 알림 상태
+    @Field("sub_notification_type")
+    private SubNotificationType subNotificationType;            // 알림 보조 타입
 
-    private LocalDateTime createdAt;                // 생성 시간
-    private LocalDateTime modifiedAt;               // 수정 시간
+    @Field("notification_read_status")
+    private NotificationReadStatus notificationReadStatus;      // 알림 상태
 
-    private InvitationDetails invitationDetails;
-    private ChatDetails chatDetails;
+    private LocalDateTime createdAt;                            // 생성 시간
+
     private MatchingDetails matchingDetails;
-    private SystemDetails systemDetails;
+    private ChatDetails chatDetails;
+
+    private TeamInvitationDetails teamInvitationDetails;
+    private TeamDetails teamDetails;
+
 
     @Data
     @Builder
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
-    public static class InvitationDetails {
-        private String teamName;                    // 발신 팀 이름
+    public static class MatchingDetails {
+        private String matchingTargetName;
     }
 
     @Data
@@ -56,26 +61,27 @@ public class Notification {
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
     public static class ChatDetails {
-        private String senderName;                  // 채팅 발신자 이름
-        private String receiverName;                // 채팅 수신자 이름
+        private String chatSenderName;
     }
 
     @Data
     @Builder
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
-    public static class MatchingDetails {
-        private String matchingSenderName;          // 매칭 요청 발신자 이름
-        private String matchingReceiverName;        // 매칭 요청 수신자 이름
+    public static class TeamInvitationDetails {
+        private String teamMemberName;
+        private String teamName;
     }
 
     @Data
     @Builder
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
-    public static class SystemDetails {
-        private String systemMessage;               // 시스템 메시지 발송 문구
+    public static class TeamDetails {
+        private String teamMemberName;
+        private String teamName;
     }
+
 
     public void setMatchingDetails(final MatchingDetails matchingDetails) {
         this.matchingDetails = matchingDetails;
@@ -85,11 +91,11 @@ public class Notification {
         this.chatDetails = chatDetails;
     }
 
-    public void setInvitationDetails(final InvitationDetails invitationDetails) {
-        this.invitationDetails = invitationDetails;
+    public void setTeamInvitationDetails(final TeamInvitationDetails teamInvitationDetails) {
+        this.teamInvitationDetails = teamInvitationDetails;
     }
 
-    public void setSystemDetails(final SystemDetails systemDetails) {
-        this.systemDetails = systemDetails;
+    public void setTeamDetails(final TeamDetails teamDetails) {
+        this.teamDetails = teamDetails;
     }
 }

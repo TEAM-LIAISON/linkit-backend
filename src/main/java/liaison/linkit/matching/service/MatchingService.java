@@ -49,7 +49,9 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceiv
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.notification.business.NotificationMapper;
 import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
 import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
@@ -116,6 +118,7 @@ public class MatchingService {
     private final AsyncMatchingEmailService asyncMatchingEmailService;
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
+    private final NotificationMapper notificationMapper;
 
     @Transactional(readOnly = true)
     public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long memberId, final String emailId) {
@@ -440,18 +443,32 @@ public class MatchingService {
             );
         }
 
-        NotificationDetails notificationDetails = NotificationDetails.matching(
-                getSenderName(matching),
-                getReceiverName(matching),
-                matching.getMatchingStatusType().name()
+        // 매칭 성사된 경우, 수신자에게 알림 발송
+        NotificationDetails receiverNotificationDetails = NotificationDetails.matchingAccepted(
+                getReceiverName(matching)
         );
 
-        Long receiverMemberId = getReceiverMemberId(matching);
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        getReceiverMemberId(matching),
+                        NotificationType.MATCHING,
+                        SubNotificationType.MATCHING_ACCEPTED,
+                        receiverNotificationDetails
+                )
+        );
 
-        notificationService.sendNotification(
-                receiverMemberId,
-                NotificationType.MATCHING,
-                notificationDetails
+        // 매칭 성사된 경우, 발신자에게 알림 발송
+        NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
+                getSenderName(matching)
+        );
+
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        getSenderMemberId(matching),
+                        NotificationType.MATCHING,
+                        SubNotificationType.MATCHING_ACCEPTED,
+                        senderNotificationDetails
+                )
         );
 
         return matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
@@ -625,18 +642,18 @@ public class MatchingService {
             receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
         }
 
-        NotificationDetails notificationDetails = NotificationDetails.matching(
-                getSenderName(matching),
-                getReceiverName(matching),
-                matching.getMatchingStatusType().name()
+        NotificationDetails receiverNotificationDetails = NotificationDetails.matchingRequested(
+                // matchingTargetName 필요
+                getSenderName(matching)
         );
 
-        Long receiverMemberId = getReceiverMemberId(matching);
-
-        notificationService.sendNotification(
-                receiverMemberId,
-                NotificationType.MATCHING,
-                notificationDetails
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        getReceiverMemberId(matching),
+                        NotificationType.MATCHING,
+                        SubNotificationType.MATCHING_REQUESTED,
+                        receiverNotificationDetails
+                )
         );
 
         return matchingMapper.toAddMatchingResponse(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
@@ -853,6 +870,15 @@ public class MatchingService {
                 return teamMemberQueryAdapter.findTeamOwnerByTeamCode(teamCode).getId();
             }
             default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+        }
+    }
+
+    private Long getSenderMemberId(final Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            return memberQueryAdapter.findByEmailId(matching.getSenderEmailId()).getId();
+        } else {
+            final Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
+            return teamMemberQueryAdapter.getTeamOwnerMemberId(team);
         }
     }
 
