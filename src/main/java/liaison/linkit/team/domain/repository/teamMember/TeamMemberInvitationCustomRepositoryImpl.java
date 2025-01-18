@@ -73,4 +73,27 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
                 )
                 .fetchOne();
     }
+
+    @Override
+    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMemberInvitation)
+                .where(
+                        qTeamMemberInvitation.teamMemberInvitationEmail.eq(email),
+                        qTeamMemberInvitation.team.teamCode.eq(teamCode)
+                )
+                .fetchOne();
+    }
+
+    @Override
+    public void removeTeamMemberInvitation(final TeamMemberInvitation teamMemberInvitation) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        jpaQueryFactory
+                .delete(qTeamMemberInvitation)
+                .where(qTeamMemberInvitation.id.eq(teamMemberInvitation.getId()))
+                .execute();
+    }
 }

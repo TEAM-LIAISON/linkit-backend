@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
@@ -19,13 +20,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class TeamMember {
+@SQLRestriction("status = 'ACTIVE'")
+public class TeamMember extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -47,7 +50,11 @@ public class TeamMember {
     @Enumerated(value = STRING)
     private TeamMemberManagingTeamState teamMemberManagingTeamState;    // 팀원의 팀 관리 상태 (ACTIVE, DENY_DELETE, ALLOW_DELETE)
 
-    public void updateTeamMemberType(final TeamMemberType teamMemberType) {
+    public void setTeamMemberType(final TeamMemberType teamMemberType) {
         this.teamMemberType = teamMemberType;
+    }
+
+    public void setTeamMemberManagingTeamState(final TeamMemberManagingTeamState teamMemberManagingTeamState) {
+        this.teamMemberManagingTeamState = teamMemberManagingTeamState;
     }
 }

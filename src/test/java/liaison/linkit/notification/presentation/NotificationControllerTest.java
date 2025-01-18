@@ -77,35 +77,120 @@ public class NotificationControllerTest extends ControllerTest {
         // given
         final NotificationItems notificationItems = NotificationItems.builder()
                 .notificationItems(Arrays.asList(
+                        // 1) TEAM_INVITATION_REQUESTED (팀 이름만)
                         NotificationItem.builder()
                                 .notificationType(NotificationType.TEAM_INVITATION)
                                 .subNotificationType(SubNotificationType.TEAM_INVITATION_REQUESTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
                                 .notificationOccurTime("방금 전")
                                 .notificationDetails(
-                                        NotificationResponseDTO.NotificationDetails.builder()
-                                                .teamName("테스트 팀")
-                                                .build()
+                                        NotificationResponseDTO.NotificationDetails.teamInvitationRequested(
+                                                "팀원으로 초대한 팀의 이름"
+                                        )
                                 )
                                 .build(),
+                        // 2) TEAM_MEMBER_JOINED (팀 이름 + 팀원 이름)
+                        NotificationItem.builder()
+                                .notificationType(NotificationType.TEAM_INVITATION)
+                                .subNotificationType(SubNotificationType.TEAM_MEMBER_JOINED)
+                                .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("방금 전")
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.teamMemberJoined(
+                                                "팀원으로 들어온 회원의 이름",
+                                                "팀원으로 초대한 팀의 이름"
+                                        )
+                                )
+                                .build(),
+
+                        // 3) CHATTING: NEW_CHAT
                         NotificationItem.builder()
                                 .notificationType(NotificationType.CHATTING)
                                 .subNotificationType(SubNotificationType.NEW_CHAT)
                                 .notificationReadStatus(NotificationReadStatus.READ)
                                 .notificationOccurTime("방금 전")
                                 .notificationDetails(
-                                        NotificationResponseDTO.NotificationDetails.builder()
-                                                .build()
+                                        NotificationResponseDTO.NotificationDetails.chat(
+                                                "채팅 발신자 이름"
+                                        )
                                 )
                                 .build(),
+
+                        // 4) MATCHING_REQUESTED
+                        NotificationItem.builder()
+                                .notificationType(NotificationType.MATCHING)
+                                .subNotificationType(SubNotificationType.MATCHING_REQUESTED)
+                                .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("1일 전")
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.matchingRequested(
+                                                "매칭 상대방의 이름"
+                                        )
+                                )
+                                .build(),
+                        // 5) MATCHING_ACCEPTED
                         NotificationItem.builder()
                                 .notificationType(NotificationType.MATCHING)
                                 .subNotificationType(SubNotificationType.MATCHING_ACCEPTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
-                                        NotificationResponseDTO.NotificationDetails.builder()
-                                                .build()
+                                        NotificationResponseDTO.NotificationDetails.matchingAccepted(
+                                                "매칭 상대방의 이름"
+                                        )
+                                )
+                                .build(),
+                        // 6) MATCHING_REJECTED
+                        NotificationItem.builder()
+                                .notificationType(NotificationType.MATCHING)
+                                .subNotificationType(SubNotificationType.MATCHING_REJECTED)
+                                .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("1일 전")
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.matchingRejected(
+                                                "매칭 상대방의 이름"
+                                        )
+                                )
+                                .build(),
+
+                        // 7) TEAM: REMOVE_TEAM_REQUESTED (팀 + 팀원)
+                        NotificationItem.builder()
+                                .notificationType(NotificationType.TEAM)
+                                .subNotificationType(SubNotificationType.REMOVE_TEAM_REQUESTED)
+                                .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("1일 전")
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.removeTeamRequested(
+                                                "팀 삭제 요청을 진행한 팀원(오너/관리자)의 이름",
+                                                "팀 이름"
+                                        )
+                                )
+                                .build(),
+
+                        // 8) TEAM: REMOVE_TEAM_REJECTED (팀 + 팀원)
+                        NotificationItem.builder()
+                                .notificationType(NotificationType.TEAM)
+                                .subNotificationType(SubNotificationType.REMOVE_TEAM_REJECTED)
+                                .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("1일 전")
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.removeTeamRejected(
+                                                "팀 삭제 요청을 거절한 팀원(오너/관리자)의 이름",
+                                                "삭제 완료된 팀 이름"
+                                        )
+                                )
+                                .build(),
+
+                        // 9) TEAM: REMOVE_TEAM_COMPLETED (팀 이름만)
+                        NotificationItem.builder()
+                                .notificationType(NotificationType.TEAM)
+                                .subNotificationType(SubNotificationType.REMOVE_TEAM_COMPLETED)
+                                .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("1일 전")
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.removeTeamCompleted(
+                                                "삭제 완료된 팀 이름"
+                                        )
                                 )
                                 .build()
                 ))
@@ -116,9 +201,10 @@ public class NotificationControllerTest extends ControllerTest {
 
         final ResultActions resultActions = performGetNotificationItems();
 
+        // then
         final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.isSuccess").value(true))
                 .andExpect(jsonPath("$.code").value("1000"))
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
@@ -177,54 +263,43 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("알림 타입별 상세 정보"),
 
-                                        // TEAM_INVITATION 관련 필드
+                                        // TEAM/TEAM_INVITATION 관련 필드
                                         fieldWithPath("result.notificationItems[].notificationDetails.teamName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("팀 이름 (팀 초대 알림인 경우)")
+                                                .description("팀 이름 (팀 초대, 팀 삭제 알림 등)")
+                                                .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.teamMemberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 관련 알림에서 팀원의 이름 (팀 초대, 팀 삭제 요청 등)")
                                                 .optional(),
 
                                         // CHATTING 관련 필드
-                                        fieldWithPath("result.notificationItems[].notificationDetails.senderName")
+                                        fieldWithPath("result.notificationItems[].notificationDetails.chatSenderName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("메시지 발신자 이름 (채팅 알림인 경우)")
                                                 .optional(),
-                                        fieldWithPath("result.notificationItems[].notificationDetails.receiverName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("메시지 수신자 이름 (채팅 알림인 경우)")
-                                                .optional(),
-                                        fieldWithPath("result.notificationItems[].notificationDetails.lastMessage")
-                                                .type(JsonFieldType.STRING)
-                                                .description("마지막 메시지 내용 (채팅 알림인 경우)")
-                                                .optional(),
 
-                                        // MATCHING 알림 관련 필드
-                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingSenderName")
+                                        // MATCHING 관련 필드
+                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingTargetName")
                                                 .type(JsonFieldType.STRING)
-                                                .description("매칭 발신자 이름 (매칭 알림인 경우)")
-                                                .optional(),
-                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingReceiverName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("매칭 수신자 이름 (매칭 알림인 경우)")
-                                                .optional(),
-                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingStatus")
-                                                .type(JsonFieldType.STRING)
-                                                .description("매칭 상태 (매칭 알림인 경우)")
+                                                .description("매칭 상대방의 이름 (매칭 알림인 경우)")
                                                 .optional()
                                 )
                         )
-                ).andReturn();
+                )
+                .andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<NotificationItems> actual = objectMapper.readValue(
                 jsonResponse,
-                new TypeReference<CommonResponse<NotificationItems>>() {
+                new TypeReference<>() {
                 }
         );
 
         final CommonResponse<NotificationItems> expected = CommonResponse.onSuccess(notificationItems);
 
-        // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
+
 }

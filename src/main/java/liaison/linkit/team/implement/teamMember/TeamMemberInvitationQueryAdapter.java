@@ -33,4 +33,8 @@ public class TeamMemberInvitationQueryAdapter {
     public TeamMemberInvitation getTeamMemberInvitationInPendingState(final String email, final Team team) {
         return teamMemberInvitationRepository.getTeamMemberInvitationInPendingState(email, team);
     }
+
+    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email) {
+        return teamMemberInvitationRepository.getTeamMemberInvitationByTeamCodeAndEmail(teamCode, email);
+    }
 }

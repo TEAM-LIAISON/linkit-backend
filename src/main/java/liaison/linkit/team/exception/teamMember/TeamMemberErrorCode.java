@@ -16,6 +16,7 @@ import lombok.Getter;
 public enum TeamMemberErrorCode implements BaseErrorCode {
     OWNER_TEAM_MEMBER_OUT_BAD_REQUEST(BAD_REQUEST, "TEAM_MEMBER_400_1", "오너는 팀 나가기를 요청할 수 없습니다,"),
     MANAGING_BAD_REQUEST(BAD_REQUEST, "TEAM_MEMBER_400_2", "팀 삭제 수락/거절 권한이 없습니다."),
+    REMOVE_TEAM_MEMBER_BAD_REQUEST(BAD_REQUEST, "TEAM_MEMBER_400_3", "팀 삭제 권한이 없는 회원의 팀원 삭제 요청입니다."),
     TEAM_MEMBER_TYPE_FORBIDDEN_REQUEST(FORBIDDEN, "FORBIDDEN_TEAM_MEMBER_TYPE_REQUEST_403_1", "잘못된 팀 관리 권한 요청입니다.");
 
     private final Integer status;

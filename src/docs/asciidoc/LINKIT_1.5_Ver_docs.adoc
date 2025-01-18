@@ -1344,6 +1344,18 @@ include::{snippets}/team-history-controller-test/update-team-history/response-fi
 
 == #[팀 - 팀 관리]#
 
+=== 팀 초대 수락하기
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/join-team/http-request.adoc[]
+include::{snippets}/team-member-controller-test/join-team/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/join-team/http-response.adoc[]
+include::{snippets}/team-member-controller-test/join-team/response-fields.adoc[]
+====
+
 === 팀 나가기 (스스로 나가기)
 
 ====
@@ -1354,6 +1366,19 @@ include::{snippets}/team-member-controller-test/get-out-team/path-parameters.ado
 *응답*
 include::{snippets}/team-member-controller-test/get-out-team/http-response.adoc[]
 include::{snippets}/team-member-controller-test/get-out-team/response-fields.adoc[]
+====
+
+=== 팀원 삭제하기 (오너/관리자에 의해서)
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/remove-team-member/http-request.adoc[]
+include::{snippets}/team-member-controller-test/remove-team-member/path-parameters.adoc[]
+include::{snippets}/team-member-controller-test/remove-team-member/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/remove-team-member/http-response.adoc[]
+include::{snippets}/team-member-controller-test/remove-team-member/response-fields.adoc[]
 ====
 
 === 팀 삭제 요청하기 (오너, 관리자에게 허용)
@@ -1369,6 +1394,17 @@ include::{snippets}/team-controller-test/delete-team/response-fields.adoc[]
 ====
 
 === 팀 삭제 수락/거절 (모든 관리자의 허락에 의해 삭제 가능하다)
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/update-managing-team-state/http-request.adoc[]
+include::{snippets}/team-member-controller-test/update-managing-team-state/path-parameters.adoc[]
+include::{snippets}/team-member-controller-test/update-managing-team-state/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/update-managing-team-state/http-response.adoc[]
+include::{snippets}/team-member-controller-test/update-managing-team-state/response-fields.adoc[]
+====
 
 == #[팀원 찾기]#
 

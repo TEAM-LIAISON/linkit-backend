@@ -128,4 +128,13 @@ public class TeamMemberResponseDTO {
     public static class UpdateManagingTeamStateResponse {
         private String teamCode;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveTeamMemberResponse {
+        private String teamCode;
+        private String removedIdentifier;
+    }
 }

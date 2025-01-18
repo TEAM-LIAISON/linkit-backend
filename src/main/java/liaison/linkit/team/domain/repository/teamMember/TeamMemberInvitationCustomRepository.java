@@ -15,4 +15,8 @@ public interface TeamMemberInvitationCustomRepository {
     List<Team> getTeamsByEmail(final String email);
 
     TeamMemberInvitation getTeamMemberInvitationInPendingState(final String email, final Team team);
+
+    TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email);
+
+    void removeTeamMemberInvitation(final TeamMemberInvitation teamMemberInvitation);
 }

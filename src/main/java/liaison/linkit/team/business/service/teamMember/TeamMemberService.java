@@ -21,8 +21,10 @@ import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberRegisterType;
 import liaison.linkit.team.exception.teamMember.ManagingBadRequestException;
 import liaison.linkit.team.exception.teamMember.OwnerTeamMemberOutBadRequestException;
+import liaison.linkit.team.exception.teamMember.RemoveTeamMemberBadRequestException;
 import liaison.linkit.team.exception.teamMember.TeamMemberForbiddenException;
 import liaison.linkit.team.exception.teamMember.TeamMemberInvitationDuplicateException;
 import liaison.linkit.team.exception.teamMember.TeamMemberInvitationNotFoundException;
@@ -33,6 +35,7 @@ import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.UpdateManagingTeamStateRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.RemoveTeamMemberRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.UpdateTeamMemberTypeRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
@@ -120,7 +123,7 @@ public class TeamMemberService {
             throw TeamMemberForbiddenException.EXCEPTION;
         }
 
-        teamMember.updateTeamMemberType(requestedTeamMemberType);
+        teamMember.setTeamMemberType(requestedTeamMemberType);
 
         return teamMemberMapper.toUpdateTeamMemberTypeResponse(teamMember);
     }
@@ -220,6 +223,29 @@ public class TeamMemberService {
 
         final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
 
-        teamMemberCommandAdapter.updateTeamMemberManangingTeamState(teamMember, updateManagingTeamStateRequest.getTeamMemberManagingTeamState());
+        teamMemberCommandAdapter.updateTeamMemberManagingTeamState(teamMember, updateManagingTeamStateRequest.getTeamMemberManagingTeamState());
+
+        return teamMemberMapper.toUpdateManagingTeamStateResponse(teamCode);
+    }
+
+    // 오너 / 관리자가 팀원을 삭제할 수 있다.
+    public TeamMemberResponseDTO.RemoveTeamMemberResponse removeTeamMember(final String teamCode, final Long memberId, final RemoveTeamMemberRequest removeTeamMemberRequest) {
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
+            throw RemoveTeamMemberBadRequestException.EXCEPTION;
+        }
+
+        if (removeTeamMemberRequest.getTeamMemberRegisterType().equals(TeamMemberRegisterType.ACCEPTED)) {
+            final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, removeTeamMemberRequest.getRemoveIdentifier());
+            teamMemberCommandAdapter.removeTeamMemberInTeam(teamMember);
+        }
+
+        if (removeTeamMemberRequest.getTeamMemberRegisterType().equals(TeamMemberRegisterType.PENDING)) {
+            final TeamMemberInvitation teamMemberInvitation = teamMemberInvitationQueryAdapter.getTeamMemberInvitationByTeamCodeAndEmail(teamCode, removeTeamMemberRequest.getRemoveIdentifier());
+            teamMemberInvitationCommandAdapter.removeTeamMemberInvitation(teamMemberInvitation);
+        }
+
+        return teamMemberMapper.toRemoveTeamMemberResponse(teamCode, removeTeamMemberRequest.getRemoveIdentifier());
     }
 }

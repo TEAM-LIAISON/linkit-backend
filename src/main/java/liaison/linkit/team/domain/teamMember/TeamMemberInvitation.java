@@ -11,20 +11,22 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import liaison.linkit.common.domain.BaseDateTimeEntity;
+import liaison.linkit.global.BaseEntity;
 import liaison.linkit.team.domain.team.Team;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class TeamMemberInvitation extends BaseDateTimeEntity {
+@SQLRestriction("status = 'USABLE'")
+public class TeamMemberInvitation extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

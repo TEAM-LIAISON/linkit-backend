@@ -786,13 +786,13 @@ public class TeamControllerTest extends ControllerTest {
 
     }
 
-    @DisplayName("팀 오너가 팀을 최종 삭제한다.")
+    @DisplayName("팀 오너/관리자가 팀을 삭제 요청한다.")
     @Test
     void deleteTeam() throws Exception {
         // given
         final DeleteTeamResponse deleteTeamResponse = DeleteTeamResponse.builder()
                 .teamCode("liaison")
-                .deletedAt(LocalDateTime.now())
+                .deletedRequestedAt(LocalDateTime.now())
                 .build();
 
         // when
@@ -830,7 +830,7 @@ public class TeamControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 아이디 (팀 코드)")
                                                 .attributes(field("constraint", "숫자 값")),
-                                        fieldWithPath("result.deletedAt")
+                                        fieldWithPath("result.deletedRequestedAt")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 삭제 시간")
                                                 .attributes(field("constraint", "문자열"))

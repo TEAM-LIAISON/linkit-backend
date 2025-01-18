@@ -18,9 +18,11 @@ import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.RemoveTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamJoinResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamOutResponse;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateManagingTeamStateResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
 
 @Mapper
@@ -104,6 +106,19 @@ public class TeamMemberMapper {
         return TeamJoinResponse.builder()
                 .teamCode(teamCode)
                 .emailId(emailId)
+                .build();
+    }
+
+    public TeamMemberResponseDTO.UpdateManagingTeamStateResponse toUpdateManagingTeamStateResponse(final String teamCode) {
+        return UpdateManagingTeamStateResponse.builder()
+                .teamCode(teamCode)
+                .build();
+    }
+
+    public TeamMemberResponseDTO.RemoveTeamMemberResponse toRemoveTeamMemberResponse(final String teamCode, final String removeIdentifier) {
+        return RemoveTeamMemberResponse.builder()
+                .teamCode(teamCode)
+                .removedIdentifier(removeIdentifier)
                 .build();
     }
 }

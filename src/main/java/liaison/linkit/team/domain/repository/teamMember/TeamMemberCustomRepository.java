@@ -4,6 +4,7 @@ import java.util.List;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 
 public interface TeamMemberCustomRepository {
 
@@ -32,4 +33,6 @@ public interface TeamMemberCustomRepository {
     void removeTeamMemberInTeam(final TeamMember teamMember);
 
     List<Long> getAllTeamMemberIds(final String teamCode);
+
+    void updateTeamMemberManagingTeamState(final TeamMember teamMember, final TeamMemberManagingTeamState teamMemberManagingTeamState);
 }

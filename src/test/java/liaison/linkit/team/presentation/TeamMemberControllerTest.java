@@ -27,18 +27,24 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.business.service.teamMember.TeamMemberService;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberRegisterType;
+import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.UpdateManagingTeamStateRequest;
 import liaison.linkit.team.presentation.teamMember.TeamMemberController;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.RemoveTeamMemberRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.UpdateTeamMemberTypeRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AddTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.PendingTeamMemberItem;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.RemoveTeamMemberResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamJoinResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamMemberViewItems;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.TeamOutResponse;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateManagingTeamStateResponse;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.UpdateTeamMemberTypeResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -98,7 +104,7 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performUpdateTeamMemberType(final String teamCode, final String emailId, final UpdateTeamMemberTypeRequest request) throws Exception {
+    private ResultActions performSetTeamMemberType(final String teamCode, final String emailId, final UpdateTeamMemberTypeRequest request) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/member/type/{emailId}", teamCode, emailId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -116,6 +122,26 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performManagingTeamState(final String teamCode, final UpdateManagingTeamStateRequest request) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/managing/teamState", teamCode)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+    }
+
+    private ResultActions performRemoveTeamMember(final String teamCode, final RemoveTeamMemberRequest request) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/member/remove", teamCode)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+        );
+    }
+
     private ResultActions performJoinTeam(final String teamCode) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/member/join", teamCode)
@@ -123,6 +149,7 @@ public class TeamMemberControllerTest extends ControllerTest {
                         .cookie(COOKIE)
         );
     }
+
 
     @DisplayName("회원이 팀의 팀 구성원 뷰어를 전체 조회할 수 있다.")
     @Test
@@ -465,7 +492,7 @@ public class TeamMemberControllerTest extends ControllerTest {
         // when
         when(teamMemberService.updateTeamMemberType(anyLong(), any(), any(), any())).thenReturn(updateTeamMemberTypeResponse);
 
-        final ResultActions resultActions = performUpdateTeamMemberType("liaison", "kwondm7", updateTeamMemberTypeRequest);
+        final ResultActions resultActions = performSetTeamMemberType("liaison", "kwondm7", updateTeamMemberTypeRequest);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -574,6 +601,135 @@ public class TeamMemberControllerTest extends ControllerTest {
                                 )
                         )
                 ).andReturn();
+    }
+
+    @DisplayName("관리자가 팀 삭제 요청에 대해 수락/거절을 진행할 수 있다.")
+    @Test
+    void updateManagingTeamState() throws Exception {
+        // given
+        final UpdateManagingTeamStateResponse updateManagingTeamStateResponse = UpdateManagingTeamStateResponse.builder()
+                .teamCode("liaison")
+                .build();
+
+        final UpdateManagingTeamStateRequest updateManagingTeamStateRequest = UpdateManagingTeamStateRequest.builder()
+                .teamMemberManagingTeamState(TeamMemberManagingTeamState.ALLOW_DELETE)
+                .build();
+
+        // when
+        when(teamMemberService.updateManagingTeamState(anyLong(), any(), any())).thenReturn(updateManagingTeamStateResponse);
+
+        final ResultActions resultActions = performManagingTeamState("liaison", updateManagingTeamStateRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
+                                ),
+                                requestFields(
+                                        fieldWithPath("teamMemberManagingTeamState")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 수락/거절 여부 (DENY_DELETE / ALLOW_DELETE)")
+                                                .attributes(field("constraint", "문자열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+
+                                        // 누락된 필드 추가
+                                        fieldWithPath("result.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                ).andReturn();
+    }
+
+    @DisplayName("오너/관리자가 팀원을 삭제할 수 있다.")
+    @Test
+    void removeTeamMember() throws Exception {
+        // given
+        final RemoveTeamMemberRequest removeTeamMemberRequest = RemoveTeamMemberRequest.builder()
+                .teamMemberRegisterType(TeamMemberRegisterType.ACCEPTED)
+                .removeIdentifier("liaison")
+                .build();
+
+        final RemoveTeamMemberResponse removeTeamMemberResponse = RemoveTeamMemberResponse.builder()
+                .teamCode("liaison")
+                .removedIdentifier("kwondm7@naver.com")
+                .build();
+
+        // when
+        when(teamMemberService.removeTeamMember(any(), anyLong(), any())).thenReturn(removeTeamMemberResponse);
+
+        final ResultActions resultActions = performRemoveTeamMember("liaison", removeTeamMemberRequest);
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("teamCode")
+                                                .description("팀 아이디 (팀 코드)")
+                                ),
+                                requestFields(
+                                        fieldWithPath("teamMemberRegisterType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("초대된 팀원의 현재 상태 (ACCEPTED / PENDING) 2가지 케이스")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("removeIdentifier")
+                                                .type(JsonFieldType.STRING)
+                                                .description("ACCEPTED인 경우 -> emailId / PENDING인 경우 -> email")
+                                                .attributes(field("constraint", "문자열"))
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+
+                                        // 누락된 필드 추가
+                                        fieldWithPath("result.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.removedIdentifier")
+                                                .type(JsonFieldType.STRING)
+                                                .description("삭제된 회원의 식별자")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                ).andReturn();
+
     }
 
     @DisplayName("회원이 팀 초대 수락을 할 수 있다.")

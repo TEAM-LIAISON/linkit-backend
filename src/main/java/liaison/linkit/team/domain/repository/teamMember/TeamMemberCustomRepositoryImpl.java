@@ -1,22 +1,28 @@
 package liaison.linkit.team.domain.repository.teamMember;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.QMember;
-
 import liaison.linkit.team.domain.team.QTeam;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.QTeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
 @Slf4j
 public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepository {
+
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<TeamMember> getTeamMembers(final Long teamId) {
@@ -175,11 +181,32 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
     @Override
     public List<Long> getAllTeamMemberIds(final String teamCode) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
-        
+
         return jpaQueryFactory
                 .select(qTeamMember.member.id)
                 .from(qTeamMember)
                 .where(qTeamMember.team.teamCode.eq(teamCode))
                 .fetch();
+    }
+
+    @Override
+    public void updateTeamMemberManagingTeamState(final TeamMember teamMember, final TeamMemberManagingTeamState teamMemberManagingTeamState) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
+        long updatedCount = jpaQueryFactory
+                .update(qTeamMember)
+                .set(qTeamMember.teamMemberManagingTeamState, teamMemberManagingTeamState)
+                .where(qTeamMember.id.eq(teamMember.getId()))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) { // 업데이트 성공 확인
+            teamMember.setTeamMemberManagingTeamState(teamMemberManagingTeamState); // 메모리 내 객체 업데이트
+        } else {
+            throw new IllegalStateException("프로필 로그 업데이트 실패");
+        }
     }
 }

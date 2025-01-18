@@ -15,4 +15,7 @@ public class TeamMemberInvitationCommandAdapter {
         teamMemberInvitationRepository.save(teamMemberInvitation);
     }
 
+    public void removeTeamMemberInvitation(final TeamMemberInvitation teamMemberInvitation) {
+        teamMemberInvitationRepository.removeTeamMemberInvitation(teamMemberInvitation);
+    }
 }
