@@ -57,20 +57,6 @@ Authorization: Bearer {accessToken}
 SEND /pub/chat/send/{chatRoomId}
 ----
 
-=== 회원 알림 구독 연결 (/sub)
-
-[source,http]
-----
-Authorization: Bearer {accessToken}
-----
-
-==== 회원 알림 구독
-
-[source,http]
-----
-SUBSCRIBE /sub/notification/{emailId}
-----
-
 === 상단바 구독 연결 (/sub)
 
 [source,http]
