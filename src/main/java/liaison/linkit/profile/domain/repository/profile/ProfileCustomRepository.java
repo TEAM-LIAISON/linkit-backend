@@ -26,4 +26,6 @@ public interface ProfileCustomRepository {
             final List<String> profileStateName,
             final Pageable pageable
     );
+
+    List<Profile> findTopProfiles(final int limit);
 }

@@ -15,6 +15,7 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
@@ -42,6 +43,7 @@ public class TeamMemberAnnouncementMapper {
     ) {
 
         return AnnouncementInformMenu.builder()
+                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .teamLogoImagePath(teamLogoImagePath)
                 .teamName(teamName)
                 .teamCode(teamCode)
@@ -112,6 +114,12 @@ public class TeamMemberAnnouncementMapper {
                 .build();
     }
 
+    public AnnouncementInformMenus toAnnouncementInformMenus(final List<AnnouncementInformMenu> announcementInformMenus) {
+        return AnnouncementInformMenus.builder()
+                .announcementInformMenus(announcementInformMenus)
+                .build();
+    }
+
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail toTeamMemberAnnouncementDetail(
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final boolean isAnnouncementScrap,
@@ -142,6 +150,7 @@ public class TeamMemberAnnouncementMapper {
     public TeamMemberAnnouncement toAddTeamMemberAnnouncement(final Team team, final AddTeamMemberAnnouncementRequest request) {
         return TeamMemberAnnouncement
                 .builder()
+                .id(null)
                 .team(team)
                 .announcementTitle(request.getAnnouncementTitle())
                 .announcementStartDate(request.getAnnouncementStartDate())
@@ -153,6 +162,8 @@ public class TeamMemberAnnouncementMapper {
                 .preferredQualifications(request.getPreferredQualifications())
                 .joiningProcess(request.getJoiningProcess())
                 .benefits(request.getBenefits())
+                .isAnnouncementPublic(true)
+                .isAnnouncementInProgress(true)
                 .build();
     }
 

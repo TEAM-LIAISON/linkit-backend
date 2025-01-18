@@ -7,17 +7,7 @@ public enum TeamMemberInviteState {
     PENDING,
 
     /**
-     * 초대 거절
-     */
-    REJECTED,
-
-    /**
      * 초대 수락 완료
      */
-    ACCEPTED,
-
-    /**
-     * 관리자
-     */
-    ADMIN
+    ACCEPTED
 }

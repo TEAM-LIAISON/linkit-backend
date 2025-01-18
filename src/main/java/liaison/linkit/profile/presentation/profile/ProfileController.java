@@ -46,4 +46,10 @@ public class ProfileController {
             return CommonResponse.onSuccess(profileService.getLoggedOutProfileDetail(emailId));
         }
     }
+
+    // 홈화면에서 팀원 조회 (최대 6개)
+    @GetMapping("/home/profile")
+    public CommonResponse<ProfileResponseDTO.ProfileInformMenus> getHomeProfileInformMenus() {
+        return CommonResponse.onSuccess(profileService.getHomeProfileInformMenus());
+    }
 }

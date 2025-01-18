@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/notification")
+@RequestMapping("/api/v1")
 @Slf4j
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @GetMapping
+    @GetMapping("/notifications")
     @MemberOnly
     public CommonResponse<NotificationResponseDTO.NotificationItems> getNotificationItems(
             @Auth final Accessor accessor
     ) {
-        return CommonResponse.onSuccess(notificationService.getNotificationItems(accessor.getMemberId().toString()));
+        return CommonResponse.onSuccess(notificationService.getNotificationItems(accessor.getMemberId()));
     }
 }

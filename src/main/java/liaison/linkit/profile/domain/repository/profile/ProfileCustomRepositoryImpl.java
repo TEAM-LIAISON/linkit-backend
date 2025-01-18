@@ -122,6 +122,21 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     }
 
     @Override
+    public List<Profile> findTopProfiles(final int limit) {
+        QProfile qProfile = QProfile.profile;
+
+        return jpaQueryFactory
+                .selectFrom(qProfile)
+                .where(
+                        qProfile.status.eq(StatusType.USABLE)
+                                .and(qProfile.isProfilePublic.eq(true))
+                )
+                .orderBy(qProfile.createdAt.desc()) // 최신순으로 정렬
+                .limit(limit)
+                .fetch();
+    }
+
+    @Override
     public Page<Profile> findAll(
             final List<String> majorPosition,
             final List<String> skillName,
@@ -155,6 +170,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             List<Profile> content = jpaQueryFactory
                     .selectDistinct(qProfile)
                     .from(qProfile)
+
                     // Profile과 ProfilePosition 조인
                     .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
                     .leftJoin(qProfilePosition.position, qPosition)
@@ -199,6 +215,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             Long totalLong = jpaQueryFactory
                     .selectDistinct(qProfile.count())
                     .from(qProfile)
+
                     .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
                     .leftJoin(qProfilePosition.position, qPosition)
                     .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))

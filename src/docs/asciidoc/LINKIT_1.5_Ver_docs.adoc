@@ -1,10 +1,10 @@
 = LINKIT API 명세서 Version 1.5
 :doctype: book
+:icons: font
 :toc: left
 :sectnums:
 :sectlinks:
 :source-highlighter: highlightjs
-:icons: font
 
 - 링킷 개발용 API 서버 도메인 네임 = https://dev.liaison-dev.site
 
@@ -197,6 +197,41 @@ include::{snippets}/member-controller-test/update-consent-marketing/request-fiel
 include::{snippets}/member-controller-test/update-consent-marketing/http-response.adoc[]
 include::{snippets}/member-controller-test/update-consent-marketing/response-fields.adoc[]
 
+====
+
+== #[홈화면]#
+
+=== 홈화면_팀원 조회
+
+====
+*요청*
+include::{snippets}/profile-controller-test/get-home-profile-inform-menus/http-request.adoc[]
+
+*응답*
+include::{snippets}/profile-controller-test/get-home-profile-inform-menus/http-response.adoc[]
+include::{snippets}/profile-controller-test/get-home-profile-inform-menus/response-fields.adoc[]
+====
+
+=== 홈화면_팀 조회
+
+====
+*요청*
+include::{snippets}/team-controller-test/get-home-team-inform-menus/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-controller-test/get-home-team-inform-menus/http-response.adoc[]
+include::{snippets}/team-controller-test/get-home-team-inform-menus/response-fields.adoc[]
+====
+
+=== 홈화면_팀원 공고 조회
+
+====
+*요청*
+include::{snippets}/team-member-announcement-controller-test/get-home-announcement-inform-menus/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-member-announcement-controller-test/get-home-announcement-inform-menus/http-response.adoc[]
+include::{snippets}/team-member-announcement-controller-test/get-home-announcement-inform-menus/response-fields.adoc[]
 ====
 
 == #[프로필 - 내 프로필 조회]#
@@ -1307,6 +1342,70 @@ include::{snippets}/team-history-controller-test/update-team-history/http-respon
 include::{snippets}/team-history-controller-test/update-team-history/response-fields.adoc[]
 ====
 
+== #[팀 - 팀 관리]#
+
+=== 팀 초대 수락하기
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/join-team/http-request.adoc[]
+include::{snippets}/team-member-controller-test/join-team/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/join-team/http-response.adoc[]
+include::{snippets}/team-member-controller-test/join-team/response-fields.adoc[]
+====
+
+=== 팀 나가기 (스스로 나가기)
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/get-out-team/http-request.adoc[]
+include::{snippets}/team-member-controller-test/get-out-team/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/get-out-team/http-response.adoc[]
+include::{snippets}/team-member-controller-test/get-out-team/response-fields.adoc[]
+====
+
+=== 팀원 삭제하기 (오너/관리자에 의해서)
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/remove-team-member/http-request.adoc[]
+include::{snippets}/team-member-controller-test/remove-team-member/path-parameters.adoc[]
+include::{snippets}/team-member-controller-test/remove-team-member/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/remove-team-member/http-response.adoc[]
+include::{snippets}/team-member-controller-test/remove-team-member/response-fields.adoc[]
+====
+
+=== 팀 삭제 요청하기 (오너, 관리자에게 허용)
+
+====
+*요청*
+include::{snippets}/team-controller-test/delete-team/http-request.adoc[]
+include::{snippets}/team-controller-test/delete-team/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-controller-test/delete-team/http-response.adoc[]
+include::{snippets}/team-controller-test/delete-team/response-fields.adoc[]
+====
+
+=== 팀 삭제 수락/거절 (모든 관리자의 허락에 의해 삭제 가능하다)
+
+====
+*요청*
+include::{snippets}/team-member-controller-test/update-managing-team-state/http-request.adoc[]
+include::{snippets}/team-member-controller-test/update-managing-team-state/path-parameters.adoc[]
+include::{snippets}/team-member-controller-test/update-managing-team-state/request-fields.adoc[]
+
+*응답*
+include::{snippets}/team-member-controller-test/update-managing-team-state/http-response.adoc[]
+include::{snippets}/team-member-controller-test/update-managing-team-state/response-fields.adoc[]
+====
+
 == #[팀원 찾기]#
 
 === 팀원 찾기 (필터링 포함)
@@ -1439,6 +1538,43 @@ include::{snippets}/chat-controller-test/create-chat-room/http-response.adoc[]
 include::{snippets}/chat-controller-test/create-chat-room/response-fields.adoc[]
 ====
 
+=== 채팅방 왼쪽 메뉴 조회
+
+====
+*요청*
+include::{snippets}/chat-controller-test/get-chat-left-menu/http-request.adoc[]
+
+*응답*
+include::{snippets}/chat-controller-test/get-chat-left-menu/http-response.adoc[]
+include::{snippets}/chat-controller-test/get-chat-left-menu/response-fields.adoc[]
+====
+
+=== 채팅 내역 전체 조회
+
+====
+*요청*
+include::{snippets}/chat-controller-test/get-chat-messages/http-request.adoc[]
+include::{snippets}/chat-controller-test/get-chat-messages/path-parameters.adoc[]
+include::{snippets}/chat-controller-test/get-chat-messages/query-parameters.adoc[]
+
+*응답*
+include::{snippets}/chat-controller-test/get-chat-messages/http-response.adoc[]
+include::{snippets}/chat-controller-test/get-chat-messages/response-fields.adoc[]
+
+====
+
+=== 채팅방 나가기
+
+====
+*요청*
+include::{snippets}/chat-controller-test/leave-chat-room/http-request.adoc[]
+include::{snippets}/chat-controller-test/leave-chat-room/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/chat-controller-test/leave-chat-room/http-response.adoc[]
+include::{snippets}/chat-controller-test/leave-chat-room/response-fields.adoc[]
+====
+
 == #[알림]#
 
 === 알림 목록 전체 조회 (상단바)
@@ -1540,7 +1676,7 @@ include::{snippets}/matching-controller-test/get-requested-matching-menu/http-re
 include::{snippets}/matching-controller-test/get-requested-matching-menu/response-fields.adoc[]
 ====
 
-=== 매칭 관리 수신함에서 요청 받은 매칭에 대해 읽음 처리
+=== 매칭 관리 수신함에서 요청/성사된 매칭에 대해 읽음 처리
 
 ====
 *요청*
@@ -1550,18 +1686,6 @@ include::{snippets}/matching-controller-test/update-received-matching-requested-
 *응답*
 include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/http-response.adoc[]
 include::{snippets}/matching-controller-test/update-received-matching-requested-state-read/response-fields.adoc[]
-====
-
-=== 매칭 관리 수신함에서 성사된 매칭에 대해 읽음 처리
-
-====
-*요청*
-include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/http-request.adoc[]
-include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/request-fields.adoc[]
-
-*응답*
-include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/http-response.adoc[]
-include::{snippets}/matching-controller-test/update-received-matching-completed-state-read/response-fields.adoc[]
 ====
 
 === 매칭 관리 수신함에서 매칭 삭제 처리

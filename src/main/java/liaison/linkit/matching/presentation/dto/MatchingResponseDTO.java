@@ -66,6 +66,10 @@ public class MatchingResponseDTO {
 
         private ReceiverType receiverType;
 
+        private Boolean isChatRoomCreated;
+
+        private Long chatRoomId;
+
         @Builder.Default
         private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
 
@@ -82,6 +86,8 @@ public class MatchingResponseDTO {
         private ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
 
         private String requestMessage;
+
+        private String modifiedAt;
 
         private MatchingStatusType matchingStatusType;
 
@@ -108,6 +114,10 @@ public class MatchingResponseDTO {
 
         private ReceiverType receiverType;
 
+        private Boolean isChatRoomCreated;
+
+        private Long chatRoomId;
+
         @Builder.Default
         private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
 
@@ -125,6 +135,8 @@ public class MatchingResponseDTO {
 
         private String requestMessage;
 
+        private String modifiedAt;
+
         private MatchingStatusType matchingStatusType;
 
         private ReceiverReadStatus receiverReadStatus;
@@ -139,7 +151,10 @@ public class MatchingResponseDTO {
         private Long matchingId;
 
         private SenderType senderType;
+
         private ReceiverType receiverType;
+
+        private Boolean isChatRoomCreated;
 
         @Builder.Default
         private SenderProfileInformation senderProfileInformation = new SenderProfileInformation();

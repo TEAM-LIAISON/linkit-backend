@@ -2,6 +2,7 @@ package liaison.linkit.matching.business;
 
 import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
+import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
@@ -120,6 +121,7 @@ public class MatchingMapper {
 
     public RequestedMatchingMenu toMatchingRequestedMenu(
             final Matching requestedMatchingItem,
+            final Long chatRoomId,
             final SenderProfileInformation senderProfileInformation,
             final SenderTeamInformation senderTeamInformation,
             final ReceiverProfileInformation receiverProfileInformation,
@@ -130,12 +132,15 @@ public class MatchingMapper {
                 .matchingId(requestedMatchingItem.getId())
                 .senderType(requestedMatchingItem.getSenderType())
                 .receiverType(requestedMatchingItem.getReceiverType())
+                .isChatRoomCreated(requestedMatchingItem.isChatRoomCreated())
+                .chatRoomId(chatRoomId)
                 .senderProfileInformation(senderProfileInformation)
                 .senderTeamInformation(senderTeamInformation)
                 .receiverProfileInformation(receiverProfileInformation)
                 .receiverTeamInformation(receiverTeamInformation)
                 .receiverAnnouncementInformation(receiverAnnouncementInformation)
                 .requestMessage(requestedMatchingItem.getRequestMessage())
+                .modifiedAt(DateUtils.formatRelativeTime(requestedMatchingItem.getModifiedAt()))
                 .matchingStatusType(requestedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(requestedMatchingItem.getReceiverReadStatus())
                 .build();
@@ -150,6 +155,7 @@ public class MatchingMapper {
 
     public ReceivedMatchingMenu toMatchingReceivedMenu(
             final Matching receivedMatchingItem,
+            final Long chatRoomId,
             final SenderProfileInformation senderProfileInformation,
             final SenderTeamInformation senderTeamInformation,
             final ReceiverProfileInformation receiverProfileInformation,
@@ -160,12 +166,15 @@ public class MatchingMapper {
                 .matchingId(receivedMatchingItem.getId())
                 .senderType(receivedMatchingItem.getSenderType())
                 .receiverType(receivedMatchingItem.getReceiverType())
+                .isChatRoomCreated(receivedMatchingItem.isChatRoomCreated())
+                .chatRoomId(chatRoomId)
                 .senderProfileInformation(senderProfileInformation)
                 .senderTeamInformation(senderTeamInformation)
                 .receiverProfileInformation(receiverProfileInformation)
                 .receiverTeamInformation(receiverTeamInformation)
                 .receiverAnnouncementInformation(receiverAnnouncementInformation)
                 .requestMessage(receivedMatchingItem.getRequestMessage())
+                .modifiedAt(DateUtils.formatRelativeTime(receivedMatchingItem.getModifiedAt()))
                 .matchingStatusType(receivedMatchingItem.getMatchingStatusType())
                 .receiverReadStatus(receivedMatchingItem.getReceiverReadStatus())
                 .build();
@@ -184,6 +193,7 @@ public class MatchingMapper {
                 .matchingId(matching.getId())
                 .senderType(matching.getSenderType())
                 .receiverType(matching.getReceiverType())
+                .isChatRoomCreated(matching.isChatRoomCreated())
                 .senderProfileInformation(senderProfileInformation)
                 .senderTeamInformation(senderTeamInformation)
                 .receiverProfileInformation(receiverProfileInformation)

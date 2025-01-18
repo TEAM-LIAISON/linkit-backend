@@ -5,6 +5,7 @@ import java.util.List;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.QTeamMemberInvitation;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
+import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,5 +58,42 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
                 .from(qTeamMemberInvitation)
                 .where(qTeamMemberInvitation.teamMemberInvitationEmail.eq(email)) // 이메일 조건
                 .fetch();
+    }
+
+    @Override
+    public TeamMemberInvitation getTeamMemberInvitationInPendingState(final String email, final Team team) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMemberInvitation)
+                .where(
+                        qTeamMemberInvitation.teamMemberInvitationEmail.eq(email),
+                        qTeamMemberInvitation.team.id.eq(team.getId())
+                                .and(qTeamMemberInvitation.teamMemberInviteState.eq(TeamMemberInviteState.PENDING))
+                )
+                .fetchOne();
+    }
+
+    @Override
+    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMemberInvitation)
+                .where(
+                        qTeamMemberInvitation.teamMemberInvitationEmail.eq(email),
+                        qTeamMemberInvitation.team.teamCode.eq(teamCode)
+                )
+                .fetchOne();
+    }
+
+    @Override
+    public void removeTeamMemberInvitation(final TeamMemberInvitation teamMemberInvitation) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        jpaQueryFactory
+                .delete(qTeamMemberInvitation)
+                .where(qTeamMemberInvitation.id.eq(teamMemberInvitation.getId()))
+                .execute();
     }
 }

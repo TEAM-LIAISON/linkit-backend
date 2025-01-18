@@ -23,4 +23,8 @@ public class ChatRoomQueryAdapter {
     public boolean existsChatRoomByMatchingId(final Long matchingId) {
         return chatRoomRepository.existsChatRoomByMatchingId(matchingId);
     }
+
+    public Long getChatRoomIdByMatchingId(final Long matchingId) {
+        return chatRoomRepository.getChatRoomIdByMatchingId(matchingId);
+    }
 }

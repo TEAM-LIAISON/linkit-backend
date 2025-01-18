@@ -46,4 +46,6 @@ public interface MatchingCustomRepository {
     int countByReceiverAnnouncementIds(final List<Long> receiverAnnouncementIds);
 
     void updateMatchingStatusType(final Matching matching, final MatchingStatusType matchingStatusType);
+
+    void updateMatchingToCreatedRoomState(final Matching matching);
 }

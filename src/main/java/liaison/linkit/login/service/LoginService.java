@@ -1,6 +1,5 @@
 package liaison.linkit.login.service;
 
-import java.util.List;
 import java.util.Optional;
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.business.AccountMapper;
@@ -22,11 +21,11 @@ import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.notification.implement.NotificationCommandAdapter;
+import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.implement.profile.ProfileCommandAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +58,7 @@ public class LoginService {
     private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
     private final TeamMemberInvitationCommandAdapter teamMemberInvitationCommandAdapter;
     private final NotificationCommandAdapter notificationCommandAdapter;
+    private final NotificationService notificationService;
 
 
     // 회원이 로그인한다
@@ -85,6 +85,7 @@ public class LoginService {
         return accountMapper.toLogin(
                 memberTokens,
                 member.getEmail(),
+                member.getEmailId(),
                 isMemberBasicInform
         );
     }
@@ -108,12 +109,6 @@ public class LoginService {
                 profileCommandAdapter.create(new Profile(
                         null, member, null, false, 0, false, false, false, false, false, false, false, false
                 ));
-
-                // 팀원 초대를 받은 신규 회원인 경우 알림 데이터 추가
-                if (teamMemberInvitationQueryAdapter.existsByEmail(email)) {
-                    final List<Team> invitationTeams = teamMemberInvitationQueryAdapter.getTeamsByEmail(email);
-                    notificationCommandAdapter.addInvitationNotificationsForTeams(member, invitationTeams);
-                }
 
                 return member;
             } else if (memberQueryAdapter.existsByEmail(email)) {

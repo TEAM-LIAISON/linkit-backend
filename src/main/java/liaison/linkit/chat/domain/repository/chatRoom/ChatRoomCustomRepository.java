@@ -7,4 +7,6 @@ public interface ChatRoomCustomRepository {
     List<ChatRoom> findAllChatRoomsByMemberId(final Long memberId);
 
     boolean existsChatRoomByMatchingId(final Long matchingId);
+
+    Long getChatRoomIdByMatchingId(final Long matchingId);
 }

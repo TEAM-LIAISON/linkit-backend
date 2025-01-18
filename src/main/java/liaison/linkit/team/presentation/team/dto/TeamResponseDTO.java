@@ -1,5 +1,6 @@
 package liaison.linkit.team.presentation.team.dto;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -17,7 +18,14 @@ public class TeamResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamDetail {
+        // 내가 속한 팀인지 여부
         private Boolean isMyTeam;
+
+        // 초대 상태
+        private Boolean isTeamInvitationInProgress;
+
+        // 팀 삭제 상태
+        private Boolean isTeamDeleteInProgress;
 
         @Builder.Default
         private TeamInformMenu teamInformMenu = new TeamInformMenu();
@@ -140,5 +148,15 @@ public class TeamResponseDTO {
     public static class TeamItems {
         @Builder.Default
         final List<TeamInformMenu> teamInformMenus = new ArrayList<>();
+    }
+
+    // 팀 삭제 요청 응답
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DeleteTeamResponse {
+        private String teamCode;
+        private LocalDateTime deletedRequestedAt;
     }
 }

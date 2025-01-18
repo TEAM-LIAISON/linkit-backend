@@ -257,7 +257,7 @@ public class ProfileService {
                 isMyProfile,
                 profileCompletionMenu,
                 profileInformMenu,
-                targetProfile.getMember().getProfileScrapCount(),
+                profileScrapCount,
                 profileLogItem,
                 profileSkillItems,
                 profileActivityItems,
@@ -361,4 +361,81 @@ public class ProfileService {
                 profileLinkItems
         );
     }
+
+    // 홈화면에서 팀원 정보를 조회한다.
+    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenus() {
+        // 최대 6개의 Profile 조회
+        List<Profile> profiles = profileQueryAdapter.findTopProfiles(6);
+
+        // Profiles -> ProfileInformMenus 변환
+        List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus = profiles.stream()
+                .map(this::toHomeProfileInformMenu)
+                .toList();
+
+        // ProfileInformMenus DTO 반환
+        return profileMapper.toProfileInformMenus(profileInformMenus);
+    }
+
+    // 개별 Profile -> ProfileInformMenu 변환
+    private ProfileInformMenu toHomeProfileInformMenu(final Profile profile) {
+        // 지역 정보
+        RegionDetail regionDetail = fetchRegionDetail(profile);
+
+        // 상태 정보
+        List<ProfileCurrentStateItem> profileCurrentStateItems = fetchProfileCurrentStateItems(profile);
+
+        // 포지션 정보
+        ProfilePositionDetail profilePositionDetail = fetchProfilePositionDetail(profile);
+
+        // 팀 정보
+        List<ProfileTeamInform> profileTeamInforms = fetchProfileTeamInforms(profile);
+
+        // 스크랩 수 계산
+        int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
+
+        // ProfileInformMenu 생성 및 반환
+        return profileMapper.toProfileInformMenu(
+                profileCurrentStateItems, false, profileScrapCount, profile,
+                profilePositionDetail, regionDetail, profileTeamInforms
+        );
+    }
+
+    // 지역 정보 가져오기
+    private RegionDetail fetchRegionDetail(Profile profile) {
+        if (regionQueryAdapter.existsProfileRegionByProfileId(profile.getId())) {
+            ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+            log.info("지역 정보 조회 성공");
+            return regionMapper.toRegionDetail(profileRegion.getRegion());
+        }
+        return new RegionDetail();
+    }
+
+    // 상태 정보 가져오기
+    private List<ProfileCurrentStateItem> fetchProfileCurrentStateItems(Profile profile) {
+        List<ProfileCurrentState> profileCurrentStates =
+                profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
+        log.info("상태 정보 조회 성공");
+        return profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
+    }
+
+    // 포지션 정보 가져오기
+    private ProfilePositionDetail fetchProfilePositionDetail(Profile profile) {
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+            ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+            log.info("포지션 정보 조회 성공");
+            return profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+        return new ProfilePositionDetail();
+    }
+
+    // 팀 정보 가져오기
+    private List<ProfileTeamInform> fetchProfileTeamInforms(Profile profile) {
+        if (teamMemberQueryAdapter.existsTeamByMemberId(profile.getMember().getId())) {
+            List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsByMemberId(profile.getMember().getId());
+            log.info("팀 정보 조회 성공, 팀 수: {}", myTeams.size());
+            return teamMemberMapper.toProfileTeamInforms(myTeams);
+        }
+        return new ArrayList<>();
+    }
+
 }

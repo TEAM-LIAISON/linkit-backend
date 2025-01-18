@@ -78,6 +78,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
     void searchAnnouncements() throws Exception {
         // given
         AnnouncementInformMenu announcementInformMenu1 = AnnouncementInformMenu.builder()
+                .teamMemberAnnouncementId(1L)
                 .teamLogoImagePath("팀 로고 이미지 경로")
                 .teamName("팀 이름 1")
                 .teamCode("팀 아이디 1(팀 코드)")
@@ -115,6 +116,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                 .build();
 
         AnnouncementInformMenu announcementInformMenu2 = AnnouncementInformMenu.builder()
+                .teamMemberAnnouncementId(2L)
                 .teamLogoImagePath("팀 로고 이미지 경로 2")
                 .teamName("팀 이름 2")
                 .teamCode("팀 아이디 2(팀 코드)")
@@ -218,6 +220,9 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                         fieldWithPath("result.content")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("팀 공고 정보 목록"),
+                                        fieldWithPath("result.content[].teamMemberAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀원 공고 ID PK"),
                                         fieldWithPath("result.content[].teamLogoImagePath")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 로고 이미지 경로"),

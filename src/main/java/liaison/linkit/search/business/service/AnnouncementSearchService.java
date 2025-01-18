@@ -57,6 +57,9 @@ public class AnnouncementSearchService {
             Pageable pageable
     ) {
         Page<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.findAll(majorPosition, skillName, cityName, scaleName, pageable);
+
+        log.info(announcements.toString());
+
         return announcements.map(
                 teamMemberAnnouncement -> toSearchAnnouncementInformInLoginState(memberId, teamMemberAnnouncement)
         );
@@ -94,9 +97,13 @@ public class AnnouncementSearchService {
         }
         log.info("error 3");
         // 포지션 조회
+        log.info("error 3.1.1.");
         AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+        log.info("error 3.1.2.");
         if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
+            log.info("error 3.1");
             AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+            log.info("error 3.2");
             announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
         }
         log.info("error 4");
@@ -131,6 +138,8 @@ public class AnnouncementSearchService {
     ) {
         final Team team = teamMemberAnnouncement.getTeam();
 
+        log.info("error 1");
+
         // 팀 규모 조회
         TeamScaleItem teamScaleItem = null;
         if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
@@ -138,12 +147,16 @@ public class AnnouncementSearchService {
             teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
         }
 
+        log.info("error 2");
+
         // 팀 지역 조회
         RegionDetail regionDetail = new RegionDetail();
         if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
             final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
             regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
         }
+
+        log.info("error 3");
 
         // 포지션 조회
         AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
@@ -155,7 +168,6 @@ public class AnnouncementSearchService {
         // 스킬 조회
         List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
         List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-
         final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
         final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
         final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());

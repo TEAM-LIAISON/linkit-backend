@@ -2,21 +2,22 @@ package liaison.linkit.team.domain.repository.team;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
-import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.domain.region.QRegion;
-
-import liaison.linkit.team.domain.region.QTeamRegion;
-import liaison.linkit.team.domain.state.QTeamCurrentState;
-import liaison.linkit.team.domain.team.QTeam;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
+import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
+import liaison.linkit.team.domain.state.QTeamCurrentState;
 import liaison.linkit.team.domain.state.QTeamState;
+import liaison.linkit.team.domain.team.QTeam;
+import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.domain.team.type.TeamStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,9 @@ import org.springframework.data.support.PageableExecutionUtils;
 public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public Optional<Team> findByTeamCode(final String teamCode) {
@@ -166,5 +170,72 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeamState qTeamState = QTeamState.teamState;
 
         return qTeamState.teamStateName.in(teamStateName);
+    }
+
+    @Override
+    public void deleteTeamByTeamCode(final String teamCode) {
+        QTeam qTeam = QTeam.team;
+
+        try {
+            long updatedRows = jpaQueryFactory
+                    .update(qTeam)
+                    .set(qTeam.status, StatusType.DELETED)
+                    .where(qTeam.teamCode.eq(teamCode))
+                    .execute();
+        } catch (Exception e) {
+            log.error("Error occurred while deleting team with teamCode: {}", teamCode, e);
+            throw e; // 필요에 따라 커스텀 예외로 변환하여 던질 수 있습니다.
+        }
+    }
+
+    @Override
+    public List<Team> findTopTeams(final int limit) {
+        QTeam qTeam = QTeam.team;
+
+        return jpaQueryFactory
+                .selectFrom(qTeam)
+                .where(
+                        qTeam.isTeamPublic.eq(true),
+                        qTeam.status.eq(StatusType.USABLE)
+                )
+                .orderBy(qTeam.createdAt.desc()) // 최신순으로 정렬
+                .limit(limit)
+                .fetch();
+    }
+
+    @Override
+    public Team updateTeamStatus(final TeamStatus teamStatus, final String teamCode) {
+        QTeam qTeam = QTeam.team;
+
+        // 프로필 활동 업데이트
+        long updatedCount = jpaQueryFactory
+                .update(qTeam)
+                .set(qTeam.teamStatus, teamStatus)
+                .where(qTeam.teamCode.eq(teamCode))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) {
+            return jpaQueryFactory
+                    .selectFrom(qTeam)
+                    .where(qTeam.teamCode.eq(teamCode))
+                    .fetchOne();
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean isTeamDeleteInProgress(final String teamCode) {
+        QTeam qTeam = QTeam.team;
+        
+        return jpaQueryFactory
+                .selectOne()
+                .from(qTeam)
+                .where(qTeam.teamCode.eq(teamCode)
+                        .and(qTeam.teamStatus.eq(TeamStatus.DELETE_PENDING)))
+                .fetchFirst() != null;
     }
 }

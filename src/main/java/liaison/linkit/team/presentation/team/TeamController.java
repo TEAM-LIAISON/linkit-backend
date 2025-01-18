@@ -5,12 +5,13 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.team.business.service.team.TeamService;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.UpdateTeamResponse;
-import liaison.linkit.team.business.service.team.TeamService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,6 +27,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class TeamController {
 
     private final TeamService teamService;
+
+    // 홈화면에서 팀 조회하기 (최대 4개)
+    @GetMapping("/home/team")
+    public CommonResponse<TeamResponseDTO.TeamInformMenus> getHomeTeamInformMenus() {
+        return CommonResponse.onSuccess(teamService.getHomeTeamInformMenus());
+    }
 
     // 팀 생성하기
     @PostMapping("/team")
@@ -69,8 +76,14 @@ public class TeamController {
     }
 
     // 팀 삭제 요청
-
-    // 팀 나가기 요청
+    @DeleteMapping("/team/{teamCode}")
+    @MemberOnly
+    public CommonResponse<TeamResponseDTO.DeleteTeamResponse> deleteTeam(
+            @PathVariable final String teamCode,
+            @Auth final Accessor accessor
+    ) {
+        return CommonResponse.onSuccess(teamService.deleteTeam(accessor.getMemberId(), teamCode));
+    }
 
     // 나의 팀 조회
     @GetMapping("/my/teams")

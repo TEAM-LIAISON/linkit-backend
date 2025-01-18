@@ -54,7 +54,8 @@ public class LoginController {
         response.addHeader(SET_COOKIE, cookie.toString());
 
         log.info("response 설정 = {}", response);
-        return CommonResponse.onSuccess(new AccountResponseDTO.LoginResponse(loginResponse.getAccessToken(), loginResponse.getEmail(), loginResponse.getIsMemberBasicInform()));
+        return CommonResponse.onSuccess(
+                new AccountResponseDTO.LoginResponse(loginResponse.getAccessToken(), loginResponse.getEmail(), loginResponse.getEmailId(), loginResponse.getIsMemberBasicInform()));
     }
 
     // accessToken을 재발행한다

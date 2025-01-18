@@ -11,7 +11,6 @@ import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
 import liaison.linkit.profile.domain.skill.QSkill;
-
 import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
 import liaison.linkit.team.domain.announcement.QAnnouncementSkill;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
@@ -198,7 +197,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
         // 카운트 쿼리
         Long totalLong = jpaQueryFactory
-                .select(qTeamMemberAnnouncement.countDistinct())
+                .selectDistinct(qTeamMemberAnnouncement.count())
                 .from(qTeamMemberAnnouncement)
 
                 .leftJoin(qTeamMemberAnnouncement.team, qTeam)
@@ -226,6 +225,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 .fetchOne();
 
         long total = (totalLong == null) ? 0L : totalLong;
+
+        log.info("Fetched {} announcements from database", total);
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }
@@ -264,5 +265,20 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         QScale qScale = QScale.scale;
 
         return qScale.scaleName.in(scaleName);
+    }
+
+    @Override
+    public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMemberAnnouncement)
+                .where(
+                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
+                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+                )
+                .orderBy(qTeamMemberAnnouncement.createdAt.desc()) // 최신순으로 정렬
+                .limit(limit)
+                .fetch();
     }
 }

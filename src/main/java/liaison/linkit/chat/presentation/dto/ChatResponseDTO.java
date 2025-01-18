@@ -3,9 +3,11 @@ package liaison.linkit.chat.presentation.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import liaison.linkit.chat.domain.ChatRoom.ParticipantType;
+import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,13 +48,39 @@ public class ChatResponseDTO {
         private String chatPartnerImageUrl;         // 상대방 프로필 이미지
 
         @Builder.Default
+        private PartnerProfileDetailInformation partnerProfileDetailInformation = new PartnerProfileDetailInformation();
+
+        @Builder.Default
+        private PartnerTeamDetailInformation partnerTeamDetailInformation = new PartnerTeamDetailInformation();
+
+        private String lastMessage;                 // 마지막 메시지
+        private LocalDateTime lastMessageTime;      // 마지막 메시지 시간
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PartnerProfileDetailInformation {
+        @Builder.Default
         private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
 
         @Builder.Default
         private RegionDetail regionDetail = new RegionDetail();
+    }
 
-        private String lastMessage;                 // 마지막 메시지
-        private LocalDateTime lastMessageTime;      // 마지막 메시지 시간
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PartnerTeamDetailInformation {
+        // 팀 규모 정보
+        @Builder.Default
+        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+
+        // 지역 정보
+        @Builder.Default
+        private RegionDetail regionDetail = new RegionDetail();
     }
 
     @Builder
@@ -65,11 +93,11 @@ public class ChatResponseDTO {
         private Long matchingId;
 
         private String participantAId;
-        private ParticipantType participantAType;
+        private SenderType participantAType;
         private String participantAName;                // Profile인 경우 회원 이름, Team인 경우 팀 이름
 
         private String participantBId;
-        private ParticipantType participantBType;
+        private SenderType participantBType;
         private String participantBName;                // Profile인 경우 회원 이름, Team인 경우 팀 이름
 
         private String lastMessage;                // 마지막 메시지 정보
@@ -97,14 +125,27 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatMessageResponse {
-        private String messageId;                   // 메시지 ID
-        private Long chatRoomId;                    // 채팅방 ID
+        private String messageId;                               // 메시지 ID
+        private Long chatRoomId;                                // 채팅방 ID
 
-        private ParticipantType messageSenderType;
-        private String messageSenderId;
+        private String myParticipantType;                       // 나의 참여 타입
+        private ParticipantType messageSenderParticipantType;   // A_TYPE / B_TYPE 구별
 
-        private String content;                     // 메시지 내용
-        private LocalDateTime timestamp;            // 전송 시간
-        private boolean isRead;                     // 읽음 여부
+        private String messageSenderLogoImagePath;              // 메시지 발신자의 로고 이미지 경로
+
+        private String content;                                 // 메시지 내용
+        private LocalDateTime timestamp;                        // 전송 시간
+        private boolean isRead;                                 // 읽음 여부
+    }
+
+    // 채팅방 나가기에 대한 응답
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatRoomLeaveResponse {
+        private Long chatRoomId;
+
+        private ParticipantType chatRoomLeaveParticipantType;
     }
 }

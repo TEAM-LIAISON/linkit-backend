@@ -9,6 +9,8 @@ import java.util.Optional;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.QMatching;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
+import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.team.domain.team.Team;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +60,9 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
         try {
             List<Matching> content = jpaQueryFactory
                     .selectFrom(qMatching)
-                    .where(qMatching.senderEmailId.eq(emailId))
+                    .where(qMatching.senderEmailId.eq(emailId)
+                            .and(qMatching.senderDeleteStatus.eq(SenderDeleteStatus.REMAINING))
+                    )
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(qMatching.createdAt.desc())
@@ -68,7 +72,9 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
                     jpaQueryFactory
                             .select(qMatching.count())
                             .from(qMatching)
-                            .where(qMatching.senderEmailId.eq(emailId))
+                            .where(qMatching.senderEmailId.eq(emailId)
+                                    .and(qMatching.senderDeleteStatus.eq(SenderDeleteStatus.REMAINING))
+                            )
                             .fetchOne()
             ).orElse(0L);
 
@@ -93,7 +99,7 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
                 .map(Team::getTeamCode)
                 .toList();
 
-        BooleanExpression condition = qMatching.senderTeamCode.in(teamCodes);
+        BooleanExpression condition = qMatching.senderTeamCode.in(teamCodes).and(qMatching.senderDeleteStatus.eq(SenderDeleteStatus.REMAINING));
 
         List<Matching> content = jpaQueryFactory
                 .selectFrom(qMatching)
@@ -124,7 +130,8 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
         try {
             List<Matching> content = jpaQueryFactory
                     .selectFrom(qMatching)
-                    .where(qMatching.receiverEmailId.eq(emailId))
+                    .where(qMatching.receiverEmailId.eq(emailId)
+                            .and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING)))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(qMatching.createdAt.desc())
@@ -161,7 +168,7 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
                 .map(Team::getTeamCode)
                 .toList();
 
-        BooleanExpression condition = qMatching.receiverTeamCode.in(teamCodes);
+        BooleanExpression condition = qMatching.receiverTeamCode.in(teamCodes).and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING));
 
         List<Matching> content = jpaQueryFactory
                 .selectFrom(qMatching)
@@ -193,7 +200,7 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
             return Page.empty(pageable);
         }
 
-        BooleanExpression condition = qMatching.receiverAnnouncementId.in(announcementIds);
+        BooleanExpression condition = qMatching.receiverAnnouncementId.in(announcementIds).and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING));
 
         List<Matching> content = jpaQueryFactory
                 .selectFrom(qMatching)
@@ -286,6 +293,31 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
             matching.setMatchingStatusType(matchingStatusType);
         } else {
             throw new IllegalStateException("프로필 로그 업데이트 실패");
+        }
+    }
+
+    @Override
+    public void updateMatchingToCreatedRoomState(final Matching matching) {
+        QMatching qMatching = QMatching.matching;
+
+        // 상태 업데이트 실행
+        long updatedCount = jpaQueryFactory
+                .update(qMatching)
+                .set(qMatching.isChatRoomCreated, true) // 방 생성 상태로 업데이트
+                .where(qMatching.id.eq(matching.getId()))
+                .execute();
+
+        // EntityManager flush/clear를 통해 영속성 컨텍스트 동기화
+        entityManager.flush();
+        entityManager.clear();
+
+        // 상태 업데이트 성공 여부 확인 및 Matching 엔티티에도 동기화
+        if (updatedCount > 0) {
+            matching.setIsChatRoomCreated(true);
+        } else {
+            throw new IllegalStateException(
+                    "Failed to update matching status to ROOM_CREATED for Matching ID: " + matching.getId()
+            );
         }
     }
 }

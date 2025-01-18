@@ -56,8 +56,6 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamIn
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateMatchingStatusTypeResponse;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItem;
-import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingRequestedStateToReadItems;
 import liaison.linkit.matching.service.MatchingService;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
@@ -172,20 +170,9 @@ public class MatchingControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performUpdateReceivedMatchingRequestedStateRead(final UpdateReceivedMatchingReadRequest request) throws Exception {
+    private ResultActions performUpdateReceivedMatchingStateRead(final UpdateReceivedMatchingReadRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/requested/read")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request))
-                        .characterEncoding("UTF-8")
-        );
-    }
-
-    private ResultActions performUpdateReceivedMatchingCompletedStateRead(final UpdateReceivedMatchingReadRequest request) throws Exception {
-        return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/completed/read")
+                RestDocumentationRequestBuilders.post("/api/v1/matching/received/menu/read")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -235,6 +222,7 @@ public class MatchingControllerTest extends ControllerTest {
                 .matchingId(1L)
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
+                .isChatRoomCreated(false)
                 .senderProfileInformation(
                         SenderProfileInformation.builder()
                                 .profileImagePath("발신자 프로필 이미지 경로")
@@ -369,6 +357,11 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.matchingId")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("매칭 ID (PK)"),
+
+                                        fieldWithPath("result.isChatRoomCreated")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("채팅방 생성 여부"),
+
                                         fieldWithPath("result.senderType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("발신자 타입 - [PROFILE, TEAM]"),
@@ -950,6 +943,8 @@ public class MatchingControllerTest extends ControllerTest {
                 .matchingId(1L)
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
+                .isChatRoomCreated(true)
+                .chatRoomId(1L)
                 .senderProfileInformation(
                         SenderProfileInformation.builder()
                                 .profileImagePath("발신자 프로필 이미지 경로")
@@ -1022,6 +1017,7 @@ public class MatchingControllerTest extends ControllerTest {
                                 .build()
                 )
                 .requestMessage("매칭 요청 메시지")
+                .modifiedAt("최종 매칭 정보 변경 시간")
                 .matchingStatusType(MatchingStatusType.REQUESTED)
                 .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
                 .build();
@@ -1030,6 +1026,8 @@ public class MatchingControllerTest extends ControllerTest {
                 .matchingId(2L)
                 .senderType(SenderType.TEAM)
                 .receiverType(ReceiverType.PROFILE)
+                .isChatRoomCreated(true)
+                .chatRoomId(2L)
                 .senderProfileInformation(
                         SenderProfileInformation.builder()
                                 .profileImagePath("발신자 프로필 이미지 경로")
@@ -1102,6 +1100,7 @@ public class MatchingControllerTest extends ControllerTest {
                                 .build()
                 )
                 .requestMessage("매칭 요청 메시지")
+                .modifiedAt("최종 매칭 정보 변경 시간")
                 .matchingStatusType(MatchingStatusType.COMPLETED)
                 .receiverReadStatus(ReceiverReadStatus.READ_COMPLETED_MATCHING)
                 .build();
@@ -1164,6 +1163,14 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].receiverType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("수신자 타입 - [PROFILE, TEAM, ANNOUNCEMENT]"),
+
+                                        fieldWithPath("result.content[].isChatRoomCreated")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("채팅방 생성 여부"),
+
+                                        fieldWithPath("result.content[].chatRoomId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("채팅방이 생성된 경우 해당 채팅방의 ID"),
 
                                         // ----- senderProfileInformation
                                         fieldWithPath("result.content[].senderProfileInformation")
@@ -1282,6 +1289,10 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].requestMessage")
                                                 .type(JsonFieldType.STRING)
                                                 .description("매칭 요청 메시지"),
+                                        fieldWithPath("result.content[].modifiedAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("개별 매칭 정보 최종 수정 시간"),
+
                                         fieldWithPath("result.content[].matchingStatusType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("매칭 상태 - [REQUESTED, COMPLETED 등]"),
@@ -1373,6 +1384,8 @@ public class MatchingControllerTest extends ControllerTest {
                 .matchingId(1L)
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
+                .isChatRoomCreated(true)
+                .chatRoomId(1L)
                 .senderProfileInformation(
                         SenderProfileInformation.builder()
                                 .profileImagePath("발신자 프로필 이미지 경로")
@@ -1445,6 +1458,7 @@ public class MatchingControllerTest extends ControllerTest {
                                 .build()
                 )
                 .requestMessage("매칭 요청 메시지")
+                .modifiedAt("최신 매칭 수정 시간")
                 .matchingStatusType(MatchingStatusType.REQUESTED)
                 .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
                 .build();
@@ -1453,6 +1467,8 @@ public class MatchingControllerTest extends ControllerTest {
                 .matchingId(2L)
                 .senderType(SenderType.PROFILE)
                 .receiverType(ReceiverType.PROFILE)
+                .isChatRoomCreated(true)
+                .chatRoomId(2L)
                 .senderProfileInformation(
                         SenderProfileInformation.builder()
                                 .profileImagePath("발신자 프로필 이미지 경로")
@@ -1525,6 +1541,7 @@ public class MatchingControllerTest extends ControllerTest {
                                 .build()
                 )
                 .requestMessage("매칭 요청 메시지")
+                .modifiedAt("최신 매칭 수정 시간")
                 .matchingStatusType(MatchingStatusType.REQUESTED)
                 .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
                 .build();
@@ -1581,6 +1598,15 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].matchingId")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("매칭 ID (PK)"),
+
+                                        fieldWithPath("result.content[].isChatRoomCreated")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("채팅방 생성 여부"),
+
+                                        fieldWithPath("result.content[].chatRoomId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("채팅방이 생성된 경우 해당 채팅방의 ID"),
+
                                         fieldWithPath("result.content[].senderType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("발신자 타입 - [PROFILE, TEAM]"),
@@ -1705,6 +1731,9 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].requestMessage")
                                                 .type(JsonFieldType.STRING)
                                                 .description("매칭 요청 메시지"),
+                                        fieldWithPath("result.content[].modifiedAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("개별 매칭 케이스 최종 수정 시간"),
                                         fieldWithPath("result.content[].matchingStatusType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("매칭 상태 (REQUESTED, COMPLETED 등)"),
@@ -1785,7 +1814,7 @@ public class MatchingControllerTest extends ControllerTest {
                 ).andReturn();
     }
 
-    @DisplayName("매칭 관리 수신함에서 Requested 상태 매칭을 읽음 처리할 수 있다.")
+    @DisplayName("매칭 관리 수신함에서 매칭을 읽음 처리할 수 있다.")
     @Test
     void updateReceivedMatchingRequestedStateRead() throws Exception {
         // given
@@ -1796,24 +1825,24 @@ public class MatchingControllerTest extends ControllerTest {
                 ))
                 .build();
 
-        final UpdateReceivedMatchingRequestedStateToReadItems updateReceivedMatchingRequestedStateToReadItems
-                = UpdateReceivedMatchingRequestedStateToReadItems.builder()
-                .updateReceivedMatchingRequestedStateToReadItems(Arrays.asList(
-                        UpdateReceivedMatchingRequestedStateToReadItem.builder()
+        final UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingCompletedStateReadItems
+                = UpdateReceivedMatchingCompletedStateReadItems.builder()
+                .updateReceivedMatchingCompletedStateReadItems(Arrays.asList(
+                        UpdateReceivedMatchingCompletedStateReadItem.builder()
                                 .matchingId(1L)
                                 .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
                                 .build(),
-                        UpdateReceivedMatchingRequestedStateToReadItem.builder()
+                        UpdateReceivedMatchingCompletedStateReadItem.builder()
                                 .matchingId(2L)
-                                .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
+                                .receiverReadStatus(ReceiverReadStatus.READ_COMPLETED_MATCHING)
                                 .build()
                 ))
                 .build();
 
         // when
-        when(matchingService.updateReceivedMatchingRequestedStateToRead(anyLong(), any())).thenReturn(updateReceivedMatchingRequestedStateToReadItems);
+        when(matchingService.updateReceivedMatchingStateToRead(anyLong(), any())).thenReturn(updateReceivedMatchingCompletedStateReadItems);
 
-        final ResultActions resultActions = performUpdateReceivedMatchingRequestedStateRead(request);
+        final ResultActions resultActions = performUpdateReceivedMatchingStateRead(request);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -1841,74 +1870,6 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("결과 데이터"),
-                                        fieldWithPath("result.updateReceivedMatchingRequestedStateToReadItems")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("업데이트된 매칭 항목 목록"),
-                                        fieldWithPath("result.updateReceivedMatchingRequestedStateToReadItems[].matchingId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("업데이트된 매칭 ID"),
-                                        fieldWithPath("result.updateReceivedMatchingRequestedStateToReadItems[].receiverReadStatus")
-                                                .type(JsonFieldType.STRING)
-                                                .description("업데이트된 매칭의 읽음 상태")
-                                ))).andReturn();
-    }
-
-    @DisplayName("매칭 관리 수신함에서 Completed 상태 매칭을 읽음 처리할 수 있다.")
-    @Test
-    void updateReceivedMatchingCompletedStateRead() throws Exception {
-        // given
-        final UpdateReceivedMatchingReadRequest request = UpdateReceivedMatchingReadRequest.builder()
-                .matchingIds(Arrays.asList(
-                        1L,
-                        2L
-                ))
-                .build();
-
-        final UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingCompletedStateReadItems
-                = UpdateReceivedMatchingCompletedStateReadItems.builder()
-                .updateReceivedMatchingCompletedStateReadItems(Arrays.asList(
-                        UpdateReceivedMatchingCompletedStateReadItem.builder()
-                                .matchingId(1L)
-                                .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
-                                .build(),
-                        UpdateReceivedMatchingCompletedStateReadItem.builder()
-                                .matchingId(2L)
-                                .receiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING)
-                                .build()
-                ))
-                .build();
-
-        // when
-        when(matchingService.updateReceivedMatchingCompletedStateToRead(anyLong(), any())).thenReturn(updateReceivedMatchingCompletedStateReadItems);
-
-        final ResultActions resultActions = performUpdateReceivedMatchingCompletedStateRead(request);
-
-        // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                requestFields(
-                                        fieldWithPath("matchingIds")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("매칭 ID 목록. 읽음 처리할 매칭 (MatchingStatusType -> COMPLETED && ReceiverReadStatus -> UNREAD_COMPLETED_MATCHING)인 항목들")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부"),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드"),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지"),
-                                        fieldWithPath("result")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("결과 데이터"),
                                         fieldWithPath("result.updateReceivedMatchingCompletedStateReadItems")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("업데이트된 매칭 항목 목록"),
@@ -1918,7 +1879,10 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.updateReceivedMatchingCompletedStateReadItems[].receiverReadStatus")
                                                 .type(JsonFieldType.STRING)
                                                 .description("업데이트된 매칭의 읽음 상태")
-                                ))).andReturn();
+                                )
+                        )
+                )
+                .andReturn();
     }
 
     @DisplayName("매칭 관리 수신함에서 매칭을 삭제 처리할 수 있다.")

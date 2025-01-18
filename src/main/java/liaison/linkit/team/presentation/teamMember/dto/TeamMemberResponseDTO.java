@@ -101,4 +101,40 @@ public class TeamMemberResponseDTO {
         private String emailId;
         private TeamMemberType teamMemberType;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamOutResponse {
+        private String teamCode;
+        private String emailId;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamJoinResponse {
+        private String teamCode;
+        private String emailId;
+    }
+
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class UpdateManagingTeamStateResponse {
+        private String teamCode;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RemoveTeamMemberResponse {
+        private String teamCode;
+        private String removedIdentifier;
+    }
 }

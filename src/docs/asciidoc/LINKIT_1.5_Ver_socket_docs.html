@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.23">
-<title>WebSocket Chat API</title>
+<title>실시간 채팅/알림 API 명세서</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -550,18 +550,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>WebSocket Chat API</h1>
+<h1>실시간 채팅/알림 API 명세서</h1>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#chat-websocket">WebSocket 연결</a>
+<li><a href="#notification-websocket">1. 웹소켓 활용 채팅 및 알림 기능</a>
 <ul class="sectlevel2">
-<li><a href="#_연결_정보">연결 정보</a></li>
-<li><a href="#_연결_헤더">연결 헤더</a></li>
-<li><a href="#_채팅방_구독">채팅방 구독</a></li>
-<li><a href="#_메시지_전송">메시지 전송</a></li>
-<li><a href="#_에러_코드">에러 코드</a></li>
-<li><a href="#_websocket_연결_예시_javascript">WebSocket 연결 예시 (JavaScript)</a></li>
+<li><a href="#_웹소켓_연결">1.1. 웹소켓 연결</a></li>
+<li><a href="#_채팅방_구독_연결_sub">1.2. 채팅방 구독 연결 (/sub)</a></li>
+<li><a href="#_채팅_메시지_전송_pub">1.3. 채팅 메시지 전송 (/pub)</a></li>
+<li><a href="#_회원_알림_구독_연결_sub">1.4. 회원 알림 구독 연결 (/sub)</a></li>
+<li><a href="#_상단바_구독_연결_sub">1.5. 상단바 구독 연결 (/sub)</a></li>
 </ul>
 </li>
 </ul>
@@ -569,10 +568,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="chat-websocket"><a class="link" href="#chat-websocket">WebSocket 연결</a></h2>
+<h2 id="notification-websocket"><a class="link" href="#notification-websocket">1. 웹소켓 활용 채팅 및 알림 기능</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_연결_정보"><a class="link" href="#_연결_정보">연결 정보</a></h3>
+<h3 id="_웹소켓_연결"><a class="link" href="#_웹소켓_연결">1.1. 웹소켓 연결</a></h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 28.5714%;">
@@ -580,131 +579,142 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">WebSocket URL</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ws://localhost:8080/ws-stomp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">웹소켓 연결 URL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">wss://dev.liaison-dev.site/stomp/linkit</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Protocol</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로토콜</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">STOMP over WebSocket</p></td>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="sect2">
-<h3 id="_연결_헤더"><a class="link" href="#_연결_헤더">연결 헤더</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">Authorization: Bearer {jwt_token}</code></pre>
+<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">Authorization: Bearer {accessToken}</code></pre>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_채팅방_구독"><a class="link" href="#_채팅방_구독">채팅방 구독</a></h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">SUBSCRIBE /sub/chat/room/{chatRoomId}</code></pre>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_구독_시_수신되는_메시지_형식"><a class="link" href="#_구독_시_수신되는_메시지_형식">구독 시 수신되는 메시지 형식</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-    "messageId": "string",
-    "chatRoomId": "number",
-    "senderMemberId": "number",
-    "content": "string",
-    "timestamp": "string",
-    "isRead": "boolean"
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiaWF0IjoxNzM2Mzk3OTE0LCJleHAiOjE3MzY0MDE1MTR9.ax6k9jeG4rTJmOP9fhebYRd50Ahmj7s9UtMegBhPEIY"
 }</code></pre>
 </div>
 </div>
 </div>
-</div>
 <div class="sect2">
-<h3 id="_메시지_전송"><a class="link" href="#_메시지_전송">메시지 전송</a></h3>
+<h3 id="_채팅방_구독_연결_sub"><a class="link" href="#_채팅방_구독_연결_sub">1.2. 채팅방 구독 연결 (/sub)</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">SEND /pub/chat/message</code></pre>
+<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">Authorization: Bearer {accessToken}</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_전송_메시지_형식"><a class="link" href="#_전송_메시지_형식">전송 메시지 형식</a></h4>
+<h4 id="_채팅방_구독"><a class="link" href="#_채팅방_구독">1.2.1. 채팅방 구독</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
-    "chatRoomId": "number",
-    "senderEntityId": "number",
-    "content": "string"
-}</code></pre>
+<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">SUBSCRIBE /sub/chat/{chatRoomId}</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_에러_코드"><a class="link" href="#_에러_코드">에러 코드</a></h3>
+<h3 id="_채팅_메시지_전송_pub"><a class="link" href="#_채팅_메시지_전송_pub">1.3. 채팅 메시지 전송 (/pub)</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">Authorization: Bearer {accessToken}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_채팅_메시지_전송"><a class="link" href="#_채팅_메시지_전송">1.3.1. 채팅 메시지 전송</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">SEND /pub/chat/send/{chatRoomId}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_회원_알림_구독_연결_sub"><a class="link" href="#_회원_알림_구독_연결_sub">1.4. 회원 알림 구독 연결 (/sub)</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">Authorization: Bearer {accessToken}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_회원_알림_구독"><a class="link" href="#_회원_알림_구독">1.4.1. 회원 알림 구독</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">SUBSCRIBE /sub/notification/{emailId}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_상단바_구독_연결_sub"><a class="link" href="#_상단바_구독_연결_sub">1.5. 상단바 구독 연결 (/sub)</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">Authorization: Bearer {accessToken}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_상단바_신규_채팅신규_알림_정보_구독_빨간점_표시"><a class="link" href="#_상단바_신규_채팅신규_알림_정보_구독_빨간점_표시">1.5.1. 상단바 신규 채팅/신규 알림 정보 구독 (빨간점 표시)</a></h4>
+<div class="paragraph">
+<p>이 구독 경로를 통해, 새로 온 채팅 메시지나 알림의 미확인(안 읽음) 개수를 실시간으로 받아볼 수 있습니다.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">SUBSCRIBE /sub/notification/header/{emailId}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Path Parameter</strong>
+- <code>emailId</code>: 이메일 ID (문자열)</p>
+</div>
+<div class="paragraph">
+<p>구독 성공 시, 서버에서 <code>NotificationCountResponse</code> 형태의 메시지가 다음과 같이 전송됩니다:</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_notificationcountresponse"><a class="link" href="#_notificationcountresponse">1.5.2. NotificationCountResponse</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 20%;">
-<col style="width: 30%;">
-<col style="width: 50%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 66.6668%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">코드</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">상태</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">설명</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unreadChatCount</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">안 읽은 채팅 메시지의 개수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CHAT_001</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">인증되지 않은 사용자</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CHAT_002</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">채팅방 접근 권한 없음</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CHAT_003</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">존재하지 않는 채팅방</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unreadNotificationCount</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">안 읽은 알림의 개수</p></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="sect2">
-<h3 id="_websocket_연결_예시_javascript"><a class="link" href="#_websocket_연결_예시_javascript">WebSocket 연결 예시 (JavaScript)</a></h3>
+<div class="sect3">
+<h4 id="_example_payload"><a class="link" href="#_example_payload">1.5.3. Example Payload</a></h4>
+<div class="paragraph">
+<p>아래는 실제로 전송되는 JSON 예시입니다.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">// WebSocket 연결
-const sock = new SockJS('http://localhost:8080/ws-stomp');
-const stomp = Stomp.over(sock);
-
-// 연결
-stomp.connect({
-    'Authorization': 'Bearer ' + token
-}, frame =&gt; {
-    console.log('Connected: ' + frame);
-
-    // 채팅방 구독
-    stomp.subscribe(`/sub/chat/room/${chatRoomId}`, message =&gt; {
-        const received = JSON.parse(message.body);
-        console.log(received);
-    });
-});
-
-// 메시지 전송
-function sendMessage(content) {
-    stomp.send("/pub/chat/message",
-        {'Authorization': 'Bearer ' + token},
-        JSON.stringify({
-            chatRoomId: chatRoomId,
-            senderEntityId: senderEntityId,
-            content: content
-        })
-    );
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "unreadChatCount": 3,
+  "unreadNotificationCount": 2
 }</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -713,7 +723,7 @@ function sendMessage(content) {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-01-07 16:48:37 +0900
+Last updated 2025-01-17 21:13:59 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

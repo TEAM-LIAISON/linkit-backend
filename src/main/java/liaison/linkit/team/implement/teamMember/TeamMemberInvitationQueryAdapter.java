@@ -29,4 +29,12 @@ public class TeamMemberInvitationQueryAdapter {
     public List<TeamMemberInvitation> getTeamMemberInvitations(final Long teamId) {
         return teamMemberInvitationRepository.getTeamMemberInvitations(teamId);
     }
+
+    public TeamMemberInvitation getTeamMemberInvitationInPendingState(final String email, final Team team) {
+        return teamMemberInvitationRepository.getTeamMemberInvitationInPendingState(email, team);
+    }
+
+    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email) {
+        return teamMemberInvitationRepository.getTeamMemberInvitationByTeamCodeAndEmail(teamCode, email);
+    }
 }

@@ -1,5 +1,6 @@
 package liaison.linkit.member.presentation.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,13 +17,13 @@ public class MemberBasicInformRequestDTO {
     @AllArgsConstructor
     public static class UpdateMemberBasicInformRequest {
 
-        @NotNull(message = "이름을 입력해주세요")
+        @NotBlank(message = "이름을 입력해주세요")
         private String memberName;
 
-        @NotNull(message = "유저 아이디를 입력해주세요")
+        @NotBlank(message = "유저 아이디를 입력해주세요")
         private String emailId;
 
-        @NotNull(message = "연락처를 입력해주세요")
+        @NotBlank(message = "연락처를 입력해주세요")
         private String contact;
     }
 
@@ -43,7 +44,7 @@ public class MemberBasicInformRequestDTO {
 
         @NotNull(message = "광고성 정보 수신 동의를 선택해주세요")
         private Boolean isMarketingAgree;
-        
+
     }
 
     @Builder
@@ -78,6 +79,7 @@ public class MemberBasicInformRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MailReAuthenticationRequest {
+        @NotNull(message = "변경하고자 하는 이메일을 입력해주세요")
         private String email;
     }
 
@@ -86,7 +88,11 @@ public class MemberBasicInformRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AuthCodeVerificationRequest {
+
+        @NotNull(message = "변경하고자 하는 이메일을 입력해주세요")
         private String changeRequestEmail;
+
+        @NotNull(message = "이메일로 발송된 인증코드를 입력해주세요")
         private String authCode;
     }
 }

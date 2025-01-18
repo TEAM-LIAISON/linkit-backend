@@ -33,6 +33,7 @@ public class AccountResponseDTO {
     public static class LoginResponse {
         private String accessToken;
         private String email;
+        private String emailId;
         private Boolean isMemberBasicInform;
 
     }
@@ -53,6 +54,7 @@ public class AccountResponseDTO {
         private String accessToken;
         private String refreshToken;
         private String email;
+        private String emailId;
         private Boolean isMemberBasicInform;
     }
 }
