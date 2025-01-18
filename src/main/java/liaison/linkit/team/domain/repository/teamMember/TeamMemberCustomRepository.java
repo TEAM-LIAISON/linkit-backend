@@ -11,7 +11,7 @@ public interface TeamMemberCustomRepository {
 
     Long getTeamOwnerMemberId(final Team team);
 
-    boolean isMemberOfTeam(final Long teamId, final Long memberId);
+    boolean isOwnerOrManagerOfTeam(final Long teamId, final Long memberId);
 
     boolean existsTeamByMemberId(final Long memberId);
 
@@ -30,4 +30,6 @@ public interface TeamMemberCustomRepository {
     boolean existsTeamMembersByTeamCode(final String teamCode);
 
     void removeTeamMemberInTeam(final TeamMember teamMember);
+
+    List<Long> getAllTeamMemberIds(final String teamCode);
 }

@@ -21,8 +21,8 @@ public class TeamMemberQueryAdapter {
         return teamMemberRepository.getTeamOwnerMemberId(team);
     }
 
-    public boolean isMemberOfTeam(final Long teamId, final Long memberId) {
-        return teamMemberRepository.isMemberOfTeam(teamId, memberId);
+    public boolean isOwnerOrManagerOfTeam(final Long teamId, final Long memberId) {
+        return teamMemberRepository.isOwnerOrManagerOfTeam(teamId, memberId);
     }
 
     public boolean existsTeamByMemberId(final Long memberId) {
@@ -55,5 +55,9 @@ public class TeamMemberQueryAdapter {
 
     public boolean existsTeamMembersByTeamCode(final String teamCode) {
         return teamMemberRepository.existsTeamMembersByTeamCode(teamCode);
+    }
+
+    public List<Long> getAllTeamMemberIds(final String teamCode) {
+        return teamMemberRepository.getAllTeamMemberIds(teamCode);
     }
 }

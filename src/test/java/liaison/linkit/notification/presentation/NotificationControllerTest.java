@@ -78,11 +78,8 @@ public class NotificationControllerTest extends ControllerTest {
         final NotificationItems notificationItems = NotificationItems.builder()
                 .notificationItems(Arrays.asList(
                         NotificationItem.builder()
-                                .id("알림 ID 1")
                                 .notificationType(NotificationType.TEAM_INVITATION)
-                                .notificationReadStatus(NotificationReadStatus.PENDING)
-                                .createdAt(LocalDateTime.now())
-                                .modifiedAt(LocalDateTime.now())
+                                .notificationReadStatus(NotificationReadStatus.READ)
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.builder()
                                                 .teamName("테스트 팀")
@@ -90,11 +87,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 )
                                 .build(),
                         NotificationItem.builder()
-                                .id("알림 ID 2")
                                 .notificationType(NotificationType.CHATTING)
                                 .notificationReadStatus(NotificationReadStatus.READ)
-                                .createdAt(LocalDateTime.now())
-                                .modifiedAt(LocalDateTime.now())
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.builder()
                                                 .senderName("보낸 사람 이름")
@@ -104,11 +98,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 )
                                 .build(),
                         NotificationItem.builder()
-                                .id("알림 ID 3")
                                 .notificationType(NotificationType.MATCHING)
                                 .notificationReadStatus(NotificationReadStatus.SENT)
-                                .createdAt(LocalDateTime.now())
-                                .modifiedAt(LocalDateTime.now())
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.builder()
                                                 .matchingSenderName("매칭 발신자 이름")
@@ -118,11 +109,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 )
                                 .build(),
                         NotificationItem.builder()
-                                .id("알림 ID 4")
                                 .notificationType(NotificationType.SYSTEM)
                                 .notificationReadStatus(NotificationReadStatus.READ)
-                                .createdAt(LocalDateTime.now())
-                                .modifiedAt(LocalDateTime.now())
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.builder()
                                                 .systemMessage("시스템 메시지 내용")

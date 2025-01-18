@@ -5,6 +5,7 @@ import java.util.List;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.domain.team.type.TeamStatus;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.DeleteTeamResponse;
@@ -25,6 +26,7 @@ public class TeamMapper {
                 .teamCode(addTeamRequest.getTeamCode())
                 .teamShortDescription(addTeamRequest.getTeamShortDescription())
                 .isTeamPublic(addTeamRequest.getIsTeamPublic())
+                .teamStatus(TeamStatus.ACTIVE)
                 .build();
     }
 
@@ -95,11 +97,15 @@ public class TeamMapper {
 
     public TeamResponseDTO.TeamDetail toTeamDetail(
             final boolean isMyTeam,
+            final boolean isTeamInvitationInProgress,
+            final boolean isTeamDeleteInProgress,
             final TeamInformMenu teamInformMenu
     ) {
         return TeamResponseDTO.TeamDetail
                 .builder()
                 .isMyTeam(isMyTeam)
+                .isTeamInvitationInProgress(isTeamInvitationInProgress)
+                .isTeamDeleteInProgress(isTeamDeleteInProgress)
                 .teamInformMenu(teamInformMenu)
                 .build();
     }

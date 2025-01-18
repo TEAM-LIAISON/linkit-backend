@@ -3,6 +3,7 @@ package liaison.linkit.team.implement.team;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.repository.team.TeamRepository;
+import liaison.linkit.team.domain.team.type.TeamStatus;
 import lombok.RequiredArgsConstructor;
 
 @Adapter
@@ -16,5 +17,9 @@ public class TeamCommandAdapter {
 
     public void deleteTeam(final String teamCode) {
         teamRepository.deleteTeamByTeamCode(teamCode);
+    }
+
+    public Team updateTeamStatus(final TeamStatus teamStatus, final String teamCode) {
+        return teamRepository.updateTeamStatus(teamStatus, teamCode);
     }
 }

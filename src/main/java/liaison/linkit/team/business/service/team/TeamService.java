@@ -10,6 +10,11 @@ import liaison.linkit.file.domain.ImageFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.notification.business.NotificationMapper;
+import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
+import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import liaison.linkit.team.business.mapper.state.TeamCurrentStateMapper;
@@ -18,6 +23,7 @@ import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.state.TeamCurrentState;
+import liaison.linkit.team.domain.team.type.TeamStatus;
 import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.region.TeamRegion;
 import liaison.linkit.team.domain.scale.Scale;
@@ -36,6 +42,7 @@ import liaison.linkit.team.implement.state.TeamCurrentStateCommandAdapter;
 import liaison.linkit.team.implement.state.TeamCurrentStateQueryAdapter;
 import liaison.linkit.team.implement.state.TeamStateQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.UpdateTeamRequest;
@@ -85,6 +92,9 @@ public class TeamService {
     private final ImageValidator imageValidator;
     private final S3Uploader s3Uploader;
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
+    private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
+    private final NotificationService notificationService;
+    private final NotificationMapper notificationMapper;
 
 
     // 초기 팀 생성
@@ -240,10 +250,15 @@ public class TeamService {
 
     // 로그인한 사용자가 팀을 상세 조회한 케이스
     public TeamResponseDTO.TeamDetail getLoggedInTeamDetail(final Long memberId, final String teamCode) {
+        final Member member = memberQueryAdapter.findById(memberId);
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
-        // 6. 멤버 여부 확인
-        boolean isMyTeam = teamMemberQueryAdapter.isMemberOfTeam(targetTeam.getId(), memberId);
+        // 오너, 관리자 여부 확인
+        boolean isMyTeam = teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId);
+
+        // 조회 요청을 진행한 사용자가 teamInvitation 테이블에 존재하는지 여부 판단
+        boolean isTeamInvitationInProgress = teamMemberInvitationQueryAdapter.existsByEmailAndTeam(member.getEmail(), targetTeam);
+        boolean isTeamDeleteInProgress = false;
 
         final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
         final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
@@ -267,7 +282,7 @@ public class TeamService {
 
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(isMyTeam, teamInformMenu);
+        return teamMapper.toTeamDetail(isMyTeam, isTeamInvitationInProgress, isTeamDeleteInProgress, teamInformMenu);
     }
 
     // 로그인하지 않은 사용자가 팀을 상세 조회한 케이스
@@ -293,7 +308,7 @@ public class TeamService {
         final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(teamCode);
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(false, teamInformMenu);
+        return teamMapper.toTeamDetail(false, false, false, teamInformMenu);
     }
 
     public TeamResponseDTO.TeamItems getTeamItems(final Long memberId) {
@@ -334,9 +349,23 @@ public class TeamService {
         // 오너를 제외하고 등록된 팀원이 존재하는 경우
         if (teamMemberQueryAdapter.existsTeamMembersByTeamCode(teamCode)) {
             // 팀원의 삭제 수락 요청이 모두 처리되어야 팀 삭제가 진행될 수 있다.
+            teamCommandAdapter.updateTeamStatus(TeamStatus.DELETE_PENDING, teamCode);
 
             // 팀원들에게 요청 알림 발송
+            NotificationDetails removeTeamNotificationDetails = NotificationDetails.teamInvitationRequested(targetTeam.getTeamName());
 
+            final List<Long> teamMemberIds = teamMemberQueryAdapter.getAllTeamMemberIds(teamCode);
+
+            for (Long teamMemberId : teamMemberIds) {
+                notificationService.alertNewNotification(
+                        notificationMapper.toNotification(
+                                teamMemberId,
+                                NotificationType.TEAM,
+                                SubNotificationType.REMOVE_TEAM_REQUESTED,
+                                removeTeamNotificationDetails
+                        )
+                );
+            }
         } else {    // 오너만 해당 팀을 소유하고 있는 경우
             teamCommandAdapter.deleteTeam(teamCode);
         }

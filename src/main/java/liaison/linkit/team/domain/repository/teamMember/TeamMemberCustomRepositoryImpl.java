@@ -43,13 +43,14 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
     }
 
     @Override
-    public boolean isMemberOfTeam(Long teamId, Long memberId) {
+    public boolean isOwnerOrManagerOfTeam(final Long teamId, final Long memberId) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
 
         return jpaQueryFactory.selectOne()
                 .from(qTeamMember)
                 .where(qTeamMember.team.id.eq(teamId)
-                        .and(qTeamMember.member.id.eq(memberId)))
+                        .and(qTeamMember.member.id.eq(memberId))
+                        .and(qTeamMember.teamMemberType.in(TeamMemberType.TEAM_OWNER, TeamMemberType.TEAM_MANAGER)))
                 .fetchFirst() != null;
     }
 
@@ -164,10 +165,21 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
     @Override
     public void removeTeamMemberInTeam(final TeamMember teamMember) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
-        
+
         jpaQueryFactory
                 .delete(qTeamMember)
                 .where(qTeamMember.id.eq(teamMember.getId()))
                 .execute();
+    }
+
+    @Override
+    public List<Long> getAllTeamMemberIds(final String teamCode) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+        
+        return jpaQueryFactory
+                .select(qTeamMember.member.id)
+                .from(qTeamMember)
+                .where(qTeamMember.team.teamCode.eq(teamCode))
+                .fetch();
     }
 }

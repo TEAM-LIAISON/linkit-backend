@@ -2,6 +2,8 @@ package liaison.linkit.team.domain.repository.team;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 import liaison.linkit.global.type.StatusType;
@@ -15,6 +17,7 @@ import liaison.linkit.team.domain.state.QTeamCurrentState;
 import liaison.linkit.team.domain.state.QTeamState;
 import liaison.linkit.team.domain.team.QTeam;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.domain.team.type.TeamStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -26,6 +29,9 @@ import org.springframework.data.support.PageableExecutionUtils;
 public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public Optional<Team> findByTeamCode(final String teamCode) {
@@ -197,4 +203,27 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                 .fetch();
     }
 
+    @Override
+    public Team updateTeamStatus(final TeamStatus teamStatus, final String teamCode) {
+        QTeam qTeam = QTeam.team;
+
+        // 프로필 활동 업데이트
+        long updatedCount = jpaQueryFactory
+                .update(qTeam)
+                .set(qTeam.teamStatus, teamStatus)
+                .where(qTeam.teamCode.eq(teamCode))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) {
+            return jpaQueryFactory
+                    .selectFrom(qTeam)
+                    .where(qTeam.teamCode.eq(teamCode))
+                    .fetchOne();
+        } else {
+            return null;
+        }
+    }
 }

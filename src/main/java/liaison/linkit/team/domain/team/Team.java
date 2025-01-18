@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import liaison.linkit.global.BaseEntity;
+import liaison.linkit.team.domain.team.type.TeamStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,16 +37,14 @@ public class Team extends BaseEntity {
     private String teamLogoImagePath;
     private boolean isTeamPublic;
 
+    private TeamStatus teamStatus;
+
     public void setTeamLogoImagePath(final String teamLogoImagePath) {
         this.teamLogoImagePath = teamLogoImagePath;
     }
 
     public void setTeamName(final String teamName) {
         this.teamName = teamName;
-    }
-
-    public void setTeamShortDescription(final String teamShortDescription) {
-        this.teamShortDescription = teamShortDescription;
     }
 
     public void updateTeam(

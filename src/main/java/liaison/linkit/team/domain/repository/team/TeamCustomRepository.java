@@ -3,6 +3,7 @@ package liaison.linkit.team.domain.repository.team;
 import java.util.List;
 import java.util.Optional;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.domain.team.type.TeamStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -22,4 +23,6 @@ public interface TeamCustomRepository {
     void deleteTeamByTeamCode(final String teamCode);
 
     List<Team> findTopTeams(final int limit);
+
+    Team updateTeamStatus(final TeamStatus teamStatus, final String teamCode);
 }

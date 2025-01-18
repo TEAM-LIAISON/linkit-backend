@@ -18,8 +18,15 @@ public class TeamResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamDetail {
+        // 내가 속한 팀인지 여부
         private Boolean isMyTeam;
 
+        // 초대 상태
+        private Boolean isTeamInvitationInProgress;
+
+        // 팀 삭제 상태
+        private Boolean isTeamDeleteInProgress;
+        
         @Builder.Default
         private TeamInformMenu teamInformMenu = new TeamInformMenu();
     }
