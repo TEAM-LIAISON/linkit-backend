@@ -41,7 +41,6 @@ public class NotificationService {
         NotificationResponseDTO.NotificationItem notificationItem = notificationMapper.toNotificationItem(savedNotification);
 
         if (emailId != null) {
-            // 수신자별 구독 주소로 알림 전송
             log.info("Sent notification to " + emailId);
         } else {
             log.warn("수신자의 emailId가 존재하지 않습니다. 알림 전송이 중단되었습니다.");

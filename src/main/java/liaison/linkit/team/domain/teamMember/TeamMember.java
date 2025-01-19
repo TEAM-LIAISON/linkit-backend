@@ -27,7 +27,7 @@ import org.hibernate.annotations.SQLRestriction;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@SQLRestriction("status = 'ACTIVE'")
+@SQLRestriction("status = 'USABLE'")
 public class TeamMember extends BaseEntity {
 
     @Id
