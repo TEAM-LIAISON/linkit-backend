@@ -143,4 +143,16 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
             return null;
         }
     }
+
+    @Override
+    public List<ProfileLog> findTopView(final int limit) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        return queryFactory
+                .selectFrom(qProfileLog)
+                .where(qProfileLog.isLogPublic.eq(true)) // 공개 여부가 true인 것만
+                .orderBy(qProfileLog.viewCount.desc())   // 조회수 높은 순
+                .limit(limit)
+                .fetch();
+    }
 }

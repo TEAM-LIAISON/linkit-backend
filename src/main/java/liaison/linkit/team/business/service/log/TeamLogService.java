@@ -119,7 +119,8 @@ public class TeamLogService {
                 addTeamLogRequest.getLogTitle(),
                 addTeamLogRequest.getLogContent(),
                 addTeamLogRequest.getIsLogPublic(),
-                addTeamLogType
+                addTeamLogType,
+                0L
         );
 
         final TeamLog savedTeamLog = teamLogCommandAdapter.addTeamLog(teamLog);

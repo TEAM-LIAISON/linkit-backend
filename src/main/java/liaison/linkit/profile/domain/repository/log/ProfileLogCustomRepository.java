@@ -20,4 +20,6 @@ public interface ProfileLogCustomRepository {
     ProfileLog updateProfileLogPublicState(final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState);
 
     boolean existsRepresentativeProfileLogByProfile(final Long profileId);
+
+    List<ProfileLog> findTopView(final int limit);
 }

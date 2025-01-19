@@ -89,16 +89,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     // 팀원 공고 뷰어 전체 조회
     private ResultActions performGetLoggedOutTeamMemberAnnouncementViewItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/announcement/view", teamCode)
-        );
-    }
-
-    // 팀원 공고 전체 조회
-    private ResultActions performGetTeamMemberAnnouncementItems(final String teamCode) throws Exception {
-        return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/announcement", teamCode)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
         );
     }
 
@@ -349,9 +340,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
-    @DisplayName("회원이 팀의 팀원 공고 뷰어를 전체 조회할 수 있다.")
+    @DisplayName("회원이 팀의 팀원 공고를 전체 조회할 수 있다.")
     @Test
-    void getLoggedOutTeamMemberAnnouncementViewItems() throws Exception {
+    void getLoggedOutTeamMemberAnnouncementItems() throws Exception {
         // given
         final TeamMemberAnnouncemenItems teamMemberAnnouncemenItems = TeamMemberAnnouncemenItems.builder()
                 .teamMemberAnnouncementItems(Arrays.asList(

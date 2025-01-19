@@ -22,6 +22,21 @@ public class LogResponseDTO {
         private List<LogInformMenu> logInformMenus = new ArrayList<>();
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class LogInformMenu {
+        private Long id;
+        private String domainType;
+
+        private LocalDateTime createdAt;
+        private String logTitle;
+        private String logContent;
+
+        private LogInformDetails logInformDetails;
+    }
+
     @Getter
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class LogInformDetails {
@@ -42,20 +57,19 @@ public class LogResponseDTO {
             this.memberName = memberName;
             this.profileImagePath = profileImagePath;
         }
-    }
 
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class LogInformMenu {
-        // PROFILE || TEAM 판단 변수
-        private String logDomainType;
+        public static LogInformDetails profileLogType(final String memberName, final String profileImagePath) {
+            return LogInformDetails.builder()
+                    .memberName(memberName)
+                    .profileImagePath(profileImagePath)
+                    .build();
+        }
 
-        private LocalDateTime createdAt;
-        private String logTitle;
-        private String logContent;
-
-        private LogInformDetails logInformDetails;
+        public static LogInformDetails teamLogType(final String teamName, final String teamLogoImagePath) {
+            return LogInformDetails.builder()
+                    .teamName(teamName)
+                    .teamLogoImagePath(teamLogoImagePath)
+                    .build();
+        }
     }
 }

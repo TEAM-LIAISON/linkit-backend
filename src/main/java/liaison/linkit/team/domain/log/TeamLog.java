@@ -47,11 +47,26 @@ public class TeamLog extends BaseDateTimeEntity {
     @Enumerated(value = STRING)
     private LogType logType;
 
+    // == 1) 조회수 필드 추가 ==
+    // 기본값 0
+    @Column(nullable = false)
+    private Long viewCount;
+
     public void setLogType(final LogType logType) {
         this.logType = logType;
     }
 
     public void setIsLogPublic(final boolean isLogPublic) {
         this.isLogPublic = isLogPublic;
+    }
+
+    // == 조회수 증가 메서드 ==
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
+
+    // == 2) 배치에서 주기적으로 호출할 메서드 (조회수 초기화) ==
+    public void resetViewCount() {
+        this.viewCount = 0L;
     }
 }

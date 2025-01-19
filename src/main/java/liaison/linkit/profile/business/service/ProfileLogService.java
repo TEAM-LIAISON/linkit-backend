@@ -119,7 +119,8 @@ public class ProfileLogService {
                 addProfileLogRequest.getLogTitle(),
                 addProfileLogRequest.getLogContent(),
                 addProfileLogRequest.getIsLogPublic(),
-                addProfileLogType
+                addProfileLogType,
+                0L
         );
 
         final ProfileLog savedProfileLog = profileLogCommandAdapter.addProfileLog(profileLog);

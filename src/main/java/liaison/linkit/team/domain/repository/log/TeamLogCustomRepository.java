@@ -19,4 +19,6 @@ public interface TeamLogCustomRepository {
     boolean existsRepresentativeTeamLogByTeam(final Long teamId);
 
     TeamLog updateTeamLog(final TeamLog teamLog, final UpdateTeamLogRequest updateTeamLogRequest);
+
+    List<TeamLog> findTopView(final int limit);
 }

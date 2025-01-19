@@ -138,4 +138,16 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
             return null;
         }
     }
+
+    @Override
+    public List<TeamLog> findTopView(final int limit) {
+        QTeamLog qTeamLog = QTeamLog.teamLog;
+
+        return queryFactory
+                .selectFrom(qTeamLog)
+                .where(qTeamLog.isLogPublic.eq(true)) // 공개 여부가 true인 것만
+                .orderBy(qTeamLog.viewCount.desc())   // 조회수 높은 순
+                .limit(limit)
+                .fetch();
+    }
 }
