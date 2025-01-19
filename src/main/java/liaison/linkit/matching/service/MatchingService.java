@@ -435,11 +435,14 @@ public class MatchingService {
                     getSenderEmail(matching),
                     getSenderName(matching),
                     getSenderLogoImagePath(matching),
+                    getSenderPositionOrTeamSizeText(matching),
                     getSenderPositionOrTeamSize(matching),
                     getSenderRegionDetail(matching),
+
                     getReceiverEmail(matching),
                     getReceiverName(matching),
                     getReceiverLogoImagePath(matching),
+                    getReceiverPositionOrTeamSizeText(matching),
                     getReceiverPositionOrTeamSize(matching),
                     getReceiverRegionDetail(matching)
             );
@@ -528,7 +531,7 @@ public class MatchingService {
         return matchingMapper.toDeleteReceivedMatchingItems(deleteReceivedMatchingItems);
     }
 
-    public MatchingResponseDTO.AddMatchingResponse addMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest addMatchingRequest) {
+    public MatchingResponseDTO.AddMatchingResponse addMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest addMatchingRequest) throws MessagingException {
 
         if (addMatchingRequest.getSenderTeamCode() != null && addMatchingRequest.getReceiverAnnouncementId() != null) {
             throw MatchingRelationBadRequestException.EXCEPTION;
@@ -579,6 +582,15 @@ public class MatchingService {
 
         final Matching matching = matchingMapper.toMatching(addMatchingRequest);
         matchingCommandAdapter.addMatching(matching);
+
+        asyncMatchingEmailService.sendMatchingRequestedEmail(
+                getReceiverEmail(matching),
+                getSenderName(matching),
+                getSenderLogoImagePath(matching),
+                getSenderPositionOrTeamSizeText(matching),
+                getSenderPositionOrTeamSize(matching),
+                getSenderRegionDetail(matching)
+        );
 
         SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
         SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
@@ -1082,5 +1094,21 @@ public class MatchingService {
             return divisionName;
         }
         return "";
+    }
+
+    private String getSenderPositionOrTeamSizeText(final Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            return "포지션";
+        } else {
+            return "규모";
+        }
+    }
+
+    private String getReceiverPositionOrTeamSizeText(final Matching matching) {
+        if (matching.getReceiverType() == ReceiverType.PROFILE) {
+            return "포지션";
+        } else {
+            return "규모";
+        }
     }
 }
