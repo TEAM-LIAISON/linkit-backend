@@ -89,16 +89,16 @@ public class TeamMemberAnnouncementResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamMemberAnnouncementViewItems {
+    public static class TeamMemberAnnouncemenItems {
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItem> teamMemberAnnouncementViewItems = new ArrayList<>();
+        private List<TeamMemberAnnouncementItem> teamMemberAnnouncementItems = new ArrayList<>();
     }
 
     @Builder
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamMemberAnnouncementViewItem {
+    public static class TeamMemberAnnouncementItem {
         private Long teamMemberAnnouncementId;
 
         private int announcementDDay;
@@ -116,30 +116,30 @@ public class TeamMemberAnnouncementResponseDTO {
         private int announcementScrapCount;         // 공고의 전체 스크랩 개수
     }
 
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TeamMemberAnnouncementItem {
-        private Long teamMemberAnnouncementId;
-        private String announcementTitle;
-        private String majorPosition;
-
-        @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
-
-        private Boolean isAnnouncementPublic;       // 공고 공개/비공개 여부
-        private Boolean isAnnouncementInProgress;   // 공고 현재 진행 여부
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TeamMemberAnnouncementItems {
-        @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem> teamMemberAnnouncementItems = new ArrayList<>();
-    }
+//    @Builder
+//    @Getter
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class TeamMemberAnnouncementItem {
+//        private Long teamMemberAnnouncementId;
+//        private String announcementTitle;
+//        private String majorPosition;
+//
+//        @Builder.Default
+//        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+//
+//        private Boolean isAnnouncementPublic;       // 공고 공개/비공개 여부
+//        private Boolean isAnnouncementInProgress;   // 공고 현재 진행 여부
+//    }
+//
+//    @Builder
+//    @Getter
+//    @NoArgsConstructor
+//    @AllArgsConstructor
+//    public static class TeamMemberAnnouncementItems {
+//        @Builder.Default
+//        private List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem> teamMemberAnnouncementItems = new ArrayList<>();
+//    }
 
     @Builder
     @Getter

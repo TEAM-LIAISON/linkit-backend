@@ -8,6 +8,7 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.business.service.announcement.TeamMemberAnnouncementService;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncemenItems;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,7 +34,7 @@ public class TeamMemberAnnouncementController {
 
     // 팀원 공고 뷰어 전체 조회
     @GetMapping("/team/{teamCode}/announcement")
-    public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems> getTeamMemberAnnouncementViewItems(
+    public CommonResponse<TeamMemberAnnouncemenItems> getTeamMemberAnnouncementItems(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode
     ) {
@@ -48,16 +49,20 @@ public class TeamMemberAnnouncementController {
         }
     }
 
+
+    /*
+    deprecated API
+     */
     // 팀원 공고 전체 조회
-    @GetMapping("/team/{teamCode}/announcement/deprecated")
-    @MemberOnly
-    public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems> getTeamMemberAnnouncementItems(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode
-    ) {
-        log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
-        return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementItems(accessor.getMemberId(), teamCode));
-    }
+//    @GetMapping("/team/{teamCode}/announcement/deprecated")
+//    @MemberOnly
+//    public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems> getTeamMemberAnnouncementItems(
+//            @Auth final Accessor accessor,
+//            @PathVariable final String teamCode
+//    ) {
+//        log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
+//        return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementItems(accessor.getMemberId(), teamCode));
+//    }
 
     // 팀원 공고 단일 조회
     @GetMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
