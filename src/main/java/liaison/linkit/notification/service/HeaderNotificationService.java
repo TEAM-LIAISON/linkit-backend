@@ -28,6 +28,7 @@ public class HeaderNotificationService {
         final String emailId = memberQueryAdapter.findEmailIdById(memberId);
 
         NotificationCountResponse count = getUnreadCount(memberId);
+        log.info("Sent notification to " + emailId);
         messagingTemplate.convertAndSend("/sub/notification/header/" + emailId, count);
     }
 
