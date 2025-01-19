@@ -63,6 +63,7 @@ public class TeamMemberAnnouncementResponseDTO {
         private Boolean isAnnouncementScrap;
         private int announcementScrapCount;
 
+        private int announcementDDay;           // 디데이
         private String announcementTitle;
 
         @Builder.Default

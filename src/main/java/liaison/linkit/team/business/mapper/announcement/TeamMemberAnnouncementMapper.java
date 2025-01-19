@@ -131,6 +131,7 @@ public class TeamMemberAnnouncementMapper {
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .isAnnouncementScrap(isAnnouncementScrap)
                 .announcementScrapCount(announcementScrapCount)
+                .announcementDDay(DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate()))
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
