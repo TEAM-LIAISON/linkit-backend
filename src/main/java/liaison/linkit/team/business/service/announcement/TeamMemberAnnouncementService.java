@@ -21,6 +21,7 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionCommandAdapter;
@@ -29,6 +30,7 @@ import liaison.linkit.team.implement.announcement.AnnouncementSkillCommandAdapte
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
@@ -69,6 +71,7 @@ public class TeamMemberAnnouncementService {
     private final TeamScaleMapper teamScaleMapper;
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncemenItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamCode) {
@@ -180,7 +183,12 @@ public class TeamMemberAnnouncementService {
             final Long memberId, final String teamCode, final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
     ) {
         log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 추가 요청이 서비스 계층에 발생했습니다.", memberId, teamCode);
+
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId)) {
+            throw TeamAdminNotRegisteredException.EXCEPTION;
+        }
+
         final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementMapper.toAddTeamMemberAnnouncement(team, addTeamMemberAnnouncementRequest);
         final TeamMemberAnnouncement savedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.addTeamMemberAnnouncement(teamMemberAnnouncement);
 

@@ -19,11 +19,13 @@ import liaison.linkit.team.business.mapper.log.TeamLogMapper;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.domain.log.TeamLogImage;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.implement.log.TeamLogCommandAdapter;
 import liaison.linkit.team.implement.log.TeamLogImageCommandAdapter;
 import liaison.linkit.team.implement.log.TeamLogImageQueryAdapter;
 import liaison.linkit.team.implement.log.TeamLogQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogRequest;
 import liaison.linkit.team.presentation.log.dto.TeamLogResponseDTO;
@@ -60,6 +62,7 @@ public class TeamLogService {
     private final ImageUtils imageUtils;
 
     private final S3Uploader s3Uploader;
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
 
     @Transactional(readOnly = true)
     public TeamLogResponseDTO.TeamLogItems getTeamLogViewItems(final String teamCode) {
@@ -106,6 +109,9 @@ public class TeamLogService {
     public AddTeamLogResponse addTeamLog(final Long memberId, final String teamCode, final TeamLogRequestDTO.AddTeamLogRequest addTeamLogRequest) {
         // 1. 팀 조회
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId)) {
+            throw TeamAdminNotRegisteredException.EXCEPTION;
+        }
 
         LogType addTeamLogType = GENERAL_LOG;
 

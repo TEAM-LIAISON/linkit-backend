@@ -11,6 +11,7 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.product.ProductLink;
 import liaison.linkit.team.domain.product.ProductSubImage;
 import liaison.linkit.team.domain.product.TeamProduct;
+import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.product.ProductLinkCommandAdapter;
 import liaison.linkit.team.implement.product.ProductLinkQueryAdapter;
@@ -18,6 +19,7 @@ import liaison.linkit.team.implement.product.ProductSubImageCommandAdapter;
 import liaison.linkit.team.implement.product.ProductSubImageQueryAdapter;
 import liaison.linkit.team.implement.product.TeamProductCommandAdapter;
 import liaison.linkit.team.implement.product.TeamProductQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.TeamProductImages;
@@ -49,6 +51,7 @@ public class TeamProductService {
     private final ImageValidator imageValidator;
 
     private final S3Uploader s3Uploader;
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
 
     @Transactional(readOnly = true)
     public TeamProductResponseDTO.TeamProductViewItems getTeamProductViewItems(final String teamCode) {
@@ -97,7 +100,9 @@ public class TeamProductService {
         String productRepresentImagePath = null;
 
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-
+        if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId)) {
+            throw TeamAdminNotRegisteredException.EXCEPTION;
+        }
         final TeamProduct teamProduct = teamProductMapper.toAddTeamProduct(team, addTeamProductRequest);
         final TeamProduct savedTeamProduct = teamProductCommandAdapter.addTeamProduct(teamProduct); // 포트폴리오 객체 우선 저장
 
