@@ -82,6 +82,7 @@ public class TeamLogService {
     @Transactional(readOnly = true)
     public TeamLogItem getTeamLogItem(final String teamCode, final Long teamLogId) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
+        teamLog.increaseViewCount();
         return teamLogMapper.toTeamLogItem(teamLog);
     }
 

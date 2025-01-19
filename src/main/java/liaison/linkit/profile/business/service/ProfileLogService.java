@@ -79,6 +79,8 @@ public class ProfileLogService {
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
         log.info("profileLog = {}가 성공적으로 조회되었습니다.", profileLog);
 
+        profileLog.increaseViewCount();
+
         return profileLogMapper.toProfileLogItem(profileLog);
     }
 
