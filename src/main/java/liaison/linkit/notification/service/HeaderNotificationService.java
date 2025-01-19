@@ -42,7 +42,7 @@ public class HeaderNotificationService {
     }
 
     @EventListener
-    public void handleSubscribeEvent(SubscribeEvent event) {
+    public void handleSubscribeEvent(final SubscribeEvent event) {
         Long memberId = event.getMemberId();
         String emailId = event.getEmailId();
 

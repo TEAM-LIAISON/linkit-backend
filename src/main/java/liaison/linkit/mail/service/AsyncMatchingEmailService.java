@@ -7,6 +7,10 @@ public interface AsyncMatchingEmailService {
 
     @Async
     void sendMatchingCompletedEmails(
+            final String mailTitle,
+            final String mailSubTitle,
+            final String mailSubText,
+
             final String matchingSenderEmail,
             final String matchingSenderName,
             final String matchingSenderLogoImagePath,
@@ -19,7 +23,9 @@ public interface AsyncMatchingEmailService {
             final String matchingReceiverLogoImagePath,
             final String matchingReceiverPositionOrTeamSIzeText,
             final String matchingReceiverPositionOrTeamSize,
-            final String matchingReceiverRegionDetail
+
+            final String matchingReceiverRegionOrAnnouncementSkillText,
+            final String matchingReceiverRegionOrAnnouncementSkill
     ) throws MessagingException;
 
     @Async
