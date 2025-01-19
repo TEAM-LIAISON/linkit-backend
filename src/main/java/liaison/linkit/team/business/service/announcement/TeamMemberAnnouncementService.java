@@ -72,7 +72,9 @@ public class TeamMemberAnnouncementService {
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamCode) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
+
         return teamMemberAnnouncementMapper.toLoggedInTeamMemberAnnouncementViewItems(
                 memberId,
                 teamMemberAnnouncements,

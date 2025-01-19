@@ -32,7 +32,7 @@ public class TeamMemberAnnouncementController {
     }
 
     // 팀원 공고 뷰어 전체 조회
-    @GetMapping("/team/{teamCode}/announcement/view")
+    @GetMapping("/team/{teamCode}/announcement")
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems> getTeamMemberAnnouncementViewItems(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode
@@ -49,7 +49,7 @@ public class TeamMemberAnnouncementController {
     }
 
     // 팀원 공고 전체 조회
-    @GetMapping("/team/{teamCode}/announcement")
+    @GetMapping("/team/{teamCode}/announcement/deprecated")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems> getTeamMemberAnnouncementItems(
             @Auth final Accessor accessor,
