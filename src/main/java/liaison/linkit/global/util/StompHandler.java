@@ -3,6 +3,7 @@ package liaison.linkit.global.util;
 import java.util.List;
 import liaison.linkit.chat.event.ChatEvent.UserConnectedEvent;
 import liaison.linkit.chat.event.ChatEvent.UserDisconnectedEvent;
+import liaison.linkit.global.presentation.dto.SubscribeEvent;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,11 +59,22 @@ public class StompHandler implements ChannelInterceptor {
         }
 
         if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
-            String destination = headerAccessor.getDestination(); // 구독 경로
-            String sessionId = headerAccessor.getSessionId();     // 세션 ID
-            String user = headerAccessor.getUser() != null ? headerAccessor.getUser().getName() : "Anonymous"; // 사용자 이름 (인증된 경우)
+            String destination = headerAccessor.getDestination();
+            String sessionId = headerAccessor.getSessionId();
+            Long memberId = sessionRegistry.getMemberIdBySession(sessionId);
 
-            log.info("SUBSCRIBE: User [{}] subscribed to [{}] with session ID [{}]", user, destination, sessionId);
+            // 구독 경로에 따른 초기 데이터 전송
+            if (destination != null) {
+                if (destination.startsWith("/sub/notification/header/")) {
+                    // 알림 구독시 초기 카운트 전송
+                    String emailId = extractEmailId(destination);
+                    // 이벤트 발행
+                    eventPublisher.publishEvent(new SubscribeEvent(memberId, emailId));
+                }
+
+            }
+            log.info("SUBSCRIBE: User [{}] subscribed to [{}] with session ID [{}]",
+                    memberId, destination, sessionId);
         }
 
         if (StompCommand.SEND.equals(headerAccessor.getCommand())) {
@@ -128,4 +140,23 @@ public class StompHandler implements ChannelInterceptor {
             log.info("세션 종료 처리: sessionId={}, memberId={}", sessionId, memberId);
         }
     }
+
+    private Long extractChatRoomId(String destination) {
+        String[] parts = destination.split("/");
+        return Long.valueOf(parts[parts.length - 1]);
+    }
+
+    private String extractEmailId(String destination) {
+        String[] parts = destination.split("/");
+        return parts[parts.length - 1];
+    }
+
+//    private void sendInitialChatMessages(Long memberId, Long chatRoomId) {
+//        // 채팅방의 최근 메시지들을 조회하여 전송
+//        messagingTemplate.convertAndSendToUser(
+//            memberId.toString(),
+//            "/sub/chat/" + chatRoomId,
+//            chatService.getChatMessages(chatRoomId, memberId, /* pageable 객체 필요 */)
+//        );
+//    }
 }
