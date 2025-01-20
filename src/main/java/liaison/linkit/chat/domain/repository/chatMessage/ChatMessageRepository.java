@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, String> {
 
+    @Query(value = "{ 'chat_room_id': ?0 }", sort = "{ 'timestamp': -1 }")
     Page<ChatMessage> findByChatRoomIdOrderByTimestampDesc(Long chatRoomId, Pageable pageable);
 
     // 특정 채팅방의 읽지 않은 메시지 조회

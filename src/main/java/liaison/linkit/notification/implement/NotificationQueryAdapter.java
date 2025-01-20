@@ -14,11 +14,11 @@ public class NotificationQueryAdapter {
     private final NotificationRepository notificationRepository;
 
     public Notification getNotificationByMember(final Long memberId) {
-        return notificationRepository.getNotificationByReceiverMemberId(memberId);
+        return notificationRepository.findTopByReceiverMemberIdOrderByCreatedAtDesc(memberId);
     }
 
     public List<Notification> getNotificationsByMember(final Long memberId) {
-        return notificationRepository.getNotificationsByReceiverMemberId(memberId);
+        return notificationRepository.findAllByReceiverMemberIdOrderByCreatedAtDesc(memberId);
     }
 
     public long countUnreadMessages(final Long memberId) {

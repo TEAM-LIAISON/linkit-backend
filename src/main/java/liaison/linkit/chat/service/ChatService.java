@@ -427,6 +427,8 @@ public class ChatService {
                 pageable
         );
 
+        log.info("messages: {}", messages);
+
         // 3. 읽지 않은 메시지 읽음 처리
         updateUnreadMessages(chatRoomId, memberId);
 
