@@ -68,8 +68,10 @@ public class StompHandler implements ChannelInterceptor {
                 if (destination.startsWith("/sub/notification/header/")) {
                     // 알림 구독시 초기 카운트 전송
                     String emailId = extractEmailId(destination);
+                    log.info("emailId: {}", emailId);
                     // 이벤트 발행
                     eventPublisher.publishEvent(new SubscribeEvent(memberId, emailId));
+                    log.info("알림 이벤트 발행");
                 }
 
             }

@@ -45,9 +45,12 @@ public class HeaderNotificationService {
     public void handleSubscribeEvent(final SubscribeEvent event) {
         Long memberId = event.getMemberId();
         String emailId = event.getEmailId();
+        log.info("Subscribed to " + emailId);
+        log.info("Subscribed to " + memberId);
 
         // 초기 데이터 전송
         NotificationCountResponse count = getUnreadCount(memberId);
+        log.info("count " + count);
         messagingTemplate.convertAndSend("/sub/notification/header/" + emailId, count);
     }
 }
