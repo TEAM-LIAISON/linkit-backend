@@ -90,11 +90,24 @@ public class StompHandler implements ChannelInterceptor {
             }
 
             String destination = headerAccessor.getDestination();
-            if ("/pub/chat/send".equals(destination)) {
-                String memberId = jwtProvider.getSubject(accessToken);
-                headerAccessor.setNativeHeader("memberId", memberId);
-                return MessageBuilder
-                        .createMessage(message.getPayload(), headerAccessor.getMessageHeaders());
+
+            // 동적으로 chatRoomId를 추출
+            if (destination != null && destination.startsWith("/pub/chat/send/")) {
+                // "/pub/chat/send/{chatRoomId}"에서 chatRoomId 추출
+                String[] parts = destination.split("/");
+                if (parts.length >= 5) { // /pub/chat/send/{chatRoomId} 구조 확인
+                    String chatRoomId = parts[4];
+                    log.info("Extracted chatRoomId: {}", chatRoomId);
+
+                    String memberId = jwtProvider.getSubject(accessToken);
+                    headerAccessor.setNativeHeader("memberId", memberId);
+                    headerAccessor.setNativeHeader("chatRoomId", chatRoomId); // chatRoomId 추가
+
+                    return MessageBuilder
+                            .createMessage(message.getPayload(), headerAccessor.getMessageHeaders());
+                } else {
+                    throw new IllegalArgumentException("잘못된 destination 형식입니다.");
+                }
             }
         }
 

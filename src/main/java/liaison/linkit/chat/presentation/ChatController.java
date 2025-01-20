@@ -13,19 +13,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @Slf4j
 public class ChatController {
+
     private final ChatService chatService;
 
     // ==============================
@@ -51,10 +54,17 @@ public class ChatController {
     @MessageMapping("/chat/send")
     public void sendChatMessage(
             @Payload ChatMessageRequest chatMessageRequest,
-            @Header(name = "memberId", required = true) Long memberId
+            @Header(name = "memberId", required = true) Long memberId,
+            @Header(name = "chatRoomId", required = true) Long chatRoomId,
+            Message<?> message
     ) {
-        log.info("sendChatMessage Content = {}", chatMessageRequest.getContent());
-        chatService.handleChatMessage(chatMessageRequest, memberId);
+        // StompHeaderAccessor로 message의 정보를 추출
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
+        String destination = headerAccessor.getDestination();
+        log.info("Destination: {}", destination);
+
+        // /pub/chat/send/{chatRoomId}에서 chatRoomId 추출
+        chatService.handleChatMessage(chatMessageRequest, memberId, chatRoomId);
     }
 
     /**

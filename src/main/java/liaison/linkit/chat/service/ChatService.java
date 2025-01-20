@@ -329,38 +329,42 @@ public class ChatService {
         return chatMapper.toCreateChatRoomResponse(saved);
     }
 
-    // 메시지 처리
-    public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId) {
-        log.info("handleChatMessage 호출: chatRoomId={}, content={}", chatMessageRequest.getChatRoomId(), chatMessageRequest.getContent());
+    public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId, final Long chatRoomId) {
+        log.info("handleChatMessage 호출: chatRoomId={}, content={}", chatRoomId, chatMessageRequest.getContent());
 
         // 1. 채팅방 존재 및 접근 권한 확인
-        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatMessageRequest.getChatRoomId());
+        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
 
-        String participantALogoImagePath = null;
-        String participantBLogoImagePath = null;
-
-        if (chatRoom.getParticipantAType().equals(SenderType.PROFILE)) {
-            final Profile profile = profileQueryAdapter.findByEmailId(chatRoom.getParticipantAId());
-            participantALogoImagePath = profile.getProfileImagePath();
-        } else if (chatRoom.getParticipantAType().equals(SenderType.TEAM)) {
-            final Team team = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantAId());
-            participantALogoImagePath = team.getTeamLogoImagePath();
-        }
-
-        if (chatRoom.getParticipantBType().equals(SenderType.PROFILE)) {
-            final Profile profile = profileQueryAdapter.findByEmailId(chatRoom.getParticipantBId());
-            participantBLogoImagePath = profile.getProfileImagePath();
-        } else if (chatRoom.getParticipantBType().equals(SenderType.TEAM)) {
-            final Team team = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantBId());
-            participantBLogoImagePath = team.getTeamLogoImagePath();
-        }
+        // 참여자 프로필 이미지 로드
+        String participantALogoImagePath = getParticipantLogoImagePath(chatRoom.getParticipantAType(), chatRoom.getParticipantAId());
+        String participantBLogoImagePath = getParticipantLogoImagePath(chatRoom.getParticipantBType(), chatRoom.getParticipantBId());
 
         // 2. 메시지 생성 및 저장
-        ChatMessage chatMessage;
+        ChatMessage chatMessage = createChatMessage(chatMessageRequest, chatRoom, memberId, participantALogoImagePath, participantBLogoImagePath);
+        chatMessageRepository.save(chatMessage);
 
+        // 3. 채팅방 마지막 메시지 업데이트
+        chatRoom.updateLastMessage(chatMessage.getContent(), chatMessage.getTimestamp());
+        chatRoomCommandAdapter.save(chatRoom);
+
+        // 4. 메시지 전송
+        sendChatMessages(chatRoom, chatMessage, memberId);
+    }
+
+    private String getParticipantLogoImagePath(SenderType type, String id) {
+        if (type.equals(SenderType.PROFILE)) {
+            return profileQueryAdapter.findByEmailId(id).getProfileImagePath();
+        } else if (type.equals(SenderType.TEAM)) {
+            return teamQueryAdapter.findByTeamCode(id).getTeamLogoImagePath();
+        }
+        return null;
+    }
+
+    private ChatMessage createChatMessage(ChatMessageRequest chatMessageRequest, ChatRoom chatRoom, Long memberId,
+                                          String participantALogoImagePath, String participantBLogoImagePath) {
         if (chatRoom.getParticipantAMemberId().equals(memberId)) {
             // A가 B에게 보내는 메시지
-            chatMessage = chatMapper.toChatMessage(
+            return chatMapper.toChatMessage(
                     chatMessageRequest,
                     ParticipantType.A_TYPE,
                     chatRoom.getParticipantAId(),
@@ -372,7 +376,7 @@ public class ChatService {
             );
         } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
             // B가 A에게 보내는 메시지
-            chatMessage = chatMapper.toChatMessage(
+            return chatMapper.toChatMessage(
                     chatMessageRequest,
                     ParticipantType.B_TYPE,
                     chatRoom.getParticipantBId(),
@@ -385,29 +389,26 @@ public class ChatService {
         } else {
             throw SendChatMessageBadRequestException.EXCEPTION;
         }
+    }
 
-        chatMessageRepository.save(chatMessage);
-
-        // 3. 채팅방 마지막 메시지 업데이트
-        chatRoom.updateLastMessage(chatMessage.getContent(), chatMessage.getTimestamp());
-        chatRoomCommandAdapter.save(chatRoom);
-
-        // 4. 발신자용 메시지 응답 생성 (isMyMessage = true)
+    private void sendChatMessages(ChatRoom chatRoom, ChatMessage chatMessage, Long senderMemberId) {
+        // 발신자 메시지 응답 생성 및 전송
         ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatMessage, true);
         simpMessagingTemplate.convertAndSendToUser(
-                memberId.toString(),
+                senderMemberId.toString(),
                 "/sub/chat/" + chatRoom.getId(),
                 senderResponse
         );
 
-        // 5. 수신자용 메시지 응답 생성 (isMyMessage = false)
+        // 수신자 메시지 응답 생성 및 전송
         ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatMessage, false);
         simpMessagingTemplate.convertAndSendToUser(
-                chatMessage.getMessageSenderMemberId().toString(),
+                chatMessage.getMessageReceiverMemberId().toString(),
                 "/sub/chat/" + chatRoom.getId(),
                 receiverResponse
         );
     }
+
 
     /**
      * 채팅방의 이전 메시지 내역 조회
