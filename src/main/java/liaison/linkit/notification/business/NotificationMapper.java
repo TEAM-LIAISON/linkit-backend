@@ -178,7 +178,7 @@ public class NotificationMapper {
                 .build();
     }
 
-    public NotificationCountResponse toNotificationCount(final long unreadNotificationCount, final long unreadChatCount) {
+    public NotificationCountResponse toNotificationCount(final long unreadChatCount, final long unreadNotificationCount) {
         return NotificationCountResponse.builder()
                 .unreadChatCount(unreadChatCount)
                 .unreadNotificationCount(unreadNotificationCount)
