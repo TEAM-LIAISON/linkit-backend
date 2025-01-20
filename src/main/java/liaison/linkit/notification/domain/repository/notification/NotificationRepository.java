@@ -11,6 +11,6 @@ public interface NotificationRepository extends MongoRepository<Notification, St
     List<Notification> getNotificationsByReceiverMemberId(final Long memberId);
 
     // 수동 쿼리 + count
-    @Query(value = "{ 'receiverMemberId': ?0, 'notificationReadStatus': 'UNREAD' }", count = true)
+    @Query(value = "{ 'receiver_member_id': ?0, 'notification_read_status': 'UNREAD' }", count = true)
     long countUnreadMessages(Long memberId);
 }
