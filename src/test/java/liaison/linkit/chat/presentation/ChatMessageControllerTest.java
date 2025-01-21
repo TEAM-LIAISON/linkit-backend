@@ -57,11 +57,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-@WebMvcTest(ChatController.class)
+@WebMvcTest(ChatMessageController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 @Slf4j
-public class ChatControllerTest extends ControllerTest {
+public class ChatMessageControllerTest extends ControllerTest {
 
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());

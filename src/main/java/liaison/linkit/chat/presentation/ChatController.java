@@ -3,9 +3,9 @@ package liaison.linkit.chat.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.chat.service.ChatService;
 import liaison.linkit.common.presentation.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,22 +13,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.messaging.Message;
-import org.springframework.messaging.handler.annotation.Header;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
+@RequestMapping
 @Slf4j
 public class ChatController {
-
     private final ChatService chatService;
 
     // ==============================
@@ -36,35 +32,12 @@ public class ChatController {
     // ==============================
     @PostMapping("/api/v1/chat/room")
     @MemberOnly
-    public CommonResponse<ChatResponseDTO.CreateChatRoomResponse> createChatRoom(
+    public CommonResponse<CreateChatRoomResponse> createChatRoom(
             @RequestBody CreateChatRoomRequest request,
             @Auth Accessor accessor
     ) {
         log.info("createChatRoom {}", request);
         return CommonResponse.onSuccess(chatService.createChatRoom(request, accessor.getMemberId()));
-    }
-
-    // ==============================
-    // 2) STOMP: 메시지 전송
-    // ==============================
-
-    /**
-     * 클라이언트가 /pub/chat/send 로 메시지를 전송하면 서버가 이 메서드를 통해 메시지를 수신하고, 내부 로직 처리 후 /sub/chat/{chatRoomId} 경로로 메시지를 브로드캐스트한다.
-     */
-    @MessageMapping("/chat/send")
-    public void sendChatMessage(
-            @Payload ChatMessageRequest chatMessageRequest,
-            @Header(name = "memberId", required = true) Long memberId,
-            @Header(name = "chatRoomId", required = true) Long chatRoomId,
-            Message<?> message
-    ) {
-        // StompHeaderAccessor로 message의 정보를 추출
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(message);
-        String destination = headerAccessor.getDestination();
-        log.info("Destination: {}", destination);
-
-        // /pub/chat/send/{chatRoomId}에서 chatRoomId 추출
-        chatService.handleChatMessage(chatMessageRequest, memberId, chatRoomId);
     }
 
     /**
