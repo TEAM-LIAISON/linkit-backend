@@ -40,33 +40,44 @@ public class LogResponseDTO {
     @Getter
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class LogInformDetails {
+        private String teamCode;
         private String teamLogoImagePath;
         private String teamName;
+
+        private String emailId;
         private String memberName;
         private String profileImagePath;
 
         @Builder
         private LogInformDetails(
+                final String teamCode,
                 final String teamLogoImagePath,
                 final String teamName,
+
+                final String emailId,
                 final String memberName,
                 final String profileImagePath
         ) {
+            this.teamCode = teamCode;
             this.teamLogoImagePath = teamLogoImagePath;
             this.teamName = teamName;
+
+            this.emailId = emailId;
             this.memberName = memberName;
             this.profileImagePath = profileImagePath;
         }
 
-        public static LogInformDetails profileLogType(final String memberName, final String profileImagePath) {
+        public static LogInformDetails profileLogType(final String emailId, final String memberName, final String profileImagePath) {
             return LogInformDetails.builder()
+                    .emailId(emailId)
                     .memberName(memberName)
                     .profileImagePath(profileImagePath)
                     .build();
         }
 
-        public static LogInformDetails teamLogType(final String teamName, final String teamLogoImagePath) {
+        public static LogInformDetails teamLogType(final String teamCode, final String teamName, final String teamLogoImagePath) {
             return LogInformDetails.builder()
+                    .teamCode(teamCode)
                     .teamName(teamName)
                     .teamLogoImagePath(teamLogoImagePath)
                     .build();

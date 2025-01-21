@@ -84,6 +84,7 @@ public class LogSearchService {
                 .createdAt(pl.getCreatedAt())
                 .logInformDetails(
                         LogInformDetails.profileLogType(
+                                pl.getProfile().getMember().getEmailId(),
                                 pl.getProfile().getMember().getMemberBasicInform().getMemberName(),
                                 pl.getProfile().getProfileImagePath()
                         )
@@ -101,6 +102,7 @@ public class LogSearchService {
                 .createdAt(tl.getCreatedAt())
                 .logInformDetails(
                         LogInformDetails.teamLogType(
+                                tl.getTeam().getTeamCode(),
                                 tl.getTeam().getTeamName(),
                                 tl.getTeam().getTeamLogoImagePath()
                         )

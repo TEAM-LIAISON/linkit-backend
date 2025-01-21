@@ -100,6 +100,8 @@ public class StompHandler implements ChannelInterceptor {
                     log.info("Extracted chatRoomId: {}", chatRoomId);
 
                     String memberId = jwtProvider.getSubject(accessToken);
+                    log.info("memberId: {}", memberId);
+
                     headerAccessor.setNativeHeader("memberId", memberId);
                     headerAccessor.setNativeHeader("chatRoomId", chatRoomId); // chatRoomId 추가
 
