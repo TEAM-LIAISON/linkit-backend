@@ -37,11 +37,14 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
+import lombok.extern.slf4j.Slf4j;
 
 @Mapper
+@Slf4j
 public class MatchingMapper {
 
-    public Matching toMatching(MatchingRequestDTO.AddMatchingRequest addMatchingRequest) {
+    public Matching toMatching(final MatchingRequestDTO.AddMatchingRequest addMatchingRequest) {
+        log.info("Add matching request: {}", addMatchingRequest);
         return Matching.builder()
                 .id(null)
                 .senderType(addMatchingRequest.getSenderType())
@@ -52,6 +55,7 @@ public class MatchingMapper {
                 .receiverTeamCode(addMatchingRequest.getReceiverTeamCode())
                 .receiverAnnouncementId(addMatchingRequest.getReceiverAnnouncementId())
                 .requestMessage(addMatchingRequest.getRequestMessage())
+
                 .matchingStatusType(MatchingStatusType.REQUESTED)
                 .senderDeleteStatus(SenderDeleteStatus.REMAINING)
                 .receiverDeleteStatus(ReceiverDeleteStatus.REMAINING)
