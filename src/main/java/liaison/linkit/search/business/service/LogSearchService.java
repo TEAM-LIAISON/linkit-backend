@@ -85,6 +85,7 @@ public class LogSearchService {
                 .logInformDetails(
                         LogInformDetails.profileLogType(
                                 pl.getProfile().getMember().getEmailId(),
+                                pl.getId(),
                                 pl.getProfile().getMember().getMemberBasicInform().getMemberName(),
                                 pl.getProfile().getProfileImagePath()
                         )
@@ -103,6 +104,7 @@ public class LogSearchService {
                 .logInformDetails(
                         LogInformDetails.teamLogType(
                                 tl.getTeam().getTeamCode(),
+                                tl.getId(),
                                 tl.getTeam().getTeamName(),
                                 tl.getTeam().getTeamLogoImagePath()
                         )

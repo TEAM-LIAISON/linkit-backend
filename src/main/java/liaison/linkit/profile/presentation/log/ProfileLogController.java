@@ -51,6 +51,22 @@ public class ProfileLogController {
         return CommonResponse.onSuccess(profileLogService.getProfileLogItems(accessor.getMemberId()));
     }
 
+    // 로그 뷰어 전체 조회
+    @GetMapping("/view/{emailId}")
+    public CommonResponse<ProfileLogResponseDTO.ProfileLogItems> getProfileLogViewItems(
+            @PathVariable final String emailId
+    ) {
+        return CommonResponse.onSuccess(profileLogService.getProfileLogViewItems(emailId));
+    }
+
+    // 로그 뷰어 단일 조회
+    @GetMapping("/view/detail/{profileLogId}")
+    public CommonResponse<ProfileLogResponseDTO.ProfileLogItem> getProfileLogViewItem(
+            @PathVariable final Long profileLogId
+    ) {
+        return CommonResponse.onSuccess(profileLogService.getProfileLogViewItem(profileLogId));
+    }
+
     // 로그 상세 조회
     @GetMapping("/{profileLogId}")
     @MemberOnly

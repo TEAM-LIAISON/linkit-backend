@@ -41,43 +41,61 @@ public class LogResponseDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class LogInformDetails {
         private String teamCode;
+        private Long teamLogId;
         private String teamLogoImagePath;
         private String teamName;
 
         private String emailId;
+        private Long profileLogId;
         private String memberName;
         private String profileImagePath;
 
         @Builder
         private LogInformDetails(
                 final String teamCode,
+                final Long teamLogId,
                 final String teamLogoImagePath,
                 final String teamName,
 
                 final String emailId,
+                final Long profileLogId,
                 final String memberName,
                 final String profileImagePath
         ) {
             this.teamCode = teamCode;
+            this.teamLogId = teamLogId;
             this.teamLogoImagePath = teamLogoImagePath;
             this.teamName = teamName;
 
             this.emailId = emailId;
+            this.profileLogId = profileLogId;
             this.memberName = memberName;
             this.profileImagePath = profileImagePath;
         }
 
-        public static LogInformDetails profileLogType(final String emailId, final String memberName, final String profileImagePath) {
+        public static LogInformDetails profileLogType(
+                final String emailId,
+                final Long profileLogId,
+                final String memberName,
+                final String profileImagePath
+        ) {
             return LogInformDetails.builder()
                     .emailId(emailId)
+                    .profileLogId(profileLogId)
                     .memberName(memberName)
                     .profileImagePath(profileImagePath)
                     .build();
         }
 
-        public static LogInformDetails teamLogType(final String teamCode, final String teamName, final String teamLogoImagePath) {
+        public static LogInformDetails teamLogType(
+                final String teamCode,
+                final Long teamLogId,
+                final String teamName,
+                final String teamLogoImagePath
+        ) {
             return LogInformDetails.builder()
                     .teamCode(teamCode)
+                    .teamLogId(teamLogId)
                     .teamName(teamName)
                     .teamLogoImagePath(teamLogoImagePath)
                     .build();

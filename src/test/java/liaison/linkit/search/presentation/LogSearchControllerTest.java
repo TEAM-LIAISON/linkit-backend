@@ -69,6 +69,8 @@ public class LogSearchControllerTest extends ControllerTest {
                                         .logInformDetails(
                                                 LogInformDetails.profileLogType(
                                                         "회원 이름",
+                                                        1L,
+                                                        "회원 이름",
                                                         "프로필 이미지 경로"
                                                 )
                                         )
@@ -81,6 +83,8 @@ public class LogSearchControllerTest extends ControllerTest {
                                         .logContent("로그 내용")
                                         .logInformDetails(
                                                 LogInformDetails.teamLogType(
+                                                        "팀 ID (팀 코드)",
+                                                        1L,
                                                         "팀 이름",
                                                         "팀 로고 이미지 경로"
                                                 )

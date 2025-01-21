@@ -12,6 +12,8 @@ import liaison.linkit.image.domain.Image;
 import liaison.linkit.image.implement.ImageCommandAdapter;
 import liaison.linkit.image.implement.ImageQueryAdapter;
 import liaison.linkit.image.util.ImageUtils;
+import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.business.mapper.ProfileLogMapper;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.ProfileLogImage;
@@ -60,6 +62,7 @@ public class ProfileLogService {
     private final ImageUtils imageUtils;
 
     private final S3Uploader s3Uploader;
+    private final MemberQueryAdapter memberQueryAdapter;
 
 
     @Transactional(readOnly = true)
@@ -73,6 +76,14 @@ public class ProfileLogService {
     }
 
     @Transactional(readOnly = true)
+    public ProfileLogItems getProfileLogViewItems(final String emailId) {
+        final Member member = memberQueryAdapter.findByEmailId(emailId);
+        final List<ProfileLog> profileLogs = profileLogQueryAdapter.getProfileLogs(member.getId());
+        return profileLogMapper.toProfileLogItems(profileLogs);
+    }
+
+
+    @Transactional(readOnly = true)
     public ProfileLogItem getProfileLogItem(final Long memberId, final Long profileLogId) {
         log.info("memberId = {}의 내 로그 DTO 조회 요청 발생했습니다.", memberId);
 
@@ -81,6 +92,13 @@ public class ProfileLogService {
 
         profileLog.increaseViewCount();
 
+        return profileLogMapper.toProfileLogItem(profileLog);
+    }
+
+    @Transactional(readOnly = true)
+    public ProfileLogItem getProfileLogViewItem(final Long profileLogId) {
+        final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+        profileLog.increaseViewCount();
         return profileLogMapper.toProfileLogItem(profileLog);
     }
 
