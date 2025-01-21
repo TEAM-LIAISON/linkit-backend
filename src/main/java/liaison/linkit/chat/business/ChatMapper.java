@@ -84,6 +84,7 @@ public class ChatMapper {
     }
 
     public ChatMessage toChatMessage(
+            final Long chatRoomId,
             final ChatMessageRequest chatMessageRequest,
             final ParticipantType participantType,
             final String senderKeyId,
@@ -94,7 +95,7 @@ public class ChatMapper {
             final Long receiverMemberId
     ) {
         return ChatMessage.builder()
-                .chatRoomId(chatMessageRequest.getChatRoomId())
+                .chatRoomId(chatRoomId)
                 .messageSenderParticipantType(participantType)
                 .messageSenderKeyId(senderKeyId)
                 .messageSenderMemberId(senderMemberId)

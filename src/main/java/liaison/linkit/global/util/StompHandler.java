@@ -93,6 +93,7 @@ public class StompHandler implements ChannelInterceptor {
 
             // 동적으로 chatRoomId를 추출
             if (destination != null && destination.startsWith("/pub/chat/send/")) {
+
                 // "/pub/chat/send/{chatRoomId}"에서 chatRoomId 추출
                 String[] parts = destination.split("/");
                 if (parts.length >= 5) { // /pub/chat/send/{chatRoomId} 구조 확인

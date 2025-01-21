@@ -36,7 +36,6 @@ public class ChatRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatMessageRequest {
-        private Long chatRoomId;
         private String content;
     }
 }

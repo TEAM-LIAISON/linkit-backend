@@ -31,7 +31,6 @@ import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.type.StatusType;
-import liaison.linkit.global.util.SessionRegistry;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
@@ -85,7 +84,6 @@ public class ChatService {
     private final MatchingQueryAdapter matchingQueryAdapter;
 
     private final ChatRoomCommandAdapter chatRoomCommandAdapter;
-    private final SessionRegistry sessionRegistry;
     private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
     private final ProfilePositionMapper profilePositionMapper;
     private final RegionQueryAdapter regionQueryAdapter;
@@ -365,6 +363,7 @@ public class ChatService {
         if (chatRoom.getParticipantAMemberId().equals(memberId)) {
             // A가 B에게 보내는 메시지
             return chatMapper.toChatMessage(
+                    chatRoom.getId(),
                     chatMessageRequest,
                     ParticipantType.A_TYPE,
                     chatRoom.getParticipantAId(),
@@ -377,6 +376,7 @@ public class ChatService {
         } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
             // B가 A에게 보내는 메시지
             return chatMapper.toChatMessage(
+                    chatRoom.getId(),
                     chatMessageRequest,
                     ParticipantType.B_TYPE,
                     chatRoom.getParticipantBId(),
