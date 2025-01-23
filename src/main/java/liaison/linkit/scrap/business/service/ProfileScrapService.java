@@ -28,7 +28,6 @@ import liaison.linkit.scrap.implement.profileScrap.ProfileScrapCommandAdapter;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapRequestDTO.UpdateProfileScrapRequest;
 import liaison.linkit.scrap.presentation.dto.profileScrap.ProfileScrapResponseDTO;
-import liaison.linkit.scrap.validation.ScrapValidator;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -50,7 +49,7 @@ public class ProfileScrapService {
 
     private final ProfileScrapMapper profileScrapMapper;
 
-    private final ScrapValidator scrapValidator;
+    //    private final ScrapValidator scrapValidator;
     private final ProfileMapper profileMapper;
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
@@ -69,8 +68,8 @@ public class ProfileScrapService {
 
         boolean shouldAddScrap = updateProfileScrapRequest.isChangeScrapValue();
 
-        scrapValidator.validateSelfProfileScrap(memberId, emailId);     // 자기 자신의 프로필 선택에 대한 예외 처리
-        scrapValidator.validateMemberMaxProfileScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
+//        scrapValidator.validateSelfProfileScrap(memberId, emailId);     // 자기 자신의 프로필 선택에 대한 예외 처리
+//        scrapValidator.validateMemberMaxProfileScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
 
         boolean scrapExists = profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, emailId);
 

@@ -16,7 +16,6 @@ import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommand
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapRequestDTO.UpdateAnnouncementScrapRequest;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO;
-import liaison.linkit.scrap.validation.ScrapValidator;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
@@ -51,7 +50,7 @@ public class AnnouncementScrapService {
 
     private final AnnouncementScrapMapper announcementScrapMapper;
 
-    private final ScrapValidator scrapValidator;
+    //    private final ScrapValidator scrapValidator;
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
     private final TeamScaleMapper teamScaleMapper;
     private final RegionQueryAdapter regionQueryAdapter;
@@ -69,8 +68,8 @@ public class AnnouncementScrapService {
 
         boolean shouldAddScrap = updateAnnouncementScrapRequest.isChangeScrapValue();
 
-        scrapValidator.validateSelfTeamMemberAnnouncementScrap(memberId, teamMemberAnnouncementId);     // 자기 자신의 프로필 선택에 대한 예외 처리
-        scrapValidator.validateMemberMaxTeamMemberAnnouncementScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
+//        scrapValidator.validateSelfTeamMemberAnnouncementScrap(memberId, teamMemberAnnouncementId);     // 자기 자신의 프로필 선택에 대한 예외 처리
+//        scrapValidator.validateMemberMaxTeamMemberAnnouncementScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
 
         boolean scrapExists = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
 

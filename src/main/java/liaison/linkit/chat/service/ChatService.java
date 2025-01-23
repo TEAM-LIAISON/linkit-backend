@@ -474,6 +474,8 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
                             .build();
@@ -506,6 +508,8 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
                             .build();
@@ -538,6 +542,8 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
                             .build();
@@ -576,6 +582,8 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
                             .build();
@@ -608,6 +616,8 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
                             .build();
@@ -640,6 +650,8 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
                             .build();

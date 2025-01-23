@@ -14,16 +14,13 @@ import liaison.linkit.scrap.implement.teamScrap.TeamScrapCommandAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapRequestDTO.UpdateTeamScrapRequest;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapResponseDTO;
-import liaison.linkit.scrap.validation.ScrapValidator;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.business.mapper.state.TeamCurrentStateMapper;
 import liaison.linkit.team.business.mapper.team.TeamMapper;
-import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.region.TeamRegion;
 import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.state.TeamCurrentState;
 import liaison.linkit.team.domain.team.Team;
-import liaison.linkit.team.implement.region.TeamRegionQueryAdapter;
 import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
@@ -43,18 +40,16 @@ public class TeamScrapService {
     private final MemberQueryAdapter memberQueryAdapter;
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
     private final TeamQueryAdapter teamQueryAdapter;
-    private final ScrapValidator scrapValidator;
+//    private final ScrapValidator scrapValidator;
 
     private final TeamScrapCommandAdapter teamScrapCommandAdapter;
 
     private final TeamScrapMapper teamScrapMapper;
-    private final TeamRegionQueryAdapter teamRegionQueryAdapter;
     private final TeamCurrentStateMapper teamCurrentStateMapper;
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
     private final TeamScaleMapper teamScaleMapper;
-    private final TeamMemberMapper teamMemberMapper;
     private final TeamMapper teamMapper;
 
     // 회원이 팀 스크랩 버튼을 눌렀을 떄의 메서드
@@ -66,8 +61,8 @@ public class TeamScrapService {
 
         boolean shouldAddScrap = updateTeamScrapRequest.isChangeScrapValue();
 
-        scrapValidator.validateSelfTeamScrap(memberId, teamCode); // 자기 자신이 속한 팀 스크랩에 대한 예외 처리
-        scrapValidator.validateMemberMaxTeamScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
+//        scrapValidator.validateSelfTeamScrap(memberId, teamCode); // 자기 자신이 속한 팀 스크랩에 대한 예외 처리
+//        scrapValidator.validateMemberMaxTeamScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
 
         boolean scrapExists = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, teamCode);
 
