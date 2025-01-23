@@ -362,22 +362,63 @@ public class ProfileService {
         );
     }
 
-    // 홈화면에서 팀원 정보를 조회한다.
-    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenus() {
+    // 홈화면에서 로그인 상태에서 팀원 정보를 조회한다.
+    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLoginState(final Long memberId) {
         // 최대 6개의 Profile 조회
         List<Profile> profiles = profileQueryAdapter.findTopProfiles(6);
 
         // Profiles -> ProfileInformMenus 변환
         List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus = profiles.stream()
-                .map(this::toHomeProfileInformMenu)
+                .map(profile -> toHomeProfileInformMenuInLoginState(profile, memberId))
                 .toList();
 
         // ProfileInformMenus DTO 반환
         return profileMapper.toProfileInformMenus(profileInformMenus);
     }
 
+    // 홈화면에서 로그아웃 상태에서 팀원 정보를 조회한다.
+    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLogoutState() {
+        // 최대 6개의 Profile 조회
+        List<Profile> profiles = profileQueryAdapter.findTopProfiles(6);
+
+        // Profiles -> ProfileInformMenus 변환
+        List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus = profiles.stream()
+                .map(this::toHomeProfileInformMenuInLogoutState)
+                .toList();
+
+        // ProfileInformMenus DTO 반환
+        return profileMapper.toProfileInformMenus(profileInformMenus);
+    }
+
+
     // 개별 Profile -> ProfileInformMenu 변환
-    private ProfileInformMenu toHomeProfileInformMenu(final Profile profile) {
+    private ProfileInformMenu toHomeProfileInformMenuInLoginState(final Profile profile, final Long memberId) {
+        // 지역 정보
+        RegionDetail regionDetail = fetchRegionDetail(profile);
+
+        // 상태 정보
+        List<ProfileCurrentStateItem> profileCurrentStateItems = fetchProfileCurrentStateItems(profile);
+
+        // 포지션 정보
+        ProfilePositionDetail profilePositionDetail = fetchProfilePositionDetail(profile);
+
+        // 팀 정보
+        List<ProfileTeamInform> profileTeamInforms = fetchProfileTeamInforms(profile);
+
+        // 프로필 스크랩 여부
+        final boolean isProfileScrap = profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, profile.getMember().getEmailId());
+
+        // 스크랩 수 계산
+        int profileScrapCount = profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
+
+        // ProfileInformMenu 생성 및 반환
+        return profileMapper.toProfileInformMenu(
+                profileCurrentStateItems, isProfileScrap, profileScrapCount, profile,
+                profilePositionDetail, regionDetail, profileTeamInforms
+        );
+    }
+
+    private ProfileInformMenu toHomeProfileInformMenuInLogoutState(final Profile profile) {
         // 지역 정보
         RegionDetail regionDetail = fetchRegionDetail(profile);
 
