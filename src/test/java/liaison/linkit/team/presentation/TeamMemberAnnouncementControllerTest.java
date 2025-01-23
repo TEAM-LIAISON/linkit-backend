@@ -222,7 +222,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .build();
 
         // when
-        when(teamMemberAnnouncementService.getHomeAnnouncementInformMenus()).thenReturn(announcementInformMenus);
+        when(teamMemberAnnouncementService.getHomeAnnouncementInformMenusInLoginState()).thenReturn(announcementInformMenus);
 
         final ResultActions resultActions = performGetHomeAnnouncementInformMenus();
 

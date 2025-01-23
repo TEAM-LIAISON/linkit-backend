@@ -38,7 +38,6 @@ public class TeamController {
         } else {
             return CommonResponse.onSuccess(teamService.getHomeTeamInformMenusInLogoutState());
         }
-
     }
 
     // 팀 생성하기

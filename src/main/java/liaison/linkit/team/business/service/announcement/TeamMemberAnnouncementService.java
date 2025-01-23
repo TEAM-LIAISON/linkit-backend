@@ -300,19 +300,71 @@ public class TeamMemberAnnouncementService {
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementPublicState(updatedTeamMemberAnnouncement);
     }
 
-    public AnnouncementInformMenus getHomeAnnouncementInformMenus() {
+    public AnnouncementInformMenus getHomeAnnouncementInformMenusInLoginState(final Long memberId) {
         // 최대 6개의 TeamMemberAnnouncement 조회
         List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(6);
 
         // TeamMemberAnnouncements -> AnnouncementInformMenus 변환
         List<AnnouncementInformMenu> announcementInformMenus = teamMemberAnnouncements.stream()
-                .map(this::mapToAnnouncementInformMenu)
+                .map(teamMemberAnnouncement -> mapToAnnouncementInformMenuInLoginState(teamMemberAnnouncement, memberId))
                 .toList();
 
         return teamMemberAnnouncementMapper.toAnnouncementInformMenus(announcementInformMenus);
     }
 
-    private AnnouncementInformMenu mapToAnnouncementInformMenu(final TeamMemberAnnouncement teamMemberAnnouncement) {
+    public AnnouncementInformMenus getHomeAnnouncementInformMenusInLogoutState() {
+        // 최대 6개의 TeamMemberAnnouncement 조회
+        List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(6);
+
+        // TeamMemberAnnouncements -> AnnouncementInformMenus 변환
+        List<AnnouncementInformMenu> announcementInformMenus = teamMemberAnnouncements.stream()
+                .map(this::mapToAnnouncementInformMenuInLogoutState)
+                .toList();
+
+        return teamMemberAnnouncementMapper.toAnnouncementInformMenus(announcementInformMenus);
+    }
+
+    private AnnouncementInformMenu mapToAnnouncementInformMenuInLoginState(final TeamMemberAnnouncement teamMemberAnnouncement, final Long memberId) {
+        final Team team = teamMemberAnnouncement.getTeam();
+
+        // 팀 규모 조회
+        TeamScaleItem teamScaleItem = fetchTeamScaleItem(team);
+
+        // 팀 지역 조회
+        RegionDetail regionDetail = fetchRegionDetail(team);
+
+        // 포지션 조회
+        AnnouncementPositionItem announcementPositionItem = fetchAnnouncementPositionItem(teamMemberAnnouncement);
+
+        // 스킬 조회
+        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = fetchAnnouncementSkills(teamMemberAnnouncement);
+
+        // D-Day 계산
+        int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+
+        // 공고 스크랩 여부 판단
+        final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
+
+        // 스크랩 수 조회
+        int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+
+        // 결과 변환 및 반환
+        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
+                team.getTeamLogoImagePath(),
+                team.getTeamName(),
+                team.getTeamCode(),
+                teamScaleItem,
+                regionDetail,
+                teamMemberAnnouncement,
+                announcementDDay,
+                isAnnouncementScrap,
+                announcementScrapCount,
+                announcementPositionItem,
+                announcementSkillNames
+        );
+    }
+
+    private AnnouncementInformMenu mapToAnnouncementInformMenuInLogoutState(final TeamMemberAnnouncement teamMemberAnnouncement) {
         final Team team = teamMemberAnnouncement.getTeam();
 
         // 팀 규모 조회

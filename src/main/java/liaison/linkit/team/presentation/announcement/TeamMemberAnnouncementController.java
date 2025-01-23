@@ -28,8 +28,14 @@ public class TeamMemberAnnouncementController {
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
     @GetMapping("/home/announcement")
-    public CommonResponse<AnnouncementInformMenus> getHomeAnnouncementInformMenus() {
-        return CommonResponse.onSuccess(teamMemberAnnouncementService.getHomeAnnouncementInformMenus());
+    public CommonResponse<AnnouncementInformMenus> getHomeAnnouncementInformMenus(
+            @Auth final Accessor accessor
+    ) {
+        if (accessor.isMember()) {
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getHomeAnnouncementInformMenusInLoginState(accessor.getMemberId()));
+        } else {
+            return CommonResponse.onSuccess(teamMemberAnnouncementService.getHomeAnnouncementInformMenusInLogoutState());
+        }
     }
 
     // 팀원 공고 뷰어 전체 조회
