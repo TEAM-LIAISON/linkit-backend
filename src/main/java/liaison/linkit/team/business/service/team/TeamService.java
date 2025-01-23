@@ -378,28 +378,49 @@ public class TeamService {
         return teamMapper.toDeleteTeam(teamCode);
     }
 
-    // 홈화면에서 팀 조회
-    public TeamResponseDTO.TeamInformMenus getHomeTeamInformMenus() {
+    // 홈화면에서 로그인 상태에서 팀 조회
+    public TeamResponseDTO.TeamInformMenus getHomeTeamInformMenusInLoginState(
+            final Long memberId
+    ) {
         // 최대 4개의 Team 조회
         List<Team> teams = teamQueryAdapter.findTopTeams(4);
 
         // Teams -> TeamInformMenus 변환
         List<TeamResponseDTO.TeamInformMenu> teamInformMenus = teams.stream()
-                .map(this::buildTeamInformMenu)
+                .map(team -> buildTeamInformMenuInLoginState(team, memberId))
                 .toList();
 
         return teamMapper.toTeamInformMenus(teamInformMenus);
     }
 
-    private TeamResponseDTO.TeamInformMenu buildTeamInformMenu(final Team team) {
+    // 홈화면에서 로그아웃 상태에서 팀 조회
+    public TeamResponseDTO.TeamInformMenus getHomeTeamInformMenusInLogoutState() {
+        // 최대 4개의 Team 조회
+        List<Team> teams = teamQueryAdapter.findTopTeams(4);
+
+        // Teams -> TeamInformMenus 변환
+        List<TeamResponseDTO.TeamInformMenu> teamInformMenus = teams.stream()
+                .map(this::buildTeamInformMenuInLogoutState)
+                .toList();
+
+        return teamMapper.toTeamInformMenus(teamInformMenus);
+    }
+
+    private TeamResponseDTO.TeamInformMenu buildTeamInformMenuInLogoutState(final Team team) {
         RegionDetail regionDetail = getRegionDetail(team);
         List<TeamCurrentStateItem> teamCurrentStateItems = getTeamCurrentStateItems(team);
         TeamScaleItem teamScaleItem = getTeamScaleItem(team);
         int teamScrapCount = getTeamScrapCount(team);
-
-        log.info("팀 정보 생성 완료: teamId={}, teamName={}", team.getId(), team.getTeamName());
-
         return teamMapper.toTeamInformMenu(team, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
+    }
+
+    private TeamResponseDTO.TeamInformMenu buildTeamInformMenuInLoginState(final Team team, final Long memberId) {
+        RegionDetail regionDetail = getRegionDetail(team);
+        List<TeamCurrentStateItem> teamCurrentStateItems = getTeamCurrentStateItems(team);
+        TeamScaleItem teamScaleItem = getTeamScaleItem(team);
+        final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, team.getTeamCode());
+        int teamScrapCount = getTeamScrapCount(team);
+        return teamMapper.toTeamInformMenu(team, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
     }
 
     private RegionDetail getRegionDetail(final Team team) {

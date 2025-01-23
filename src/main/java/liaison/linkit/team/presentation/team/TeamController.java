@@ -30,8 +30,15 @@ public class TeamController {
 
     // 홈화면에서 팀 조회하기 (최대 4개)
     @GetMapping("/home/team")
-    public CommonResponse<TeamResponseDTO.TeamInformMenus> getHomeTeamInformMenus() {
-        return CommonResponse.onSuccess(teamService.getHomeTeamInformMenus());
+    public CommonResponse<TeamResponseDTO.TeamInformMenus> getHomeTeamInformMenus(
+            @Auth final Accessor accessor
+    ) {
+        if (accessor.isMember()) {
+            return CommonResponse.onSuccess(teamService.getHomeTeamInformMenusInLoginState(accessor.getMemberId()));
+        } else {
+            return CommonResponse.onSuccess(teamService.getHomeTeamInformMenusInLogoutState());
+        }
+
     }
 
     // 팀 생성하기

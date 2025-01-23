@@ -57,6 +57,5 @@ public class ProfileController {
         } else {
             return CommonResponse.onSuccess(profileService.getHomeProfileInformMenusInLogoutState());
         }
-
     }
 }
