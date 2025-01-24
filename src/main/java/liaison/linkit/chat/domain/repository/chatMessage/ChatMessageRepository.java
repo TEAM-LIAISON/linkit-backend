@@ -18,8 +18,7 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
             Long chatRoomId
     );
 
-    // 특정 회원의 '읽지 않은' 메시지 수를 계산
-    @Query(value = "{ 'chat_room_id': { $in: ?0 }, 'message_receiver_member_id': ?1, 'is_read': false }", count = true)
+    @Query(value = "{ 'chat_room_id': { $in: ?1 }, 'message_receiver_member_id': ?0, 'is_read': false }", count = true)
     long countUnreadMessagesByChatRoomIdsAndReceiver(Long memberId, List<Long> chatRoomIds);
 
 }

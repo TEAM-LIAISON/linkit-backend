@@ -47,19 +47,28 @@ public class HeaderNotificationService {
 
         // 초기 데이터 전송
         NotificationCountResponse count = getUnreadCount(memberId);
+        log.info("Sent notification to " + emailId);
         messagingTemplate.convertAndSend("/sub/notification/header/" + emailId, count);
     }
 
-    private NotificationCountResponse getUnreadCount(final Long memberId) {
+    public NotificationCountResponse getUnreadCount(final Long memberId) {
         long unreadNotificationCount = notificationQueryAdapter.countUnreadMessages(memberId);
+        log.info("Unread notification count: " + unreadNotificationCount);
+        // 4. 채팅방 참여 이력이 없을 경우 처리
+        long unreadChatCount = 0;
+        if (chatRoomQueryAdapter.existsChatRoomByMemberId(memberId)) {
+            log.info("Chat room exists");
+            // 2. 사용자의 채팅방 참여 이력 조회
+            List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
+            log.info("Found " + chatRooms.size() + " chat rooms");
 
-        List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
-
-        List<Long> chatRoomIds = chatRooms.stream()
-                .map(ChatRoom::getId)
-                .toList(); // 채팅방 ID 추출
-
-        long unreadChatCount = chatQueryAdapter.countUnreadMessagesByChatRoomIdsAndReceiver(memberId, chatRoomIds);
+            // 3. 채팅방 ID 추출
+            List<Long> chatRoomIds = chatRooms.stream()
+                    .map(ChatRoom::getId)
+                    .toList();
+            log.info("Found " + chatRoomIds.size() + " chat rooms");
+            unreadChatCount = chatQueryAdapter.countUnreadMessagesByChatRoomIdsAndReceiver(memberId, chatRoomIds);
+        }
 
         return notificationMapper.toNotificationCount(unreadChatCount, unreadNotificationCount);
     }

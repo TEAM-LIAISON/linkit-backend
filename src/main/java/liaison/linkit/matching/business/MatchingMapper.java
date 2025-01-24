@@ -55,7 +55,6 @@ public class MatchingMapper {
                 .receiverTeamCode(addMatchingRequest.getReceiverTeamCode())
                 .receiverAnnouncementId(addMatchingRequest.getReceiverAnnouncementId())
                 .requestMessage(addMatchingRequest.getRequestMessage())
-
                 .matchingStatusType(MatchingStatusType.REQUESTED)
                 .senderDeleteStatus(SenderDeleteStatus.REMAINING)
                 .receiverDeleteStatus(ReceiverDeleteStatus.REMAINING)

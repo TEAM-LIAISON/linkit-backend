@@ -27,4 +27,8 @@ public class ChatRoomQueryAdapter {
     public Long getChatRoomIdByMatchingId(final Long matchingId) {
         return chatRoomRepository.getChatRoomIdByMatchingId(matchingId);
     }
+
+    public boolean existsChatRoomByMemberId(final Long memberId) {
+        return chatRoomRepository.existsChatRoomByMemberId(memberId);
+    }
 }
