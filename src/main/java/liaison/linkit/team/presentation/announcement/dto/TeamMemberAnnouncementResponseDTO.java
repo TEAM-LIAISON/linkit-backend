@@ -72,7 +72,6 @@ public class TeamMemberAnnouncementResponseDTO {
         @Builder.Default
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
 
-        private String announcementStartDate;
         private String announcementEndDate;
 
         private Boolean isRegionFlexible; // 지역 무관
@@ -183,7 +182,7 @@ public class TeamMemberAnnouncementResponseDTO {
 
         @Builder.Default
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
-        
+
         private String announcementEndDate;
 
         private Boolean isRegionFlexible; // 지역 무관

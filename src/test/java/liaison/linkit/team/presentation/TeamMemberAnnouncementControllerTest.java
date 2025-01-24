@@ -585,7 +585,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         .build()
                         )
                 )
-                .announcementStartDate("공고 시작 날짜")
                 .announcementEndDate("공고 종료 날짜")
                 .isRegionFlexible(true)
                 .mainTasks("주요 업무")
@@ -658,9 +657,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementSkillNames[].announcementSkillName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 스킬 이름"),
-                                        fieldWithPath("result.announcementStartDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 시작 날짜"),
                                         fieldWithPath("result.announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
@@ -749,9 +745,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 스킬 이름"),
 
-                                        fieldWithPath("announcementStartDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 시작 날짜"),
                                         fieldWithPath("announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
@@ -816,9 +809,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementSkillNames[].announcementSkillName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 스킬 이름"),
-                                        fieldWithPath("result.announcementStartDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 시작 날짜"),
                                         fieldWithPath("result.announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
@@ -908,10 +898,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("announcementSkillNames[].announcementSkillName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 스킬 이름"),
-
-                                        fieldWithPath("announcementStartDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 시작 날짜"),
+                                        
                                         fieldWithPath("announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
@@ -976,9 +963,6 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementSkillNames[].announcementSkillName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 스킬 이름"),
-                                        fieldWithPath("result.announcementStartDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 시작 날짜"),
                                         fieldWithPath("result.announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
