@@ -316,10 +316,13 @@ public class ChatService {
                 .participantAMemberId(participantAMemberId)
                 .participantAName(participantAName)
                 .participantAType(participantAType)
+                .participantAStatus(StatusType.USABLE)
+
                 .participantBId(participantBId)
                 .participantBName(participantBName)
                 .participantBMemberId(participantBMemberId)
                 .participantBType(participantBType)
+                .participantBStatus(StatusType.USABLE)
                 .build();
 
         ChatRoom saved = chatRoomCommandAdapter.createChatRoom(chatRoom);
