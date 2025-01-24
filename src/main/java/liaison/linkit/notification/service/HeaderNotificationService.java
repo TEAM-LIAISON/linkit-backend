@@ -1,6 +1,9 @@
 package liaison.linkit.notification.service;
 
+import java.util.List;
+import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.implement.ChatQueryAdapter;
+import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.global.presentation.dto.SubscribeEvent;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.notification.business.NotificationMapper;
@@ -25,6 +28,7 @@ public class HeaderNotificationService {
 
     private final NotificationMapper notificationMapper;
     private final MemberQueryAdapter memberQueryAdapter;
+    private final ChatRoomQueryAdapter chatRoomQueryAdapter;
 
     public void publishNotificationCount(final Long memberId) {
         final String emailId = memberQueryAdapter.findEmailIdById(memberId);
@@ -32,13 +36,6 @@ public class HeaderNotificationService {
         NotificationCountResponse count = getUnreadCount(memberId);
         log.info("Sent notification to " + emailId);
         messagingTemplate.convertAndSend("/sub/notification/header/" + emailId, count);
-    }
-
-    public NotificationCountResponse getUnreadCount(final Long memberId) {
-        long unreadNotificationCount = notificationQueryAdapter.countUnreadMessages(memberId);
-        long unreadChatCount = chatQueryAdapter.countByMessageReceiverMemberIdAndIsReadFalse(memberId);
-
-        return notificationMapper.toNotificationCount(unreadChatCount, unreadNotificationCount);
     }
 
     @EventListener
@@ -50,7 +47,20 @@ public class HeaderNotificationService {
 
         // 초기 데이터 전송
         NotificationCountResponse count = getUnreadCount(memberId);
-        log.info("count " + count);
         messagingTemplate.convertAndSend("/sub/notification/header/" + emailId, count);
+    }
+
+    private NotificationCountResponse getUnreadCount(final Long memberId) {
+        long unreadNotificationCount = notificationQueryAdapter.countUnreadMessages(memberId);
+
+        List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
+
+        List<Long> chatRoomIds = chatRooms.stream()
+                .map(ChatRoom::getId)
+                .toList(); // 채팅방 ID 추출
+
+        long unreadChatCount = chatQueryAdapter.countUnreadMessagesByChatRoomIdsAndReceiver(memberId, chatRoomIds);
+
+        return notificationMapper.toNotificationCount(unreadChatCount, unreadNotificationCount);
     }
 }
