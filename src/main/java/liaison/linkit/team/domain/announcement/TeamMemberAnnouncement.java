@@ -34,7 +34,6 @@ public class TeamMemberAnnouncement extends BaseEntity {
     private Team team;
 
     private String announcementTitle;                   // 공고 제목
-    private String announcementStartDate;               // 공고 시작 기간
     private String announcementEndDate;                 // 공고 마감 기간
     private boolean isRegionFlexible;                   // 지역 무관
     private String mainTasks;                           // 주요 업무

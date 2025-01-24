@@ -8,6 +8,7 @@ import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.common.validator.ImageValidator;
 import liaison.linkit.file.domain.ImageFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
+import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.notification.business.NotificationMapper;
@@ -98,6 +99,7 @@ public class TeamService {
     private final NotificationService notificationService;
     private final NotificationMapper notificationMapper;
     private final HeaderNotificationService headerNotificationService;
+    private final MatchingQueryAdapter matchingQueryAdapter;
 
 
     // 초기 팀 생성

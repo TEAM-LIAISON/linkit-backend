@@ -82,7 +82,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         long updatedCount = jpaQueryFactory
                 .update(qTeamMemberAnnouncement)
                 .set(qTeamMemberAnnouncement.announcementTitle, request.getAnnouncementTitle())
-                .set(qTeamMemberAnnouncement.announcementStartDate, request.getAnnouncementStartDate())
                 .set(qTeamMemberAnnouncement.announcementEndDate, request.getAnnouncementEndDate())
                 .set(qTeamMemberAnnouncement.isRegionFlexible, request.getIsRegionFlexible())
                 .set(qTeamMemberAnnouncement.mainTasks, request.getMainTasks())
