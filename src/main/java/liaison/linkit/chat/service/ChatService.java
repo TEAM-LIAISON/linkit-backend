@@ -14,6 +14,7 @@ import liaison.linkit.chat.exception.CreateChatRoomBadRequestException;
 import liaison.linkit.chat.exception.CreateChatSenderBadRequestException;
 import liaison.linkit.chat.exception.MatchingStateChatBadRequestException;
 import liaison.linkit.chat.exception.SendChatMessageBadRequestException;
+import liaison.linkit.chat.implement.ChatQueryAdapter;
 import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
@@ -31,6 +32,7 @@ import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.type.StatusType;
+import liaison.linkit.global.util.SessionRegistry;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
@@ -91,6 +93,8 @@ public class ChatService {
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
     private final TeamScaleMapper teamScaleMapper;
     private final MatchingCommandAdapter matchingCommandAdapter;
+    private final SessionRegistry sessionRegistry;
+    private final ChatQueryAdapter chatQueryAdapter;
 
     /**
      * 새로운 채팅방 생성
@@ -465,6 +469,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -481,6 +488,8 @@ public class ChatService {
                                             .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -499,6 +508,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -515,6 +527,8 @@ public class ChatService {
                                             .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -533,6 +547,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -549,6 +566,8 @@ public class ChatService {
                                             .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -573,6 +592,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -589,6 +611,8 @@ public class ChatService {
                                             .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -607,6 +631,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -623,6 +650,8 @@ public class ChatService {
                                             .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -641,6 +670,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -657,6 +689,8 @@ public class ChatService {
                                             .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);

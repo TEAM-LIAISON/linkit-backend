@@ -35,8 +35,11 @@ public class ChatResponseDTO {
         @Builder.Default
         private ChatPartnerInformation chatPartnerInformation = new ChatPartnerInformation();
 
-        private Long unreadCount;                   // 읽지 않은 메시지 수
-        private boolean isOnline;                   // 상대방 온라인 상태
+        // 상대방의 온라인 여부
+        private boolean isChatPartnerOnline;
+
+        // 읽지 않은 채팅 메시지 개수
+        private long unreadChatMessageCount;
     }
 
     @Builder
