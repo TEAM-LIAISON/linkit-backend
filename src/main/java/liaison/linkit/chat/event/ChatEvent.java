@@ -7,13 +7,6 @@ public abstract class ChatEvent {
 
     @Getter
     @AllArgsConstructor
-    public static class ChatRoomConnectedEvent {
-        private final Long memberId;
-        private final Long chatRoomId;
-    }
-
-    @Getter
-    @AllArgsConstructor
     public static class UserConnectedEvent {
         private final Long memberId;
         private final String sessionId;

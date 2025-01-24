@@ -1,9 +1,9 @@
 package liaison.linkit.global.util;
 
 import java.util.List;
-import liaison.linkit.chat.event.ChatEvent.ChatRoomConnectedEvent;
 import liaison.linkit.chat.event.ChatEvent.UserConnectedEvent;
 import liaison.linkit.chat.event.ChatEvent.UserDisconnectedEvent;
+import liaison.linkit.global.presentation.dto.ChatRoomConnectedEvent;
 import liaison.linkit.global.presentation.dto.SubscribeEvent;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +81,7 @@ public class StompHandler implements ChannelInterceptor {
                 if (destination.startsWith("/sub/chat/")) {
                     // 채팅방 구독시 해당 채팅방 초기 정보 전송
                     Long chatRoomId = extractChatRoomId(destination);
+                    log.info("chatRoomId: {}", chatRoomId);
                     eventPublisher.publishEvent(new ChatRoomConnectedEvent(memberId, chatRoomId));
                 }
             }
