@@ -1,6 +1,7 @@
 package liaison.linkit.notification.presentation.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.notification.domain.type.NotificationReadStatus;
@@ -14,6 +15,24 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class NotificationResponseDTO {
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ChatRoomConnectedInitResponse {
+        // 상대방의 온라인 여부
+        private boolean isChatPartnerOnline;
+
+        // 읽지 않은 채팅 메시지 개수
+        private long unreadChatMessageCount;
+
+        // 마지막 메시지
+        private String lastMessage;
+
+        // 마지막 메시지의 시간
+        private LocalDateTime lastMessageTime;
+    }
 
     @Builder
     @Getter

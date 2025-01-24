@@ -21,4 +21,7 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
     @Query(value = "{ 'chat_room_id': { $in: ?1 }, 'message_receiver_member_id': ?0, 'is_read': false }", count = true)
     long countUnreadMessagesByChatRoomIdsAndReceiver(Long memberId, List<Long> chatRoomIds);
 
+    @Query(value = "{ 'chat_room_id': ?0, 'message_receiver_member_id': ?1, 'is_read': false }", count = true)
+    long countUnreadMessagesInRoomForMember(Long chatRoomId, Long memberId);
+
 }

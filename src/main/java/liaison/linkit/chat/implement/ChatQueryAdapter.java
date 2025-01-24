@@ -13,4 +13,8 @@ public class ChatQueryAdapter {
     public long countUnreadMessagesByChatRoomIdsAndReceiver(final Long memberId, final List<Long> chatRoomIds) {
         return chatMessageRepository.countUnreadMessagesByChatRoomIdsAndReceiver(memberId, chatRoomIds);
     }
+
+    public long countUnreadMessagesInRoomForMember(final Long chatRoomId, final Long memberId) {
+        return chatMessageRepository.countUnreadMessagesInRoomForMember(chatRoomId, memberId);
+    }
 }
