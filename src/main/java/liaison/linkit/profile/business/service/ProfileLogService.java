@@ -269,6 +269,7 @@ public class ProfileLogService {
 
     // 프로필 로그 타입 수정
     public UpdateProfileLogTypeResponse updateProfileLogType(final Long memberId, final Long profileLogId) {
+
         log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청 발생했습니다.", memberId, profileLogId);
 
         // 1. ProfileLog 엔티티 조회
@@ -290,12 +291,12 @@ public class ProfileLogService {
         if (existingRepresentativeLog != null && !existingRepresentativeLog.getId().equals(profileLogId)) {
             log.info("기존 대표 로그가 존재하므로, 기존 대표 로그를 일반 로그로 변경합니다. 기존 대표 로그 ID: {}", existingRepresentativeLog.getId());
 
-            profileLogCommandAdapter.updateProfileLogTypeRepresent(existingRepresentativeLog);
+            profileLogCommandAdapter.updateProfileLogTypeToNormal(existingRepresentativeLog);
             log.info("기존 대표 로그(ID: {})가 일반 로그로 변경되었습니다.", existingRepresentativeLog.getId());
         }
 
-        // 5. 수정하려는 로그를 대표 로그로 설정
-        log.info("수정하려는 로그를 대표 로그로 설정합니다. 로그 ID: {}", profileLogId);
+        // 6) 수정 대상 로그 -> 대표 로그로 변경
+        log.debug("로그(ID={})를 대표 로그로 설정", profileLogId);
         profileLogCommandAdapter.updateProfileLogTypeRepresent(profileLog);
 
         return profileLogMapper.toUpdateProfileLogType(profileLog);
