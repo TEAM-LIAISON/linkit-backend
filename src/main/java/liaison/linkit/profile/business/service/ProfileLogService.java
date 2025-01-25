@@ -83,7 +83,7 @@ public class ProfileLogService {
     }
 
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ProfileLogItem getProfileLogItem(final Long memberId, final Long profileLogId) {
         log.info("memberId = {}의 내 로그 DTO 조회 요청 발생했습니다.", memberId);
 
@@ -95,7 +95,7 @@ public class ProfileLogService {
         return profileLogMapper.toProfileLogItem(profileLog);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ProfileLogItem getProfileLogViewItem(final Long profileLogId) {
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
         profileLog.increaseViewCount();

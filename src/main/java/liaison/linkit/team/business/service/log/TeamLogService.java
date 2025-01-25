@@ -82,7 +82,7 @@ public class TeamLogService {
         return teamLogMapper.toTeamLogItems(teamLogs);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public TeamLogItem getTeamLogItem(final String teamCode, final Long teamLogId) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
         teamLog.increaseViewCount();
