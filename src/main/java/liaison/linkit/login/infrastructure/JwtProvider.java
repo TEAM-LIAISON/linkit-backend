@@ -1,20 +1,27 @@
 package liaison.linkit.login.infrastructure;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Header;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import liaison.linkit.global.exception.ExpiredPeriodJwtException;
-import liaison.linkit.global.exception.InvalidJwtException;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import javax.crypto.SecretKey;
+import liaison.linkit.common.exception.ExpiredAccessTokenException;
+import liaison.linkit.common.exception.InvalidAccessTokenException;
+import liaison.linkit.common.exception.InvalidRefreshTokenException;
+import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.domain.MemberTokens;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
-
 @Component
+@Slf4j
 public class JwtProvider {
 
     public static final String EMPTY_SUBJECT = "";
@@ -38,11 +45,10 @@ public class JwtProvider {
         }
     }
 
-
     public MemberTokens generateLoginToken(final String subject) {
-        final String refreshToken = createToken(EMPTY_SUBJECT, refreshExpirationTime);
         final String accessToken = createToken(subject, accessExpirationTime);
-        return new MemberTokens(refreshToken, accessToken);
+        final String refreshToken = createToken(EMPTY_SUBJECT, refreshExpirationTime);
+        return new MemberTokens(accessToken, refreshToken);
     }
 
     private String createToken(final String subject, final Long validityInMilliseconds) {
@@ -59,27 +65,40 @@ public class JwtProvider {
     }
 
     public void validateTokens(final MemberTokens memberTokens) {
-        validateRefreshToken(memberTokens.getRefreshToken());
-        validateAccessToken(memberTokens.getAccessToken());
+        final String refreshToken = memberTokens.getRefreshToken();
+        final String accessToken = memberTokens.getAccessToken();
+
+        try {
+            validateRefreshToken(refreshToken);
+            validateAccessToken(accessToken);
+        } catch (RefreshTokenExpiredException e) {
+            throw e;
+        } catch (InvalidAccessTokenException e) {
+            throw e;
+        }
     }
 
     private void validateRefreshToken(final String refreshToken) {
         try {
             parseToken(refreshToken);
         } catch (final ExpiredJwtException e) {
-            throw new ExpiredPeriodJwtException(EXPIRED_PERIOD_REFRESH_TOKEN);
+            log.info("RefreshToken 만료 = {}", e.getMessage());
+            throw RefreshTokenExpiredException.EXCEPTION;
         } catch (final JwtException | IllegalArgumentException e) {
-            throw new InvalidJwtException(INVALID_REFRESH_TOKEN);
+            log.info("유효하지 않은 RefreshToken = {}", e.getMessage());
+            throw InvalidRefreshTokenException.EXCEPTION;
         }
     }
 
-    private void validateAccessToken(final String accessToken) {
+    public void validateAccessToken(final String accessToken) {
         try {
-            parseToken(accessToken);
+            parseToken(accessToken);  // JWT 토큰을 파싱
         } catch (final ExpiredJwtException e) {
-            throw new ExpiredPeriodJwtException(EXPIRED_PERIOD_ACCESS_TOKEN);
+            log.info("AccessToken 만료 = {}", e.getMessage());
+            throw ExpiredAccessTokenException.EXCEPTION;
         } catch (final JwtException | IllegalArgumentException e) {
-            throw new InvalidJwtException(INVALID_ACCESS_TOKEN);
+            log.info("유효하지 않은 AccessToken = {}", e.getMessage());
+            throw InvalidAccessTokenException.EXCEPTION;
         }
     }
 
@@ -100,7 +119,7 @@ public class JwtProvider {
         validateRefreshToken(refreshToken);
         try {
             validateAccessToken(accessToken);
-        } catch (final ExpiredPeriodJwtException e) {
+        } catch (final InvalidAccessTokenException e) {
             return true;
         }
         return false;

@@ -1,171 +1,77 @@
-# default 설정 (공통 설정)
+spring:
+  profiles:
+    active: local
+    group:
+      local: local, common, secret
+
+server:
+  env: local
+
+---
+
 spring:
   config:
     activate:
-      on-profile: "local"
-  mvc:
-    path match:
-      matching-strategy: ant_path_matcher
+      on-profile: local
+
+  security:
+    oauth2:
+      client:
+        registration:
+          naver:
+            redirect-uri: http://localhost:3000/login/oauth2/callback/naver
+          kakao:
+            redirect-uri: http://localhost:3000/login/oauth2/callback/kakao
+          google:
+            redirect-uri: http://localhost:3000/login/oauth2/callback/google
+server:
+  port: 8080
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: common
 
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
     properties:
       hibernate:
-        default_batch_fetch_size: 100
-        format_sql: true
-        use_sql_comments: true
+        format_sql: false
         show_sql: false
+        use_sql_comments: false
+        default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
 
-  datasource:
-    url: ${database.url}
-    username: ${database.username}
-    password: ${database.password}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    baseline-version: 0
-
-  data:
-    redis:
-      host: ${redis.host}
-      port: ${redis.port}
-  
-  sql:
-    init:
-      mode: never
+  mvc:
+    path match:
+      matching-strategy: ant_path_matcher
 
   batch:
     job:
-      enabled: false
+      enabled: true
     jdbc:
-      initialize-schema: never
+      initialize-schema: always
 
-  security:
-    oauth2:
-      client:
-        registration:
-          kakao:
-            client-id: ${kakao.client.id}
-            client-secret: ${kakao.client.secret}
-            redirect-uri: ${kakao.redirect.url}
-            client-authentication-method: client_secret_post
-            authorization-grant-type: authorization_code
-            scope:
-              - profile_nickname
-              - profile_image
-            client-name: Kakao
-          naver:
-            client-id: ${naver.client.id}
-            client-secret: ${naver.client.secret}
-            redirect-uri: ${naver.redirect.url}
-            authorization-grant-type: authorization_code
-            scope: name, email
-            client-name: Naver
-          google:
-            client-id: ${google.client.id}
-            client-secret: ${google.client.secret}
-            redirect-uri: ${google.redirect.url}
-            scope:
-              - email
-              - profile
-        provider:
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: ${kakao.token.uri}
-            user-info-uri: ${kakao.user.info.uri}
-            user-info-authentication-method: header
-            user-name-attribute: id
-          naver:
-            authorization-uri: https://nid.naver.com/oauth2.0/authorize
-            token-uri: ${naver.token.uri}
-            user-info-uri: ${naver.user.info.uri}
-            user-name-attribute: response
-          google:
-            token-uri: ${google.token.uri}
-            user-info-uri: ${google.user.info.uri}
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: linkit@linkit.im
-    password: ${google.workspace.password}
-    properties:
-      mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
-      mail.smtp.connectiontimeout: 5000
-      mail.smtp.timeout: 5000
-      mail.smtp.writetimeout: 5000
+    #  flyway:
+    #    enabled: true
+    #    baseline-on-migrate: true
+    #    baseline-version: 0
+
+  sql:
+    init:
+      mode: always
 
   servlet:
     multipart:
-      enabled: true # 멀티파트 업로드 지원여부
+      enabled: true # 멀티파트 업로드 지원 여부
       file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
-      max-file-size: 2MB # 한개 파일의 최대 사이즈 (default: 1MB)
-      max-request-size: 2MB # 한개 요청의 최대 사이즈 (default: 10MB)
-
-cloud:
-  aws:
-    credentials:
-      access-key: ${aws.s3.access.key}
-      secret-key: ${aws.s3.secret.key}
-    region:
-      static: ${aws.region}
-    s3:
-      bucket: ${aws.s3.bucket.name}
-      image-folder: ${aws.s3.image.folder.name}
-      file-folder: ${aws.s3.file.folder.name}
-      cloud-front-image-domain: ${aws.s3.cloudfront.image.domain}
-      cloud-front-file-domain: ${aws.s3.cloudfront.file.domain}
-    stack:
-      auto: false
-
-jwt:
-  secret: ${secret.key}
-  access-expiration-time: ${access.expiration.time}
-  refresh-expiration-time: ${refresh.expiration.time}
-
-university:
-  csv-path: ${university.path}
-
-teamBuildingField:
-  csv-path: ${teamBuildingField.path}
-
-major:
-  csv-path: ${major.path}
-
-region:
-  csv-path: ${region.path}
-
-teamScale:
-  csv-path: ${teamScale.path}
-
-memberRole:
-  csv-path: ${memberRole.path}
-
-industrySector:
-  csv-path: ${industrySector.path}
-
-activityMethodTag:
-  csv-path: ${activityMethodTag.path}
-
-skill:
-  csv-path: ${skill.path}
-
-degree:
-  csv-path: ${degree.path}
-
-jobRole:
-  csv-path: ${jobRole.path}
-
-naver:
-  id: linkit@linkit.im
-  password: ${mail.password}
-
-google:
-  id: linkit@linkit.im
-  password: ${google.workspace.password}
-
+      max-file-size: 10MB # 한 개 파일의 최대 사이즈
+      max-request-size: 10MB # 한 개 요청의 최대 사이즈
+#
+#logging:
+#  level:
+#    root: debug

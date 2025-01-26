@@ -1,11 +1,12 @@
 package liaison.linkit.profile.domain.repository.region;
 
+import java.util.Optional;
 import liaison.linkit.profile.domain.region.ProfileRegion;
 
-import java.util.Optional;
-
 public interface ProfileRegionRepositoryCustom {
-    Optional<ProfileRegion> findByProfileId(final Long profileId);
-    boolean existsByProfileId(final Long profileId);
+    Optional<ProfileRegion> findProfileRegionByProfileId(final Long profileId);
+
+    boolean existsProfileRegionByProfileId(final Long profileId);
+
     void deleteByProfileId(final Long profileId);
 }

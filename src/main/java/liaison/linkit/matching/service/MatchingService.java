@@ -1,70 +1,92 @@
 package liaison.linkit.matching.service;
 
 import jakarta.mail.MessagingException;
-import liaison.linkit.global.exception.AuthException;
-import liaison.linkit.global.exception.BadRequestException;
-import liaison.linkit.mail.service.MailService;
-import liaison.linkit.matching.domain.PrivateMatching;
-import liaison.linkit.matching.domain.TeamMatching;
-import liaison.linkit.matching.domain.repository.privateMatching.PrivateMatchingRepository;
-import liaison.linkit.matching.domain.repository.teamMatching.TeamMatchingRepository;
-import liaison.linkit.matching.domain.type.SuccessReceiverDeleteStatusType;
-import liaison.linkit.matching.domain.type.RequestSenderDeleteStatusType;
+import java.util.ArrayList;
+import java.util.List;
+import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
+import liaison.linkit.common.business.RegionMapper;
+import liaison.linkit.common.implement.RegionQueryAdapter;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.mail.service.AsyncMatchingEmailService;
+import liaison.linkit.matching.business.MatchingMapper;
+import liaison.linkit.matching.domain.Matching;
+import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
+import liaison.linkit.matching.domain.type.ReceiverReadStatus;
+import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
-import liaison.linkit.matching.domain.type.SuccessSenderDeleteStatusType;
-import liaison.linkit.matching.dto.request.AllowMatchingRequest;
-import liaison.linkit.matching.dto.request.MatchingCreateRequest;
-import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
-import liaison.linkit.matching.dto.response.RequestMatchingResponse;
-import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
-import liaison.linkit.matching.dto.response.contact.SuccessContactResponse;
-import liaison.linkit.matching.dto.response.existence.ExistenceProfileResponse;
-import liaison.linkit.matching.dto.response.messageResponse.ReceivedPrivateMatchingMessageResponse;
-import liaison.linkit.matching.dto.response.messageResponse.ReceivedTeamMatchingMessageResponse;
-import liaison.linkit.matching.dto.response.messageResponse.RequestPrivateMatchingMessageResponse;
-import liaison.linkit.matching.dto.response.messageResponse.RequestTeamMatchingMessageResponse;
-import liaison.linkit.matching.dto.response.requestPrivateMatching.MyPrivateMatchingResponse;
-import liaison.linkit.matching.dto.response.requestTeamMatching.MyTeamMatchingResponse;
-import liaison.linkit.matching.dto.response.toPrivateMatching.ToPrivateMatchingResponse;
-import liaison.linkit.matching.dto.response.toTeamMatching.ToTeamMatchingResponse;
+import liaison.linkit.matching.exception.CannotRequestMyAnnouncementException;
+import liaison.linkit.matching.exception.CannotRequestMyProfileException;
+import liaison.linkit.matching.exception.MatchingReceiverBadRequestException;
+import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
+import liaison.linkit.matching.exception.MatchingSenderBadRequestException;
+import liaison.linkit.matching.exception.MatchingStatusTypeBadRequestException;
+import liaison.linkit.matching.exception.NotAllowMatchingBadRequestException;
+import liaison.linkit.matching.implement.MatchingCommandAdapter;
+import liaison.linkit.matching.implement.MatchingQueryAdapter;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteReceivedMatchingRequest;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.DeleteRequestedMatchingRequest;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateMatchingStatusTypeRequest;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteReceivedMatchingItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.DeleteRequestedMatchingItems;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverAnnouncementInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverTeamInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToTeamMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderProfileInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamInformation;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateMatchingStatusTypeResponse;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.member.domain.Member;
-import liaison.linkit.member.domain.repository.member.MemberRepository;
-import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.profile.domain.repository.skill.ProfileSkillRepository;
-import liaison.linkit.profile.domain.repository.skill.SkillRepository;
-import liaison.linkit.profile.domain.repository.jobRole.JobRoleRepository;
-import liaison.linkit.profile.domain.repository.jobRole.ProfileJobRoleRepository;
-import liaison.linkit.profile.domain.role.JobRole;
-import liaison.linkit.profile.domain.role.ProfileJobRole;
-import liaison.linkit.profile.domain.skill.ProfileSkill;
-import liaison.linkit.profile.domain.skill.Skill;
-import liaison.linkit.team.domain.TeamProfile;
-import liaison.linkit.team.domain.activity.ActivityMethod;
-import liaison.linkit.team.domain.activity.ActivityMethodTag;
-import liaison.linkit.team.domain.activity.ActivityRegion;
+import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.notification.business.NotificationMapper;
+import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
+import liaison.linkit.notification.service.HeaderNotificationService;
+import liaison.linkit.notification.service.NotificationService;
+import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
+import liaison.linkit.profile.domain.position.ProfilePosition;
+import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.domain.region.ProfileRegion;
+import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
+import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
+import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
+import liaison.linkit.team.domain.announcement.AnnouncementPosition;
+import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
-import liaison.linkit.team.domain.announcement.TeamMemberAnnouncementJobRole;
-import liaison.linkit.team.domain.repository.teamProfile.TeamProfileRepository;
-import liaison.linkit.team.domain.repository.activity.method.ActivityMethodRepository;
-import liaison.linkit.team.domain.repository.activity.method.ActivityMethodTagRepository;
-import liaison.linkit.team.domain.repository.activity.region.ActivityRegionRepository;
-import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementJobRoleRepository;
-import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
+import liaison.linkit.team.domain.region.TeamRegion;
+import liaison.linkit.team.domain.scale.TeamScale;
+import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
+import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
+import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
+import liaison.linkit.team.implement.team.TeamQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
-import static liaison.linkit.global.exception.ExceptionCode.*;
-import static liaison.linkit.matching.domain.type.MatchingStatusType.REQUESTED;
-import static liaison.linkit.matching.domain.type.MatchingType.PROFILE;
-import static liaison.linkit.matching.domain.type.MatchingType.TEAM_PROFILE;
 
 @Service
 @RequiredArgsConstructor
@@ -72,789 +94,993 @@ import static liaison.linkit.matching.domain.type.MatchingType.TEAM_PROFILE;
 @Slf4j
 public class MatchingService {
 
-    private final ProfileRepository profileRepository;
-    private final MemberRepository memberRepository;
-    private final PrivateMatchingRepository privateMatchingRepository;
-    private final TeamMatchingRepository teamMatchingRepository;
-    private final ProfileJobRoleRepository profileJobRoleRepository;
-    private final JobRoleRepository jobRoleRepository;
-    private final ProfileSkillRepository profileSkillRepository;
-    private final SkillRepository skillRepository;
-    private final TeamProfileRepository teamProfileRepository;
-    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
-    private final TeamMemberAnnouncementJobRoleRepository teamMemberAnnouncementJobRoleRepository;
-    private final ActivityMethodRepository activityMethodRepository;
-    private final ActivityMethodTagRepository activityMethodTagRepository;
-    private final ActivityRegionRepository activityRegionRepository;
+    private final MatchingCommandAdapter matchingCommandAdapter;
+    private final MatchingQueryAdapter matchingQueryAdapter;
 
-    // 매칭 관리 -> 이메일 발송 자동화 service 계층 필요
-    public final MailService mailService;
+    private final MatchingMapper matchingMapper;
 
-    // 회원 정보를 가져오는 메서드
-    private Member getMember(final Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_MEMBER_BY_MEMBER_ID));
-    }
+    private final TeamQueryAdapter teamQueryAdapter;
 
-    // 내 이력서 ID -> profile 객체 조회
-    private Profile getProfileById(final Long profileId) {
-        return profileRepository.findById(profileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_ID));
-    }
-    // 팀 소개서 ID -> team Profile 객체 조회
-    private TeamProfile getTeamProfileById(final Long teamProfileId) {
-        return teamProfileRepository.findById(teamProfileId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
-    }
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
+    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
+    private final MemberQueryAdapter memberQueryAdapter;
+    private final ProfileQueryAdapter profileQueryAdapter;
+    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
+    private final ProfilePositionMapper profilePositionMapper;
+    private final TeamScaleQueryAdapter teamScaleQueryAdapter;
+    private final TeamScaleMapper teamScaleMapper;
+    private final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter;
+    private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
+    private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
+    private final AnnouncementSkillMapper announcementSkillMapper;
 
-    // 모든 "내 이력서" 서비스 계층에 필요한 profile 조회 메서드
-    private Profile getProfile(final Long memberId) {
-        return profileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PROFILE_BY_MEMBER_ID));
-    }
+    private final NotificationService notificationService;
+    private final ChatRoomQueryAdapter chatRoomQueryAdapter;
+    private final AsyncMatchingEmailService asyncMatchingEmailService;
+    private final RegionQueryAdapter regionQueryAdapter;
+    private final RegionMapper regionMapper;
+    private final NotificationMapper notificationMapper;
+    private final HeaderNotificationService headerNotificationService;
 
-    private TeamProfile getTeamProfile(final Long memberId) {
-        return teamProfileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_PROFILE_ID));
-    }
+    @Transactional(readOnly = true)
+    public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long memberId, final String emailId) {
+        // 1. 프로필 조회
+        final Profile senderProfile = profileQueryAdapter.findByMemberId(memberId);
 
-    private PrivateMatching getPrivateMatching(final Long privateMatchingId) {
-        return privateMatchingRepository.findById(privateMatchingId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_PRIVATE_MATCHING_BY_ID));
-    }
-
-    private TeamMatching getTeamMatching(final Long teamMatchingId) {
-        return teamMatchingRepository.findById(teamMatchingId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MATCHING_BY_ID));
-    }
-
-    public void validateReceivedMatchingRequest(final Long memberId) {
-        if(!privateMatchingRepository.existsByProfileId(getProfile(memberId).getId())){
-            throw new AuthException(NOT_FOUND_PRIVATE_MATCHING_BY_ID);
-        }
-    }
-
-    // 이미 애노테이션으로 매칭에 대한 권한을 체킹한 상태이다.
-    // 내 이력서로 내 이력서에 발생한 매칭 요청을 저장한다.
-    // 1번
-    public void createPrivateProfileMatchingToPrivate(
-            final Long memberId,
-            // 해당 매칭 요청이 발생한 내 이력서에 대한 미니 프로필 -> 발생시키기
-            final Long profileId,
-            // 매칭 요청 생성
-            final MatchingCreateRequest matchingCreateRequest
-    ) throws Exception {
-        final Member member = getMember(memberId);
-        log.info("memberId={}가 매칭 요청을 보냅니다.", memberId);
-
-        final Profile profile = getProfileById(profileId);
-        if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
-            throw new BadRequestException(NOT_ALLOW_P2P_MATCHING);
+        if (senderProfile.getMember().getEmailId().equals(emailId)) {
+            throw NotAllowMatchingBadRequestException.EXCEPTION;
         }
 
-        // 새로운 매칭 객체를 생성한다.
-        final PrivateMatching newPrivateMatching = new PrivateMatching(
-                null,
-                // 요청 보낸 회원
-                member,
-                // 내 이력서의 프로필 아이디를 저장한다.
-                profile,
-                SenderType.PRIVATE,
-                // 내 이력서로 요청을 보냈음을 저장
-                PROFILE,
-                // 요청 메시지를 저장한다
-                matchingCreateRequest.getRequestMessage(),
-                // 요청 상태로 저장한다.
-                REQUESTED,
-                RequestSenderDeleteStatusType.REMAINED,
-                SuccessSenderDeleteStatusType.REMAINED,
-                SuccessReceiverDeleteStatusType.REMAINED,
-                false,
-                false
-        );
+        log.info("Selecting matching request to profile {}", senderProfile);
+        ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
 
-        // to 내 이력서
-        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
-
-        List<ProfileJobRole> profileJobRoles = profileJobRoleRepository.findAllByProfileId(savedPrivateMatching.getMember().getProfile().getId());
-        List<String> jobRoleNames = profileJobRoles.stream()
-                .map(profileJobRole -> jobRoleRepository.findById(profileJobRole.getJobRole().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(JobRole::getJobRoleName)
-                .toList();
-
-        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(savedPrivateMatching.getMember().getProfile().getId());
-        List<String> skillNames = profileSkills.stream()
-                .map(profileSkill -> skillRepository.findById(profileSkill.getSkill().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(Skill::getSkillName)
-                .toList();
-
-        mailService.mailRequestPrivateToPrivate(
-                // 수신자 이메일
-                savedPrivateMatching.getProfile().getMember().getEmail(),
-                savedPrivateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
-                savedPrivateMatching.getMember().getMemberBasicInform().getMemberName(),
-                jobRoleNames,
-                skillNames,
-                savedPrivateMatching.getCreatedAt(),
-                savedPrivateMatching.getRequestMessage()
-        );
-    }
-
-    // 이미 애노테이션으로 매칭에 대한 권한을 체킹한 상태이다.
-    // 팀 소개서로 내 이력서에 발생한 매칭 요청을 저장한다.
-    // 2번
-    public void createTeamProfileMatchingToPrivate(
-            final Long memberId,
-            final Long profileId,
-            final MatchingCreateRequest matchingCreateRequest
-    ) throws Exception {
-        final Member member = getMember(memberId);
-        final Profile profile = getProfileById(profileId);
-
-        if (Objects.equals(getProfile(memberId).getId(), profile.getId())) {
-            throw new BadRequestException(NOT_ALLOW_T2P_MATCHING);
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+            senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
         }
 
-        final PrivateMatching newPrivateMatching = new PrivateMatching(
-                null,
-                // 요청 보낸 회원
-                member,
-                // 내 이력서의 프로필 아이디를 저장한다.
-                profile,
-                // 팀 소개서로 나한테 요청 보냄
-                SenderType.TEAM,
-                // 팀 소개서로 요청을 보냈음을 저장
-                PROFILE,
-                // 요청 메시지를 저장한다
-                matchingCreateRequest.getRequestMessage(),
-                // 요청 상태로 저장한다.
-                REQUESTED,
-                RequestSenderDeleteStatusType.REMAINED,
-                SuccessSenderDeleteStatusType.REMAINED,
-                SuccessReceiverDeleteStatusType.REMAINED,
-                false,
-                false
+        // 2. 팀 정보 조회 및 변환
+        List<SenderTeamInformation> senderTeamInformations = new ArrayList<>();
+        boolean isTeamInformationExists = false;
+
+        if (teamMemberQueryAdapter.existsTeamOwnerByMemberId(memberId)) {
+            isTeamInformationExists = true;
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            senderTeamInformations = teams.stream()
+                    .map(team -> SenderTeamInformation.builder()
+                            .teamCode(team.getTeamCode())
+                            .teamName(team.getTeamName())
+                            .teamLogoImagePath(team.getTeamLogoImagePath())
+                            .build())
+                    .toList();
+        }
+
+        final Profile receiverProfile = profileQueryAdapter.findByEmailId(emailId);
+        log.info("Selecting matching request to profile {}", receiverProfile);
+        ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
+            receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+
+        return matchingMapper.toSelectMatchingRequestToProfileMenu(
+                isTeamInformationExists,
+                senderProfile,
+                senderProfilePositionDetail,
+                senderTeamInformations,
+                receiverProfile,
+                receiverProfilePositionDetail
         );
-
-        final PrivateMatching savedPrivateMatching = privateMatchingRepository.save(newPrivateMatching);
-
-        // 저장되어 있는 활동 방식 리포지토리에서 모든 활동 방식 조회
-        List<ActivityMethod> activityMethods = activityMethodRepository.findAllByTeamProfileId(savedPrivateMatching.getMember().getTeamProfile().getId());
-
-        List<String> activityTagNames = activityMethods.stream()
-                .map(activityMethod -> activityMethodTagRepository.findById(activityMethod.getActivityMethodTag().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(ActivityMethodTag::getActivityTagName)
-                .toList();
-
-        ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(savedPrivateMatching.getMember().getTeamProfile().getId())
-                .orElseThrow(()-> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
-
-        mailService.mailRequestTeamToPrivate(
-                savedPrivateMatching.getProfile().getMember().getEmail(),
-                savedPrivateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
-                savedPrivateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                activityTagNames,
-                String.join(", ", activityRegion.getRegion().getCityName(), activityRegion.getRegion().getDivisionName()),
-                savedPrivateMatching.getCreatedAt(),
-                savedPrivateMatching.getRequestMessage()
-        );
-
     }
 
-    // 3번
-    // 팀 소개서가 팀 소개서에 요청을 보낸 경우
-    public void createTeamProfileMatchingToTeam(
-            final Long memberId,
-            final Long teamMemberAnnouncementId,
-            final MatchingCreateRequest matchingCreateRequest
+    @Transactional(readOnly = true)
+    public SelectMatchingRequestToTeamMenu selectMatchingRequestToTeamMenu(final Long memberId, final String teamCode) {
+        // 1. 프로필 조회
+        final Profile senderProfile = profileQueryAdapter.findByMemberId(memberId);
+
+        ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+            senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+        }
+
+        // 2. 팀 정보 조회 및 변환
+        List<SenderTeamInformation> senderTeamInformations = new ArrayList<>();
+        boolean isTeamInformationExists = false;
+
+        if (teamMemberQueryAdapter.existsTeamOwnerByMemberId(memberId)) {
+            isTeamInformationExists = true;
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            senderTeamInformations = teams.stream()
+                    .map(team -> {
+                        TeamScaleItem teamScaleItem = new TeamScaleItem();
+                        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
+                            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+                            teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                        }
+
+                        return SenderTeamInformation.builder()
+                                .teamCode(team.getTeamCode())
+                                .teamName(team.getTeamName())
+                                .teamLogoImagePath(team.getTeamLogoImagePath())
+                                .teamScaleItem(teamScaleItem)
+                                .build();
+                    }).toList();
+
+        }
+
+        final Team receiverTeam = teamQueryAdapter.findByTeamCode(teamCode);
+
+        TeamScaleItem receiveTeamScaleItem = null;
+        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+            receiveTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+        }
+
+        return matchingMapper.toSelectMatchingRequestTeamMenu(isTeamInformationExists, senderProfile, senderProfilePositionDetail, senderTeamInformations, receiverTeam, receiveTeamScaleItem);
+    }
+
+    // 매칭 상단 알림 조회 (수정 필요)
+    @Transactional(readOnly = true)
+    public MatchingNotificationMenu getMatchingNotificationMenu(final Long memberId) {
+        int receivedMatchingNotificationCount = 0;
+        int requestedMatchingNotificationCount = 0;
+
+        // 내 프로필에 대한 수신함 우선 판단
+        /**
+         *  내가 가지고 있는 memberId에 대하여 Matching 엔티티에서 emailId와 동일한 값을 찾는다
+         *
+         */
+
+        // 해당 회원이 오너인 팀이 존재한다면
+        if (teamMemberQueryAdapter.existsTeamOwnerByMemberId(memberId)) {
+            // 해당 회원이 오너로 등록된 팀들의 teamCode를 가져온다.
+            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+
+            // 2. 팀 코드 목록 추출
+            List<String> myTeamCodes = myTeams.stream()
+                    .map(Team::getTeamCode)
+                    .toList();
+
+            // "TEAM" 매칭(= 팀으로 수신) 건수
+            receivedMatchingNotificationCount += matchingQueryAdapter.countByReceiverTeamCodes(myTeamCodes);
+
+            // 2-2) 팀 ID 목록
+            List<Long> myTeamIds = myTeams.stream()
+                    .map(Team::getId)
+                    .toList();
+
+            // 3) 팀이 만든 공고 목록 -> 공고 ID 목록
+            List<TeamMemberAnnouncement> announcements =
+                    teamMemberAnnouncementQueryAdapter.getAllByTeamIds(myTeamIds);
+
+            List<Long> announcementIds = announcements.stream()
+                    .map(TeamMemberAnnouncement::getId)
+                    .toList();
+
+            // "ANNOUNCEMENT" 매칭(= 공고로 수신) 건수
+            receivedMatchingNotificationCount += matchingQueryAdapter.countByReceiverAnnouncementIds(announcementIds);
+        }
+
+        return matchingMapper.toMatchingMenuResponse(receivedMatchingNotificationCount, requestedMatchingNotificationCount);
+    }
+
+    public Page<ReceivedMatchingMenu> getReceivedMatchingMenuResponse(final Long memberId, final ReceiverType receiverType, Pageable pageable) {
+        List<Matching> combinedMatchingItems = new ArrayList<>();
+
+        // Profile 케이스
+        if (receiverType == null || receiverType.equals(ReceiverType.PROFILE)) {
+            final String emailId = memberQueryAdapter.findEmailIdById(memberId);
+            final Page<Matching> profileMatchingItems = matchingQueryAdapter.findReceivedToProfile(emailId, pageable);
+
+            if (receiverType != null) {
+                return profileMatchingItems.map(this::toMatchingReceivedMenu);
+            }
+
+            combinedMatchingItems.addAll(profileMatchingItems.getContent());
+        }
+
+        // Team 케이스
+        if (receiverType == null || receiverType.equals(ReceiverType.TEAM)) {
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            final Page<Matching> teamMatchingItems = matchingQueryAdapter.findReceivedToTeam(teams, pageable);
+
+            if (receiverType != null) {
+                return teamMatchingItems.map(this::toMatchingReceivedMenu);
+            }
+
+            combinedMatchingItems.addAll(teamMatchingItems.getContent());
+        }
+
+        // Announcement 케이스
+        if (receiverType == null || receiverType.equals(ReceiverType.ANNOUNCEMENT)) {
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+
+            final List<Long> teamIds = teams.stream()
+                    .map(Team::getId)
+                    .toList();
+
+            final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllByTeamIds(teamIds);
+            final List<Long> announcementIds = teamMemberAnnouncements.stream()
+                    .map(TeamMemberAnnouncement::getId)
+                    .toList();
+
+            final Page<Matching> announcementMatchingItems = matchingQueryAdapter.findReceivedToAnnouncement(announcementIds, pageable);
+
+            if (receiverType != null) {
+                return announcementMatchingItems.map(this::toMatchingReceivedMenu);
+            }
+
+            combinedMatchingItems.addAll(announcementMatchingItems.getContent());
+        }
+
+        // Null 케이스: Profile, Team, Announcement 데이터를 모두 병합
+        return new PageImpl<>(
+                combinedMatchingItems.stream()
+                        .map(this::toMatchingReceivedMenu)
+                        .toList(),
+                pageable,
+                combinedMatchingItems.size()
+        );
+    }
+
+    public Page<RequestedMatchingMenu> getRequestedMatchingMenuResponse(final Long memberId, final SenderType senderType, Pageable pageable) {
+        List<Matching> combinedMatchingItems = new ArrayList<>();
+
+        // Profile 케이스
+        if (senderType == null || senderType.equals(SenderType.PROFILE)) {
+            final String emailId = memberQueryAdapter.findEmailIdById(memberId);
+            final Page<Matching> profileMatchingItems = matchingQueryAdapter.findRequestedByProfile(emailId, pageable);
+
+            if (senderType != null) {
+                return profileMatchingItems.map(this::toMatchingRequestedMenu);
+            }
+
+            combinedMatchingItems.addAll(profileMatchingItems.getContent());
+        }
+
+        // Team 케이스
+        if (senderType == null || senderType.equals(SenderType.TEAM)) {
+            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            final Page<Matching> teamMatchingItems = matchingQueryAdapter.findRequestedByTeam(teams, pageable);
+
+            if (senderType != null) {
+                return teamMatchingItems.map(this::toMatchingRequestedMenu);
+            }
+
+            combinedMatchingItems.addAll(teamMatchingItems.getContent());
+        }
+
+        // Null 케이스: Profile, Team, Announcement 데이터를 모두 병합
+        return new PageImpl<>(
+                combinedMatchingItems.stream()
+                        .map(this::toMatchingRequestedMenu)
+                        .toList(),
+                pageable,
+                combinedMatchingItems.size()
+        );
+    }
+
+    public UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingStateToRead(final Long memberId, final UpdateReceivedMatchingReadRequest request) {
+        // 1) 요청 검증
+        List<Long> matchingIds = request.getMatchingIds();
+        if (matchingIds == null || matchingIds.isEmpty()) {
+            throw new IllegalArgumentException("Request must include valid matching IDs.");
+        }
+
+        // 2) 매칭 조회
+        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
+        if (matchings.isEmpty()) {
+            throw new IllegalArgumentException("No matchings found for the given IDs: " + matchingIds);
+        }
+
+        // 3) 상태별로 읽음 처리
+        for (Matching matching : matchings) {
+            MatchingStatusType statusType = matching.getMatchingStatusType();
+
+            switch (statusType) {
+                case REQUESTED:
+                    // 이미 READ_REQUESTED_MATCHING 상태인지 확인
+                    if (matching.getReceiverReadStatus() != ReceiverReadStatus.READ_REQUESTED_MATCHING) {
+                        matching.setReceiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING);
+                    }
+                    break;
+
+                case COMPLETED:
+                    // 이미 READ_COMPLETED_MATCHING 상태인지 확인
+                    if (matching.getReceiverReadStatus() != ReceiverReadStatus.READ_COMPLETED_MATCHING) {
+                        matching.setReceiverReadStatus(ReceiverReadStatus.READ_COMPLETED_MATCHING);
+                    }
+                    break;
+
+                default:
+                    // REQUESTED, COMPLETED가 아닌 경우 별도 처리
+                    // 예: "READ_REQUESTED_MATCHING와 READ_COMPLETED_MATCHING은 REQUESTED 또는 COMPLETED 상태에서만 적용 가능합니다."
+                    // 필요하다면 로그 남기거나, 예외를 던질 수 있음
+                    log.warn("Matching ID {} has status {}, which is not handled by read logic.",
+                            matching.getId(), statusType);
+                    break;
+            }
+        }
+
+        // 4) DB에 반영 (bulk update)
+        matchingCommandAdapter.updateAll(matchings);
+
+        // 5) 응답 DTO 구성
+        List<UpdateReceivedMatchingCompletedStateReadItem> readItems = matchings.stream()
+                .map(m -> new UpdateReceivedMatchingCompletedStateReadItem(
+                        m.getId(),
+                        m.getReceiverReadStatus()
+                ))
+                .toList();
+
+        return matchingMapper.toUpdateMatchingCompletedToReadItems(readItems);
+    }
+
+    // 수신자가 매칭 요청 상태를 업데이트한다.
+    public UpdateMatchingStatusTypeResponse updateMatchingStatusType(final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
     ) throws MessagingException {
-        // 멤버 객체 조회
-        final Member member = getMember(memberId);
-
-        // 팀원 공고 객체 조회
-        final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
-
-        if (Objects.equals(getTeamProfile(memberId).getId(), teamMemberAnnouncement.getTeamProfile().getId())) {
-            throw new BadRequestException(NOT_ALLOW_T2T_MATCHING);
+        if (updateMatchingStatusTypeRequest == null || updateMatchingStatusTypeRequest.getMatchingStatusType().equals(MatchingStatusType.REQUESTED)) {
+            throw MatchingStatusTypeBadRequestException.EXCEPTION;
         }
 
-        // 해당 팀원 공고 객체에 대한 팀 매칭 객체 생성
-        final TeamMatching newTeamMatching = new TeamMatching(
-                null,
-                // 요청 보낸 회원
-                member,
-                // 팀 소개서를 저장한다.
-                teamMemberAnnouncement,
-                SenderType.TEAM,
-                // 팀 소개서로 요청을 보냈음을 저장
-                TEAM_PROFILE,
-                // 요청 메시지를 저장한다
-                matchingCreateRequest.getRequestMessage(),
-                // 요청 상태로 저장한다.
-                REQUESTED,
-                RequestSenderDeleteStatusType.REMAINED,
-                SuccessSenderDeleteStatusType.REMAINED,
-                SuccessReceiverDeleteStatusType.REMAINED,
-                false,
-                false
+        final Matching matching = matchingQueryAdapter.findByMatchingId(matchingId);
+
+        matchingCommandAdapter.updateMatchingStatusType(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
+
+        // COMPLETED 상태로 변경된 경우 비동기 이메일 발송
+        if (updateMatchingStatusTypeRequest.getMatchingStatusType() == MatchingStatusType.COMPLETED) {
+
+            asyncMatchingEmailService.sendMatchingCompletedEmails(
+                    getSenderEmail(matching),
+                    getSenderName(matching),
+                    getSenderLogoImagePath(matching),
+                    getSenderPositionOrTeamSize(matching),
+                    getSenderRegionDetail(matching),
+                    getReceiverEmail(matching),
+                    getReceiverName(matching),
+                    getReceiverLogoImagePath(matching),
+                    getReceiverPositionOrTeamSize(matching),
+                    getReceiverRegionDetail(matching)
+            );
+        }
+
+        // 매칭 성사된 경우, 수신자에게 알림 발송
+        NotificationDetails receiverNotificationDetails = NotificationDetails.matchingAccepted(
+                getReceiverName(matching)
         );
 
-        final TeamMatching savedTeamMatching = teamMatchingRepository.save(newTeamMatching);
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        getReceiverMemberId(matching),
+                        NotificationType.MATCHING,
+                        SubNotificationType.MATCHING_ACCEPTED,
+                        receiverNotificationDetails
+                )
+        );
 
-        // 저장되어 있는 활동 방식 리포지토리에서 모든 활동 방식 조회
-        List<ActivityMethod> activityMethods = activityMethodRepository.findAllByTeamProfileId(savedTeamMatching.getMember().getTeamProfile().getId());
+        headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
 
-        List<String> activityTagNames = activityMethods.stream()
-                .map(activityMethod -> activityMethodTagRepository.findById(activityMethod.getActivityMethodTag().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(ActivityMethodTag::getActivityTagName)
+        // 매칭 성사된 경우, 발신자에게 알림 발송
+        NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
+                getSenderName(matching)
+        );
+
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        getSenderMemberId(matching),
+                        NotificationType.MATCHING,
+                        SubNotificationType.MATCHING_ACCEPTED,
+                        senderNotificationDetails
+                )
+        );
+
+        headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
+
+        return matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
+    }
+
+    public DeleteRequestedMatchingItems deleteRequestedMatchingItems(final Long memberId, final DeleteRequestedMatchingRequest request) {
+        List<Long> matchingIds = request.getMatchingIds();
+
+        if (matchingIds == null || matchingIds.isEmpty()) {
+            throw new IllegalArgumentException("Request must include valid matching IDs.");
+        }
+
+        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
+
+        matchings.forEach(matching ->
+                matching.setReceiverDeleteStatus(ReceiverDeleteStatus.DELETED));
+
+        matchingCommandAdapter.updateAll(matchings);
+
+        List<DeleteRequestedMatchingItem> deleteRequestedMatchingItems = matchings.stream()
+                .map(matching -> new DeleteRequestedMatchingItem(
+                        matching.getId(),
+                        matching.getSenderDeleteStatus()
+                ))
                 .toList();
 
-        ActivityRegion activityRegion = activityRegionRepository.findByTeamProfileId(savedTeamMatching.getMember().getTeamProfile().getId())
-                .orElseThrow(()-> new BadRequestException(NOT_FOUND_ACTIVITY_REGION_BY_TEAM_PROFILE_ID));
-
-        mailService.mailRequestTeamToTeam(
-                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
-                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                savedTeamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                activityTagNames,
-                String.join(", ", activityRegion.getRegion().getCityName(), activityRegion.getRegion().getDivisionName()),
-                savedTeamMatching.getCreatedAt(),
-                savedTeamMatching.getRequestMessage()
-        );
+        return matchingMapper.toDeleteRequestedMatchingItems(deleteRequestedMatchingItems);
     }
 
-    private TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId) {
-        return teamMemberAnnouncementRepository.findById(teamMemberAnnouncementId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_ID));
-    }
+    public DeleteReceivedMatchingItems deleteReceivedMatchingItems(final Long memberId, final DeleteReceivedMatchingRequest request) {
+        List<Long> matchingIds = request.getMatchingIds();
 
-
-    // 4번
-    // 내 이력서가 팀 소개서에 요청을 보낸 경우
-    public void createPrivateProfileMatchingToTeam(
-            final Long memberId,
-            final Long teamMemberAnnouncementId,
-            final MatchingCreateRequest matchingCreateRequest
-    ) throws Exception {
-        // 매칭 요청 주체 객체 조회
-        final Member member = getMember(memberId);
-
-        // 팀원 공고 객체 조회
-        final TeamMemberAnnouncement teamMemberAnnouncement = getTeamMemberAnnouncement(teamMemberAnnouncementId);
-
-        if (Objects.equals(getTeamProfile(memberId).getId(), teamMemberAnnouncement.getTeamProfile().getId())) {
-            throw new BadRequestException(NOT_ALLOW_P2T_MATCHING);
+        if (matchingIds == null || matchingIds.isEmpty()) {
+            throw new IllegalArgumentException("Request must include valid matching IDs.");
         }
 
-        final TeamMatching newTeamMatching = new TeamMatching(
-                null,
-                // 요청 보낸 회원
-                member,
-                // 팀 소개서를 저장한다.
-                teamMemberAnnouncement,
-                SenderType.PRIVATE,
-                // 내 이력서로 요청을 보냈음을 저장
-                TEAM_PROFILE,
-                // 요청 메시지를 저장한다
-                matchingCreateRequest.getRequestMessage(),
-                // 요청 상태로 저장한다.
-                REQUESTED,
-                RequestSenderDeleteStatusType.REMAINED,
-                SuccessSenderDeleteStatusType.REMAINED,
-                SuccessReceiverDeleteStatusType.REMAINED,
-                false,
-                false
-        );
+        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
 
-        final TeamMatching savedTeamMatching = teamMatchingRepository.save(newTeamMatching);
+        matchings.forEach(matching ->
+                matching.setReceiverDeleteStatus(ReceiverDeleteStatus.DELETED));
 
-        List<ProfileJobRole> profileJobRoles = profileJobRoleRepository.findAllByProfileId(savedTeamMatching.getMember().getProfile().getId());
-        List<String> jobRoleNames = profileJobRoles.stream()
-                .map(profileJobRole -> jobRoleRepository.findById(profileJobRole.getJobRole().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(JobRole::getJobRoleName)
+        matchingCommandAdapter.updateAll(matchings);
+
+        List<DeleteReceivedMatchingItem> deleteReceivedMatchingItems = matchings.stream()
+                .map(matching -> new DeleteReceivedMatchingItem(
+                        matching.getId(),
+                        matching.getReceiverDeleteStatus()
+                ))
                 .toList();
 
-        List<ProfileSkill> profileSkills = profileSkillRepository.findAllByProfileId(savedTeamMatching.getMember().getProfile().getId());
-        List<String> skillNames = profileSkills.stream()
-                .map(profileSkill -> skillRepository.findById(profileSkill.getSkill().getId()))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(Skill::getSkillName)
-                .toList();
-
-        mailService.mailRequestPrivateToTeam(
-                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
-                savedTeamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                savedTeamMatching.getMember().getMemberBasicInform().getMemberName(),
-                jobRoleNames,
-                skillNames,
-                savedTeamMatching.getCreatedAt(),
-                savedTeamMatching.getRequestMessage()
-        );
+        return matchingMapper.toDeleteReceivedMatchingItems(deleteReceivedMatchingItems);
     }
 
-    // 내가 받은 매칭
-    public List<ReceivedMatchingResponse> getReceivedMatching(
-            final Long memberId
-    ) {
-        // 해당 memberId에게 발생한 모든 매칭 요청을 조회해야 함.
-        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
-        List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
+    public MatchingResponseDTO.AddMatchingResponse addMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest addMatchingRequest) {
 
-        // 일단 나의 내 이력서에 보낸 사람만
-        if (profileRepository.existsByMemberId(memberId)) {
-            final Profile profile = getProfile(memberId);
-            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByProfileIdAndMatchingStatus(profile.getId());
-            toPrivateMatchingResponseList = ToPrivateMatchingResponse.toPrivateMatchingResponse(privateMatchingList);
+        if (addMatchingRequest.getSenderTeamCode() != null && addMatchingRequest.getReceiverAnnouncementId() != null) {
+            throw MatchingRelationBadRequestException.EXCEPTION;
         }
 
-        if (teamProfileRepository.existsByMemberId(memberId)) {
-            // 내가 등록한 나의 팀 소개서 중 팀원 공고들이 필요함
-            final TeamProfile teamProfile = getTeamProfile(memberId);
-            final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileIdUsableAndDeleted(teamProfile.getId());
-            final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream().map(TeamMemberAnnouncement::getId).toList();
-            final List<TeamMatching> teamMatchingList = teamMatchingRepository.findAllByTeamMemberAnnouncementIds(teamMemberAnnouncementIds);
-            toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamMatchingList);
-        }
-        return ReceivedMatchingResponse.toReceivedMatchingResponse(toPrivateMatchingResponseList, toTeamMatchingResponseList);
-    }
-
-    // 내가 매칭 요청 보낸 것을 조회하는 메서드
-    public List<RequestMatchingResponse> getMyRequestMatching(final Long memberId) {
-        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Collections.emptyList();
-        List<MyTeamMatchingResponse> myTeamMatchingResponseList = Collections.emptyList();
-
-        // 내 이력서에 매칭 요청 보낸 것
-        if (profileRepository.existsByMemberId(memberId)) {
-            final List<PrivateMatching> privateMatchingList = privateMatchingRepository.findByMemberIdAndMatchingStatus(memberId);
-            myPrivateMatchingResponseList = MyPrivateMatchingResponse.myPrivateMatchingResponseList(privateMatchingList);
-        }
-
-        // 내가 팀 소개서에 매칭 요청 보낸 것
-        if (teamProfileRepository.existsByMemberId(memberId)) {
-            final List<TeamMatching> teamMatchingList = teamMatchingRepository.findByMemberIdAndMatchingStatus(memberId);
-            myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamMatchingList);
-        }
-
-        return RequestMatchingResponse.requestMatchingResponseList(myPrivateMatchingResponseList, myTeamMatchingResponseList);
-    }
-
-    // 성사된 매칭
-    public List<SuccessMatchingResponse> getMySuccessMatching(final Long memberId) {
-        List<ToPrivateMatchingResponse> toPrivateMatchingResponseList = Collections.emptyList();
-        List<ToTeamMatchingResponse> toTeamMatchingResponseList = Collections.emptyList();
-        List<MyPrivateMatchingResponse> myPrivateMatchingResponseList = Collections.emptyList();
-        List<MyTeamMatchingResponse> myTeamMatchingResponseList = Collections.emptyList();
-
-        if (profileRepository.existsByMemberId(memberId)) {
-            // 나의 내 이력서로 받은 매칭 요청 조회
-            final Profile profile = getProfile(memberId);
-            final List<PrivateMatching> privateReceivedMatchingList = privateMatchingRepository.findSuccessReceivedMatching(profile.getId());
-            toPrivateMatchingResponseList = ToPrivateMatchingResponse.toPrivateMatchingResponse(privateReceivedMatchingList);
-
-            // 내가 보낸 매칭 요청 조회
-            final List<PrivateMatching> privateRequestMatchingList = privateMatchingRepository.findSuccessRequestMatching(memberId);
-            myPrivateMatchingResponseList = MyPrivateMatchingResponse.myPrivateMatchingResponseList(privateRequestMatchingList);
-        }
-
-        if (teamProfileRepository.existsByMemberId(memberId)) {
-            // 나의 팀 소개서로 받은 매칭 요청 조회
-            final TeamProfile teamProfile = getTeamProfile(memberId);
-
-            final List<TeamMemberAnnouncement> teamMemberAnnouncementList = teamMemberAnnouncementRepository.findAllByTeamProfileIdUsableAndDeleted(teamProfile.getId());
-            final List<Long> teamMemberAnnouncementIds = teamMemberAnnouncementList.stream().map(TeamMemberAnnouncement::getId).toList();
-            final List<TeamMatching> teamReceivedMatchingList = teamMatchingRepository.findSuccessReceivedMatching(teamMemberAnnouncementIds);
-
-            log.info("memberId={}의 팀 소개서로 받은 매칭 요청은 다음과 같습니다. teamReceivedMatchingList={}", memberId, teamReceivedMatchingList);
-            toTeamMatchingResponseList = ToTeamMatchingResponse.toTeamMatchingResponse(teamReceivedMatchingList);
-
-            // 내가 팀 소개서로 보낸 매칭 요청 조회
-            final List<TeamMatching> teamRequestMatchingList = teamMatchingRepository.findSuccessRequestMatching(memberId);
-            myTeamMatchingResponseList = MyTeamMatchingResponse.myTeamMatchingResponses(teamRequestMatchingList);
-        }
-
-        return SuccessMatchingResponse.successMatchingResponseList(
-                toPrivateMatchingResponseList,
-                toTeamMatchingResponseList,
-                myPrivateMatchingResponseList,
-                myTeamMatchingResponseList
-        );
-    }
-
-    // 나의 멤버 아이디
-    public ExistenceProfileResponse getExistenceProfile(final Long memberId) {
-        final Profile profile = getProfile(memberId);
-        final TeamProfile teamProfile = getTeamProfile(memberId);
-
-        // 내 이력서, 팀 소개서 모두로 매칭 요청을 보낼 수 있는 상태
-        if (profile.getCompletion() >= 80 && teamProfile.getTeamProfileCompletion() >= 80) {
-            return new ExistenceProfileResponse(
-                    true,
-                    true
-            );
-        }
-        else if (profile.getCompletion() >= 80 && teamProfile.getTeamProfileCompletion() < 80) {
-            return new ExistenceProfileResponse(
-                    true,
-                    false
-            );
-        }
-        else if (profile.getCompletion() < 80 && teamProfile.getTeamProfileCompletion() >= 80) {
-            return new ExistenceProfileResponse(
-                    false,
-                    true
-            );
-        }
-        else {
-            return new ExistenceProfileResponse(
-                    false,
-                    false
-            );
-        }
-    }
-
-    // 내 이력서가 내 이력서에 보낸 경우
-    public ReceivedPrivateMatchingMessageResponse getReceivedPrivateToPrivateMatchingMessage(
-            // private Matching PK
-            final Long privateMatchingId
-    ) {
-        // 이 private matching -> member -> 보낸 사람의 ID / profile -> 수신자의 내 이력서 ID
-        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-        final List<String> jobRoleNames = getJobRoleNames(privateMatching.getMember().getId());
-
-        return new ReceivedPrivateMatchingMessageResponse(
-                privateMatching.getId(),
-                privateMatching.getMember().getMemberBasicInform().getMemberName(),
-                jobRoleNames,
-                privateMatching.getRequestMessage(),
-                false
-        );
-    }
-
-    // 팀 소개서가 내 이력서에 보낸 경우
-    public ReceivedPrivateMatchingMessageResponse getReceivedTeamToPrivateMatchingMessage(
-            final Long privateMatchingId
-    ) {
-        // 보낸 팀의 정보가 필요
-        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-        return new ReceivedPrivateMatchingMessageResponse(
-                privateMatching.getId(),
-                // 상대 팀의 이름 필요
-                privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                null,
-                privateMatching.getRequestMessage(),
-                false
-        );
-    }
-
-    // 내 이력서가 팀 소개서에 보낸 경우
-    public ReceivedTeamMatchingMessageResponse getReceivedPrivateToTeamMatchingMessage(
-            final Long teamMatchingId
-    ) {
-        // 보낸 개인의 이름 필요
-        final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
-        final List<String> jobRoleNames = getJobRoleNames(teamMatching.getMember().getId());
-        return new ReceivedTeamMatchingMessageResponse(
-                teamMatching.getId(),
-                // 개인 이름
-                teamMatching.getMember().getMemberBasicInform().getMemberName(),
-                jobRoleNames,
-                teamMatching.getRequestMessage(),
-                false
-        );
-    }
-
-    // 내가 보낸 매칭 요청에서 private_matching 조회하는 경우 (개인 - 개인인 경우)
-    public RequestPrivateMatchingMessageResponse getRequestPrivateToPrivateMatchingMessage(
-            final Long privateMatchingId
-    ) {
-        // 이 private matching -> member -> 나의 ID / profile -> 상대의 내 이력서 ID
-        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-
-        // 상대의 jobRoleName 필요
-        final List<String> jobRoleNames = getJobRoleNames(privateMatching.getProfile().getMember().getId());
-
-        return new RequestPrivateMatchingMessageResponse(
-                privateMatching.getId(),
-                // 수신자 이름
-                privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
-                jobRoleNames,
-                privateMatching.getRequestMessage(),
-                privateMatching.getSenderType(),
-                false
-        );
-    }
-
-    // 내가 보낸 매칭 요청에서 private_matching 조회하는 경우 (팀 - 개인인 경우)
-    public RequestPrivateMatchingMessageResponse getRequestTeamToPrivateMatchingMessage(
-            final Long privateMatchingId
-    ) {
-        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-        // 상대의 jobRoleName 필요
-        final List<String> jobRoleNames = getJobRoleNames(privateMatching.getProfile().getMember().getId());
-
-        return new RequestPrivateMatchingMessageResponse(
-                privateMatching.getId(),
-                privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
-                jobRoleNames,
-                privateMatching.getRequestMessage(),
-                privateMatching.getSenderType(),
-                false
-        );
-    }
-
-    // 내가 보낸 매칭 요청에서 team_matching 조회하는 경우 (개인 - 팀인 경우)
-    public RequestTeamMatchingMessageResponse getRequestPrivateToTeamMatchingMessage(
-            final Long teamMatchingId
-    ) {
-        final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
-
-        return new RequestTeamMatchingMessageResponse(
-                teamMatching.getId(),
-                teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                teamMatching.getRequestMessage(),
-                teamMatching.getSenderType(),
-                true
-        );
-    }
-
-
-    // 사용
-    // 수신자가 내 이력서일 때
-    // 1. 나의 개인 이력서에 매칭 요청 받은 것
-    // 2. 내가 개인 이력서에 매칭 요청 보낸 것
-    public SuccessContactResponse getPrivateSuccessContactResponse(
-            // 조회하는 본인의 ID 제공
-            final Long memberId,
-            final Long privateMatchingId
-    ) {
-        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-        // 매칭 요청 보낸 사람의 ID = 열람한 사람의 ID -> Profile 객체의 정보를 가져온다
-
-        // 내가 개인 이력서에 매칭 요청 보낸 것이다.
-        // 상대 개인 이력서의 정보가 필요하다.
-        if (Objects.equals(privateMatching.getMember().getId(), memberId)) {
-            return new SuccessContactResponse(
-                    privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
-                    privateMatching.getProfile().getMember().getEmail()
-            );
-        } else {
-            // 나의 개인 이력서에 매칭 요청이 온 경우
-            // 보낸 사람의 ID != 열람한 사람의 ID -> Member 객체의 정보를 가져온다
-            if (privateMatching.getSenderType().equals(SenderType.PRIVATE)) {
-                // 내 이력서 - 내 이력서 매칭
-                return new SuccessContactResponse(
-                        privateMatching.getMember().getMemberBasicInform().getMemberName(),
-                        privateMatching.getMember().getEmail()
-                );
-            } else {
-                // 팀 소개서 - 내 이력서 매칭
-                return new SuccessContactResponse(
-                        privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                        privateMatching.getMember().getEmail()
-                );
+        if (addMatchingRequest.getSenderType().equals(SenderType.PROFILE)) {
+            if (addMatchingRequest.getSenderEmailId() == null) {
+                throw MatchingSenderBadRequestException.EXCEPTION;
             }
         }
-    }
 
-    // 사용
-    // 수신자가 팀 소개서일 때
-    // 1. 나의 팀 소개서에 매칭 요청 받은 것
-    // 2. 내가 팀 소개서에 매칭 요청 보낸 것
-    public SuccessContactResponse getTeamSuccessContactResponse(
-            // 열람하는 본인의 member - id
-            final Long memberId,
-            final Long teamMatchingId
-    ) {
-
-        // 전달 받은 PK -> 팀 매칭 객체 확인
-        final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
-        // 보낸 사람의 ID = 열람한 사람의 ID -> teamMemberAnnouncement 객체의 정보를 가져온다
-
-        // 내가 팀 소개서에 매칭 요청 보낸 것이다.
-        // 상대 팀의 정보가 필요하다
-        if (Objects.equals(teamMatching.getMember().getId(), memberId)) {
-            return new SuccessContactResponse(
-                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail()
-            );
-        } else {
-            // 누군가 나의 팀 소개서에 매칭 요청을 보내왔다.
-            // 보낸 사람의 ID != 열람한 사람의 ID -> Member 객체의 정보를 가져온다
-            // 팀 소개서가 나한테 보냈을 수도, 개인 이력서가 지원했을수도 있다
-
-            if (teamMatching.getSenderType().equals(SenderType.PRIVATE)) {
-                // 개인 이력서가 팀 소개서에 매칭 요청 보낸 경우
-                // 상대 개인의 정보가 필요하다.
-                return new SuccessContactResponse(
-                        teamMatching.getMember().getMemberBasicInform().getMemberName(),
-                        teamMatching.getMember().getEmail()
-                );
-            } else {
-                // 팀 소개서가 나의 팀 소개서에 매칭 요청 보낸 경우
-                // 상대 팀의 정보가 필요하다
-                return new SuccessContactResponse(
-                        teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                        teamMatching.getMember().getEmail()
-                );
+        if (addMatchingRequest.getSenderType().equals(SenderType.TEAM)) {
+            if (addMatchingRequest.getSenderTeamCode() == null) {
+                throw MatchingSenderBadRequestException.EXCEPTION;
             }
         }
-    }
 
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.PROFILE)) {
+            if (addMatchingRequest.getReceiverEmailId() == null) {
+                throw MatchingReceiverBadRequestException.EXCEPTION;
+            }
 
-
-    public List<String> getJobRoleNames(final Long memberId) {
-        final Profile profile = getProfile(memberId);
-        final List<ProfileJobRole> profileJobRoleList = getProfileJobRoleList(profile.getId());
-
-        List<JobRole> jobRoleList = profileJobRoleList.stream()
-                .map(ProfileJobRole::getJobRole)
-                .toList();
-
-        return jobRoleList.stream()
-                .map(JobRole::getJobRoleName)
-                .toList();
-    }
-
-    private List<ProfileJobRole> getProfileJobRoleList(final Long profileId) {
-        return profileJobRoleRepository.findAllByProfileId(profileId);
-    }
-
-    private TeamMemberAnnouncementJobRole getTeamMemberAnnouncementJobRole(final Long teamMemberAnnouncementId) {
-        return teamMemberAnnouncementJobRoleRepository.findByTeamMemberAnnouncementId(teamMemberAnnouncementId)
-                .orElseThrow(() -> new BadRequestException(NOT_FOUND_TEAM_MEMBER_ANNOUNCEMENT_JOB_ROLE));
-    }
-
-    public void acceptPrivateMatching(final Long privateMatchingId, final AllowMatchingRequest allowMatchingRequest) throws MessagingException {
-        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-
-        // 매칭 성사 상태로 업데이트를 진행한다.
-        if (allowMatchingRequest.getIsAllowMatching()) {
-            privateMatching.updateMatchingStatus(true);
-        } else {
-            privateMatching.updateMatchingStatus(false);
+            final Profile profile = profileQueryAdapter.findByEmailId(addMatchingRequest.getReceiverEmailId());
+            if (profile.getMember().getId().equals(memberId)) {
+                throw CannotRequestMyProfileException.EXCEPTION;
+            }
         }
 
-        // 이메일 자동 발송을 시작한다.
-        // private to private인 경우
-        if (SenderType.PRIVATE.equals(privateMatching.getSenderType())) {
-            mailService.mailSuccessPrivateToPrivateSender(
-                    privateMatching.getMember().getEmail(),
-                    privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
-                    privateMatching.getProfile().getMember().getEmail(),
-                    privateMatching.getRequestMessage()
-            );
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.TEAM)) {
+            if (addMatchingRequest.getReceiverTeamCode() == null) {
+                throw MatchingReceiverBadRequestException.EXCEPTION;
+            }
 
-            mailService.mailSuccessPrivateToPrivateReceiver(
-                    privateMatching.getMember().getMemberBasicInform().getMemberName(),
-                    privateMatching.getMember().getEmail(),
-                    privateMatching.getProfile().getMember().getEmail(),
-                    privateMatching.getRequestMessage()
-            );
+            if (teamMemberQueryAdapter.findMembersByTeamCode(addMatchingRequest.getReceiverTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
+                throw CannotRequestMyProfileException.EXCEPTION;
+            }
+        }
 
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            if (addMatchingRequest.getReceiverAnnouncementId() == null) {
+                throw MatchingReceiverBadRequestException.EXCEPTION;
+            }
+            final Team team = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(addMatchingRequest.getReceiverAnnouncementId()).getTeam();
+            if (teamMemberQueryAdapter.findMembersByTeamCode(team.getTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
+                throw CannotRequestMyAnnouncementException.EXCEPTION;
+            }
+        }
+
+        final Matching matching = matchingMapper.toMatching(addMatchingRequest);
+        matchingCommandAdapter.addMatching(matching);
+
+        SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
+        SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
+        ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+        ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
+
+        if (addMatchingRequest.getSenderType().equals(SenderType.PROFILE)) {
+            final Profile senderProfile = profileQueryAdapter.findByEmailId(addMatchingRequest.getSenderEmailId());
+            ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+                final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+                senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+
+            senderProfileInformation = matchingMapper.toSenderProfileInformation(senderProfile, senderProfilePositionDetail);
+        }
+
+        if (addMatchingRequest.getSenderType().equals(SenderType.TEAM)) {
+            final Team senderTeam = teamQueryAdapter.findByTeamCode(addMatchingRequest.getSenderTeamCode());
+            TeamScaleItem senderTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(senderTeam.getId())) {
+                final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(senderTeam.getId());
+                senderTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+
+            senderTeamInformation = matchingMapper.toSenderTeamInformation(senderTeam, senderTeamScaleItem);
+        }
+
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.PROFILE)) {
+            final Profile receiverProfile = profileQueryAdapter.findByEmailId(addMatchingRequest.getReceiverEmailId());
+            ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
+                final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
+                receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+
+            receiverProfileInformation = matchingMapper.toReceiverProfileInformation(receiverProfile, receiverProfilePositionDetail);
+        }
+
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.TEAM)) {
+            final Team receiverTeam = teamQueryAdapter.findByTeamCode(addMatchingRequest.getSenderTeamCode());
+            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+                final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+
+            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+        }
+
+        if (addMatchingRequest.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            final TeamMemberAnnouncement receiverAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(addMatchingRequest.getReceiverAnnouncementId());
+
+            // 포지션 조회
+            AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+            if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId())) {
+                AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId());
+                announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
+            }
+
+            // 스킬 조회
+            List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(receiverAnnouncement.getId());
+            List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+
+            receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
+        }
+
+        NotificationDetails receiverNotificationDetails = NotificationDetails.matchingRequested(
+                // matchingTargetName 필요
+                getSenderName(matching)
+        );
+
+        notificationService.alertNewNotification(
+                notificationMapper.toNotification(
+                        getReceiverMemberId(matching),
+                        NotificationType.MATCHING,
+                        SubNotificationType.MATCHING_REQUESTED,
+                        receiverNotificationDetails
+                )
+        );
+
+        headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
+
+        return matchingMapper.toAddMatchingResponse(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
+    }
+
+    private ReceivedMatchingMenu toMatchingReceivedMenu(final Matching matching) {
+        // 발신자
+        SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
+        SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
+
+        // 수신자
+        ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+        ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
+
+        Long chatRoomId = null;
+        if (chatRoomQueryAdapter.existsChatRoomByMatchingId(matching.getId())) {
+            chatRoomId = chatRoomQueryAdapter.getChatRoomIdByMatchingId(matching.getId());
+        }
+
+        // (A) 발신자 정보 설정
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            // 1) senderEmailId로 Profile 조회
+            Profile senderProfile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
+            // 2) 프로필 포지션 조회
+            ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+                ProfilePosition profilePosition =
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+                senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+            // 3) senderProfileInfo 구성
+            senderProfileInformation = matchingMapper.toSenderProfileInformation(senderProfile, senderProfilePositionDetail);
         } else {
-            // team to private인 경우
-            mailService.mailSuccessTeamToPrivateSender(
-                    privateMatching.getMember().getEmail(),
-                    privateMatching.getProfile().getMember().getMemberBasicInform().getMemberName(),
-                    privateMatching.getProfile().getMember().getEmail(),
-                    privateMatching.getRequestMessage()
-            );
-            mailService.mailSuccessTeamToPrivateReceiver(
-                    privateMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                    privateMatching.getMember().getEmail(),
-                    privateMatching.getProfile().getMember().getEmail(),
-                    privateMatching.getRequestMessage()
-            );
+            // 1) senderTeamCode로 Team 조회
+            Team senderTeam = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
+            // 2) 팀 규모 조회
+            TeamScaleItem senderTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(senderTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(senderTeam.getId());
+                senderTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            // 3) senderTeamInfo 구성
+            senderTeamInformation = matchingMapper.toSenderTeamInformation(senderTeam, senderTeamScaleItem);
+        }
 
+        // (B) 수신자 정보 설정
+        if (matching.getReceiverType() == ReceiverType.PROFILE) {
+            // 1) receiverEmailId로 Profile 조회
+            Profile receiverProfile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+            // 2) 프로필 포지션 조회
+            ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
+                ProfilePosition profilePosition =
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
+                receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+            // 3) receiverProfileInfo 구성
+            receiverProfileInformation = matchingMapper.toReceiverProfileInformation(receiverProfile, receiverProfilePositionDetail);
+        } else if (matching.getReceiverType() == ReceiverType.TEAM) {
+            // 1) receiverTeamCode로 Team 조회
+            Team receiverTeam = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            // 2) 팀 규모 조회
+            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            // 3) receiverTeamInfo 구성
+            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+        } else if (matching.getReceiverType() == ReceiverType.ANNOUNCEMENT) {
+            final TeamMemberAnnouncement receiverAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
+
+            // 포지션 조회
+            AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+            if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId())) {
+                AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId());
+                announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
+            }
+
+            // 스킬 조회
+            List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(receiverAnnouncement.getId());
+            List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+
+            receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
+
+        }
+
+        return matchingMapper.toMatchingReceivedMenu(matching,
+                chatRoomId, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation,
+                receiverAnnouncementInformation);
+    }
+
+    private RequestedMatchingMenu toMatchingRequestedMenu(final Matching matching) {
+        // 발신자
+        SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
+        SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
+
+        // 수신자
+        ReceiverProfileInformation receiverProfileInformation = new ReceiverProfileInformation();
+        ReceiverTeamInformation receiverTeamInformation = new ReceiverTeamInformation();
+        ReceiverAnnouncementInformation receiverAnnouncementInformation = new ReceiverAnnouncementInformation();
+
+        Long chatRoomId = null;
+        if (chatRoomQueryAdapter.existsChatRoomByMatchingId(matching.getId())) {
+            chatRoomId = chatRoomQueryAdapter.getChatRoomIdByMatchingId(matching.getId());
+        }
+
+        // (A) 발신자 정보 설정 (senderXxx)
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            Profile senderProfile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
+            ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
+                ProfilePosition profilePosition =
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
+                senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+            senderProfileInformation = matchingMapper.toSenderProfileInformation(senderProfile, senderProfilePositionDetail);
+        } else {
+            Team senderTeam = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
+            TeamScaleItem senderTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(senderTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(senderTeam.getId());
+                senderTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            senderTeamInformation = matchingMapper.toSenderTeamInformation(senderTeam, senderTeamScaleItem);
+        }
+
+        // (B) 수신자 정보 설정 (receiverXxx)
+        if (matching.getReceiverType() == ReceiverType.PROFILE) {
+            Profile receiverProfile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+            ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
+                ProfilePosition profilePosition =
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
+                receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+            receiverProfileInformation = matchingMapper.toReceiverProfileInformation(receiverProfile, receiverProfilePositionDetail);
+        } else if (matching.getReceiverType() == ReceiverType.TEAM) {
+            Team receiverTeam = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
+                TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
+                receiverTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
+        } else if (matching.getReceiverType() == ReceiverType.ANNOUNCEMENT) {
+            final TeamMemberAnnouncement receiverAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
+
+            // 포지션 조회
+            AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+            if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId())) {
+                AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(receiverAnnouncement.getId());
+                announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
+            }
+
+            // 스킬 조회
+            List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(receiverAnnouncement.getId());
+            List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+
+            receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
+        }
+
+        return matchingMapper.toMatchingRequestedMenu(matching, chatRoomId, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation,
+                receiverAnnouncementInformation);
+    }
+
+
+    // 발신자 이름 조회 헬퍼 메서드
+    private String getSenderName(Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            Member member = memberQueryAdapter.findByEmailId(matching.getSenderEmailId());
+            return member.getMemberBasicInform().getMemberName();
+        } else {
+            Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
+            return team.getTeamName();
         }
     }
 
-    // 팀 매칭 성사
-    public void acceptTeamMatching(final Long teamMatchingId, final AllowMatchingRequest allowMatchingRequest) throws MessagingException {
-        final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
-
-        // 매칭 성사 상태로 업데이트를 진행한다.
-        if (allowMatchingRequest.getIsAllowMatching()) {
-            teamMatching.updateMatchingStatus(true);
-        } else {
-            teamMatching.updateMatchingStatus(false);
-        }
-
-        // 이메일 자동 발송을 시작한다.
-        // private to team인 경우
-        if (SenderType.TEAM.equals(teamMatching.getSenderType())) {
-            mailService.mailSuccessPrivateToTeamSender(
-                    teamMatching.getMember().getEmail(),
-                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
-                    teamMatching.getRequestMessage()
-            );
-            mailService.mailSuccessPrivateToTeamReceiver(
-                    teamMatching.getMember().getMemberBasicInform().getMemberName(),
-                    teamMatching.getMember().getEmail(),
-                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
-                    teamMatching.getRequestMessage()
-            );
-        } else {
-            mailService.mailSuccessTeamToTeamSender(
-                    teamMatching.getMember().getEmail(),
-                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
-                    teamMatching.getRequestMessage()
-            );
-            mailService.mailSuccessTeamToTeamReceiver(
-                    teamMatching.getMember().getTeamProfile().getTeamMiniProfile().getTeamName(),
-                    teamMatching.getMember().getEmail(),
-                    teamMatching.getTeamMemberAnnouncement().getTeamProfile().getMember().getEmail(),
-                    teamMatching.getRequestMessage()
-            );
+    // 수신자 이름 조회 헬퍼 메서드
+    private String getReceiverName(Matching matching) {
+        switch (matching.getReceiverType()) {
+            case PROFILE -> {
+                Member member = memberQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+                return member.getMemberBasicInform().getMemberName();
+            }
+            case TEAM -> {
+                Team team = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+                return team.getTeamName();
+            }
+            case ANNOUNCEMENT -> {
+                TeamMemberAnnouncement announcement = teamMemberAnnouncementQueryAdapter
+                        .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
+                return announcement.getTeam().getTeamName();
+            }
+            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
         }
     }
 
-    // 내가 보낸 매칭 삭제 (내 이력서 대상)
-    public void deleteRequestPrivateMatching(final Long privateMatchingId) {
-        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-        privateMatching.updateRequestSenderDeleteStatusType(true);
-    }
-
-    // 내가 보낸 매칭 삭제 (팀 소개서 대상)
-    public void deleteRequestTeamMatching(final Long teamMatchingId) {
-        final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
-        teamMatching.updateRequestSenderDeleteStatusType(true);
-    }
-
-    // 성사된 매칭에서 내 이력서 대상 매칭을 삭제하는 경우
-    public void deleteSuccessPrivateMatching(final Long memberId, final Long privateMatchingId) {
-        final PrivateMatching privateMatching = getPrivateMatching(privateMatchingId);
-        if (Objects.equals(privateMatching.getMember().getId(), memberId)) {
-//            발신자 쪽에서 매칭 삭제
-            privateMatching.updateSuccessSenderDeleteStatusType(true);
-        } else {
-//            수신자 쪽에서 매칭 삭제
-            privateMatching.updateSuccessReceiverDeleteStatusType(true);
+    // 수신자 memberId 조회 헬퍼 메서드
+    private Long getReceiverMemberId(Matching matching) {
+        switch (matching.getReceiverType()) {
+            case PROFILE -> {
+                Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+                return profile.getMember().getId();
+            }
+            case TEAM, ANNOUNCEMENT -> {
+                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
+                        ? matching.getReceiverTeamCode()
+                        : teamMemberAnnouncementQueryAdapter
+                                .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
+                                .getTeam()
+                                .getTeamCode();
+                return teamMemberQueryAdapter.findTeamOwnerByTeamCode(teamCode).getId();
+            }
+            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
         }
     }
 
-    // 성사된 매칭에서 팀 소개서 대상 매칭을 삭제하는 경우
-    public void deleteSuccessTeamMatching(final Long memberId, final Long teamMatchingId) {
-        final TeamMatching teamMatching = getTeamMatching(teamMatchingId);
-        if (Objects.equals(teamMatching.getMember().getId(), memberId)) {
-            // 발신자 쪽에서 매칭 삭제
-            teamMatching.updateSuccessSenderDeleteStatusType(true);
+    private Long getSenderMemberId(final Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            return memberQueryAdapter.findByEmailId(matching.getSenderEmailId()).getId();
         } else {
-            // 수신자 쪽에서 매칭 삭제
-            teamMatching.updateSuccessReceiverDeleteStatusType(true);
+            final Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
+            return teamMemberQueryAdapter.getTeamOwnerMemberId(team);
         }
+    }
+
+    // 발신자 로고 이미지 조회 헬퍼 메서드
+    private String getSenderLogoImagePath(Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            final Profile profile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
+            return profile.getProfileImagePath();
+        } else {
+            final Team team = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            return team.getTeamLogoImagePath();
+        }
+    }
+
+    // 수신자 로고 이미지 조회 헬퍼 메서드
+    private String getReceiverLogoImagePath(Matching matching) {
+        switch (matching.getReceiverType()) {
+            case PROFILE -> {
+                Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+                return profile.getProfileImagePath();
+            }
+            case TEAM, ANNOUNCEMENT -> {
+                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
+                        ? matching.getReceiverTeamCode()
+                        : teamMemberAnnouncementQueryAdapter
+                                .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
+                                .getTeam()
+                                .getTeamCode();
+                return teamQueryAdapter.findByTeamCode(teamCode).getTeamLogoImagePath();
+            }
+            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+        }
+    }
+
+    // 발신자의 포지션 또는 규모 정보
+    private String getSenderPositionOrTeamSize(Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            final Profile profile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
+
+            ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+
+            if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+                final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+                senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+            }
+
+            return senderProfilePositionDetail.getMajorPosition();
+        } else {
+            final Team team = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            // 팀 규모 조회
+            TeamScaleItem teamScaleItem = null;
+            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
+                final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+                teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+            }
+            return teamScaleItem.getTeamScaleName();
+        }
+    }
+
+    // 수신자의 포지션 또는 규모 정보
+    private String getReceiverPositionOrTeamSize(Matching matching) {
+        switch (matching.getReceiverType()) {
+            case PROFILE -> {
+                final Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+
+                ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
+
+                if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
+                    final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+                    senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                }
+
+                return senderProfilePositionDetail.getMajorPosition();
+            }
+            case TEAM, ANNOUNCEMENT -> {
+                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
+                        ? matching.getReceiverTeamCode()
+                        : teamMemberAnnouncementQueryAdapter
+                                .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
+                                .getTeam()
+                                .getTeamCode();
+                final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+                // 팀 규모 조회
+                TeamScaleItem teamScaleItem = null;
+                if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
+                    final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+                    teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                }
+                return teamScaleItem.getTeamScaleName();
+
+            }
+            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+        }
+    }
+
+    // 발신자의 지역 정보
+    private String getSenderRegionDetail(Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            final Profile profile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
+            // 팀 지역 조회
+            RegionDetail regionDetail = new RegionDetail();
+            if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
+                final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+                regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+            }
+            return buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
+        } else {
+            final Team team = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            RegionDetail regionDetail = new RegionDetail();
+            if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
+                final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+                regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+            }
+            return buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
+        }
+    }
+
+    // 수신자의 지역 정보
+    private String getReceiverRegionDetail(Matching matching) {
+        switch (matching.getReceiverType()) {
+            case PROFILE -> {
+                Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+                // 팀 지역 조회
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
+                    final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+                    regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+                }
+
+                return buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
+            }
+            case TEAM, ANNOUNCEMENT -> {
+                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
+                        ? matching.getReceiverTeamCode()
+                        : teamMemberAnnouncementQueryAdapter
+                                .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
+                                .getTeam()
+                                .getTeamCode();
+                final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
+                    final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+                    regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+                }
+                return buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
+            }
+            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+        }
+    }
+
+    // 발신자의 이메일 정보
+    private String getSenderEmail(Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            final Profile profile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
+            return profile.getMember().getEmail();
+        } else {
+            final Team team = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            final Member member = teamMemberQueryAdapter.findTeamOwnerByTeamCode(team.getTeamCode());
+            return member.getEmail();
+        }
+    }
+
+    // 수신자의 이메일 정보
+    private String getReceiverEmail(Matching matching) {
+        switch (matching.getReceiverType()) {
+            case PROFILE -> {
+                Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+                return profile.getMember().getEmail();
+            }
+            case TEAM, ANNOUNCEMENT -> {
+                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
+                        ? matching.getReceiverTeamCode()
+                        : teamMemberAnnouncementQueryAdapter
+                                .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
+                                .getTeam()
+                                .getTeamCode();
+                final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+                final Member member = teamMemberQueryAdapter.findTeamOwnerByTeamCode(team.getTeamCode());
+                return member.getEmail();
+            }
+            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+        }
+    }
+
+    // 지역 정보를 문자열로 조합하는 유틸리티 메서드
+    private String buildRegionString(String cityName, String divisionName) {
+        if (cityName != null && divisionName != null) {
+            return cityName + " " + divisionName;
+        } else if (cityName != null) {
+            return cityName;
+        } else if (divisionName != null) {
+            return divisionName;
+        }
+        return "";
     }
 }

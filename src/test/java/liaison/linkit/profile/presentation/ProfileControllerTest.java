@@ -1,26 +1,63 @@
 package liaison.linkit.profile.presentation;
 
+import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
+import static liaison.linkit.profile.domain.type.LogType.REPRESENTATIVE_LOG;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.http.Cookie;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
-import liaison.linkit.member.service.MemberService;
-import liaison.linkit.profile.dto.request.IntroductionRequest;
-import liaison.linkit.profile.dto.response.ProfileIntroductionResponse;
-import liaison.linkit.profile.dto.response.ProfileResponse;
-import liaison.linkit.profile.dto.response.antecedents.AntecedentsResponse;
-import liaison.linkit.profile.dto.response.attach.AttachResponse;
-import liaison.linkit.profile.dto.response.attach.AttachUrlResponse;
-import liaison.linkit.profile.dto.response.awards.AwardsResponse;
-import liaison.linkit.profile.dto.response.completion.CompletionResponse;
-import liaison.linkit.profile.dto.response.education.EducationResponse;
-import liaison.linkit.profile.dto.response.isValue.ProfileIsValueResponse;
-import liaison.linkit.profile.dto.response.miniProfile.MiniProfileResponse;
-import liaison.linkit.profile.dto.response.onBoarding.JobAndSkillResponse;
-import liaison.linkit.profile.dto.response.profileRegion.ProfileRegionResponse;
-import liaison.linkit.profile.dto.response.teamBuilding.ProfileTeamBuildingFieldResponse;
-import liaison.linkit.profile.service.*;
+import liaison.linkit.profile.domain.portfolio.ProjectSize;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
+import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
+import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO;
+import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.ProfileAwardsItem;
+import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO;
+import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.ProfileEducationItem;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO;
+import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.ProfileLicenseItem;
+import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO;
+import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO.ProfileLinkItem;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO;
+import liaison.linkit.profile.presentation.log.dto.ProfileLogResponseDTO.ProfileLogItem;
+import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
+import liaison.linkit.profile.presentation.profile.ProfileController;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenus;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileScrapMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileBooleanMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileCompletionMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileDetail;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileLeftMenu;
+import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
+import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.ProfileSkillItem;
+import liaison.linkit.profile.business.service.ProfileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,25 +66,10 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.restdocs.cookies.CookieDocumentation.cookieWithName;
-import static org.springframework.restdocs.cookies.CookieDocumentation.requestCookies;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ProfileController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -55,421 +77,806 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 class ProfileControllerTest extends ControllerTest {
 
-    private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
-    private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
+    private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
+    private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
-    private MemberService memberService;
-    @MockBean
     private ProfileService profileService;
-    @MockBean
-    private ProfileOnBoardingService profileOnBoardingService;
-    @MockBean
-    private MiniProfileService miniProfileService;
-    @MockBean
-    private CompletionService completionService;
-    @MockBean
-    private ProfileSkillService profileSkillService;
-    @MockBean
-    private TeamBuildingFieldService teamBuildingFieldService;
-    @MockBean
-    private AntecedentsService antecedentsService;
-    @MockBean
-    private EducationService educationService;
-    @MockBean
-    private AwardsService awardsService;
-    @MockBean
-    private AttachService attachService;
-    @MockBean
-    private ProfileRegionService profileRegionService;
 
     @BeforeEach
     void setUp() {
         given(refreshTokenRepository.existsById(any())).willReturn(true);
         doNothing().when(jwtProvider).validateTokens(any());
         given(jwtProvider.getSubject(any())).willReturn("1");
-
-        // 서비스 계층 -> validate -> 리턴하는 값 (1L) 지정.
-        doNothing().when(profileService).validateProfileByMember(1L);
-
-        // 미니 프로필 리턴 Value 1L
-        doNothing().when(miniProfileService).validateMiniProfileByMember(1L);
     }
 
-
-    private void makeIntroduction() throws Exception{
-        final IntroductionRequest introductionRequest = new IntroductionRequest(
-                "자기소개 정보를 생성합니다."
-        );
-        final ResultActions resultActions = performCreateRequest(introductionRequest);
-    }
-
-
-    private ResultActions performGetProfileRequest() throws Exception {
+    private ResultActions performGetProfileLeftMenu() throws Exception {
         return mockMvc.perform(
-                get("/private/profile")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(APPLICATION_JSON)
-        );
-    }
-
-    private ResultActions performCreateRequest(final IntroductionRequest introductionRequest) throws Exception {
-        return mockMvc.perform(
-                post("/private/introduction")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(introductionRequest))
-        );
-    }
-
-    private ResultActions performGetRequest() throws Exception {
-        return mockMvc.perform(
-                get("/profile/introduction")
+                get("/api/v1/profile/left/menu")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    private ResultActions performDeleteRequest() throws Exception {
+    private ResultActions performGetProfileDetail(final String emailId) throws Exception {
         return mockMvc.perform(
-                delete("/profile/introduction")
+                RestDocumentationRequestBuilders.get("/api/v1/profile/{emailId}", emailId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
         );
     }
 
-    @DisplayName("내 이력서를 조회할 수 있다.")
+    private ResultActions performGetHomeProfileInformMenus() throws Exception {
+        return mockMvc.perform(
+                get("/api/v1/home/profile")
+        );
+    }
+
+    @DisplayName("회원이 나의 프로필 왼쪽 메뉴를 조회할 수 있다.")
     @Test
-    void getProfile() throws Exception {
+    void getProfileLeftMenu() throws Exception {
         // given
-        final ProfileIsValueResponse profileIsValueResponse = new ProfileIsValueResponse(
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true
-        );
+        final ProfileCompletionMenu profileCompletionMenu = new ProfileCompletionMenu(100);
 
-        final boolean isPrivateProfileEssential = (
-                profileIsValueResponse.isProfileTeamBuildingField() &&
-                        profileIsValueResponse.isProfileRegion() &&
-                        profileIsValueResponse.isMiniProfile() &&
-                        profileIsValueResponse.isJobAndSkill()
-        );
+        final ProfileCurrentStateItem firstProfileCurrentStateItem = new ProfileCurrentStateItem("팀 찾는 중");
+        final ProfileCurrentStateItem secondProfileCurrentStateItem = new ProfileCurrentStateItem("공모전 준비 중");
 
-        given(profileService.getProfileIsValue(1L)).willReturn(profileIsValueResponse);
+        final List<ProfileCurrentStateItem> profileCurrentStates = Arrays.asList(firstProfileCurrentStateItem, secondProfileCurrentStateItem);
 
-        // 1. 미니 프로필 (V)
-        final MiniProfileResponse miniProfileResponse = new MiniProfileResponse(
-                1L,
-                "시니어 소프트웨어 개발자",
-                "https://image.linkit.im/images/linkit_logo.png",
-                true,
-                Arrays.asList("2024 레드닷 수상", "스타트업 경력", "서울대 디자인", "대기업 경력 3년"),
-                "권동민",
-                Arrays.asList("개발·데이터"),
-                false
-        );
+        final RegionDetail regionDetail = new RegionDetail("서울특별시", "강남구");
 
-        given(miniProfileService.getPersonalMiniProfile(1L)).willReturn(miniProfileResponse);
+        final ProfileInformMenu profileInformMenu = ProfileInformMenu.builder()
+                .profileCurrentStates(profileCurrentStates)
+                .isProfileScrap(false)
+                .profileImagePath("프로필 이미지 경로")
+                .memberName("권동민")
+                .emailId("이메일 아이디")
+                .isProfilePublic(true)
+                .profileScrapCount(100)
+                .majorPosition("포지션 대분류")
+                .regionDetail(regionDetail)
+                .profileTeamInforms(Arrays.asList(
+                        ProfileTeamInform.builder()
+                                .teamName("리에종")
+                                .teamCode("팀 아이디 (팀 코드)")
+                                .teamLogoImagePath("팀 로고 이미지 경로")
+                                .build(),
+                        ProfileTeamInform.builder()
+                                .teamName("팀명 2")
+                                .teamCode("팀 아이디 2(팀 코드)")
+                                .teamLogoImagePath("팀 로고 이미지 경로 2")
+                                .build()
+                ))
+                .build();
 
-        // 2. 완성도 & 존재 여부 (V)
-        final CompletionResponse completionResponse = new CompletionResponse(
-                "100.0",
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true,
-                true
-        );
+        final ProfileBooleanMenu profileBooleanMenu =
+                new ProfileBooleanMenu(
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false);
 
-        given(completionService.getCompletion(1L)).willReturn(completionResponse);
+        final ProfileScrapMenu profileScrapMenu = new ProfileScrapMenu(100);
 
-        // 3. 자기소개
-        final ProfileIntroductionResponse profileIntroductionResponse = new ProfileIntroductionResponse(
-                "안녕하세요, 저는 다양한 프로젝트와 혁신적인 아이디어를 구현하는 데 열정을 가진 기획자입니다. 대학에서 경영학을 전공하고, 여러 기업에서 프로젝트 매니저와 기획자로서의 경험을 쌓아왔습니다.."
-        );
-        given(profileService.getProfileIntroduction(1L)).willReturn(profileIntroductionResponse);
-
-        // 4. 보유기술 (V)
-        List<String> jobRoleNames = Arrays.asList("공모전, 대회, 창업");
-        List<String> skillNames = Arrays.asList("Notion, Figma");
-        final JobAndSkillResponse jobAndSkillResponse = new JobAndSkillResponse(jobRoleNames, skillNames);
-        given(profileOnBoardingService.getJobAndSkill(1L)).willReturn(jobAndSkillResponse);
-
-        // 5. 희망 팀빌딩 분야 (V)
-        List<String> teamBuildingFieldNames = Arrays.asList("공모전", "대회", "창업");
-        final ProfileTeamBuildingFieldResponse profileTeamBuildingFieldResponse = new ProfileTeamBuildingFieldResponse(
-                teamBuildingFieldNames
-        );
-
-        given(teamBuildingFieldService.getAllProfileTeamBuildingFields(1L))
-                .willReturn(profileTeamBuildingFieldResponse);
-
-        // 6. 활동 지역 및 위치 (V)
-        final ProfileRegionResponse profileRegionResponse = new ProfileRegionResponse(
-                "서울특별시",
-                "강남구"
-        );
-
-        given(profileRegionService.getPersonalProfileRegion(1L)).willReturn(profileRegionResponse);
-
-        // 7. 이력 (V)
-        final AntecedentsResponse antecedentsResponse1 = new AntecedentsResponse(
-                1L,
-                "linkit",
-                "프로젝트 매니저",
-                "2023.03",
-                "2024.10",
-                false,
-                "경력 설명입니다."
-        );
-
-        final AntecedentsResponse antecedentsResponse2 = new AntecedentsResponse(
-                2L,
-                "오더이즈",
-                "프로젝트 매니저",
-                "2023.03",
-                "2023.06",
-                false,
-                "경력 설명입니다."
-        );
-
-        List<AntecedentsResponse> antecedentsResponses = Arrays.asList(antecedentsResponse1, antecedentsResponse2);
-
-        given(antecedentsService.getAllAntecedents(1L)).willReturn(antecedentsResponses);
-
-        // 8. 학력
-        final EducationResponse educationResponse1 = new EducationResponse(
-                1L,
-                2022,
-                2024,
-                "홍익대학교",
-                "컴퓨터공학과",
-                "재학 중"
-        );
-
-        final EducationResponse educationResponse2 = new EducationResponse(
-                2L,
-                2021,
-                2025,
-                "홍익대학교",
-                "예술학과",
-                "졸업"
-        );
-
-        List<EducationResponse> educationResponses = Arrays.asList(educationResponse1, educationResponse2);
-        given(educationService.getAllEducations(1L))
-                .willReturn(educationResponses);
-
-        // 9. 수상
-        final AwardsResponse firstAwardsResponse = new AwardsResponse(
-                1L,
-                "홍익대학교 창업경진대회",
-                "대상",
-                "홍익대학교 창업교육센터",
-                2024,
-                5,
-                "홍익대학교 창업경진대회에서 1등이라는 성과를 이뤄냈습니다."
-        );
-
-        final AwardsResponse secondAwardsResponse = new AwardsResponse(
-                2L,
-                "성균관대학교 캠퍼스타운 입주경진대회",
-                "선정",
-                "성균관대학교 캠퍼스타운",
-                2024,
-                3,
-                "성균관대학교 캠퍼스타운에 최종 선정되었습니다."
-        );
-        final List<AwardsResponse> awardsResponses = Arrays.asList(firstAwardsResponse, secondAwardsResponse);
-        given(awardsService.getAllAwards(1L)).willReturn(awardsResponses);
-
-        // 10. 첨부
-        final AttachUrlResponse firstAttachUrlResponse = new AttachUrlResponse(
-                1L,
-                "깃허브",
-                "https://github.com/TEAM-LIAISON"
-        );
-
-        final AttachUrlResponse secondAttachUrlResponse = new AttachUrlResponse(
-                2L,
-                "노션",
-                "https://www.notion.so/ko-kr"
-        );
-
-//        final AttachFileResponse firstAttachFileResponse = new AttachFileResponse(
-//                1L,
-//                "A4+-=1.pdf",
-//                "https://linkit-dev-env-bucket.s3.ap-northeast-1.amazonaws.com/files/A4+-+1.pdf"
-//        );
-
-        final List<AttachUrlResponse> attachUrlResponseList = Arrays.asList(firstAttachUrlResponse, secondAttachUrlResponse);
-//        final List<AttachFileResponse> attachFileResponseList = Arrays.asList(firstAttachFileResponse);
-        final AttachResponse attachResponses = new AttachResponse(
-                attachUrlResponseList
-//                attachFileResponseList
-        );
-
-        given(attachService.getAttachList(1L)).willReturn(attachResponses);
-
-        final ProfileResponse profileResponse = new ProfileResponse(
-                isPrivateProfileEssential,
-                miniProfileResponse,
-                completionResponse,
-                profileIntroductionResponse,
-                jobAndSkillResponse,
-                profileTeamBuildingFieldResponse,
-                profileRegionResponse,
-                antecedentsResponses,
-                educationResponses,
-                awardsResponses,
-                attachResponses
-        );
-
-        given(profileService.getProfileResponse(
-                isPrivateProfileEssential,
-                miniProfileResponse,
-                completionResponse,
-                profileIntroductionResponse,
-                jobAndSkillResponse,
-                profileTeamBuildingFieldResponse,
-                profileRegionResponse,
-                antecedentsResponses,
-                educationResponses,
-                awardsResponses,
-                attachResponses
-        )).willReturn(profileResponse);
+        final ProfileLeftMenu profileLeftMenu =
+                new ProfileLeftMenu(
+                        profileCompletionMenu,
+                        profileInformMenu,
+                        profileBooleanMenu,
+                        profileScrapMenu
+                );
 
         // when
-        final ResultActions resultActions = performGetProfileRequest();
+        when(profileService.getProfileLeftMenu(anyLong())).thenReturn(profileLeftMenu);
 
-        // then
-        resultActions.andExpect(status().isOk())
+        final ResultActions resultActions = performGetProfileLeftMenu();
+
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
                         restDocs.document(
-                                requestCookies(
-                                        cookieWithName("refresh-token")
-                                                .description("갱신 토큰")
-                                ),
-                                requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("access token")
-                                                .attributes(field("constraint", "문자열(jwt)"))
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부"),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드"),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지"),
+
+                                        // ProfileCompletionMenu
+                                        fieldWithPath("result.profileCompletionMenu.profileCompletion")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 완성도 값"),
+
+                                        // ProfileInformMenu
+                                        fieldWithPath("result.profileInformMenu.profileCurrentStates[].profileStateName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 현재 상태 이름"),
+                                        fieldWithPath("result.profileInformMenu.isProfileScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 스크랩 여부 (자기 자신의 조회는 무조건 false)"),
+                                        fieldWithPath("result.profileInformMenu.profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 전체 개수"),
+
+                                        fieldWithPath("result.profileInformMenu.profileImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 이미지 경로"),
+                                        fieldWithPath("result.profileInformMenu.memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 사용자 이름"),
+                                        fieldWithPath("result.profileInformMenu.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이메일 아이디"),
+                                        fieldWithPath("result.profileInformMenu.isProfilePublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 공개 여부"),
+                                        fieldWithPath("result.profileInformMenu.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 포지션 대분류"),
+
+                                        // RegionDetail
+                                        fieldWithPath("result.profileInformMenu.regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 활동 지역 시/도"),
+                                        fieldWithPath("result.profileInformMenu.regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 활동 지역 시/군/구"),
+
+                                        // profileTeamInform
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 아이디"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로"),
+
+                                        // profileBooleanMenu
+                                        fieldWithPath("result.profileBooleanMenu.isMiniProfile")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 미니 프로필 기입 여부"),
+                                        fieldWithPath("result.profileBooleanMenu.isProfileSkill")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 스킬 기입 여부"),
+                                        fieldWithPath("result.profileBooleanMenu.isProfileActivity")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 이력 기입 여부"),
+                                        fieldWithPath("result.profileBooleanMenu.isProfilePortfolio")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 포트폴리오 기입 여부"),
+                                        fieldWithPath("result.profileBooleanMenu.isProfileEducation")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 학력 기입 여부"),
+                                        fieldWithPath("result.profileBooleanMenu.isProfileAwards")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 수상 기입 여부"),
+                                        fieldWithPath("result.profileBooleanMenu.isProfileLicense")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 자격증 기입 여부"),
+                                        fieldWithPath("result.profileBooleanMenu.isProfileLink")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 링크 기입 여부"),
+
+                                        // profileScrapMenu
+                                        fieldWithPath("result.profileScrapMenu.profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 전체 스크랩 개수")
+
+                                )
+                        )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<ProfileLeftMenu> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<ProfileLeftMenu>>() {
+                }
+        );
+
+        final CommonResponse<ProfileLeftMenu> expected = CommonResponse.onSuccess(profileLeftMenu);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 프로필을 조회할 수 있다.")
+    @Test
+    void getProfileDetail() throws Exception {
+        // given
+        final ProfileCompletionMenu profileCompletionMenu = new ProfileCompletionMenu(100);
+
+        final ProfileCurrentStateItem firstProfileCurrentStateItem = new ProfileCurrentStateItem("팀 찾는 중");
+        final ProfileCurrentStateItem secondProfileCurrentStateItem = new ProfileCurrentStateItem("공모전 준비 중");
+        final List<ProfileCurrentStateItem> profileCurrentStates = Arrays.asList(firstProfileCurrentStateItem, secondProfileCurrentStateItem);
+
+        final RegionDetail regionDetail = new RegionDetail("서울특별시", "강남구");
+
+        final ProfileInformMenu profileInformMenu = ProfileInformMenu.builder()
+                .profileCurrentStates(profileCurrentStates)
+                .isProfileScrap(false)
+                .profileImagePath("프로필 이미지 경로")
+                .memberName("권동민")
+                .emailId("이메일 아이디")
+                .isProfilePublic(true)
+                .profileScrapCount(100)
+                .majorPosition("포지션 대분류")
+                .regionDetail(regionDetail)
+                .profileTeamInforms(Arrays.asList(
+                        ProfileTeamInform.builder()
+                                .teamName("리에종")
+                                .teamCode("팀 아이디 (팀 코드)")
+                                .teamLogoImagePath("팀 로고 이미지 경로")
+                                .build(),
+                        ProfileTeamInform.builder()
+                                .teamName("팀명 2")
+                                .teamCode("팀 아이디 2(팀 코드)")
+                                .teamLogoImagePath("팀 로고 이미지 경로 2")
+                                .build()
+                ))
+                .build();
+
+        final ProfileLogResponseDTO.ProfileLogItem profileLogItem
+                = new ProfileLogItem(1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+
+        final int profileScrapCount = 0;
+
+        final ProfileSkillResponseDTO.ProfileSkillItem firstProfileSkillItem
+                = new ProfileSkillItem(1L, "Figma", "상");
+
+        final ProfileSkillResponseDTO.ProfileSkillItem secondProfileSkillItem
+                = new ProfileSkillItem(2L, "Notion", "중상");
+
+        final List<ProfileSkillItem> profileSkillItems
+                = Arrays.asList(firstProfileSkillItem, secondProfileSkillItem);
+
+        final ProfileActivityResponseDTO.ProfileActivityItem firstProfileActivityItem
+                = new ProfileActivityItem(1L, "리에종", "PO", "2022.06", "2026.06", true, "이력 설명 1");
+
+        final ProfileActivityResponseDTO.ProfileActivityItem secondProfileActivityItem
+                = new ProfileActivityItem(2L, "리에종", "디자이너", "2024.10", "2024.12", true, "이력 설명 2");
+
+        final List<ProfileActivityItem> profileActivityItems
+                = Arrays.asList(firstProfileActivityItem, secondProfileActivityItem);
+
+        final ProfilePortfolioResponseDTO.ProfilePortfolioItem firstProfilePortfolioItem
+                = new ProfilePortfolioItem(1L, "프로젝트 이름", "프로젝트 한 줄 소개", ProjectSize.PERSONAL, "2023.02", "2023.04", false, Arrays.asList("컨텐츠 제작", "브랜딩", "계정 관리"), "logo.png");
+
+        final ProfilePortfolioResponseDTO.ProfilePortfolioItem secondProfilePortfolioItem
+                = new ProfilePortfolioItem(2L, "프로젝트 이름", "프로젝트 한 줄 소개", ProjectSize.TEAM, "2023.03", "2023.06", true, Arrays.asList("컨텐츠 제작", "브랜딩", "계정 관리"), "logo.png");
+
+        final List<ProfilePortfolioItem> profilePortfolioItems
+                = Arrays.asList(firstProfilePortfolioItem, secondProfilePortfolioItem);
+
+        final ProfileEducationResponseDTO.ProfileEducationItem firstProfileEducationItem
+                = new ProfileEducationItem(1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, true, "학력 설명 1");
+
+        final ProfileEducationResponseDTO.ProfileEducationItem secondProfileEducationItem
+                = new ProfileEducationItem(2L, "대학 이름 2", "전공 이름 2", "입학 연도 2", "졸업 연도 2", false, true, "학력 설명 2");
+
+        final List<ProfileEducationItem> profileEducationItems
+                = Arrays.asList(firstProfileEducationItem, secondProfileEducationItem);
+
+        final ProfileAwardsResponseDTO.ProfileAwardsItem firstProfileAwardsItem
+                = new ProfileAwardsItem(1L, "수상 이름 1", "훈격 1", "수상 날짜 1", true, "수상 설명 1");
+
+        final ProfileAwardsResponseDTO.ProfileAwardsItem secondProfileAwardsItem
+                = new ProfileAwardsItem(2L, "수상 이름 2", "훈격 2", "수상 날짜 2", true, "수상 설명 2");
+
+        final List<ProfileAwardsItem> profileAwardsItems
+                = Arrays.asList(firstProfileAwardsItem, secondProfileAwardsItem);
+
+        final ProfileLicenseResponseDTO.ProfileLicenseItem firstProfileLicenseItem
+                = new ProfileLicenseItem(1L, "자격증 자격명 1", "자격증 관련 부처 1", "자격증 취득 시기 1", true, "자격증 설명 1");
+
+        final ProfileLicenseResponseDTO.ProfileLicenseItem secondProfileLicenseItem
+                = new ProfileLicenseItem(2L, "자격증 자격명 2", "자격증 관련 부처 2", "자격증 취득 시기 2", true, "자격증 설명 2");
+
+        final List<ProfileLicenseItem> profileLicenseItems
+                = Arrays.asList(firstProfileLicenseItem, secondProfileLicenseItem);
+
+        final ProfileLinkResponseDTO.ProfileLinkItem firstProfileLinkItem
+                = new ProfileLinkItem(1L, "링크 이름", "링크 경로");
+
+        final ProfileLinkResponseDTO.ProfileLinkItem secondProfileLinkItem
+                = new ProfileLinkItem(2L, "링크 이름", "링크 경로");
+
+        final List<ProfileLinkItem> profileLinkItems
+                = Arrays.asList(firstProfileLinkItem, secondProfileLinkItem);
+
+        final ProfileResponseDTO.ProfileDetail profileDetail =
+                new ProfileResponseDTO.ProfileDetail(
+                        false,
+                        profileCompletionMenu,
+                        profileInformMenu,
+                        profileScrapCount,
+                        profileLogItem,
+                        profileSkillItems,
+                        profileActivityItems,
+                        profilePortfolioItems,
+                        profileEducationItems,
+                        profileAwardsItems,
+                        profileLicenseItems,
+                        profileLinkItems
+                );
+
+        // when
+        when(profileService.getLoggedOutProfileDetail(anyString())).thenReturn(profileDetail);
+
+        final ResultActions resultActions = performGetProfileDetail("kwondm7");
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("emailId")
+                                                .description("이메일 ID")
                                 ),
                                 responseFields(
-                                        fieldWithPath("privateProfileEssential").type(JsonFieldType.BOOLEAN).description("내 이력서 필수 입력 항목 존재 여부"),
-                                        // miniProfileResponse
-                                        subsectionWithPath("miniProfileResponse").description("사용자의 미니 프로필 정보"),
-                                        fieldWithPath("miniProfileResponse.profileTitle").type(JsonFieldType.STRING).description("프로필의 제목"),
-                                        fieldWithPath("miniProfileResponse.miniProfileImg").type(JsonFieldType.STRING).description("미니 프로필 이미지 URL"),
-                                        fieldWithPath("miniProfileResponse.myKeywordNames").type(JsonFieldType.ARRAY).description("나를 소개하는 키워드 목록"),
-                                        fieldWithPath("miniProfileResponse.isActivate").type(JsonFieldType.BOOLEAN).description("미니 프로필 활성화 여부"),
-                                        fieldWithPath("miniProfileResponse.memberName").type(JsonFieldType.STRING).description("회원 이름"),
-                                        fieldWithPath("miniProfileResponse.jobRoleNames").type(JsonFieldType.ARRAY).description("직무 및 역할"),
-
-                                        // completionResponse
-                                        subsectionWithPath("completionResponse").description("프로필의 완성도 정보"),
-                                        fieldWithPath("completionResponse.completion").type(JsonFieldType.STRING).description("프로필 완성도 (백분율)"),
-                                        fieldWithPath("completionResponse.introduction").type(JsonFieldType.BOOLEAN).description("소개의 완성 여부"),
-                                        fieldWithPath("completionResponse.profileSkill").type(JsonFieldType.BOOLEAN).description("스킬 섹션의 완성 여부"),
-                                        fieldWithPath("completionResponse.profileTeamBuildingField").type(JsonFieldType.BOOLEAN).description("팀 빌딩 필드의 완성 여부"),
-                                        fieldWithPath("completionResponse.profileRegion").type(JsonFieldType.BOOLEAN).description("지역 정보의 완성 여부"),
-                                        fieldWithPath("completionResponse.antecedents").type(JsonFieldType.BOOLEAN).description("이력 사항의 완성 여부"),
-                                        fieldWithPath("completionResponse.education").type(JsonFieldType.BOOLEAN).description("교육 이력의 완성 여부"),
-                                        fieldWithPath("completionResponse.awards").type(JsonFieldType.BOOLEAN).description("수상 이력의 완성 여부"),
-                                        fieldWithPath("completionResponse.attach").type(JsonFieldType.BOOLEAN).description("첨부 파일의 유무"),
-
-                                        // profileIntroductionResponse
-                                        subsectionWithPath("profileIntroductionResponse").description("프로필 소개"),
-                                        fieldWithPath("profileIntroductionResponse.introduction").type(JsonFieldType.STRING).description("소개 내용"),
-
-                                        // jobAndSkillResponse
-                                        subsectionWithPath("jobAndSkillResponse").description("나의 직무/역할 및 보유 기술 정보"),
-                                        fieldWithPath("jobAndSkillResponse.jobRoleNames").type(JsonFieldType.ARRAY).description("직무/역할 명칭"),
-                                        fieldWithPath("jobAndSkillResponse.skillNames").type(JsonFieldType.ARRAY).description("보유 기술 명칭"),
-
-                                        // profileTeamBuildingFieldResponse
-                                        subsectionWithPath("profileTeamBuildingFieldResponse").description("팀 빌딩 필드 응답"),
-                                        fieldWithPath("profileTeamBuildingFieldResponse.teamBuildingFieldNames").type(JsonFieldType.ARRAY).description("팀 빌딩 필드 이름"),
-
-                                        // profileRegionResponse
-                                        subsectionWithPath("profileRegionResponse").description("활동 지역 및 위치 응답"),
-                                        fieldWithPath("profileRegionResponse.cityName").type(JsonFieldType.STRING).description("시/도 이름"),
-                                        fieldWithPath("profileRegionResponse.divisionName").type(JsonFieldType.STRING).description("시/군/구 이름"),
-
-                                        // antecedentsResponse
-                                        subsectionWithPath("antecedentsResponse").description("과거 경력 정보"),
-                                        fieldWithPath("antecedentsResponse[].id").type(JsonFieldType.NUMBER).description("경력 ID"),
-                                        fieldWithPath("antecedentsResponse[].projectName").type(JsonFieldType.STRING).description("프로젝트 이름"),
-                                        fieldWithPath("antecedentsResponse[].projectRole").type(JsonFieldType.STRING).description("프로젝트 역할"),
-                                        fieldWithPath("antecedentsResponse[].startDate").type(JsonFieldType.STRING).description("시작 연도/월"),
-                                        fieldWithPath("antecedentsResponse[].endDate").type(JsonFieldType.STRING).description("종료 연도/월"),
-                                        fieldWithPath("antecedentsResponse[].retirement").type(JsonFieldType.BOOLEAN).description("퇴직 여부"),
-
-                                        // educationResponse
-                                        subsectionWithPath("educationResponse").description("교육 이력 정보"),
-                                        fieldWithPath("educationResponse[].id").type(JsonFieldType.NUMBER).description("교육 이력 ID"),
-                                        fieldWithPath("educationResponse[].admissionYear").type(JsonFieldType.NUMBER).description("입학 연도"),
-                                        fieldWithPath("educationResponse[].graduationYear").type(JsonFieldType.NUMBER).description("졸업 연도"),
-                                        fieldWithPath("educationResponse[].universityName").type(JsonFieldType.STRING).description("대학교 이름"),
-                                        fieldWithPath("educationResponse[].majorName").type(JsonFieldType.STRING).description("전공 이름"),
-                                        fieldWithPath("educationResponse[].degreeName").type(JsonFieldType.STRING).description("학위명"),
-
-                                        // awardsResponse
-                                        subsectionWithPath("awardsResponse").description("수상 이력 정보"),
-                                        fieldWithPath("awardsResponse[].id").type(JsonFieldType.NUMBER).description("수상 ID"),
-                                        fieldWithPath("awardsResponse[].awardsName").type(JsonFieldType.STRING).description("수상 이름"),
-                                        fieldWithPath("awardsResponse[].ranking").type(JsonFieldType.STRING).description("수상 순위"),
-                                        fieldWithPath("awardsResponse[].organizer").type(JsonFieldType.STRING).description("주최자"),
-                                        fieldWithPath("awardsResponse[].awardsYear").type(JsonFieldType.NUMBER).description("수상 연도"),
-                                        fieldWithPath("awardsResponse[].awardsMonth").type(JsonFieldType.NUMBER).description("수상 월"),
-                                        fieldWithPath("awardsResponse[].awardsDescription").type(JsonFieldType.STRING).description("수상 내용"),
-
-                                        // attachResponse
-                                        subsectionWithPath("attachResponse").description("첨부 파일 정보"),
-                                        fieldWithPath("attachResponse.attachUrlResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 URL ID"),
-                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlName").type(JsonFieldType.STRING).description("첨부된 URL 이름"),
-                                        fieldWithPath("attachResponse.attachUrlResponseList[].attachUrlPath").type(JsonFieldType.STRING).description("첨부된 URL")
-//                                        fieldWithPath("attachResponse.attachFileResponseList[].id").type(JsonFieldType.NUMBER).description("첨부 파일 ID"),
-//                                        fieldWithPath("attachResponse.attachFileResponseList[].attachFilePath").type(JsonFieldType.STRING).description("첨부 파일 URL")
-                                )
-                        ));
-    }
-
-    @DisplayName("프로필 자기소개 항목을 생성할 수 있다.")
-    @Test
-    void createProfileIntroduction() throws Exception {
-        // given
-        final IntroductionRequest introductionRequest = new IntroductionRequest(
-                "프로필 자기소개 항목을 입력합니다."
-        );
-
-        // when
-        final ResultActions resultActions = performCreateRequest(introductionRequest);
-
-        // then
-        resultActions.andExpect(status().isOk())
-                .andDo(
-                        restDocs.document(
-                                requestFields(
-                                        fieldWithPath("introduction")
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
                                                 .type(JsonFieldType.STRING)
-                                                .description("자기소개")
-                                                .attributes(field("constraint", "문자열"))
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("응답 결과 객체"),
+
+                                        fieldWithPath("result.isMyProfile")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("내 프로필 여부"),
+
+                                        fieldWithPath("result.profileCompletionMenu")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("프로필 완성도 정보"),
+                                        fieldWithPath("result.profileCompletionMenu.profileCompletion")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 완성도 퍼센트"),
+
+                                        fieldWithPath("result.profileInformMenu")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("프로필 정보 메뉴"),
+                                        fieldWithPath("result.profileInformMenu.profileCurrentStates")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("현재 프로필 상태 목록"),
+                                        fieldWithPath("result.profileInformMenu.profileCurrentStates[].profileStateName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 상태 이름"),
+                                        fieldWithPath("result.profileInformMenu.isProfileScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 스크랩 유무 (로그아웃 상태 -> 무조건 false)"),
+                                        fieldWithPath("result.profileInformMenu.profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 전체 개수"),
+                                        fieldWithPath("result.profileInformMenu.profileImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 이미지 경로"),
+                                        fieldWithPath("result.profileInformMenu.memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이름"),
+                                        fieldWithPath("result.profileInformMenu.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이메일 아이디"),
+                                        fieldWithPath("result.profileInformMenu.isProfilePublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 공개 여부"),
+                                        fieldWithPath("result.profileInformMenu.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("대분류 포지션"),
+                                        fieldWithPath("result.profileInformMenu.regionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("지역 상세 정보"),
+                                        fieldWithPath("result.profileInformMenu.regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("지역 시/도"),
+                                        fieldWithPath("result.profileInformMenu.regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("지역 시/군/구"),
+
+                                        // profileTeamInform
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 이름"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 아이디 (팀 코드)"),
+                                        fieldWithPath("result.profileInformMenu.profileTeamInforms[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 회원이 속한 팀의 팀 로고 이미지 경로"),
+
+                                        fieldWithPath("result.profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 수"),
+
+                                        fieldWithPath("result.profileLogItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("프로필 로그 객체"),
+                                        fieldWithPath("result.profileLogItem.profileLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 로그 ID"),
+                                        fieldWithPath("result.profileLogItem.isLogPublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("로그 공개 여부"),
+                                        fieldWithPath("result.profileLogItem.logType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 로그 타입"),
+                                        fieldWithPath("result.profileLogItem.modifiedAt")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 수정 시간"),
+                                        fieldWithPath("result.profileLogItem.logTitle")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 제목"),
+                                        fieldWithPath("result.profileLogItem.logContent")
+                                                .type(JsonFieldType.STRING)
+                                                .description("로그 내용"),
+
+                                        fieldWithPath("result.profileSkillItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로필 스킬 항목 배열"),
+                                        fieldWithPath("result.profileSkillItems[].profileSkillId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스킬 ID"),
+                                        fieldWithPath("result.profileSkillItems[].skillName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("스킬 이름"),
+                                        fieldWithPath("result.profileSkillItems[].skillLevel")
+                                                .type(JsonFieldType.STRING)
+                                                .description("스킬 수준"),
+
+                                        fieldWithPath("result.profileActivityItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로필 활동 항목 배열"),
+                                        fieldWithPath("result.profileActivityItems[].profileActivityId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 활동 ID"),
+                                        fieldWithPath("result.profileActivityItems[].activityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동 이름"),
+                                        fieldWithPath("result.profileActivityItems[].activityRole")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동 역할"),
+                                        fieldWithPath("result.profileActivityItems[].activityStartDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동 시작 날짜"),
+                                        fieldWithPath("result.profileActivityItems[].activityEndDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동 종료 날짜"),
+                                        fieldWithPath("result.profileActivityItems[].isActivityVerified")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("활동 인증 여부"),
+                                        fieldWithPath("result.profileActivityItems[].activityDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("이력 설명"),
+
+                                        fieldWithPath("result.profilePortfolioItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로필 포트폴리오 항목 배열"),
+                                        fieldWithPath("result.profilePortfolioItems[].profilePortfolioId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 포트폴리오 ID"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 이름"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectLineDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 한 줄 소개"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectSize")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 규모"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectStartDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 시작 날짜"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectEndDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 종료 날짜"),
+                                        fieldWithPath("result.profilePortfolioItems[].isProjectInProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로젝트 진행 중 여부"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectRoles")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로젝트 역할 목록"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectRoles[]")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로젝트 역할"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectRepresentImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 대표 이미지 경로"),
+
+                                        fieldWithPath("result.profileEducationItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로필 학력 항목 배열"),
+                                        fieldWithPath("result.profileEducationItems[].profileEducationId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 학력 ID"),
+                                        fieldWithPath("result.profileEducationItems[].universityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("대학교 이름"),
+                                        fieldWithPath("result.profileEducationItems[].majorName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("전공 이름"),
+                                        fieldWithPath("result.profileEducationItems[].admissionYear")
+                                                .type(JsonFieldType.STRING)
+                                                .description("입학 연도"),
+                                        fieldWithPath("result.profileEducationItems[].graduationYear")
+                                                .type(JsonFieldType.STRING)
+                                                .description("졸업 연도"),
+                                        fieldWithPath("result.profileEducationItems[].isAttendUniversity")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("재학 여부"),
+                                        fieldWithPath("result.profileEducationItems[].isEducationVerified")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("학력 인증 여부"),
+                                        fieldWithPath("result.profileEducationItems[].educationDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("학력 설명"),
+
+                                        fieldWithPath("result.profileAwardsItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로필 수상 항목 배열"),
+                                        fieldWithPath("result.profileAwardsItems[].profileAwardsId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 수상 ID"),
+                                        fieldWithPath("result.profileAwardsItems[].awardsName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수상 이름"),
+                                        fieldWithPath("result.profileAwardsItems[].awardsRanking")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수상 훈격"),
+                                        fieldWithPath("result.profileAwardsItems[].awardsDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수상 날짜"),
+                                        fieldWithPath("result.profileAwardsItems[].isAwardsVerified")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("수상 인증 여부"),
+                                        fieldWithPath("result.profileAwardsItems[].awardsDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("수상 설명"),
+
+                                        fieldWithPath("result.profileLicenseItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로필 자격증 항목 배열"),
+                                        fieldWithPath("result.profileLicenseItems[].profileLicenseId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 자격증 ID"),
+                                        fieldWithPath("result.profileLicenseItems[].licenseName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("자격증 이름"),
+                                        fieldWithPath("result.profileLicenseItems[].licenseInstitution")
+                                                .type(JsonFieldType.STRING)
+                                                .description("자격증 기관"),
+                                        fieldWithPath("result.profileLicenseItems[].licenseAcquisitionDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("자격증 취득 날짜"),
+                                        fieldWithPath("result.profileLicenseItems[].isLicenseVerified")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("자격증 인증 여부"),
+                                        fieldWithPath("result.profileLicenseItems[].licenseDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("자격증 설명"),
+
+                                        fieldWithPath("result.profileLinkItems")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로필 링크 항목 배열"),
+                                        fieldWithPath("result.profileLinkItems[].profileLinkId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 링크 ID"),
+                                        fieldWithPath("result.profileLinkItems[].linkName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("링크 이름"),
+                                        fieldWithPath("result.profileLinkItems[].linkPath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("링크 경로")
                                 )
                         )
-                );
+                ).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<ProfileDetail> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<ProfileDetail>>() {
+                }
+        );
+
+        final CommonResponse<ProfileDetail> expected = CommonResponse.onSuccess(profileDetail);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원/비회원이 홈화면의 팀원을 조회할 수 있다.")
+    @Test
+    void getHomeProfileInformMenus() throws Exception {
+        // given
+        final ProfileResponseDTO.ProfileInformMenus profileInformMenus = ProfileInformMenus.builder()
+                .profileInformMenus(
+                        Arrays.asList(
+                                ProfileInformMenu.builder()
+                                        .profileCurrentStates(
+                                                Arrays.asList(
+                                                        ProfileCurrentStateItem.builder()
+                                                                .profileStateName("팀원 찾는 중")
+                                                                .build(),
+                                                        ProfileCurrentStateItem.builder()
+                                                                .profileStateName("팀 찾는 중")
+                                                                .build()
+                                                )
+                                        )
+                                        .isProfileScrap(true)
+                                        .profileScrapCount(100)
+                                        .profileImagePath("프로필 이미지 경로")
+                                        .memberName("회원 이름")
+                                        .emailId("이메일 ID")
+                                        .isProfilePublic(true)
+                                        .majorPosition("포지션 대분류")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("활동지역 시/도")
+                                                        .divisionName("활동지역 시/군/구")
+                                                        .build()
+                                        )
+                                        .profileTeamInforms(
+                                                Arrays.asList(
+                                                        ProfileTeamInform.builder()
+                                                                .teamName("소속 팀 이름 1")
+                                                                .teamCode("소속 팀 아이디 1")
+                                                                .teamLogoImagePath("소속 팀 로고 이미지 1")
+                                                                .build(),
+                                                        ProfileTeamInform.builder()
+                                                                .teamName("소속 팀 이름 2")
+                                                                .teamCode("소속 팀 아이디 2")
+                                                                .teamLogoImagePath("소속 팀 로고 이미지 2")
+                                                                .build()
+                                                )
+                                        )
+                                        .build(),
+                                ProfileInformMenu.builder()
+                                        .profileCurrentStates(
+                                                Arrays.asList(
+                                                        ProfileCurrentStateItem.builder()
+                                                                .profileStateName("팀원 찾는 중")
+                                                                .build(),
+                                                        ProfileCurrentStateItem.builder()
+                                                                .profileStateName("팀 찾는 중")
+                                                                .build()
+                                                )
+                                        )
+                                        .isProfileScrap(true)
+                                        .profileScrapCount(200)
+                                        .profileImagePath("프로필 이미지 경로 2")
+                                        .memberName("회원 이름 2")
+                                        .emailId("이메일 ID 2")
+                                        .isProfilePublic(true)
+                                        .majorPosition("포지션 대분류")
+                                        .regionDetail(
+                                                RegionDetail.builder()
+                                                        .cityName("활동지역 시/도")
+                                                        .divisionName("활동지역 시/군/구")
+                                                        .build()
+                                        )
+                                        .profileTeamInforms(
+                                                Arrays.asList(
+                                                        ProfileTeamInform.builder()
+                                                                .teamName("소속 팀 이름 1")
+                                                                .teamCode("소속 팀 아이디 1")
+                                                                .teamLogoImagePath("소속 팀 로고 이미지 1")
+                                                                .build(),
+                                                        ProfileTeamInform.builder()
+                                                                .teamName("소속 팀 이름 2")
+                                                                .teamCode("소속 팀 아이디 2")
+                                                                .teamLogoImagePath("소속 팀 로고 이미지 2")
+                                                                .build()
+                                                )
+                                        )
+                                        .build()
+                        )
+                )
+                .build();
+
+        // when
+        when(profileService.getHomeProfileInformMenus()).thenReturn(profileInformMenus);
+
+        final ResultActions resultActions = performGetHomeProfileInformMenus();
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.profileInformMenus[].profileCurrentStates[].profileStateName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 상태 이름"),
+                                        fieldWithPath("result.profileInformMenus[].isProfileScrap")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 스크랩 여부 (자기 자신이 스크랩한 목록 조회는 무조건 true)"),
+                                        fieldWithPath("result.profileInformMenus[].profileScrapCount")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 스크랩 전체 개수"),
+                                        fieldWithPath("result.profileInformMenus[].profileImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로필 이미지 경로"),
+                                        fieldWithPath("result.profileInformMenus[].memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이름"),
+                                        fieldWithPath("result.profileInformMenus[].emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("이메일 ID"),
+                                        fieldWithPath("result.profileInformMenus[].isProfilePublic")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로필 공개 여부"),
+                                        fieldWithPath("result.profileInformMenus[].majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("포지션 대분류"),
+                                        fieldWithPath("result.profileInformMenus[].regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동지역 시/도"),
+                                        fieldWithPath("result.profileInformMenus[].regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("활동지역 시/군/구"),
+                                        fieldWithPath("result.profileInformMenus[].profileTeamInforms[].teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소속 팀 이름"),
+                                        fieldWithPath("result.profileInformMenus[].profileTeamInforms[].teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소속 팀 아이디 (팀 코드)"),
+                                        fieldWithPath("result.profileInformMenus[].profileTeamInforms[].teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("소속 팀 로고 이미지 경로")
+                                )
+                        )).andReturn();
+
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<ProfileInformMenus> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<ProfileInformMenus>>() {
+                }
+        );
+
+        final CommonResponse<ProfileInformMenus> expected = CommonResponse.onSuccess(profileInformMenus);
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 }

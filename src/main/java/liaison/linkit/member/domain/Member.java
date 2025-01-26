@@ -1,32 +1,31 @@
 package liaison.linkit.member.domain;
 
-import jakarta.persistence.*;
-import liaison.linkit.member.domain.type.MemberState;
-import liaison.linkit.member.domain.type.ProfileType;
-import liaison.linkit.member.domain.type.TeamProfileType;
-import liaison.linkit.profile.domain.Profile;
-import liaison.linkit.team.domain.TeamProfile;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-
-import java.time.LocalDateTime;
-
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static liaison.linkit.member.domain.type.MemberState.ACTIVE;
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
+import liaison.linkit.common.domain.BaseDateTimeEntity;
+import liaison.linkit.member.domain.type.MemberState;
+import liaison.linkit.member.domain.type.Platform;
+import liaison.linkit.profile.domain.profile.Profile;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
 @SQLRestriction("member_state = 'ACTIVE'")
-public class Member {
-
-    private static final String DEFAULT_MEMBER_IMAGE_NAME = "default-image.png";
+public class Member extends BaseDateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -38,99 +37,96 @@ public class Member {
     @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = LAZY)
     private Profile profile;
 
-    @OneToOne(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = LAZY)
-    private TeamProfile teamProfile;
-
     @Column(nullable = false, length = 100)
     private String socialLoginId;
 
     @Column(nullable = false, length = 50)
     private String email;
 
+    @Column(unique = true, length = 50)
+    private String emailId;
+
     // 계정 상태 관리 컬럼
     @Column(nullable = false)
     @Enumerated(value = STRING)
     private MemberState memberState;
 
-    // 내 이력서 타입 (완성도 기반)
+    @Column(nullable = false)
+    private boolean createMemberBasicInform;
+
+    @Column(nullable = false)
+    private int profileScrapCount;
+
+    @Column(nullable = false)
+    private int teamScrapCount;
+
+    @Column(nullable = false)
+    private int teamMemberAnnouncementScrapCount;
+
     @Column(nullable = false)
     @Enumerated(value = STRING)
-    private ProfileType profileType;
-
-    // 팀 소개서 타입 (완성도 기반)
-    @Column(nullable = false)
-    @Enumerated(value = STRING)
-    private TeamProfileType teamProfileType;
-
-    @CreatedDate
-    @Column(updatable = false)
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
-
-    @Column(nullable = false)
-    private boolean existMemberBasicInform;
-
-    @Column(nullable = false)
-    private int privateWishCount;
-
-    @Column(nullable = false)
-    private int teamWishCount;
+    private Platform platform;
 
     public Member(
             final Long id,
             final String socialLoginId,
             final String email,
-            final MemberBasicInform memberBasicInform
+            final String emailId,
+            final MemberBasicInform memberBasicInform,
+            final Platform platform
     ) {
         this.id = id;
         this.socialLoginId = socialLoginId;
         this.email = email;
-        this.profileType = ProfileType.NO_PERMISSION;
-        this.teamProfileType = TeamProfileType.NO_PERMISSION;
+        this.emailId = emailId;
         this.memberState = ACTIVE;
-        this.createdAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
         this.memberBasicInform = memberBasicInform;
-        this.existMemberBasicInform = false;
-        this.privateWishCount = 0;
-        this.teamWishCount = 0;
+        this.createMemberBasicInform = false;
+        this.profileScrapCount = 0;
+        this.teamScrapCount = 0;
+        this.teamMemberAnnouncementScrapCount = 0;
+        this.platform = platform;
     }
 
     public Member(
             final String socialLoginId,
             final String email,
-            final MemberBasicInform memberBasicInform
+            final String emailId,
+            final MemberBasicInform memberBasicInform,
+            final Platform platform
     ) {
-        this(null, socialLoginId, email, memberBasicInform);
+        this(null, socialLoginId, email, emailId, memberBasicInform, platform);
     }
 
-    public void changeIsMemberBasicInform(final Boolean existMemberBasicInform) {
-        this.existMemberBasicInform = existMemberBasicInform;
+    public void setCreateMemberBasicInform(final boolean createMemberBasicInform) {
+        this.createMemberBasicInform = createMemberBasicInform;
     }
 
-    public void setProfileType(final ProfileType profileType) {
-        this.profileType = profileType;
+    public void addProfileScrapCount() {
+        this.profileScrapCount += 1;
     }
 
-    public void setTeamProfileType(final TeamProfileType teamProfileType) {
-        this.teamProfileType = teamProfileType;
+    public void addTeamScrapCount() {
+        this.teamScrapCount += 1;
     }
 
-    public void addPrivateWishCount() {
-        this.privateWishCount += 1;
+    public void subProfileScrapCount() {
+        this.profileScrapCount -= 1;
     }
 
-    public void addTeamWishCount() {
-        this.teamWishCount += 1;
+    public void subTeamScrapCount() {
+        this.teamScrapCount -= 1;
     }
 
-    public void subPrivateWishCount() {
-        this.privateWishCount -= 1;
+    public void addTeamMemberAnnouncementScrapCount() {
+        this.teamMemberAnnouncementScrapCount += 1;
     }
 
-    public void subTeamWishCount() {
-        this.teamWishCount -= 1;
+    public void subTeamMemberAnnouncementScrapCount() {
+        this.teamMemberAnnouncementScrapCount -= 1;
+    }
+
+    public void updateEmail(final String email) {
+        this.email = email;
     }
 }

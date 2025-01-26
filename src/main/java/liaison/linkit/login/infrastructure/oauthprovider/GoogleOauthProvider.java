@@ -1,10 +1,12 @@
 package liaison.linkit.login.infrastructure.oauthprovider;
 
-import liaison.linkit.global.exception.AuthException;
+import liaison.linkit.common.exception.NotSupportedOauthServiceException;
 import liaison.linkit.login.domain.OauthAccessToken;
 import liaison.linkit.login.domain.OauthProvider;
 import liaison.linkit.login.domain.OauthUserInfo;
+import liaison.linkit.login.exception.AuthCodeBadRequestException;
 import liaison.linkit.login.infrastructure.oauthUserInfo.GoogleUserInfo;
+import liaison.linkit.member.domain.type.Platform;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -12,9 +14,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.util.Optional;
-
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_AUTHORIZATION_CODE;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
 
 @Component
 public class GoogleOauthProvider implements OauthProvider {
@@ -27,11 +26,11 @@ public class GoogleOauthProvider implements OauthProvider {
     protected final String userUri;
 
     public GoogleOauthProvider(
-            @Value("${GOOGLE_CLIENT_ID}") final String clientId,
-            @Value("${GOOGLE_CLIENT_SECRET}") final String clientSecret,
-            @Value("${GOOGLE_REDIRECT_URL}") final String redirectUri,
-            @Value("${GOOGLE_TOKEN_URI}") final String tokenUri, // Notice the path correction
-            @Value("${GOOGLE_USER_INFO_URI}") final String userUri // Notice the path correction
+            @Value("${spring.security.oauth2.client.registration.google.client-id}") final String clientId,
+            @Value("${spring.security.oauth2.client.registration.google.client-secret}") final String clientSecret,
+            @Value("${spring.security.oauth2.client.registration.google.redirect-uri}") final String redirectUri,
+            @Value("${spring.security.oauth2.client.provider.google.token-uri}") final String tokenUri, // Notice the path correction
+            @Value("${spring.security.oauth2.client.provider.google.user-info-uri}") final String userUri // Notice the path correction
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -41,7 +40,14 @@ public class GoogleOauthProvider implements OauthProvider {
     }
 
     @Override
-    public boolean is(final String name) { return PROVIDER_NAME.equals(name); }
+    public Platform getPlatform(final String providerName) {
+        return Platform.GOOGLE;
+    }
+
+    @Override
+    public boolean is(final String name) {
+        return PROVIDER_NAME.equals(name);
+    }
 
     @Override
     public OauthUserInfo getUserInfo(final String code) {
@@ -60,7 +66,7 @@ public class GoogleOauthProvider implements OauthProvider {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         }
-        throw new AuthException(NOT_SUPPORTED_OAUTH_SERVICE);
+        throw NotSupportedOauthServiceException.EXCEPTION;
     }
 
     private String requestAccessToken(final String code) {
@@ -84,7 +90,7 @@ public class GoogleOauthProvider implements OauthProvider {
         );
 
         return Optional.ofNullable(accessTokenResponse.getBody())
-                .orElseThrow(() -> new AuthException(INVALID_AUTHORIZATION_CODE))
+                .orElseThrow(() -> AuthCodeBadRequestException.EXCEPTION)
                 .getAccessToken();
     }
 }

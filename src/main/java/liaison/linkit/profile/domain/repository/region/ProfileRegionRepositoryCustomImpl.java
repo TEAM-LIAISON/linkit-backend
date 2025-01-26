@@ -1,39 +1,39 @@
 package liaison.linkit.profile.domain.repository.region;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Optional;
 import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.domain.region.QProfileRegion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Optional;
-
 @RequiredArgsConstructor
 @Slf4j
-public class ProfileRegionRepositoryCustomImpl implements ProfileRegionRepositoryCustom{
+public class ProfileRegionRepositoryCustomImpl implements ProfileRegionRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<ProfileRegion> findByProfileId(Long profileId) {
-        QProfileRegion profileRegion = QProfileRegion.profileRegion;
+    public Optional<ProfileRegion> findProfileRegionByProfileId(final Long profileId) {
+        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
 
-        ProfileRegion result = jpaQueryFactory
-                .selectFrom(profileRegion)
-                .where(profileRegion.profile.id.eq(profileId))
-                .fetchOne();
+        ProfileRegion profileRegion = jpaQueryFactory
+                .selectFrom(qProfileRegion)
+                .where(
+                        qProfileRegion.profile.id.eq(profileId)
+                ).fetchOne();
 
-        return Optional.ofNullable(result);
+        return Optional.ofNullable(profileRegion);
     }
 
     @Override
-    public boolean existsByProfileId(Long profileId) {
-        QProfileRegion profileRegion = QProfileRegion.profileRegion;
+    public boolean existsProfileRegionByProfileId(final Long profileId) {
+        QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
 
         Integer count = jpaQueryFactory
                 .selectOne()
-                .from(profileRegion)
-                .where(profileRegion.profile.id.eq(profileId))
+                .from(qProfileRegion)
+                .where(qProfileRegion.profile.id.eq(profileId))
                 .fetchFirst();
 
         return count != null;
@@ -41,11 +41,11 @@ public class ProfileRegionRepositoryCustomImpl implements ProfileRegionRepositor
 
     @Override
     public void deleteByProfileId(Long profileId) {
-        QProfileRegion profileRegion = QProfileRegion.profileRegion;
+        final QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
 
         jpaQueryFactory
-                .delete(profileRegion)
-                .where(profileRegion.profile.id.eq(profileId))
+                .delete(qProfileRegion)
+                .where(qProfileRegion.profile.id.eq(profileId))
                 .execute();
     }
 }

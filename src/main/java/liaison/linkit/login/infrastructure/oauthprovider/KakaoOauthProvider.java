@@ -1,23 +1,26 @@
 package liaison.linkit.login.infrastructure.oauthprovider;
 
-import liaison.linkit.global.exception.AuthException;
-import liaison.linkit.login.domain.OauthAccessToken;
-import liaison.linkit.login.domain.OauthProvider;
-import liaison.linkit.login.domain.OauthUserInfo;
-import liaison.linkit.login.infrastructure.oauthUserInfo.KakaoUserInfo;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
-import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import static java.lang.Boolean.TRUE;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import static java.lang.Boolean.TRUE;
-import static liaison.linkit.global.exception.ExceptionCode.INVALID_AUTHORIZATION_CODE;
-import static liaison.linkit.global.exception.ExceptionCode.NOT_SUPPORTED_OAUTH_SERVICE;
+import liaison.linkit.common.exception.NotSupportedOauthServiceException;
+import liaison.linkit.login.domain.OauthAccessToken;
+import liaison.linkit.login.domain.OauthProvider;
+import liaison.linkit.login.domain.OauthUserInfo;
+import liaison.linkit.login.exception.AuthCodeBadRequestException;
+import liaison.linkit.login.infrastructure.oauthUserInfo.KakaoUserInfo;
+import liaison.linkit.member.domain.type.Platform;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 @Component
 public class KakaoOauthProvider implements OauthProvider {
@@ -31,17 +34,23 @@ public class KakaoOauthProvider implements OauthProvider {
     protected final String userUri;
 
     public KakaoOauthProvider(
-            @Value("${KAKAO_CLIENT_ID}") final String clientId,
-            @Value("${KAKAO_CLIENT_SECRET}") final String clientSecret,
-            @Value("${KAKAO_REDIRECT_URL}") final String redirectUri,
+            @Value("${spring.security.oauth2.client.registration.kakao.client-id}") final String clientId,
+            @Value("${spring.security.oauth2.client.registration.kakao.client-secret}") final String clientSecret,
+            @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}") final String redirectUri,
             @Value("${spring.security.oauth2.client.provider.kakao.token-uri}") final String tokenUri,
             @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}") final String userUri
+
     ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
         this.tokenUri = tokenUri;
         this.userUri = userUri;
+    }
+
+    @Override
+    public Platform getPlatform(final String providerName) {
+        return Platform.KAKAO;
     }
 
     @Override
@@ -71,7 +80,7 @@ public class KakaoOauthProvider implements OauthProvider {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         }
-        throw new AuthException(NOT_SUPPORTED_OAUTH_SERVICE);
+        throw NotSupportedOauthServiceException.EXCEPTION;
     }
 
     private String requestAccessToken(final String code) {
@@ -83,6 +92,7 @@ public class KakaoOauthProvider implements OauthProvider {
         params.add("client_secret", clientSecret);
         params.add("redirect_uri", redirectUri);
         params.add("grant_type", "authorization_code");
+        
         final HttpEntity<MultiValueMap<String, String>> accessTokenRequestEntity = new HttpEntity<>(params, headers);
 
         final ResponseEntity<OauthAccessToken> accessTokenResponse = restTemplate.exchange(
@@ -93,7 +103,7 @@ public class KakaoOauthProvider implements OauthProvider {
         );
 
         return Optional.ofNullable(accessTokenResponse.getBody())
-                .orElseThrow(() -> new AuthException(INVALID_AUTHORIZATION_CODE))
+                .orElseThrow(() -> AuthCodeBadRequestException.EXCEPTION)
                 .getAccessToken();
     }
 }

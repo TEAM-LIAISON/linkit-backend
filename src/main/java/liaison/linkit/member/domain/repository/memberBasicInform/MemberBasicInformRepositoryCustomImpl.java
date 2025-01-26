@@ -1,20 +1,24 @@
 package liaison.linkit.member.domain.repository.memberBasicInform;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import liaison.linkit.global.type.StatusType;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import java.util.Optional;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.QMemberBasicInform;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO;
+import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.UpdateConsentMarketingRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class MemberBasicInformRepositoryCustomImpl implements MemberBasicInformRepositoryCustom{
+public class MemberBasicInformRepositoryCustomImpl implements MemberBasicInformRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public boolean existsByMemberId(final Long memberId) {
@@ -40,13 +44,130 @@ public class MemberBasicInformRepositoryCustomImpl implements MemberBasicInformR
     }
 
     @Override
-    @Transactional
-    public void deleteByMemberId(final Long memberId) {
-        QMemberBasicInform memberBasicInform = QMemberBasicInform.memberBasicInform;
+    public Optional<MemberBasicInform> updateMemberBasicInform(
+            final Long memberId,
+            final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest updateMemberBasicInformRequest
+    ) {
+        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform;
 
-        jpaQueryFactory.update(memberBasicInform)
-                .set(memberBasicInform.status, StatusType.DELETED)
-                .where(memberBasicInform.member.id.eq(memberId))
+        long affectedRows = jpaQueryFactory.update(qMemberBasicInform)
+                .set(qMemberBasicInform.memberName, updateMemberBasicInformRequest.getMemberName())
+                .set(qMemberBasicInform.contact, updateMemberBasicInformRequest.getContact())
+                .where(qMemberBasicInform.member.id.eq(memberId))
                 .execute();
+
+        if (affectedRows > 0) {
+            // 업데이트된 객체를 다시 조회해서 반환
+            MemberBasicInform updatedEntity = jpaQueryFactory
+                    .selectFrom(qMemberBasicInform)
+                    .where(qMemberBasicInform.member.id.eq(memberId))
+                    .fetchOne();
+            return Optional.ofNullable(updatedEntity);
+        }
+
+        entityManager.flush();
+        entityManager.clear();
+
+        return Optional.empty();  // 업데이트가 실패한 경우
+    }
+
+    @Override
+    public Optional<MemberBasicInform> updateConsentServiceUse(
+            final Long memberId,
+            final MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest updateConsentServiceUseRequest
+    ) {
+        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform;
+
+        long affectedRows = jpaQueryFactory.update(qMemberBasicInform)
+                .set(qMemberBasicInform.serviceUseAgree, updateConsentServiceUseRequest.getIsServiceUseAgree())
+                .set(qMemberBasicInform.privateInformAgree, updateConsentServiceUseRequest.getIsPrivateInformAgree())
+                .set(qMemberBasicInform.ageCheck, updateConsentServiceUseRequest.getIsAgeCheck())
+                .set(qMemberBasicInform.marketingAgree, updateConsentServiceUseRequest.getIsMarketingAgree())
+                .where(qMemberBasicInform.member.id.eq(memberId))
+                .execute();
+
+        // 업데이트가 성공했는지 여부에 따라 결과 반환
+        if (affectedRows > 0) {
+            // 업데이트된 객체를 다시 조회해서 반환
+            MemberBasicInform updatedEntity = jpaQueryFactory
+                    .selectFrom(qMemberBasicInform)
+                    .where(qMemberBasicInform.member.id.eq(memberId))
+                    .fetchOne();
+            return Optional.ofNullable(updatedEntity);
+        }
+
+        return Optional.empty();  // 업데이트가 실패한 경우
+    }
+
+    @Override
+    public Optional<MemberBasicInform> updateMemberName(
+            final Long memberId,
+            final MemberBasicInformRequestDTO.UpdateMemberNameRequest updateMemberNameRequest
+    ) {
+        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform;
+
+        long affectedRows = jpaQueryFactory.update(qMemberBasicInform)
+                .set(qMemberBasicInform.memberName, updateMemberNameRequest.getMemberName())
+                .where(qMemberBasicInform.member.id.eq(memberId))
+                .execute();
+
+        if (affectedRows > 0) {
+            // 업데이트된 엔티티를 다시 조회하여 반환
+            MemberBasicInform updatedEntity = jpaQueryFactory
+                    .selectFrom(qMemberBasicInform)
+                    .where(qMemberBasicInform.member.id.eq(memberId))
+                    .fetchOne();
+            return Optional.ofNullable(updatedEntity);
+        }
+
+        return Optional.empty();  // 업데이트가 실패한 경우
+    }
+
+    @Override
+    public Optional<MemberBasicInform> updateMemberContact(
+            final Long memberId,
+            final MemberBasicInformRequestDTO.UpdateMemberContactRequest updateMemberContactRequest
+    ) {
+        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform;
+
+        long affectedRows = jpaQueryFactory.update(qMemberBasicInform)
+                .set(qMemberBasicInform.contact, updateMemberContactRequest.getContact())
+                .where(qMemberBasicInform.member.id.eq(memberId))
+                .execute();
+
+        if (affectedRows > 0) {
+            // 업데이트된 엔티티를 다시 조회하여 반환
+            MemberBasicInform updatedEntity = jpaQueryFactory
+                    .selectFrom(qMemberBasicInform)
+                    .where(qMemberBasicInform.member.id.eq(memberId))
+                    .fetchOne();
+            return Optional.ofNullable(updatedEntity);
+        }
+
+        return Optional.empty();  // 업데이트가 실패한 경우
+    }
+
+    @Override
+    public Optional<MemberBasicInform> updateConsentMarketing(
+            final Long memberId,
+            final UpdateConsentMarketingRequest updateConsentMarketingRequest
+    ) {
+        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform;
+
+        long affectedRows = jpaQueryFactory.update(qMemberBasicInform)
+                .set(qMemberBasicInform.marketingAgree, updateConsentMarketingRequest.getIsMarketingAgree())
+                .where(qMemberBasicInform.member.id.eq(memberId))
+                .execute();
+
+        if (affectedRows > 0) {
+            // 업데이트된 엔티티를 다시 조회하여 반환
+            MemberBasicInform updatedEntity = jpaQueryFactory
+                    .selectFrom(qMemberBasicInform)
+                    .where(qMemberBasicInform.member.id.eq(memberId))
+                    .fetchOne();
+            return Optional.ofNullable(updatedEntity);
+        }
+
+        return Optional.empty();  // 업데이트가 실패한 경우
     }
 }
