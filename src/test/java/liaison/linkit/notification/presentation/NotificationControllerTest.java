@@ -85,6 +85,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("방금 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.teamInvitationRequested(
+                                                "팀 코드",
                                                 "팀원으로 초대한 팀의 이름"
                                         )
                                 )
@@ -97,6 +98,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("방금 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.teamMemberJoined(
+                                                "팀 코드",
                                                 "팀원으로 들어온 회원의 이름",
                                                 "팀원으로 초대한 팀의 이름"
                                         )
@@ -161,6 +163,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.removeTeamRequested(
+                                                "팀 코드",
                                                 "팀 삭제 요청을 진행한 팀원(오너/관리자)의 이름",
                                                 "팀 이름"
                                         )
@@ -175,6 +178,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.removeTeamRejected(
+                                                "팀 코드",
                                                 "팀 삭제 요청을 거절한 팀원(오너/관리자)의 이름",
                                                 "삭제 완료된 팀 이름"
                                         )
@@ -189,6 +193,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.removeTeamCompleted(
+                                                "팀 코드",
                                                 "삭제 완료된 팀 이름"
                                         )
                                 )

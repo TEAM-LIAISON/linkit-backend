@@ -58,12 +58,14 @@ public class NotificationMapper {
                 switch (subNotificationType) {
                     case TEAM_INVITATION_REQUESTED -> notification.setTeamInvitationDetails(
                             Notification.TeamInvitationDetails.builder()
+                                    .teamCode(notificationDetails.getTeamCode())
                                     .teamName(notificationDetails.getTeamName())
                                     .build()
                     );
 
                     case TEAM_MEMBER_JOINED -> notification.setTeamInvitationDetails(
                             Notification.TeamInvitationDetails.builder()
+                                    .teamCode(notificationDetails.getTeamCode())
                                     .teamMemberName(notificationDetails.getTeamMemberName())
                                     .teamName(notificationDetails.getTeamName())
                                     .build()
@@ -75,6 +77,7 @@ public class NotificationMapper {
                 switch (subNotificationType) {
                     case REMOVE_TEAM_REQUESTED, REMOVE_TEAM_REJECTED -> notification.setTeamDetails(
                             Notification.TeamDetails.builder()
+                                    .teamCode(notificationDetails.getTeamCode())
                                     .teamMemberName(notificationDetails.getTeamMemberName())
                                     .teamName(notificationDetails.getTeamName())
                                     .build()
@@ -82,6 +85,7 @@ public class NotificationMapper {
 
                     case TEAM_MEMBER_JOINED -> notification.setTeamDetails(
                             Notification.TeamDetails.builder()
+                                    .teamCode(notificationDetails.getTeamCode())
                                     .teamName(notificationDetails.getTeamName())
                                     .build()
                     );
@@ -140,9 +144,11 @@ public class NotificationMapper {
             case TEAM_INVITATION -> {
                 switch (subType) {
                     case TEAM_INVITATION_REQUESTED -> notificationDetails = NotificationDetails.teamInvitationRequested(
+                            notification.getTeamInvitationDetails().getTeamCode(),
                             notification.getTeamInvitationDetails().getTeamName()
                     );
                     case TEAM_MEMBER_JOINED -> notificationDetails = NotificationDetails.teamMemberJoined(
+                            notification.getTeamInvitationDetails().getTeamCode(),
                             notification.getTeamInvitationDetails().getTeamMemberName(),
                             notification.getTeamInvitationDetails().getTeamName()
                     );
@@ -153,16 +159,19 @@ public class NotificationMapper {
             case TEAM -> {
                 switch (subType) {
                     case REMOVE_TEAM_REQUESTED -> notificationDetails = NotificationDetails.removeTeamRequested(
+                            notification.getTeamDetails().getTeamCode(),
                             notification.getTeamDetails().getTeamMemberName(),
                             notification.getTeamDetails().getTeamName()
                     );
 
                     case REMOVE_TEAM_REJECTED -> notificationDetails = NotificationDetails.removeTeamRejected(
+                            notification.getTeamDetails().getTeamCode(),
                             notification.getTeamDetails().getTeamMemberName(),
                             notification.getTeamDetails().getTeamName()
                     );
 
                     case REMOVE_TEAM_COMPLETED -> notificationDetails = NotificationDetails.removeTeamCompleted(
+                            notification.getTeamDetails().getTeamCode(),
                             notification.getTeamDetails().getTeamName()
                     );
                 }

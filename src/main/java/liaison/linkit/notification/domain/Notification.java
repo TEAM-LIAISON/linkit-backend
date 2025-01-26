@@ -53,6 +53,8 @@ public class Notification {
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
     public static class MatchingDetails {
+        private Long matchingId;
+        private String emailId;
         private String matchingTargetName;
     }
 
@@ -61,6 +63,7 @@ public class Notification {
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
     public static class ChatDetails {
+        private String chatRoomId;
         private String chatSenderName;
     }
 
@@ -69,6 +72,7 @@ public class Notification {
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
     public static class TeamInvitationDetails {
+        private String teamCode;
         private String teamMemberName;
         private String teamName;
     }
@@ -78,6 +82,7 @@ public class Notification {
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
     public static class TeamDetails {
+        private String teamCode;
         private String teamMemberName;
         private String teamName;
     }

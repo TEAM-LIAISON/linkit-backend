@@ -70,6 +70,9 @@ public class NotificationResponseDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NotificationDetails {
 
+        // 이메일 ID
+        private String emailId;
+
         // 채팅 알림
         private String chatSenderName;
 
@@ -77,32 +80,42 @@ public class NotificationResponseDTO {
         private String matchingTargetName;
 
         // 팀 알림 / 팀 초대 알림
+        private String teamCode;
+        private String teamLogoImagePath;
         private String teamMemberName;
         private String teamName;
 
         @Builder
         private NotificationDetails(
+                final String emailId,
                 final String chatSenderName,
                 final String matchingTargetName,
+                final String teamCode,
+                final String teamLogoImagePath,
                 final String teamMemberName,
                 final String teamName
         ) {
+            this.emailId = emailId;
             this.chatSenderName = chatSenderName;
             this.matchingTargetName = matchingTargetName;
+            this.teamCode = teamCode;
+            this.teamLogoImagePath = teamLogoImagePath;
             this.teamMemberName = teamMemberName;
             this.teamName = teamName;
         }
 
         // 팀 초대 요청에 대한 알림생성
-        public static NotificationDetails teamInvitationRequested(final String teamName) {
+        public static NotificationDetails teamInvitationRequested(final String teamCode, final String teamName) {
             return NotificationDetails.builder()
+                    .teamCode(teamCode)
                     .teamName(teamName)
                     .build();
         }
 
         // 팀 초대 완료에 대한 알림 생성
-        public static NotificationDetails teamMemberJoined(final String teamMemberName, final String teamName) {
+        public static NotificationDetails teamMemberJoined(final String teamCode, final String teamMemberName, final String teamName) {
             return NotificationDetails.builder()
+                    .teamCode(teamCode)
                     .teamMemberName(teamMemberName)
                     .teamName(teamName)
                     .build();
@@ -137,24 +150,27 @@ public class NotificationResponseDTO {
         }
 
         // 팀 삭제 요청 알림 생성
-        public static NotificationDetails removeTeamRequested(final String teamMemberName, final String teamName) {
+        public static NotificationDetails removeTeamRequested(final String teamCode, final String teamMemberName, final String teamName) {
             return NotificationDetails.builder()
+                    .teamCode(teamCode)
                     .teamMemberName(teamMemberName)
                     .teamName(teamName)
                     .build();
         }
 
         // 팀 삭제 요청 거절 알림 생성
-        public static NotificationDetails removeTeamRejected(final String teamMemberName, final String teamName) {
+        public static NotificationDetails removeTeamRejected(final String teamCode, final String teamMemberName, final String teamName) {
             return NotificationDetails.builder()
+                    .teamCode(teamCode)
                     .teamMemberName(teamMemberName)
                     .teamName(teamName)
                     .build();
         }
 
         // 팀 삭제 요청 거절 알림 생성
-        public static NotificationDetails removeTeamCompleted(final String teamName) {
+        public static NotificationDetails removeTeamCompleted(final String teamCode, final String teamName) {
             return NotificationDetails.builder()
+                    .teamCode(teamCode)
                     .teamName(teamName)
                     .build();
         }
