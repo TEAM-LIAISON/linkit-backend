@@ -1,31 +1,40 @@
 package liaison.linkit.profile.domain.skill;
 
-import jakarta.persistence.*;
-import liaison.linkit.profile.domain.Profile;
+import static jakarta.persistence.FetchType.LAZY;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import liaison.linkit.common.domain.BaseDateTimeEntity;
+import liaison.linkit.profile.domain.profile.Profile;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.IDENTITY;
-import static lombok.AccessLevel.PROTECTED;
-
 @Entity
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@NoArgsConstructor(access = PROTECTED)
-public class ProfileSkill {
+public class ProfileSkill extends BaseDateTimeEntity {
+
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "profile_skill_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    // 역할 및 기술 저장된 skill
+    private String skillLevel;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "skill_id")
     private Skill skill;
+    
 }

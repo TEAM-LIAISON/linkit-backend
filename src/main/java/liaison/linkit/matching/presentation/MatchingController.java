@@ -1,118 +1,147 @@
 package liaison.linkit.matching.presentation;
 
-import jakarta.validation.Valid;
+import jakarta.mail.MessagingException;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.matching.CheckMatchingToPrivateProfileAccess;
-import liaison.linkit.matching.CheckMatchingToTeamProfileAccess;
-import liaison.linkit.matching.dto.request.MatchingCreateRequest;
-import liaison.linkit.matching.dto.response.ReceivedMatchingResponse;
-import liaison.linkit.matching.dto.response.RequestMatchingResponse;
-import liaison.linkit.matching.dto.response.SuccessMatchingResponse;
+import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.matching.domain.type.ReceiverType;
+import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateReceivedMatchingReadRequest;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceivedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.RequestedMatchingMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
+import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
 import liaison.linkit.matching.service.MatchingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping
+@RequestMapping("/api/v1/matching")
 @Slf4j
 public class MatchingController {
 
-    public final MatchingService matchingService;
+    private final MatchingService matchingService;
 
-    // 매칭 요청을 보내기 전에 GET 메서드로 해당 사용자의 권한을 체킹?
-    // 아니면 요청이 발생했을 때 사용자의 권한을 조회하는 방법?
-
-    // 개인 이력서로 개인 이력서에 매칭 요청을 보내는 경우
-    // 해당 개인 이력서의 PK id가 필요하다.
-    // accessor.getMemberId -> 해당 회원의 내 이력서와 상대의 내 이력서가 매칭
-    @PostMapping("/private/profile/matching/private/{profileId}")
-    @MemberOnly
-    @CheckMatchingToPrivateProfileAccess
-    public ResponseEntity<Void> createPrivateProfileMatchingToPrivate(
+    // 프로필 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
+    @GetMapping("/profile/{emailId}/select/request/menu")
+    public CommonResponse<SelectMatchingRequestToProfileMenu> selectMatchingRequestToProfileMenu(
             @Auth final Accessor accessor,
-            @PathVariable final Long profileId,
-            @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
+            @PathVariable final String emailId
     ) {
-        log.info("profileId={}에게 내 이력서 대상으로 memberId={} 매칭 요청이 발생했습니다.", profileId, accessor.getMemberId());
-        matchingService.createPrivateProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        log.info("selectMatchingRequestToProfileMenu");
+        return CommonResponse.onSuccess(matchingService.selectMatchingRequestToProfileMenu(accessor.getMemberId(), emailId));
     }
 
-    // accessor.getMemberId -> 해당 회원의 팀 소개서와 상대의 내 이력서가 매칭
-    @PostMapping("/team/profile/matching/private/{profileId}")
+    // 팀 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
+    @GetMapping("/team/{teamCode}/select/request/menu")
     @MemberOnly
-    @CheckMatchingToPrivateProfileAccess
-    public ResponseEntity<Void> createTeamProfileMatchingToPrivate(
+    public CommonResponse<MatchingResponseDTO.SelectMatchingRequestToTeamMenu> selectMatchingRequestToTeamMenu(
             @Auth final Accessor accessor,
-            @PathVariable final Long profileId,
-            @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
+            @PathVariable final String teamCode
     ) {
-        matchingService.createTeamProfileMatchingToPrivate(accessor.getMemberId(), profileId, matchingCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return CommonResponse.onSuccess(matchingService.selectMatchingRequestToTeamMenu(accessor.getMemberId(), teamCode));
     }
 
-
-    // 팀 소개서가 팀 소개서에 매칭 요청을 보내는 경우
-    @PostMapping("/team/profile/matching/team/{teamProfileId}")
+    // 매칭 요청 보내기 (명세 완료)
+    @PostMapping
     @MemberOnly
-    @CheckMatchingToTeamProfileAccess
-    public ResponseEntity<Void> createTeamProfileMatchingToTeam(
+    public CommonResponse<MatchingResponseDTO.AddMatchingResponse> addMatching(
             @Auth final Accessor accessor,
-            @PathVariable final Long teamProfileId,
-            @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
+            @RequestBody final MatchingRequestDTO.AddMatchingRequest addMatchingRequest
     ) {
-        matchingService.createTeamProfileMatchingToTeam(accessor.getMemberId(), teamProfileId, matchingCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return CommonResponse.onSuccess(matchingService.addMatching(accessor.getMemberId(), addMatchingRequest));
     }
 
-    @PostMapping("/private/profile/matching/team/{teamProfileId}")
+    // 매칭 수신함 (명세 완료)
+    @GetMapping("/received/menu")
     @MemberOnly
-    @CheckMatchingToTeamProfileAccess
-    public ResponseEntity<Void> createPrivateProfileMatchingToTeam(
+    public CommonResponse<Page<ReceivedMatchingMenu>> getReceivedMatchingMenu(
             @Auth final Accessor accessor,
-            @PathVariable final Long teamProfileId,
-            @RequestBody @Valid MatchingCreateRequest matchingCreateRequest
+            @RequestParam(value = "receiverType", required = false) final ReceiverType receiverType,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size
     ) {
-        matchingService.createPrivateProfileMatchingToTeam(accessor.getMemberId(), teamProfileId, matchingCreateRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<ReceivedMatchingMenu> matchingReceivedMenus = matchingService.getReceivedMatchingMenuResponse(accessor.getMemberId(), receiverType, pageable);
+        return CommonResponse.onSuccess(matchingReceivedMenus);
     }
 
-    // 내가 받은 매칭 조회
-    @GetMapping("/matching/received")
+    // 매칭 수신함에서 읽음처리 (명세 완료)
+    @PostMapping("/received/menu/read")
     @MemberOnly
-    public ResponseEntity<ReceivedMatchingResponse> getReceivedMatchingResponses(
+    public CommonResponse<UpdateReceivedMatchingCompletedStateReadItems> updateReceivedMatchingStateRead(
+            @Auth final Accessor accessor,
+            @RequestBody final UpdateReceivedMatchingReadRequest request
+    ) {
+        return CommonResponse.onSuccess(matchingService.updateReceivedMatchingStateToRead(accessor.getMemberId(), request));
+    }
+
+    // 매칭 수신함에서 삭제 처리 (명세 완료)
+    @PostMapping("/received/menu/delete")
+    @MemberOnly
+    public CommonResponse<MatchingResponseDTO.DeleteReceivedMatchingItems> deleteReceivedMatchingItems(
+            @Auth final Accessor accessor,
+            @RequestBody final MatchingRequestDTO.DeleteReceivedMatchingRequest request
+    ) {
+        return CommonResponse.onSuccess(matchingService.deleteReceivedMatchingItems(accessor.getMemberId(), request));
+    }
+
+    // 매칭 수신함에서 수락하기/거절하기
+    @PostMapping("/{matchingId}")
+    @MemberOnly
+    public CommonResponse<MatchingResponseDTO.UpdateMatchingStatusTypeResponse> updateMatchingStatusTypeResponse(
+            @Auth final Accessor accessor,
+            @PathVariable final Long matchingId,
+            @RequestBody final MatchingRequestDTO.UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
+    ) throws MessagingException {
+        return CommonResponse.onSuccess(matchingService.updateMatchingStatusType(accessor.getMemberId(), matchingId, updateMatchingStatusTypeRequest));
+    }
+
+    // 매칭 발신함 (명세 완료)
+    @GetMapping("/requested/menu")
+    @MemberOnly
+    public CommonResponse<Page<RequestedMatchingMenu>> getRequestedMatchingMenuResponse(
+            @Auth final Accessor accessor,
+            @RequestParam(value = "senderType", required = false) final SenderType senderType,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<RequestedMatchingMenu> requestedMatchingMenus = matchingService.getRequestedMatchingMenuResponse(accessor.getMemberId(), senderType, pageable);
+        return CommonResponse.onSuccess(requestedMatchingMenus);
+    }
+
+    // 매칭 발신함에서 삭제 처리 (명세 완료)
+    @PostMapping("/requested/menu/delete")
+    @MemberOnly
+    public CommonResponse<MatchingResponseDTO.DeleteRequestedMatchingItems> deleteRequestedMatchingItems(
+            @Auth final Accessor accessor,
+            @RequestBody final MatchingRequestDTO.DeleteRequestedMatchingRequest request
+    ) {
+        return CommonResponse.onSuccess(matchingService.deleteRequestedMatchingItems(accessor.getMemberId(), request));
+    }
+
+    // 상단 메뉴 (명세 완료)
+    @GetMapping("/notification/menu")
+    public CommonResponse<MatchingNotificationMenu> getMatchingNotificationMenu(
             @Auth final Accessor accessor
     ) {
-        final ReceivedMatchingResponse receivedMatchingResponse = matchingService.getReceivedMatching(accessor.getMemberId());
-        return ResponseEntity.status(HttpStatus.OK).body(receivedMatchingResponse);
+        return CommonResponse.onSuccess(matchingService.getMatchingNotificationMenu(accessor.getMemberId()));
     }
-
-    // 내가 보낸 매칭 조회
-    @GetMapping("/matching/request")
-    @MemberOnly
-    public ResponseEntity<RequestMatchingResponse> getRequestMatchingResponses(
-            @Auth final Accessor accessor
-    ) {
-        // accessor.getMemberId()가 보낸 모든 매칭 요청을 조회해야한다.
-        final RequestMatchingResponse requestMatchingResponse = matchingService.getMyRequestMatching(accessor.getMemberId());
-        return ResponseEntity.status(HttpStatus.OK).body(requestMatchingResponse);
-    }
-
-    // 성사된 매칭 조회
-    @GetMapping("/matching/success")
-    @MemberOnly
-    public ResponseEntity<SuccessMatchingResponse> getSuccessMatchingResponses(
-            @Auth final Accessor accessor
-    ) {
-        // 내가 보낸 매칭 요청, 내가 받은 매칭 요청 중에서 성사된 모든 매칭을 조회해야한다.
-        final SuccessMatchingResponse successMatchingResponse = matchingService.getMySuccessMatching(accessor.getMemberId());
-        return ResponseEntity.status(HttpStatus.OK).body(successMatchingResponse);
-    }
-
 }

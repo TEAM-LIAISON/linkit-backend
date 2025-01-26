@@ -1,7 +1,7 @@
 package liaison.linkit.global.config.csv.university;
 
-import liaison.linkit.profile.dto.csv.UniversityCsvData;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
@@ -12,18 +12,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class CsvUniversityReader {
-
     @Value("${university.csv-path}")
-    private String universityCsv;
+    private String universityFieldCsv;
 
-    @Bean(name = "universityCsvReader")
-    public FlatFileItemReader<UniversityCsvData> csvUniversityReader() {
-        // 파일 경로 지정 및 인코딩
+    @Bean(name = "UniversityCsvReader")
+    public FlatFileItemReader<UniversityCsvData> csvUniversityFieldReader() {
+
         FlatFileItemReader<UniversityCsvData> flatFileItemReader = new FlatFileItemReader<>();
-        flatFileItemReader.setResource(new ClassPathResource(universityCsv));
+        flatFileItemReader.setResource(new ClassPathResource(universityFieldCsv));
         flatFileItemReader.setEncoding("UTF-8");
 
         // 데이터 내부에 개행이 있으면 꼭! 추가해주세요
@@ -44,7 +44,6 @@ public class CsvUniversityReader {
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
         flatFileItemReader.setLineMapper(defaultLineMapper);
-
         return flatFileItemReader;
     }
 }

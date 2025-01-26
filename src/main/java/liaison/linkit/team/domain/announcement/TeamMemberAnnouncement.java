@@ -1,69 +1,52 @@
 package liaison.linkit.team.domain.announcement;
 
-import jakarta.persistence.*;
-import liaison.linkit.team.domain.TeamProfile;
-import liaison.linkit.team.dto.request.announcement.TeamMemberAnnouncementRequest;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import liaison.linkit.global.BaseEntity;
+import liaison.linkit.team.domain.team.Team;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 @Entity
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-// 팀원 공고
-public class TeamMemberAnnouncement {
+public class TeamMemberAnnouncement extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "team_member_announcement_id")
     private Long id;
 
-    @ManyToOne(fetch = LAZY, cascade = ALL)
-    @JoinColumn(name = "team_profile_id")
-    private TeamProfile teamProfile;
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
-    // 2. 주요 업무
-    @Column(name = "main_business")
-    private String mainBusiness;
+    private String announcementTitle;                   // 공고 제목
+    private String announcementStartDate;               // 공고 시작 기간
+    private String announcementEndDate;                 // 공고 마감 기간
+    private boolean isRegionFlexible;                   // 지역 무관
+    private String mainTasks;                           // 주요 업무
+    private String workMethod;                          // 업무 방식
+    private String idealCandidate;                      // 이런 분을 찾고 있어요
+    private String preferredQualifications;             // 이런 분이면 더 좋아요
+    private String joiningProcess;                      // 이런 과정으로 합류해요
+    private String benefits;                            // 합류하면 이런 것들을 얻어 갈 수 있어요
+    private boolean isAnnouncementPublic;               // 공고 공개/비공개 설정
+    private boolean isAnnouncementInProgress;           // 공고 진행/완료 여부
 
-    // 4. 지원 절차
-    @Column(name = "application_process")
-    private String applicationProcess;
-
-    @Column(updatable = false)
-    private LocalDateTime createdDate;
-
-    @PrePersist
-    protected void onCreate() {
-        this.createdDate = LocalDateTime.now();
-    }
-
-    public static TeamMemberAnnouncement of(
-            final TeamProfile teamProfile,
-            final String mainBusiness,
-            final String applicationProcess
-    ) {
-        return new TeamMemberAnnouncement(
-                null,
-                teamProfile,
-                mainBusiness,
-                applicationProcess,
-                null
-        );
-    }
-
-    public void update(
-            final TeamMemberAnnouncementRequest teamMemberAnnouncementRequest
-    ) {
-        this.mainBusiness = teamMemberAnnouncementRequest.getMainBusiness();
-        this.applicationProcess = teamMemberAnnouncementRequest.getApplicationProcess();
+    public void setIsAnnouncementPublic(final boolean isAnnouncementPublic) {
+        this.isAnnouncementPublic = isAnnouncementPublic;
     }
 }
