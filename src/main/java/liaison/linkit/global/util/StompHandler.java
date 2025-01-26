@@ -1,5 +1,6 @@
 package liaison.linkit.global.util;
 
+import java.security.Principal;
 import java.util.List;
 import liaison.linkit.chat.event.ChatEvent.UserConnectedEvent;
 import liaison.linkit.chat.event.ChatEvent.UserDisconnectedEvent;
@@ -74,11 +75,10 @@ public class StompHandler implements ChannelInterceptor {
                     eventPublisher.publishEvent(new SubscribeEvent(memberId, emailId));
                     log.info("알림 이벤트 발행");
                 }
-
             }
 
             if (destination != null) {
-                if (destination.startsWith("/sub/chat/")) {
+                if (destination.startsWith("/user/sub/chat/")) {
                     // 채팅방 구독시 해당 채팅방 초기 정보 전송
                     Long chatRoomId = extractChatRoomId(destination);
                     log.info("chatRoomId: {}", chatRoomId);
@@ -123,7 +123,6 @@ public class StompHandler implements ChannelInterceptor {
                 }
             }
 
-            // TODO
             // 채팅방 입장 입력
             if (destination != null && destination.startsWith("/pub/chat/read")) {
                 // "/pub/chat/send/{chatRoomId}"에서 chatRoomId 추출
@@ -176,6 +175,14 @@ public class StompHandler implements ChannelInterceptor {
     }
 
     @EventListener
+    public void handleSessionConnected(SessionConnectedEvent event) {
+        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+        Principal userPrincipal = headerAccessor.getUser();
+        log.info("SessionConnectedEvent - Principal: {}",
+                (userPrincipal != null ? userPrincipal.getName() : "null"));
+    }
+
+    @EventListener
     public void handleWebSocketDisconnectionListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         String sessionId = headerAccessor.getSessionId();
@@ -207,3 +214,4 @@ public class StompHandler implements ChannelInterceptor {
 //        );
 //    }
 }
+

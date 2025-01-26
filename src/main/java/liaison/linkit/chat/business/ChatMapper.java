@@ -119,16 +119,6 @@ public class ChatMapper {
                 .build();
     }
 
-    public ChatResponseDTO.ChatMessageResponse toChatMessageResponse(ChatMessage chatMessage, boolean isMyMessage) {
-        return ChatResponseDTO.ChatMessageResponse.builder()
-                .messageId(chatMessage.getId())
-                .chatRoomId(chatMessage.getChatRoomId())
-                .content(chatMessage.getContent())
-                .timestamp(chatMessage.getTimestamp())
-                .isRead(chatMessage.isRead())
-                .build();
-    }
-
     private ParticipantType determineMyParticipantType(ChatRoom chatRoom, ChatMessage message, Long memberId) {
         if (chatRoom.getParticipantAMemberId().equals(memberId)) {
             return ParticipantType.A_TYPE;

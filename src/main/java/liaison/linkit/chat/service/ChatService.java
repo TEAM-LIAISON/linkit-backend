@@ -3,6 +3,7 @@ package liaison.linkit.chat.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import liaison.linkit.chat.business.ChatMapper;
 import liaison.linkit.chat.domain.ChatMessage;
@@ -31,7 +32,6 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomRespon
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerProfileDetailInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerTeamDetailInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ReadChatMessageResponse;
-import liaison.linkit.common.annotation.ExplainError;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -371,14 +371,14 @@ public class ChatService {
 
         // 2. 메시지 생성 및 저장
         ChatMessage chatMessage = createChatMessage(chatMessageRequest, chatRoom, memberId, participantALogoImagePath, participantBLogoImagePath);
-        chatMessageRepository.save(chatMessage);
+        final ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
 
         // 3. 채팅방 마지막 메시지 업데이트
         chatRoom.updateLastMessage(chatMessage.getContent(), chatMessage.getTimestamp());
-        chatRoomCommandAdapter.save(chatRoom);
+        final ChatRoom savedChatRoom = chatRoomCommandAdapter.save(chatRoom);
 
         // 4. 메시지 전송
-        sendChatMessages(chatRoom, chatMessage, memberId);
+        sendChatMessages(savedChatRoom, savedChatMessage, memberId);
     }
 
     private String getParticipantLogoImagePath(SenderType type, String id) {
@@ -424,19 +424,26 @@ public class ChatService {
     }
 
     private void sendChatMessages(final ChatRoom chatRoom, final ChatMessage chatMessage, final Long senderMemberId) {
-        // 발신자 메시지 응답 생성 및 전송
-        ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatMessage, true);
-        simpMessagingTemplate.convertAndSend(
-                "/sub/chat/" + chatRoom.getId(),
-                senderResponse
-        );
+        // 1) 발신자/수신자 식별
+        Long receiverMemberId = chatMessage.getMessageReceiverMemberId();
 
-        // 수신자 메시지 응답 생성 및 전송
-        ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatMessage, false);
-        simpMessagingTemplate.convertAndSend(
-                "/sub/chat/" + chatRoom.getId(),
-                receiverResponse
-        );
+        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+//            ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatRoom, chatMessage, senderMemberId);
+//            // 발신자만 받는 메시지 → convertAndSendToUser
+//            simpMessagingTemplate.convertAndSend(
+//                    "/sub/chat/" + chatRoom.getId(),           // user destination
+//                    senderResponse
+//            );
+
+            // 3) 수신자 메시지 응답 생성
+            ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatRoom, chatMessage, receiverMemberId);
+            // 수신자만 받는 메시지
+            simpMessagingTemplate.convertAndSend(
+                    "/sub/chat/" + chatRoom.getId(),
+                    receiverResponse
+            );
+        }, 150, TimeUnit.MILLISECONDS);
+
     }
 
 
@@ -753,4 +760,5 @@ public class ChatService {
 
         return chatMapper.toLeaveChatRoom(chatRoomId, participantType);
     }
+
 }
