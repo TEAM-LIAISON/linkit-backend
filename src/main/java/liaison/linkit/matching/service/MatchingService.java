@@ -419,22 +419,32 @@ public class MatchingService {
     }
 
     // 수신자가 매칭 요청 상태를 업데이트한다.
-    public UpdateMatchingStatusTypeResponse updateMatchingStatusType(final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
+    public UpdateMatchingStatusTypeResponse updateMatchingStatusType(
+            final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
     ) throws MessagingException {
+        log.info("updateMatchingStatusType 호출: memberId={}, matchingId={}, updateRequest={}",
+                memberId, matchingId, updateMatchingStatusTypeRequest);
+
         if (updateMatchingStatusTypeRequest == null || updateMatchingStatusTypeRequest.getMatchingStatusType().equals(MatchingStatusType.REQUESTED)) {
+            log.error("Invalid updateMatchingStatusTypeRequest: {}", updateMatchingStatusTypeRequest);
             throw MatchingStatusTypeBadRequestException.EXCEPTION;
         }
 
         final Matching matching = matchingQueryAdapter.findByMatchingId(matchingId);
+        log.info("Matching 정보 조회 성공: {}", matching);
 
         if (!getReceiverMemberId(matching).equals(memberId)) {
+            log.error("수신자 ID 불일치: 요청자 ID={}, 수신자 ID={}", memberId, getReceiverMemberId(matching));
             throw UpdateMatchingStatusTypeBadRequestException.EXCEPTION;
         }
 
         matchingCommandAdapter.updateMatchingStatusType(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
+        log.info("매칭 상태 업데이트 성공: matchingId={}, statusType={}", matchingId, updateMatchingStatusTypeRequest.getMatchingStatusType());
 
         // COMPLETED 상태로 변경된 경우 비동기 이메일 발송
         if (updateMatchingStatusTypeRequest.getMatchingStatusType() == MatchingStatusType.COMPLETED) {
+            log.info("매칭 상태 COMPLETED - 이메일 발송 준비");
+
             String mailTitle;
             String mailSubTitle;
             String mailSubText;
@@ -447,6 +457,8 @@ public class MatchingService {
                 mailSubTitle = "과 매칭 성사";
                 mailSubText = "매칭이 성사되었어요";
             }
+
+            log.info("이메일 정보 설정: mailTitle={}, mailSubTitle={}, mailSubText={}", mailTitle, mailSubTitle, mailSubText);
 
             asyncMatchingEmailService.sendMatchingCompletedEmails(
                     mailTitle,
@@ -468,6 +480,7 @@ public class MatchingService {
                     getReceiverRegionOrAnnouncementSkillText(matching),
                     getReceiverRegionOrAnnouncementSkill(matching)
             );
+            log.info("이메일 발송 완료");
         }
 
         // 매칭 성사된 경우, 수신자에게 알림 발송
@@ -485,8 +498,10 @@ public class MatchingService {
                         receiverNotificationDetails
                 )
         );
+        log.info("수신자에게 알림 발송 완료: memberId={}, matchingId={}", getReceiverMemberId(matching), matchingId);
 
         headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
+        log.info("수신자 헤더 알림 카운트 업데이트 완료: memberId={}", getReceiverMemberId(matching));
 
         // 매칭 성사된 경우, 발신자에게 알림 발송
         NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
@@ -503,11 +518,17 @@ public class MatchingService {
                         senderNotificationDetails
                 )
         );
+        log.info("발신자에게 알림 발송 완료: memberId={}, matchingId={}", getSenderMemberId(matching), matchingId);
 
         headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
+        log.info("발신자 헤더 알림 카운트 업데이트 완료: memberId={}", getSenderMemberId(matching));
 
-        return matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
+        UpdateMatchingStatusTypeResponse response = matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
+        log.info("매칭 상태 업데이트 응답 생성 완료: {}", response);
+
+        return response;
     }
+
 
     public DeleteRequestedMatchingItems deleteRequestedMatchingItems(final Long memberId, final DeleteRequestedMatchingRequest request) {
         List<Long> matchingIds = request.getMatchingIds();
@@ -1119,7 +1140,7 @@ public class MatchingService {
             final Profile profile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
             return profile.getMember().getEmail();
         } else {
-            final Team team = teamQueryAdapter.findByTeamCode(matching.getReceiverTeamCode());
+            final Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
             final Member member = teamMemberQueryAdapter.findTeamOwnerByTeamCode(team.getTeamCode());
             return member.getEmail();
         }
