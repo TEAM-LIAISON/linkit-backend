@@ -57,6 +57,8 @@ public class NotificationResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class NotificationItem {
+        private Long notificationId;
+
         private NotificationType notificationType;
         private SubNotificationType subNotificationType;
         private NotificationReadStatus notificationReadStatus;

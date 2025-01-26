@@ -401,16 +401,14 @@ public class ChatService {
     private void sendChatMessages(ChatRoom chatRoom, ChatMessage chatMessage, Long senderMemberId) {
         // 발신자 메시지 응답 생성 및 전송
         ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatMessage, true);
-        simpMessagingTemplate.convertAndSendToUser(
-                senderMemberId.toString(),
+        simpMessagingTemplate.convertAndSend(
                 "/sub/chat/" + chatRoom.getId(),
                 senderResponse
         );
 
         // 수신자 메시지 응답 생성 및 전송
         ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatMessage, false);
-        simpMessagingTemplate.convertAndSendToUser(
-                chatMessage.getMessageReceiverMemberId().toString(),
+        simpMessagingTemplate.convertAndSend(
                 "/sub/chat/" + chatRoom.getId(),
                 receiverResponse
         );

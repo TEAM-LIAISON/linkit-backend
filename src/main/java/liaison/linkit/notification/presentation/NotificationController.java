@@ -26,4 +26,10 @@ public class NotificationController {
     ) {
         return CommonResponse.onSuccess(notificationService.getNotificationItems(accessor.getMemberId()));
     }
+
+//    @PostMapping("/read/{notificationId}")
+//    @MemberOnly
+//    public CommonResponse<NotificationResponseDTO.ReadNotificationResponse> readNotification(
+//            @Auth final Accessor accessor,
+//    )
 }
