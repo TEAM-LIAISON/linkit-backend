@@ -118,8 +118,8 @@ public class MemberService {
         // 재인증 코드를 생성한다
         final String authCode = createCode();
 
-        // Redis 에 해당 인증코드 인증 시간 설정
-        mailReAuthenticationRedisUtil.setDataExpire(mailReAuthenticationRequest.getEmail(), authCode, 60 * 10L);
+        // Redis 에 해당 인증코드 인증 시간 설정 (10분)
+        mailReAuthenticationRedisUtil.setDataExpire(mailReAuthenticationRequest.getEmail(), authCode, 18 * 10L);
 
         // DB 조회
         final Member member = memberQueryAdapter.findById(memberId);
