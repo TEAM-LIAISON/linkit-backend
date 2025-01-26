@@ -126,6 +126,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.matchingRequested(
+                                                1L,
                                                 "매칭 상대방의 이름"
                                         )
                                 )
@@ -138,6 +139,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.matchingAccepted(
+                                                2L,
                                                 "매칭 상대방의 이름"
                                         )
                                 )
@@ -150,6 +152,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.matchingRejected(
+                                                3L,
                                                 "매칭 상대방의 이름"
                                         )
                                 )

@@ -37,6 +37,7 @@ public class NotificationMapper {
                 switch (subNotificationType) {
                     case MATCHING_REQUESTED, MATCHING_REJECTED, MATCHING_ACCEPTED -> notification.setMatchingDetails(
                             Notification.MatchingDetails.builder()
+                                    .matchingId(notificationDetails.getMatchingId())
                                     .matchingTargetName(notificationDetails.getMatchingTargetName())
                                     .build()
                     );
@@ -48,6 +49,7 @@ public class NotificationMapper {
                 switch (subNotificationType) {
                     case NEW_CHAT -> notification.setChatDetails(
                             Notification.ChatDetails.builder()
+                                    .chatRoomId(notificationDetails.getChatRoomId())
                                     .chatSenderName(notificationDetails.getChatSenderName())
                                     .build()
                     );
@@ -118,14 +120,17 @@ public class NotificationMapper {
             case MATCHING -> {
                 switch (subType) {
                     case MATCHING_REQUESTED -> notificationDetails = NotificationDetails.matchingRequested(
+                            notification.getMatchingDetails().getMatchingId(),
                             notification.getMatchingDetails().getMatchingTargetName()
                     );
 
                     case MATCHING_REJECTED -> notificationDetails = NotificationDetails.matchingRejected(
+                            notification.getMatchingDetails().getMatchingId(),
                             notification.getMatchingDetails().getMatchingTargetName()
                     );
 
                     case MATCHING_ACCEPTED -> notificationDetails = NotificationDetails.matchingAccepted(
+                            notification.getMatchingDetails().getMatchingId(),
                             notification.getMatchingDetails().getMatchingTargetName()
                     );
                 }
@@ -135,6 +140,7 @@ public class NotificationMapper {
             case CHATTING -> {
                 switch (subType) {
                     case NEW_CHAT -> notificationDetails = NotificationDetails.chat(
+                            notification.getChatDetails().getChatRoomId(),
                             notification.getChatDetails().getChatSenderName()
                     );
                 }

@@ -472,6 +472,7 @@ public class MatchingService {
 
         // 매칭 성사된 경우, 수신자에게 알림 발송
         NotificationDetails receiverNotificationDetails = NotificationDetails.matchingAccepted(
+                matchingId,
                 getReceiverName(matching)
         );
 
@@ -488,6 +489,7 @@ public class MatchingService {
 
         // 매칭 성사된 경우, 발신자에게 알림 발송
         NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
+                matchingId,
                 getSenderName(matching)
         );
 
@@ -604,7 +606,7 @@ public class MatchingService {
 
         final Matching matching = matchingMapper.toMatching(addMatchingRequest);
         log.info("Add matching 0: " + matching);
-        matchingCommandAdapter.addMatching(matching);
+        final Matching savedMatching = matchingCommandAdapter.addMatching(matching);
 
         log.info("Add matching 0-1: " + matching);
 
@@ -699,6 +701,7 @@ public class MatchingService {
 
         NotificationDetails receiverNotificationDetails = NotificationDetails.matchingRequested(
                 // matchingTargetName 필요
+                savedMatching.getId(),
                 getSenderName(matching)
         );
 

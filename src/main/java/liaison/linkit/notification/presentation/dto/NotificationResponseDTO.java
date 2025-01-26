@@ -74,9 +74,11 @@ public class NotificationResponseDTO {
         private String emailId;
 
         // 채팅 알림
+        private String chatRoomId;
         private String chatSenderName;
 
         // 매칭 알림
+        private Long matchingId;
         private String matchingTargetName;
 
         // 팀 알림 / 팀 초대 알림
@@ -88,16 +90,26 @@ public class NotificationResponseDTO {
         @Builder
         private NotificationDetails(
                 final String emailId,
+
+                final String chatRoomId,
                 final String chatSenderName,
+
+                final Long matchingId,
                 final String matchingTargetName,
+
                 final String teamCode,
                 final String teamLogoImagePath,
                 final String teamMemberName,
                 final String teamName
         ) {
             this.emailId = emailId;
+
+            this.chatRoomId = chatRoomId;
             this.chatSenderName = chatSenderName;
+
+            this.matchingId = matchingId;
             this.matchingTargetName = matchingTargetName;
+
             this.teamCode = teamCode;
             this.teamLogoImagePath = teamLogoImagePath;
             this.teamMemberName = teamMemberName;
@@ -122,29 +134,33 @@ public class NotificationResponseDTO {
         }
 
         // 채팅 알림 생성
-        public static NotificationDetails chat(final String chatSenderName) {
+        public static NotificationDetails chat(final String chatRoomId, final String chatSenderName) {
             return NotificationDetails.builder()
+                    .chatRoomId(chatRoomId)
                     .chatSenderName(chatSenderName)
                     .build();
         }
 
         // 매칭 알림 생성
-        public static NotificationDetails matchingRequested(final String matchingTargetName) {
+        public static NotificationDetails matchingRequested(final Long matchingId, final String matchingTargetName) {
             return NotificationDetails.builder()
+                    .matchingId(matchingId)
                     .matchingTargetName(matchingTargetName)
                     .build();
         }
 
         // 매칭 성사 알림 생성
-        public static NotificationDetails matchingAccepted(final String matchingTargetName) {
+        public static NotificationDetails matchingAccepted(final Long matchingId, final String matchingTargetName) {
             return NotificationDetails.builder()
+                    .matchingId(matchingId)
                     .matchingTargetName(matchingTargetName)
                     .build();
         }
 
         // 매칭 거절 알림 생성
-        public static NotificationDetails matchingRejected(final String matchingTargetName) {
+        public static NotificationDetails matchingRejected(final Long matchingId, final String matchingTargetName) {
             return NotificationDetails.builder()
+                    .matchingId(matchingId)
                     .matchingTargetName(matchingTargetName)
                     .build();
         }
