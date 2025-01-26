@@ -701,7 +701,9 @@ public class MatchingService {
 
         log.info("Adding new matching 5: " + matching);
 
-        NotificationDetails receiverNotificationDetails = NotificationDetails.matchingRequested(
+        log.info("getSenderLogoImagePath: " + getSenderLogoImagePath(matching));
+
+        final NotificationDetails receiverNotificationDetails = NotificationDetails.matchingRequested(
                 // matchingTargetName 필요
                 savedMatching.getId(),
                 getSenderLogoImagePath(matching),
@@ -953,7 +955,7 @@ public class MatchingService {
     }
 
     // 발신자 로고 이미지 조회 헬퍼 메서드
-    private String getSenderLogoImagePath(Matching matching) {
+    private String getSenderLogoImagePath(final Matching matching) {
         if (matching.getSenderType() == SenderType.PROFILE) {
             final Profile profile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
             return profile.getProfileImagePath();
@@ -965,7 +967,7 @@ public class MatchingService {
     }
 
     // 수신자 로고 이미지 조회 헬퍼 메서드
-    private String getReceiverLogoImagePath(Matching matching) {
+    private String getReceiverLogoImagePath(final Matching matching) {
         switch (matching.getReceiverType()) {
             case PROFILE -> {
                 Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());

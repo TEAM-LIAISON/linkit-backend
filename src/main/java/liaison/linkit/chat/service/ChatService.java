@@ -398,7 +398,7 @@ public class ChatService {
         }
     }
 
-    private void sendChatMessages(ChatRoom chatRoom, ChatMessage chatMessage, Long senderMemberId) {
+    private void sendChatMessages(final ChatRoom chatRoom, final ChatMessage chatMessage, final Long senderMemberId) {
         // 발신자 메시지 응답 생성 및 전송
         ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatMessage, true);
         simpMessagingTemplate.convertAndSend(

@@ -38,7 +38,7 @@ public class NotificationMapper {
                     case MATCHING_REQUESTED, MATCHING_REJECTED, MATCHING_ACCEPTED -> notification.setMatchingDetails(
                             Notification.MatchingDetails.builder()
                                     .matchingId(notificationDetails.getMatchingId())
-                                    .matchingTargetImagePath(notificationDetails.getMatchingTargetName())
+                                    .matchingTargetImagePath(notificationDetails.getMatchingTargetLogoImagePath())
                                     .matchingTargetName(notificationDetails.getMatchingTargetName())
                                     .build()
                     );
