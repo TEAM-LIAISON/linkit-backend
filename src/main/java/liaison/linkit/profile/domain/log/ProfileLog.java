@@ -35,10 +35,10 @@ public class ProfileLog extends BaseDateTimeEntity {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100) // 제목 길이 제한 추가 (100자)
     private String logTitle;
 
-    @Column(nullable = false)
+    @Column(length = 5000) // 본문 길이 제한 추가 (5,000자)
     private String logContent;
 
     private boolean isLogPublic;

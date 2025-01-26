@@ -3,6 +3,7 @@ package liaison.linkit.profile.domain.activity;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -31,11 +32,17 @@ public class ProfileActivity extends BaseDateTimeEntity {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
+    @Column(nullable = false, length = 50)
     private String activityName;
+
+    @Column(nullable = false, length = 50)
     private String activityRole;
+
     private String activityStartDate;
     private String activityEndDate;
     private boolean isActivityInProgress;
+
+    @Column(length = 300)
     private String activityDescription;
 
     private boolean isActivityCertified; // 인증하지 않은 사람 false

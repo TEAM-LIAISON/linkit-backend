@@ -3,6 +3,7 @@ package liaison.linkit.team.domain.history;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -30,9 +31,12 @@ public class TeamHistory {
     @JoinColumn(name = "team_id")
     private Team team;
 
+    @Column(nullable = false, length = 50)
     private String historyName;
     private String historyStartDate;
     private String historyEndDate;
     private boolean isHistoryInProgress;
+    
+    @Column(length = 50)
     private String historyDescription;
 }

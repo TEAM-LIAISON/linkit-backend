@@ -39,11 +39,11 @@ spring:
       client:
         registration:
           naver:
-            redirect-uri: https://liaison-dev.site/login/oauth2/callback/naver
+            redirect-uri: https://linkit.im/login/oauth2/callback/naver
           kakao:
-            redirect-uri: https://liaison-dev.site/login/oauth2/callback/kakao
+            redirect-uri: https://linkit.im/login/oauth2/callback/kakao
           google:
-            redirect-uri: https://liaison-dev.site/login/oauth2/callback/google
+            redirect-uri: https://linkit.im/login/oauth2/callback/google
 
   jpa:
     database: mysql

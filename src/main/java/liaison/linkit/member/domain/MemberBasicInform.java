@@ -33,7 +33,7 @@ public class MemberBasicInform extends BaseDateTimeEntity {
     private Member member;
 
     // 성함
-    @Column(length = 30)
+    @Column(nullable = false, length = 50)
     private String memberName;
 
     // 연락처

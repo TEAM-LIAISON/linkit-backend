@@ -35,10 +35,10 @@ public class TeamLog extends BaseDateTimeEntity {
     @JoinColumn(name = "team_id")
     private Team team;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String logTitle;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 5000)
     private String logContent;
 
     private boolean isLogPublic;
