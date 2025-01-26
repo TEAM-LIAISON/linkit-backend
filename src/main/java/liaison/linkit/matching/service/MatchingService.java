@@ -14,6 +14,7 @@ import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
+import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.exception.CannotRequestMyAnnouncementException;
 import liaison.linkit.matching.exception.CannotRequestMyProfileException;
@@ -540,7 +541,7 @@ public class MatchingService {
         List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
 
         matchings.forEach(matching ->
-                matching.setReceiverDeleteStatus(ReceiverDeleteStatus.DELETED));
+                matching.setSenderDeleteStatus(SenderDeleteStatus.DELETED));
 
         matchingCommandAdapter.updateAll(matchings);
 
