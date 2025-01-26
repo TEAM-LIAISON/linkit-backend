@@ -1,8 +1,8 @@
 spring:
   profiles:
     group:
-      blue: blue, common, secret-dev
-      green: green, common, secret-dev
+      blue: blue, common, secret-prod
+      green: green, common, secret-prod
 
 server:
   env: blue
