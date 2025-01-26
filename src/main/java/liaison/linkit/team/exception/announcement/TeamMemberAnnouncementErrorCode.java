@@ -14,7 +14,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum TeamMemberAnnouncementErrorCode implements BaseErrorCode {
-
     TEAM_MEMBER_ANNOUNCEMENT_NOT_FOUND(NOT_FOUND, "TEAM_MEMBER_ANNOUNCEMENT_404_1", "해당하는 팀원 공고를 찾을 수 없습니다.");
 
     private final Integer status;

@@ -559,8 +559,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_웹소켓_연결">1.1. 웹소켓 연결</a></li>
 <li><a href="#_채팅방_구독_연결_sub">1.2. 채팅방 구독 연결 (/sub)</a></li>
 <li><a href="#_채팅_메시지_전송_pub">1.3. 채팅 메시지 전송 (/pub)</a></li>
-<li><a href="#_회원_알림_구독_연결_sub">1.4. 회원 알림 구독 연결 (/sub)</a></li>
-<li><a href="#_상단바_구독_연결_sub">1.5. 상단바 구독 연결 (/sub)</a></li>
+<li><a href="#_상단바_구독_연결_sub">1.4. 상단바 구독 연결 (/sub)</a></li>
 </ul>
 </li>
 </ul>
@@ -634,30 +633,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_회원_알림_구독_연결_sub"><a class="link" href="#_회원_알림_구독_연결_sub">1.4. 회원 알림 구독 연결 (/sub)</a></h3>
+<h3 id="_상단바_구독_연결_sub"><a class="link" href="#_상단바_구독_연결_sub">1.4. 상단바 구독 연결 (/sub)</a></h3>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">Authorization: Bearer {accessToken}</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_회원_알림_구독"><a class="link" href="#_회원_알림_구독">1.4.1. 회원 알림 구독</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">SUBSCRIBE /sub/notification/{emailId}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_상단바_구독_연결_sub"><a class="link" href="#_상단바_구독_연결_sub">1.5. 상단바 구독 연결 (/sub)</a></h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-http hljs" data-lang="http">Authorization: Bearer {accessToken}</code></pre>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_상단바_신규_채팅신규_알림_정보_구독_빨간점_표시"><a class="link" href="#_상단바_신규_채팅신규_알림_정보_구독_빨간점_표시">1.5.1. 상단바 신규 채팅/신규 알림 정보 구독 (빨간점 표시)</a></h4>
+<h4 id="_상단바_신규_채팅신규_알림_정보_구독_빨간점_표시"><a class="link" href="#_상단바_신규_채팅신규_알림_정보_구독_빨간점_표시">1.4.1. 상단바 신규 채팅/신규 알림 정보 구독 (빨간점 표시)</a></h4>
 <div class="paragraph">
 <p>이 구독 경로를 통해, 새로 온 채팅 메시지나 알림의 미확인(안 읽음) 개수를 실시간으로 받아볼 수 있습니다.</p>
 </div>
@@ -675,7 +658,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect3">
-<h4 id="_notificationcountresponse"><a class="link" href="#_notificationcountresponse">1.5.2. NotificationCountResponse</a></h4>
+<h4 id="_notificationcountresponse"><a class="link" href="#_notificationcountresponse">1.4.2. NotificationCountResponse</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 16.6666%;">
@@ -704,7 +687,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </table>
 </div>
 <div class="sect3">
-<h4 id="_example_payload"><a class="link" href="#_example_payload">1.5.3. Example Payload</a></h4>
+<h4 id="_example_payload"><a class="link" href="#_example_payload">1.4.3. Example Payload</a></h4>
 <div class="paragraph">
 <p>아래는 실제로 전송되는 JSON 예시입니다.</p>
 </div>
@@ -723,7 +706,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-01-17 21:13:59 +0900
+Last updated 2025-01-18 21:47:03 +0900
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>

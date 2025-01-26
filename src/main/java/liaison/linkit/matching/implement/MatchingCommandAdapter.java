@@ -20,8 +20,8 @@ public class MatchingCommandAdapter {
         matchingRepository.updateMatchingStatusType(matching, matchingStatusType);
     }
 
-    public void addMatching(final Matching matching) {
-        matchingRepository.save(matching);
+    public Matching addMatching(final Matching matching) {
+        return matchingRepository.save(matching);
     }
 
     public void updateMatchingToCreatedRoomState(final Matching matching) {

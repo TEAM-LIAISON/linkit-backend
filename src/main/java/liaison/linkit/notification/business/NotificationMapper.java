@@ -8,13 +8,24 @@ import liaison.linkit.notification.domain.Notification;
 import liaison.linkit.notification.domain.type.NotificationReadStatus;
 import liaison.linkit.notification.domain.type.NotificationType;
 import liaison.linkit.notification.domain.type.SubNotificationType;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationCountResponse;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItem;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItems;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.ReadNotificationResponse;
 
 @Mapper
 public class NotificationMapper {
+
+    public NotificationResponseDTO.ReadNotificationResponse toReadNotification(
+            final Notification notification
+    ) {
+        return ReadNotificationResponse.builder()
+                .notificationId(notification.getId())
+                .notificationReadStatus(notification.getNotificationReadStatus())
+                .build();
+    }
 
     public Notification toNotification(
             final Long notificationReceiverMemberId,
@@ -37,6 +48,8 @@ public class NotificationMapper {
                 switch (subNotificationType) {
                     case MATCHING_REQUESTED, MATCHING_REJECTED, MATCHING_ACCEPTED -> notification.setMatchingDetails(
                             Notification.MatchingDetails.builder()
+                                    .matchingId(notificationDetails.getMatchingId())
+                                    .matchingTargetImagePath(notificationDetails.getMatchingTargetLogoImagePath())
                                     .matchingTargetName(notificationDetails.getMatchingTargetName())
                                     .build()
                     );
@@ -48,6 +61,8 @@ public class NotificationMapper {
                 switch (subNotificationType) {
                     case NEW_CHAT -> notification.setChatDetails(
                             Notification.ChatDetails.builder()
+                                    .chatRoomId(notificationDetails.getChatRoomId())
+                                    .chatSenderImagePath(notificationDetails.getChatSenderLogoImagePath())
                                     .chatSenderName(notificationDetails.getChatSenderName())
                                     .build()
                     );
@@ -58,12 +73,16 @@ public class NotificationMapper {
                 switch (subNotificationType) {
                     case TEAM_INVITATION_REQUESTED -> notification.setTeamInvitationDetails(
                             Notification.TeamInvitationDetails.builder()
+                                    .teamCode(notificationDetails.getTeamCode())
+                                    .teamLogoImagePath(notificationDetails.getTeamLogoImagePath())
                                     .teamName(notificationDetails.getTeamName())
                                     .build()
                     );
 
                     case TEAM_MEMBER_JOINED -> notification.setTeamInvitationDetails(
                             Notification.TeamInvitationDetails.builder()
+                                    .teamCode(notificationDetails.getTeamCode())
+                                    .teamLogoImagePath(notificationDetails.getTeamLogoImagePath())
                                     .teamMemberName(notificationDetails.getTeamMemberName())
                                     .teamName(notificationDetails.getTeamName())
                                     .build()
@@ -75,6 +94,8 @@ public class NotificationMapper {
                 switch (subNotificationType) {
                     case REMOVE_TEAM_REQUESTED, REMOVE_TEAM_REJECTED -> notification.setTeamDetails(
                             Notification.TeamDetails.builder()
+                                    .teamCode(notificationDetails.getTeamCode())
+                                    .teamLogoImagePath(notificationDetails.getTeamLogoImagePath())
                                     .teamMemberName(notificationDetails.getTeamMemberName())
                                     .teamName(notificationDetails.getTeamName())
                                     .build()
@@ -82,6 +103,8 @@ public class NotificationMapper {
 
                     case TEAM_MEMBER_JOINED -> notification.setTeamDetails(
                             Notification.TeamDetails.builder()
+                                    .teamCode(notificationDetails.getTeamCode())
+                                    .teamLogoImagePath(notificationDetails.getTeamLogoImagePath())
                                     .teamName(notificationDetails.getTeamName())
                                     .build()
                     );
@@ -114,14 +137,20 @@ public class NotificationMapper {
             case MATCHING -> {
                 switch (subType) {
                     case MATCHING_REQUESTED -> notificationDetails = NotificationDetails.matchingRequested(
+                            notification.getMatchingDetails().getMatchingId(),
+                            notification.getMatchingDetails().getMatchingTargetImagePath(),
                             notification.getMatchingDetails().getMatchingTargetName()
                     );
 
                     case MATCHING_REJECTED -> notificationDetails = NotificationDetails.matchingRejected(
+                            notification.getMatchingDetails().getMatchingId(),
+                            notification.getMatchingDetails().getMatchingTargetImagePath(),
                             notification.getMatchingDetails().getMatchingTargetName()
                     );
 
                     case MATCHING_ACCEPTED -> notificationDetails = NotificationDetails.matchingAccepted(
+                            notification.getMatchingDetails().getMatchingId(),
+                            notification.getMatchingDetails().getMatchingTargetImagePath(),
                             notification.getMatchingDetails().getMatchingTargetName()
                     );
                 }
@@ -131,6 +160,8 @@ public class NotificationMapper {
             case CHATTING -> {
                 switch (subType) {
                     case NEW_CHAT -> notificationDetails = NotificationDetails.chat(
+                            notification.getChatDetails().getChatRoomId(),
+                            notification.getChatDetails().getChatSenderImagePath(),
                             notification.getChatDetails().getChatSenderName()
                     );
                 }
@@ -140,9 +171,13 @@ public class NotificationMapper {
             case TEAM_INVITATION -> {
                 switch (subType) {
                     case TEAM_INVITATION_REQUESTED -> notificationDetails = NotificationDetails.teamInvitationRequested(
+                            notification.getTeamInvitationDetails().getTeamCode(),
+                            notification.getTeamInvitationDetails().getTeamLogoImagePath(),
                             notification.getTeamInvitationDetails().getTeamName()
                     );
                     case TEAM_MEMBER_JOINED -> notificationDetails = NotificationDetails.teamMemberJoined(
+                            notification.getTeamInvitationDetails().getTeamCode(),
+                            notification.getTeamInvitationDetails().getTeamLogoImagePath(),
                             notification.getTeamInvitationDetails().getTeamMemberName(),
                             notification.getTeamInvitationDetails().getTeamName()
                     );
@@ -153,16 +188,22 @@ public class NotificationMapper {
             case TEAM -> {
                 switch (subType) {
                     case REMOVE_TEAM_REQUESTED -> notificationDetails = NotificationDetails.removeTeamRequested(
+                            notification.getTeamDetails().getTeamCode(),
+                            notification.getTeamDetails().getTeamLogoImagePath(),
                             notification.getTeamDetails().getTeamMemberName(),
                             notification.getTeamDetails().getTeamName()
                     );
 
                     case REMOVE_TEAM_REJECTED -> notificationDetails = NotificationDetails.removeTeamRejected(
+                            notification.getTeamDetails().getTeamCode(),
+                            notification.getTeamDetails().getTeamLogoImagePath(),
                             notification.getTeamDetails().getTeamMemberName(),
                             notification.getTeamDetails().getTeamName()
                     );
 
                     case REMOVE_TEAM_COMPLETED -> notificationDetails = NotificationDetails.removeTeamCompleted(
+                            notification.getTeamDetails().getTeamCode(),
+                            notification.getTeamDetails().getTeamLogoImagePath(),
                             notification.getTeamDetails().getTeamName()
                     );
                 }
@@ -170,6 +211,7 @@ public class NotificationMapper {
         }
 
         return NotificationItem.builder()
+                .notificationId(notification.getId())
                 .notificationType(type)
                 .subNotificationType(subType)
                 .notificationReadStatus(notification.getNotificationReadStatus())
@@ -178,7 +220,7 @@ public class NotificationMapper {
                 .build();
     }
 
-    public NotificationCountResponse toNotificationCount(final long unreadNotificationCount, final long unreadChatCount) {
+    public NotificationCountResponse toNotificationCount(final long unreadChatCount, final long unreadNotificationCount) {
         return NotificationCountResponse.builder()
                 .unreadChatCount(unreadChatCount)
                 .unreadNotificationCount(unreadNotificationCount)

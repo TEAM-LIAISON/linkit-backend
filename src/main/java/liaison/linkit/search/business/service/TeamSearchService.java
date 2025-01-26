@@ -41,7 +41,7 @@ public class TeamSearchService {
     private final TeamScaleMapper teamScaleMapper;
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
 
-    public Page<TeamInformMenu> searchTeams(
+    public Page<TeamInformMenu> searchTeamsInLogoutState(
             List<String> scaleName,
             Boolean isAnnouncement,
             List<String> cityName,
@@ -55,6 +55,19 @@ public class TeamSearchService {
 
         return teams.map(this::toSearchTeamInformMenuInLogoutState);
     }
+
+    public Page<TeamInformMenu> searchTeamsInLoginState(
+            final Long memberId,
+            List<String> scaleName,
+            Boolean isAnnouncement,
+            List<String> cityName,
+            List<String> teamStateName,
+            Pageable pageable
+    ) {
+        Page<Team> teams = teamQueryAdapter.findAllByFiltering(scaleName, isAnnouncement, cityName, teamStateName, pageable);
+        return teams.map(team -> toSearchTeamInformMenuInLogInState(team, memberId));
+    }
+
 
     private TeamInformMenu toSearchTeamInformMenuInLogoutState(
             final Team team
@@ -76,5 +89,29 @@ public class TeamSearchService {
         final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamName());
 
         return teamMapper.toTeamInformMenu(team, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
+    }
+
+    private TeamInformMenu toSearchTeamInformMenuInLogInState(
+            final Team team, final Long memberId
+    ) {
+        RegionDetail regionDetail = new RegionDetail();
+        if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
+            final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+            regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+        }
+        log.info("지역 정보 조회 성공");
+
+        final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(team.getId());
+        final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
+        log.info("팀 상태 정보 조회 성공");
+
+        final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+        final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+
+        final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, team.getTeamCode());
+
+        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamName());
+
+        return teamMapper.toTeamInformMenu(team, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
     }
 }

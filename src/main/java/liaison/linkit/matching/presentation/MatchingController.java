@@ -64,7 +64,7 @@ public class MatchingController {
     public CommonResponse<MatchingResponseDTO.AddMatchingResponse> addMatching(
             @Auth final Accessor accessor,
             @RequestBody final MatchingRequestDTO.AddMatchingRequest addMatchingRequest
-    ) {
+    ) throws MessagingException {
         return CommonResponse.onSuccess(matchingService.addMatching(accessor.getMemberId(), addMatchingRequest));
     }
 

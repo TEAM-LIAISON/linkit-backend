@@ -12,6 +12,8 @@ import liaison.linkit.image.domain.Image;
 import liaison.linkit.image.implement.ImageCommandAdapter;
 import liaison.linkit.image.implement.ImageQueryAdapter;
 import liaison.linkit.image.util.ImageUtils;
+import liaison.linkit.member.domain.Member;
+import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.business.mapper.ProfileLogMapper;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.ProfileLogImage;
@@ -60,6 +62,7 @@ public class ProfileLogService {
     private final ImageUtils imageUtils;
 
     private final S3Uploader s3Uploader;
+    private final MemberQueryAdapter memberQueryAdapter;
 
 
     @Transactional(readOnly = true)
@@ -73,12 +76,29 @@ public class ProfileLogService {
     }
 
     @Transactional(readOnly = true)
+    public ProfileLogItems getProfileLogViewItems(final String emailId) {
+        final Member member = memberQueryAdapter.findByEmailId(emailId);
+        final List<ProfileLog> profileLogs = profileLogQueryAdapter.getProfileLogs(member.getId());
+        return profileLogMapper.toProfileLogItems(profileLogs);
+    }
+
+
+    @Transactional
     public ProfileLogItem getProfileLogItem(final Long memberId, final Long profileLogId) {
         log.info("memberId = {}의 내 로그 DTO 조회 요청 발생했습니다.", memberId);
 
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
         log.info("profileLog = {}가 성공적으로 조회되었습니다.", profileLog);
 
+        profileLog.increaseViewCount();
+
+        return profileLogMapper.toProfileLogItem(profileLog);
+    }
+
+    @Transactional
+    public ProfileLogItem getProfileLogViewItem(final Long profileLogId) {
+        final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+        profileLog.increaseViewCount();
         return profileLogMapper.toProfileLogItem(profileLog);
     }
 
@@ -119,7 +139,8 @@ public class ProfileLogService {
                 addProfileLogRequest.getLogTitle(),
                 addProfileLogRequest.getLogContent(),
                 addProfileLogRequest.getIsLogPublic(),
-                addProfileLogType
+                addProfileLogType,
+                0L
         );
 
         final ProfileLog savedProfileLog = profileLogCommandAdapter.addProfileLog(profileLog);
@@ -248,6 +269,7 @@ public class ProfileLogService {
 
     // 프로필 로그 타입 수정
     public UpdateProfileLogTypeResponse updateProfileLogType(final Long memberId, final Long profileLogId) {
+
         log.info("memberId = {}의 프로필 로그 = {}에 대한 대표글 설정 수정 요청 발생했습니다.", memberId, profileLogId);
 
         // 1. ProfileLog 엔티티 조회
@@ -269,12 +291,12 @@ public class ProfileLogService {
         if (existingRepresentativeLog != null && !existingRepresentativeLog.getId().equals(profileLogId)) {
             log.info("기존 대표 로그가 존재하므로, 기존 대표 로그를 일반 로그로 변경합니다. 기존 대표 로그 ID: {}", existingRepresentativeLog.getId());
 
-            profileLogCommandAdapter.updateProfileLogTypeRepresent(existingRepresentativeLog);
+            profileLogCommandAdapter.updateProfileLogTypeToNormal(existingRepresentativeLog);
             log.info("기존 대표 로그(ID: {})가 일반 로그로 변경되었습니다.", existingRepresentativeLog.getId());
         }
 
-        // 5. 수정하려는 로그를 대표 로그로 설정
-        log.info("수정하려는 로그를 대표 로그로 설정합니다. 로그 ID: {}", profileLogId);
+        // 6) 수정 대상 로그 -> 대표 로그로 변경
+        log.debug("로그(ID={})를 대표 로그로 설정", profileLogId);
         profileLogCommandAdapter.updateProfileLogTypeRepresent(profileLog);
 
         return profileLogMapper.toUpdateProfileLogType(profileLog);

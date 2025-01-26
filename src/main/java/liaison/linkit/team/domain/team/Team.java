@@ -28,12 +28,15 @@ public class Team extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(nullable = false, length = 50)
     private String teamName;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 50)
     private String teamCode;
 
+    @Column(nullable = false, length = 100)
     private String teamShortDescription;
+
     private String teamLogoImagePath;
     private boolean isTeamPublic;
 

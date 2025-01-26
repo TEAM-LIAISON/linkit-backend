@@ -35,8 +35,11 @@ public class ChatResponseDTO {
         @Builder.Default
         private ChatPartnerInformation chatPartnerInformation = new ChatPartnerInformation();
 
-        private Long unreadCount;                   // 읽지 않은 메시지 수
-        private boolean isOnline;                   // 상대방 온라인 상태
+        // 상대방의 온라인 여부
+        private boolean isChatPartnerOnline;
+
+        // 읽지 않은 채팅 메시지 개수
+        private long unreadChatMessageCount;
     }
 
     @Builder
@@ -105,6 +108,15 @@ public class ChatResponseDTO {
         private Long unreadCount;                       // 읽지 않은 메시지 수
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReadChatMessageResponse {
+        private Long chatRoomId;      // 어떤 채팅방에서
+        private long readMessagesCount; // 몇 개의 메시지를 읽었는지
+    }
+
     // 채팅 내역에 대한 응답
     @Getter
     @Builder
@@ -130,6 +142,8 @@ public class ChatResponseDTO {
 
         private String myParticipantType;                       // 나의 참여 타입
         private ParticipantType messageSenderParticipantType;   // A_TYPE / B_TYPE 구별
+
+        private Boolean isMyMessage;
 
         private String messageSenderLogoImagePath;              // 메시지 발신자의 로고 이미지 경로
 

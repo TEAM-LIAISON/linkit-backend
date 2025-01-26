@@ -37,7 +37,10 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
+    @Column(nullable = false, length = 50) // 제목 길이 제한 추가 (50자)
     private String projectName; // 프로젝트명
+
+    @Column(nullable = false, length = 100) // 제목 길이 제한 추가 (50자)
     private String projectLineDescription; // 한줄소개
 
     @Column(nullable = false)
@@ -45,6 +48,8 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     private ProjectSize projectSize; // 규모
 
     private int projectHeadCount; // 인원
+
+    @Column(length = 50) // 제목 길이 제한 추가 (50자)
     private String projectTeamComposition; // 팀 구성
 
     private String projectStartDate;
@@ -55,6 +60,8 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     private List<ProjectRoleContribution> projectRoleContributions = new ArrayList<>();
 
     private String projectLink; // 링크
+
+    @Column(length = 500) // 제목 길이 제한 추가 (50자)
     private String projectDescription; // 설명
 
     private String projectRepresentImagePath; // 대표 이미지

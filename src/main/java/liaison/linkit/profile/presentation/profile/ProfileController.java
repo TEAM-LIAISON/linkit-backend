@@ -49,7 +49,13 @@ public class ProfileController {
 
     // 홈화면에서 팀원 조회 (최대 6개)
     @GetMapping("/home/profile")
-    public CommonResponse<ProfileResponseDTO.ProfileInformMenus> getHomeProfileInformMenus() {
-        return CommonResponse.onSuccess(profileService.getHomeProfileInformMenus());
+    public CommonResponse<ProfileResponseDTO.ProfileInformMenus> getHomeProfileInformMenus(
+            @Auth final Accessor accessor
+    ) {
+        if (accessor.isMember()) {
+            return CommonResponse.onSuccess(profileService.getHomeProfileInformMenusInLoginState(accessor.getMemberId()));
+        } else {
+            return CommonResponse.onSuccess(profileService.getHomeProfileInformMenusInLogoutState());
+        }
     }
 }

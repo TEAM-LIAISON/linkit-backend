@@ -1,6 +1,8 @@
 package liaison.linkit.search.presentation;
 
 import java.util.List;
+import liaison.linkit.auth.Auth;
+import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.search.business.service.TeamSearchService;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
@@ -36,6 +38,7 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
      */
     @GetMapping
     public CommonResponse<Page<TeamInformMenu>> searchTeams(
+            @Auth final Accessor accessor,
             @RequestParam(value = "scaleName", required = false) List<String> scaleName,
             @RequestParam(value = "isAnnouncement", required = false) Boolean isAnnouncement,
             @RequestParam(value = "cityName", required = false) List<String> cityName,
@@ -43,13 +46,17 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
     ) {
-        log.info("팀 검색 요청 - scaleName: {}, isAnnouncement: {}, cityName: {}, teamStateName: {}, page: {}, size: {}",
-                scaleName, isAnnouncement, cityName, teamStateName, page, size);
+        if (accessor.isMember()) {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+            Page<TeamInformMenu> teams = teamSearchService.searchTeamsInLoginState(accessor.getMemberId(), scaleName, isAnnouncement, cityName, teamStateName, pageable);
+            return CommonResponse.onSuccess(teams);
+        } else {
+            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+            Page<TeamInformMenu> teams = teamSearchService.searchTeamsInLogoutState(scaleName, isAnnouncement, cityName, teamStateName, pageable);
+            return CommonResponse.onSuccess(teams);
+        }
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<TeamInformMenu> teams = teamSearchService.searchTeams(scaleName, isAnnouncement, cityName, teamStateName, pageable);
-        CommonResponse<Page<TeamInformMenu>> response = CommonResponse.onSuccess(teams);
-        return response;
+
     }
 
 }

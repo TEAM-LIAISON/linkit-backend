@@ -21,8 +21,8 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
     private String mailId;
 
     @Override
-    public void sendMailTeamMemberInvitation(final String teamMemberInvitationEmail, final String teamLogoImagePath, final String teamName) throws MessagingException {
-        final MimeMessage mimeMessage = createTeamMemberInvitationMail(teamMemberInvitationEmail, teamLogoImagePath, teamName);
+    public void sendMailTeamMemberInvitation(final String teamMemberInvitationEmail, final String teamLogoImagePath, final String teamName, final String teamCode) throws MessagingException {
+        final MimeMessage mimeMessage = createTeamMemberInvitationMail(teamMemberInvitationEmail, teamLogoImagePath, teamName, teamCode);
 
         try {
             javaMailSender.send(mimeMessage);
@@ -35,7 +35,8 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
     private MimeMessage createTeamMemberInvitationMail(
             final String teamMemberInvitationEmail,
             final String teamLogoImagePath,
-            final String teamName
+            final String teamName,
+            final String teamCode
     ) throws MessagingException {
         final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
@@ -75,13 +76,8 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
                                 </tr>
                                 <tr>
                                     <td style="padding: 1.875rem 1.25rem; text-align: center;">
-                                        <a href="%s" style="display: inline-block; padding: 0.75rem 1.5rem; background-color: #2563EB; color: #FFFFFF; text-decoration: none; border-radius: 1.5rem;">팀 프로필 보러가기</a>
+                                        <a href="https://www.linkit.im/team/%s/log" style="display: inline-block; padding: 0.75rem 1.5rem; background-color: #2563EB; color: #FFFFFF; text-decoration: none; border-radius: 1.5rem;">팀 프로필 보러가기</a>
                                     </td>
-                                </tr>
-                                <tr>
-                                  <td style="padding: 1.875rem 1.25rem;">
-                                    <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 0.75rem; color: #94A3B8; margin: 0; word-break: keep-all;">*팀원 초대를 희망하시지 않는 경우 이메일을 삭제해 주세요</p>
-                                  </td>
                                 </tr>
                                 <tr>
                                     <td style="background-color: #CBD4E1; height: 1px;"></td>
@@ -106,7 +102,7 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
                         </tr>
                       </tbody>
                     </table>
-                """, teamName, teamName, teamLogoImagePath, teamName, "https://www.linkit.im");
+                """, teamName, teamName, teamLogoImagePath, teamName, teamCode);
 
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
         mimeMessage.setFrom(mailId);

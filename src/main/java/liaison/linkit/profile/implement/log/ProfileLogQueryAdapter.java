@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 public class ProfileLogQueryAdapter {
     private final ProfileLogRepository profileLogRepository;
 
-
     public ProfileLog getProfileLog(final Long profileLogId) {
         return profileLogRepository.findById(profileLogId)
                 .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
@@ -33,5 +32,9 @@ public class ProfileLogQueryAdapter {
 
     public boolean existsRepresentativeProfileLogByProfile(final Long profileId) {
         return profileLogRepository.existsRepresentativeProfileLogByProfile(profileId);
+    }
+
+    public List<ProfileLog> findTopView(final int limit) {
+        return profileLogRepository.findTopView(limit);
     }
 }

@@ -36,9 +36,6 @@ public class TeamMemberAnnouncementRequestDTO {
         @Builder.Default
         private List<AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
 
-        @NotBlank(message = "공고 시작일은 필수입니다")
-        private String announcementStartDate;
-
         @NotBlank(message = "공고 종료일은 필수입니다")
         private String announcementEndDate;
 
@@ -82,11 +79,6 @@ public class TeamMemberAnnouncementRequestDTO {
         @Builder.Default
         private List<AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
 
-        @NotBlank(message = "공고 시작일은 필수입니다")
-        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
-                message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
-        private String announcementStartDate;
-
         @NotBlank(message = "공고 종료일은 필수입니다")
         @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
                 message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
@@ -106,7 +98,7 @@ public class TeamMemberAnnouncementRequestDTO {
         @NotBlank(message = "이런 분을 찾고 있어요는 필수입니다")
         @Size(min = 1, message = "이런 분을 찾고 있어요는 1자 이상이어야 합니다")
         private String idealCandidate;
-        
+
         private String preferredQualifications;
         private String joiningProcess;
         private String benefits;

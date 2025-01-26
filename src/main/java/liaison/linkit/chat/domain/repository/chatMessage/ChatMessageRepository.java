@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.repository.Query;
 
 public interface ChatMessageRepository extends MongoRepository<ChatMessage, String> {
 
+    @Query(value = "{ 'chat_room_id': ?0 }", sort = "{ 'timestamp': -1 }")
     Page<ChatMessage> findByChatRoomIdOrderByTimestampDesc(Long chatRoomId, Pageable pageable);
 
     // 특정 채팅방의 읽지 않은 메시지 조회
@@ -17,6 +18,10 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
             Long chatRoomId
     );
 
-    // [추가] 특정 회원의 '읽지 않은' 메시지 수 카운트 (Derived Query)
-    int countByMessageReceiverMemberIdAndIsReadFalse(Long memberId);
+    @Query(value = "{ 'chat_room_id': { $in: ?1 }, 'message_receiver_member_id': ?0, 'is_read': false }", count = true)
+    long countUnreadMessagesByChatRoomIdsAndReceiver(Long memberId, List<Long> chatRoomIds);
+
+    @Query(value = "{ 'chat_room_id': ?0, 'message_receiver_member_id': ?1, 'is_read': false }", count = true)
+    long countUnreadMessagesInRoomForMember(Long chatRoomId, Long memberId);
+
 }

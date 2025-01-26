@@ -21,6 +21,7 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionCommandAdapter;
@@ -29,11 +30,13 @@ import liaison.linkit.team.implement.announcement.AnnouncementSkillCommandAdapte
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncemenItems;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,11 +71,14 @@ public class TeamMemberAnnouncementService {
     private final TeamScaleMapper teamScaleMapper;
     private final RegionQueryAdapter regionQueryAdapter;
     private final RegionMapper regionMapper;
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamCode) {
+    public TeamMemberAnnouncemenItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamCode) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
+
         return teamMemberAnnouncementMapper.toLoggedInTeamMemberAnnouncementViewItems(
                 memberId,
                 teamMemberAnnouncements,
@@ -84,7 +90,7 @@ public class TeamMemberAnnouncementService {
     }
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementViewItems getLoggedOutTeamMemberAnnouncementViewItems(final String teamCode) {
+    public TeamMemberAnnouncemenItems getLoggedOutTeamMemberAnnouncementViewItems(final String teamCode) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
 
@@ -97,38 +103,41 @@ public class TeamMemberAnnouncementService {
         );
     }
 
-    @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems getTeamMemberAnnouncementItems(final Long memberId, final String teamCode) {
-        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
-
-        // 조회한 TeamMemberAnnouncement 리스트를 TeamMemberAnnouncementItems 매핑
-        List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem> items = teamMemberAnnouncements.stream()
-                .map(teamMemberAnnouncement -> {
-                    // 포지션 조회
-                    AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
-                    if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-                        AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-                        announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-                    }
-
-                    List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-
-                    // TeamMemberAnnouncementItem 생성
-                    return TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem.builder()
-                            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
-                            .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
-                            .majorPosition(announcementPositionItem.getMajorPosition())
-                            .announcementSkillNames(announcementSkillNames)
-                            .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
-                            .isAnnouncementInProgress(teamMemberAnnouncement.isAnnouncementInProgress())
-                            .build();
-                })
-                .toList();
-
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementItems(items);
-    }
+    /*
+    deprecated
+     */
+//    @Transactional(readOnly = true)
+//    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems getTeamMemberAnnouncementItems(final Long memberId, final String teamCode) {
+//        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+//        final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
+//
+//        // 조회한 TeamMemberAnnouncement 리스트를 TeamMemberAnnouncementItems 매핑
+//        List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem> items = teamMemberAnnouncements.stream()
+//                .map(teamMemberAnnouncement -> {
+//                    // 포지션 조회
+//                    AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
+//                    if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
+//                        AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+//                        announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
+//                    }
+//
+//                    List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
+//                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+//
+//                    // TeamMemberAnnouncementItem 생성
+//                    return TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem.builder()
+//                            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+//                            .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+//                            .majorPosition(announcementPositionItem.getMajorPosition())
+//                            .announcementSkillNames(announcementSkillNames)
+//                            .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
+//                            .isAnnouncementInProgress(teamMemberAnnouncement.isAnnouncementInProgress())
+//                            .build();
+//                })
+//                .toList();
+//
+//        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementItems(items);
+//    }
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail getTeamMemberAnnouncementDetailInLogoutState(final String teamCode, final Long teamMemberAnnouncementId) {
@@ -174,10 +183,18 @@ public class TeamMemberAnnouncementService {
             final Long memberId, final String teamCode, final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
     ) {
         log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 추가 요청이 서비스 계층에 발생했습니다.", memberId, teamCode);
-        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementMapper.toAddTeamMemberAnnouncement(team, addTeamMemberAnnouncementRequest);
-        final TeamMemberAnnouncement savedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.addTeamMemberAnnouncement(teamMemberAnnouncement);
 
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId)) {
+            throw TeamAdminNotRegisteredException.EXCEPTION;
+        }
+
+        log.info("에러 체크 1");
+
+        final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementMapper.toAddTeamMemberAnnouncement(team, addTeamMemberAnnouncementRequest);
+        log.info("에러 체크 2");
+        final TeamMemberAnnouncement savedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.addTeamMemberAnnouncement(teamMemberAnnouncement);
+        log.info("에러 체크 3");
         // 포지션 저장
         final Position position = positionQueryAdapter.findByMajorPositionAndSubPosition(addTeamMemberAnnouncementRequest.getMajorPosition(), addTeamMemberAnnouncementRequest.getSubPosition());
         AnnouncementPosition announcementPosition = new AnnouncementPosition(null, savedTeamMemberAnnouncement, position);
@@ -286,19 +303,71 @@ public class TeamMemberAnnouncementService {
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementPublicState(updatedTeamMemberAnnouncement);
     }
 
-    public AnnouncementInformMenus getHomeAnnouncementInformMenus() {
+    public AnnouncementInformMenus getHomeAnnouncementInformMenusInLoginState(final Long memberId) {
         // 최대 6개의 TeamMemberAnnouncement 조회
         List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(6);
 
         // TeamMemberAnnouncements -> AnnouncementInformMenus 변환
         List<AnnouncementInformMenu> announcementInformMenus = teamMemberAnnouncements.stream()
-                .map(this::mapToAnnouncementInformMenu)
+                .map(teamMemberAnnouncement -> mapToAnnouncementInformMenuInLoginState(teamMemberAnnouncement, memberId))
                 .toList();
 
         return teamMemberAnnouncementMapper.toAnnouncementInformMenus(announcementInformMenus);
     }
 
-    private AnnouncementInformMenu mapToAnnouncementInformMenu(final TeamMemberAnnouncement teamMemberAnnouncement) {
+    public AnnouncementInformMenus getHomeAnnouncementInformMenusInLogoutState() {
+        // 최대 6개의 TeamMemberAnnouncement 조회
+        List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(6);
+
+        // TeamMemberAnnouncements -> AnnouncementInformMenus 변환
+        List<AnnouncementInformMenu> announcementInformMenus = teamMemberAnnouncements.stream()
+                .map(this::mapToAnnouncementInformMenuInLogoutState)
+                .toList();
+
+        return teamMemberAnnouncementMapper.toAnnouncementInformMenus(announcementInformMenus);
+    }
+
+    private AnnouncementInformMenu mapToAnnouncementInformMenuInLoginState(final TeamMemberAnnouncement teamMemberAnnouncement, final Long memberId) {
+        final Team team = teamMemberAnnouncement.getTeam();
+
+        // 팀 규모 조회
+        TeamScaleItem teamScaleItem = fetchTeamScaleItem(team);
+
+        // 팀 지역 조회
+        RegionDetail regionDetail = fetchRegionDetail(team);
+
+        // 포지션 조회
+        AnnouncementPositionItem announcementPositionItem = fetchAnnouncementPositionItem(teamMemberAnnouncement);
+
+        // 스킬 조회
+        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = fetchAnnouncementSkills(teamMemberAnnouncement);
+
+        // D-Day 계산
+        int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+
+        // 공고 스크랩 여부 판단
+        final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
+
+        // 스크랩 수 조회
+        int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+
+        // 결과 변환 및 반환
+        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
+                team.getTeamLogoImagePath(),
+                team.getTeamName(),
+                team.getTeamCode(),
+                teamScaleItem,
+                regionDetail,
+                teamMemberAnnouncement,
+                announcementDDay,
+                isAnnouncementScrap,
+                announcementScrapCount,
+                announcementPositionItem,
+                announcementSkillNames
+        );
+    }
+
+    private AnnouncementInformMenu mapToAnnouncementInformMenuInLogoutState(final TeamMemberAnnouncement teamMemberAnnouncement) {
         final Team team = teamMemberAnnouncement.getTeam();
 
         // 팀 규모 조회

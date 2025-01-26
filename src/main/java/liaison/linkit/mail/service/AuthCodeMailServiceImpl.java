@@ -58,7 +58,7 @@ public class AuthCodeMailServiceImpl implements AuthCodeMailService {
                                 <td style="padding: 1.875rem 1.25rem;">
                                   <h1 style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 1.25rem; font-weight: 600; margin: 0 0 1rem 0; word-break: keep-all;">%s님, 안녕하세요</h1>
                                   <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 0.75rem; color: #64748B; line-height: 1.4; margin: 0; word-break: keep-all;">
-                                    이메일 변경 시 사용되는 인증 코드로, 10분 동안 유효합니다.<br/>
+                                    이메일 변경 시 사용되는 인증 코드로, 3분 동안 유효합니다.<br/>
                                     인증 코드를 입력하시면 메일 주소 변경이 완료됩니다.
                                   </p>
                                 </td>
@@ -74,11 +74,6 @@ public class AuthCodeMailServiceImpl implements AuthCodeMailService {
                                     </tr>
                                   </table>
                                 </td>
-                            </tr>
-                            <tr>
-                              <td style="padding: 1.875rem 1.25rem;">
-                                <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 0.75rem; color: #94A3B8; margin: 0; word-break: keep-all;">*이메일 변경을 요청하시지 않은 경우 이메일을 삭제해 주세요</p>
-                              </td>
                             </tr>
                             <tr>
                                 <td style="background-color: #CBD4E1; height: 1px;"></td>

@@ -25,6 +25,7 @@ import liaison.linkit.team.domain.teamMember.type.TeamMemberRegisterType;
 import liaison.linkit.team.exception.teamMember.ManagingBadRequestException;
 import liaison.linkit.team.exception.teamMember.OwnerTeamMemberOutBadRequestException;
 import liaison.linkit.team.exception.teamMember.RemoveTeamMemberBadRequestException;
+import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.exception.teamMember.TeamMemberForbiddenException;
 import liaison.linkit.team.exception.teamMember.TeamMemberInvitationDuplicateException;
 import liaison.linkit.team.exception.teamMember.TeamMemberInvitationNotFoundException;
@@ -91,6 +92,9 @@ public class TeamMemberService {
         final String teamMemberInvitationEmail = addTeamMemberRequest.getTeamMemberInvitationEmail();
 
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId)) {
+            throw TeamAdminNotRegisteredException.EXCEPTION;
+        }
 
         if (teamMemberInvitationQueryAdapter.existsByEmailAndTeam(teamMemberInvitationEmail, team)) {
             throw TeamMemberInvitationDuplicateException.EXCEPTION;
@@ -99,7 +103,7 @@ public class TeamMemberService {
         log.info("teamMemberInvitationEmail = {}", teamMemberInvitationEmail);
 
         // 해당 회원에 대해 이메일 발송
-        teamMemberInvitationMailService.sendMailTeamMemberInvitation(teamMemberInvitationEmail, team.getTeamLogoImagePath(), team.getTeamName());
+        teamMemberInvitationMailService.sendMailTeamMemberInvitation(teamMemberInvitationEmail, team.getTeamLogoImagePath(), team.getTeamName(), team.getTeamCode());
 
         // 새로운 팀원 초대 객체 생성
         final TeamMemberInvitation teamMemberInvitation = new TeamMemberInvitation(null, teamMemberInvitationEmail, team, addTeamMemberRequest.getTeamMemberType(), TeamMemberInviteState.PENDING);

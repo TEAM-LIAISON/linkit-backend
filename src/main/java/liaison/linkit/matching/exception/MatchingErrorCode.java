@@ -24,6 +24,7 @@ public enum MatchingErrorCode implements BaseErrorCode {
     CANNOT_REQUEST_MY_ANNOUNCEMENT(BAD_REQUEST, "MATCHING_400_8", "내가 속한 팀의 공고에 매칭 요청을 보낼 수 없습니다."),
     NOT_ALLOW_MATCHING_BAD_REQUEST(BAD_REQUEST, "MATCHING_400_9", "허용되지 않은 매칭 요청입니다."),
     MATCHING_STATUS_TYPE_BAD_REQUEST(BAD_REQUEST, "MATCHING_400_10", "잘못된 매칭 수락 및 거절 요청입니다."),
+    UPDATE_MATCHING_STATUS_TYPE_BAD_REQUEST(BAD_REQUEST, "MATCHING_400_11", "매칭 수신자에 의한 매칭 수락 요청이 아닙니다."),
 
     MATCHING_NOT_FOUND(NOT_FOUND, "MATCHING_404_1", "해당하는 매칭을 찾을 수 없습니다.");
 

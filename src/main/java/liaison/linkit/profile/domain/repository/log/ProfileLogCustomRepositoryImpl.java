@@ -56,6 +56,28 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
     }
 
     @Override
+    public ProfileLog updateProfileLogTypeToNormal(final ProfileLog profileLog) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
+        long updatedCount = queryFactory
+                .update(qProfileLog)
+                .set(qProfileLog.logType, LogType.GENERAL_LOG)
+                .where(qProfileLog.id.eq(profileLog.getId()))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) { // 업데이트 성공 확인
+            profileLog.setLogType(LogType.GENERAL_LOG); // 메모리 내 객체 업데이트
+            return profileLog;
+        } else {
+            throw new IllegalStateException("대표 로그 일반 로그로 업데이트 실패");
+        }
+    }
+
+    @Override
     public ProfileLog updateProfileLogPublicState(final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState) {
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
@@ -142,5 +164,17 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<ProfileLog> findTopView(final int limit) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        return queryFactory
+                .selectFrom(qProfileLog)
+                .where(qProfileLog.isLogPublic.eq(true)) // 공개 여부가 true인 것만
+                .orderBy(qProfileLog.viewCount.desc())   // 조회수 높은 순
+                .limit(limit)
+                .fetch();
     }
 }

@@ -104,6 +104,7 @@ public class TeamResponseDTO {
         private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
 
         private Boolean isTeamScrap;
+
         private int teamScrapCount;
 
         private String teamName;

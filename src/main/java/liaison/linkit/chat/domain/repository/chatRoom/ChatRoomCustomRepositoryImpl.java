@@ -45,4 +45,21 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
                 .where(qChatRoom.matchingId.eq(matchingId))
                 .fetchOne();
     }
+
+    @Override
+    public boolean existsChatRoomByMemberId(final Long memberId) {
+        QChatRoom qChatRoom = QChatRoom.chatRoom;
+
+        // 해당 회원이 A 또는 B 참여자로 있는 채팅방이 존재하는지 확인
+        Integer count = jpaQueryFactory
+                .selectOne()
+                .from(qChatRoom)
+                .where(qChatRoom.participantAMemberId.eq(memberId)
+                        .or(qChatRoom.participantBMemberId.eq(memberId)))
+                .fetchFirst();
+
+        // count가 null이 아닌 경우 true 반환
+        return count != null;
+    }
+
 }

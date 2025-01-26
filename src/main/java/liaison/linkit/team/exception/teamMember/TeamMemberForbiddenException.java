@@ -6,6 +6,6 @@ public class TeamMemberForbiddenException extends BaseCodeException {
     public static BaseCodeException EXCEPTION = new TeamMemberForbiddenException();
 
     private TeamMemberForbiddenException() {
-        super(TeamMemberErrorCode.TEAM_MEMBER_TYPE_FORBIDDEN_REQUEST);
+        super(TeamMemberErrorCode.TEAM_MEMBER_TYPE_BAD_REQUEST);
     }
 }

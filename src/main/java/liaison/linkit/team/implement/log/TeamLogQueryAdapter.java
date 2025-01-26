@@ -34,4 +34,7 @@ public class TeamLogQueryAdapter {
         return teamLogRepository.existsRepresentativeTeamLogByTeam(teamId);
     }
 
+    public List<TeamLog> findTopView(final int limit) {
+        return teamLogRepository.findTopView(limit);
+    }
 }

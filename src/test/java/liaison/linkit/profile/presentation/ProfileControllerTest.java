@@ -801,7 +801,7 @@ class ProfileControllerTest extends ControllerTest {
                 .build();
 
         // when
-        when(profileService.getHomeProfileInformMenus()).thenReturn(profileInformMenus);
+        when(profileService.getHomeProfileInformMenusInLogoutState()).thenReturn(profileInformMenus);
 
         final ResultActions resultActions = performGetHomeProfileInformMenus();
 

@@ -116,7 +116,7 @@ public class TeamSearchControllerTest extends ControllerTest {
         List<TeamInformMenu> teams = Arrays.asList(teamInformMenu1, teamInformMenu2);
         Page<TeamInformMenu> teamPage = new PageImpl<>(teams, PageRequest.of(0, 20), teams.size());
 
-        when(teamSearchService.searchTeams(any(), any(), any(), any(), any(Pageable.class))).thenReturn(teamPage);
+        when(teamSearchService.searchTeamsInLogoutState(any(), any(), any(), any(), any(Pageable.class))).thenReturn(teamPage);
 
         // when
         final ResultActions resultActions = performSearchTeams(

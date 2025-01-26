@@ -2,6 +2,9 @@ package liaison.linkit.chat.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 import liaison.linkit.chat.business.ChatMapper;
 import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
@@ -14,6 +17,7 @@ import liaison.linkit.chat.exception.CreateChatRoomBadRequestException;
 import liaison.linkit.chat.exception.CreateChatSenderBadRequestException;
 import liaison.linkit.chat.exception.MatchingStateChatBadRequestException;
 import liaison.linkit.chat.exception.SendChatMessageBadRequestException;
+import liaison.linkit.chat.implement.ChatQueryAdapter;
 import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
@@ -27,6 +31,7 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerProfileDetailInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerTeamDetailInformation;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ReadChatMessageResponse;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -85,7 +90,6 @@ public class ChatService {
     private final MatchingQueryAdapter matchingQueryAdapter;
 
     private final ChatRoomCommandAdapter chatRoomCommandAdapter;
-    private final SessionRegistry sessionRegistry;
     private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
     private final ProfilePositionMapper profilePositionMapper;
     private final RegionQueryAdapter regionQueryAdapter;
@@ -93,6 +97,8 @@ public class ChatService {
     private final TeamScaleQueryAdapter teamScaleQueryAdapter;
     private final TeamScaleMapper teamScaleMapper;
     private final MatchingCommandAdapter matchingCommandAdapter;
+    private final SessionRegistry sessionRegistry;
+    private final ChatQueryAdapter chatQueryAdapter;
 
     /**
      * 새로운 채팅방 생성
@@ -318,10 +324,13 @@ public class ChatService {
                 .participantAMemberId(participantAMemberId)
                 .participantAName(participantAName)
                 .participantAType(participantAType)
+                .participantAStatus(StatusType.USABLE)
+
                 .participantBId(participantBId)
                 .participantBName(participantBName)
                 .participantBMemberId(participantBMemberId)
                 .participantBType(participantBType)
+                .participantBStatus(StatusType.USABLE)
                 .build();
 
         ChatRoom saved = chatRoomCommandAdapter.createChatRoom(chatRoom);
@@ -329,38 +338,64 @@ public class ChatService {
         return chatMapper.toCreateChatRoomResponse(saved);
     }
 
-    // 메시지 처리
-    public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId) {
-        log.info("handleChatMessage 호출: chatRoomId={}, content={}", chatMessageRequest.getChatRoomId(), chatMessageRequest.getContent());
+    public ReadChatMessageResponse handleReadChatMessage(final Long memberId, final Long chatRoomId) {
+        log.info("handleReadChatMessage 호출: chatRoomId={}", chatRoomId);
+
+        // 1. 채팅방 존재 확인
+        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
+
+        // 3. 읽지 않은 메시지 조회 (수신자 == memberId)
+        List<ChatMessage> unreadMessages = chatMessageRepository.findByChatRoomIdAndIsReadFalseAndReceiverParticipantId(chatRoomId);
+
+        unreadMessages = unreadMessages.stream()
+                .filter(msg -> msg.getMessageReceiverMemberId().equals(memberId))
+                .collect(Collectors.toList());
+
+        unreadMessages.forEach(ChatMessage::markAsRead);
+        chatMessageRepository.saveAll(unreadMessages);
+
+        // 5. 응답 DTO 생성
+        long updatedCount = unreadMessages.size();
+        return chatMapper.toReadChatMessageResponse(chatRoomId, updatedCount);
+    }
+
+    public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId, final Long chatRoomId) {
+        log.info("handleChatMessage 호출: chatRoomId={}, content={}", chatRoomId, chatMessageRequest.getContent());
 
         // 1. 채팅방 존재 및 접근 권한 확인
-        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatMessageRequest.getChatRoomId());
+        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
 
-        String participantALogoImagePath = null;
-        String participantBLogoImagePath = null;
-
-        if (chatRoom.getParticipantAType().equals(SenderType.PROFILE)) {
-            final Profile profile = profileQueryAdapter.findByEmailId(chatRoom.getParticipantAId());
-            participantALogoImagePath = profile.getProfileImagePath();
-        } else if (chatRoom.getParticipantAType().equals(SenderType.TEAM)) {
-            final Team team = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantAId());
-            participantALogoImagePath = team.getTeamLogoImagePath();
-        }
-
-        if (chatRoom.getParticipantBType().equals(SenderType.PROFILE)) {
-            final Profile profile = profileQueryAdapter.findByEmailId(chatRoom.getParticipantBId());
-            participantBLogoImagePath = profile.getProfileImagePath();
-        } else if (chatRoom.getParticipantBType().equals(SenderType.TEAM)) {
-            final Team team = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantBId());
-            participantBLogoImagePath = team.getTeamLogoImagePath();
-        }
+        // 참여자 프로필 이미지 로드
+        String participantALogoImagePath = getParticipantLogoImagePath(chatRoom.getParticipantAType(), chatRoom.getParticipantAId());
+        String participantBLogoImagePath = getParticipantLogoImagePath(chatRoom.getParticipantBType(), chatRoom.getParticipantBId());
 
         // 2. 메시지 생성 및 저장
-        ChatMessage chatMessage;
+        ChatMessage chatMessage = createChatMessage(chatMessageRequest, chatRoom, memberId, participantALogoImagePath, participantBLogoImagePath);
+        final ChatMessage savedChatMessage = chatMessageRepository.save(chatMessage);
 
+        // 3. 채팅방 마지막 메시지 업데이트
+        chatRoom.updateLastMessage(chatMessage.getContent(), chatMessage.getTimestamp());
+        final ChatRoom savedChatRoom = chatRoomCommandAdapter.save(chatRoom);
+
+        // 4. 메시지 전송
+        sendChatMessages(savedChatRoom, savedChatMessage, memberId);
+    }
+
+    private String getParticipantLogoImagePath(SenderType type, String id) {
+        if (type.equals(SenderType.PROFILE)) {
+            return profileQueryAdapter.findByEmailId(id).getProfileImagePath();
+        } else if (type.equals(SenderType.TEAM)) {
+            return teamQueryAdapter.findByTeamCode(id).getTeamLogoImagePath();
+        }
+        return null;
+    }
+
+    private ChatMessage createChatMessage(ChatMessageRequest chatMessageRequest, ChatRoom chatRoom, Long memberId,
+                                          String participantALogoImagePath, String participantBLogoImagePath) {
         if (chatRoom.getParticipantAMemberId().equals(memberId)) {
             // A가 B에게 보내는 메시지
-            chatMessage = chatMapper.toChatMessage(
+            return chatMapper.toChatMessage(
+                    chatRoom.getId(),
                     chatMessageRequest,
                     ParticipantType.A_TYPE,
                     chatRoom.getParticipantAId(),
@@ -372,7 +407,8 @@ public class ChatService {
             );
         } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
             // B가 A에게 보내는 메시지
-            chatMessage = chatMapper.toChatMessage(
+            return chatMapper.toChatMessage(
+                    chatRoom.getId(),
                     chatMessageRequest,
                     ParticipantType.B_TYPE,
                     chatRoom.getParticipantBId(),
@@ -385,29 +421,31 @@ public class ChatService {
         } else {
             throw SendChatMessageBadRequestException.EXCEPTION;
         }
-
-        chatMessageRepository.save(chatMessage);
-
-        // 3. 채팅방 마지막 메시지 업데이트
-        chatRoom.updateLastMessage(chatMessage.getContent(), chatMessage.getTimestamp());
-        chatRoomCommandAdapter.save(chatRoom);
-
-        // 4. 발신자용 메시지 응답 생성 (isMyMessage = true)
-        ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatMessage, true);
-        simpMessagingTemplate.convertAndSendToUser(
-                memberId.toString(),
-                "/sub/chat/" + chatRoom.getId(),
-                senderResponse
-        );
-
-        // 5. 수신자용 메시지 응답 생성 (isMyMessage = false)
-        ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatMessage, false);
-        simpMessagingTemplate.convertAndSendToUser(
-                chatMessage.getMessageSenderMemberId().toString(),
-                "/sub/chat/" + chatRoom.getId(),
-                receiverResponse
-        );
     }
+
+    private void sendChatMessages(final ChatRoom chatRoom, final ChatMessage chatMessage, final Long senderMemberId) {
+        // 1) 발신자/수신자 식별
+        Long receiverMemberId = chatMessage.getMessageReceiverMemberId();
+
+        Executors.newSingleThreadScheduledExecutor().schedule(() -> {
+//            ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatRoom, chatMessage, senderMemberId);
+//            // 발신자만 받는 메시지 → convertAndSendToUser
+//            simpMessagingTemplate.convertAndSend(
+//                    "/sub/chat/" + chatRoom.getId(),           // user destination
+//                    senderResponse
+//            );
+
+            // 3) 수신자 메시지 응답 생성
+            ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatRoom, chatMessage, receiverMemberId);
+            // 수신자만 받는 메시지
+            simpMessagingTemplate.convertAndSend(
+                    "/sub/chat/" + chatRoom.getId(),
+                    receiverResponse
+            );
+        }, 150, TimeUnit.MILLISECONDS);
+
+    }
+
 
     /**
      * 채팅방의 이전 메시지 내역 조회
@@ -426,6 +464,8 @@ public class ChatService {
                 chatRoomId,
                 pageable
         );
+
+        log.info("messages: {}", messages);
 
         // 3. 읽지 않은 메시지 읽음 처리
         updateUnreadMessages(chatRoomId, memberId);
@@ -459,6 +499,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -471,8 +514,12 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -491,6 +538,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -503,8 +553,12 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -523,6 +577,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -535,8 +592,12 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -561,6 +622,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -573,8 +637,12 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -593,6 +661,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -605,8 +676,12 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -625,6 +700,9 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
+                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
@@ -637,8 +715,12 @@ public class ChatService {
                                                             .regionDetail(regionDetail)
                                                             .build()
                                             )
+                                            .lastMessage(chatRoom.getLastMessage())
+                                            .lastMessageTime(chatRoom.getLastMessageTime())
                                             .build()
                             )
+                            .isChatPartnerOnline(isPartnerOnline)
+                            .unreadChatMessageCount(unreadCount)
                             .build();
 
                     chatRoomSummaries.add(chatRoomSummary);
@@ -678,4 +760,5 @@ public class ChatService {
 
         return chatMapper.toLeaveChatRoom(chatRoomId, participantType);
     }
+
 }

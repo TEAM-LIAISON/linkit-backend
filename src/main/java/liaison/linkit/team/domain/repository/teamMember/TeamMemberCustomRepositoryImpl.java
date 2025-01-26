@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
+import liaison.linkit.global.type.StatusType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.QMember;
 import liaison.linkit.team.domain.team.QTeam;
@@ -92,7 +93,8 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .select(qTeam).distinct()
                 .from(qTeamMember)
                 .join(qTeamMember.team, qTeam)
-                .where(qTeamMember.member.id.eq(memberId))
+                .where(qTeamMember.member.id.eq(memberId)
+                        .and(qTeamMember.status.eq(StatusType.USABLE)))
                 .fetch();
     }
 

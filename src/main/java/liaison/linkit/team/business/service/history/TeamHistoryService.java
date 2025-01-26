@@ -4,9 +4,11 @@ import java.util.List;
 import liaison.linkit.team.business.mapper.history.TeamHistoryMapper;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.history.TeamHistory;
+import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.history.TeamHistoryCommandAdapter;
 import liaison.linkit.team.implement.history.TeamHistoryQueryAdapter;
+import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO.UpdateTeamHistoryRequest;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryResponseDTO;
@@ -26,6 +28,7 @@ public class TeamHistoryService {
     private final TeamHistoryQueryAdapter teamHistoryQueryAdapter;
     private final TeamHistoryCommandAdapter teamHistoryCommandAdapter;
     private final TeamHistoryMapper teamHistoryMapper;
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
 
     @Transactional(readOnly = true)
     public TeamHistoryResponseDTO.TeamHistoryCalendarResponse getTeamHistoryCalendarResponses(final String teamCode) {
@@ -48,6 +51,9 @@ public class TeamHistoryService {
     public TeamHistoryResponseDTO.AddTeamHistoryResponse addTeamHistory(final Long memberId, final String teamCode, final TeamHistoryRequestDTO.AddTeamHistoryRequest addTeamHistoryRequest) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         log.info("team ={}", team);
+        if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId)) {
+            throw TeamAdminNotRegisteredException.EXCEPTION;
+        }
         final TeamHistory teamHistory = teamHistoryMapper.toAddTeamHistory(team, addTeamHistoryRequest);
         log.info("teamHistory ={}", teamHistory);
         final TeamHistory savedTeamHistory = teamHistoryCommandAdapter.addTeamHistory(teamHistory);

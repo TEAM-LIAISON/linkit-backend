@@ -33,6 +33,7 @@ public class ProjectRoleContribution extends BaseDateTimeEntity {
     @JoinColumn(name = "profile_portfolio_id")
     private ProfilePortfolio profilePortfolio;
 
+    @Column(nullable = false, length = 50) // 제목 길이 제한 추가 (50자)
     private String projectRole;
 
     @Column(nullable = false)

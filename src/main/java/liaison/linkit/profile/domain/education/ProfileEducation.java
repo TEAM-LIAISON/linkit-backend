@@ -39,7 +39,7 @@ public class ProfileEducation extends BaseDateTimeEntity {
     private University university;
 
     // 전공명
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String majorName;
 
     @Column(nullable = false)
@@ -48,6 +48,7 @@ public class ProfileEducation extends BaseDateTimeEntity {
     private boolean isAttendUniversity; // 학적 상태
 
     // 학력 설명
+    @Column(length = 300)
     private String educationDescription;
 
     private boolean isEducationCertified;

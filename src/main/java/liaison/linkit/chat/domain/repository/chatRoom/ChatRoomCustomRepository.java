@@ -9,4 +9,6 @@ public interface ChatRoomCustomRepository {
     boolean existsChatRoomByMatchingId(final Long matchingId);
 
     Long getChatRoomIdByMatchingId(final Long matchingId);
+
+    boolean existsChatRoomByMemberId(final Long memberId);
 }

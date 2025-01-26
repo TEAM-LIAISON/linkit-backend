@@ -24,6 +24,10 @@ public class ProfileLogCommandAdapter {
         profileLogRepository.updateProfileLogTypeRepresent(profileLog);
     }
 
+    public void updateProfileLogTypeToNormal(final ProfileLog profileLog) {
+        profileLogRepository.updateProfileLogTypeToNormal(profileLog);
+    }
+
     public ProfileLog updateProfileLog(final ProfileLog profileLog, final UpdateProfileLogRequest updateProfileLogRequest) {
         return profileLogRepository.updateProfileLog(profileLog, updateProfileLogRequest);
     }

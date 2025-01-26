@@ -3,12 +3,15 @@ package liaison.linkit.notification.presentation;
 import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,6 +29,7 @@ import liaison.linkit.notification.domain.type.SubNotificationType;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItem;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItems;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.ReadNotificationResponse;
 import liaison.linkit.notification.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -71,6 +75,14 @@ public class NotificationControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performUpdateNotificationReadStatus(final String notificationId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.post("/api/v1/notification/read/{notificationId}", notificationId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
     @DisplayName("회원이 내가 수신한 알림을 전체 조회할 수 있다.")
     @Test
     void getNotificationItems() throws Exception {
@@ -85,6 +97,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("방금 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.teamInvitationRequested(
+                                                "팀 코드",
+                                                "팀원으로 초대된 팀의 로고 이미지 경로",
                                                 "팀원으로 초대한 팀의 이름"
                                         )
                                 )
@@ -97,6 +111,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("방금 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.teamMemberJoined(
+                                                "팀 코드",
+                                                "팀원으로 들어간 팀의 로고 이미지 경로",
                                                 "팀원으로 들어온 회원의 이름",
                                                 "팀원으로 초대한 팀의 이름"
                                         )
@@ -111,6 +127,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("방금 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.chat(
+                                                "채팅방 아이디",
+                                                "채팅 발신자의 로고 이미지 경로",
                                                 "채팅 발신자 이름"
                                         )
                                 )
@@ -124,6 +142,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.matchingRequested(
+                                                1L,
+                                                "매칭 상대방의 로고 이미지 경로",
                                                 "매칭 상대방의 이름"
                                         )
                                 )
@@ -136,6 +156,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.matchingAccepted(
+                                                2L,
+                                                "매칭 상대방의 로고 이미지 경로",
                                                 "매칭 상대방의 이름"
                                         )
                                 )
@@ -148,6 +170,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.matchingRejected(
+                                                3L,
+                                                "매칭 상대방의 로고 이미지 경로",
                                                 "매칭 상대방의 이름"
                                         )
                                 )
@@ -161,6 +185,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.removeTeamRequested(
+                                                "팀 코드",
+                                                "삭제 요청된 팀 로고 이미지 경로",
                                                 "팀 삭제 요청을 진행한 팀원(오너/관리자)의 이름",
                                                 "팀 이름"
                                         )
@@ -175,6 +201,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.removeTeamRejected(
+                                                "팀 코드",
+                                                "삭제 거절된 팀 로고 이미지 경로",
                                                 "팀 삭제 요청을 거절한 팀원(오너/관리자)의 이름",
                                                 "삭제 완료된 팀 이름"
                                         )
@@ -189,6 +217,8 @@ public class NotificationControllerTest extends ControllerTest {
                                 .notificationOccurTime("1일 전")
                                 .notificationDetails(
                                         NotificationResponseDTO.NotificationDetails.removeTeamCompleted(
+                                                "팀 코드",
+                                                "삭제 완료된 팀 로고 이미지 경로",
                                                 "삭제 완료된 팀 이름"
                                         )
                                 )
@@ -223,6 +253,7 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
 
+                                        // result
                                         fieldWithPath("result")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("결과 데이터 객체")
@@ -232,10 +263,14 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .description("알림 목록 배열")
                                                 .attributes(field("constraint", "배열")),
 
+                                        // 공통 필드
+                                        fieldWithPath("result.notificationItems[].notificationId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("알림 ID (DB 식별자, null일 수 있음)")
+                                                .optional(),
                                         fieldWithPath("result.notificationItems[].notificationType")
                                                 .type(JsonFieldType.STRING)
-                                                .description("알림 유형 - 변동 가능성 있음 (MATCHING, CHATTING, TEAM_INVITATION, TEAM)"),
-
+                                                .description("알림 유형 (MATCHING, CHATTING, TEAM_INVITATION, TEAM 등)"),
                                         fieldWithPath("result.notificationItems[].subNotificationType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("""
@@ -250,20 +285,50 @@ public class NotificationControllerTest extends ControllerTest {
                                                             - REMOVE_TEAM_REJECTED: 팀 삭제 요청 거절
                                                             - REMOVE_TEAM_COMPLETED: 팀 삭제 완료
                                                         """),
-
                                         fieldWithPath("result.notificationItems[].notificationReadStatus")
                                                 .type(JsonFieldType.STRING)
                                                 .description("알림 읽음 여부 (UNREAD, READ)"),
-
                                         fieldWithPath("result.notificationItems[].notificationOccurTime")
                                                 .type(JsonFieldType.STRING)
                                                 .description("알림 발생 시간 (STRING)"),
 
+                                        // notificationDetails (object)
                                         fieldWithPath("result.notificationItems[].notificationDetails")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("알림 타입별 상세 정보"),
 
-                                        // TEAM/TEAM_INVITATION 관련 필드
+                                        // [TEAM] 관련 추가 필드
+                                        fieldWithPath("result.notificationItems[].notificationDetails.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 코드 (팀 초대/삭제 알림 등)")
+                                                .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 로고 이미지 경로 (팀 관련 알림)")
+                                                .optional(),
+
+                                        // [TEAM_INVITATION] 관련 (이미 documented: teamName, teamMemberName),
+                                        // [CHATTING] 관련 추가 필드
+                                        fieldWithPath("result.notificationItems[].notificationDetails.chatRoomId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅방 아이디 (채팅 알림일 경우)")
+                                                .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.chatSenderLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 발신자의 로고 이미지 경로 (채팅 알림일 경우)")
+                                                .optional(),
+
+                                        // [MATCHING] 관련 추가 필드
+                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("매칭 ID (매칭 알림일 경우)")
+                                                .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingTargetLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 상대방의 로고 이미지 경로 (매칭 알림일 경우)")
+                                                .optional(),
+
+                                        // 이미 정의된 필드 (기존)
                                         fieldWithPath("result.notificationItems[].notificationDetails.teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름 (팀 초대, 팀 삭제 알림 등)")
@@ -272,14 +337,10 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 관련 알림에서 팀원의 이름 (팀 초대, 팀 삭제 요청 등)")
                                                 .optional(),
-
-                                        // CHATTING 관련 필드
                                         fieldWithPath("result.notificationItems[].notificationDetails.chatSenderName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("메시지 발신자 이름 (채팅 알림인 경우)")
                                                 .optional(),
-
-                                        // MATCHING 관련 필드
                                         fieldWithPath("result.notificationItems[].notificationDetails.matchingTargetName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("매칭 상대방의 이름 (매칭 알림인 경우)")
@@ -302,4 +363,62 @@ public class NotificationControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
+    @DisplayName("회원이 내가 수신한 알림을 읽음 상태로 처리할 수 있다.")
+    @Test
+    void updateNotificationReadStatus() throws Exception {
+        // given
+        final NotificationResponseDTO.ReadNotificationResponse readNotificationResponse = ReadNotificationResponse.builder()
+                .notificationId("알림 ID")
+                .notificationReadStatus(NotificationReadStatus.READ)
+                .build();
+
+        // when
+        when(notificationService.readNotification(anyLong(), any())).thenReturn(readNotificationResponse);
+
+        final ResultActions resultActions = performUpdateNotificationReadStatus("random_id");
+
+        // then
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value(true))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("notificationId")
+                                                .description("알림 ID (문자열)")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+
+                                        fieldWithPath("result")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("결과 데이터 객체")
+                                                .attributes(field("constraint", "object")),
+                                        fieldWithPath("result.notificationId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("알림 아이디")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.notificationReadStatus")
+                                                .type(JsonFieldType.STRING)
+                                                .description("알림 읽음 상태")
+                                                .attributes(field("constraint", "문자열"))
+                                )
+                        )
+                )
+                .andReturn();
+    }
 }

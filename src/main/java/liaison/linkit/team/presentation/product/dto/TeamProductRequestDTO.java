@@ -39,7 +39,7 @@ public class TeamProductRequestDTO {
                 message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
         private String productStartDate;
 
-        @NotBlank(message = "팀 프로덕트 종료 기간을 입력해주세요.")
+
         @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
                 message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
         private String productEndDate;
@@ -67,7 +67,7 @@ public class TeamProductRequestDTO {
 
         @Size(min = 1, message = "팀 프로덕트 분야는 1자 이상 입력해주세요.")
         private String productField;
-        
+
         @NotBlank(message = "팀 프로덕트 시작 기간을 입력해주세요.")
         @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
                 message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")

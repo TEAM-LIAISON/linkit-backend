@@ -13,12 +13,21 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomLeaveResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ReadChatMessageResponse;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.matching.domain.type.SenderType;
 import org.springframework.data.domain.Page;
 
 @Mapper
 public class ChatMapper {
+
+    public ReadChatMessageResponse toReadChatMessageResponse(final Long chatRoomId, final Long updatedCount) {
+        return ReadChatMessageResponse.builder()
+                .chatRoomId(chatRoomId)
+                .readMessagesCount(updatedCount)
+                .build();
+    }
+
     public ChatResponseDTO.CreateChatRoomResponse toCreateChatRoomResponse(
             final ChatRoom chatRoom
     ) {
@@ -59,31 +68,27 @@ public class ChatMapper {
             final ChatMessage message,
             final Long memberId
     ) {
+        ParticipantType myType = determineMyParticipantType(chatRoom, message, memberId);
+        ParticipantType messageSenderType = message.getMessageSenderParticipantType();
+
+        // String 타입으로 비교
+        boolean isMyMessage = myType.equals(messageSenderType);
+
         return ChatResponseDTO.ChatMessageResponse.builder()
-                .messageId(message.getId())                               // 메시지 ID
-                .chatRoomId(message.getChatRoomId())                      // 채팅방 ID
-
-                // '나의 참여 타입' (예: A_TYPE / B_TYPE) 판단 로직
-                .myParticipantType(determineMyParticipantType(chatRoom, message, memberId))
-
-                // 메시지 발신자 A/B 참여 타입
+                .messageId(message.getId())
+                .chatRoomId(message.getChatRoomId())
+                .myParticipantType(myType.name())
                 .messageSenderParticipantType(message.getMessageSenderParticipantType())
-
-                // 메시지 발신자의 로고 이미지 경로
+                .isMyMessage(isMyMessage)
                 .messageSenderLogoImagePath(message.getMessageSenderLogoImagePath())
-
-                // 메시지 내용
                 .content(message.getContent())
-
-                // 전송 시간
                 .timestamp(message.getTimestamp())
-
-                // 읽음 여부
                 .isRead(message.isRead())
                 .build();
     }
 
     public ChatMessage toChatMessage(
+            final Long chatRoomId,
             final ChatMessageRequest chatMessageRequest,
             final ParticipantType participantType,
             final String senderKeyId,
@@ -94,7 +99,7 @@ public class ChatMapper {
             final Long receiverMemberId
     ) {
         return ChatMessage.builder()
-                .chatRoomId(chatMessageRequest.getChatRoomId())
+                .chatRoomId(chatRoomId)
                 .messageSenderParticipantType(participantType)
                 .messageSenderKeyId(senderKeyId)
                 .messageSenderMemberId(senderMemberId)
@@ -114,21 +119,11 @@ public class ChatMapper {
                 .build();
     }
 
-    public ChatResponseDTO.ChatMessageResponse toChatMessageResponse(ChatMessage chatMessage, boolean isMyMessage) {
-        return ChatResponseDTO.ChatMessageResponse.builder()
-                .messageId(chatMessage.getId())
-                .chatRoomId(chatMessage.getChatRoomId())
-                .content(chatMessage.getContent())
-                .timestamp(chatMessage.getTimestamp())
-                .isRead(chatMessage.isRead())
-                .build();
-    }
-
-    private String determineMyParticipantType(ChatRoom chatRoom, ChatMessage message, Long memberId) {
+    private ParticipantType determineMyParticipantType(ChatRoom chatRoom, ChatMessage message, Long memberId) {
         if (chatRoom.getParticipantAMemberId().equals(memberId)) {
-            return "A_TYPE";
+            return ParticipantType.A_TYPE;
         } else {
-            return "B_TYPE";
+            return ParticipantType.B_TYPE;
         }
     }
 
