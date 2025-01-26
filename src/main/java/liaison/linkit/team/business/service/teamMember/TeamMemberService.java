@@ -103,7 +103,7 @@ public class TeamMemberService {
         log.info("teamMemberInvitationEmail = {}", teamMemberInvitationEmail);
 
         // 해당 회원에 대해 이메일 발송
-        teamMemberInvitationMailService.sendMailTeamMemberInvitation(teamMemberInvitationEmail, team.getTeamLogoImagePath(), team.getTeamName());
+        teamMemberInvitationMailService.sendMailTeamMemberInvitation(teamMemberInvitationEmail, team.getTeamLogoImagePath(), team.getTeamName(), team.getTeamCode());
 
         // 새로운 팀원 초대 객체 생성
         final TeamMemberInvitation teamMemberInvitation = new TeamMemberInvitation(null, teamMemberInvitationEmail, team, addTeamMemberRequest.getTeamMemberType(), TeamMemberInviteState.PENDING);
