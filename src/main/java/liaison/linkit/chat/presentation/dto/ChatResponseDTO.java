@@ -108,6 +108,15 @@ public class ChatResponseDTO {
         private Long unreadCount;                       // 읽지 않은 메시지 수
     }
 
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ReadChatMessageResponse {
+        private Long chatRoomId;      // 어떤 채팅방에서
+        private long readMessagesCount; // 몇 개의 메시지를 읽었는지
+    }
+
     // 채팅 내역에 대한 응답
     @Getter
     @Builder

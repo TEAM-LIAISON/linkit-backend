@@ -2,6 +2,8 @@ package liaison.linkit.chat.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 import liaison.linkit.chat.business.ChatMapper;
 import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
@@ -28,6 +30,8 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerProfileDetailInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.PartnerTeamDetailInformation;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ReadChatMessageResponse;
+import liaison.linkit.common.annotation.ExplainError;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -332,6 +336,27 @@ public class ChatService {
         ChatRoom saved = chatRoomCommandAdapter.createChatRoom(chatRoom);
 
         return chatMapper.toCreateChatRoomResponse(saved);
+    }
+
+    public ReadChatMessageResponse handleReadChatMessage(final Long memberId, final Long chatRoomId) {
+        log.info("handleReadChatMessage 호출: chatRoomId={}", chatRoomId);
+
+        // 1. 채팅방 존재 확인
+        final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
+
+        // 3. 읽지 않은 메시지 조회 (수신자 == memberId)
+        List<ChatMessage> unreadMessages = chatMessageRepository.findByChatRoomIdAndIsReadFalseAndReceiverParticipantId(chatRoomId);
+
+        unreadMessages = unreadMessages.stream()
+                .filter(msg -> msg.getMessageReceiverMemberId().equals(memberId))
+                .collect(Collectors.toList());
+
+        unreadMessages.forEach(ChatMessage::markAsRead);
+        chatMessageRepository.saveAll(unreadMessages);
+
+        // 5. 응답 DTO 생성
+        long updatedCount = unreadMessages.size();
+        return chatMapper.toReadChatMessageResponse(chatRoomId, updatedCount);
     }
 
     public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId, final Long chatRoomId) {

@@ -125,6 +125,22 @@ public class StompHandler implements ChannelInterceptor {
 
             // TODO
             // 채팅방 입장 입력
+            if (destination != null && destination.startsWith("/pub/chat/read")) {
+                // "/pub/chat/send/{chatRoomId}"에서 chatRoomId 추출
+                String[] parts = destination.split("/");
+                if (parts.length >= 5) { // /pub/chat/read/{chatRoomId} 구조 확인
+                    String chatRoomId = parts[4];
+                    String memberId = jwtProvider.getSubject(accessToken);
+
+                    headerAccessor.setNativeHeader("memberId", memberId);
+                    headerAccessor.setNativeHeader("chatRoomId", chatRoomId); // chatRoomId 추가
+
+                    return MessageBuilder
+                            .createMessage(message.getPayload(), headerAccessor.getMessageHeaders());
+                } else {
+                    throw new IllegalArgumentException("잘못된 destination 형식입니다.");
+                }
+            }
         }
 
         return message;

@@ -13,12 +13,21 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomLeaveResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ReadChatMessageResponse;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.matching.domain.type.SenderType;
 import org.springframework.data.domain.Page;
 
 @Mapper
 public class ChatMapper {
+
+    public ReadChatMessageResponse toReadChatMessageResponse(final Long chatRoomId, final Long updatedCount) {
+        return ReadChatMessageResponse.builder()
+                .chatRoomId(chatRoomId)
+                .readMessagesCount(updatedCount)
+                .build();
+    }
+
     public ChatResponseDTO.CreateChatRoomResponse toCreateChatRoomResponse(
             final ChatRoom chatRoom
     ) {

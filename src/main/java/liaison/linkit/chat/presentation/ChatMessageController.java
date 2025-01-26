@@ -43,7 +43,18 @@ public class ChatMessageController {
         }
     }
 
-//    @MessageMapping("/chat/read/{chatRoomId}")
-//    public void
+    @MessageMapping("/chat/read/{chatRoomId}")
+    public void readChatMessages(
+            @Header(name = "memberId", required = true) Long memberId,
+            @Header(name = "chatRoomId", required = true) Long chatRoomId,
+            Message<?> message
+    ) {
+        try {
+            chatService.handleReadChatMessage(memberId, chatRoomId);
+        } catch (Exception e) {
+            log.error("Error processing read chat message", e);
+            throw e;
+        }
+    }
 
 }
