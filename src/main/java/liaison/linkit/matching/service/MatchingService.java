@@ -473,7 +473,8 @@ public class MatchingService {
         // 매칭 성사된 경우, 수신자에게 알림 발송
         NotificationDetails receiverNotificationDetails = NotificationDetails.matchingAccepted(
                 matchingId,
-                getReceiverName(matching)
+                getSenderLogoImagePath(matching),
+                getSenderName(matching)
         );
 
         notificationService.alertNewNotification(
@@ -490,7 +491,8 @@ public class MatchingService {
         // 매칭 성사된 경우, 발신자에게 알림 발송
         NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
                 matchingId,
-                getSenderName(matching)
+                getReceiverLogoImagePath(matching),
+                getReceiverName(matching)
         );
 
         notificationService.alertNewNotification(
@@ -702,6 +704,7 @@ public class MatchingService {
         NotificationDetails receiverNotificationDetails = NotificationDetails.matchingRequested(
                 // matchingTargetName 필요
                 savedMatching.getId(),
+                getSenderLogoImagePath(matching),
                 getSenderName(matching)
         );
 

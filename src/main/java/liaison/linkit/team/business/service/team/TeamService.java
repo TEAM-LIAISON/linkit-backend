@@ -357,7 +357,7 @@ public class TeamService {
             teamCommandAdapter.updateTeamStatus(TeamStatus.DELETE_PENDING, teamCode);
 
             // 팀원들에게 요청 알림 발송
-            NotificationDetails removeTeamNotificationDetails = NotificationDetails.teamInvitationRequested(teamCode, targetTeam.getTeamName());
+            NotificationDetails removeTeamNotificationDetails = NotificationDetails.teamInvitationRequested(teamCode, targetTeam.getTeamLogoImagePath(), targetTeam.getTeamName());
 
             final List<Long> teamMemberIds = teamMemberQueryAdapter.getAllTeamMemberIds(teamCode);
 

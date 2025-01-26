@@ -75,10 +75,12 @@ public class NotificationResponseDTO {
 
         // 채팅 알림
         private String chatRoomId;
+        private String chatSenderLogoImagePath;
         private String chatSenderName;
 
         // 매칭 알림
         private Long matchingId;
+        private String matchingTargetLogoImagePath;
         private String matchingTargetName;
 
         // 팀 알림 / 팀 초대 알림
@@ -92,9 +94,11 @@ public class NotificationResponseDTO {
                 final String emailId,
 
                 final String chatRoomId,
+                final String chatSenderLogoImagePath,
                 final String chatSenderName,
 
                 final Long matchingId,
+                final String matchingTargetLogoImagePath,
                 final String matchingTargetName,
 
                 final String teamCode,
@@ -105,9 +109,11 @@ public class NotificationResponseDTO {
             this.emailId = emailId;
 
             this.chatRoomId = chatRoomId;
+            this.chatSenderLogoImagePath = chatSenderLogoImagePath;
             this.chatSenderName = chatSenderName;
 
             this.matchingId = matchingId;
+            this.matchingTargetLogoImagePath = matchingTargetLogoImagePath;
             this.matchingTargetName = matchingTargetName;
 
             this.teamCode = teamCode;
@@ -117,76 +123,120 @@ public class NotificationResponseDTO {
         }
 
         // 팀 초대 요청에 대한 알림생성
-        public static NotificationDetails teamInvitationRequested(final String teamCode, final String teamName) {
+        public static NotificationDetails teamInvitationRequested(final String teamCode, final String teamLogoImagePath, final String teamName) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
+                    .teamLogoImagePath(teamLogoImagePath)
                     .teamName(teamName)
                     .build();
         }
 
         // 팀 초대 완료에 대한 알림 생성
-        public static NotificationDetails teamMemberJoined(final String teamCode, final String teamMemberName, final String teamName) {
+        public static NotificationDetails teamMemberJoined(
+                final String teamCode,
+                final String teamLogoImagePath,
+                final String teamMemberName,
+                final String teamName
+        ) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
+                    .teamLogoImagePath(teamLogoImagePath)
                     .teamMemberName(teamMemberName)
                     .teamName(teamName)
                     .build();
         }
 
         // 채팅 알림 생성
-        public static NotificationDetails chat(final String chatRoomId, final String chatSenderName) {
+        public static NotificationDetails chat(
+                final String chatRoomId,
+                final String chatSenderLogoImagePath,
+                final String chatSenderName
+        ) {
             return NotificationDetails.builder()
                     .chatRoomId(chatRoomId)
+                    .chatSenderLogoImagePath(chatSenderLogoImagePath)
                     .chatSenderName(chatSenderName)
                     .build();
         }
 
         // 매칭 알림 생성
-        public static NotificationDetails matchingRequested(final Long matchingId, final String matchingTargetName) {
+        public static NotificationDetails matchingRequested(
+                final Long matchingId,
+                final String matchingTargetLogoImagePath,
+                final String matchingTargetName
+        ) {
             return NotificationDetails.builder()
                     .matchingId(matchingId)
+                    .matchingTargetLogoImagePath(matchingTargetLogoImagePath)
                     .matchingTargetName(matchingTargetName)
                     .build();
         }
 
         // 매칭 성사 알림 생성
-        public static NotificationDetails matchingAccepted(final Long matchingId, final String matchingTargetName) {
+        public static NotificationDetails matchingAccepted(
+                final Long matchingId,
+                final String matchingTargetLogoImagePath,
+                final String matchingTargetName
+        ) {
             return NotificationDetails.builder()
                     .matchingId(matchingId)
+                    .matchingTargetLogoImagePath(matchingTargetLogoImagePath)
                     .matchingTargetName(matchingTargetName)
                     .build();
         }
 
         // 매칭 거절 알림 생성
-        public static NotificationDetails matchingRejected(final Long matchingId, final String matchingTargetName) {
+        public static NotificationDetails matchingRejected(
+                final Long matchingId,
+                final String matchingTargetLogoImagePath,
+                final String matchingTargetName
+        ) {
             return NotificationDetails.builder()
                     .matchingId(matchingId)
+                    .matchingTargetLogoImagePath(matchingTargetLogoImagePath)
                     .matchingTargetName(matchingTargetName)
                     .build();
         }
 
         // 팀 삭제 요청 알림 생성
-        public static NotificationDetails removeTeamRequested(final String teamCode, final String teamMemberName, final String teamName) {
+        public static NotificationDetails removeTeamRequested(
+                final String teamCode,
+                final String teamLogoImagePath,
+                final String teamMemberName,
+                final String teamName
+        ) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
+                    .teamLogoImagePath(teamLogoImagePath)
                     .teamMemberName(teamMemberName)
                     .teamName(teamName)
                     .build();
         }
 
         // 팀 삭제 요청 거절 알림 생성
-        public static NotificationDetails removeTeamRejected(final String teamCode, final String teamMemberName, final String teamName) {
+        public static NotificationDetails removeTeamRejected(
+                final String teamCode,
+                final String teamLogoImagePath,
+                final String teamMemberName,
+                final String teamName
+        ) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
+                    .teamLogoImagePath(teamLogoImagePath)
                     .teamMemberName(teamMemberName)
                     .teamName(teamName)
                     .build();
         }
 
         // 팀 삭제 요청 거절 알림 생성
-        public static NotificationDetails removeTeamCompleted(final String teamCode, final String teamName) {
+        public static NotificationDetails removeTeamCompleted(
+                final String teamCode,
+                final String teamLogoImagePath,
+                final String teamName
+        ) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
+                    .teamLogoImagePath(teamLogoImagePath)
                     .teamName(teamName)
                     .build();
         }
