@@ -20,6 +20,15 @@ public class NotificationResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class ReadNotificationResponse {
+        private String notificationId;
+        private NotificationReadStatus notificationReadStatus;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ChatRoomConnectedInitResponse {
         // 상대방의 온라인 여부
         private boolean isChatPartnerOnline;
@@ -57,7 +66,7 @@ public class NotificationResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class NotificationItem {
-        private Long notificationId;
+        private String notificationId;
 
         private NotificationType notificationType;
         private SubNotificationType subNotificationType;

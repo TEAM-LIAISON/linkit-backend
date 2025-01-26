@@ -57,11 +57,11 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-@WebMvcTest(ChatMessageController.class)
+@WebMvcTest(ChatController.class)
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 @Slf4j
-public class ChatMessageControllerTest extends ControllerTest {
+public class ChatControllerTest extends ControllerTest {
 
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
     private static final Cookie COOKIE = new Cookie("refresh-token", MEMBER_TOKENS.getRefreshToken());
@@ -296,6 +296,8 @@ public class ChatMessageControllerTest extends ControllerTest {
                                                         .lastMessageTime(LocalDateTime.now())
                                                         .build()
                                         )
+                                        .unreadChatMessageCount(10)
+                                        .isChatPartnerOnline(true)
                                         .build(),
                                 ChatRoomSummary.builder()
                                         .chatRoomId(2L)
@@ -338,6 +340,8 @@ public class ChatMessageControllerTest extends ControllerTest {
                                                         .lastMessageTime(LocalDateTime.now())
                                                         .build()
                                         )
+                                        .unreadChatMessageCount(20)
+                                        .isChatPartnerOnline(false)
                                         .build()
                         )
                 )
@@ -405,10 +409,10 @@ public class ChatMessageControllerTest extends ControllerTest {
                                         fieldWithPath("result.chatRoomSummaries[].chatPartnerInformation.lastMessageTime")
                                                 .type(JsonFieldType.STRING)
                                                 .description("마지막 메시지 시간"),
-                                        fieldWithPath("result.chatRoomSummaries[].unreadCount")
-                                                .type(JsonFieldType.NULL)
+                                        fieldWithPath("result.chatRoomSummaries[].unreadChatMessageCount")
+                                                .type(JsonFieldType.NUMBER)
                                                 .description("읽지 않은 메시지 수"),
-                                        fieldWithPath("result.chatRoomSummaries[].online")
+                                        fieldWithPath("result.chatRoomSummaries[].chatPartnerOnline")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("사용자 온라인 상태")
                                 )
@@ -431,6 +435,7 @@ public class ChatMessageControllerTest extends ControllerTest {
                                         .chatRoomId(1L)
                                         .myParticipantType("A_TYPE")
                                         .messageSenderParticipantType(ParticipantType.A_TYPE)
+                                        .isMyMessage(true)
                                         .messageSenderLogoImagePath("메시지 발신자의 프로필 로고 이미지 경로")
                                         .content("첫 번째 메시지")
                                         .timestamp(LocalDateTime.now())
@@ -441,6 +446,7 @@ public class ChatMessageControllerTest extends ControllerTest {
                                         .chatRoomId(2L)
                                         .myParticipantType("B_TYPE")
                                         .messageSenderParticipantType(ParticipantType.B_TYPE)
+                                        .isMyMessage(true)
                                         .messageSenderLogoImagePath("메시지 발신자의 프로필 로고 이미지 경로")
                                         .content("두 번째 메시지")
                                         .timestamp(LocalDateTime.now())
@@ -488,6 +494,7 @@ public class ChatMessageControllerTest extends ControllerTest {
                                         // 누락된 필드 추가
                                         fieldWithPath("result.messages[].myParticipantType").type(JsonFieldType.STRING).description("현재 사용자의 참여 타입 (A_TYPE / B_TYPE / 기타)"),
                                         fieldWithPath("result.messages[].messageSenderParticipantType").type(JsonFieldType.STRING).description("메시지 발신자의 참여 타입 (A_TYPE / B_TYPE / 기타)"),
+                                        fieldWithPath("result.messages[].isMyMessage").type(JsonFieldType.BOOLEAN).description("내가 보낸 메시지인지 여부"),
                                         fieldWithPath("result.messages[].messageSenderLogoImagePath").type(JsonFieldType.STRING).description("메시지 발신자의 로고 이미지 경로")
                                 )
                         )

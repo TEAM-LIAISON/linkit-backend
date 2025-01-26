@@ -222,7 +222,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .build();
 
         // when
-        when(teamMemberAnnouncementService.getHomeAnnouncementInformMenusInLoginState()).thenReturn(announcementInformMenus);
+        when(teamMemberAnnouncementService.getHomeAnnouncementInformMenusInLogoutState()).thenReturn(announcementInformMenus);
 
         final ResultActions resultActions = performGetHomeAnnouncementInformMenus();
 
@@ -568,6 +568,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .teamMemberAnnouncementId(1L)
                 .isAnnouncementScrap(true)
                 .announcementScrapCount(100)
+                .announcementDDay(20)
                 .announcementTitle("팀원 공고 제목")
                 .announcementPositionItem(
                         AnnouncementPositionItem.builder()
@@ -639,6 +640,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementScrapCount")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("팀원 공고 스크랩 수"),
+                                        fieldWithPath("result.announcementDDay")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀원 공고 디데이"),
                                         fieldWithPath("result.announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),
@@ -706,7 +710,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
 
         final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
-                = new AddTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 시작 날짜", "공고 종료 날짜", false, "주요 업무", "업무 방식",
+                = new AddTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 종료 날짜", false, "주요 업무", "업무 방식",
                 "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
 
         final AddTeamMemberAnnouncementResponse addTeamMemberAnnouncementResponse = getAddTeamMemberAnnouncementResponse();
@@ -858,7 +862,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
 
         final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
-                = new UpdateTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 시작 날짜", "공고 종료 날짜", false, "주요 업무", "업무 방식",
+                = new UpdateTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 종료 날짜", false, "주요 업무", "업무 방식",
                 "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
 
         final UpdateTeamMemberAnnouncementResponse updateTeamMemberAnnouncementResponse = getUpdateTeamMemberAnnouncementResponse();
@@ -898,7 +902,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("announcementSkillNames[].announcementSkillName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 스킬 이름"),
-                                        
+
                                         fieldWithPath("announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
@@ -1131,7 +1135,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNamesResponse
                 = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
 
-        return new AddTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 시작 날짜", "공고 종료 날짜", false, "주요 업무",
+        return new AddTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 종료 날짜", false, "주요 업무",
                 "업무 방식", "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
     }
 
@@ -1143,7 +1147,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNamesResponse
                 = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
 
-        return new UpdateTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 시작 날짜", "공고 종료 날짜", false, "주요 업무",
+        return new UpdateTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 종료 날짜", false, "주요 업무",
                 "업무 방식", "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
     }
 }

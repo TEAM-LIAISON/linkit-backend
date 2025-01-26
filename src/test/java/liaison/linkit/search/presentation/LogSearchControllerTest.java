@@ -152,6 +152,14 @@ public class LogSearchControllerTest extends ControllerTest {
                                                 .description("로그 상세 정보"),
 
                                         // PROFILE 도메인 관련 필드
+                                        fieldWithPath("result.logInformMenus[].logInformDetails.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("유저 아이디 (이메일 ID)")
+                                                .optional(),
+                                        fieldWithPath("result.logInformMenus[].logInformDetails.profileLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("프로필 로그 아이디 (PK)")
+                                                .optional(),
                                         fieldWithPath("result.logInformMenus[].logInformDetails.memberName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("회원 이름 (PROFILE 도메인일 경우)")
@@ -162,6 +170,15 @@ public class LogSearchControllerTest extends ControllerTest {
                                                 .optional(),
 
                                         // TEAM 도메인 관련 필드
+                                        fieldWithPath("result.logInformMenus[].logInformDetails.teamCode")
+                                                .type(JsonFieldType.STRING)
+                                                .description("팀 아이디 (팀 코드)")
+                                                .optional(),
+                                        fieldWithPath("result.logInformMenus[].logInformDetails.teamLogId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("팀 로그 아이디 (PK)")
+                                                .optional(),
+
                                         fieldWithPath("result.logInformMenus[].logInformDetails.teamName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 이름 (TEAM 도메인일 경우)")

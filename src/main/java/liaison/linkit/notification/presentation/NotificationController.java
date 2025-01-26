@@ -9,6 +9,8 @@ import liaison.linkit.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,9 +29,12 @@ public class NotificationController {
         return CommonResponse.onSuccess(notificationService.getNotificationItems(accessor.getMemberId()));
     }
 
-//    @PostMapping("/read/{notificationId}")
-//    @MemberOnly
-//    public CommonResponse<NotificationResponseDTO.ReadNotificationResponse> readNotification(
-//            @Auth final Accessor accessor,
-//    )
+    @PostMapping("/notification/read/{notificationId}")
+    @MemberOnly
+    public CommonResponse<NotificationResponseDTO.ReadNotificationResponse> readNotification(
+            @Auth final Accessor accessor,
+            @PathVariable final String notificationId
+    ) {
+        return CommonResponse.onSuccess(notificationService.readNotification(accessor.getMemberId(), notificationId));
+    }
 }

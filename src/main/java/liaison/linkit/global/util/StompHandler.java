@@ -122,6 +122,9 @@ public class StompHandler implements ChannelInterceptor {
                     throw new IllegalArgumentException("잘못된 destination 형식입니다.");
                 }
             }
+
+            // TODO
+            // 채팅방 입장 입력
         }
 
         return message;

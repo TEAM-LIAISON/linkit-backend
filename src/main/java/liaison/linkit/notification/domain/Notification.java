@@ -106,4 +106,8 @@ public class Notification {
     public void setTeamDetails(final TeamDetails teamDetails) {
         this.teamDetails = teamDetails;
     }
+
+    public void setNotificationReadStatus(final NotificationReadStatus notificationReadStatus) {
+        this.notificationReadStatus = notificationReadStatus;
+    }
 }

@@ -1587,6 +1587,18 @@ include::{snippets}/notification-controller-test/get-notification-items/http-res
 include::{snippets}/notification-controller-test/get-notification-items/response-fields.adoc[]
 ====
 
+=== 알림 읽음 처리 (상단바)
+
+====
+*요청*
+include::{snippets}/notification-controller-test/update-notification-read-status/http-request.adoc[]
+include::{snippets}/notification-controller-test/update-notification-read-status/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/notification-controller-test/update-notification-read-status/http-response.adoc[]
+include::{snippets}/notification-controller-test/update-notification-read-status/response-fields.adoc[]
+====
+
 == #[매칭 관리]#
 
 === 매칭 요청 보내기

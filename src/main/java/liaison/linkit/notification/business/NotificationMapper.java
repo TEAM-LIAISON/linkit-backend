@@ -8,13 +8,24 @@ import liaison.linkit.notification.domain.Notification;
 import liaison.linkit.notification.domain.type.NotificationReadStatus;
 import liaison.linkit.notification.domain.type.NotificationType;
 import liaison.linkit.notification.domain.type.SubNotificationType;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationCountResponse;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItem;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItems;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.ReadNotificationResponse;
 
 @Mapper
 public class NotificationMapper {
+
+    public NotificationResponseDTO.ReadNotificationResponse toReadNotification(
+            final Notification notification
+    ) {
+        return ReadNotificationResponse.builder()
+                .notificationId(notification.getId())
+                .notificationReadStatus(notification.getNotificationReadStatus())
+                .build();
+    }
 
     public Notification toNotification(
             final Long notificationReceiverMemberId,
@@ -200,6 +211,7 @@ public class NotificationMapper {
         }
 
         return NotificationItem.builder()
+                .notificationId(notification.getId())
                 .notificationType(type)
                 .subNotificationType(subType)
                 .notificationReadStatus(notification.getNotificationReadStatus())

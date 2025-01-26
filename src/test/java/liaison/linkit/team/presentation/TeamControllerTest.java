@@ -167,7 +167,7 @@ public class TeamControllerTest extends ControllerTest {
                 .build();
 
         // when
-        when(teamService.getHomeTeamInformMenusInLoginState()).thenReturn(teamInformMenus);
+        when(teamService.getHomeTeamInformMenusInLogoutState()).thenReturn(teamInformMenus);
 
         final ResultActions resultActions = performGetHomeTeamInformMenus();
         // then
