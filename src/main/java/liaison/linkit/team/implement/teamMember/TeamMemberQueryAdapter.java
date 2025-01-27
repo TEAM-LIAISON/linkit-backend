@@ -3,9 +3,9 @@ package liaison.linkit.team.implement.teamMember;
 import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.member.domain.Member;
+import liaison.linkit.team.domain.repository.teamMember.TeamMemberRepository;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
-import liaison.linkit.team.domain.repository.teamMember.TeamMemberRepository;
 import lombok.RequiredArgsConstructor;
 
 @Adapter
@@ -53,11 +53,15 @@ public class TeamMemberQueryAdapter {
         return teamMemberRepository.findTeamOwnerByTeamCode(teamCode);
     }
 
-    public boolean existsTeamMembersByTeamCode(final String teamCode) {
-        return teamMemberRepository.existsTeamMembersByTeamCode(teamCode);
+    public boolean existsTeamMembersExceptOwnerByTeamCode(final String teamCode) {
+        return teamMemberRepository.existsTeamMembersExceptOwnerByTeamCode(teamCode);
     }
 
     public List<Long> getAllTeamMemberIds(final String teamCode) {
         return teamMemberRepository.getAllTeamMemberIds(teamCode);
+    }
+
+    public boolean isMemberOfTeam(final String teamCode, final String emailId) {
+        return teamMemberRepository.isMemberOfTeam(teamCode, emailId);
     }
 }

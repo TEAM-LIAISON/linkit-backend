@@ -262,6 +262,7 @@ public class MatchingMapper {
             final List<AnnouncementSkillName> announcementSkillNames
     ) {
         return ReceiverAnnouncementInformation.builder()
+                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)

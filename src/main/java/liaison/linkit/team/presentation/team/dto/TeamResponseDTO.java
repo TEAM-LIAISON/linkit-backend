@@ -20,6 +20,7 @@ public class TeamResponseDTO {
     public static class TeamDetail {
         // 내가 속한 팀인지 여부
         private Boolean isMyTeam;
+        private Boolean isTeamManager;
 
         // 초대 상태
         private Boolean isTeamInvitationInProgress;

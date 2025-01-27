@@ -32,6 +32,7 @@ import liaison.linkit.team.domain.scale.Scale;
 import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.state.TeamState;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import liaison.linkit.team.exception.team.DeleteTeamBadRequestException;
 import liaison.linkit.team.exception.team.DuplicateTeamCodeException;
 import liaison.linkit.team.implement.team.TeamCommandAdapter;
@@ -256,14 +257,31 @@ public class TeamService {
     // 로그인한 사용자가 팀을 상세 조회한 케이스
     public TeamResponseDTO.TeamDetail getLoggedInTeamDetail(final Long memberId, final String teamCode) {
         final Member member = memberQueryAdapter.findById(memberId);
+        log.info("getLoggedInTeamDetail memberId = {}", memberId);
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
+        log.info("getLoggedInTeamDetail targetTeam = {}", targetTeam);
+
+        boolean isTeamManager = false;
+        log.info("getLoggedInTeamDetail isTeamManager = {}", isTeamManager);
+
+        if (teamMemberQueryAdapter.isMemberOfTeam(targetTeam.getTeamCode(), member.getEmailId())) {
+            final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(targetTeam.getTeamCode(), member.getEmailId());
+            log.info("getLoggedInTeamDetail teamMember = {}", teamMember);
+            if (teamMember.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.REQUEST_DELETE)) {
+                isTeamManager = true;
+            }
+        }
 
         // 오너, 관리자 여부 확인
         boolean isMyTeam = teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId);
+        
+        log.info("getLoggedInTeamDetail isMyTeam = {}", isMyTeam);
 
         // 조회 요청을 진행한 사용자가 teamInvitation 테이블에 존재하는지 여부 판단
         boolean isTeamInvitationInProgress = teamMemberInvitationQueryAdapter.existsByEmailAndTeam(member.getEmail(), targetTeam);
+        log.info("isTeamInvitationInProgress = {}", isTeamInvitationInProgress);
         boolean isTeamDeleteInProgress = teamQueryAdapter.isTeamDeleteInProgress(teamCode) && isMyTeam;
+        log.info("getLoggedInTeamDetail isTeamDeleteInProgress = {}", isTeamDeleteInProgress);
 
         final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
         final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
@@ -287,7 +305,7 @@ public class TeamService {
 
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(isMyTeam, isTeamInvitationInProgress, isTeamDeleteInProgress, teamInformMenu);
+        return teamMapper.toTeamDetail(isMyTeam, isTeamManager, isTeamInvitationInProgress, isTeamDeleteInProgress, teamInformMenu);
     }
 
     // 로그인하지 않은 사용자가 팀을 상세 조회한 케이스
@@ -313,7 +331,7 @@ public class TeamService {
         final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(teamCode);
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(false, false, false, teamInformMenu);
+        return teamMapper.toTeamDetail(false, false, false, false, teamInformMenu);
     }
 
     public TeamResponseDTO.TeamItems getTeamItems(final Long memberId) {
@@ -345,23 +363,31 @@ public class TeamService {
 
     // 팀 삭제 요청
     public TeamResponseDTO.DeleteTeamResponse deleteTeam(final Long memberId, final String teamCode) {
+        final Member member = memberQueryAdapter.findById(memberId);
+
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
         if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
             throw DeleteTeamBadRequestException.EXCEPTION;
         }
 
+        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(targetTeam.getTeamCode(), member.getEmailId());
+
+        // 해당 회원이 삭제 요청을 보낸 것으로 수정
+        teamMember.setTeamMemberManagingTeamState(TeamMemberManagingTeamState.REQUEST_DELETE);
+
         // 오너를 제외하고 등록된 팀원이 존재하는 경우
-        if (teamMemberQueryAdapter.existsTeamMembersByTeamCode(teamCode)) {
+        if (teamMemberQueryAdapter.existsTeamMembersExceptOwnerByTeamCode(teamCode)) {
             // 팀원의 삭제 수락 요청이 모두 처리되어야 팀 삭제가 진행될 수 있다.
             teamCommandAdapter.updateTeamStatus(TeamStatus.DELETE_PENDING, teamCode);
-
-            // 팀원들에게 요청 알림 발송
-            NotificationDetails removeTeamNotificationDetails = NotificationDetails.teamInvitationRequested(teamCode, targetTeam.getTeamLogoImagePath(), targetTeam.getTeamName());
 
             final List<Long> teamMemberIds = teamMemberQueryAdapter.getAllTeamMemberIds(teamCode);
 
             for (Long teamMemberId : teamMemberIds) {
+                // 팀원들에게 요청 알림 발송 (수정 필요)
+                NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamRequested(teamCode, targetTeam.getTeamLogoImagePath(), targetTeam.getTeamName(),
+                        member.getMemberBasicInform().getMemberName());
+
                 notificationService.alertNewNotification(
                         notificationMapper.toNotification(
                                 teamMemberId,
