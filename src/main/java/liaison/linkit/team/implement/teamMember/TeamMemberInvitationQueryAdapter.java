@@ -26,8 +26,8 @@ public class TeamMemberInvitationQueryAdapter {
         return teamMemberInvitationRepository.existsByEmailAndTeam(email, team);
     }
 
-    public List<TeamMemberInvitation> getTeamMemberInvitations(final Long teamId) {
-        return teamMemberInvitationRepository.getTeamMemberInvitations(teamId);
+    public List<TeamMemberInvitation> getTeamMemberInvitationsInPending(final Long teamId) {
+        return teamMemberInvitationRepository.getTeamMemberInvitationsInPending(teamId);
     }
 
     public TeamMemberInvitation getTeamMemberInvitationInPendingState(final String email, final Team team) {

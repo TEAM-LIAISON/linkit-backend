@@ -175,7 +175,7 @@ public class TeamMemberService {
         final List<AcceptedTeamMemberItem> acceptedTeamMemberItems = getAcceptedTeamMemberItems(teamMembers);
 
         // 초대 수락 대기 중인 멤버들을 PendingTeamMemberItem 리스트로 매핑
-        final List<TeamMemberInvitation> teamMemberInvitations = teamMemberInvitationQueryAdapter.getTeamMemberInvitations(team.getId());
+        final List<TeamMemberInvitation> teamMemberInvitations = teamMemberInvitationQueryAdapter.getTeamMemberInvitationsInPending(team.getId());
 
         final List<PendingTeamMemberItem> pendingTeamMemberItems = teamMemberInvitations.stream()
                 .map(teamMemberInvitation ->

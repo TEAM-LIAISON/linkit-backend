@@ -10,7 +10,7 @@ public interface TeamMemberInvitationCustomRepository {
 
     boolean existsByEmailAndTeam(final String email, final Team team);
 
-    List<TeamMemberInvitation> getTeamMemberInvitations(final Long teamId);
+    List<TeamMemberInvitation> getTeamMemberInvitationsInPending(final Long teamId);
 
     List<Team> getTeamsByEmail(final String email);
 

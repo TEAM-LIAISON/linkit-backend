@@ -40,12 +40,13 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
     }
 
     @Override
-    public List<TeamMemberInvitation> getTeamMemberInvitations(final Long teamId) {
+    public List<TeamMemberInvitation> getTeamMemberInvitationsInPending(final Long teamId) {
         QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
 
         return jpaQueryFactory
                 .selectFrom(qTeamMemberInvitation)
-                .where(qTeamMemberInvitation.team.id.eq(teamId))
+                .where(qTeamMemberInvitation.team.id.eq(teamId)
+                        .and(qTeamMemberInvitation.teamMemberInviteState.eq(TeamMemberInviteState.PENDING)))
                 .fetch();
     }
 
