@@ -16,5 +16,8 @@ public enum SubNotificationType {
     // TEAM 관련
     REMOVE_TEAM_REQUESTED,
     REMOVE_TEAM_REJECTED,
-    REMOVE_TEAM_COMPLETED
+    REMOVE_TEAM_COMPLETED,
+
+    // SYSTEM
+    WELCOME_LINKIT
 }

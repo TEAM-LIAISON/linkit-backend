@@ -499,47 +499,64 @@ public class MatchingService {
                     getReceiverRegionOrAnnouncementSkill(matching)
             );
             log.info("이메일 발송 완료");
+
+            // 매칭 성사된 경우, 수신자에게 알림 발송
+            NotificationDetails receiverNotificationDetails = NotificationDetails.matchingAccepted(
+                    matchingId,
+                    getSenderLogoImagePath(matching),
+                    getSenderName(matching)
+            );
+
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getReceiverMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_ACCEPTED,
+                            receiverNotificationDetails
+                    )
+            );
+            log.info("수신자에게 알림 발송 완료: memberId={}, matchingId={}", getReceiverMemberId(matching), matchingId);
+
+            headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
+            log.info("수신자 헤더 알림 카운트 업데이트 완료: memberId={}", getReceiverMemberId(matching));
+
+            // 매칭 성사된 경우, 발신자에게 알림 발송
+            NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
+                    matchingId,
+                    getReceiverLogoImagePath(matching),
+                    getReceiverName(matching)
+            );
+
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getSenderMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_ACCEPTED,
+                            senderNotificationDetails
+                    )
+            );
+            log.info("발신자에게 알림 발송 완료: memberId={}, matchingId={}", getSenderMemberId(matching), matchingId);
+
+            headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
+            log.info("발신자 헤더 알림 카운트 업데이트 완료: memberId={}", getSenderMemberId(matching));
+        } else {
+            NotificationDetails senderRejectedNotificationDetails = NotificationDetails.matchingRejected(
+                    matchingId,
+                    getReceiverLogoImagePath(matching),
+                    getReceiverName(matching)
+            );
+
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getSenderMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_REJECTED,
+                            senderRejectedNotificationDetails
+                    )
+            );
+
+            headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
         }
-
-        // 매칭 성사된 경우, 수신자에게 알림 발송
-        NotificationDetails receiverNotificationDetails = NotificationDetails.matchingAccepted(
-                matchingId,
-                getSenderLogoImagePath(matching),
-                getSenderName(matching)
-        );
-
-        notificationService.alertNewNotification(
-                notificationMapper.toNotification(
-                        getReceiverMemberId(matching),
-                        NotificationType.MATCHING,
-                        SubNotificationType.MATCHING_ACCEPTED,
-                        receiverNotificationDetails
-                )
-        );
-        log.info("수신자에게 알림 발송 완료: memberId={}, matchingId={}", getReceiverMemberId(matching), matchingId);
-
-        headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
-        log.info("수신자 헤더 알림 카운트 업데이트 완료: memberId={}", getReceiverMemberId(matching));
-
-        // 매칭 성사된 경우, 발신자에게 알림 발송
-        NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
-                matchingId,
-                getReceiverLogoImagePath(matching),
-                getReceiverName(matching)
-        );
-
-        notificationService.alertNewNotification(
-                notificationMapper.toNotification(
-                        getSenderMemberId(matching),
-                        NotificationType.MATCHING,
-                        SubNotificationType.MATCHING_ACCEPTED,
-                        senderNotificationDetails
-                )
-        );
-        log.info("발신자에게 알림 발송 완료: memberId={}, matchingId={}", getSenderMemberId(matching), matchingId);
-
-        headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
-        log.info("발신자 헤더 알림 카운트 업데이트 완료: memberId={}", getSenderMemberId(matching));
 
         UpdateMatchingStatusTypeResponse response = matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
         log.info("매칭 상태 업데이트 응답 생성 완료: {}", response);

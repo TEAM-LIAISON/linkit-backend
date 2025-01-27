@@ -20,6 +20,7 @@ import liaison.linkit.member.exception.member.FailMemberGenerateException;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.notification.business.NotificationMapper;
 import liaison.linkit.notification.implement.NotificationCommandAdapter;
 import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -59,6 +60,7 @@ public class LoginService {
     private final TeamMemberInvitationCommandAdapter teamMemberInvitationCommandAdapter;
     private final NotificationCommandAdapter notificationCommandAdapter;
     private final NotificationService notificationService;
+    private final NotificationMapper notificationMapper;
 
 
     // 회원이 로그인한다

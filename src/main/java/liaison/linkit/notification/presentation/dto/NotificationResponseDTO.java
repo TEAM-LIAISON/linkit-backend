@@ -100,6 +100,9 @@ public class NotificationResponseDTO {
         private String teamMemberName;
         private String teamName;
 
+        // 시스템 알림
+        private String systemTitle;
+
         @Builder
         private NotificationDetails(
                 final String emailId,
@@ -115,7 +118,9 @@ public class NotificationResponseDTO {
                 final String teamCode,
                 final String teamLogoImagePath,
                 final String teamMemberName,
-                final String teamName
+                final String teamName,
+
+                final String systemTitle
         ) {
             this.emailId = emailId;
 
@@ -131,6 +136,8 @@ public class NotificationResponseDTO {
             this.teamLogoImagePath = teamLogoImagePath;
             this.teamMemberName = teamMemberName;
             this.teamName = teamName;
+
+            this.systemTitle = systemTitle;
         }
 
         // 팀 초대 요청에 대한 알림생성
@@ -249,6 +256,17 @@ public class NotificationResponseDTO {
                     .teamCode(teamCode)
                     .teamLogoImagePath(teamLogoImagePath)
                     .teamName(teamName)
+                    .build();
+        }
+
+        // 링킷 환영 알림
+        public static NotificationDetails welcomeLinkit(
+                final String emailId,
+                final String systemTitle
+        ) {
+            return NotificationDetails.builder()
+                    .emailId(emailId)
+                    .systemTitle(systemTitle)
                     .build();
         }
     }

@@ -110,6 +110,17 @@ public class NotificationMapper {
                     );
                 }
             }
+
+            case SYSTEM -> {
+                switch (subNotificationType) {
+                    case WELCOME_LINKIT -> notification.setSystemDetails(
+                            Notification.SystemDetails.builder()
+                                    .emailId(notificationDetails.getEmailId())
+                                    .systemTitle(notificationDetails.getSystemTitle())
+                                    .build()
+                    );
+                }
+            }
         }
 
         return notification;
@@ -208,6 +219,16 @@ public class NotificationMapper {
                     );
                 }
             }
+
+            case SYSTEM -> {
+                switch (subType) {
+                    case WELCOME_LINKIT -> notificationDetails = NotificationDetails.welcomeLinkit(
+                            notification.getSystemDetails().getEmailId(),
+                            notification.getSystemDetails().getSystemTitle()
+                    );
+                }
+            }
+
         }
 
         return NotificationItem.builder()
