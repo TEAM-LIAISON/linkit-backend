@@ -274,7 +274,7 @@ public class TeamService {
 
         // 오너, 관리자 여부 확인
         boolean isMyTeam = teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId);
-        
+
         log.info("getLoggedInTeamDetail isMyTeam = {}", isMyTeam);
 
         // 조회 요청을 진행한 사용자가 teamInvitation 테이블에 존재하는지 여부 판단
@@ -385,8 +385,12 @@ public class TeamService {
 
             for (Long teamMemberId : teamMemberIds) {
                 // 팀원들에게 요청 알림 발송 (수정 필요)
-                NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamRequested(teamCode, targetTeam.getTeamLogoImagePath(), targetTeam.getTeamName(),
-                        member.getMemberBasicInform().getMemberName());
+                NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamRequested(
+                        teamCode,
+                        targetTeam.getTeamLogoImagePath(),
+                        targetTeam.getTeamName(),
+                        member.getMemberBasicInform().getMemberName()
+                );
 
                 notificationService.alertNewNotification(
                         notificationMapper.toNotification(

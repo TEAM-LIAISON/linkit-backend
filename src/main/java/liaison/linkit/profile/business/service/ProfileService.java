@@ -169,11 +169,8 @@ public class ProfileService {
         final Profile targetProfile = profileQueryAdapter.findByEmailId(emailId);
         final Member targetMember = targetProfile.getMember();
 
-        boolean isMyProfile = false;
-        if (targetProfile.getMember().equals(member)) {
-            isMyProfile = true;
-        }
-
+        boolean isMyProfile = targetMember.getId().equals(memberId);
+        
         final boolean isProfileScrap = profileScrapQueryAdapter.existsByMemberIdAndEmailId(memberId, emailId);
 
         RegionDetail regionDetail = new RegionDetail();
