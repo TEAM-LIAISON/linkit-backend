@@ -269,13 +269,18 @@ public class MatchingService {
 
     public Page<ReceivedMatchingMenu> getReceivedMatchingMenuResponse(final Long memberId, final ReceiverType receiverType, Pageable pageable) {
         List<Matching> combinedMatchingItems = new ArrayList<>();
+        log.info("Start getReceivedMatchingMenuResponse: memberId={}, receiverType={}", memberId, receiverType);
 
         // Profile 케이스
         if (receiverType == null || receiverType.equals(ReceiverType.PROFILE)) {
             final String emailId = memberQueryAdapter.findEmailIdById(memberId);
+            log.info("Profile case: emailId={}", emailId);
+
             final Page<Matching> profileMatchingItems = matchingQueryAdapter.findReceivedToProfile(emailId, pageable);
+            log.info("Profile matching items size: {}", profileMatchingItems.getContent().size());
 
             if (receiverType != null) {
+                log.info("Returning Profile case directly.");
                 return profileMatchingItems.map(this::toMatchingReceivedMenu);
             }
 
@@ -285,9 +290,13 @@ public class MatchingService {
         // Team 케이스
         if (receiverType == null || receiverType.equals(ReceiverType.TEAM)) {
             final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            log.info("Team case: teams size={}", teams.size());
+
             final Page<Matching> teamMatchingItems = matchingQueryAdapter.findReceivedToTeam(teams, pageable);
+            log.info("Team matching items size: {}", teamMatchingItems.getContent().size());
 
             if (receiverType != null) {
+                log.info("Returning Team case directly.");
                 return teamMatchingItems.map(this::toMatchingReceivedMenu);
             }
 
@@ -297,19 +306,26 @@ public class MatchingService {
         // Announcement 케이스
         if (receiverType == null || receiverType.equals(ReceiverType.ANNOUNCEMENT)) {
             final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            log.info("Announcement case: teams size={}", teams.size());
 
             final List<Long> teamIds = teams.stream()
                     .map(Team::getId)
                     .toList();
+            log.info("Team IDs size: {}", teamIds.size());
 
             final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllByTeamIds(teamIds);
+            log.info("TeamMemberAnnouncements size: {}", teamMemberAnnouncements.size());
+
             final List<Long> announcementIds = teamMemberAnnouncements.stream()
                     .map(TeamMemberAnnouncement::getId)
                     .toList();
+            log.info("Announcement IDs size: {}", announcementIds.size());
 
             final Page<Matching> announcementMatchingItems = matchingQueryAdapter.findReceivedToAnnouncement(announcementIds, pageable);
+            log.info("Announcement matching items size: {}", announcementMatchingItems.getContent().size());
 
             if (receiverType != null) {
+                log.info("Returning Announcement case directly.");
                 return announcementMatchingItems.map(this::toMatchingReceivedMenu);
             }
 
@@ -317,6 +333,7 @@ public class MatchingService {
         }
 
         // Null 케이스: Profile, Team, Announcement 데이터를 모두 병합
+        log.info("Combining all matching items: combined size={}", combinedMatchingItems.size());
         return new PageImpl<>(
                 combinedMatchingItems.stream()
                         .map(this::toMatchingReceivedMenu)
