@@ -171,6 +171,17 @@ public class TeamMemberService {
         // 해당 팀의 모든 팀 멤버 조회
         final List<TeamMember> teamMembers = teamMemberQueryAdapter.getTeamMembers(team.getId());
 
+        // isTeamOwner 계산
+        boolean isTeamOwner = teamMembers.stream()
+                .filter(teamMember -> teamMember.getTeamMemberType() == TeamMemberType.TEAM_OWNER)
+                .anyMatch(teamMember -> teamMember.getMember().getId().equals(memberId));
+
+        // isTeamManager 계산
+        boolean isTeamManager = teamMembers.stream()
+                .anyMatch(teamMember -> teamMember.getMember().getId().equals(memberId)
+                        && (teamMember.getTeamMemberType() == TeamMemberType.TEAM_MANAGER
+                        || teamMember.getTeamMemberType() == TeamMemberType.TEAM_OWNER));
+
         // 초대 수락 완료된 팀 멤버들을 AcceptedTeamMemberItem 리스트로 매핑
         final List<AcceptedTeamMemberItem> acceptedTeamMemberItems = getAcceptedTeamMemberItems(teamMembers);
 
@@ -188,6 +199,8 @@ public class TeamMemberService {
 
         // 결과 객체 생성 및 반환
         return TeamMemberResponseDTO.TeamMemberItems.builder()
+                .isTeamOwner(isTeamOwner)
+                .isTeamManager(isTeamManager)
                 .acceptedTeamMemberItems(acceptedTeamMemberItems)
                 .pendingTeamMemberItems(pendingTeamMemberItems)
                 .build();
