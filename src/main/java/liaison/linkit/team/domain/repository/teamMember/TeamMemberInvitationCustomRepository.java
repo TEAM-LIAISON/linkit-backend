@@ -19,4 +19,6 @@ public interface TeamMemberInvitationCustomRepository {
     TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email);
 
     void removeTeamMemberInvitation(final TeamMemberInvitation teamMemberInvitation);
+
+    void deleteAllByTeamIds(final List<Long> teamIds);
 }

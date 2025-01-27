@@ -1,6 +1,7 @@
 package liaison.linkit.team.domain.repository.announcement;
 
 import java.util.List;
+import java.util.Set;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import org.springframework.data.domain.Page;
@@ -26,4 +27,6 @@ public interface TeamMemberAnnouncementCustomRepository {
     );
 
     List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit);
+
+    Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds);
 }

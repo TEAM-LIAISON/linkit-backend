@@ -1,6 +1,7 @@
 package liaison.linkit.team.implement.announcement;
 
 import java.util.List;
+import java.util.Set;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
@@ -43,5 +44,9 @@ public class TeamMemberAnnouncementQueryAdapter {
 
     public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
         return teamMemberAnnouncementRepository.findTopTeamMemberAnnouncements(limit);
+    }
+
+    public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds) {
+        return teamMemberAnnouncementRepository.getAllDeletableTeamMemberAnnouncementsByTeamIds(teamIds);
     }
 }

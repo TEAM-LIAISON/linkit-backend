@@ -46,7 +46,30 @@ public class ProfileScrapCustomRepositoryImpl implements ProfileScrapCustomRepos
                 .where(qProfileScrap.member.id.eq(memberId)
                         .and(qProfileScrap.profile.member.emailId.eq(emailId)))
                 .execute();
+    }
 
+    @Override
+    public void deleteAllByMemberId(final Long memberId) {
+        QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qProfileScrap)
+                .where(qProfileScrap.member.id.eq(memberId))
+                .execute();
+
+        log.info("Deleted {} profile scraps for memberId: {}", deletedCount, memberId);
+    }
+
+    @Override
+    public void deleteAllByProfileId(final Long profileId) {
+        QProfileScrap qProfileScrap = QProfileScrap.profileScrap;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qProfileScrap)
+                .where(qProfileScrap.profile.id.eq(profileId))
+                .execute();
+
+        log.info("Deleted {} profile scraps for profileId: {}", deletedCount, profileId);
     }
 
     @Override

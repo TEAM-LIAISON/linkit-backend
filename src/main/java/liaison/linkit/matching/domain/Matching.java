@@ -10,7 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import liaison.linkit.common.domain.BaseDateTimeEntity;
+import liaison.linkit.global.BaseEntity;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
@@ -21,13 +21,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
-public class Matching extends BaseDateTimeEntity {
+@SQLRestriction("status = 'USABLE'")
+public class Matching extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +44,7 @@ public class Matching extends BaseDateTimeEntity {
     @Column(name = "sender_email_id", nullable = true)
     private String senderEmailId;
 
-    @Column(name = "sender_team_id", nullable = true)
+    @Column(name = "sender_team_code", nullable = true)
     private String senderTeamCode;
 
     // 수신자 타입: PROFILE, TEAM, POSTING 등

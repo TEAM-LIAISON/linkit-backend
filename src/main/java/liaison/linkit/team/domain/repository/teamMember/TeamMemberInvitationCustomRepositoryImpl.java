@@ -97,4 +97,16 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
                 .where(qTeamMemberInvitation.id.eq(teamMemberInvitation.getId()))
                 .execute();
     }
+
+    @Override
+    public void deleteAllByTeamIds(final List<Long> teamIds) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qTeamMemberInvitation)
+                .where(qTeamMemberInvitation.team.id.in(teamIds))
+                .execute();
+
+        log.info("Deleted " + deletedCount + " team members with ids " + teamIds);
+    }
 }

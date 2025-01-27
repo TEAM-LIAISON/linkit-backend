@@ -11,6 +11,10 @@ public interface ProfileScrapCustomRepository {
 
     void deleteByMemberIdAndEmailId(final Long memberId, final String emailId);
 
+    void deleteAllByMemberId(final Long memberId);
+
+    void deleteAllByProfileId(final Long profileId);
+
     boolean existsByMemberId(final Long memberId);
 
     boolean existsByProfileId(final Long profileId);

@@ -239,4 +239,27 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                         .and(qTeam.teamStatus.eq(TeamStatus.DELETE_PENDING)))
                 .fetchFirst() != null;
     }
+
+    @Override
+    public void updateTeam(final Team team) {
+        QTeam qTeam = QTeam.team;
+
+        long updatedRows = jpaQueryFactory.update(qTeam)
+                .set(qTeam.teamName, team.getTeamName())
+                .set(qTeam.teamCode, team.getTeamCode())
+                .set(qTeam.teamShortDescription, team.getTeamShortDescription())
+                .set(qTeam.teamLogoImagePath, team.getTeamLogoImagePath())
+                .set(qTeam.isTeamPublic, team.isTeamPublic())
+                .set(qTeam.teamStatus, team.getTeamStatus())
+                .set(qTeam.status, team.getStatus())
+                .where(qTeam.id.eq(team.getId()))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedRows == 0) {
+            throw new IllegalStateException("No team found with ID: " + team.getId());
+        }
+    }
 }

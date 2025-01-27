@@ -22,4 +22,8 @@ public class TeamCommandAdapter {
     public Team updateTeamStatus(final TeamStatus teamStatus, final String teamCode) {
         return teamRepository.updateTeamStatus(teamStatus, teamCode);
     }
+
+    public void updateTeam(final Team team) {
+        teamRepository.updateTeam(team);
+    }
 }

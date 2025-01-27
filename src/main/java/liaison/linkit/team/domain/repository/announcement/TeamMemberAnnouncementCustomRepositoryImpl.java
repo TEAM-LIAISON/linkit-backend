@@ -5,7 +5,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import liaison.linkit.common.domain.QPosition;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
@@ -279,5 +281,22 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 .orderBy(qTeamMemberAnnouncement.createdAt.desc()) // 최신순으로 정렬
                 .limit(limit)
                 .fetch();
+    }
+
+    @Override
+    public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        if (teamIds == null || teamIds.isEmpty()) {
+            log.info("No team IDs provided for fetching deletable announcements.");
+            return Collections.emptySet();
+        }
+
+        return new HashSet<>(
+                jpaQueryFactory
+                        .selectFrom(qTeamMemberAnnouncement)
+                        .where(qTeamMemberAnnouncement.team.id.in(teamIds))
+                        .fetch()
+        );
     }
 }

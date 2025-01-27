@@ -27,4 +27,24 @@ public class MatchingCommandAdapter {
     public void updateMatchingToCreatedRoomState(final Matching matching) {
         matchingRepository.updateMatchingToCreatedRoomState(matching);
     }
+
+    public void deleteAllBySenderProfile(final String emailId) {
+        matchingRepository.deleteAllBySenderProfile(emailId);
+    }
+
+    public void deleteAllBySenderTeamCodes(final List<String> teamCodes) {
+        matchingRepository.deleteAllBySenderTeamCodes(teamCodes);
+    }
+
+    public void deleteAllByReceiverProfile(final String emailId) {
+        matchingRepository.deleteAllByReceiverProfile(emailId);
+    }
+
+    public void deleteAllByReceiverTeamCodes(final List<String> teamCodes) {
+        matchingRepository.deleteAllByReceiverTeamCodes(teamCodes);
+    }
+
+    public void deleteAllByReceiverAnnouncements(final List<Long> teamMemberAnnouncementIds) {
+        matchingRepository.deleteAllByReceiverAnnouncements(teamMemberAnnouncementIds);
+    }
 }

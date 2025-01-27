@@ -17,4 +17,8 @@ public interface NotificationRepository extends MongoRepository<Notification, St
     // 수동 쿼리 + count
     @Query(value = "{ 'receiver_member_id': ?0, 'notification_read_status': 'UNREAD' }", count = true)
     long countUnreadMessages(Long memberId);
+
+    // 특정 회원의 모든 알림 삭제
+    @Query(value = "{ 'receiver_member_id': ?0 }", delete = true)
+    long deleteAllByReceiverMemberId(Long memberId);
 }
