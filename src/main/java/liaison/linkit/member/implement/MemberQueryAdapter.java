@@ -42,4 +42,8 @@ public class MemberQueryAdapter {
     public boolean existsByEmail(final String email) {
         return memberRepository.existsByEmail(email);
     }
+
+    public Member findByEmail(final String email) {
+        return memberRepository.findByEmail(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+    }
 }

@@ -64,4 +64,8 @@ public class TeamMemberQueryAdapter {
     public boolean isMemberOfTeam(final String teamCode, final String emailId) {
         return teamMemberRepository.isMemberOfTeam(teamCode, emailId);
     }
+
+    public List<TeamMember> getAllTeamManagers(final Team team) {
+        return teamMemberRepository.getAllTeamManagers(team);
+    }
 }

@@ -1,5 +1,6 @@
 package liaison.linkit.login.service;
 
+import java.util.List;
 import java.util.Optional;
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.login.business.AccountMapper;
@@ -21,12 +22,16 @@ import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.notification.business.NotificationMapper;
+import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
 import liaison.linkit.notification.implement.NotificationCommandAdapter;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
 import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
 import liaison.linkit.profile.implement.profile.ProfileCommandAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import lombok.RequiredArgsConstructor;

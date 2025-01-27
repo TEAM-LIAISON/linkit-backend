@@ -37,4 +37,6 @@ public interface TeamMemberCustomRepository {
     void updateTeamMemberManagingTeamState(final TeamMember teamMember, final TeamMemberManagingTeamState teamMemberManagingTeamState);
 
     boolean isMemberOfTeam(final String teamCode, final String emailId);
+
+    List<TeamMember> getAllTeamManagers(final Team team);
 }

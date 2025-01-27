@@ -227,4 +227,17 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .fetchFirst() != null; // Return true if a result is found, false otherwise
     }
 
+    @Override
+    public List<TeamMember> getAllTeamManagers(final Team team) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMember)
+                .where(
+                        qTeamMember.team.eq(team)
+                                .and(qTeamMember.teamMemberType.in(TeamMemberType.TEAM_MANAGER, TeamMemberType.TEAM_OWNER))
+                )
+                .fetch();
+    }
+
 }

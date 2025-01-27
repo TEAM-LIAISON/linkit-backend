@@ -120,4 +120,16 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .where(member.id.eq(memberId))
                 .fetchOne();
     }
+
+    @Override
+    public Optional<Member> findByEmail(final String email) {
+        QMember member = QMember.member;
+
+        Member result = jpaQueryFactory
+                .selectFrom(member)
+                .where(member.email.eq(email))
+                .fetchOne();
+
+        return Optional.ofNullable(result);
+    }
 }

@@ -8,6 +8,13 @@ import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.mail.service.TeamMemberInvitationMailService;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.notification.business.NotificationMapper;
+import liaison.linkit.notification.domain.type.NotificationType;
+import liaison.linkit.notification.domain.type.SubNotificationType;
+import liaison.linkit.notification.implement.NotificationCommandAdapter;
+import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
+import liaison.linkit.notification.service.HeaderNotificationService;
+import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
 import liaison.linkit.profile.domain.position.ProfilePosition;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -17,10 +24,12 @@ import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.domain.team.type.TeamStatus;
 import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
 import liaison.linkit.team.domain.teamMember.TeamMemberInviteState;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
+import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import liaison.linkit.team.domain.teamMember.type.TeamMemberRegisterType;
 import liaison.linkit.team.exception.teamMember.ManagingBadRequestException;
 import liaison.linkit.team.exception.teamMember.OwnerTeamMemberOutBadRequestException;
@@ -68,6 +77,10 @@ public class TeamMemberService {
     private final TeamMemberInvitationMailService teamMemberInvitationMailService;
     private final RegionMapper regionMapper;
     private final TeamMemberCommandAdapter teamMemberCommandAdapter;
+    private final NotificationService notificationService;
+    private final NotificationMapper notificationMapper;
+    private final HeaderNotificationService headerNotificationService;
+    private final NotificationCommandAdapter notificationCommandAdapter;
 
     public TeamMemberViewItems getTeamMemberViewItems(final String teamCode) {
         // 1. 팀 조회
@@ -109,6 +122,25 @@ public class TeamMemberService {
         final TeamMemberInvitation teamMemberInvitation = new TeamMemberInvitation(null, teamMemberInvitationEmail, team, addTeamMemberRequest.getTeamMemberType(), TeamMemberInviteState.PENDING);
 
         teamMemberInvitationCommandAdapter.addTeamMemberInvitation(teamMemberInvitation);
+
+        // (상대방님의 뫄뫄팀 삭제 요청)
+        NotificationDetails teamInvitationNotificationDetails = NotificationDetails.teamInvitationRequested(
+                teamCode,
+                team.getTeamLogoImagePath(),
+                team.getTeamName()
+        );
+
+        // 링킷의 회원이라면
+        if (memberQueryAdapter.existsByEmail(teamMemberInvitationEmail)) {
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            memberQueryAdapter.findByEmail(teamMemberInvitationEmail).getId(),
+                            NotificationType.TEAM_INVITATION,
+                            SubNotificationType.TEAM_INVITATION_REQUESTED,
+                            teamInvitationNotificationDetails
+                    )
+            );
+        }
 
         return teamMemberMapper.toAddTeamMemberInvitation(teamMemberInvitation);
     }
@@ -211,6 +243,31 @@ public class TeamMemberService {
             final TeamMember teamMember = teamMemberMapper.toTeamMember(member, targetTeam, teamMemberInvitation.getTeamMemberType());
             teamMemberCommandAdapter.addTeamMember(teamMember);
             teamMemberInvitation.setTeamMemberInviteState(TeamMemberInviteState.ACCEPTED);
+
+            // 팀원 초대 수락 시 모든 팀원들한테 이 사람이 구성원으로 들어왔다고 알림 발송
+            // (상대방님의 뫄뫄팀 구성원 수락 완료)
+            NotificationDetails teamMemberJoinedNotificationDetails = NotificationDetails.teamMemberJoined(
+                    teamCode,
+                    targetTeam.getTeamLogoImagePath(),
+                    member.getMemberBasicInform().getMemberName(),
+                    targetTeam.getTeamName()
+            );
+
+            final List<TeamMember> teamMembers = teamMemberQueryAdapter.getAllTeamManagers(targetTeam);
+            for (TeamMember currentMember : teamMembers) {
+                if (!currentMember.getMember().getId().equals(memberId)) { // 본인 제외
+                    notificationService.alertNewNotification(
+                            notificationMapper.toNotification(
+                                    currentMember.getMember().getId(),
+                                    NotificationType.TEAM_INVITATION,
+                                    SubNotificationType.TEAM_MEMBER_JOINED,
+                                    teamMemberJoinedNotificationDetails
+                            )
+                    );
+                }
+
+                headerNotificationService.publishNotificationCount(currentMember.getMember().getId());
+            }
         }
 
         return teamMemberMapper.toTeamJoinResponse(teamCode, member.getEmailId());
@@ -223,11 +280,49 @@ public class TeamMemberService {
             throw ManagingBadRequestException.EXCEPTION;
         }
 
-        final String emailId = memberQueryAdapter.findEmailIdById(memberId);
-
-        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
+        final Member member = memberQueryAdapter.findById(memberId);
+        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, member.getEmailId());
 
         teamMemberCommandAdapter.updateTeamMemberManagingTeamState(teamMember, updateManagingTeamStateRequest.getTeamMemberManagingTeamState());
+
+        // 삭제 허용
+        if (updateManagingTeamStateRequest.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.ALLOW_DELETE)) {
+            // 모든 TeamMember가 허용을 했는지 확인
+        } else if (updateManagingTeamStateRequest.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.DENY_DELETE)) {
+
+            // 삭제 거절 -> 아무 일도 없었던 것처럼
+            targetTeam.setTeamStatus(TeamStatus.ACTIVE);
+
+            // 모든 팀원들의 상태 변경
+            final List<TeamMember> teamMembers = teamMemberQueryAdapter.getTeamMembers(targetTeam.getId());
+            for (TeamMember currentMember : teamMembers) {
+                currentMember.setTeamMemberManagingTeamState(TeamMemberManagingTeamState.ACTIVE);
+            }
+
+            // 알림 발송
+            NotificationDetails rejectRemoveTeamNotificationDetails = NotificationDetails.removeTeamRejected(
+                    targetTeam.getTeamCode(),
+                    targetTeam.getTeamLogoImagePath(),
+                    member.getMemberBasicInform().getMemberName(),
+                    targetTeam.getTeamName()
+            );
+
+            // 관리자에게 개별 발송
+            final List<TeamMember> managingTeamMembers = teamMemberQueryAdapter.getAllTeamManagers(targetTeam);
+            for (TeamMember currentManagingMember : managingTeamMembers) {
+                notificationService.alertNewNotification(
+                        notificationMapper.toNotification(
+                                currentManagingMember.getMember().getId(),
+                                NotificationType.TEAM,
+                                SubNotificationType.REMOVE_TEAM_REJECTED,
+                                rejectRemoveTeamNotificationDetails
+                        )
+                );
+
+                headerNotificationService.publishNotificationCount(currentManagingMember.getMember().getId());
+            }
+
+        }
 
         return teamMemberMapper.toUpdateManagingTeamStateResponse(teamCode);
     }
