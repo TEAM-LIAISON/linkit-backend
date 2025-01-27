@@ -157,7 +157,7 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
     }
 
     @Override
-    public boolean existsTeamMembersByTeamCode(final String teamCode) {
+    public boolean existsTeamMembersExceptOwnerByTeamCode(final String teamCode) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
 
         return jpaQueryFactory
@@ -165,7 +165,7 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .from(qTeamMember)
                 .where(
                         qTeamMember.team.teamCode.eq(teamCode)
-                                .and(qTeamMember.teamMemberType.in(TeamMemberType.TEAM_OWNER, TeamMemberType.TEAM_VIEWER))
+                                .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_MANAGER))
                 )
                 .fetchFirst() != null;
     }
@@ -211,4 +211,20 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
             throw new IllegalStateException("프로필 로그 업데이트 실패");
         }
     }
+
+    @Override
+    public boolean isMemberOfTeam(final String teamCode, final String emailId) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+        // Query to check if a member with the given emailId is part of the team with the given teamCode
+        return jpaQueryFactory
+                .selectOne()
+                .from(qTeamMember)
+                .where(
+                        qTeamMember.team.teamCode.eq(teamCode) // Team code matches
+                                .and(qTeamMember.member.emailId.eq(emailId)) // Email ID matches
+                                .and(qTeamMember.status.ne(StatusType.DELETED)) // Member is not in a deleted state
+                )
+                .fetchFirst() != null; // Return true if a result is found, false otherwise
+    }
+
 }

@@ -1,11 +1,13 @@
 package liaison.linkit.team.domain.team;
 
 
+import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import liaison.linkit.global.BaseEntity;
@@ -31,7 +33,7 @@ public class Team extends BaseEntity {
     @Column(nullable = false, length = 50)
     private String teamName;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(nullable = false, length = 50)
     private String teamCode;
 
     @Column(nullable = false, length = 100)
@@ -40,6 +42,8 @@ public class Team extends BaseEntity {
     private String teamLogoImagePath;
     private boolean isTeamPublic;
 
+    @Column(nullable = false)
+    @Enumerated(value = STRING)
     private TeamStatus teamStatus;
 
     public void setTeamLogoImagePath(final String teamLogoImagePath) {

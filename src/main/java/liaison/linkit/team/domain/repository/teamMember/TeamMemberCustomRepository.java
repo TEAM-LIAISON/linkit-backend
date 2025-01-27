@@ -28,11 +28,13 @@ public interface TeamMemberCustomRepository {
 
     Member findTeamOwnerByTeamCode(final String teamCode);
 
-    boolean existsTeamMembersByTeamCode(final String teamCode);
+    boolean existsTeamMembersExceptOwnerByTeamCode(final String teamCode);
 
     void removeTeamMemberInTeam(final TeamMember teamMember);
 
     List<Long> getAllTeamMemberIds(final String teamCode);
 
     void updateTeamMemberManagingTeamState(final TeamMember teamMember, final TeamMemberManagingTeamState teamMemberManagingTeamState);
+
+    boolean isMemberOfTeam(final String teamCode, final String emailId);
 }

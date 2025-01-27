@@ -269,13 +269,18 @@ public class MatchingService {
 
     public Page<ReceivedMatchingMenu> getReceivedMatchingMenuResponse(final Long memberId, final ReceiverType receiverType, Pageable pageable) {
         List<Matching> combinedMatchingItems = new ArrayList<>();
+        log.info("Start getReceivedMatchingMenuResponse: memberId={}, receiverType={}", memberId, receiverType);
 
         // Profile 케이스
         if (receiverType == null || receiverType.equals(ReceiverType.PROFILE)) {
             final String emailId = memberQueryAdapter.findEmailIdById(memberId);
+            log.info("Profile case: emailId={}", emailId);
+
             final Page<Matching> profileMatchingItems = matchingQueryAdapter.findReceivedToProfile(emailId, pageable);
+            log.info("Profile matching items size: {}", profileMatchingItems.getContent().size());
 
             if (receiverType != null) {
+                log.info("Returning Profile case directly.");
                 return profileMatchingItems.map(this::toMatchingReceivedMenu);
             }
 
@@ -285,9 +290,13 @@ public class MatchingService {
         // Team 케이스
         if (receiverType == null || receiverType.equals(ReceiverType.TEAM)) {
             final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            log.info("Team case: teams size={}", teams.size());
+
             final Page<Matching> teamMatchingItems = matchingQueryAdapter.findReceivedToTeam(teams, pageable);
+            log.info("Team matching items size: {}", teamMatchingItems.getContent().size());
 
             if (receiverType != null) {
+                log.info("Returning Team case directly.");
                 return teamMatchingItems.map(this::toMatchingReceivedMenu);
             }
 
@@ -297,19 +306,26 @@ public class MatchingService {
         // Announcement 케이스
         if (receiverType == null || receiverType.equals(ReceiverType.ANNOUNCEMENT)) {
             final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            log.info("Announcement case: teams size={}", teams.size());
 
             final List<Long> teamIds = teams.stream()
                     .map(Team::getId)
                     .toList();
+            log.info("Team IDs size: {}", teamIds.size());
 
             final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllByTeamIds(teamIds);
+            log.info("TeamMemberAnnouncements size: {}", teamMemberAnnouncements.size());
+
             final List<Long> announcementIds = teamMemberAnnouncements.stream()
                     .map(TeamMemberAnnouncement::getId)
                     .toList();
+            log.info("Announcement IDs size: {}", announcementIds.size());
 
             final Page<Matching> announcementMatchingItems = matchingQueryAdapter.findReceivedToAnnouncement(announcementIds, pageable);
+            log.info("Announcement matching items size: {}", announcementMatchingItems.getContent().size());
 
             if (receiverType != null) {
+                log.info("Returning Announcement case directly.");
                 return announcementMatchingItems.map(this::toMatchingReceivedMenu);
             }
 
@@ -317,6 +333,7 @@ public class MatchingService {
         }
 
         // Null 케이스: Profile, Team, Announcement 데이터를 모두 병합
+        log.info("Combining all matching items: combined size={}", combinedMatchingItems.size());
         return new PageImpl<>(
                 combinedMatchingItems.stream()
                         .map(this::toMatchingReceivedMenu)
@@ -482,47 +499,64 @@ public class MatchingService {
                     getReceiverRegionOrAnnouncementSkill(matching)
             );
             log.info("이메일 발송 완료");
+
+            // 매칭 성사된 경우, 수신자에게 알림 발송
+            NotificationDetails receiverNotificationDetails = NotificationDetails.matchingAccepted(
+                    matchingId,
+                    getSenderLogoImagePath(matching),
+                    getSenderName(matching)
+            );
+
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getReceiverMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_ACCEPTED,
+                            receiverNotificationDetails
+                    )
+            );
+            log.info("수신자에게 알림 발송 완료: memberId={}, matchingId={}", getReceiverMemberId(matching), matchingId);
+
+            headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
+            log.info("수신자 헤더 알림 카운트 업데이트 완료: memberId={}", getReceiverMemberId(matching));
+
+            // 매칭 성사된 경우, 발신자에게 알림 발송
+            NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
+                    matchingId,
+                    getReceiverLogoImagePath(matching),
+                    getReceiverName(matching)
+            );
+
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getSenderMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_ACCEPTED,
+                            senderNotificationDetails
+                    )
+            );
+            log.info("발신자에게 알림 발송 완료: memberId={}, matchingId={}", getSenderMemberId(matching), matchingId);
+
+            headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
+            log.info("발신자 헤더 알림 카운트 업데이트 완료: memberId={}", getSenderMemberId(matching));
+        } else {
+            NotificationDetails senderRejectedNotificationDetails = NotificationDetails.matchingRejected(
+                    matchingId,
+                    getReceiverLogoImagePath(matching),
+                    getReceiverName(matching)
+            );
+
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getSenderMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_REJECTED,
+                            senderRejectedNotificationDetails
+                    )
+            );
+
+            headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
         }
-
-        // 매칭 성사된 경우, 수신자에게 알림 발송
-        NotificationDetails receiverNotificationDetails = NotificationDetails.matchingAccepted(
-                matchingId,
-                getSenderLogoImagePath(matching),
-                getSenderName(matching)
-        );
-
-        notificationService.alertNewNotification(
-                notificationMapper.toNotification(
-                        getReceiverMemberId(matching),
-                        NotificationType.MATCHING,
-                        SubNotificationType.MATCHING_ACCEPTED,
-                        receiverNotificationDetails
-                )
-        );
-        log.info("수신자에게 알림 발송 완료: memberId={}, matchingId={}", getReceiverMemberId(matching), matchingId);
-
-        headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
-        log.info("수신자 헤더 알림 카운트 업데이트 완료: memberId={}", getReceiverMemberId(matching));
-
-        // 매칭 성사된 경우, 발신자에게 알림 발송
-        NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
-                matchingId,
-                getReceiverLogoImagePath(matching),
-                getReceiverName(matching)
-        );
-
-        notificationService.alertNewNotification(
-                notificationMapper.toNotification(
-                        getSenderMemberId(matching),
-                        NotificationType.MATCHING,
-                        SubNotificationType.MATCHING_ACCEPTED,
-                        senderNotificationDetails
-                )
-        );
-        log.info("발신자에게 알림 발송 완료: memberId={}, matchingId={}", getSenderMemberId(matching), matchingId);
-
-        headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
-        log.info("발신자 헤더 알림 카운트 업데이트 완료: memberId={}", getSenderMemberId(matching));
 
         UpdateMatchingStatusTypeResponse response = matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
         log.info("매칭 상태 업데이트 응답 생성 완료: {}", response);

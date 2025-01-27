@@ -10,6 +10,7 @@ import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.QMatching;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
+import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.team.domain.team.Team;
 import lombok.RequiredArgsConstructor;
@@ -131,7 +132,8 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
             List<Matching> content = jpaQueryFactory
                     .selectFrom(qMatching)
                     .where(qMatching.receiverEmailId.eq(emailId)
-                            .and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING)))
+                            .and(qMatching.receiverType.eq(ReceiverType.PROFILE)
+                                    .and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING))))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(qMatching.createdAt.desc())
@@ -168,7 +170,9 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
                 .map(Team::getTeamCode)
                 .toList();
 
-        BooleanExpression condition = qMatching.receiverTeamCode.in(teamCodes).and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING));
+        BooleanExpression condition = qMatching.receiverTeamCode.in(teamCodes)
+                .and(qMatching.receiverType.eq(ReceiverType.TEAM)
+                        .and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING)));
 
         List<Matching> content = jpaQueryFactory
                 .selectFrom(qMatching)
@@ -200,7 +204,9 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
             return Page.empty(pageable);
         }
 
-        BooleanExpression condition = qMatching.receiverAnnouncementId.in(announcementIds).and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING));
+        BooleanExpression condition = qMatching.receiverAnnouncementId.in(announcementIds)
+                .and(qMatching.receiverType.eq(ReceiverType.ANNOUNCEMENT)
+                        .and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING)));
 
         List<Matching> content = jpaQueryFactory
                 .selectFrom(qMatching)

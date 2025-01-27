@@ -47,6 +47,7 @@ public class Notification {
     private TeamInvitationDetails teamInvitationDetails;
     private TeamDetails teamDetails;
 
+    private SystemDetails systemDetails;
 
     @Data
     @Builder
@@ -90,6 +91,15 @@ public class Notification {
         private String teamName;
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor(access = PROTECTED)
+    @AllArgsConstructor
+    public static class SystemDetails {
+        private String emailId;
+        private String systemTitle;
+    }
+
 
     public void setMatchingDetails(final MatchingDetails matchingDetails) {
         this.matchingDetails = matchingDetails;
@@ -105,6 +115,10 @@ public class Notification {
 
     public void setTeamDetails(final TeamDetails teamDetails) {
         this.teamDetails = teamDetails;
+    }
+
+    public void setSystemDetails(final SystemDetails systemDetails) {
+        this.systemDetails = systemDetails;
     }
 
     public void setNotificationReadStatus(final NotificationReadStatus notificationReadStatus) {

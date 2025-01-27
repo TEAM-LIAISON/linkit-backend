@@ -52,7 +52,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         return jpaQueryFactory
                 .selectOne()
                 .from(qTeam)
-                .where(qTeam.teamCode.eq(teamCode))
+                .where(qTeam.teamCode.eq(teamCode)
+                        .and(qTeam.status.eq(StatusType.USABLE)))
                 .fetchFirst() != null;
     }
 
@@ -230,7 +231,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     @Override
     public boolean isTeamDeleteInProgress(final String teamCode) {
         QTeam qTeam = QTeam.team;
-        
+
         return jpaQueryFactory
                 .selectOne()
                 .from(qTeam)
