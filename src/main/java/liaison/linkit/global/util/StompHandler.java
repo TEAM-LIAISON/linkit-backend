@@ -71,6 +71,12 @@ public class StompHandler implements ChannelInterceptor {
         if (StompCommand.SUBSCRIBE.equals(headerAccessor.getCommand())) {
             String destination = headerAccessor.getDestination();
             String sessionId = headerAccessor.getSessionId();
+            Principal user = headerAccessor.getUser();
+
+            log.info("SUBSCRIBE - Destination: {}, SessionId: {}, User: {}",
+                    destination,
+                    sessionId,
+                    user != null ? user.getName() : "null");
             Long memberId = sessionRegistry.getMemberIdBySession(sessionId);
 
             // 구독 경로에 따른 초기 데이터 전송
@@ -217,12 +223,12 @@ public class StompHandler implements ChannelInterceptor {
         return parts[parts.length - 1];
     }
 
-//     private void sendInitialChatMessages(Long memberId, Long chatRoomId) {
-//     // 채팅방의 최근 메시지들을 조회하여 전송
-//     messagingTemplate.convertAndSendToUser(
-//     memberId.toString(),
-//     "/sub/chat/" + chatRoomId,
-//     chatService.getChatMessages(chatRoomId, memberId, /* pageable 객체 필요 */)
-//     );
-//     }
+    // private void sendInitialChatMessages(Long memberId, Long chatRoomId) {
+    // // 채팅방의 최근 메시지들을 조회하여 전송
+    // messagingTemplate.convertAndSendToUser(
+    // memberId.toString(),
+    // "/sub/chat/" + chatRoomId,
+    // chatService.getChatMessages(chatRoomId, memberId, /* pageable 객체 필요 */)
+    // );
+    // }
 }

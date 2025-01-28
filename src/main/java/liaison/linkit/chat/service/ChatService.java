@@ -426,23 +426,27 @@ public class ChatService {
 
     private void sendChatMessages(ChatRoom chatRoom, ChatMessage chatMessage, Long senderMemberId) {
         // 채팅방의 양쪽 참여자에게 메시지 전송
-        ChatMessageResponse response = chatMapper.toChatMessageResponse(chatRoom, chatMessage, senderMemberId);
+        ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatRoom, chatMessage, senderMemberId);
+        ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatRoom, chatMessage,
+                chatMessage.getMessageReceiverMemberId());
 
         // 발신자에게 메시지 전송
+        log.info("Sending to sender [{}] via /user/sub/chat/{}", senderMemberId, chatRoom.getId());
         simpMessagingTemplate.convertAndSendToUser(
                 senderMemberId.toString(),
-                "/sub/chat/" + chatRoom.getId(),
-                response);
+                "/sub/chat/" + chatRoom.getId(), // /user prefix는 자동으로 추가됨
+                senderResponse);
 
         // 수신자에게 메시지 전송
         Long receiverId = chatRoom.getParticipantAMemberId().equals(senderMemberId)
                 ? chatRoom.getParticipantBMemberId()
                 : chatRoom.getParticipantAMemberId();
 
+        log.info("Sending to receiver [{}] via /user/sub/chat/{}", receiverId, chatRoom.getId());
         simpMessagingTemplate.convertAndSendToUser(
                 receiverId.toString(),
-                "/sub/chat/" + chatRoom.getId(),
-                response);
+                "/sub/chat/" + chatRoom.getId(), // /user prefix는 자동으로 추가됨
+                receiverResponse);
     }
 
     /**
