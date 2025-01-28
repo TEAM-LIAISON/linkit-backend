@@ -207,6 +207,7 @@ public class LoginService {
         List<String> deletableTeamCodes = deletableTeams.stream()
                 .map(Team::getTeamCode)
                 .toList();
+
         log.info("Deleting teams {}", deletableTeamCodes);
         // [2. 매칭 데이터 삭제]
         matchingCommandAdapter.deleteAllBySenderProfile(member.getEmailId());
@@ -215,6 +216,7 @@ public class LoginService {
         matchingCommandAdapter.deleteAllByReceiverProfile(member.getEmailId());
         matchingCommandAdapter.deleteAllByReceiverTeamCodes(deletableTeamCodes);
         matchingCommandAdapter.deleteAllByReceiverAnnouncements(deletableAnnouncementIds);
+
         log.info("Deleting teams {}", deletableTeams);
 
         // [3. 스크랩 데이터 삭제] (내가 스크랩을 한 데이터 + 나에게 스크랩을 한 데이터)
@@ -249,6 +251,11 @@ public class LoginService {
         for (Team team : deletableTeams) {
             team.changeStatusToDeleted();
             teamCommandAdapter.updateTeam(team); // 변경된 상태를 DB에 반영
+        }
+
+        // 모든 공고 삭제
+        if (!deletableAnnouncementIds.isEmpty()) {
+            teamMemberAnnouncementCommandAdapter.deleteAllByIds(deletableAnnouncementIds);
         }
 
         // 6. 프로필 삭제

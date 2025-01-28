@@ -299,4 +299,25 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                         .fetch()
         );
     }
+
+    @Override
+    public void deleteAllByIds(final List<Long> announcementIds) {
+        QTeamMemberAnnouncement qAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        try {
+            long updatedCount = jpaQueryFactory
+                    .update(qAnnouncement)
+                    .set(qAnnouncement.status, StatusType.DELETED)
+                    .where(qAnnouncement.id.in(announcementIds))
+                    .execute();
+
+            log.info("Deleted {} announcements with IDs: {}", updatedCount, announcementIds);
+
+            entityManager.flush();
+            entityManager.clear();
+
+        } catch (Exception e) {
+            log.error("Error occurred while deleting announcements with IDs: {}", announcementIds, e);
+        }
+    }
 }

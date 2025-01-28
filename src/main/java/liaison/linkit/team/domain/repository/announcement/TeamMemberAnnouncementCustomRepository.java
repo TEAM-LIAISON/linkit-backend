@@ -29,4 +29,6 @@ public interface TeamMemberAnnouncementCustomRepository {
     List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit);
 
     Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds);
+
+    void deleteAllByIds(final List<Long> announcementIds);
 }
