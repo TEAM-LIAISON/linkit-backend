@@ -239,9 +239,9 @@ public class LoginService {
         // [4. 팀 초대 데이터 삭제]
         teamMemberInvitationCommandAdapter.deleteAllByTeamIds(deletableTeamIds);
         log.info("Deleting teams {}", deletableTeams);
-        // [5. 채팅방 데이터 삭제]
 
-        // 3. 스크랩 데이터 삭제
+        teamMemberCommandAdapter.deleteAllTeamMember(memberId);
+        // [5. 채팅방 데이터 삭제]
 
         // 4. 알림 데이터 삭제
         notificationCommandAdapter.deleteAllByReceiverMemberId(memberId);

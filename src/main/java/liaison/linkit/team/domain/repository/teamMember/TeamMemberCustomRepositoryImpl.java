@@ -320,4 +320,22 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .fetch());
     }
 
+    @Override
+    public void deleteAllTeamMember(final Long memberId) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qTeamMember)
+                .where(
+                        qTeamMember.member.id.eq(memberId)
+                                .and(
+                                        qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_MANAGER)
+                                                .or(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_VIEWER))
+                                )
+                )
+                .execute();
+
+        log.info("Deleted {} team members for memberId: {}", deletedCount, memberId);
+    }
+
 }
