@@ -2,6 +2,7 @@ package liaison.linkit.chat.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import liaison.linkit.chat.business.ChatMapper;
 import liaison.linkit.chat.domain.ChatMessage;
@@ -63,6 +64,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -358,8 +362,7 @@ public class ChatService {
         return chatMapper.toReadChatMessageResponse(chatRoomId, updatedCount);
     }
 
-    public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId,
-                                  final Long chatRoomId) {
+    public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final String sessionId, final Long memberId, final Long chatRoomId) {
         log.info("handleChatMessage 호출: chatRoomId={}, content={}", chatRoomId, chatMessageRequest.getContent());
 
         // 1. 채팅방 존재 및 접근 권한 확인
@@ -381,7 +384,7 @@ public class ChatService {
         final ChatRoom savedChatRoom = chatRoomCommandAdapter.save(chatRoom);
 
         // 4. 메시지 전송
-        sendChatMessages(savedChatRoom, savedChatMessage, memberId);
+        sendChatMessages(savedChatRoom, savedChatMessage, memberId, sessionId);
     }
 
     private String getParticipantLogoImagePath(SenderType type, String id) {
@@ -424,7 +427,7 @@ public class ChatService {
         }
     }
 
-    private void sendChatMessages(ChatRoom chatRoom, ChatMessage chatMessage, Long senderMemberId) {
+    private void sendChatMessages(ChatRoom chatRoom, ChatMessage chatMessage, Long senderMemberId, String sessionId) {
         // 채팅방의 양쪽 참여자에게 메시지 전송
         ChatMessageResponse senderResponse = chatMapper.toChatMessageResponse(chatRoom, chatMessage, senderMemberId);
         ChatMessageResponse receiverResponse = chatMapper.toChatMessageResponse(chatRoom, chatMessage,
@@ -432,21 +435,15 @@ public class ChatService {
 
         // 발신자에게 메시지 전송
         log.info("Sending to sender [{}] via /user/sub/chat/{}", senderMemberId, chatRoom.getId());
-        simpMessagingTemplate.convertAndSendToUser(
-                senderMemberId.toString(),
-                "/sub/chat/" + chatRoom.getId(), // /user prefix는 자동으로 추가됨
-                senderResponse);
+        sendMessageToAllSessions(senderMemberId, "/sub/chat/" + chatRoom.getId(), senderResponse);
 
         // 수신자에게 메시지 전송
-        Long receiverId = chatRoom.getParticipantAMemberId().equals(senderMemberId)
+        Long receiverMemberId = chatRoom.getParticipantAMemberId().equals(senderMemberId)
                 ? chatRoom.getParticipantBMemberId()
                 : chatRoom.getParticipantAMemberId();
 
-        log.info("Sending to receiver [{}] via /user/sub/chat/{}", receiverId, chatRoom.getId());
-        simpMessagingTemplate.convertAndSendToUser(
-                receiverId.toString(),
-                "/sub/chat/" + chatRoom.getId(), // /user prefix는 자동으로 추가됨
-                receiverResponse);
+        log.info("Sending to receiver [{}] via /user/sub/chat/{}", receiverMemberId, chatRoom.getId());
+        sendMessageToAllSessions(receiverMemberId, "/sub/chat/" + chatRoom.getId(), receiverResponse);
     }
 
     /**
@@ -762,4 +759,36 @@ public class ChatService {
         return chatMapper.toLeaveChatRoom(chatRoomId, participantType);
     }
 
+    /**
+     * 특정 userId가 가진 모든 sessionId에 메시지를 전송하는 메서드
+     */
+    private void sendMessageToAllSessions(Long userId, String destination, Object payload) {
+        // userId가 가진 모든 sessionId 조회
+        Set<String> sessionIds = sessionRegistry.getMemberSessions(userId);
+        if (sessionIds == null || sessionIds.isEmpty()) {
+            log.info("No active sessions for user [{}], skip sending to {}", userId, destination);
+            return;
+        }
+
+        for (String sessionId : sessionIds) {
+            log.info("Sending to user [{}], session [{}], destination={}", userId, sessionId, destination);
+
+            // convertAndSendToUser 1번 호출 = 1개 세션에만 전송
+            simpMessagingTemplate.convertAndSendToUser(
+                    sessionId,       // Principal name(=userId, e.g. "5")
+                    destination,            // "/sub/chat/{chatRoomId}"
+                    payload,
+                    createHeaders(sessionId) // sessionID 명시해 특정 세션만 받도록
+            );
+        }
+    }
+
+    private MessageHeaders createHeaders(String sessionId) {
+        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor
+                .create(SimpMessageType.MESSAGE);
+        headerAccessor.setSessionId(sessionId);
+        headerAccessor.setLeaveMutable(true);
+        return headerAccessor.getMessageHeaders();
+
+    }
 }

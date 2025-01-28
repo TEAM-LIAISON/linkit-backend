@@ -118,6 +118,7 @@ public class StompHandler implements ChannelInterceptor {
             }
 
             String destination = headerAccessor.getDestination();
+            String sessionId = headerAccessor.getSessionId();
 
             // 동적으로 chatRoomId를 추출
             if (destination != null && destination.startsWith("/pub/chat/send/")) {
@@ -132,6 +133,7 @@ public class StompHandler implements ChannelInterceptor {
                     log.debug("SEND Command - Extracted memberId: {}", memberId); // 로그 추가
 
                     headerAccessor.setNativeHeader("memberId", memberId);
+                    headerAccessor.setNativeHeader("sessionId", sessionId);
                     headerAccessor.setNativeHeader("chatRoomId", chatRoomId); // chatRoomId 추가
 
                     return MessageBuilder
