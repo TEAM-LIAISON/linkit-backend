@@ -648,7 +648,9 @@ public class MatchingService {
                 throw MatchingReceiverBadRequestException.EXCEPTION;
             }
             final Team team = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(addMatchingRequest.getReceiverAnnouncementId()).getTeam();
+            log.info("team 공고 지원의 팀 이름: {}", team.getTeamName());
             if (teamMemberQueryAdapter.findMembersByTeamCode(team.getTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
+                log.info("팀원에 속해있어요.");
                 throw CannotRequestMyAnnouncementException.EXCEPTION;
             }
         }
