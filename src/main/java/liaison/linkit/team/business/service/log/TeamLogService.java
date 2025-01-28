@@ -245,7 +245,7 @@ public class TeamLogService {
         log.info("기존 팀 대표 로그: {}", existingRepresentativeTeamLog);
 
         if (existingRepresentativeTeamLog != null && !existingRepresentativeTeamLog.getId().equals(teamLogId)) {
-            teamLogCommandAdapter.updateTeamLogTypeRepresent(existingRepresentativeTeamLog);
+            teamLogCommandAdapter.updateTeamLogTypeGeneral(existingRepresentativeTeamLog);
         }
 
         teamLogCommandAdapter.updateTeamLogTypeRepresent(teamLog);

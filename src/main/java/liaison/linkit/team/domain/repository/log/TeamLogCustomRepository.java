@@ -12,6 +12,8 @@ public interface TeamLogCustomRepository {
 
     void updateTeamLogTypeRepresent(final TeamLog teamLog);
 
+    void updateTeamLogTypeGeneral(final TeamLog teamLog);
+
     Optional<TeamLog> findRepresentativeTeamLog(final Long teamId);
 
     TeamLog updateTeamLogPublicState(final TeamLog teamLog, final boolean isTeamLogCurrentPublicState);

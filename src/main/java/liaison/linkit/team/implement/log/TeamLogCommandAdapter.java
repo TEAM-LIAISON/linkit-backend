@@ -23,6 +23,10 @@ public class TeamLogCommandAdapter {
         teamLogRepository.updateTeamLogTypeRepresent(teamLog);
     }
 
+    public void updateTeamLogTypeGeneral(final TeamLog teamLog) {
+        teamLogRepository.updateTeamLogTypeGeneral(teamLog);
+    }
+
     public TeamLog updateTeamLogPublicState(final TeamLog teamLog, final boolean isTeamLogCurrentPublicState) {
         return teamLogRepository.updateTeamLogPublicState(teamLog, isTeamLogCurrentPublicState);
     }

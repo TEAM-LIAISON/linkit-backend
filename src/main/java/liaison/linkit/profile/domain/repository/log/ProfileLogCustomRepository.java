@@ -11,7 +11,7 @@ public interface ProfileLogCustomRepository {
 
     ProfileLog updateProfileLogTypeRepresent(final ProfileLog profileLog);
 
-    ProfileLog updateProfileLogTypeToNormal(final ProfileLog profileLog);
+    void updateProfileLogTypeGeneral(final ProfileLog profileLog);
 
     Optional<ProfileLog> findRepresentativeProfileLog(final Long profileId);
 

@@ -9,7 +9,6 @@ import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.QProfileLog;
 import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
-import liaison.linkit.team.domain.log.QTeamLog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -57,7 +56,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
     }
 
     @Override
-    public ProfileLog updateProfileLogTypeToNormal(final ProfileLog profileLog) {
+    public void updateProfileLogTypeGeneral(final ProfileLog profileLog) {
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
@@ -72,9 +71,8 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         if (updatedCount > 0) { // 업데이트 성공 확인
             profileLog.setLogType(LogType.GENERAL_LOG); // 메모리 내 객체 업데이트
-            return profileLog;
         } else {
-            throw new IllegalStateException("대표 로그 일반 로그로 업데이트 실패");
+            throw new IllegalStateException("팀 로그 업데이트 실패");
         }
     }
 
@@ -188,6 +186,6 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                 .delete(qProfileLog)
                 .where(qProfileLog.profile.id.eq(profileId))
                 .execute();
-        
+
     }
 }
