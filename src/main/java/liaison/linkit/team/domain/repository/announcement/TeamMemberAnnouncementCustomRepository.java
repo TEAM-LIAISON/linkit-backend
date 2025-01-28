@@ -30,5 +30,7 @@ public interface TeamMemberAnnouncementCustomRepository {
 
     Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds);
 
+    Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamId(final Long teamId);
+
     void deleteAllByIds(final List<Long> announcementIds);
 }

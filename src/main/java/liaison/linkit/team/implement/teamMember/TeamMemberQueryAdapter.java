@@ -79,4 +79,8 @@ public class TeamMemberQueryAdapter {
     public Set<Team> getAllDeletableTeamsByMemberId(final Long memberId) {
         return teamMemberRepository.getAllDeletableTeamsByMemberId(memberId);
     }
+
+    public boolean isTeamMembersAllowDelete(final Team team) {
+        return teamMemberRepository.isTeamMembersAllowDelete(team);
+    }
 }

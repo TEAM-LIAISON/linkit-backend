@@ -46,4 +46,6 @@ public interface TeamMemberCustomRepository {
     Set<Team> getAllDeletableTeamsByMemberId(final Long memberId);
 
     void deleteAllTeamMember(final Long memberId);
+
+    boolean isTeamMembersAllowDelete(final Team team);
 }

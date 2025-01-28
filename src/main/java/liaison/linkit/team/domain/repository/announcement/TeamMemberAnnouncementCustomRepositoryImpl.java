@@ -303,6 +303,25 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     @Override
+    public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamId(final Long teamId) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        if (teamId == null) {
+            log.info("No team ID provided for fetching deletable announcements.");
+            return Collections.emptySet();
+        }
+
+        return new HashSet<>(
+                jpaQueryFactory
+                        .selectFrom(qTeamMemberAnnouncement)
+                        .where(
+                                qTeamMemberAnnouncement.team.id.eq(teamId) // 특정 팀 ID와 일치
+                        )
+                        .fetch()
+        );
+    }
+
+    @Override
     public void deleteAllByIds(final List<Long> announcementIds) {
         QTeamMemberAnnouncement qAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 

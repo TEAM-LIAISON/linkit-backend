@@ -2,6 +2,7 @@ package liaison.linkit.team.business.service.teamMember;
 
 import jakarta.mail.MessagingException;
 import java.util.List;
+import java.util.Set;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -23,6 +24,7 @@ import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import liaison.linkit.team.domain.teamMember.TeamMember;
@@ -38,6 +40,9 @@ import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.exception.teamMember.TeamMemberForbiddenException;
 import liaison.linkit.team.exception.teamMember.TeamMemberInvitationDuplicateException;
 import liaison.linkit.team.exception.teamMember.TeamMemberInvitationNotFoundException;
+import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
+import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.team.TeamCommandAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
@@ -82,6 +87,9 @@ public class TeamMemberService {
     private final NotificationMapper notificationMapper;
     private final HeaderNotificationService headerNotificationService;
     private final NotificationCommandAdapter notificationCommandAdapter;
+    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
+    private final TeamMemberAnnouncementCommandAdapter teamMemberAnnouncementCommandAdapter;
+    private final TeamCommandAdapter teamCommandAdapter;
 
     public TeamMemberViewItems getTeamMemberViewItems(final String teamCode) {
         // 1. 팀 조회
@@ -272,7 +280,7 @@ public class TeamMemberService {
                 // 팀원 초대 등록
                 teamMemberCommandAdapter.addTeamMember(teamMember);
                 teamMemberInvitationCommandAdapter.removeTeamMemberInvitation(teamMemberInvitation);
-                
+
                 // 팀원 초대 수락 시 모든 팀원들한테 이 사람이 구성원으로 들어왔다고 알림 발송
                 // (상대방님의 뫄뫄팀 구성원 수락 완료)
                 NotificationDetails teamMemberJoinedNotificationDetails = NotificationDetails.teamMemberJoined(
@@ -321,6 +329,21 @@ public class TeamMemberService {
         // 삭제 허용
         if (updateManagingTeamStateRequest.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.ALLOW_DELETE)) {
             // 모든 TeamMember가 허용을 했는지 확인
+            if (teamMemberQueryAdapter.isTeamMembersAllowDelete(targetTeam)) {
+                // 해당 팀의 모든 팀원 공고 삭제
+                Set<TeamMemberAnnouncement> deletableTeamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllDeletableTeamMemberAnnouncementsByTeamId(targetTeam.getId());
+
+                List<Long> deletableAnnouncementIds = deletableTeamMemberAnnouncements.stream()
+                        .map(TeamMemberAnnouncement::getId)
+                        .toList();
+
+                // 모든 공고 삭제
+                if (!deletableAnnouncementIds.isEmpty()) {
+                    teamMemberAnnouncementCommandAdapter.deleteAllByIds(deletableAnnouncementIds);
+                }
+
+                teamCommandAdapter.deleteTeam(teamCode);
+            }
         } else if (updateManagingTeamStateRequest.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.DENY_DELETE)) {
 
             // 삭제 거절 -> 아무 일도 없었던 것처럼

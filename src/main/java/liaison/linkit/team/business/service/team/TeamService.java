@@ -2,6 +2,7 @@ package liaison.linkit.team.business.service.team;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -23,6 +24,7 @@ import liaison.linkit.team.business.mapper.state.TeamCurrentStateMapper;
 import liaison.linkit.team.business.mapper.team.TeamMapper;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
+import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.state.TeamCurrentState;
 import liaison.linkit.team.domain.team.type.TeamStatus;
@@ -35,6 +37,8 @@ import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import liaison.linkit.team.exception.team.DeleteTeamBadRequestException;
 import liaison.linkit.team.exception.team.DuplicateTeamCodeException;
+import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
+import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.implement.team.TeamCommandAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.region.TeamRegionCommandAdapter;
@@ -101,6 +105,8 @@ public class TeamService {
     private final NotificationMapper notificationMapper;
     private final HeaderNotificationService headerNotificationService;
     private final MatchingQueryAdapter matchingQueryAdapter;
+    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
+    private final TeamMemberAnnouncementCommandAdapter teamMemberAnnouncementCommandAdapter;
 
 
     // 초기 팀 생성
@@ -405,6 +411,20 @@ public class TeamService {
                 headerNotificationService.publishNotificationCount(currentTeamMember.getMember().getId());
             }
         } else {    // 오너만 해당 팀을 소유하고 있는 경우
+
+            Set<TeamMemberAnnouncement> deletableTeamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllDeletableTeamMemberAnnouncementsByTeamId(targetTeam.getId());
+            log.info("Deleting teams {}", deletableTeamMemberAnnouncements);
+
+            List<Long> deletableAnnouncementIds = deletableTeamMemberAnnouncements.stream()
+                    .map(TeamMemberAnnouncement::getId)
+                    .toList();
+            log.info("Deleting teams {}", deletableAnnouncementIds);
+
+            // 모든 공고 삭제
+            if (!deletableAnnouncementIds.isEmpty()) {
+                teamMemberAnnouncementCommandAdapter.deleteAllByIds(deletableAnnouncementIds);
+            }
+
             teamCommandAdapter.deleteTeam(teamCode);
             NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamCompleted(
                     teamCode,
