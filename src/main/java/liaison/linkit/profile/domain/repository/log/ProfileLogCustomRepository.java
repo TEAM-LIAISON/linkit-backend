@@ -11,7 +11,7 @@ public interface ProfileLogCustomRepository {
 
     ProfileLog updateProfileLogTypeRepresent(final ProfileLog profileLog);
 
-    ProfileLog updateProfileLogTypeToNormal(final ProfileLog profileLog);
+    void updateProfileLogTypeGeneral(final ProfileLog profileLog);
 
     Optional<ProfileLog> findRepresentativeProfileLog(final Long profileId);
 
@@ -24,4 +24,6 @@ public interface ProfileLogCustomRepository {
     boolean existsRepresentativeProfileLogByProfile(final Long profileId);
 
     List<ProfileLog> findTopView(final int limit);
+
+    void deleteAllProfileLogs(final Long profileId);
 }

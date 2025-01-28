@@ -18,20 +18,21 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     private final StompHandler stompHandler; // WebSocket 연결 시 클라이언트의 인증 및 권한을 처리하는 인터셉터
 
     /**
-     * 메시지 브로커 설정 - 서버와 클라이언트 간 메시지 송수신 경로를 정의 - "/app"으로 시작하는 경로는 애플리케이션으로 전달 -
-     * "/topic"은 브로드캐스트용 경로 (예: 채팅방 메시지)
+     * 메시지 브로커 설정 - 서버와 클라이언트 간 메시지 송수신 경로를 정의 - "/app"으로 시작하는 경로는 애플리케이션으로 전달 - "/topic"은 브로드캐스트용 경로 (예: 채팅방 메시지)
      */
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/sub", "/user"); // /user 추가
-        registry.setApplicationDestinationPrefixes("/pub");
-        registry.setUserDestinationPrefix("/user"); // 사용자별 구독을 위한 prefix 설정
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker(
+                "/sub/chat",
+                "/sub/notification/header"
+        );
+
+        config.setUserDestinationPrefix("/user");
+        config.setApplicationDestinationPrefixes("/pub");  // /pub 경로로 서버 수신
     }
 
     /**
-     * STOMP 엔드포인트 설정 - 클라이언트가 WebSocket 서버에 연결하기 위한 엔드포인트 - SockJS를 활성화하여
-     * WebSocket을 지원하지 않는 브라우저에서도 사용 가능 - CORS 허용을 위해 `setAllowedOrigins("*")` 및
-     * `setAllowedOriginPatterns("*")` 사용
+     * STOMP 엔드포인트 설정 - 클라이언트가 WebSocket 서버에 연결하기 위한 엔드포인트 - SockJS를 활성화하여 WebSocket을 지원하지 않는 브라우저에서도 사용 가능 - CORS 허용을 위해 `setAllowedOrigins("*")` 및 `setAllowedOriginPatterns("*")` 사용
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -40,8 +41,7 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     /**
-     * 클라이언트에서 서버로 들어오는 메시지 채널 설정 - StompHandler를 인터셉터로 등록하여 메시지 인증 및 추가 처리를 수행 - 예:
-     * 인증 토큰 확인, 사용자 권한 확인
+     * 클라이언트에서 서버로 들어오는 메시지 채널 설정 - StompHandler를 인터셉터로 등록하여 메시지 인증 및 추가 처리를 수행 - 예: 인증 토큰 확인, 사용자 권한 확인
      */
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
@@ -54,9 +54,9 @@ public class StompConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureWebSocketTransport(WebSocketTransportRegistration registration) {
-        registration.setMessageSizeLimit(64 * 1024) // 64KB
-                .setSendTimeLimit(20 * 1000) // 20 seconds
+        registration.setMessageSizeLimit(64 * 1024)     // 64KB
+                .setSendTimeLimit(20 * 1000)        // 20 seconds
                 .setSendBufferSizeLimit(512 * 1024) // 512KB
-                .setTimeToFirstMessage(60 * 1000); // 60 seconds
+                .setTimeToFirstMessage(60 * 1000);  // 60 seconds
     }
 }

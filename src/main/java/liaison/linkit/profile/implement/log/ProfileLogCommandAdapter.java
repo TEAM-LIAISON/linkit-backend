@@ -24,8 +24,9 @@ public class ProfileLogCommandAdapter {
         profileLogRepository.updateProfileLogTypeRepresent(profileLog);
     }
 
-    public void updateProfileLogTypeToNormal(final ProfileLog profileLog) {
-        profileLogRepository.updateProfileLogTypeToNormal(profileLog);
+
+    public void updateProfileLogTypeGeneral(final ProfileLog profileLog) {
+        profileLogRepository.updateProfileLogTypeGeneral(profileLog);
     }
 
     public ProfileLog updateProfileLog(final ProfileLog profileLog, final UpdateProfileLogRequest updateProfileLogRequest) {
@@ -34,5 +35,9 @@ public class ProfileLogCommandAdapter {
 
     public ProfileLog updateProfileLogPublicState(final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState) {
         return profileLogRepository.updateProfileLogPublicState(profileLog, isProfileLogCurrentPublicState);
+    }
+
+    public void deleteAllProfileLogs(final Long profileId) {
+        profileLogRepository.deleteAllProfileLogs(profileId);
     }
 }

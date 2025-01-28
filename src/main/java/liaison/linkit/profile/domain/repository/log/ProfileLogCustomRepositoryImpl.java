@@ -56,7 +56,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
     }
 
     @Override
-    public ProfileLog updateProfileLogTypeToNormal(final ProfileLog profileLog) {
+    public void updateProfileLogTypeGeneral(final ProfileLog profileLog) {
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
@@ -71,9 +71,8 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         if (updatedCount > 0) { // 업데이트 성공 확인
             profileLog.setLogType(LogType.GENERAL_LOG); // 메모리 내 객체 업데이트
-            return profileLog;
         } else {
-            throw new IllegalStateException("대표 로그 일반 로그로 업데이트 실패");
+            throw new IllegalStateException("팀 로그 업데이트 실패");
         }
     }
 
@@ -176,5 +175,17 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                 .orderBy(qProfileLog.viewCount.desc())   // 조회수 높은 순
                 .limit(limit)
                 .fetch();
+    }
+
+    @Override
+    public void deleteAllProfileLogs(final Long profileId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        // 쿼리 실행하여 삭제된 로그 수를 계산
+        long deletedCount = queryFactory
+                .delete(qProfileLog)
+                .where(qProfileLog.profile.id.eq(profileId))
+                .execute();
+
     }
 }

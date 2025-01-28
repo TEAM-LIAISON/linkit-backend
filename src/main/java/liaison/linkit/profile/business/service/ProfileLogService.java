@@ -291,7 +291,7 @@ public class ProfileLogService {
         if (existingRepresentativeLog != null && !existingRepresentativeLog.getId().equals(profileLogId)) {
             log.info("기존 대표 로그가 존재하므로, 기존 대표 로그를 일반 로그로 변경합니다. 기존 대표 로그 ID: {}", existingRepresentativeLog.getId());
 
-            profileLogCommandAdapter.updateProfileLogTypeToNormal(existingRepresentativeLog);
+            profileLogCommandAdapter.updateProfileLogTypeGeneral(existingRepresentativeLog);
             log.info("기존 대표 로그(ID: {})가 일반 로그로 변경되었습니다.", existingRepresentativeLog.getId());
         }
 

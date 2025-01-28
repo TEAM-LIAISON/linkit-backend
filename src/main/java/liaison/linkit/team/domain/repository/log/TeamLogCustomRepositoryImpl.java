@@ -63,6 +63,27 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
     }
 
     @Override
+    public void updateTeamLogTypeGeneral(final TeamLog teamLog) {
+        QTeamLog qTeamLog = QTeamLog.teamLog;
+
+        // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
+        long updatedCount = queryFactory
+                .update(qTeamLog)
+                .set(qTeamLog.logType, LogType.GENERAL_LOG)
+                .where(qTeamLog.id.eq(teamLog.getId()))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        if (updatedCount > 0) { // 업데이트 성공 확인
+            teamLog.setLogType(LogType.GENERAL_LOG); // 메모리 내 객체 업데이트
+        } else {
+            throw new IllegalStateException("팀 로그 업데이트 실패");
+        }
+    }
+
+    @Override
     public Optional<TeamLog> findRepresentativeTeamLog(final Long teamId) {
         QTeamLog qTeamLog = QTeamLog.teamLog;
 
@@ -150,4 +171,19 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
                 .limit(limit)
                 .fetch();
     }
+
+    @Override
+    public void deleteAllTeamLogs(final Long teamId) {
+        QTeamLog qTeamLog = QTeamLog.teamLog;
+
+        // 쿼리 실행하여 삭제된 로그 수를 계산
+        long deletedCount = queryFactory
+                .delete(qTeamLog)
+                .where(qTeamLog.team.id.eq(teamId))
+                .execute();
+
+        // memberId 대신 teamId를 로그에 출력
+        log.info("Deleted {} team logs for teamId: {}", deletedCount, teamId);
+    }
+
 }
