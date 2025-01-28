@@ -20,4 +20,6 @@ public interface MemberRepositoryCustom {
     String findEmailById(final Long memberId);
 
     String findEmailIdById(final Long memberId);
+
+    Optional<Member> findByEmail(final String email);
 }

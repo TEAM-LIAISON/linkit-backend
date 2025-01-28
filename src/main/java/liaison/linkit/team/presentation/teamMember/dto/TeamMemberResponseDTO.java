@@ -30,6 +30,9 @@ public class TeamMemberResponseDTO {
     @AllArgsConstructor
     public static class TeamMemberItems {
 
+        private Boolean isTeamOwner;
+        private Boolean isTeamManager;
+
         @Builder.Default
         private List<AcceptedTeamMemberItem> acceptedTeamMemberItems = new ArrayList<>();
 

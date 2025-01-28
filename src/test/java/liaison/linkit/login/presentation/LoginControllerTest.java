@@ -300,7 +300,7 @@ public class LoginControllerTest extends ControllerTest {
 
         final AccountResponseDTO.QuitAccountResponse quitAccountResponse = new QuitAccountResponse(LocalDateTime.now());
 
-        when(loginService.quitAccount(anyLong())).thenReturn(quitAccountResponse);
+        when(loginService.quitAccount(anyLong(), any())).thenReturn(quitAccountResponse);
 
         // when
         final ResultActions resultActions = mockMvc.perform(delete("/api/v1/quit")
@@ -351,7 +351,7 @@ public class LoginControllerTest extends ControllerTest {
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
-        verify(loginService).quitAccount(anyLong());
+        verify(loginService).quitAccount(anyLong(), any());
     }
 
 

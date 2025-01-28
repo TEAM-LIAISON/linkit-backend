@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
+import liaison.linkit.global.type.StatusType;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.QMatching;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
@@ -325,5 +326,83 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
                     "Failed to update matching status to ROOM_CREATED for Matching ID: " + matching.getId()
             );
         }
+    }
+
+    @Override
+    public void deleteAllBySenderProfile(final String emailId) {
+        QMatching qMatching = QMatching.matching;
+
+        long deletedCount = jpaQueryFactory
+                .update(qMatching)
+                .set(qMatching.status, StatusType.DELETED)
+                .where(qMatching.senderEmailId.eq(emailId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        log.info("Deleted {} matching scraps for emailId: {}", deletedCount, emailId);
+    }
+
+    @Override
+    public void deleteAllBySenderTeamCodes(final List<String> senderTeamCodes) {
+        QMatching qMatching = QMatching.matching;
+
+        long deletedCount = jpaQueryFactory.update(qMatching)
+                .set(qMatching.status, StatusType.DELETED)
+                .where(qMatching.senderTeamCode.in(senderTeamCodes))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        log.info("Deleted {} matching scraps for teamCodes: {}", deletedCount, senderTeamCodes);
+    }
+
+    @Override
+    public void deleteAllByReceiverProfile(final String emailId) {
+        QMatching qMatching = QMatching.matching;
+
+        long deletedCount = jpaQueryFactory
+                .update(qMatching)
+                .set(qMatching.status, StatusType.DELETED)
+                .where(qMatching.receiverEmailId.eq(emailId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        log.info("Deleted {} matching scraps for emailId: {}", deletedCount, emailId);
+    }
+
+    @Override
+    public void deleteAllByReceiverTeamCodes(final List<String> receiverTeamCodes) {
+        QMatching qMatching = QMatching.matching;
+
+        long deletedCount = jpaQueryFactory.update(qMatching)
+                .set(qMatching.status, StatusType.DELETED)
+                .where(qMatching.receiverTeamCode.in(receiverTeamCodes))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        log.info("Deleted {} matching scraps for teamCodes: {}", deletedCount, receiverTeamCodes);
+    }
+
+    @Override
+    public void deleteAllByReceiverAnnouncements(final List<Long> teamMemberAnnouncementIds) {
+        QMatching qMatching = QMatching.matching;
+
+        long deletedCount = jpaQueryFactory.update(qMatching)
+                .set(qMatching.status, StatusType.DELETED)
+                .where(qMatching.receiverAnnouncementId.in(teamMemberAnnouncementIds))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        log.info("Deleted {} matching scraps for teamMemberAnnouncementIds: {}", deletedCount, teamMemberAnnouncementIds);
+
     }
 }

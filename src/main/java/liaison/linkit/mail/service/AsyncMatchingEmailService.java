@@ -7,9 +7,13 @@ public interface AsyncMatchingEmailService {
 
     @Async
     void sendMatchingCompletedEmails(
-            final String mailTitle,
-            final String mailSubTitle,
-            final String mailSubText,
+            final String senderMailTitle,
+            final String senderMailSubTitle,
+            final String senderMailSubText,
+
+            final String receiverMailTitle,
+            final String receiverMailSubTitle,
+            final String receiverMailSubText,
 
             final String matchingSenderEmail,
             final String matchingSenderName,
@@ -30,6 +34,10 @@ public interface AsyncMatchingEmailService {
 
     @Async
     void sendMatchingRequestedEmail(
+            final String receiverMailTitle,
+            final String receiverMailSubTitle,
+            final String receiverMailSubText,
+
             final String matchingReceiverEmail,
             final String matchingSenderName,
             final String matchingSenderLogoImagePath,

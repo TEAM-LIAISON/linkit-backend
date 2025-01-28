@@ -1,10 +1,11 @@
 package liaison.linkit.member.business;
 
 import jakarta.mail.MessagingException;
+import java.util.List;
 import java.util.Random;
 import liaison.linkit.login.exception.AuthCodeBadRequestException;
 import liaison.linkit.login.infrastructure.MailReAuthenticationRedisUtil;
-import liaison.linkit.mail.service.AuthCodeMailService;
+import liaison.linkit.mail.service.AsyncAuthCodeMailService;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.exception.member.DuplicateEmailIdException;
@@ -28,9 +29,12 @@ import liaison.linkit.member.presentation.dto.MemberResponseDTO;
 import liaison.linkit.notification.business.NotificationMapper;
 import liaison.linkit.notification.domain.type.NotificationType;
 import liaison.linkit.notification.domain.type.SubNotificationType;
+import liaison.linkit.notification.implement.NotificationCommandAdapter;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationDetails;
 import liaison.linkit.notification.service.HeaderNotificationService;
 import liaison.linkit.notification.service.NotificationService;
+import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -49,12 +53,14 @@ public class MemberService {
     private final MemberBasicInformMapper memberBasicInformMapper;
 
     private final MailReAuthenticationRedisUtil mailReAuthenticationRedisUtil;
-    private final AuthCodeMailService authCodeMailService;
+    private final AsyncAuthCodeMailService asyncAuthCodeMailService;
     private final MemberCommandAdapter memberCommandAdapter;
     private final MemberMapper memberMapper;
     private final NotificationService notificationService;
     private final NotificationMapper notificationMapper;
     private final HeaderNotificationService headerNotificationService;
+    private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
+    private final NotificationCommandAdapter notificationCommandAdapter;
 
     // 회원 기본 정보 요청 (UPDATE)
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse updateMemberBasicInform(final Long memberId, final UpdateMemberBasicInformRequest request) {
@@ -85,6 +91,26 @@ public class MemberService {
         );
 
         headerNotificationService.publishNotificationCount(updatedMember.getId());
+
+        if (teamMemberInvitationQueryAdapter.existsByEmail(updatedMember.getEmail())) {
+            final List<Team> teams = teamMemberInvitationQueryAdapter.getTeamsByEmail(updatedMember.getEmail());
+
+            for (Team team : teams) {
+                // 매칭 성사된 경우, 수신자에게 알림 발송
+                NotificationDetails teamInvitationNotificationDetails = NotificationDetails.teamInvitationRequested(
+                        team.getTeamCode(),
+                        team.getTeamLogoImagePath(),
+                        team.getTeamName()
+                );
+
+                notificationCommandAdapter.save(notificationMapper.toNotification(
+                        updatedMember.getId(),
+                        NotificationType.TEAM_INVITATION,
+                        SubNotificationType.TEAM_INVITATION_REQUESTED,
+                        teamInvitationNotificationDetails
+                ));
+            }
+        }
 
         return memberBasicInformMapper.toMemberBasicInformResponse(updatedMemberBasicInform, updatedMember.getEmail(), updatedMember.getEmailId());
     }
@@ -151,7 +177,7 @@ public class MemberService {
         final Member member = memberQueryAdapter.findById(memberId);
 
         // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
-        authCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), mailReAuthenticationRequest.getEmail(), authCode);
+        asyncAuthCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), mailReAuthenticationRequest.getEmail(), authCode);
 
         // 재인증 코드를 발송한 시간 발행
         return memberBasicInformMapper.toReAuthenticationResponse();

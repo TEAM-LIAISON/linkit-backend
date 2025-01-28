@@ -40,12 +40,13 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
     }
 
     @Override
-    public List<TeamMemberInvitation> getTeamMemberInvitations(final Long teamId) {
+    public List<TeamMemberInvitation> getTeamMemberInvitationsInPending(final Long teamId) {
         QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
 
         return jpaQueryFactory
                 .selectFrom(qTeamMemberInvitation)
-                .where(qTeamMemberInvitation.team.id.eq(teamId))
+                .where(qTeamMemberInvitation.team.id.eq(teamId)
+                        .and(qTeamMemberInvitation.teamMemberInviteState.eq(TeamMemberInviteState.PENDING)))
                 .fetch();
     }
 
@@ -95,5 +96,17 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
                 .delete(qTeamMemberInvitation)
                 .where(qTeamMemberInvitation.id.eq(teamMemberInvitation.getId()))
                 .execute();
+    }
+
+    @Override
+    public void deleteAllByTeamIds(final List<Long> teamIds) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qTeamMemberInvitation)
+                .where(qTeamMemberInvitation.team.id.in(teamIds))
+                .execute();
+
+        log.info("Deleted " + deletedCount + " team members with ids " + teamIds);
     }
 }

@@ -241,6 +241,8 @@ public class MatchingResponseDTO {
     public static class ReceiverAnnouncementInformation {
         private Long teamMemberAnnouncementId;
 
+        private String teamName;
+
         private String announcementTitle;
 
         @Builder.Default

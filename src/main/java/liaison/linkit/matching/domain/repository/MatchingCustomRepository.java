@@ -48,4 +48,14 @@ public interface MatchingCustomRepository {
     void updateMatchingStatusType(final Matching matching, final MatchingStatusType matchingStatusType);
 
     void updateMatchingToCreatedRoomState(final Matching matching);
+
+    void deleteAllBySenderProfile(final String emailId);
+
+    void deleteAllBySenderTeamCodes(final List<String> teamCodes);
+
+    void deleteAllByReceiverProfile(final String emailId);
+
+    void deleteAllByReceiverTeamCodes(final List<String> teamCodes);
+
+    void deleteAllByReceiverAnnouncements(final List<Long> announcementIds);
 }

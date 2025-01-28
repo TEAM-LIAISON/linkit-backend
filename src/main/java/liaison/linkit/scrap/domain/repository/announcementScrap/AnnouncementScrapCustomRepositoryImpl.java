@@ -64,4 +64,28 @@ public class AnnouncementScrapCustomRepositoryImpl implements AnnouncementScrapC
                 .where(qAnnouncementScrap.member.id.eq(memberId))
                 .fetch();
     }
+
+    @Override
+    public void deleteAllByMemberId(final Long memberId) {
+        QAnnouncementScrap qAnnouncementScrap = QAnnouncementScrap.announcementScrap;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qAnnouncementScrap)
+                .where(qAnnouncementScrap.member.id.eq(memberId))
+                .execute();
+
+        log.info("Deleted {} announcement scraps for memberId: {}", deletedCount, memberId);
+    }
+
+    @Override
+    public void deleteAllByAnnouncementIds(final List<Long> teamMemberAnnouncementIds) {
+        QAnnouncementScrap qAnnouncementScrap = QAnnouncementScrap.announcementScrap;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qAnnouncementScrap)
+                .where(qAnnouncementScrap.teamMemberAnnouncement.id.in(teamMemberAnnouncementIds))
+                .execute();
+
+        log.info("Deleted {} announcement scraps for teamMemberAnnouncementIds: {}", deletedCount, teamMemberAnnouncementIds);
+    }
 }

@@ -1,6 +1,7 @@
 package liaison.linkit.team.implement.teamMember;
 
 
+import java.util.List;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberInvitationRepository;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
@@ -17,5 +18,9 @@ public class TeamMemberInvitationCommandAdapter {
 
     public void removeTeamMemberInvitation(final TeamMemberInvitation teamMemberInvitation) {
         teamMemberInvitationRepository.removeTeamMemberInvitation(teamMemberInvitation);
+    }
+
+    public void deleteAllByTeamIds(final List<Long> teamIds) {
+        teamMemberInvitationRepository.deleteAllByTeamIds(teamIds);
     }
 }

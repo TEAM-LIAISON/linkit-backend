@@ -1,6 +1,7 @@
 package liaison.linkit.team.domain.repository.teamMember;
 
 import java.util.List;
+import java.util.Set;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
@@ -17,6 +18,8 @@ public interface TeamMemberCustomRepository {
     boolean existsTeamByMemberId(final Long memberId);
 
     boolean existsTeamOwnerByMemberId(final Long memberId);
+
+    boolean existsTeamOwnerAndOtherManagerByMemberId(final Long memberId);
 
     List<Team> getAllTeamsByMemberId(final Long memberId);
 
@@ -37,4 +40,8 @@ public interface TeamMemberCustomRepository {
     void updateTeamMemberManagingTeamState(final TeamMember teamMember, final TeamMemberManagingTeamState teamMemberManagingTeamState);
 
     boolean isMemberOfTeam(final String teamCode, final String emailId);
+
+    List<TeamMember> getAllTeamManagers(final Team team);
+
+    Set<Team> getAllDeletableTeamsByMemberId(final Long memberId);
 }

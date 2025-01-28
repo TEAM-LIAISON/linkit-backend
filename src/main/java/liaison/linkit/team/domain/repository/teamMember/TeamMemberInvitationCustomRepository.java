@@ -10,7 +10,7 @@ public interface TeamMemberInvitationCustomRepository {
 
     boolean existsByEmailAndTeam(final String email, final Team team);
 
-    List<TeamMemberInvitation> getTeamMemberInvitations(final Long teamId);
+    List<TeamMemberInvitation> getTeamMemberInvitationsInPending(final Long teamId);
 
     List<Team> getTeamsByEmail(final String email);
 
@@ -19,4 +19,6 @@ public interface TeamMemberInvitationCustomRepository {
     TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email);
 
     void removeTeamMemberInvitation(final TeamMemberInvitation teamMemberInvitation);
+
+    void deleteAllByTeamIds(final List<Long> teamIds);
 }

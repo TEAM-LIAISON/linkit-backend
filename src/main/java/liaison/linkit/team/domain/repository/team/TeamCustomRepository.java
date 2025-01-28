@@ -26,5 +26,7 @@ public interface TeamCustomRepository {
 
     Team updateTeamStatus(final TeamStatus teamStatus, final String teamCode);
 
+    void updateTeam(final Team team);
+
     boolean isTeamDeleteInProgress(final String teamCode);
 }

@@ -81,8 +81,9 @@ public class LoginController {
     @DeleteMapping("/quit")
     @MemberOnly
     public CommonResponse<AccountResponseDTO.QuitAccountResponse> quitAccount(
-            @Auth final Accessor accessor
+            @Auth final Accessor accessor,
+            @CookieValue("refreshToken") final String refreshToken
     ) {
-        return CommonResponse.onSuccess(loginService.quitAccount(accessor.getMemberId()));
+        return CommonResponse.onSuccess(loginService.quitAccount(accessor.getMemberId(), refreshToken));
     }
 }

@@ -65,4 +65,8 @@ public class Team extends BaseEntity {
         this.teamShortDescription = teamShortDescription;
         this.isTeamPublic = isTeamPublic;
     }
+
+    public void setTeamStatus(final TeamStatus teamStatus) {
+        this.teamStatus = teamStatus;
+    }
 }

@@ -1,6 +1,7 @@
 package liaison.linkit.team.implement.teamMember;
 
 import java.util.List;
+import java.util.Set;
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberRepository;
@@ -29,8 +30,14 @@ public class TeamMemberQueryAdapter {
         return teamMemberRepository.existsTeamByMemberId(memberId);
     }
 
+    // 해당 회원이 오너로 있는 팀이 있는지 여부
     public boolean existsTeamOwnerByMemberId(final Long memberId) {
         return teamMemberRepository.existsTeamOwnerByMemberId(memberId);
+    }
+
+    // [회원 탈퇴] 해당 회원이 오너로 있는 팀에서 다른 관리자가 존재하는지 여부
+    public boolean existsTeamOwnerAndOtherManagerByMemberId(final Long memberId) {
+        return teamMemberRepository.existsTeamOwnerAndOtherManagerByMemberId(memberId);
     }
 
     public List<Team> getAllTeamsByMemberId(final Long memberId) {
@@ -63,5 +70,13 @@ public class TeamMemberQueryAdapter {
 
     public boolean isMemberOfTeam(final String teamCode, final String emailId) {
         return teamMemberRepository.isMemberOfTeam(teamCode, emailId);
+    }
+
+    public List<TeamMember> getAllTeamManagers(final Team team) {
+        return teamMemberRepository.getAllTeamManagers(team);
+    }
+
+    public Set<Team> getAllDeletableTeamsByMemberId(final Long memberId) {
+        return teamMemberRepository.getAllDeletableTeamsByMemberId(memberId);
     }
 }

@@ -267,14 +267,14 @@ public class TeamService {
         if (teamMemberQueryAdapter.isMemberOfTeam(targetTeam.getTeamCode(), member.getEmailId())) {
             final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(targetTeam.getTeamCode(), member.getEmailId());
             log.info("getLoggedInTeamDetail teamMember = {}", teamMember);
-            if (teamMember.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.REQUEST_DELETE)) {
+            if (teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
                 isTeamManager = true;
             }
         }
 
         // 오너, 관리자 여부 확인
         boolean isMyTeam = teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId);
-        
+
         log.info("getLoggedInTeamDetail isMyTeam = {}", isMyTeam);
 
         // 조회 요청을 진행한 사용자가 teamInvitation 테이블에 존재하는지 여부 판단
@@ -381,26 +381,47 @@ public class TeamService {
             // 팀원의 삭제 수락 요청이 모두 처리되어야 팀 삭제가 진행될 수 있다.
             teamCommandAdapter.updateTeamStatus(TeamStatus.DELETE_PENDING, teamCode);
 
-            final List<Long> teamMemberIds = teamMemberQueryAdapter.getAllTeamMemberIds(teamCode);
+            final List<TeamMember> teamMembers = teamMemberQueryAdapter.getAllTeamManagers(targetTeam);
 
-            for (Long teamMemberId : teamMemberIds) {
+            for (TeamMember currentTeamMember : teamMembers) {
                 // 팀원들에게 요청 알림 발송 (수정 필요)
-                NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamRequested(teamCode, targetTeam.getTeamLogoImagePath(), targetTeam.getTeamName(),
-                        member.getMemberBasicInform().getMemberName());
+                // (상대방님의 뫄뫄팀 삭제 요청)
+                NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamRequested(
+                        teamCode,
+                        targetTeam.getTeamLogoImagePath(),
+                        targetTeam.getTeamName(),
+                        member.getMemberBasicInform().getMemberName()
+                );
 
                 notificationService.alertNewNotification(
                         notificationMapper.toNotification(
-                                teamMemberId,
+                                currentTeamMember.getMember().getId(),
                                 NotificationType.TEAM,
                                 SubNotificationType.REMOVE_TEAM_REQUESTED,
                                 removeTeamNotificationDetails
                         )
                 );
 
-                headerNotificationService.publishNotificationCount(teamMemberId);
+                headerNotificationService.publishNotificationCount(currentTeamMember.getMember().getId());
             }
         } else {    // 오너만 해당 팀을 소유하고 있는 경우
             teamCommandAdapter.deleteTeam(teamCode);
+            NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamCompleted(
+                    teamCode,
+                    targetTeam.getTeamLogoImagePath(),
+                    targetTeam.getTeamName()
+            );
+
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            memberId,
+                            NotificationType.TEAM,
+                            SubNotificationType.REMOVE_TEAM_REQUESTED,
+                            removeTeamNotificationDetails
+                    )
+            );
+
+            headerNotificationService.publishNotificationCount(memberId);
         }
 
         return teamMapper.toDeleteTeam(teamCode);

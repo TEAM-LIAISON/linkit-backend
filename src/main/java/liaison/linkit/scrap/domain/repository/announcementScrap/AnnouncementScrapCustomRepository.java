@@ -11,5 +11,9 @@ public interface AnnouncementScrapCustomRepository {
     int getTotalAnnouncementScrapCount(final Long teamMemberAnnouncementId);
 
     List<AnnouncementScrap> findAllByMemberId(final Long memberId);
+
+    void deleteAllByMemberId(final Long memberId);
+
+    void deleteAllByAnnouncementIds(final List<Long> teamMemberAnnouncementIds);
 }
 

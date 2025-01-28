@@ -1,9 +1,12 @@
 package liaison.linkit.team.domain.repository.teamMember;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.QMember;
@@ -83,6 +86,55 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                         .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_OWNER)))
                 .fetchFirst() != null;
     }
+
+    @Override
+    public boolean existsTeamOwnerAndOtherManagerByMemberId(final Long memberId) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        // 해당 memberId가 OWNER인지 확인
+        Boolean isTeamOwner = jpaQueryFactory
+                .selectOne()
+                .from(qTeamMember)
+                .where(qTeamMember.member.id.eq(memberId)
+                        .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_OWNER)))
+                .fetchFirst() != null;
+
+        log.info("Is memberId {} a team owner? {}", memberId, isTeamOwner);
+
+        if (!isTeamOwner) {
+            // OWNER가 아니면 바로 false 반환
+            return false;
+        }
+
+        // 소유한 팀을 조회 (팀이 없을 경우 null 체크)
+        Team ownerTeam = jpaQueryFactory
+                .select(qTeamMember.team)
+                .from(qTeamMember)
+                .where(qTeamMember.member.id.eq(memberId)
+                        .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_OWNER)))
+                .fetchFirst();
+
+        if (ownerTeam == null) {
+            log.info("No team found for owner with memberId {}", memberId);
+            return false; // 팀이 없으면 false 반환
+        }
+
+        log.info("Team found for owner: {}", ownerTeam);
+
+        // 같은 팀에 다른 매니저가 존재하는지 확인
+        Boolean hasOtherManager = jpaQueryFactory
+                .selectOne()
+                .from(qTeamMember)
+                .where(qTeamMember.team.eq(ownerTeam)
+                        .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_MANAGER))
+                        .and(qTeamMember.member.id.ne(memberId))) // OWNER 본인은 제외
+                .fetchFirst() != null;
+
+        log.info("Does the team have other managers? {}", hasOtherManager);
+
+        return hasOtherManager;
+    }
+
 
     @Override
     public List<Team> getAllTeamsByMemberId(final Long memberId) {
@@ -225,6 +277,47 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                                 .and(qTeamMember.status.ne(StatusType.DELETED)) // Member is not in a deleted state
                 )
                 .fetchFirst() != null; // Return true if a result is found, false otherwise
+    }
+
+    @Override
+    public List<TeamMember> getAllTeamManagers(final Team team) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        return jpaQueryFactory
+                .selectFrom(qTeamMember)
+                .where(
+                        qTeamMember.team.eq(team)
+                                .and(qTeamMember.teamMemberType.in(TeamMemberType.TEAM_MANAGER, TeamMemberType.TEAM_OWNER))
+                )
+                .fetch();
+    }
+
+    @Override
+    public Set<Team> getAllDeletableTeamsByMemberId(final Long memberId) {
+        QTeam qTeam = QTeam.team;
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        // 팀에서 관리자가 없어야 하므로 서브쿼리로 관리자 확인
+        BooleanExpression noOtherManagers = jpaQueryFactory
+                .selectOne()
+                .from(qTeamMember)
+                .where(
+                        qTeamMember.team.eq(qTeam)
+                                .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_MANAGER))
+                )
+                .notExists();
+
+        return new HashSet<>(jpaQueryFactory
+                .select(qTeam)
+                .from(qTeamMember)
+                .join(qTeamMember.team, qTeam)
+                .where(
+                        qTeamMember.member.id.eq(memberId)
+                                .and(qTeamMember.teamMemberType.eq(TeamMemberType.TEAM_OWNER))
+                                .and(qTeam.status.eq(StatusType.USABLE))
+                                .and(noOtherManagers) // 추가 조건: 다른 팀 관리자가 없어야 함
+                )
+                .fetch());
     }
 
 }
