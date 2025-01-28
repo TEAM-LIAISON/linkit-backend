@@ -22,4 +22,8 @@ public class TeamMemberCommandAdapter {
     public void updateTeamMemberManagingTeamState(final TeamMember teamMember, final TeamMemberManagingTeamState teamMemberManagingTeamState) {
         teamMemberRepository.updateTeamMemberManagingTeamState(teamMember, teamMemberManagingTeamState);
     }
+
+    public void deleteAllTeamMember(final Long memberId) {
+        teamMemberRepository.deleteAllTeamMember(memberId);
+    }
 }
