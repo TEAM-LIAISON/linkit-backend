@@ -269,9 +269,10 @@ public class TeamMemberService {
             if (teamJoinRequest.getIsTeamJoin()) {
                 // 수락
                 final TeamMember teamMember = teamMemberMapper.toTeamMember(member, targetTeam, teamMemberInvitation.getTeamMemberType());
+                // 팀원 초대 등록
                 teamMemberCommandAdapter.addTeamMember(teamMember);
-                teamMemberInvitation.setTeamMemberInviteState(TeamMemberInviteState.ACCEPTED);
-
+                teamMemberInvitationCommandAdapter.removeTeamMemberInvitation(teamMemberInvitation);
+                
                 // 팀원 초대 수락 시 모든 팀원들한테 이 사람이 구성원으로 들어왔다고 알림 발송
                 // (상대방님의 뫄뫄팀 구성원 수락 완료)
                 NotificationDetails teamMemberJoinedNotificationDetails = NotificationDetails.teamMemberJoined(
