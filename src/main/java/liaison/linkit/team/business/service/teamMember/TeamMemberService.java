@@ -152,15 +152,26 @@ public class TeamMemberService {
             final String emailId,
             final UpdateTeamMemberTypeRequest updateTeamMemberTypeRequest
     ) {
-        // 1. TeamMember 엔티티 조회
-        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
+        final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
+        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
         final TeamMemberType requestedTeamMemberType = updateTeamMemberTypeRequest.getTeamMemberType();
         if (requestedTeamMemberType == teamMember.getTeamMemberType()) {
             throw TeamMemberForbiddenException.EXCEPTION;
         }
 
-        teamMember.setTeamMemberType(requestedTeamMemberType);
+        if (requestedTeamMemberType.equals(TeamMemberType.TEAM_OWNER)) {
+            final Member ownerMember = memberQueryAdapter.findById(teamMemberQueryAdapter.getTeamOwnerMemberId(targetTeam));
+
+            if (!ownerMember.getId().equals(memberId)) {
+                throw TeamMemberForbiddenException.EXCEPTION;
+            }
+
+            teamMember.setTeamMemberType(requestedTeamMemberType);
+            teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(teamCode, ownerMember.getEmailId());
+        } else {
+            teamMember.setTeamMemberType(requestedTeamMemberType);
+        }
 
         return teamMemberMapper.toUpdateTeamMemberTypeResponse(teamMember);
     }

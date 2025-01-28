@@ -106,7 +106,7 @@ public class ChatService {
      * @return 생성된 채팅방 정보
      */
     public CreateChatRoomResponse createChatRoom(final CreateChatRoomRequest createChatRoomRequest,
-            final Long memberId) {
+                                                 final Long memberId) {
 
         // 채팅방을 열게하는 매칭의 매칭 ID
         final Long matchingId = createChatRoomRequest.getMatchingId();
@@ -359,7 +359,7 @@ public class ChatService {
     }
 
     public void handleChatMessage(final ChatMessageRequest chatMessageRequest, final Long memberId,
-            final Long chatRoomId) {
+                                  final Long chatRoomId) {
         log.info("handleChatMessage 호출: chatRoomId={}, content={}", chatRoomId, chatMessageRequest.getContent());
 
         // 1. 채팅방 존재 및 접근 권한 확인
@@ -394,7 +394,7 @@ public class ChatService {
     }
 
     private ChatMessage createChatMessage(ChatMessageRequest chatMessageRequest, ChatRoom chatRoom, Long memberId,
-            String participantALogoImagePath, String participantBLogoImagePath) {
+                                          String participantALogoImagePath, String participantBLogoImagePath) {
         if (chatRoom.getParticipantAMemberId().equals(memberId)) {
             // A가 B에게 보내는 메시지
             return chatMapper.toChatMessage(
