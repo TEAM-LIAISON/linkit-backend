@@ -34,6 +34,10 @@ public interface AsyncMatchingEmailService {
 
     @Async
     void sendMatchingRequestedEmail(
+            final String receiverMailTitle,
+            final String receiverMailSubTitle,
+            final String receiverMailSubText,
+
             final String matchingReceiverEmail,
             final String matchingSenderName,
             final String matchingSenderLogoImagePath,

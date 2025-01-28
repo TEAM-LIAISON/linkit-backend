@@ -463,7 +463,7 @@ public class MatchingService {
         // COMPLETED 상태로 변경된 경우 비동기 이메일 발송
         if (updateMatchingStatusTypeRequest.getMatchingStatusType() == MatchingStatusType.COMPLETED) {
             log.info("매칭 상태 COMPLETED - 이메일 발송 준비");
-            MatchingEmailContent emailContent = generateEmailContent(matching);
+            MatchingEmailContent emailContent = generateMatchingCompletedEmailContent(matching);
 
             asyncMatchingEmailService.sendMatchingCompletedEmails(
                     emailContent.getSenderMailTitle(),
@@ -659,7 +659,13 @@ public class MatchingService {
 
         log.info("Add matching 0-1: " + matching);
 
+        MatchingEmailContent emailContent = generateMatchingRequestedEmailContent(matching);
+
         asyncMatchingEmailService.sendMatchingRequestedEmail(
+                emailContent.getReceiverMailTitle(),
+                emailContent.getReceiverMailSubTitle(),
+                emailContent.getReceiverMailSubText(),
+
                 getReceiverEmail(matching),
                 getSenderName(matching),
                 getSenderLogoImagePath(matching),
@@ -1242,7 +1248,7 @@ public class MatchingService {
     /**
      * 이메일 제목, 소제목, 세부 내용을 생성하는 메서드
      */
-    private MatchingEmailContent generateEmailContent(Matching matching) {
+    private MatchingEmailContent generateMatchingCompletedEmailContent(Matching matching) {
         String senderMailTitle;
         String senderMailSubTitle;
         String senderMailSubText;
@@ -1270,6 +1276,30 @@ public class MatchingService {
 
         return new MatchingEmailContent(
                 senderMailTitle, senderMailSubTitle, senderMailSubText,
+                receiverMailTitle, receiverMailSubTitle, receiverMailSubText
+        );
+    }
+
+    private MatchingEmailContent generateMatchingRequestedEmailContent(Matching matching) {
+        String receiverMailTitle;
+        String receiverMailSubTitle;
+        String receiverMailSubText;
+
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            receiverMailTitle = "공고 지원";
+            receiverMailSubTitle = "님의 공고 지원";
+            receiverMailSubText = "새로운 지원이 왔어요";
+        } else if (matching.getSenderType().equals(SenderType.TEAM)) {
+            receiverMailTitle = "매칭 요청";
+            receiverMailSubTitle = "팀의 매칭 요청";
+            receiverMailSubText = "새로운 매칭 요청이 왔어요";
+        } else {
+            receiverMailTitle = "매칭 요청";
+            receiverMailSubTitle = "님의 매칭 요청";
+            receiverMailSubText = "새로운 매칭 요청이 왔어요";
+        }
+
+        return new MatchingEmailContent(
                 receiverMailTitle, receiverMailSubTitle, receiverMailSubText
         );
     }
