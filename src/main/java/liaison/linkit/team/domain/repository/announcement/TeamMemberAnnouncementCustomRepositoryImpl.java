@@ -153,7 +153,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
         QTeamScale qTeamScale = QTeamScale.teamScale;
         QScale qScale = QScale.scale;
+
         log.info("Starting query to fetch Announcements");
+
         List<TeamMemberAnnouncement> content = jpaQueryFactory
                 .selectDistinct(qTeamMemberAnnouncement)
                 .from(qTeamMemberAnnouncement)
