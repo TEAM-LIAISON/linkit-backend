@@ -21,4 +21,6 @@ public interface TeamMemberInvitationCustomRepository {
     void removeTeamMemberInvitation(final TeamMemberInvitation teamMemberInvitation);
 
     void deleteAllByTeamIds(final List<Long> teamIds);
+
+    void deleteAllByTeamId(final Long teamId);
 }

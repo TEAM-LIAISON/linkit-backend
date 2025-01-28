@@ -21,4 +21,6 @@ public interface TeamScrapCustomRepository {
     void deleteAllByMemberId(final Long memberId);
 
     void deleteAllByTeamIds(final List<Long> teamIds);
+
+    void deleteAllByTeamId(final Long teamId);
 }

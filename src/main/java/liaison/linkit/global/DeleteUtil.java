@@ -22,6 +22,7 @@ import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandA
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.implement.log.TeamLogCommandAdapter;
 import liaison.linkit.team.implement.team.TeamCommandAdapter;
+import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -34,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class DeleteService {
+public class DeleteUtil {
     private final MemberQueryAdapter memberQueryAdapter;
     private final ProfileQueryAdapter profileQueryAdapter;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
@@ -53,6 +54,7 @@ public class DeleteService {
     private final TeamMemberAnnouncementCommandAdapter teamMemberAnnouncementCommandAdapter;
     private final ProfileCommandAdapter profileCommandAdapter;
     private final MemberCommandAdapter memberCommandAdapter;
+    private final TeamQueryAdapter teamQueryAdapter;
     // 회원 탈퇴 케이스
 
     public void quitAccount(final Long memberId, final String refreshToken) {
@@ -104,8 +106,6 @@ public class DeleteService {
         profileScrapCommandAdapter.deleteAllByProfileId(profile.getId());
         log.info("Deleting teams {}", deletableTeams);
 
-        teamScrapCommandAdapter.deleteAllByMemberId(member.getId());
-        teamScrapCommandAdapter.deleteAllByTeamIds(deletableTeamIds);
         log.info("Deleting teams {}", deletableTeams);
 
         announcementScrapCommandAdapter.deleteAllByMemberId(member.getId());
@@ -116,7 +116,7 @@ public class DeleteService {
         teamMemberInvitationCommandAdapter.deleteAllByTeamIds(deletableTeamIds);
         log.info("Deleting teams {}", deletableTeams);
 
-        teamMemberCommandAdapter.deleteAllTeamMember(memberId);
+        teamMemberCommandAdapter.deleteAllTeamMemberByMember(memberId);
         // [5. 채팅방 데이터 삭제]
 
         // 4. 알림 데이터 삭제
@@ -137,7 +137,8 @@ public class DeleteService {
             teamCommandAdapter.updateTeam(team); // 변경된 상태를 DB에 반영
         }
 
-        profileLogCommandAdapter.deleteAllProfileLogs(profile.getId());
+        // 모든 프로필 로그 삭제
+        deleteProfileLogs(profile.getId());
 
         // 모든 공고 삭제
         if (!deletableAnnouncementIds.isEmpty()) {
@@ -151,31 +152,102 @@ public class DeleteService {
         memberCommandAdapter.deleteByMemberId(memberId);
     }
 
-    public void deleteTeam() {
-        // 팀 로그 삭제
-        
-        // 팀 구성원 삭제
+    public void deleteTeam(final String teamCode) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        final Set<TeamMemberAnnouncement> deletableTeamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllDeletableTeamMemberAnnouncementsByTeamId(team.getId());
+        final List<Long> deletableAnnouncementIds = deletableTeamMemberAnnouncements.stream()
+                .map(TeamMemberAnnouncement::getId)
+                .toList();
 
-        // 팀 초대 구성원 삭제
+        // [1. 팀 로그 삭제]
+        deleteTeamLog(team.getId());
 
-        // 모집 공고 삭제
+        // [2. 팀 구성원 삭제]
+        deleteTeamMemberByTeam(team.getId());
 
-        // 팀 스크랩 데이터 삭제
+        // [3. 팀 초대 구성원 삭제]
+        deleteTeamMemberInvitationByTeam(team.getId());
 
-        // 매칭 요청 데이터 삭제
+        // [4. 모집 공고 삭제]
+
+        // [5. 팀 스크랩 데이터 삭제]
+        deleteTeamScrapByTeamId(team.getId());
+
+        // [6. 매칭 요청 데이터 삭제]
+        deleteMatchingSenderTypeTeam(team.getTeamCode());
+        deleteMatchingReceiverTypeTeam(team.getTeamCode());
+        deleteMatchingReceiverTypeAnnouncement(deletableAnnouncementIds);
 
         // 프로덕트 데이터 삭제
 
         // 연혁 데이터 삭제
+
     }
 
+    // 해당 회원의 모든 프로필 로그들 전체 삭제
+    private void deleteProfileLogs(final Long profileId) {
+        profileLogCommandAdapter.deleteAllProfileLogs(profileId);
+    }
+
+    // 해당하는 팀 아이디들의 모든 로그들 전체 삭제
     private void deleteTeamLogs(final List<Long> deletableTeamIds) {
         for (Long deletableTeamId : deletableTeamIds) {
             deleteTeamLog(deletableTeamId);
         }
     }
 
+    // 해당하는 팀 아이디의 모든 로그 삭제
     private void deleteTeamLog(final Long deletableTeamId) {
         teamLogCommandAdapter.deleteAllTeamLogs(deletableTeamId);
     }
+
+    // 스크랩 당한 팀이 삭제 될 때
+    private void deleteTeamScrapByTeamId(final Long deletableTeamId) {
+        teamScrapCommandAdapter.deleteAllByTeamId(deletableTeamId);
+    }
+
+    // 어떤 팀들을 스크랩 한 회원이 삭제 될 때
+    public void deleteTeamScrapByMemberId(final Long memberId) {
+        teamScrapCommandAdapter.deleteAllByMemberId(memberId);
+    }
+
+    // 수신자가 팀인 매칭의 팀이 삭제될 때
+    public void deleteMatchingReceiverTypeTeam(final String teamCode) {
+        matchingCommandAdapter.deleteAllByReceiverTeamCode(teamCode);
+    }
+
+    // 수신자가 프로필인 매칭의 프로필이 삭제될 때
+    public void deleteMatchingReceiverTypeProfile(final String emailId) {
+        matchingCommandAdapter.deleteAllByReceiverProfile(emailId);
+    }
+
+    // 수신자가 지원 공고인 매칭의 팀이 삭제될 때
+    public void deleteMatchingReceiverTypeAnnouncement(final List<Long> announcementIds) {
+        matchingCommandAdapter.deleteAllByReceiverAnnouncements(announcementIds);
+    }
+
+    // 발신자가 팀인 경우 매칭 삭제
+    public void deleteMatchingSenderTypeTeam(final String teamCode) {
+        matchingCommandAdapter.deleteAllBySenderTeamCode(teamCode);
+    }
+
+    // 발신자가 프로필인 경우 매칭 삭제
+    public void deleteMatchingSenderTypeProfile(final String emailId) {
+        matchingCommandAdapter.deleteAllBySenderProfile(emailId);
+    }
+
+    // 회원이 탈퇴하는 경우 팀 구성원 데이터 삭제
+    public void deleteTeamMemberByMember(final Long memberId) {
+        teamMemberCommandAdapter.deleteAllTeamMemberByMember(memberId);
+    }
+
+    public void deleteTeamMemberByTeam(final Long teamId) {
+        teamMemberCommandAdapter.deleteAllTeamMemberByTeam(teamId);
+    }
+
+    public void deleteTeamMemberInvitationByTeam(final Long teamId) {
+        teamMemberInvitationCommandAdapter.deleteAllByTeamId(teamId);
+    }
+
+
 }

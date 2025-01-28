@@ -320,8 +320,9 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .fetch());
     }
 
+    // 내가 속한 다른 모든 팀에서 나간다.
     @Override
-    public void deleteAllTeamMember(final Long memberId) {
+    public void deleteAllTeamMemberByMember(final Long memberId) {
         QTeamMember qTeamMember = QTeamMember.teamMember;
 
         long deletedCount = jpaQueryFactory
@@ -336,6 +337,23 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
                 .execute();
 
         log.info("Deleted {} team members for memberId: {}", deletedCount, memberId);
+    }
+
+    @Override
+    public void deleteAllTeamMemberByTeam(final Long teamId) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qTeamMember)
+                .where(
+                        qTeamMember.team.id.eq(teamId)
+                )
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        log.info("Deleted {} team members for teamId: {}", deletedCount, teamId);
     }
 
 

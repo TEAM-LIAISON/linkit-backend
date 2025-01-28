@@ -30,4 +30,8 @@ public class TeamScrapCommandAdapter {
     public void deleteAllByTeamIds(final List<Long> teamIds) {
         teamScrapRepository.deleteAllByTeamIds(teamIds);
     }
+
+    public void deleteAllByTeamId(final Long teamId) {
+        teamScrapRepository.deleteAllByTeamId(teamId);
+    }
 }

@@ -53,9 +53,13 @@ public interface MatchingCustomRepository {
 
     void deleteAllBySenderTeamCodes(final List<String> teamCodes);
 
+    void deleteAllBySenderTeamCode(final String teamCode);
+
     void deleteAllByReceiverProfile(final String emailId);
 
     void deleteAllByReceiverTeamCodes(final List<String> teamCodes);
+
+    void deleteAllByReceiverTeamCode(final String teamCode);
 
     void deleteAllByReceiverAnnouncements(final List<Long> announcementIds);
 }

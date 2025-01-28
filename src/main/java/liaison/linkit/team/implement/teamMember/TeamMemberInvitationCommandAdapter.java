@@ -23,4 +23,8 @@ public class TeamMemberInvitationCommandAdapter {
     public void deleteAllByTeamIds(final List<Long> teamIds) {
         teamMemberInvitationRepository.deleteAllByTeamIds(teamIds);
     }
+
+    public void deleteAllByTeamId(final Long teamId) {
+        teamMemberInvitationRepository.deleteAllByTeamId(teamId);
+    }
 }

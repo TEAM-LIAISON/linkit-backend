@@ -240,7 +240,7 @@ public class LoginService {
         teamMemberInvitationCommandAdapter.deleteAllByTeamIds(deletableTeamIds);
         log.info("Deleting teams {}", deletableTeams);
 
-        teamMemberCommandAdapter.deleteAllTeamMember(memberId);
+        teamMemberCommandAdapter.deleteAllTeamMemberByMember(memberId);
         // [5. 채팅방 데이터 삭제]
 
         // 4. 알림 데이터 삭제

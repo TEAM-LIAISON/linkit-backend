@@ -1,6 +1,8 @@
 package liaison.linkit.team.domain.repository.teamMember;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.QTeamMemberInvitation;
@@ -15,6 +17,8 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public boolean existsByEmail(final String email) {
@@ -107,6 +111,24 @@ public class TeamMemberInvitationCustomRepositoryImpl implements TeamMemberInvit
                 .where(qTeamMemberInvitation.team.id.in(teamIds))
                 .execute();
 
+        entityManager.flush();
+        entityManager.clear();
+
         log.info("Deleted " + deletedCount + " team members with ids " + teamIds);
+    }
+
+    @Override
+    public void deleteAllByTeamId(final Long teamId) {
+        QTeamMemberInvitation qTeamMemberInvitation = QTeamMemberInvitation.teamMemberInvitation;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qTeamMemberInvitation)
+                .where(qTeamMemberInvitation.team.id.eq(teamId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        log.info("Deleted " + deletedCount + " team members with id " + teamId);
     }
 }

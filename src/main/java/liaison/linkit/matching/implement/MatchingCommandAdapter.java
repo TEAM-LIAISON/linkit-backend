@@ -36,12 +36,20 @@ public class MatchingCommandAdapter {
         matchingRepository.deleteAllBySenderTeamCodes(teamCodes);
     }
 
+    public void deleteAllBySenderTeamCode(final String teamCode) {
+        matchingRepository.deleteAllBySenderTeamCode(teamCode);
+    }
+
     public void deleteAllByReceiverProfile(final String emailId) {
         matchingRepository.deleteAllByReceiverProfile(emailId);
     }
 
     public void deleteAllByReceiverTeamCodes(final List<String> teamCodes) {
         matchingRepository.deleteAllByReceiverTeamCodes(teamCodes);
+    }
+
+    public void deleteAllByReceiverTeamCode(final String teamCode) {
+        matchingRepository.deleteAllByReceiverTeamCode(teamCode);
     }
 
     public void deleteAllByReceiverAnnouncements(final List<Long> teamMemberAnnouncementIds) {

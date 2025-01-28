@@ -2,10 +2,10 @@ package liaison.linkit.team.business.service.teamMember;
 
 import jakarta.mail.MessagingException;
 import java.util.List;
-import java.util.Set;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
+import liaison.linkit.global.DeleteUtil;
 import liaison.linkit.mail.service.TeamMemberInvitationMailService;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
@@ -24,7 +24,6 @@ import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
-import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import liaison.linkit.team.domain.teamMember.TeamMember;
@@ -90,6 +89,7 @@ public class TeamMemberService {
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final TeamMemberAnnouncementCommandAdapter teamMemberAnnouncementCommandAdapter;
     private final TeamCommandAdapter teamCommandAdapter;
+    private final DeleteUtil deleteUtil;
 
     public TeamMemberViewItems getTeamMemberViewItems(final String teamCode) {
         // 1. 팀 조회
@@ -330,22 +330,28 @@ public class TeamMemberService {
         if (updateManagingTeamStateRequest.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.ALLOW_DELETE)) {
             // 모든 TeamMember가 허용을 했는지 확인
             if (teamMemberQueryAdapter.isTeamMembersAllowDelete(targetTeam)) {
-                // 해당 팀의 모든 팀원 공고 삭제
-                Set<TeamMemberAnnouncement> deletableTeamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllDeletableTeamMemberAnnouncementsByTeamId(targetTeam.getId());
+                // 팀에 대한 모든 데이터 삭제
+                deleteUtil.deleteTeam(teamCode);
 
-                List<Long> deletableAnnouncementIds = deletableTeamMemberAnnouncements.stream()
-                        .map(TeamMemberAnnouncement::getId)
-                        .toList();
+                // 삭제 완료 알림 발송
+                NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamCompleted(
+                        teamCode,
+                        targetTeam.getTeamLogoImagePath(),
+                        targetTeam.getTeamName()
+                );
 
-                // 모든 공고 삭제
-                if (!deletableAnnouncementIds.isEmpty()) {
-                    teamMemberAnnouncementCommandAdapter.deleteAllByIds(deletableAnnouncementIds);
-                }
+                notificationService.alertNewNotification(
+                        notificationMapper.toNotification(
+                                memberId,
+                                NotificationType.TEAM,
+                                SubNotificationType.REMOVE_TEAM_COMPLETED,
+                                removeTeamNotificationDetails
+                        )
+                );
 
-                teamCommandAdapter.deleteTeam(teamCode);
+                headerNotificationService.publishNotificationCount(memberId);
             }
         } else if (updateManagingTeamStateRequest.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.DENY_DELETE)) {
-
             // 삭제 거절 -> 아무 일도 없었던 것처럼
             targetTeam.setTeamStatus(TeamStatus.ACTIVE);
 
