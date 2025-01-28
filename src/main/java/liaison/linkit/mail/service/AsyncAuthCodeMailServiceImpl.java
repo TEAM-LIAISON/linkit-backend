@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class AuthCodeMailServiceImpl implements AuthCodeMailService {
+public class AsyncAuthCodeMailServiceImpl implements AsyncAuthCodeMailService {
     private final JavaMailSender javaMailSender;
 
     @Value("${google.id}")
@@ -75,6 +75,11 @@ public class AuthCodeMailServiceImpl implements AuthCodeMailService {
                                   </table>
                                 </td>
                             </tr>
+                            <!-- 주의사항 -->
+                            <tr>
+                              <td style="padding: 1.875rem 1.25rem;">
+                              </td>
+                            </tr>
                             <tr>
                                 <td style="background-color: #CBD4E1; height: 1px;"></td>
                             </tr>
@@ -84,7 +89,7 @@ public class AuthCodeMailServiceImpl implements AuthCodeMailService {
                                     <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 0.688rem; color: #94A3B8; line-height: 2.0; margin: 0; text-align: left; word-break: keep-all;">
                                       리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민<br/>
                                       주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                      Copyright ⓒ 2024. liaison All rights reserved.<br/>
+                                      Copyright ⓒ 2025. liaison All rights reserved.<br/>
                                       ※ 본 메일은 이메일 변경을 위해 발송되었습니다
                                     </p>
                                 </td>

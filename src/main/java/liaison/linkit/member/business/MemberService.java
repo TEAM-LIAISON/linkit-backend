@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Random;
 import liaison.linkit.login.exception.AuthCodeBadRequestException;
 import liaison.linkit.login.infrastructure.MailReAuthenticationRedisUtil;
-import liaison.linkit.mail.service.AuthCodeMailService;
+import liaison.linkit.mail.service.AsyncAuthCodeMailService;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.exception.member.DuplicateEmailIdException;
@@ -53,7 +53,7 @@ public class MemberService {
     private final MemberBasicInformMapper memberBasicInformMapper;
 
     private final MailReAuthenticationRedisUtil mailReAuthenticationRedisUtil;
-    private final AuthCodeMailService authCodeMailService;
+    private final AsyncAuthCodeMailService asyncAuthCodeMailService;
     private final MemberCommandAdapter memberCommandAdapter;
     private final MemberMapper memberMapper;
     private final NotificationService notificationService;
@@ -177,7 +177,7 @@ public class MemberService {
         final Member member = memberQueryAdapter.findById(memberId);
 
         // 사용자가 입력한 이메일에 재인증 코드를 발송한다.
-        authCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), mailReAuthenticationRequest.getEmail(), authCode);
+        asyncAuthCodeMailService.sendMailReAuthenticationCode(member.getMemberBasicInform().getMemberName(), mailReAuthenticationRequest.getEmail(), authCode);
 
         // 재인증 코드를 발송한 시간 발행
         return memberBasicInformMapper.toReAuthenticationResponse();

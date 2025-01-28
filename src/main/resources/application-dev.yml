@@ -54,7 +54,7 @@ spring:
         show_sql: false
         default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
 
   mvc:
     path match:
@@ -62,9 +62,9 @@ spring:
 
   batch:
     job:
-      enabled: true
+      enabled: false
     jdbc:
-      initialize-schema: always
+      initialize-schema: never
 
     #  flyway:
     #    enabled: true
@@ -72,7 +72,7 @@ spring:
     #    baseline-version: 0
   sql:
     init:
-      mode: always
+      mode: never
 
   servlet:
     multipart:

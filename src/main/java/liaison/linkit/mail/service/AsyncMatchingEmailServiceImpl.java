@@ -22,9 +22,13 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
 
     @Override
     public void sendMatchingCompletedEmails(
-            final String mailTitle,
-            final String mailSubTitle,
-            final String mailSubText,
+            final String senderMailTitle,
+            final String senderMailSubTitle,
+            final String senderMailSubText,
+
+            final String receiverMailTitle,
+            final String receiverMailSubTitle,
+            final String receiverMailSubText,
 
             final String matchingSenderEmail,
             final String matchingSenderName,
@@ -42,9 +46,10 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
             final String matchingReceiverRegionOrAnnouncementSkill
     ) throws MessagingException {
         final MimeMessage matchingSenderMail = createMatchingCompletedMail(
-                mailTitle,
-                mailSubTitle,
-                mailSubText,
+                senderMailTitle,
+                senderMailSubTitle,
+                senderMailSubText,
+
                 matchingSenderEmail,
                 matchingReceiverName,
                 matchingReceiverLogoImagePath,
@@ -55,9 +60,10 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
         );
 
         final MimeMessage matchingReceiverMail = createMatchingCompletedMail(
-                mailTitle,
-                mailSubTitle,
-                mailSubText,
+                receiverMailTitle,
+                receiverMailSubTitle,
+                receiverMailSubText,
+
                 matchingReceiverEmail,
                 matchingSenderName,
                 matchingSenderLogoImagePath,
@@ -80,6 +86,7 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
             final String mailTitle,
             final String mailSubTitle,
             final String mailSubText,
+
             final String receiverEmail,
             final String otherPartyName,
             final String otherPartyLogoImagePath,
@@ -132,11 +139,11 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
                                                     <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 18px; font-weight: 600; margin: 0 0 8px 0;">%s</p>
                                                     <table cellpadding="0" cellspacing="0" border="0" style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #94A3B8;">
                                                       <tr>
-                                                        <td style="padding-bottom: 4px; width: 36px;">%s</td>
+                                                        <td style="padding-bottom: 4px; width: 40px;">%s</td>
                                                         <td style="padding-bottom: 4px; padding-left: 8px;">| %s</td>
                                                       </tr>
                                                       <tr>
-                                                        <td style="width: 36px;">%s</td>
+                                                        <td style="width: 40px;">%s</td>
                                                         <td style="padding-left: 8px;">| %s</td>
                                                       </tr>
                                                     </table>
@@ -158,7 +165,6 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
                                     </tr>
                                     <tr>
                                       <td style="padding: 0 20px 30px;">
-                                        <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #94A3B8; margin: 0; word-break: keep-all;">*본인이 아닌 경우 이메일을 삭제해 주세요</p>
                                       </td>
                                     </tr>
                                     <tr>
@@ -170,7 +176,7 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
                                         <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 11px; color: #94A3B8; line-height: 2.0; margin: 0; text-align: left; word-break: keep-all;">
                                           리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민<br/>
                                           주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                          Copyright ⓒ 2024. liaison All rights reserved.<br/>
+                                          Copyright ⓒ 2025. liaison All rights reserved.<br/>
                                           ※ 본 메일은 %s 알림을 위해 발송되었습니다
                                         </p>
                                       </td>
@@ -303,7 +309,7 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
                                  <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 11px; color: #94A3B8; line-height: 2.0; margin: 0; text-align: left; word-break: keep-all;">
                                    리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민<br/>
                                    주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                   Copyright ⓒ 2024. liaison All rights reserved.<br/>
+                                   Copyright ⓒ 2025. liaison All rights reserved.<br/>
                                    ※ 본 메일은 매칭 요청 알림을 위해 발송되었습니다
                                  </p>
                                </td>

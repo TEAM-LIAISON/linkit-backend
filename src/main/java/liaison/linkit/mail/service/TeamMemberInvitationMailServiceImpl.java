@@ -88,7 +88,7 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
                                         <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 0.688rem; color: #94A3B8; line-height: 2.0; margin: 0; text-align: left; word-break: keep-all;">
                                             리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민<br/>
                                             주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                            Copyright ⓒ 2024. liaison All rights reserved.<br/>
+                                            Copyright ⓒ 2025. liaison All rights reserved.<br/>
                                             ※ 본 메일은 팀원 초대를 위해 발송되었습니다
                                         </p>
                                     </td>
