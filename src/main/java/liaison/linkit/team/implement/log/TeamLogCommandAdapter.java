@@ -30,4 +30,8 @@ public class TeamLogCommandAdapter {
     public TeamLog updateTeamLog(final TeamLog teamLog, final UpdateTeamLogRequest updateTeamLogRequest) {
         return teamLogRepository.updateTeamLog(teamLog, updateTeamLogRequest);
     }
+
+    public void deleteAllTeamLogs(final Long teamId) {
+        teamLogRepository.deleteAllTeamLogs(teamId);
+    }
 }

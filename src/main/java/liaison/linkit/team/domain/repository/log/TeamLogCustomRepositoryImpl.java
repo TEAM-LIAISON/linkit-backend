@@ -150,4 +150,19 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
                 .limit(limit)
                 .fetch();
     }
+
+    @Override
+    public void deleteAllTeamLogs(final Long teamId) {
+        QTeamLog qTeamLog = QTeamLog.teamLog;
+
+        // 쿼리 실행하여 삭제된 로그 수를 계산
+        long deletedCount = queryFactory
+                .delete(qTeamLog)
+                .where(qTeamLog.team.id.eq(teamId))
+                .execute();
+
+        // memberId 대신 teamId를 로그에 출력
+        log.info("Deleted {} team logs for teamId: {}", deletedCount, teamId);
+    }
+
 }

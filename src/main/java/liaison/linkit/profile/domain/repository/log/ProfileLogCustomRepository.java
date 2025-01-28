@@ -24,4 +24,6 @@ public interface ProfileLogCustomRepository {
     boolean existsRepresentativeProfileLogByProfile(final Long profileId);
 
     List<ProfileLog> findTopView(final int limit);
+
+    void deleteAllProfileLogs(final Long profileId);
 }

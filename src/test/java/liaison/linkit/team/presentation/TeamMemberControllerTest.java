@@ -742,7 +742,7 @@ public class TeamMemberControllerTest extends ControllerTest {
                 .build();
 
         // when
-        when(teamMemberService.joinTeam(anyLong(), any())).thenReturn(teamJoinResponse);
+        when(teamMemberService.joinTeam(anyLong(), any(), any())).thenReturn(teamJoinResponse);
 
         final ResultActions resultActions = performJoinTeam("liaison");
 

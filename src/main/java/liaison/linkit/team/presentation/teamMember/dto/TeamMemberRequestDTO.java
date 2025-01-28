@@ -48,4 +48,12 @@ public class TeamMemberRequestDTO {
         @NotBlank(message = "삭제하려고 하는 팀원의 emailId / email 중 입력해주세요")
         private String removeIdentifier;
     }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamJoinRequest {
+        private Boolean isTeamJoin;
+    }
 }

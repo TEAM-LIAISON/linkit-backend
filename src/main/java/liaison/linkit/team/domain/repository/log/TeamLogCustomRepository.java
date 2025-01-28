@@ -21,4 +21,6 @@ public interface TeamLogCustomRepository {
     TeamLog updateTeamLog(final TeamLog teamLog, final UpdateTeamLogRequest updateTeamLogRequest);
 
     List<TeamLog> findTopView(final int limit);
+
+    void deleteAllTeamLogs(final Long teamId);
 }

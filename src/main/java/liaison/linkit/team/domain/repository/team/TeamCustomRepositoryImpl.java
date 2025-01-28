@@ -39,7 +39,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
         Team team = jpaQueryFactory
                 .selectFrom(qTeam)
-                .where(qTeam.teamCode.eq(teamCode))
+                .where(qTeam.teamCode.eq(teamCode).and(qTeam.status.eq(StatusType.USABLE)))
                 .fetchOne();
 
         return Optional.ofNullable(team);

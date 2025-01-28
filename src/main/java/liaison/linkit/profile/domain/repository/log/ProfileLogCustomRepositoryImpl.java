@@ -9,6 +9,7 @@ import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.QProfileLog;
 import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
+import liaison.linkit.team.domain.log.QTeamLog;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -176,5 +177,17 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
                 .orderBy(qProfileLog.viewCount.desc())   // 조회수 높은 순
                 .limit(limit)
                 .fetch();
+    }
+
+    @Override
+    public void deleteAllProfileLogs(final Long profileId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        // 쿼리 실행하여 삭제된 로그 수를 계산
+        long deletedCount = queryFactory
+                .delete(qProfileLog)
+                .where(qProfileLog.profile.id.eq(profileId))
+                .execute();
+        
     }
 }

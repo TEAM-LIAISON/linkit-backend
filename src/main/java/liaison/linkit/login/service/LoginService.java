@@ -29,6 +29,7 @@ import liaison.linkit.notification.implement.NotificationCommandAdapter;
 import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
+import liaison.linkit.profile.implement.log.ProfileLogCommandAdapter;
 import liaison.linkit.profile.implement.profile.ProfileCommandAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommandAdapter;
@@ -37,6 +38,7 @@ import liaison.linkit.scrap.implement.profileScrap.ProfileScrapCommandAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapCommandAdapter;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.implement.log.TeamLogCommandAdapter;
 import liaison.linkit.team.implement.team.TeamCommandAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
@@ -91,6 +93,8 @@ public class LoginService {
     private final TeamCommandAdapter teamCommandAdapter;
     private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
     private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
+    private final TeamLogCommandAdapter teamLogCommandAdapter;
+    private final ProfileLogCommandAdapter profileLogCommandAdapter;
 
     // 회원이 로그인한다
     public AccountResponseDTO.LoginServiceResponse login(final String providerName, final String code) {
@@ -252,6 +256,12 @@ public class LoginService {
             team.changeStatusToDeleted();
             teamCommandAdapter.updateTeam(team); // 변경된 상태를 DB에 반영
         }
+
+        for (Long deletableTeamId : deletableTeamIds) {
+            teamLogCommandAdapter.deleteAllTeamLogs(deletableTeamId);
+        }
+
+        profileLogCommandAdapter.deleteAllProfileLogs(profile.getId());
 
         // 모든 공고 삭제
         if (!deletableAnnouncementIds.isEmpty()) {

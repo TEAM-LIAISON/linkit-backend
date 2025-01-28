@@ -35,4 +35,8 @@ public class ProfileLogCommandAdapter {
     public ProfileLog updateProfileLogPublicState(final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState) {
         return profileLogRepository.updateProfileLogPublicState(profileLog, isProfileLogCurrentPublicState);
     }
+
+    public void deleteAllProfileLogs(final Long profileId) {
+        profileLogRepository.deleteAllProfileLogs(profileId);
+    }
 }

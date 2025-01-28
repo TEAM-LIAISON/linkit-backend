@@ -46,6 +46,7 @@ import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.UpdateManagingTeamStateRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.RemoveTeamMemberRequest;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.TeamJoinRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.UpdateTeamMemberTypeRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
@@ -245,7 +246,8 @@ public class TeamMemberService {
                 .toList();
     }
 
-    public TeamMemberResponseDTO.TeamJoinResponse joinTeam(final Long memberId, final String teamCode) {
+    public TeamMemberResponseDTO.TeamJoinResponse joinTeam(final Long memberId, final String teamCode, final TeamJoinRequest teamJoinRequest) {
+
         final Member member = memberQueryAdapter.findById(memberId);
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
@@ -253,33 +255,39 @@ public class TeamMemberService {
             throw TeamMemberInvitationNotFoundException.EXCEPTION;
         } else {
             final TeamMemberInvitation teamMemberInvitation = teamMemberInvitationQueryAdapter.getTeamMemberInvitationInPendingState(member.getEmail(), targetTeam);
-            final TeamMember teamMember = teamMemberMapper.toTeamMember(member, targetTeam, teamMemberInvitation.getTeamMemberType());
-            teamMemberCommandAdapter.addTeamMember(teamMember);
-            teamMemberInvitation.setTeamMemberInviteState(TeamMemberInviteState.ACCEPTED);
+            if (teamJoinRequest.getIsTeamJoin()) {
+                // 수락
+                final TeamMember teamMember = teamMemberMapper.toTeamMember(member, targetTeam, teamMemberInvitation.getTeamMemberType());
+                teamMemberCommandAdapter.addTeamMember(teamMember);
+                teamMemberInvitation.setTeamMemberInviteState(TeamMemberInviteState.ACCEPTED);
 
-            // 팀원 초대 수락 시 모든 팀원들한테 이 사람이 구성원으로 들어왔다고 알림 발송
-            // (상대방님의 뫄뫄팀 구성원 수락 완료)
-            NotificationDetails teamMemberJoinedNotificationDetails = NotificationDetails.teamMemberJoined(
-                    teamCode,
-                    targetTeam.getTeamLogoImagePath(),
-                    member.getMemberBasicInform().getMemberName(),
-                    targetTeam.getTeamName()
-            );
+                // 팀원 초대 수락 시 모든 팀원들한테 이 사람이 구성원으로 들어왔다고 알림 발송
+                // (상대방님의 뫄뫄팀 구성원 수락 완료)
+                NotificationDetails teamMemberJoinedNotificationDetails = NotificationDetails.teamMemberJoined(
+                        teamCode,
+                        targetTeam.getTeamLogoImagePath(),
+                        member.getMemberBasicInform().getMemberName(),
+                        targetTeam.getTeamName()
+                );
 
-            final List<TeamMember> teamMembers = teamMemberQueryAdapter.getAllTeamManagers(targetTeam);
-            for (TeamMember currentMember : teamMembers) {
-                if (!currentMember.getMember().getId().equals(memberId)) { // 본인 제외
-                    notificationService.alertNewNotification(
-                            notificationMapper.toNotification(
-                                    currentMember.getMember().getId(),
-                                    NotificationType.TEAM_INVITATION,
-                                    SubNotificationType.TEAM_MEMBER_JOINED,
-                                    teamMemberJoinedNotificationDetails
-                            )
-                    );
+                final List<TeamMember> teamMembers = teamMemberQueryAdapter.getAllTeamManagers(targetTeam);
+                for (TeamMember currentMember : teamMembers) {
+                    if (!currentMember.getMember().getId().equals(memberId)) { // 본인 제외
+                        notificationService.alertNewNotification(
+                                notificationMapper.toNotification(
+                                        currentMember.getMember().getId(),
+                                        NotificationType.TEAM_INVITATION,
+                                        SubNotificationType.TEAM_MEMBER_JOINED,
+                                        teamMemberJoinedNotificationDetails
+                                )
+                        );
+                    }
+
+                    headerNotificationService.publishNotificationCount(currentMember.getMember().getId());
                 }
-
-                headerNotificationService.publishNotificationCount(currentMember.getMember().getId());
+            } else {
+                // 거절
+                teamMemberInvitationCommandAdapter.removeTeamMemberInvitation(teamMemberInvitation);
             }
         }
 

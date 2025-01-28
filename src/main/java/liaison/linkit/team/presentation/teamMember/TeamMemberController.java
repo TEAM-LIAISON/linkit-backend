@@ -108,8 +108,9 @@ public class TeamMemberController {
     @MemberOnly
     public CommonResponse<TeamMemberResponseDTO.TeamJoinResponse> joinTeam(
             @Auth final Accessor accessor,
-            @PathVariable final String teamCode
+            @PathVariable final String teamCode,
+            @RequestBody final TeamMemberRequestDTO.TeamJoinRequest teamJoinRequest
     ) {
-        return CommonResponse.onSuccess(teamMemberService.joinTeam(accessor.getMemberId(), teamCode));
+        return CommonResponse.onSuccess(teamMemberService.joinTeam(accessor.getMemberId(), teamCode, teamJoinRequest));
     }
 }
