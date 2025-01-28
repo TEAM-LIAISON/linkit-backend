@@ -117,7 +117,7 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
                                     </tr>
                                     <tr>
                                       <td style="padding: 30px 20px; text-align: center;">
-                                        <h1 style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 20px; font-weight: 600; margin: 0 0 16px 0; color: #2563EB; word-break: keep-all;">'%s'님%s!</h1>
+                                        <h1 style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 20px; font-weight: 600; margin: 0 0 16px 0; color: #2563EB; word-break: keep-all;">'%s'%s</h1>
                                         <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #64748B; line-height: 1.4; margin: 0; word-break: keep-all;">
                                           %s<br/>
                                           채팅을 통해 이야기를 나눠 보세요!
