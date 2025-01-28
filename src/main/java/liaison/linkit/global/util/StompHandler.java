@@ -55,6 +55,14 @@ public class StompHandler implements ChannelInterceptor {
                 // 세션 등록
                 sessionRegistry.registerSession(sessionId, memberId);
                 log.info("세션 등록: sessionId={}, memberId={}", sessionId, memberId);
+
+                // Principal 생성 및 세션에 연결
+                UserPrincipal principal = new UserPrincipal(memberId.toString());
+                headerAccessor.setUser(principal); // Principal 설정
+
+                log.info("sessionId={}, userPrincipal={}", headerAccessor.getSessionId(),
+                        (headerAccessor.getUser() != null ? headerAccessor.getUser().getName() : "null"));
+
             } catch (Exception e) {
                 throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
             }
@@ -83,6 +91,10 @@ public class StompHandler implements ChannelInterceptor {
                     Long chatRoomId = extractChatRoomId(destination);
                     log.info("chatRoomId: {}", chatRoomId);
                     eventPublisher.publishEvent(new ChatRoomConnectedEvent(memberId, chatRoomId));
+
+                    log.info("sessionId={}, userPrincipal={}", headerAccessor.getSessionId(),
+                            (headerAccessor.getUser() != null ? headerAccessor.getUser().getName() : "null"));
+
                 }
             }
             log.info("SUBSCRIBE: User [{}] subscribed to [{}] with session ID [{}]",
@@ -111,7 +123,7 @@ public class StompHandler implements ChannelInterceptor {
                     log.info("Extracted chatRoomId: {}", chatRoomId);
 
                     String memberId = jwtProvider.getSubject(accessToken);
-                    log.info("memberId: {}", memberId);
+                    log.debug("SEND Command - Extracted memberId: {}", memberId); // 로그 추가
 
                     headerAccessor.setNativeHeader("memberId", memberId);
                     headerAccessor.setNativeHeader("chatRoomId", chatRoomId); // chatRoomId 추가
@@ -205,12 +217,12 @@ public class StompHandler implements ChannelInterceptor {
         return parts[parts.length - 1];
     }
 
-    // private void sendInitialChatMessages(Long memberId, Long chatRoomId) {
-    // // 채팅방의 최근 메시지들을 조회하여 전송
-    // messagingTemplate.convertAndSendToUser(
-    // memberId.toString(),
-    // "/sub/chat/" + chatRoomId,
-    // chatService.getChatMessages(chatRoomId, memberId, /* pageable 객체 필요 */)
-    // );
-    // }
+//     private void sendInitialChatMessages(Long memberId, Long chatRoomId) {
+//     // 채팅방의 최근 메시지들을 조회하여 전송
+//     messagingTemplate.convertAndSendToUser(
+//     memberId.toString(),
+//     "/sub/chat/" + chatRoomId,
+//     chatService.getChatMessages(chatRoomId, memberId, /* pageable 객체 필요 */)
+//     );
+//     }
 }

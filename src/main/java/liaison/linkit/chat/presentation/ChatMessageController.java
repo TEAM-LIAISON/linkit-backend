@@ -32,7 +32,7 @@ public class ChatMessageController {
             Message<?> message
     ) {
         log.info("Received chat message: {}", chatMessageRequest);
-        log.info("From member: {}, to chatRoom: {}", memberId, chatRoomId);
+        log.info("Received message from member: {}, room: {}", memberId, chatRoomId);
 
         try {
             chatService.handleChatMessage(chatMessageRequest, memberId, chatRoomId);

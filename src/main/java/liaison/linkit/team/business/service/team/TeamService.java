@@ -267,7 +267,7 @@ public class TeamService {
         if (teamMemberQueryAdapter.isMemberOfTeam(targetTeam.getTeamCode(), member.getEmailId())) {
             final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(targetTeam.getTeamCode(), member.getEmailId());
             log.info("getLoggedInTeamDetail teamMember = {}", teamMember);
-            if (teamMember.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.REQUEST_DELETE)) {
+            if (teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
                 isTeamManager = true;
             }
         }

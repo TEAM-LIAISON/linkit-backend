@@ -34,10 +34,15 @@ public class ChatNotificationService {
         log.info("Received chat room connected event for member {}", memberId);
         Long chatRoomId = event.getChatRoomId();
         log.info("Received chat room connected event for chatRoomId {}", chatRoomId);
-        
+
         Executors.newSingleThreadScheduledExecutor().schedule(() -> {
             ChatRoomConnectedInitResponse response = getChatRoomState(memberId, chatRoomId);
-            messagingTemplate.convertAndSend("/sub/chat/" + event.getChatRoomId(), response);
+            // (1) 유저별 전용 경로로 전송
+            messagingTemplate.convertAndSendToUser(
+                    memberId.toString(),
+                    "/sub/chat/" + chatRoomId,
+                    response
+            );
         }, 300, TimeUnit.MILLISECONDS);
     }
 
