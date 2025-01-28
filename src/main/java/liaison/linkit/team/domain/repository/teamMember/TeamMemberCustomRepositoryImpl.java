@@ -338,4 +338,24 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
         log.info("Deleted {} team members for memberId: {}", deletedCount, memberId);
     }
 
+
+    @Override
+    public boolean isTeamMembersAllowDelete(final Team team) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        // Query to count all members in the team that are NOT in the required states
+        Long count = jpaQueryFactory
+                .select(qTeamMember.id.count())
+                .from(qTeamMember)
+                .where(
+                        qTeamMember.team.eq(team) // Matches the given team
+                                .and(qTeamMember.status.ne(StatusType.DELETED)) // Exclude deleted members
+                                .and(qTeamMember.teamMemberManagingTeamState.ne(TeamMemberManagingTeamState.REQUEST_DELETE)) // Not REQUEST_DELETE
+                                .and(qTeamMember.teamMemberManagingTeamState.ne(TeamMemberManagingTeamState.ALLOW_DELETE))  // Not ALLOW_DELETE
+                )
+                .fetchOne();
+
+        // If count is 0, it means all team members are either REQUEST_DELETE or ALLOW_DELETE
+        return count == 0;
+    }
 }

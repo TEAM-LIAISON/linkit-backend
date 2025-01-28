@@ -251,14 +251,14 @@ public class LoginService {
         removeRefreshToken(refreshToken);
         log.info("Deleting teams {}", deletableTeams);
 
+        for (Long deletableTeamId : deletableTeamIds) {
+            teamLogCommandAdapter.deleteAllTeamLogs(deletableTeamId);
+        }
+
         // 팀 삭제
         for (Team team : deletableTeams) {
             team.changeStatusToDeleted();
             teamCommandAdapter.updateTeam(team); // 변경된 상태를 DB에 반영
-        }
-
-        for (Long deletableTeamId : deletableTeamIds) {
-            teamLogCommandAdapter.deleteAllTeamLogs(deletableTeamId);
         }
 
         profileLogCommandAdapter.deleteAllProfileLogs(profile.getId());

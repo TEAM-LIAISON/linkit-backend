@@ -49,4 +49,8 @@ public class TeamMemberAnnouncementQueryAdapter {
     public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds) {
         return teamMemberAnnouncementRepository.getAllDeletableTeamMemberAnnouncementsByTeamIds(teamIds);
     }
+
+    public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamId(final Long teamId) {
+        return teamMemberAnnouncementRepository.getAllDeletableTeamMemberAnnouncementsByTeamId(teamId);
+    }
 }
