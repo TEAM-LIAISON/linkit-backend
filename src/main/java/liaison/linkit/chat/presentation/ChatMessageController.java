@@ -27,15 +27,16 @@ public class ChatMessageController {
     @MessageMapping("/chat/send/{chatRoomId}")
     public void sendChatMessage(
             @Payload ChatMessageRequest chatMessageRequest,
+            @Header(name = "sessionId", required = true) String sessionId,
             @Header(name = "memberId", required = true) Long memberId,
             @Header(name = "chatRoomId", required = true) Long chatRoomId,
             Message<?> message
     ) {
         log.info("Received chat message: {}", chatMessageRequest);
-        log.info("Received message from member: {}, room: {}", memberId, chatRoomId);
+        log.info("Received message from session: {}, room: {}", sessionId, chatRoomId);
 
         try {
-            chatService.handleChatMessage(chatMessageRequest, memberId, chatRoomId);
+            chatService.handleChatMessage(chatMessageRequest, sessionId, memberId, chatRoomId);
             log.info("Message successfully processed");
         } catch (Exception e) {
             log.error("Error processing chat message", e);
