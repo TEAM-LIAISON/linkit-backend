@@ -10,6 +10,8 @@ import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageHistoryResponse;
+import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatPartnerInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomLeaveResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
@@ -45,18 +47,22 @@ public class ChatMapper {
                 .build();
     }
 
-    public ChatResponseDTO.ChatMessageHistoryResponse toChatMessageHistoryResponse(
+    // ChatMapper.java (예시)
+    public ChatMessageHistoryResponse toChatMessageHistoryResponse(
             final ChatRoom chatRoom,
             final Page<ChatMessage> messagePage,
-            final Long memberId
+            final Long memberId,
+            final ChatPartnerInformation partnerInfo,
+            final boolean isPartnerOnline
     ) {
-        return ChatResponseDTO.ChatMessageHistoryResponse.builder()
+        return ChatMessageHistoryResponse.builder()
                 .totalElements(messagePage.getTotalElements())
                 .totalPages(messagePage.getTotalPages())
                 .hasNext(messagePage.hasNext())
+                .isChatPartnerOnline(isPartnerOnline)
+                .chatPartnerInformation(partnerInfo)
                 .messages(
                         messagePage.getContent().stream()
-                                // 여기서 message와 memberId를 함께 넘김
                                 .map(message -> toChatMessageResponse(chatRoom, message, memberId))
                                 .collect(Collectors.toList())
                 )
