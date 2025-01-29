@@ -728,6 +728,7 @@ public class ChatService {
                     chatRoomSummaries.add(chatRoomSummary);
                 } else if (chatRoom.getParticipantBType().equals(SenderType.TEAM)) {
                     final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantBId());
+                    final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
 
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
                     if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
@@ -743,15 +744,15 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
-                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
                                     ChatPartnerInformation.builder()
-                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .chatPartnerName(chatPartnerTeam.getTeamName())
+                                            .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
                                             .partnerTeamDetailInformation(
                                                     PartnerTeamDetailInformation.builder()
                                                             .teamScaleItem(teamScaleItem)
@@ -770,6 +771,8 @@ public class ChatService {
                             teamMemberAnnouncementQueryAdapter
                                     .getTeamMemberAnnouncement(Long.valueOf(chatRoom.getParticipantBId())).getTeam()
                                     .getTeamCode());
+                    final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
+
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
                     if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
                         final TeamScale teamScale = teamScaleQueryAdapter
@@ -784,15 +787,15 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
-                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
                                     ChatPartnerInformation.builder()
-                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .chatPartnerName(chatPartnerTeam.getTeamName())
+                                            .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
                                             .partnerTeamDetailInformation(
                                                     PartnerTeamDetailInformation.builder()
                                                             .teamScaleItem(teamScaleItem)
@@ -852,6 +855,7 @@ public class ChatService {
                     chatRoomSummaries.add(chatRoomSummary);
                 } else if (chatRoom.getParticipantAType().equals(SenderType.TEAM)) {
                     final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantAId());
+                    final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
 
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
                     if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
@@ -867,15 +871,15 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
-                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
                                     ChatPartnerInformation.builder()
-                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .chatPartnerName(chatPartnerTeam.getTeamName())
+                                            .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
                                             .partnerTeamDetailInformation(
                                                     PartnerTeamDetailInformation.builder()
                                                             .teamScaleItem(teamScaleItem)
@@ -894,6 +898,8 @@ public class ChatService {
                             teamMemberAnnouncementQueryAdapter
                                     .getTeamMemberAnnouncement(Long.valueOf(chatRoom.getParticipantAId())).getTeam()
                                     .getTeamCode());
+                    final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
+
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
                     if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
                         final TeamScale teamScale = teamScaleQueryAdapter
@@ -908,15 +914,15 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
-                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
                                     ChatPartnerInformation.builder()
-                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .chatPartnerName(chatPartnerTeam.getTeamName())
+                                            .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
                                             .partnerTeamDetailInformation(
                                                     PartnerTeamDetailInformation.builder()
                                                             .teamScaleItem(teamScaleItem)
