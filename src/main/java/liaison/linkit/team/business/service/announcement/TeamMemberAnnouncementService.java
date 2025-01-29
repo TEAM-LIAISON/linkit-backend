@@ -249,7 +249,9 @@ public class TeamMemberAnnouncementService {
 
         // 새로운 포지션 추가
         final AnnouncementPosition announcementPosition = new AnnouncementPosition(null, updatedTeamMemberAnnouncement, position);
+        log.info("check bug 1-1");
         final AnnouncementPosition savedAnnouncementPosition = announcementPositionCommandAdapter.save(announcementPosition);
+        log.info("check bug 1-1");
         final AnnouncementPositionItem announcementPositionItem = announcementPositionMapper.toAnnouncementPositionItem(savedAnnouncementPosition);
 
         log.info("check bug 2");
