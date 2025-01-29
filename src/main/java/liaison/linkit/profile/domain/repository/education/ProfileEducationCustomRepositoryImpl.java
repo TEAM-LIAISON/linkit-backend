@@ -74,4 +74,17 @@ public class ProfileEducationCustomRepositoryImpl implements ProfileEducationCus
                 .where(qProfileEducation.profile.id.eq(profileId))
                 .fetchFirst() != null;
     }
+
+    @Override
+    public void removeProfileEducationsByProfileId(final Long profileId) {
+        QProfileEducation qProfileEducation = QProfileEducation.profileEducation;
+
+        jpaQueryFactory
+                .delete(qProfileEducation)
+                .where(qProfileEducation.profile.id.eq(profileId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+    }
 }

@@ -11,4 +11,6 @@ public interface ProfileEducationCustomRepository {
     ProfileEducation updateProfileEducation(final Long profileEducationId, final University university, final UpdateProfileEducationRequest updateProfileEducationRequest);
 
     boolean existsByProfileId(final Long profileId);
+
+    void removeProfileEducationsByProfileId(final Long profileId);
 }

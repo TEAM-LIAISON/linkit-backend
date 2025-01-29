@@ -35,7 +35,7 @@ public class Matching extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 발신자 타입: PROFILE, TEAM, (추가 가능)
+    // 발신자 타입: PROFILE, TEAM, ANNOUNCEMENT
     @Enumerated(value = STRING)
     @Column(name = "sender_type", length = 50)
     private SenderType senderType;

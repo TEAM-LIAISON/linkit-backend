@@ -232,10 +232,12 @@ public class TeamMemberAnnouncementService {
 
         // 1. 기존 팀원 공고 조회
         final TeamMemberAnnouncement existingTeamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
+        log.info("existingTeamMemberAnnouncement = {}", existingTeamMemberAnnouncement);
 
         // 2. DTO를 통해 팀원 공고 업데이트
         final TeamMemberAnnouncement updatedTeamMemberAnnouncement =
                 teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncement(existingTeamMemberAnnouncement, updateTeamMemberAnnouncementRequest);
+        log.info("updatedTeamMemberAnnouncement = {}", updatedTeamMemberAnnouncement);
 
         // 기존 포지션 삭제
         final Position position = positionQueryAdapter.findByMajorPositionAndSubPosition(updateTeamMemberAnnouncementRequest.getMajorPosition(), updateTeamMemberAnnouncementRequest.getSubPosition());
@@ -243,16 +245,24 @@ public class TeamMemberAnnouncementService {
             announcementPositionCommandAdapter.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
         }
 
+        log.info("error check bug 1");
+
         // 새로운 포지션 추가
         final AnnouncementPosition announcementPosition = new AnnouncementPosition(null, updatedTeamMemberAnnouncement, position);
+        log.info("check bug 1-1");
         final AnnouncementPosition savedAnnouncementPosition = announcementPositionCommandAdapter.save(announcementPosition);
+        log.info("check bug 1-2");
         final AnnouncementPositionItem announcementPositionItem = announcementPositionMapper.toAnnouncementPositionItem(savedAnnouncementPosition);
+
+        log.info("check bug 2");
 
         // 기존 공고 스킬 삭제
         List<AnnouncementSkill> existingAnnouncementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
         if (existingAnnouncementSkills != null & !existingAnnouncementSkills.isEmpty()) {
             announcementSkillCommandAdapter.deleteAll(existingAnnouncementSkills);
         }
+
+        log.info("check bug 3");
 
         // 새로운 공고 스킬 추가
         List<String> newSkillNames = updateTeamMemberAnnouncementRequest.getAnnouncementSkillNames()
@@ -264,6 +274,8 @@ public class TeamMemberAnnouncementService {
         final List<AnnouncementSkill> newAnnouncementSkills = announcementSkillMapper.toAddProjectSkills(updatedTeamMemberAnnouncement, newSkills);
         announcementSkillCommandAdapter.saveAll(newAnnouncementSkills);
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(newAnnouncementSkills);
+
+        log.info("check bug 4");
 
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementResponse(
                 updatedTeamMemberAnnouncement,

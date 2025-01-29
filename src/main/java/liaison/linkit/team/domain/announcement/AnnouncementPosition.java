@@ -1,6 +1,5 @@
 package liaison.linkit.team.domain.announcement;
 
-import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
@@ -22,12 +21,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = PROTECTED)
 public class AnnouncementPosition extends BaseDateTimeEntity {
-    
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "team_member_announcement_id", unique = true)
     private TeamMemberAnnouncement teamMemberAnnouncement;
 

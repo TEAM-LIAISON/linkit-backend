@@ -86,4 +86,17 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
                 .where(qProfilePortfolio.profile.id.eq(profileId))
                 .fetchFirst() != null;
     }
+
+    @Override
+    public void removeProfilePortfoliosByProfileId(final Long profileId) {
+        QProfilePortfolio qProfilePortfolio = QProfilePortfolio.profilePortfolio;
+
+        jpaQueryFactory
+                .delete(qProfilePortfolio)
+                .where(qProfilePortfolio.profile.id.eq(profileId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+    }
 }

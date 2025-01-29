@@ -57,6 +57,7 @@ public class TeamProductCustomRepositoryImpl implements TeamProductCustomReposit
                 .set(qTeamProduct.productEndDate, request.getProductEndDate())
                 .set(qTeamProduct.isProductInProgress, request.getIsProductInProgress())
                 .set(qTeamProduct.productDescription, request.getProductDescription())
+                .where(qTeamProduct.id.eq(teamProduct.getId()))
                 .execute();
 
         entityManager.flush();

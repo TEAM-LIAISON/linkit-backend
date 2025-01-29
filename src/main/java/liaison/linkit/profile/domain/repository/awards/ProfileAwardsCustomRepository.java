@@ -10,4 +10,6 @@ public interface ProfileAwardsCustomRepository {
     ProfileAwards updateProfileAwards(final Long profileAwardsId, final UpdateProfileAwardsRequest updateProfileActivityRequest);
 
     boolean existsByProfileId(final Long profileId);
+
+    void removeProfileAwardsByProfileId(final Long profileId);
 }

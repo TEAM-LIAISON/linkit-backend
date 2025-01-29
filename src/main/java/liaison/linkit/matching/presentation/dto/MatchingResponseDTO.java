@@ -245,6 +245,8 @@ public class MatchingResponseDTO {
 
         private String announcementTitle;
 
+        private String teamLogoImagePath;
+
         @Builder.Default
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 

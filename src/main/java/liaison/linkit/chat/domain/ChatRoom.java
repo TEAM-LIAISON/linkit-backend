@@ -48,6 +48,7 @@ public class ChatRoom extends BaseDateTimeEntity {
     private SenderType participantAType;
 
     // USABLE, DELETED
+    @Enumerated(EnumType.STRING)
     @Column(name = "participant_a_status", nullable = false)
     private StatusType participantAStatus;
 
@@ -66,6 +67,7 @@ public class ChatRoom extends BaseDateTimeEntity {
     @Column(name = "participant_b_type", nullable = false)
     private SenderType participantBType;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "participant_b_status", nullable = false)
     private StatusType participantBStatus;
 

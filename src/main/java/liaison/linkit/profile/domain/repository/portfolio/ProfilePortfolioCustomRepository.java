@@ -13,4 +13,6 @@ public interface ProfilePortfolioCustomRepository {
     ProfilePortfolio updateProfilePortfolio(final ProfilePortfolio profilePortfolio, final UpdateProfilePortfolioRequest updateProfilePortfolioRequest);
 
     boolean existsByProfileId(final Long profileId);
+
+    void removeProfilePortfoliosByProfileId(final Long profileId);
 }

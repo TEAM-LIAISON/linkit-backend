@@ -456,18 +456,233 @@ public class ChatService {
             final Pageable pageable) {
 
         final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
-
+        if (chatRoom.getParticipantAMemberId().equals(memberId)) {
+            if (chatRoom.getParticipantAStatus().equals(StatusType.DELETED)) {
+                chatRoom.setParticipantBStatus(StatusType.USABLE);
+            }
+        } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
+            if (chatRoom.getParticipantBStatus().equals(StatusType.DELETED)) {
+                chatRoom.setParticipantAStatus(StatusType.USABLE);
+            }
+        }
         // 2. 메시지 조회 및 읽음 처리
         Page<ChatMessage> messages = chatMessageRepository.findByChatRoomIdOrderByTimestampDesc(
                 chatRoomId,
                 pageable);
 
-        log.info("messages: {}", messages);
+        ChatPartnerInformation chatPartnerInformation = new ChatPartnerInformation();
+        boolean isPartnerOnline = false;
 
-        // 3. 읽지 않은 메시지 읽음 처리
+        if (chatRoom.getParticipantAMemberId().equals(memberId)) {
+            final Member chatPartnerMember = memberQueryAdapter.findById(chatRoom.getParticipantBMemberId());
+            if (chatRoom.getParticipantBType().equals(SenderType.PROFILE)) {
+                final Profile chatPartnerProfile = chatPartnerMember.getProfile();
+
+                ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+                if (profilePositionQueryAdapter.existsProfilePositionByProfileId(chatPartnerProfile.getId())) {
+                    final ProfilePosition profilePosition = profilePositionQueryAdapter
+                            .findProfilePositionByProfileId(chatPartnerProfile.getId());
+                    profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                }
+
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsProfileRegionByProfileId((chatPartnerProfile.getId()))) {
+                    final ProfileRegion profileRegion = regionQueryAdapter
+                            .findProfileRegionByProfileId(chatPartnerProfile.getId());
+                    regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+                }
+
+                isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
+                chatPartnerInformation = ChatPartnerInformation.builder()
+                        .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                        .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                        .partnerProfileDetailInformation(
+                                PartnerProfileDetailInformation.builder()
+                                        .profilePositionDetail(profilePositionDetail)
+                                        .regionDetail(regionDetail)
+                                        .build())
+                        .lastMessage(chatRoom.getLastMessage())
+                        .lastMessageTime(chatRoom.getLastMessageTime())
+                        .build();
+
+            } else if (chatRoom.getParticipantBType().equals(SenderType.TEAM)) {
+                final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantBId());
+                final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
+
+                TeamScaleItem teamScaleItem = new TeamScaleItem();
+                if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
+                    final TeamScale teamScale = teamScaleQueryAdapter
+                            .findTeamScaleByTeamId(chatPartnerTeam.getId());
+                    teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                }
+
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsTeamRegionByTeamId((chatPartnerTeam.getId()))) {
+                    final TeamRegion teamRegion = regionQueryAdapter
+                            .findTeamRegionByTeamId(chatPartnerTeam.getId());
+                    regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+                }
+
+                isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
+                long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
+                chatPartnerInformation = ChatPartnerInformation.builder()
+                        .chatPartnerName(chatPartnerTeam.getTeamName())
+                        .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
+                        .partnerTeamDetailInformation(
+                                PartnerTeamDetailInformation.builder()
+                                        .teamScaleItem(teamScaleItem)
+                                        .regionDetail(regionDetail)
+                                        .build())
+                        .lastMessage(chatRoom.getLastMessage())
+                        .lastMessageTime(chatRoom.getLastMessageTime())
+                        .build();
+            } else {
+                final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(
+                        teamMemberAnnouncementQueryAdapter
+                                .getTeamMemberAnnouncement(Long.valueOf(chatRoom.getParticipantBId())).getTeam()
+                                .getTeamCode());
+                final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
+
+                TeamScaleItem teamScaleItem = new TeamScaleItem();
+                if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
+                    final TeamScale teamScale = teamScaleQueryAdapter
+                            .findTeamScaleByTeamId(chatPartnerTeam.getId());
+                    teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                }
+
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsTeamRegionByTeamId((chatPartnerTeam.getId()))) {
+                    final TeamRegion teamRegion = regionQueryAdapter
+                            .findTeamRegionByTeamId(chatPartnerTeam.getId());
+                    regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+                }
+
+                isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
+                long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
+                chatPartnerInformation = ChatPartnerInformation.builder()
+                        .chatPartnerName(chatPartnerTeam.getTeamName())
+                        .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
+                        .partnerTeamDetailInformation(
+                                PartnerTeamDetailInformation.builder()
+                                        .teamScaleItem(teamScaleItem)
+                                        .regionDetail(regionDetail)
+                                        .build())
+                        .lastMessage(chatRoom.getLastMessage())
+                        .lastMessageTime(chatRoom.getLastMessageTime())
+                        .build();
+            }
+        } else {
+            final Member chatPartnerMember = memberQueryAdapter.findById(chatRoom.getParticipantAMemberId());
+            if (chatRoom.getParticipantAType().equals(SenderType.PROFILE)) {
+                final Profile chatPartnerProfile = chatPartnerMember.getProfile();
+
+                ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
+                if (profilePositionQueryAdapter.existsProfilePositionByProfileId(chatPartnerProfile.getId())) {
+                    final ProfilePosition profilePosition = profilePositionQueryAdapter
+                            .findProfilePositionByProfileId(chatPartnerProfile.getId());
+                    profilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                }
+
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsProfileRegionByProfileId((chatPartnerProfile.getId()))) {
+                    final ProfileRegion profileRegion = regionQueryAdapter
+                            .findProfileRegionByProfileId(chatPartnerProfile.getId());
+                    regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
+                }
+
+                isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
+                chatPartnerInformation = ChatPartnerInformation.builder()
+                        .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
+                        .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                        .partnerProfileDetailInformation(
+                                PartnerProfileDetailInformation.builder()
+                                        .profilePositionDetail(profilePositionDetail)
+                                        .regionDetail(regionDetail)
+                                        .build())
+                        .lastMessage(chatRoom.getLastMessage())
+                        .lastMessageTime(chatRoom.getLastMessageTime())
+                        .build();
+
+            } else if (chatRoom.getParticipantAType().equals(SenderType.TEAM)) {
+                final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantAId());
+                final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
+
+                TeamScaleItem teamScaleItem = new TeamScaleItem();
+                if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
+                    final TeamScale teamScale = teamScaleQueryAdapter
+                            .findTeamScaleByTeamId(chatPartnerTeam.getId());
+                    teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                }
+
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsTeamRegionByTeamId((chatPartnerTeam.getId()))) {
+                    final TeamRegion teamRegion = regionQueryAdapter
+                            .findTeamRegionByTeamId(chatPartnerTeam.getId());
+                    regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+                }
+
+                isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
+                long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
+                chatPartnerInformation = ChatPartnerInformation.builder()
+                        .chatPartnerName(chatPartnerTeam.getTeamName())
+                        .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
+                        .partnerTeamDetailInformation(
+                                PartnerTeamDetailInformation.builder()
+                                        .teamScaleItem(teamScaleItem)
+                                        .regionDetail(regionDetail)
+                                        .build())
+                        .lastMessage(chatRoom.getLastMessage())
+                        .lastMessageTime(chatRoom.getLastMessageTime())
+                        .build();
+            } else {
+                final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(
+                        teamMemberAnnouncementQueryAdapter
+                                .getTeamMemberAnnouncement(Long.valueOf(chatRoom.getParticipantAId())).getTeam()
+                                .getTeamCode());
+                final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
+
+                TeamScaleItem teamScaleItem = new TeamScaleItem();
+                if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
+                    final TeamScale teamScale = teamScaleQueryAdapter
+                            .findTeamScaleByTeamId(chatPartnerTeam.getId());
+                    teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
+                }
+
+                RegionDetail regionDetail = new RegionDetail();
+                if (regionQueryAdapter.existsTeamRegionByTeamId((chatPartnerTeam.getId()))) {
+                    final TeamRegion teamRegion = regionQueryAdapter
+                            .findTeamRegionByTeamId(chatPartnerTeam.getId());
+                    regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
+                }
+
+                isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
+                long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
+
+                chatPartnerInformation = ChatPartnerInformation.builder()
+                        .chatPartnerName(chatPartnerTeam.getTeamName())
+                        .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
+                        .partnerTeamDetailInformation(
+                                PartnerTeamDetailInformation.builder()
+                                        .teamScaleItem(teamScaleItem)
+                                        .regionDetail(regionDetail)
+                                        .build())
+                        .lastMessage(chatRoom.getLastMessage())
+                        .lastMessageTime(chatRoom.getLastMessageTime())
+                        .build();
+
+            }
+        }
+
         updateUnreadMessages(chatRoomId, memberId);
 
-        return chatMapper.toChatMessageHistoryResponse(chatRoom, messages, memberId);
+        return chatMapper.toChatMessageHistoryResponse(chatRoom, messages, memberId, chatPartnerInformation, isPartnerOnline);
     }
 
     @Transactional(readOnly = true)
@@ -521,6 +736,7 @@ public class ChatService {
                     chatRoomSummaries.add(chatRoomSummary);
                 } else if (chatRoom.getParticipantBType().equals(SenderType.TEAM)) {
                     final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantBId());
+                    final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
 
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
                     if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
@@ -536,15 +752,15 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
-                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
                                     ChatPartnerInformation.builder()
-                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .chatPartnerName(chatPartnerTeam.getTeamName())
+                                            .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
                                             .partnerTeamDetailInformation(
                                                     PartnerTeamDetailInformation.builder()
                                                             .teamScaleItem(teamScaleItem)
@@ -563,6 +779,8 @@ public class ChatService {
                             teamMemberAnnouncementQueryAdapter
                                     .getTeamMemberAnnouncement(Long.valueOf(chatRoom.getParticipantBId())).getTeam()
                                     .getTeamCode());
+                    final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
+
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
                     if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
                         final TeamScale teamScale = teamScaleQueryAdapter
@@ -577,15 +795,15 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
-                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
                                     ChatPartnerInformation.builder()
-                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .chatPartnerName(chatPartnerTeam.getTeamName())
+                                            .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
                                             .partnerTeamDetailInformation(
                                                     PartnerTeamDetailInformation.builder()
                                                             .teamScaleItem(teamScaleItem)
@@ -645,6 +863,7 @@ public class ChatService {
                     chatRoomSummaries.add(chatRoomSummary);
                 } else if (chatRoom.getParticipantAType().equals(SenderType.TEAM)) {
                     final Team chatPartnerTeam = teamQueryAdapter.findByTeamCode(chatRoom.getParticipantAId());
+                    final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
 
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
                     if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
@@ -660,15 +879,15 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
-                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
                                     ChatPartnerInformation.builder()
-                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .chatPartnerName(chatPartnerTeam.getTeamName())
+                                            .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
                                             .partnerTeamDetailInformation(
                                                     PartnerTeamDetailInformation.builder()
                                                             .teamScaleItem(teamScaleItem)
@@ -687,6 +906,8 @@ public class ChatService {
                             teamMemberAnnouncementQueryAdapter
                                     .getTeamMemberAnnouncement(Long.valueOf(chatRoom.getParticipantAId())).getTeam()
                                     .getTeamCode());
+                    final Long ownerMemberId = teamMemberQueryAdapter.getTeamOwnerMemberId(chatPartnerTeam);
+
                     TeamScaleItem teamScaleItem = new TeamScaleItem();
                     if (teamScaleQueryAdapter.existsTeamScaleByTeamId(chatPartnerTeam.getId())) {
                         final TeamScale teamScale = teamScaleQueryAdapter
@@ -701,15 +922,15 @@ public class ChatService {
                         regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                     }
 
-                    boolean isPartnerOnline = sessionRegistry.isOnline(chatPartnerMember.getId());
+                    boolean isPartnerOnline = sessionRegistry.isOnline(ownerMemberId);
                     long unreadCount = chatQueryAdapter.countUnreadMessagesInRoomForMember(chatRoom.getId(), memberId);
 
                     ChatRoomSummary chatRoomSummary = ChatRoomSummary.builder()
                             .chatRoomId(chatRoom.getId())
                             .chatPartnerInformation(
                                     ChatPartnerInformation.builder()
-                                            .chatPartnerName(chatPartnerMember.getMemberBasicInform().getMemberName())
-                                            .chatPartnerImageUrl(chatPartnerMember.getProfile().getProfileImagePath())
+                                            .chatPartnerName(chatPartnerTeam.getTeamName())
+                                            .chatPartnerImageUrl(chatPartnerTeam.getTeamLogoImagePath())
                                             .partnerTeamDetailInformation(
                                                     PartnerTeamDetailInformation.builder()
                                                             .teamScaleItem(teamScaleItem)

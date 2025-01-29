@@ -77,36 +77,42 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     @Override
-    public TeamMemberAnnouncement updateTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement, final UpdateTeamMemberAnnouncementRequest request) {
+    public TeamMemberAnnouncement updateTeamMemberAnnouncement(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final UpdateTeamMemberAnnouncementRequest request
+    ) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
-        // 팀원 공고 업데이트
+        // 1) QueryDSL 부분 업데이트
         long updatedCount = jpaQueryFactory
                 .update(qTeamMemberAnnouncement)
                 .set(qTeamMemberAnnouncement.announcementTitle, request.getAnnouncementTitle())
                 .set(qTeamMemberAnnouncement.announcementEndDate, request.getAnnouncementEndDate())
                 .set(qTeamMemberAnnouncement.isRegionFlexible, request.getIsRegionFlexible())
                 .set(qTeamMemberAnnouncement.mainTasks, request.getMainTasks())
-                .set(qTeamMemberAnnouncement.workMethod, request.getMainTasks())
-                .set(qTeamMemberAnnouncement.idealCandidate, request.getPreferredQualifications())
+                .set(qTeamMemberAnnouncement.workMethod, request.getWorkMethod())
+                .set(qTeamMemberAnnouncement.idealCandidate, request.getIdealCandidate())
                 .set(qTeamMemberAnnouncement.preferredQualifications, request.getPreferredQualifications())
                 .set(qTeamMemberAnnouncement.joiningProcess, request.getJoiningProcess())
                 .set(qTeamMemberAnnouncement.benefits, request.getBenefits())
                 .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
                 .execute();
 
+        // 2) flush & clear
         entityManager.flush();
         entityManager.clear();
 
+        // 3) 변경된 행이 있으면, 다시 select 해서 엔티티 리턴
         if (updatedCount > 0) {
             return jpaQueryFactory
                     .selectFrom(qTeamMemberAnnouncement)
                     .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
-                    .fetchOne();
+                    .fetchOne(); // 새로 로드된 엔티티(영속 상태)
         } else {
-            return null;
+            return null; // 또는 Optional.empty() 처리 등
         }
     }
+
 
     @Override
     public TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(final TeamMemberAnnouncement teamMemberAnnouncement, final boolean isTeamMemberAnnouncementCurrentPublicState) {

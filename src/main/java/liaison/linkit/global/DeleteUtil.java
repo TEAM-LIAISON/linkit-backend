@@ -2,6 +2,10 @@ package liaison.linkit.global;
 
 import java.util.List;
 import java.util.Set;
+import liaison.linkit.chat.domain.ChatRoom;
+import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
+import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
+import liaison.linkit.chat.service.ChatService;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.exception.QuitBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
@@ -9,10 +13,22 @@ import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.notification.implement.NotificationCommandAdapter;
+import liaison.linkit.profile.business.mapper.ProfilePortfolioMapper;
+import liaison.linkit.profile.business.service.ProfilePortfolioService;
+import liaison.linkit.profile.domain.portfolio.ProfilePortfolio;
 import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.profile.implement.activity.ProfileActivityCommandAdapter;
+import liaison.linkit.profile.implement.awards.ProfileAwardsCommandAdapter;
+import liaison.linkit.profile.implement.education.ProfileEducationCommandAdapter;
+import liaison.linkit.profile.implement.license.ProfileLicenseCommandAdapter;
+import liaison.linkit.profile.implement.link.ProfileLinkCommandAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogCommandAdapter;
+import liaison.linkit.profile.implement.portfolio.ProfilePortfolioCommandAdapter;
+import liaison.linkit.profile.implement.portfolio.ProfilePortfolioQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileCommandAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.profile.implement.skill.ProfileSkillCommandAdapter;
+import liaison.linkit.profile.implement.skill.ProfileSkillQueryAdapter;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommandAdapter;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapCommandAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapCommandAdapter;
@@ -59,6 +75,20 @@ public class DeleteUtil {
     private final TeamQueryAdapter teamQueryAdapter;
     private final TeamProductCommandAdapter teamProductCommandAdapter;
     private final TeamHistoryCommandAdapter teamHistoryCommandAdapter;
+    private final ProfileLinkCommandAdapter profileLinkCommandAdapter;
+    private final ProfileLicenseCommandAdapter profileLicenseCommandAdapter;
+    private final ProfileAwardsCommandAdapter profileAwardsCommandAdapter;
+    private final ProfileEducationCommandAdapter profileEducationCommandAdapter;
+    private final ProfilePortfolioMapper profilePortfolioMapper;
+    private final ProfilePortfolioCommandAdapter profilePortfolioCommandAdapter;
+    private final ProfileActivityCommandAdapter profileActivityCommandAdapter;
+    private final ProfileSkillQueryAdapter profileSkillQueryAdapter;
+    private final ProfileSkillCommandAdapter profileSkillCommandAdapter;
+    private final ProfilePortfolioQueryAdapter profilePortfolioQueryAdapter;
+    private final ProfilePortfolioService profilePortfolioService;
+    private final ChatRoomCommandAdapter chatRoomCommandAdapter;
+    private final ChatRoomQueryAdapter chatRoomQueryAdapter;
+    private final ChatService chatService;
     // 회원 탈퇴 케이스
 
     public void quitAccount(final Long memberId, final String refreshToken) {
@@ -82,71 +112,44 @@ public class DeleteUtil {
                 .toList();
         log.info("Deleting teams {}", deletableTeamIds);
 
-        Set<TeamMemberAnnouncement> deletableTeamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllDeletableTeamMemberAnnouncementsByTeamIds(deletableTeamIds);
-        log.info("Deleting teams {}", deletableTeamMemberAnnouncements);
-
-        List<Long> deletableAnnouncementIds = deletableTeamMemberAnnouncements.stream()
-                .map(TeamMemberAnnouncement::getId)
-                .toList();
-        log.info("Deleting teams {}", deletableAnnouncementIds);
-
         List<String> deletableTeamCodes = deletableTeams.stream()
                 .map(Team::getTeamCode)
                 .toList();
 
-        log.info("Deleting teams {}", deletableTeamCodes);
+        // ==================================================================================================================================================================
+
+        // 회원이 참여하던 채팅방 나가기
+        final List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
+        final List<Long> deletableChatRooms = chatRooms.stream()
+                .map(ChatRoom::getId)
+                .toList();
+
+        for (Long chatRoomId : deletableChatRooms) {
+            chatService.leaveChatRoom(memberId, chatRoomId);
+        }
+
         // [2. 매칭 데이터 삭제]
         matchingCommandAdapter.deleteAllBySenderProfile(member.getEmailId());
-        matchingCommandAdapter.deleteAllBySenderTeamCodes(deletableTeamCodes);
-        log.info("Deleting teams {}", deletableTeams);
         matchingCommandAdapter.deleteAllByReceiverProfile(member.getEmailId());
-        matchingCommandAdapter.deleteAllByReceiverTeamCodes(deletableTeamCodes);
-        matchingCommandAdapter.deleteAllByReceiverAnnouncements(deletableAnnouncementIds);
-
-        log.info("Deleting teams {}", deletableTeams);
 
         // [3. 스크랩 데이터 삭제] (내가 스크랩을 한 데이터 + 나에게 스크랩을 한 데이터)
         profileScrapCommandAdapter.deleteAllByMemberId(member.getId());
         profileScrapCommandAdapter.deleteAllByProfileId(profile.getId());
-        log.info("Deleting teams {}", deletableTeams);
 
-        log.info("Deleting teams {}", deletableTeams);
-
-        announcementScrapCommandAdapter.deleteAllByMemberId(member.getId());
-        announcementScrapCommandAdapter.deleteAllByAnnouncementIds(deletableAnnouncementIds);
-        log.info("Deleting teams {}", deletableTeams);
-
-        // [4. 팀 초대 데이터 삭제]
-        teamMemberInvitationCommandAdapter.deleteAllByTeamIds(deletableTeamIds);
-        log.info("Deleting teams {}", deletableTeams);
-
-        teamMemberCommandAdapter.deleteAllTeamMemberByMember(memberId);
-        // [5. 채팅방 데이터 삭제]
+        deleteTeamMemberByMember(memberId);
 
         // 4. 알림 데이터 삭제
         notificationCommandAdapter.deleteAllByReceiverMemberId(memberId);
-        log.info("Deleting teams {}", deletableTeams);
 
-        // 5. 토큰 데이터 삭제
+        // 토큰 데이터 삭제
         refreshTokenRepository.deleteById(refreshToken);
-        log.info("Deleting teams {}", deletableTeams);
 
-        for (Long deletableTeamId : deletableTeamIds) {
-            teamLogCommandAdapter.deleteAllTeamLogs(deletableTeamId);
-        }
+        // 프로필 관련 모든 데이터 삭제
+        deleteProfile(profile);
 
-        // 팀 삭제
-        for (Team team : deletableTeams) {
-            team.changeStatusToDeleted();
-            teamCommandAdapter.updateTeam(team); // 변경된 상태를 DB에 반영
-        }
-
-        // 모든 프로필 로그 삭제
-        deleteProfileLogs(profile.getId());
-
-        // 모든 공고 삭제
-        if (!deletableAnnouncementIds.isEmpty()) {
-            teamMemberAnnouncementCommandAdapter.deleteAllByIds(deletableAnnouncementIds);
+        // 팀 관련 모든 데이터 삭제
+        for (String teamCode : deletableTeamCodes) {
+            deleteTeam(teamCode);
         }
 
         // 6. 프로필 삭제
@@ -154,6 +157,41 @@ public class DeleteUtil {
 
         // 7. 회원 삭제
         memberCommandAdapter.deleteByMemberId(memberId);
+    }
+
+    private void deleteProfile(final Profile profile) {
+        // profile 관련 모든 데이터 삭제
+
+        // 프로필 로그 삭제
+        profileLogCommandAdapter.deleteAllProfileLogs(profile.getId());
+
+        // 1. 스킬 데이터 삭제
+        profileSkillCommandAdapter.removeProfileSkillsByProfileId(profile.getId());
+
+        // 2. 이력 데이터 삭제
+        profileActivityCommandAdapter.removeProfileActivitiesByProfileId(profile.getId());
+
+        // 3. 포트폴리오 데이터 삭제
+        List<ProfilePortfolio> profilePortfolios = profilePortfolioQueryAdapter.getProfilePortfolios(profile.getId());
+        final List<Long> deletablePortfolioIds = profilePortfolios.stream()
+                .map(ProfilePortfolio::getId)
+                .toList();
+
+        for (Long portfolioId : deletablePortfolioIds) {
+            profilePortfolioService.removeProfilePortfolio(profile.getMember().getId(), portfolioId);
+        }
+
+        // 4. 학력 데이터 삭제
+        profileEducationCommandAdapter.removeProfileEducationsByProfileId(profile.getId());
+
+        // 5. 수상 데이터 삭제
+        profileAwardsCommandAdapter.removeProfileAwardsByProfileId(profile.getId());
+
+        // 6. 자격증 데이터 삭제
+        profileLicenseCommandAdapter.removeProfileLicensesByProfileId(profile.getId());
+
+        // 7. 링크 데이터 삭제
+        profileLinkCommandAdapter.removeProfileLinksByProfileId(profile.getId());
     }
 
     public void deleteTeam(final String teamCode) {

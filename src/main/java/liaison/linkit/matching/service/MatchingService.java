@@ -347,6 +347,11 @@ public class MatchingService {
     public Page<RequestedMatchingMenu> getRequestedMatchingMenuResponse(final Long memberId, final SenderType senderType, Pageable pageable) {
         List<Matching> combinedMatchingItems = new ArrayList<>();
 
+        // senderType이 ANNOUNCEMENT인 경우 빈 Page 반환
+        if (senderType != null && senderType.equals(SenderType.ANNOUNCEMENT)) {
+            return Page.empty(pageable);
+        }
+
         // Profile 케이스
         if (senderType == null || senderType.equals(SenderType.PROFILE)) {
             final String emailId = memberQueryAdapter.findEmailIdById(memberId);
