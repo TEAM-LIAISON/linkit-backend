@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.domain.QChatRoom;
+import liaison.linkit.global.type.StatusType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,8 +19,16 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
 
         return jpaQueryFactory
                 .selectFrom(qChatRoom).distinct()
-                .where(qChatRoom.participantAMemberId.eq(memberId)
-                        .or(qChatRoom.participantBMemberId.eq(memberId)))
+                .where(
+                        // (A_Member = memberId AND A_Status = USABLE)
+                        //    OR (B_Member = memberId AND B_Status = USABLE)
+                        qChatRoom.participantAMemberId.eq(memberId)
+                                .and(qChatRoom.participantAStatus.eq(StatusType.USABLE))
+                                .or(
+                                        qChatRoom.participantBMemberId.eq(memberId)
+                                                .and(qChatRoom.participantBStatus.eq(StatusType.USABLE))
+                                )
+                )
                 .fetch();
     }
 

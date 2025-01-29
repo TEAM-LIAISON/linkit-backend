@@ -456,7 +456,15 @@ public class ChatService {
             final Pageable pageable) {
 
         final ChatRoom chatRoom = chatRoomQueryAdapter.findById(chatRoomId);
-
+        if (chatRoom.getParticipantAMemberId().equals(memberId)) {
+            if (chatRoom.getParticipantAStatus().equals(StatusType.DELETED)) {
+                chatRoom.setParticipantBStatus(StatusType.USABLE);
+            }
+        } else if (chatRoom.getParticipantBMemberId().equals(memberId)) {
+            if (chatRoom.getParticipantBStatus().equals(StatusType.DELETED)) {
+                chatRoom.setParticipantAStatus(StatusType.USABLE);
+            }
+        }
         // 2. 메시지 조회 및 읽음 처리
         Page<ChatMessage> messages = chatMessageRepository.findByChatRoomIdOrderByTimestampDesc(
                 chatRoomId,
