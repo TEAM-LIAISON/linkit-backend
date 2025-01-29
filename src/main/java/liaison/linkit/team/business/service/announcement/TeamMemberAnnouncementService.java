@@ -251,7 +251,7 @@ public class TeamMemberAnnouncementService {
         final AnnouncementPosition announcementPosition = new AnnouncementPosition(null, updatedTeamMemberAnnouncement, position);
         log.info("check bug 1-1");
         final AnnouncementPosition savedAnnouncementPosition = announcementPositionCommandAdapter.save(announcementPosition);
-        log.info("check bug 1-1");
+        log.info("check bug 1-2");
         final AnnouncementPositionItem announcementPositionItem = announcementPositionMapper.toAnnouncementPositionItem(savedAnnouncementPosition);
 
         log.info("check bug 2");

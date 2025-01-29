@@ -7,8 +7,10 @@ import java.util.Optional;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
+@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class AnnouncementPositionCustomRepositoryImpl implements AnnouncementPositionCustomRepository {
@@ -55,5 +57,7 @@ public class AnnouncementPositionCustomRepositoryImpl implements AnnouncementPos
 
         entityManager.flush();
         entityManager.clear();
+
+        log.info("Deleted all announcement positions");
     }
 }

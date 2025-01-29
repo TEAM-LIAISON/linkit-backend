@@ -77,10 +77,13 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     @Override
-    public TeamMemberAnnouncement updateTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement, final UpdateTeamMemberAnnouncementRequest request) {
+    public TeamMemberAnnouncement updateTeamMemberAnnouncement(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final UpdateTeamMemberAnnouncementRequest request
+    ) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
-        // 팀원 공고 업데이트
+        // 1) QueryDSL 부분 업데이트
         long updatedCount = jpaQueryFactory
                 .update(qTeamMemberAnnouncement)
                 .set(qTeamMemberAnnouncement.announcementTitle, request.getAnnouncementTitle())
@@ -95,18 +98,21 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
                 .execute();
 
+        // 2) flush & clear
         entityManager.flush();
         entityManager.clear();
 
+        // 3) 변경된 행이 있으면, 다시 select 해서 엔티티 리턴
         if (updatedCount > 0) {
             return jpaQueryFactory
                     .selectFrom(qTeamMemberAnnouncement)
                     .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
-                    .fetchOne();
+                    .fetchOne(); // 새로 로드된 엔티티(영속 상태)
         } else {
-            return null;
+            return null; // 또는 Optional.empty() 처리 등
         }
     }
+
 
     @Override
     public TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(final TeamMemberAnnouncement teamMemberAnnouncement, final boolean isTeamMemberAnnouncementCurrentPublicState) {
