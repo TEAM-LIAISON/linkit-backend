@@ -104,4 +104,17 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
 
         log.info("Deleted {} team scraps for teamIds: {}", deletedCount, teamIds);
     }
+
+    @Override
+    public void deleteAllByTeamId(final Long teamId) {
+        QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
+
+        long deletedCount = jpaQueryFactory
+                .delete(qTeamScrap)
+                .where(qTeamScrap.team.id.eq(teamId))
+                .execute();
+
+        log.info("Deleted {} team scraps for teamId: {}", deletedCount, teamId);
+
+    }
 }

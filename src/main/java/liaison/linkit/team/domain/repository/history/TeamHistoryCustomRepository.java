@@ -8,4 +8,6 @@ public interface TeamHistoryCustomRepository {
     List<TeamHistory> getTeamHistories(final String teamCode);
 
     TeamHistory updateTeamHistory(final Long teamHistoryId, final UpdateTeamHistoryRequest updateTeamHistoryRequest);
+
+    void deleteAllTeamHistories(final Long teamId);
 }

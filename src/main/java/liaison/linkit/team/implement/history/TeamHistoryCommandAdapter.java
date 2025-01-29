@@ -23,4 +23,9 @@ public class TeamHistoryCommandAdapter {
     public void removeTeamHistory(final TeamHistory teamHistory) {
         teamHistoryRepository.delete(teamHistory);
     }
+
+    public void deleteAllTeamHistories(final Long teamId) {
+        teamHistoryRepository.deleteAllTeamHistories(teamId);
+
+    }
 }

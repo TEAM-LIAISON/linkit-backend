@@ -2,13 +2,13 @@ package liaison.linkit.team.business.service.team;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.common.validator.ImageValidator;
 import liaison.linkit.file.domain.ImageFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
+import liaison.linkit.global.DeleteUtil;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
@@ -20,27 +20,24 @@ import liaison.linkit.notification.service.HeaderNotificationService;
 import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
+import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.business.mapper.state.TeamCurrentStateMapper;
 import liaison.linkit.team.business.mapper.team.TeamMapper;
 import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
-import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
-import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
-import liaison.linkit.team.domain.team.Team;
-import liaison.linkit.team.domain.state.TeamCurrentState;
-import liaison.linkit.team.domain.team.type.TeamStatus;
-import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.region.TeamRegion;
 import liaison.linkit.team.domain.scale.Scale;
 import liaison.linkit.team.domain.scale.TeamScale;
+import liaison.linkit.team.domain.state.TeamCurrentState;
 import liaison.linkit.team.domain.state.TeamState;
+import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.domain.team.type.TeamStatus;
+import liaison.linkit.team.domain.teamMember.TeamMember;
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import liaison.linkit.team.exception.team.DeleteTeamBadRequestException;
 import liaison.linkit.team.exception.team.DuplicateTeamCodeException;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
-import liaison.linkit.team.implement.team.TeamCommandAdapter;
-import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.region.TeamRegionCommandAdapter;
 import liaison.linkit.team.implement.region.TeamRegionQueryAdapter;
 import liaison.linkit.team.implement.scale.ScaleQueryAdapter;
@@ -49,6 +46,8 @@ import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.state.TeamCurrentStateCommandAdapter;
 import liaison.linkit.team.implement.state.TeamCurrentStateQueryAdapter;
 import liaison.linkit.team.implement.state.TeamStateQueryAdapter;
+import liaison.linkit.team.implement.team.TeamCommandAdapter;
+import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -107,6 +106,7 @@ public class TeamService {
     private final MatchingQueryAdapter matchingQueryAdapter;
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final TeamMemberAnnouncementCommandAdapter teamMemberAnnouncementCommandAdapter;
+    private final DeleteUtil deleteUtil;
 
 
     // 초기 팀 생성
@@ -286,8 +286,11 @@ public class TeamService {
         // 조회 요청을 진행한 사용자가 teamInvitation 테이블에 존재하는지 여부 판단
         boolean isTeamInvitationInProgress = teamMemberInvitationQueryAdapter.existsByEmailAndTeam(member.getEmail(), targetTeam);
         log.info("isTeamInvitationInProgress = {}", isTeamInvitationInProgress);
+
         boolean isTeamDeleteInProgress = teamQueryAdapter.isTeamDeleteInProgress(teamCode) && isMyTeam;
         log.info("getLoggedInTeamDetail isTeamDeleteInProgress = {}", isTeamDeleteInProgress);
+
+        boolean isTeamDeleteRequester = teamMemberQueryAdapter.isTeamDeleteRequester(member.getId(), targetTeam.getId());
 
         final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
         final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
@@ -311,7 +314,7 @@ public class TeamService {
 
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(isMyTeam, isTeamManager, isTeamInvitationInProgress, isTeamDeleteInProgress, teamInformMenu);
+        return teamMapper.toTeamDetail(isMyTeam, isTeamManager, isTeamInvitationInProgress, isTeamDeleteInProgress, isTeamDeleteRequester, teamInformMenu);
     }
 
     // 로그인하지 않은 사용자가 팀을 상세 조회한 케이스
@@ -337,7 +340,7 @@ public class TeamService {
         final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(teamCode);
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(false, false, false, false, teamInformMenu);
+        return teamMapper.toTeamDetail(false, false, false, false, false, teamInformMenu);
     }
 
     public TeamResponseDTO.TeamItems getTeamItems(final Long memberId) {
@@ -370,7 +373,6 @@ public class TeamService {
     // 팀 삭제 요청
     public TeamResponseDTO.DeleteTeamResponse deleteTeam(final Long memberId, final String teamCode) {
         final Member member = memberQueryAdapter.findById(memberId);
-
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
         if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
@@ -411,21 +413,8 @@ public class TeamService {
                 headerNotificationService.publishNotificationCount(currentTeamMember.getMember().getId());
             }
         } else {    // 오너만 해당 팀을 소유하고 있는 경우
+            deleteUtil.deleteTeam(teamCode);
 
-            Set<TeamMemberAnnouncement> deletableTeamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllDeletableTeamMemberAnnouncementsByTeamId(targetTeam.getId());
-            log.info("Deleting teams {}", deletableTeamMemberAnnouncements);
-
-            List<Long> deletableAnnouncementIds = deletableTeamMemberAnnouncements.stream()
-                    .map(TeamMemberAnnouncement::getId)
-                    .toList();
-            log.info("Deleting teams {}", deletableAnnouncementIds);
-
-            // 모든 공고 삭제
-            if (!deletableAnnouncementIds.isEmpty()) {
-                teamMemberAnnouncementCommandAdapter.deleteAllByIds(deletableAnnouncementIds);
-            }
-
-            teamCommandAdapter.deleteTeam(teamCode);
             NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamCompleted(
                     teamCode,
                     targetTeam.getTeamLogoImagePath(),
@@ -436,7 +425,7 @@ public class TeamService {
                     notificationMapper.toNotification(
                             memberId,
                             NotificationType.TEAM,
-                            SubNotificationType.REMOVE_TEAM_REQUESTED,
+                            SubNotificationType.REMOVE_TEAM_COMPLETED,
                             removeTeamNotificationDetails
                     )
             );

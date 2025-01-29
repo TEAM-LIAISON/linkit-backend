@@ -360,6 +360,21 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     }
 
     @Override
+    public void deleteAllBySenderTeamCode(final String senderTeamCode) {
+        QMatching qMatching = QMatching.matching;
+
+        long deletedCount = jpaQueryFactory.update(qMatching)
+                .set(qMatching.status, StatusType.DELETED)
+                .where(qMatching.senderTeamCode.eq(senderTeamCode))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        log.info("Deleted {} matching scraps for teamCode: {}", deletedCount, senderTeamCode);
+    }
+
+    @Override
     public void deleteAllByReceiverProfile(final String emailId) {
         QMatching qMatching = QMatching.matching;
 
@@ -388,6 +403,21 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
         entityManager.clear();
 
         log.info("Deleted {} matching scraps for teamCodes: {}", deletedCount, receiverTeamCodes);
+    }
+
+    @Override
+    public void deleteAllByReceiverTeamCode(final String teamCode) {
+        QMatching qMatching = QMatching.matching;
+
+        long deletedCount = jpaQueryFactory.update(qMatching)
+                .set(qMatching.status, StatusType.DELETED)
+                .where(qMatching.receiverTeamCode.eq(teamCode))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+
+        log.info("Deleted {} matching scraps for teamCode: {}", deletedCount, teamCode);
     }
 
     @Override

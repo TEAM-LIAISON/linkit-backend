@@ -83,4 +83,8 @@ public class TeamMemberQueryAdapter {
     public boolean isTeamMembersAllowDelete(final Team team) {
         return teamMemberRepository.isTeamMembersAllowDelete(team);
     }
+
+    public boolean isTeamDeleteRequester(final Long memberId, final Long teamId) {
+        return teamMemberRepository.isTeamDeleteRequester(memberId, teamId);
+    }
 }
