@@ -68,4 +68,17 @@ public class ProfileLicenseCustomRepositoryImpl implements ProfileLicenseCustomR
                 .where(qProfileLicense.profile.id.eq(profileId))
                 .fetchFirst() != null;
     }
+
+    @Override
+    public void removeProfileLicensesByProfileId(final Long profileId) {
+        QProfileLicense qProfileLicense = QProfileLicense.profileLicense;
+
+        jpaQueryFactory
+                .delete(qProfileLicense)
+                .where(qProfileLicense.profile.id.eq(profileId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+    }
 }

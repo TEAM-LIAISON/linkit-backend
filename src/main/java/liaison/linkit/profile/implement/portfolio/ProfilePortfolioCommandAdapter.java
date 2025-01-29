@@ -23,4 +23,8 @@ public class ProfilePortfolioCommandAdapter {
     public void removeProfilePortfolio(final ProfilePortfolio profilePortfolio) {
         profilePortfolioRepository.delete(profilePortfolio);
     }
+
+    public void removeProfilePortfoliosByProfileId(final Long profileId) {
+        profilePortfolioRepository.removeProfilePortfoliosByProfileId(profileId);
+    }
 }

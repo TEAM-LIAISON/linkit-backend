@@ -22,4 +22,8 @@ public class ProfileAwardsCommandAdapter {
     public ProfileAwards updateProfileAwards(final Long profileAwardsId, final UpdateProfileAwardsRequest updateProfileAwardsRequest) {
         return profileAwardsRepository.updateProfileAwards(profileAwardsId, updateProfileAwardsRequest);
     }
+
+    public void removeProfileAwardsByProfileId(final Long profileId) {
+        profileAwardsRepository.removeProfileAwardsByProfileId(profileId);
+    }
 }

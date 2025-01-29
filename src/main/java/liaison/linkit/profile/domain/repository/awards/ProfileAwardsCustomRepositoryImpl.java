@@ -67,4 +67,17 @@ public class ProfileAwardsCustomRepositoryImpl implements ProfileAwardsCustomRep
                 .where(qProfileAwards.profile.id.eq(profileId))
                 .fetchFirst() != null;
     }
+
+    @Override
+    public void removeProfileAwardsByProfileId(final Long profileId) {
+        QProfileAwards qProfileAwards = QProfileAwards.profileAwards;
+
+        jpaQueryFactory
+                .delete(qProfileAwards)
+                .where(qProfileAwards.profile.id.eq(profileId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+    }
 }

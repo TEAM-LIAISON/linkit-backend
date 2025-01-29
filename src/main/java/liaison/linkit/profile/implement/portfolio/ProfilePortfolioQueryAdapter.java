@@ -25,4 +25,8 @@ public class ProfilePortfolioQueryAdapter {
     public boolean existsByProfileId(final Long profileId) {
         return profilePortfolioRepository.existsByProfileId(profileId);
     }
+
+    public void removeProfilePortfoliosByProfileId(final Long profileId) {
+        profilePortfolioRepository.removeProfilePortfoliosByProfileId(profileId);
+    }
 }

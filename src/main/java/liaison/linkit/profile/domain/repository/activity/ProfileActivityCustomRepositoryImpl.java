@@ -59,7 +59,7 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
             return null;
         }
     }
-    
+
     @Override
     public boolean existsByProfileId(final Long profileId) {
         QProfileActivity qProfileActivity = QProfileActivity.profileActivity;
@@ -69,5 +69,18 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
                 .from(qProfileActivity)
                 .where(qProfileActivity.profile.id.eq(profileId))
                 .fetchFirst() != null;
+    }
+
+    @Override
+    public void removeProfileActivitiesByProfileId(final Long profileId) {
+        QProfileActivity qProfileActivity = QProfileActivity.profileActivity;
+
+        queryFactory
+                .delete(qProfileActivity)
+                .where(qProfileActivity.profile.id.eq(profileId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
     }
 }

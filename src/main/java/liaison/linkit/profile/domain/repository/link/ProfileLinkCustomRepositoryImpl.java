@@ -1,6 +1,8 @@
 package liaison.linkit.profile.domain.repository.link;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import liaison.linkit.profile.domain.link.ProfileLink;
 import liaison.linkit.profile.domain.link.QProfileLink;
@@ -10,7 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class ProfileLinkCustomRepositoryImpl implements ProfileLinkCustomRepository {
+
     private final JPAQueryFactory jpaQueryFactory;
+
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public boolean existsByProfileId(Long profileId) {
@@ -43,5 +49,8 @@ public class ProfileLinkCustomRepositoryImpl implements ProfileLinkCustomReposit
                 .delete(profileLink)
                 .where(profileLink.profile.id.eq(profileId))
                 .execute();
+
+        entityManager.flush();
+        entityManager.clear();
     }
 }
