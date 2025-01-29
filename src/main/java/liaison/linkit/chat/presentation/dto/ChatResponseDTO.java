@@ -128,6 +128,9 @@ public class ChatResponseDTO {
         private Boolean hasNext;         // 다음 페이지 존재 여부
 
         @Builder.Default
+        private ChatPartnerInformation chatPartnerInformation = new ChatPartnerInformation();
+
+        @Builder.Default
         private List<ChatMessageResponse> messages = new ArrayList<>();
     }
 
