@@ -50,4 +50,6 @@ public interface TeamMemberCustomRepository {
     void deleteAllTeamMemberByTeam(final Long teamId);
 
     boolean isTeamMembersAllowDelete(final Team team);
+
+    boolean isTeamDeleteRequester(final Long memberId, final Long teamId);
 }

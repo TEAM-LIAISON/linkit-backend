@@ -28,6 +28,9 @@ public class TeamResponseDTO {
         // 팀 삭제 상태
         private Boolean isTeamDeleteInProgress;
 
+        // 팀 삭제 요청 상태
+        private Boolean isTeamDeleteRequester;
+
         @Builder.Default
         private TeamInformMenu teamInformMenu = new TeamInformMenu();
     }

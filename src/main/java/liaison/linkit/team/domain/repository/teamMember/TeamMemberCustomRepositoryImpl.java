@@ -376,4 +376,20 @@ public class TeamMemberCustomRepositoryImpl implements TeamMemberCustomRepositor
         // If count is 0, it means all team members are either REQUEST_DELETE or ALLOW_DELETE
         return count == 0;
     }
+
+    @Override
+    public boolean isTeamDeleteRequester(final Long memberId, final Long teamId) {
+        QTeamMember qTeamMember = QTeamMember.teamMember;
+
+        return jpaQueryFactory
+                .selectOne()
+                .from(qTeamMember)
+                .where(
+                        qTeamMember.member.id.eq(memberId) // Team code matches
+                                .and(qTeamMember.team.id.eq(teamId)) // Email ID matches
+                                .and(qTeamMember.teamMemberManagingTeamState.eq(TeamMemberManagingTeamState.REQUEST_DELETE))
+                                .and(qTeamMember.status.eq(StatusType.USABLE))
+                )
+                .fetchFirst() != null;
+    }
 }

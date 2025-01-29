@@ -100,6 +100,7 @@ public class TeamMapper {
             final boolean isTeamManager,
             final boolean isTeamInvitationInProgress,
             final boolean isTeamDeleteInProgress,
+            final boolean isTeamDeleteRequester,
             final TeamInformMenu teamInformMenu
     ) {
         return TeamResponseDTO.TeamDetail
@@ -108,6 +109,7 @@ public class TeamMapper {
                 .isTeamManager(isTeamManager)
                 .isTeamInvitationInProgress(isTeamInvitationInProgress)
                 .isTeamDeleteInProgress(isTeamDeleteInProgress)
+                .isTeamDeleteRequester(isTeamDeleteRequester)
                 .teamInformMenu(teamInformMenu)
                 .build();
     }

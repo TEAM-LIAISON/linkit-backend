@@ -286,8 +286,11 @@ public class TeamService {
         // 조회 요청을 진행한 사용자가 teamInvitation 테이블에 존재하는지 여부 판단
         boolean isTeamInvitationInProgress = teamMemberInvitationQueryAdapter.existsByEmailAndTeam(member.getEmail(), targetTeam);
         log.info("isTeamInvitationInProgress = {}", isTeamInvitationInProgress);
+
         boolean isTeamDeleteInProgress = teamQueryAdapter.isTeamDeleteInProgress(teamCode) && isMyTeam;
         log.info("getLoggedInTeamDetail isTeamDeleteInProgress = {}", isTeamDeleteInProgress);
+
+        boolean isTeamDeleteRequester = teamMemberQueryAdapter.isTeamDeleteRequester(member.getId(), targetTeam.getId());
 
         final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
         final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
@@ -311,7 +314,7 @@ public class TeamService {
 
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(isMyTeam, isTeamManager, isTeamInvitationInProgress, isTeamDeleteInProgress, teamInformMenu);
+        return teamMapper.toTeamDetail(isMyTeam, isTeamManager, isTeamInvitationInProgress, isTeamDeleteInProgress, isTeamDeleteRequester, teamInformMenu);
     }
 
     // 로그인하지 않은 사용자가 팀을 상세 조회한 케이스
@@ -337,7 +340,7 @@ public class TeamService {
         final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(teamCode);
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(false, false, false, false, teamInformMenu);
+        return teamMapper.toTeamDetail(false, false, false, false, false, teamInformMenu);
     }
 
     public TeamResponseDTO.TeamItems getTeamItems(final Long memberId) {
