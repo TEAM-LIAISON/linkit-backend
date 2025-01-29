@@ -2,6 +2,10 @@ package liaison.linkit.global;
 
 import java.util.List;
 import java.util.Set;
+import liaison.linkit.chat.domain.ChatRoom;
+import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
+import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
+import liaison.linkit.chat.service.ChatService;
 import liaison.linkit.login.domain.repository.RefreshTokenRepository;
 import liaison.linkit.login.exception.QuitBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
@@ -82,6 +86,9 @@ public class DeleteUtil {
     private final ProfileSkillCommandAdapter profileSkillCommandAdapter;
     private final ProfilePortfolioQueryAdapter profilePortfolioQueryAdapter;
     private final ProfilePortfolioService profilePortfolioService;
+    private final ChatRoomCommandAdapter chatRoomCommandAdapter;
+    private final ChatRoomQueryAdapter chatRoomQueryAdapter;
+    private final ChatService chatService;
     // 회원 탈퇴 케이스
 
     public void quitAccount(final Long memberId, final String refreshToken) {
@@ -110,6 +117,16 @@ public class DeleteUtil {
                 .toList();
 
         // ==================================================================================================================================================================
+
+        // 회원이 참여하던 채팅방 나가기
+        final List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
+        final List<Long> deletableChatRooms = chatRooms.stream()
+                .map(ChatRoom::getId)
+                .toList();
+
+        for (Long chatRoomId : deletableChatRooms) {
+            chatService.leaveChatRoom(memberId, chatRoomId);
+        }
 
         // [2. 매칭 데이터 삭제]
         matchingCommandAdapter.deleteAllBySenderProfile(member.getEmailId());
