@@ -264,6 +264,7 @@ public class MatchingMapper {
         return ReceiverAnnouncementInformation.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .teamName(teamMemberAnnouncement.getTeam().getTeamName())
+                .teamLogoImagePath(teamMemberAnnouncement.getTeam().getTeamLogoImagePath())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)

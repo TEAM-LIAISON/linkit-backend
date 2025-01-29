@@ -1,6 +1,8 @@
 package liaison.linkit.team.domain.repository.announcement;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.Optional;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
@@ -10,8 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class AnnouncementPositionCustomRepositoryImpl implements AnnouncementPositionCustomRepository {
+
     private final JPAQueryFactory jpaQueryFactory;
 
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public boolean existsAnnouncementPositionByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
@@ -47,5 +52,8 @@ public class AnnouncementPositionCustomRepositoryImpl implements AnnouncementPos
                 .delete(qAnnouncementPosition)
                 .where(qAnnouncementPosition.teamMemberAnnouncement.id.eq(teamMemberAnnouncementId))
                 .execute();
+
+        entityManager.flush();
+        entityManager.clear();
     }
 }
