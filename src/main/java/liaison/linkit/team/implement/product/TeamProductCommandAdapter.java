@@ -23,4 +23,8 @@ public class TeamProductCommandAdapter {
     public void removeTeamProduct(final TeamProduct teamProduct) {
         teamProductRepository.delete(teamProduct);
     }
+
+    public void deleteAllTeamProducts(final Long teamId) {
+        teamProductRepository.deleteAllByTeamId(teamId);
+    }
 }

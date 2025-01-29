@@ -57,4 +57,16 @@ public class TeamHistoryCustomRepositoryImpl implements TeamHistoryCustomReposit
         }
     }
 
+    @Override
+    public void deleteAllTeamHistories(final Long teamId) {
+        QTeamHistory qTeamHistory = QTeamHistory.teamHistory;
+
+        long deletedCount = queryFactory
+                .delete(qTeamHistory)
+                .where(qTeamHistory.team.id.eq(teamId))
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
+    }
 }

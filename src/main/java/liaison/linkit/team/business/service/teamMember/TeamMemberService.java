@@ -330,14 +330,18 @@ public class TeamMemberService {
         if (updateManagingTeamStateRequest.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.ALLOW_DELETE)) {
             // 모든 TeamMember가 허용을 했는지 확인
             if (teamMemberQueryAdapter.isTeamMembersAllowDelete(targetTeam)) {
+                final String targetTeamName = targetTeam.getTeamName();
+                final String targetTeamLogoImagePath = targetTeam.getTeamLogoImagePath();
+
                 // 팀에 대한 모든 데이터 삭제
                 deleteUtil.deleteTeam(teamCode);
+                log.info("Deleted team " + teamCode);
 
                 // 삭제 완료 알림 발송
                 NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamCompleted(
                         teamCode,
-                        targetTeam.getTeamLogoImagePath(),
-                        targetTeam.getTeamName()
+                        targetTeamLogoImagePath,
+                        targetTeamName
                 );
 
                 notificationService.alertNewNotification(

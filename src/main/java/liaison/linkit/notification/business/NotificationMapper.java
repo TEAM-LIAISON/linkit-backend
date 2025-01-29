@@ -101,7 +101,7 @@ public class NotificationMapper {
                                     .build()
                     );
 
-                    case TEAM_MEMBER_JOINED -> notification.setTeamDetails(
+                    case REMOVE_TEAM_COMPLETED -> notification.setTeamDetails(
                             Notification.TeamDetails.builder()
                                     .teamCode(notificationDetails.getTeamCode())
                                     .teamLogoImagePath(notificationDetails.getTeamLogoImagePath())

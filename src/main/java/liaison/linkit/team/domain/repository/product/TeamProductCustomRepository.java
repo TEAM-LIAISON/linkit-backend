@@ -13,5 +13,5 @@ public interface TeamProductCustomRepository {
 
     TeamProduct updateTeamProduct(final TeamProduct teamProduct, final UpdateTeamProductRequest updateTeamProductRequest);
 
-    boolean existsByTeamId(final Long teamId);
+    void deleteAllByTeamId(final Long teamId);
 }

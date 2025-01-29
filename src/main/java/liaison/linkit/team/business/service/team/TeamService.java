@@ -373,7 +373,6 @@ public class TeamService {
     // 팀 삭제 요청
     public TeamResponseDTO.DeleteTeamResponse deleteTeam(final Long memberId, final String teamCode) {
         final Member member = memberQueryAdapter.findById(memberId);
-
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
         if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {

@@ -20,7 +20,9 @@ import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.history.TeamHistoryCommandAdapter;
 import liaison.linkit.team.implement.log.TeamLogCommandAdapter;
+import liaison.linkit.team.implement.product.TeamProductCommandAdapter;
 import liaison.linkit.team.implement.team.TeamCommandAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
@@ -55,6 +57,8 @@ public class DeleteUtil {
     private final ProfileCommandAdapter profileCommandAdapter;
     private final MemberCommandAdapter memberCommandAdapter;
     private final TeamQueryAdapter teamQueryAdapter;
+    private final TeamProductCommandAdapter teamProductCommandAdapter;
+    private final TeamHistoryCommandAdapter teamHistoryCommandAdapter;
     // 회원 탈퇴 케이스
 
     public void quitAccount(final Long memberId, final String refreshToken) {
@@ -168,10 +172,9 @@ public class DeleteUtil {
         // [3. 팀 초대 구성원 삭제]
         deleteTeamMemberInvitationByTeam(team.getId());
 
-        // [4. 모집 공고 삭제]
-
         // [5. 팀 스크랩 데이터 삭제]
         deleteTeamScrapByTeamId(team.getId());
+        deleteAnnouncementScrapByAnnouncement(deletableAnnouncementIds);
 
         // [6. 매칭 요청 데이터 삭제]
         deleteMatchingSenderTypeTeam(team.getTeamCode());
@@ -179,14 +182,25 @@ public class DeleteUtil {
         deleteMatchingReceiverTypeAnnouncement(deletableAnnouncementIds);
 
         // 프로덕트 데이터 삭제
+        deleteAllTeamProducts(team.getId());
 
         // 연혁 데이터 삭제
+        deleteAllTeamHistories(team.getId());
 
+        // [4. 모집 공고 삭제]
+        deleteAllTeamMemberAnnouncements(deletableAnnouncementIds);
+
+        // 팀 삭제
+        deleteTeamWithTeamCode(team.getTeamCode());
     }
 
     // 해당 회원의 모든 프로필 로그들 전체 삭제
     private void deleteProfileLogs(final Long profileId) {
         profileLogCommandAdapter.deleteAllProfileLogs(profileId);
+    }
+
+    private void deleteTeamWithTeamCode(final String teamCode) {
+        teamCommandAdapter.deleteTeam(teamCode);
     }
 
     // 해당하는 팀 아이디들의 모든 로그들 전체 삭제
@@ -204,6 +218,11 @@ public class DeleteUtil {
     // 스크랩 당한 팀이 삭제 될 때
     private void deleteTeamScrapByTeamId(final Long deletableTeamId) {
         teamScrapCommandAdapter.deleteAllByTeamId(deletableTeamId);
+    }
+
+    // 스크랩 당한 공고가 삭제 될 때
+    private void deleteAnnouncementScrapByAnnouncement(final List<Long> announcementIds) {
+        announcementScrapCommandAdapter.deleteAllByAnnouncementIds(announcementIds);
     }
 
     // 어떤 팀들을 스크랩 한 회원이 삭제 될 때
@@ -249,5 +268,15 @@ public class DeleteUtil {
         teamMemberInvitationCommandAdapter.deleteAllByTeamId(teamId);
     }
 
+    public void deleteAllTeamMemberAnnouncements(final List<Long> announcementIds) {
+        teamMemberAnnouncementCommandAdapter.deleteAllByIds(announcementIds);
+    }
 
+    public void deleteAllTeamProducts(final Long teamId) {
+        teamProductCommandAdapter.deleteAllTeamProducts(teamId);
+    }
+
+    public void deleteAllTeamHistories(final Long teamId) {
+        teamHistoryCommandAdapter.deleteAllTeamHistories(teamId);
+    }
 }

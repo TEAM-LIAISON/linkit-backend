@@ -73,13 +73,15 @@ public class TeamProductCustomRepositoryImpl implements TeamProductCustomReposit
     }
 
     @Override
-    public boolean existsByTeamId(final Long teamId) {
+    public void deleteAllByTeamId(final Long teamId) {
         QTeamProduct qTeamProduct = QTeamProduct.teamProduct;
 
-        return jpaQueryFactory
-                .selectOne()
-                .from(qTeamProduct)
+        long deletedCount = jpaQueryFactory
+                .delete(qTeamProduct)
                 .where(qTeamProduct.team.id.eq(teamId))
-                .fetchFirst() != null;
+                .execute();
+
+        entityManager.flush();
+        entityManager.clear();
     }
 }
