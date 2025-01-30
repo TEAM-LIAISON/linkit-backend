@@ -278,19 +278,23 @@ public class TeamService {
             }
         }
 
-        // 오너, 관리자 여부 확인
+        // 1) 기존 로직
         boolean isMyTeam = teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId);
-
         log.info("getLoggedInTeamDetail isMyTeam = {}", isMyTeam);
 
-        // 조회 요청을 진행한 사용자가 teamInvitation 테이블에 존재하는지 여부 판단
         boolean isTeamInvitationInProgress = teamMemberInvitationQueryAdapter.existsByEmailAndTeam(member.getEmail(), targetTeam);
         log.info("isTeamInvitationInProgress = {}", isTeamInvitationInProgress);
 
-        boolean isTeamDeleteInProgress = teamQueryAdapter.isTeamDeleteInProgress(teamCode) && isMyTeam;
-        log.info("getLoggedInTeamDetail isTeamDeleteInProgress = {}", isTeamDeleteInProgress);
-
         boolean isTeamDeleteRequester = teamMemberQueryAdapter.isTeamDeleteRequester(member.getId(), targetTeam.getId());
+
+        boolean isTeamDeleteInProgress = teamQueryAdapter.isTeamDeleteInProgress(teamCode) && isMyTeam;
+        log.info("getLoggedInTeamDetail isTeamDeleteInProgress(before) = {}", isTeamDeleteInProgress);
+
+        // 2) 요구사항: "삭제 요청자(isTeamDeleteRequester)는 isTeamDeleteInProgress가 false가 되야 함."
+        if (isTeamDeleteRequester) {
+            isTeamDeleteInProgress = false;
+        }
+        log.info("getLoggedInTeamDetail isTeamDeleteInProgress(final) = {}", isTeamDeleteInProgress);
 
         final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
         final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
