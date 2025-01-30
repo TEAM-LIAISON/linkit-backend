@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.QProfileLog;
+import liaison.linkit.profile.domain.log.QProfileLogImage;
 import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.profile.presentation.log.dto.ProfileLogRequestDTO.UpdateProfileLogRequest;
 import lombok.RequiredArgsConstructor;
@@ -180,12 +181,33 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
     @Override
     public void deleteAllProfileLogs(final Long profileId) {
         QProfileLog qProfileLog = QProfileLog.profileLog;
+        QProfileLogImage qProfileLogImage = QProfileLogImage.profileLogImage; // 가정: ProfileLogImage가 있다면
 
-        // 쿼리 실행하여 삭제된 로그 수를 계산
-        long deletedCount = queryFactory
-                .delete(qProfileLog)
+        // 1) 삭제 대상 ProfileLog의 ID 목록 조회
+        List<Long> profileLogIds = queryFactory
+                .select(qProfileLog.id)
+                .from(qProfileLog)
                 .where(qProfileLog.profile.id.eq(profileId))
-                .execute();
+                .fetch();
 
+        if (profileLogIds.isEmpty()) {
+            log.info("No profile logs found for profileId={}, skip deletion", profileId);
+            return;
+        }
+
+        // 2) ProfileLogImage 먼저 삭제 (자식 테이블)
+        long deletedImageCount = queryFactory
+                .delete(qProfileLogImage)
+                .where(qProfileLogImage.profileLog.id.in(profileLogIds))
+                .execute();
+        log.info("Deleted {} profile log images for profileId={}", deletedImageCount, profileId);
+
+        // 3) ProfileLog 삭제 (부모 테이블)
+        long deletedLogCount = queryFactory
+                .delete(qProfileLog)
+                .where(qProfileLog.id.in(profileLogIds))
+                .execute();
+        log.info("Deleted {} profile logs for profileId={}", deletedLogCount, profileId);
     }
+
 }
