@@ -97,6 +97,6 @@ public class TeamProductController {
             @PathVariable final Long teamProductId
     ) {
         log.info("memberId = {}의 teamCode = {}에 대한 팀 프로덕트 단일 삭제 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
-        return CommonResponse.onSuccess(teamProductService.removeTeamProduct(accessor.getMemberId(), teamCode, teamProductId));
+        return CommonResponse.onSuccess(teamProductService.removeTeamProduct(teamCode, teamProductId));
     }
 }

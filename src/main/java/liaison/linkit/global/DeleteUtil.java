@@ -32,13 +32,16 @@ import liaison.linkit.profile.implement.skill.ProfileSkillQueryAdapter;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommandAdapter;
 import liaison.linkit.scrap.implement.profileScrap.ProfileScrapCommandAdapter;
 import liaison.linkit.scrap.implement.teamScrap.TeamScrapCommandAdapter;
+import liaison.linkit.team.business.service.product.TeamProductService;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.product.TeamProduct;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.implement.history.TeamHistoryCommandAdapter;
 import liaison.linkit.team.implement.log.TeamLogCommandAdapter;
 import liaison.linkit.team.implement.product.TeamProductCommandAdapter;
+import liaison.linkit.team.implement.product.TeamProductQueryAdapter;
 import liaison.linkit.team.implement.team.TeamCommandAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
@@ -89,6 +92,8 @@ public class DeleteUtil {
     private final ChatRoomCommandAdapter chatRoomCommandAdapter;
     private final ChatRoomQueryAdapter chatRoomQueryAdapter;
     private final ChatService chatService;
+    private final TeamProductService teamProductService;
+    private final TeamProductQueryAdapter teamProductQueryAdapter;
     // 회원 탈퇴 케이스
 
     public void quitAccount(final Long memberId, final String refreshToken) {
@@ -220,7 +225,13 @@ public class DeleteUtil {
         deleteMatchingReceiverTypeAnnouncement(deletableAnnouncementIds);
 
         // 프로덕트 데이터 삭제
-        deleteAllTeamProducts(team.getId());
+        List<TeamProduct> teamProducts = teamProductQueryAdapter.getTeamProducts(team.getId());
+        final List<Long> deletableTeamProductIds = teamProducts.stream()
+                .map(TeamProduct::getId)
+                .toList();
+        for (Long productId : deletableTeamProductIds) {
+            deleteAllTeamProducts(team.getTeamCode(), productId);
+        }
 
         // 연혁 데이터 삭제
         deleteAllTeamHistories(team.getId());
@@ -310,8 +321,8 @@ public class DeleteUtil {
         teamMemberAnnouncementCommandAdapter.deleteAllByIds(announcementIds);
     }
 
-    public void deleteAllTeamProducts(final Long teamId) {
-        teamProductCommandAdapter.deleteAllTeamProducts(teamId);
+    public void deleteAllTeamProducts(final String teamCode, final Long teamProductId) {
+        teamProductService.removeTeamProduct(teamCode, teamProductId);
     }
 
     public void deleteAllTeamHistories(final Long teamId) {

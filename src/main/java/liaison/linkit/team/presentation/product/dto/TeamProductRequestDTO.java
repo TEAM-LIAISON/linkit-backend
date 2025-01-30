@@ -91,13 +91,11 @@ public class TeamProductRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamProductLinkRequest {
+
         @NotBlank(message = "링크 이름을 입력해주세요.")
-        @Size(min = 1, message = "링크 이름은 1자 이상 입력해주세요.")
         private String productLinkName;
 
         @NotBlank(message = "링크 주소를 입력해주세요.")
-        @Pattern(regexp = "^(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})[/\\w .-]*/?$",
-                message = "올바른 URL 형식이 아닙니다.")
         private String productLinkPath;
     }
 }

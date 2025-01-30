@@ -190,6 +190,7 @@ public class TeamProductService {
             if (existingSubImages != null && !existingSubImages.isEmpty()) {
                 for (ProductSubImage subImage : existingSubImages) {
                     s3Uploader.deleteS3File(subImage.getProductSubImagePath());
+                    log.info("product subimage deleted");
                 }
                 productSubImageCommandAdapter.deleteAll(existingSubImages);
             }
@@ -239,7 +240,7 @@ public class TeamProductService {
 
 
     // 팀 프로덕트 삭제
-    public TeamProductResponseDTO.RemoveTeamProductResponse removeTeamProduct(final Long memberId, final String teamCode, final Long teamProductId) {
+    public TeamProductResponseDTO.RemoveTeamProductResponse removeTeamProduct(final String teamCode, final Long teamProductId) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         final TeamProduct teamProduct = teamProductQueryAdapter.getTeamProduct(teamProductId);

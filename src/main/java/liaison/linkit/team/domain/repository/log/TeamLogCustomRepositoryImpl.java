@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import liaison.linkit.profile.domain.type.LogType;
 import liaison.linkit.team.domain.log.QTeamLog;
+import liaison.linkit.team.domain.log.QTeamLogImage;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.presentation.log.dto.TeamLogRequestDTO.UpdateTeamLogRequest;
 import lombok.RequiredArgsConstructor;
@@ -175,15 +176,33 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
     @Override
     public void deleteAllTeamLogs(final Long teamId) {
         QTeamLog qTeamLog = QTeamLog.teamLog;
+        QTeamLogImage qTeamLogImage = QTeamLogImage.teamLogImage;
 
-        // 쿼리 실행하여 삭제된 로그 수를 계산
-        long deletedCount = queryFactory
-                .delete(qTeamLog)
+        // 1) 먼저, teamId로 해당되는 모든 TeamLog의 ID들을 조회
+        List<Long> teamLogIds = queryFactory
+                .select(qTeamLog.id)
+                .from(qTeamLog)
                 .where(qTeamLog.team.id.eq(teamId))
-                .execute();
+                .fetch();
 
-        // memberId 대신 teamId를 로그에 출력
-        log.info("Deleted {} team logs for teamId: {}", deletedCount, teamId);
+        if (!teamLogIds.isEmpty()) {
+            // 2) TeamLogImage 삭제 (teamLog_id IN (...))
+            long deletedImageCount = queryFactory
+                    .delete(qTeamLogImage)
+                    .where(qTeamLogImage.teamLog.id.in(teamLogIds))
+                    .execute();
+            log.info("Deleted {} team_log_images for teamId: {}", deletedImageCount, teamId);
+
+            // 3) TeamLog 삭제
+            long deletedLogCount = queryFactory
+                    .delete(qTeamLog)
+                    .where(qTeamLog.id.in(teamLogIds))
+                    .execute();
+            log.info("Deleted {} team_logs for teamId: {}", deletedLogCount, teamId);
+        } else {
+            log.info("No team_logs found for teamId: {}, so no deletion needed.", teamId);
+        }
     }
+
 
 }
