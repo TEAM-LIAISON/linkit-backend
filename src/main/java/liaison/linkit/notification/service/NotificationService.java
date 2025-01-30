@@ -27,6 +27,7 @@ public class NotificationService {
     private final NotificationCommandAdapter notificationCommandAdapter;
     private final NotificationMapper notificationMapper;
     private final MemberQueryAdapter memberQueryAdapter;
+    private final HeaderNotificationService headerNotificationService;
 
     public NotificationResponseDTO.NotificationItems getNotificationItems(final Long memberId) {
         final List<Notification> notifications = notificationQueryAdapter.getNotificationsByMember(memberId);
@@ -58,6 +59,8 @@ public class NotificationService {
         final Notification savedNotification = notificationCommandAdapter.save(notification);
 
         log.info("memberId={}가 알림(notificationId={})을 읽음 처리했습니다.", memberId, notificationId);
+        headerNotificationService.publishNotificationCount(memberId);
+
         return notificationMapper.toReadNotification(savedNotification);
     }
 }

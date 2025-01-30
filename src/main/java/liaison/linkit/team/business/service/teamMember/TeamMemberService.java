@@ -357,7 +357,7 @@ public class TeamMemberService {
             }
         } else if (updateManagingTeamStateRequest.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.DENY_DELETE)) {
             // 삭제 거절 -> 아무 일도 없었던 것처럼
-            targetTeam.setTeamStatus(TeamStatus.ACTIVE);
+            teamCommandAdapter.updateTeamStatus(TeamStatus.ACTIVE, targetTeam.getTeamCode());
 
             // 모든 팀원들의 상태 변경
             final List<TeamMember> teamMembers = teamMemberQueryAdapter.getTeamMembers(targetTeam.getId());

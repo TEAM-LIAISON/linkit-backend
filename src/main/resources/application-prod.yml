@@ -83,4 +83,12 @@ spring:
 
 logging:
   level:
-    root: debug
+    org:
+      springframework:
+        web:
+          socket: TRACE
+        messaging: TRACE
+        simp:
+          broker: TRACE
+#    root: debug
+
