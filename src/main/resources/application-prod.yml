@@ -90,5 +90,5 @@ logging:
         messaging: TRACE
         simp:
           broker: TRACE
-#    root: debug
+    root: debug
 
