@@ -507,7 +507,7 @@ public class TeamService {
     }
 
     private int getTeamScrapCount(final Team team) {
-        int scrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamName());
+        int scrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamCode());
         log.info("팀 스크랩 카운트 조회 성공: teamId={}, scrapCount={}", team.getId(), scrapCount);
         return scrapCount;
     }

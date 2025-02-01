@@ -110,7 +110,7 @@ public class TeamSearchService {
 
         final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, team.getTeamCode());
 
-        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamName());
+        final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamCode());
 
         return teamMapper.toTeamInformMenu(team, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
     }
