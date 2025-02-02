@@ -19,4 +19,8 @@ public class ProductSubImageCommandAdapter {
     public void deleteAll(final List<ProductSubImage> productSubImages) {
         productSubImageRepository.deleteAll(productSubImages);
     }
+
+    public void delete(final ProductSubImage productSubImage) {
+        productSubImageRepository.delete(productSubImage);
+    }
 }

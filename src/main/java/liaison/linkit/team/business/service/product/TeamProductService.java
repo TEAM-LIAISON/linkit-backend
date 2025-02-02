@@ -3,22 +3,23 @@ package liaison.linkit.team.business.service.product;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import liaison.linkit.common.validator.ImageValidator;
 import liaison.linkit.file.domain.ImageFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
 import liaison.linkit.team.business.mapper.product.TeamProductMapper;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.product.ProductLink;
 import liaison.linkit.team.domain.product.ProductSubImage;
 import liaison.linkit.team.domain.product.TeamProduct;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
-import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.product.ProductLinkCommandAdapter;
 import liaison.linkit.team.implement.product.ProductLinkQueryAdapter;
 import liaison.linkit.team.implement.product.ProductSubImageCommandAdapter;
 import liaison.linkit.team.implement.product.ProductSubImageQueryAdapter;
 import liaison.linkit.team.implement.product.TeamProductCommandAdapter;
 import liaison.linkit.team.implement.product.TeamProductQueryAdapter;
+import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO;
@@ -147,7 +148,7 @@ public class TeamProductService {
         return teamProductMapper.toAddTeamProductResponse(savedTeamProduct, productLinkResponses, teamProductImages);
     }
 
-    // 팀 프로덕트 업데이트
+    @Transactional
     public TeamProductResponseDTO.UpdateTeamProductResponse updateTeamProduct(
             final Long memberId,
             final String teamCode,
@@ -156,15 +157,16 @@ public class TeamProductService {
             final MultipartFile productRepresentImage,
             final List<MultipartFile> productSubImages
     ) {
-        // 1. 기존 포트폴리오 조회
+        // 1) 기존 TeamProduct 조회
         final TeamProduct existingTeamProduct = teamProductQueryAdapter.getTeamProduct(teamProductId);
 
-        // 2. DTO를 통해 포트폴리오 업데이트
-        final TeamProduct updatedTeamProduct = teamProductCommandAdapter.updateTeamProduct(existingTeamProduct, updateTeamProductRequest);
+        // 2) DTO 업데이트(텍스트 필드 등)
+        final TeamProduct updatedTeamProduct =
+                teamProductCommandAdapter.updateTeamProduct(existingTeamProduct, updateTeamProductRequest);
 
-        // -------------------------
-        // 3) 대표 이미지 처리
-        // -------------------------
+        // =====================================
+        // 3) 대표 이미지 처리 (단일 파일)
+        // =====================================
         if (productRepresentImage != null && !productRepresentImage.isEmpty()) {
             // 새 대표 이미지가 업로드됨
             if (!imageValidator.validatingImageUpload(productRepresentImage)) {
@@ -182,76 +184,96 @@ public class TeamProductService {
             String newRepresentImagePath = s3Uploader.uploadTeamProductRepresentImage(
                     new ImageFile(productRepresentImage)
             );
+
             // (3-3) DB에 반영
             updatedTeamProduct.updateProductRepresentImagePath(newRepresentImagePath);
         }
+        // else: 새 파일이 없으면 기존 대표 이미지를 유지
+        // 만약 “대표 이미지를 삭제”만 원한다면, 별도 플래그/로직 처리
 
-        // -------------------------
-        // 4) 보조(서브) 이미지 처리
-        // -------------------------
-        List<String> newProductSubImagePaths = new ArrayList<>();
+        // =====================================
+        // 4) 보조(서브) 이미지 부분 업데이트
+        // =====================================
+        // (4-a) 유지할 서브 이미지 경로
+        List<String> keepPaths = new ArrayList<>();
+        if (updateTeamProductRequest.getTeamProductImages() != null) {
+            keepPaths = updateTeamProductRequest.getTeamProductImages().getProductSubImages()
+                    .stream()
+                    .map(dto -> dto.getProductSubImagePath())
+                    .filter(Objects::nonNull)
+                    .toList();
+        }
 
-        if (productSubImages != null && !productSubImages.isEmpty()) {
-            // 4-1) 최대 4개 제한
-            if (productSubImages.size() > 4) {
-                throw new IllegalArgumentException("보조 이미지는 최대 4개까지 첨부할 수 있습니다.");
-            }
+        // (4-b) 기존 DB 서브 이미지 목록
+        List<ProductSubImage> existingSubImages = productSubImageQueryAdapter.getProductSubImages(teamProductId);
 
-            // 4-2) 기존 보조 이미지 전부 삭제 (DB + S3)
-            List<ProductSubImage> existingSubImages = productSubImageQueryAdapter.getProductSubImages(teamProductId);
-            if (existingSubImages != null && !existingSubImages.isEmpty()) {
-                for (ProductSubImage subImage : existingSubImages) {
-                    s3Uploader.deleteS3File(subImage.getProductSubImagePath());
-                    log.info("Deleted sub-image from S3: {}", subImage.getProductSubImagePath());
+        // (4-c) 기존 중 keepPaths에 없는 것 => 삭제
+        if (existingSubImages != null && !existingSubImages.isEmpty()) {
+            for (ProductSubImage oldSub : existingSubImages) {
+                String oldPath = oldSub.getProductSubImagePath();
+                if (!keepPaths.contains(oldPath)) {
+                    s3Uploader.deleteS3File(oldPath);
+                    productSubImageCommandAdapter.delete(oldSub);
+                    log.info("Deleted sub-image from S3 & DB: {}", oldPath);
                 }
-                productSubImageCommandAdapter.deleteAll(existingSubImages);
             }
+        }
 
-            // 4-3) 새로 업로드 + DB 저장
+        // (4-d) 새로 업로드할 파일들 처리
+        // (선택) 총개수 제한: if (keepPaths.size() + productSubImages.size() > 4) { ... }
+        List<String> newProductSubImagePaths = new ArrayList<>(); // for response
+        if (productSubImages != null && !productSubImages.isEmpty()) {
             List<ProductSubImage> newSubImageEntities = new ArrayList<>();
-            for (MultipartFile subImage : productSubImages) {
-                if (!imageValidator.validatingImageUpload(subImage)) {
+            for (MultipartFile subImageFile : productSubImages) {
+                if (!imageValidator.validatingImageUpload(subImageFile)) {
                     throw new IllegalArgumentException("유효하지 않은 보조 이미지 파일이 포함되어 있습니다.");
                 }
-                // 업로드
-                String subImagePath = s3Uploader.uploadTeamProductSubImage(new ImageFile(subImage));
-                newProductSubImagePaths.add(subImagePath);
+                // S3 업로드
+                String newPath = s3Uploader.uploadTeamProductSubImage(new ImageFile(subImageFile));
+                newProductSubImagePaths.add(newPath);
 
-                // DB 엔티티 생성
+                // DB entity 생성
                 ProductSubImage productSubImage = ProductSubImage.builder()
                         .teamProduct(updatedTeamProduct)
-                        .productSubImagePath(subImagePath)
+                        .productSubImagePath(newPath)
                         .build();
                 newSubImageEntities.add(productSubImage);
             }
-            // 일괄 저장
             productSubImageCommandAdapter.saveAll(newSubImageEntities);
         }
 
-        // 5. PortfolioImages 업데이트
-        final TeamProductImages teamProductImages = teamProductMapper.toTeamProductImages(
-                updatedTeamProduct.getProductRepresentImagePath(),
-                newProductSubImagePaths
-        );
-
+        // =====================================
+        // 5) 링크(ProductLink) 처리 (전부삭제 후 새로추가)
+        // =====================================
         List<ProductLink> existingProductLink = productLinkQueryAdapter.getProductLinks(teamProductId);
         if (existingProductLink != null && !existingProductLink.isEmpty()) {
             productLinkCommandAdapter.deleteAll(existingProductLink);
         }
 
-        // 새로운 역할 및 기여도 추가
-        final List<ProductLink> newProductLinks =
-                teamProductMapper.toAddProductLinks(updatedTeamProduct, updateTeamProductRequest.getTeamProductLinks());
+        final List<ProductLink> newProductLinks = teamProductMapper.toAddProductLinks(
+                updatedTeamProduct,
+                updateTeamProductRequest.getTeamProductLinks()
+        );
         productLinkCommandAdapter.addProductLinks(newProductLinks);
-        final List<TeamProductResponseDTO.TeamProductLinkResponse> teamProductLinkResponses = teamProductMapper.toTeamProductLinks(newProductLinks);
 
-        // 8. 응답 DTO 생성 및 반환
+        final List<TeamProductResponseDTO.TeamProductLinkResponse> teamProductLinkResponses =
+                teamProductMapper.toTeamProductLinks(newProductLinks);
+
+        // =====================================
+        // 6) 응답 DTO 구성
+        // =====================================
+        final TeamProductImages teamProductImages = teamProductMapper.toTeamProductImages(
+                updatedTeamProduct.getProductRepresentImagePath(),
+                newProductSubImagePaths
+        );
+
         return teamProductMapper.toUpdateTeamProductResponse(
                 updatedTeamProduct,
                 teamProductLinkResponses,
                 teamProductImages
         );
     }
+
 
     // 팀 프로덕트 삭제
     public TeamProductResponseDTO.RemoveTeamProductResponse removeTeamProduct(final String teamCode, final Long teamProductId) {

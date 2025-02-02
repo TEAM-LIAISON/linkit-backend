@@ -34,8 +34,8 @@ public class AccountResponseDTO {
         private String accessToken;
         private String email;
         private String emailId;
+        private String memberName;
         private Boolean isMemberBasicInform;
-
     }
 
     @Builder
@@ -55,6 +55,7 @@ public class AccountResponseDTO {
         private String refreshToken;
         private String email;
         private String emailId;
+        private String memberName;
         private Boolean isMemberBasicInform;
     }
 }

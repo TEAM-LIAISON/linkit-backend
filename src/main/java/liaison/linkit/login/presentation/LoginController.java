@@ -55,7 +55,14 @@ public class LoginController {
 
         log.info("response 설정 = {}", response);
         return CommonResponse.onSuccess(
-                new AccountResponseDTO.LoginResponse(loginResponse.getAccessToken(), loginResponse.getEmail(), loginResponse.getEmailId(), loginResponse.getIsMemberBasicInform()));
+                new AccountResponseDTO.LoginResponse(
+                        loginResponse.getAccessToken(),
+                        loginResponse.getEmail(),
+                        loginResponse.getEmailId(),
+                        loginResponse.getMemberName(),
+                        loginResponse.getIsMemberBasicInform()
+                )
+        );
     }
 
     // accessToken을 재발행한다

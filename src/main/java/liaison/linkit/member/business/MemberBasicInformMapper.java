@@ -55,6 +55,8 @@ public class MemberBasicInformMapper {
                 .isPrivateInformAgree(memberBasicInform.isPrivateInformAgree())
                 .isAgeCheck(memberBasicInform.isAgeCheck())
                 .isMarketingAgree(memberBasicInform.isMarketingAgree())
+                .emailId(memberBasicInform.getMember().getEmailId())
+                .memberName(memberBasicInform.getMemberName())
                 .build();
     }
 
