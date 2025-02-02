@@ -62,6 +62,9 @@ public class ProfilePortfolioRequestDTO {
 
         private String projectLink;
         private String projectDescription;
+
+        @Builder.Default
+        private PortfolioImages portfolioImages = new PortfolioImages();
     }
 
     @Builder
@@ -79,5 +82,24 @@ public class ProfilePortfolioRequestDTO {
     @AllArgsConstructor
     public static class ProjectSkillName {
         private String projectSkillName;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PortfolioImages {
+        private String projectRepresentImagePath; // 대표 이미지
+
+        @Builder.Default
+        private List<PortfolioSubImage> portfolioSubImages = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class PortfolioSubImage {
+        private String projectSubImagePath;
     }
 }

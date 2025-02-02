@@ -3,7 +3,9 @@ package liaison.linkit.profile.business.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import liaison.linkit.common.validator.ImageValidator;
 import liaison.linkit.file.domain.ImageFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
@@ -172,6 +174,7 @@ public class ProfilePortfolioService {
         return profilePortfolioMapper.toAddProfilePortfolioResponse(savedProfilePortfolio, projectRoleAndContributions, projectSkillNames, portfolioImages);
     }
 
+    @Transactional
     public ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse updateProfilePortfolio(
             final Long memberId,
             final Long profilePortfolioId,
@@ -184,66 +187,105 @@ public class ProfilePortfolioService {
         // 1. 기존 포트폴리오 조회
         final ProfilePortfolio existingProfilePortfolio = profilePortfolioQueryAdapter.getProfilePortfolio(profilePortfolioId);
 
-        // 2. DTO를 통해 포트폴리오 업데이트
-        final ProfilePortfolio updatedProfilePortfolio = profilePortfolioCommandAdapter.updateProfilePortfolio(existingProfilePortfolio, updateProfilePortfolioRequest);
+        // 2. DTO를 통해 포트폴리오 업데이트 (텍스트 필드 등)
+        final ProfilePortfolio updatedProfilePortfolio = profilePortfolioCommandAdapter.updateProfilePortfolio(
+                existingProfilePortfolio,
+                updateProfilePortfolioRequest
+        );
 
-        // 3. 대표 이미지 처리
+        // =====================================
+        // 3) 대표 이미지 처리 (단일 파일)
+        // =====================================
         if (projectRepresentImage != null && !projectRepresentImage.isEmpty()) {
-            if (imageValidator.validatingImageUpload(projectRepresentImage)) {
-                // 기존 대표 이미지 삭제 (선택 사항)
-                if (updatedProfilePortfolio.getProjectRepresentImagePath() != null) {
-                    s3Uploader.deleteS3File(updatedProfilePortfolio.getProjectRepresentImagePath());
-                }
-                // 새로운 대표 이미지 업로드
-                String newRepresentImagePath = s3Uploader.uploadProfileProjectRepresentImage(new ImageFile(projectRepresentImage));
-                updatedProfilePortfolio.updateProjectRepresentImagePath(newRepresentImagePath);
-            } else {
+            if (!imageValidator.validatingImageUpload(projectRepresentImage)) {
                 throw new IllegalArgumentException("유효하지 않은 대표 이미지 파일입니다.");
+            }
+
+            // 기존 대표 이미지가 있으면 S3 삭제
+            if (updatedProfilePortfolio.getProjectRepresentImagePath() != null) {
+                s3Uploader.deleteS3File(updatedProfilePortfolio.getProjectRepresentImagePath());
+                log.info("Old represent image deleted: {}", updatedProfilePortfolio.getProjectRepresentImagePath());
+            }
+
+            // 새 대표 이미지 업로드
+            String newRepresentImagePath = s3Uploader.uploadProfileProjectRepresentImage(
+                    new ImageFile(projectRepresentImage)
+            );
+            // DB 반영
+            updatedProfilePortfolio.updateProjectRepresentImagePath(newRepresentImagePath);
+        }
+        // else: 새 대표 이미지가 없으면 기존 대표 이미지를 유지
+        // (만약 “대표 이미지를 삭제만” 하고 싶으면, 별도 flag 로직 추가 가능)
+
+        // =====================================
+        // 4) 보조(서브) 이미지 부분 업데이트
+        // =====================================
+        // (4-a) 유지할 서브 이미지 경로(keepPaths)를 DTO에서 추출
+        List<String> keepPaths = new ArrayList<>();
+        if (updateProfilePortfolioRequest.getPortfolioImages() != null) {
+            keepPaths = updateProfilePortfolioRequest.getPortfolioImages().getPortfolioSubImages()
+                    .stream()
+                    .map(dto -> dto.getProjectSubImagePath())
+                    .filter(Objects::nonNull)
+                    .toList();
+        }
+
+        // (4-b) 기존 DB 서브 이미지 목록
+        List<ProjectSubImage> existingSubImages = projectSubImageQueryAdapter.getProjectSubImages(profilePortfolioId);
+
+        // (4-c) 기존 중 keepPaths에 없는 것 => 삭제 (DB + S3)
+        if (existingSubImages != null && !existingSubImages.isEmpty()) {
+            for (ProjectSubImage oldSub : existingSubImages) {
+                String oldPath = oldSub.getProjectSubImagePath();
+                if (!keepPaths.contains(oldPath)) {
+                    s3Uploader.deleteS3File(oldPath);
+                    projectSubImageCommandAdapter.delete(oldSub);
+                    log.info("Deleted old sub-image: {}", oldPath);
+                }
             }
         }
 
-        // 4. 보조 이미지 처리
+        // (4-d) 새로 업로드할 파일들 처리
+        //       (optional) 개수 제한: if (keepPaths.size() + projectSubImages.size() > 4) { ... }
         List<String> newProjectSubImagePaths = new ArrayList<>();
         if (projectSubImages != null && !projectSubImages.isEmpty()) {
             // 최대 4개까지만 허용
-            if (projectSubImages.size() > 4) {
+            if (keepPaths.size() + projectSubImages.size() > 4) {
                 throw new IllegalArgumentException("보조 이미지는 최대 4개까지 첨부할 수 있습니다.");
             }
 
-            // 기존 보조 이미지 삭제 (선택 사항)
-            List<ProjectSubImage> existingSubImages = projectSubImageQueryAdapter.getProjectSubImages(profilePortfolioId);
-            if (existingSubImages != null && !existingSubImages.isEmpty()) {
-                for (ProjectSubImage subImage : existingSubImages) {
-                    s3Uploader.deleteS3File(subImage.getProjectSubImagePath());
-                }
-                projectSubImageCommandAdapter.deleteAll(existingSubImages);
-            }
-
-            // 새로운 보조 이미지 업로드 및 저장
             List<ProjectSubImage> newProjectSubImageEntities = new ArrayList<>();
             for (MultipartFile subImage : projectSubImages) {
-                if (imageValidator.validatingImageUpload(subImage)) {
-                    String subImagePath = s3Uploader.uploadProfileProjectSubImage(new ImageFile(subImage));
-                    newProjectSubImagePaths.add(subImagePath);
-                    ProjectSubImage newSubImage = ProjectSubImage.builder()
-                            .profilePortfolio(updatedProfilePortfolio)
-                            .projectSubImagePath(subImagePath)
-                            .build();
-                    newProjectSubImageEntities.add(newSubImage);
-                } else {
+                if (!imageValidator.validatingImageUpload(subImage)) {
                     throw new IllegalArgumentException("유효하지 않은 보조 이미지 파일이 포함되어 있습니다.");
                 }
+                // 새 파일 업로드
+                String subImagePath = s3Uploader.uploadProfileProjectSubImage(new ImageFile(subImage));
+                newProjectSubImagePaths.add(subImagePath);
+
+                // DB 엔티티 생성
+                ProjectSubImage newSubImage = ProjectSubImage.builder()
+                        .profilePortfolio(updatedProfilePortfolio)
+                        .projectSubImagePath(subImagePath)
+                        .build();
+                newProjectSubImageEntities.add(newSubImage);
             }
             projectSubImageCommandAdapter.saveAll(newProjectSubImageEntities);
         }
 
-        // 5. PortfolioImages 업데이트
+        // 5. PortfolioImages DTO 생성 (대표+서브 이미지 경로들)
         final PortfolioImages portfolioImages = profilePortfolioMapper.toPortfolioImages(
                 updatedProfilePortfolio.getProjectRepresentImagePath(),
-                newProjectSubImagePaths
+                // 기존 유지 경로 + 새로 업로드된 경로를 합쳐서 응답에 넘길 수도 있음
+                Stream.concat(
+                        keepPaths.stream(),
+                        newProjectSubImagePaths.stream()
+                ).toList()
         );
 
-        // 6. 역할 및 기여도 업데이트
+        // =====================================
+        // 6) 역할 및 기여도 업데이트 (전부 삭제 후 재추가)
+        // =====================================
         // 기존 역할 및 기여도 삭제
         List<ProjectRoleContribution> existingRoleContributions = projectRoleContributionQueryAdapter.getProjectRoleContributions(profilePortfolioId);
         if (existingRoleContributions != null && !existingRoleContributions.isEmpty()) {
@@ -251,30 +293,35 @@ public class ProfilePortfolioService {
         }
 
         // 새로운 역할 및 기여도 추가
-        final List<ProjectRoleContribution> newProjectRoleContributions =
-                profilePortfolioMapper.toAddProjectRoleContributions(updatedProfilePortfolio, updateProfilePortfolioRequest.getProjectRoleAndContributions());
+        final List<ProjectRoleContribution> newProjectRoleContributions = profilePortfolioMapper.toAddProjectRoleContributions(
+                updatedProfilePortfolio,
+                updateProfilePortfolioRequest.getProjectRoleAndContributions()
+        );
         projectRoleContributionCommandAdapter.addProjectRoleContributions(newProjectRoleContributions);
-        final List<ProjectRoleAndContribution> projectRoleAndContributions = profilePortfolioMapper.toProjectRoleAndContributions(newProjectRoleContributions);
+        final List<ProjectRoleAndContribution> projectRoleAndContributions =
+                profilePortfolioMapper.toProjectRoleAndContributions(newProjectRoleContributions);
 
-        // 7. 스킬 업데이트
-        // 기존 스킬 삭제
+        // =====================================
+        // 7) 스킬 업데이트 (전부 삭제 후 새로 추가)
+        // =====================================
         List<ProjectSkill> existingProjectSkills = projectSkillQueryAdapter.getProjectSkills(profilePortfolioId);
         if (existingProjectSkills != null && !existingProjectSkills.isEmpty()) {
             projectSkillCommandAdapter.deleteAll(existingProjectSkills);
         }
 
-        // 새로운 스킬 추가
         List<String> newSkillNames = updateProfilePortfolioRequest.getProjectSkillNames()
                 .stream()
-                .map(ProfilePortfolioRequestDTO.ProjectSkillName::getProjectSkillName) // 괄호 제거
-                .collect(Collectors.toList());
+                .map(ProfilePortfolioRequestDTO.ProjectSkillName::getProjectSkillName)
+                .toList();
 
         final List<Skill> newSkills = skillQueryAdapter.getSkillsBySkillNames(newSkillNames);
         final List<ProjectSkill> newProjectSkills = profilePortfolioMapper.toAddProjectSkills(updatedProfilePortfolio, newSkills);
         projectSkillCommandAdapter.saveAll(newProjectSkills);
         final List<ProjectSkillName> projectSkillNames = profilePortfolioMapper.toProjectSkillNames(newProjectSkills);
 
+        // =====================================
         // 8. 응답 DTO 생성 및 반환
+        // =====================================
         return profilePortfolioMapper.toUpdateProfilePortfolioResponse(
                 updatedProfilePortfolio,
                 projectRoleAndContributions,
