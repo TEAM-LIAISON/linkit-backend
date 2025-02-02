@@ -84,7 +84,7 @@ public class TeamProductService {
         final List<TeamProductLinkResponse> teamProductLinkResponses = teamProductMapper.toTeamProductLinks(productLinks);
 
         // 해당 포트폴리오(프로젝트)의 연결된 이미지 조회
-        final List<String> productSubImagePaths = productSubImageQueryAdapter.getProjectSubImagePaths(teamProductId);
+        final List<String> productSubImagePaths = productSubImageQueryAdapter.getProductSubImagePaths(teamProductId);
         final TeamProductImages teamProductImages = teamProductMapper.toTeamProductImages(teamProduct.getProductRepresentImagePath(), productSubImagePaths);
 
         return teamProductMapper.toTeamProductDetail(teamProduct, teamProductLinkResponses, teamProductImages);
@@ -162,55 +162,70 @@ public class TeamProductService {
         // 2. DTO를 통해 포트폴리오 업데이트
         final TeamProduct updatedTeamProduct = teamProductCommandAdapter.updateTeamProduct(existingTeamProduct, updateTeamProductRequest);
 
-        // 3. 대표 이미지 처리
+        // -------------------------
+        // 3) 대표 이미지 처리
+        // -------------------------
         if (productRepresentImage != null && !productRepresentImage.isEmpty()) {
-            if (imageValidator.validatingImageUpload(productRepresentImage)) {
-                // 기존 대표 이미지 삭제 (선택 사항)
-                if (updatedTeamProduct.getProductRepresentImagePath() != null) {
-                    s3Uploader.deleteS3File(updatedTeamProduct.getProductRepresentImagePath());
-                }
-                // 새로운 대표 이미지 업로드
-                String newRepresentImagePath = s3Uploader.uploadTeamProductRepresentImage(new ImageFile(productRepresentImage));
-                updatedTeamProduct.updateProductRepresentImagePath(newRepresentImagePath);
-            } else {
+            // 새 대표 이미지가 업로드됨
+            if (!imageValidator.validatingImageUpload(productRepresentImage)) {
                 throw new IllegalArgumentException("유효하지 않은 대표 이미지 파일입니다.");
             }
+
+            // (3-1) 기존 대표 이미지가 있었다면 S3에서 삭제
+            String oldRepresentPath = updatedTeamProduct.getProductRepresentImagePath();
+            if (oldRepresentPath != null) {
+                s3Uploader.deleteS3File(oldRepresentPath);
+                log.info("Old represent image deleted from S3: {}", oldRepresentPath);
+            }
+
+            // (3-2) 새 대표 이미지 업로드
+            String newRepresentImagePath = s3Uploader.uploadTeamProductRepresentImage(
+                    new ImageFile(productRepresentImage)
+            );
+            // (3-3) DB에 반영
+            updatedTeamProduct.updateProductRepresentImagePath(newRepresentImagePath);
         }
 
-        // 4. 보조 이미지 처리
+        // -------------------------
+        // 4) 보조(서브) 이미지 처리
+        // -------------------------
         List<String> newProductSubImagePaths = new ArrayList<>();
+
         if (productSubImages != null && !productSubImages.isEmpty()) {
-            // 최대 4개까지만 허용
+            // 4-1) 최대 4개 제한
             if (productSubImages.size() > 4) {
                 throw new IllegalArgumentException("보조 이미지는 최대 4개까지 첨부할 수 있습니다.");
             }
 
-            // 기존 보조 이미지 삭제 (선택 사항)
-            List<ProductSubImage> existingSubImages = productSubImageQueryAdapter.getProjectSubImages(teamProductId);
+            // 4-2) 기존 보조 이미지 전부 삭제 (DB + S3)
+            List<ProductSubImage> existingSubImages = productSubImageQueryAdapter.getProductSubImages(teamProductId);
             if (existingSubImages != null && !existingSubImages.isEmpty()) {
                 for (ProductSubImage subImage : existingSubImages) {
                     s3Uploader.deleteS3File(subImage.getProductSubImagePath());
-                    log.info("product subimage deleted");
+                    log.info("Deleted sub-image from S3: {}", subImage.getProductSubImagePath());
                 }
                 productSubImageCommandAdapter.deleteAll(existingSubImages);
             }
 
-            // 새로운 보조 이미지 업로드 및 저장
-            List<ProductSubImage> newProductSubImageEntities = new ArrayList<>();
+            // 4-3) 새로 업로드 + DB 저장
+            List<ProductSubImage> newSubImageEntities = new ArrayList<>();
             for (MultipartFile subImage : productSubImages) {
-                if (imageValidator.validatingImageUpload(subImage)) {
-                    String subImagePath = s3Uploader.uploadTeamProductSubImage(new ImageFile(subImage));
-                    newProductSubImagePaths.add(subImagePath);
-                    ProductSubImage productSubImage = ProductSubImage.builder()
-                            .teamProduct(updatedTeamProduct)
-                            .productSubImagePath(subImagePath)
-                            .build();
-                    newProductSubImageEntities.add(productSubImage);
-                } else {
+                if (!imageValidator.validatingImageUpload(subImage)) {
                     throw new IllegalArgumentException("유효하지 않은 보조 이미지 파일이 포함되어 있습니다.");
                 }
+                // 업로드
+                String subImagePath = s3Uploader.uploadTeamProductSubImage(new ImageFile(subImage));
+                newProductSubImagePaths.add(subImagePath);
+
+                // DB 엔티티 생성
+                ProductSubImage productSubImage = ProductSubImage.builder()
+                        .teamProduct(updatedTeamProduct)
+                        .productSubImagePath(subImagePath)
+                        .build();
+                newSubImageEntities.add(productSubImage);
             }
-            productSubImageCommandAdapter.saveAll(newProductSubImageEntities);
+            // 일괄 저장
+            productSubImageCommandAdapter.saveAll(newSubImageEntities);
         }
 
         // 5. PortfolioImages 업데이트
@@ -238,7 +253,6 @@ public class TeamProductService {
         );
     }
 
-
     // 팀 프로덕트 삭제
     public TeamProductResponseDTO.RemoveTeamProductResponse removeTeamProduct(final String teamCode, final Long teamProductId) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
@@ -257,7 +271,7 @@ public class TeamProductService {
         }
 
         // 기존 보조 이미지 삭제 (선택 사항)
-        List<ProductSubImage> existingSubImages = productSubImageQueryAdapter.getProjectSubImages(teamProductId);
+        List<ProductSubImage> existingSubImages = productSubImageQueryAdapter.getProductSubImages(teamProductId);
         if (existingSubImages != null && !existingSubImages.isEmpty()) {
             for (ProductSubImage subImage : existingSubImages) {
                 s3Uploader.deleteS3File(subImage.getProductSubImagePath());

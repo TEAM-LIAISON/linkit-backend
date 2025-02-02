@@ -34,11 +34,11 @@ public class LogSearchService {
     public LogInformMenus getHomeLogInformMenus() {
 
         // 1) ProfileLog 전부(or 조건) 조회
-        List<ProfileLog> profileLogs = profileLogQueryAdapter.findTopView(4);
+        List<ProfileLog> profileLogs = profileLogQueryAdapter.findTopView(2);
         // 2) TeamLog 전부(or 조건) 조회
-        List<TeamLog> teamLogs = teamLogQueryAdapter.findTopView(4);
+        List<TeamLog> teamLogs = teamLogQueryAdapter.findTopView(2);
 
-        // 3) 두 엔티티를 하나의 리스트로 합침 (최대 8개)
+        // 3) 두 엔티티를 하나의 리스트로 합침 (최대 4개)
         List<Object> combined = new ArrayList<>();
         combined.addAll(profileLogs);
         combined.addAll(teamLogs);
@@ -53,9 +53,9 @@ public class LogSearchService {
             return Long.compare(bv, av); // 내림차순
         });
 
-        // 5) 상위 4개만 추출
+        // 5) 상위 2개만 추출
         List<Object> top4 = combined.stream()
-                .limit(4)
+                .limit(2)
                 .toList();
 
         // 6) 각 엔티티를 LogInformMenu DTO로 변환
