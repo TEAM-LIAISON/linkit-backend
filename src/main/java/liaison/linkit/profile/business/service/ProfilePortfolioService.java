@@ -81,7 +81,18 @@ public class ProfilePortfolioService {
     }
 
     @Transactional(readOnly = true)
-    public ProfilePortfolioResponseDTO.ProfilePortfolioDetail getProfilePortfolioDetail(final Long memberId, final Long profilePortfolioId) {
+    public ProfilePortfolioResponseDTO.ProfilePortfolioItems getProfilePortfolioViewItems(final String emailId) {
+        final Profile profile = profileQueryAdapter.findByEmailId(emailId);
+
+        final List<ProfilePortfolio> profilePortfolios = profilePortfolioQueryAdapter.getProfilePortfolios(profile.getId());
+
+        final Map<Long, List<String>> projectRolesMap = projectRoleContributionQueryAdapter.getProjectRolesByProfileId(profile.getId());
+
+        return profilePortfolioMapper.toProfilePortfolioItems(profilePortfolios, projectRolesMap);
+    }
+
+    @Transactional(readOnly = true)
+    public ProfilePortfolioResponseDTO.ProfilePortfolioDetail getProfilePortfolioDetailInLoginState(final Long memberId, final Long profilePortfolioId) {
         log.info("memberId = {}의 포트폴리오 Detail 조회 요청이 서비스 계층에 발생했습니다.", memberId);
 
         final ProfilePortfolio profilePortfolio = profilePortfolioQueryAdapter.getProfilePortfolio(profilePortfolioId);

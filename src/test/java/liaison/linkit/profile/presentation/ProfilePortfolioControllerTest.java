@@ -96,6 +96,14 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performGetProfilePortfolioViewItems(final String emailId) throws Exception {
+        return mockMvc.perform(
+                RestDocumentationRequestBuilders.get("/api/v1/profile/portfolio/view/{emailId}", emailId)
+                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                        .cookie(COOKIE)
+        );
+    }
+
     private ResultActions performGetProfilePortfolioDetail(final Long profilePortfolioId) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.get("/api/v1/profile/portfolio/{profilePortfolioId}", profilePortfolioId)
@@ -198,6 +206,96 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
+    @DisplayName("비회원이 나의 포트폴리오 뷰어를 전체 조회할 수 있다.")
+    @Test
+    void getProfilePortfolioViewItems() throws Exception {
+        // given
+        final ProfilePortfolioResponseDTO.ProfilePortfolioItem firstProfilePortfolioItem
+                = new ProfilePortfolioItem(1L, "프로젝트 이름", "프로젝트 한 줄 소개", ProjectSize.PERSONAL, "2023.02", "2023.04", false, Arrays.asList("컨텐츠 제작", "브랜딩", "계정 관리"), "logo.png");
+
+        final ProfilePortfolioResponseDTO.ProfilePortfolioItem secondProfilePortfolioItem
+                = new ProfilePortfolioItem(2L, "프로젝트 이름", "프로젝트 한 줄 소개", ProjectSize.TEAM, "2023.03", "2023.06", true, Arrays.asList("컨텐츠 제작", "브랜딩", "계정 관리"), "logo.png");
+
+        final ProfilePortfolioResponseDTO.ProfilePortfolioItems profilePortfolioItems
+                = new ProfilePortfolioItems(Arrays.asList(firstProfilePortfolioItem, secondProfilePortfolioItem));
+
+        // when
+        when(profilePortfolioService.getProfilePortfolioViewItems(any())).thenReturn(profilePortfolioItems);
+
+        final ResultActions resultActions = performGetProfilePortfolioViewItems("emailId");
+
+        // then
+        final MvcResult mvcResult = resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.isSuccess").value("true"))
+                .andExpect(jsonPath("$.code").value("1000"))
+                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                .andDo(
+                        restDocs.document(
+                                pathParameters(
+                                        parameterWithName("emailId")
+                                                .description("유저 아이디")
+                                ),
+                                responseFields(
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부")
+                                                .attributes(field("constraint", "boolean 값")),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지")
+                                                .attributes(field("constraint", "문자열")),
+                                        subsectionWithPath("result.profilePortfolioItems[]")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로필 수상 아이템 배열"),
+                                        fieldWithPath("result.profilePortfolioItems[].profilePortfolioId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("내 수상 ID"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 이름"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectLineDescription")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 한 줄 소개"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectSize")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 규모"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectStartDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 시작 날짜"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectEndDate")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 종료 날짜"),
+                                        fieldWithPath("result.profilePortfolioItems[].isProjectInProgress")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("프로젝트 진행 여부"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectRoles[]")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("프로젝트 역할 배열"),
+                                        fieldWithPath("result.profilePortfolioItems[].projectRepresentImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("프로젝트 대표 이미지 경로")
+                                )
+                        )).andReturn();
+
+        // JSON 응답에서 result 객체를 추출 및 검증
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<ProfilePortfolioItems> actual = objectMapper.readValue(
+                jsonResponse,
+                new TypeReference<CommonResponse<ProfilePortfolioItems>>() {
+                }
+        );
+
+        final CommonResponse<ProfilePortfolioItems> expected = CommonResponse.onSuccess(profilePortfolioItems);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
     @DisplayName("회원이 나의 포트폴리오를 상세 조회할 수 있다.")
     @Test
     void getProfilePortfolioDetail() throws Exception {
@@ -225,11 +323,10 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                 "프로젝트 설명", portfolioImages);
 
         // when
-        when(profilePortfolioService.getProfilePortfolioDetail(anyLong(), anyLong())).thenReturn(profilePortfolioDetail);
+        when(profilePortfolioService.getProfilePortfolioDetailInLogoutState(anyLong())).thenReturn(profilePortfolioDetail);
 
         final ResultActions resultActions = performGetProfilePortfolioDetail(1L);
 
-        // then
         // then
         final MvcResult mvcResult = resultActions
                 .andExpect(status().isOk())

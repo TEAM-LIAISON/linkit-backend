@@ -38,6 +38,14 @@ public class ProfilePortfolioController {
         return CommonResponse.onSuccess(profilePortfolioService.getProfilePortfolioItems(accessor.getMemberId()));
     }
 
+    // 포트폴리오 뷰어 전체 조회
+    @GetMapping("/view/{emailId}")
+    public CommonResponse<ProfilePortfolioItems> getProfilePortfolioViewItems(
+            @PathVariable final String emailId
+    ) {
+        return CommonResponse.onSuccess(profilePortfolioService.getProfilePortfolioViewItems(emailId));
+    }
+
     // 포트폴리오 단일 조회
     @GetMapping("/{profilePortfolioId}")
     public CommonResponse<ProfilePortfolioResponseDTO.ProfilePortfolioDetail> getProfilePortfolioDetail(
@@ -46,7 +54,7 @@ public class ProfilePortfolioController {
     ) {
         if (accessor.isMember()) {
             log.info("memberId = {}의 포트폴리오 ID = {}에 대한 단일 조회 요청이 발생했습니다.", accessor.getMemberId(), profilePortfolioId);
-            return CommonResponse.onSuccess(profilePortfolioService.getProfilePortfolioDetail(accessor.getMemberId(), profilePortfolioId));
+            return CommonResponse.onSuccess(profilePortfolioService.getProfilePortfolioDetailInLoginState(accessor.getMemberId(), profilePortfolioId));
         } else {
             return CommonResponse.onSuccess(profilePortfolioService.getProfilePortfolioDetailInLogoutState(profilePortfolioId));
         }
