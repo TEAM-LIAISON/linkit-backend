@@ -145,7 +145,7 @@ public class LoginService {
         deleteUtil.quitAccount(memberId, refreshToken);
     }
 
-    private void removeRefreshToken(final String refreshToken) {    // 리프레시 토큰을 삭제한다
+    public void removeRefreshToken(final String refreshToken) {    // 리프레시 토큰을 삭제한다
         refreshTokenRepository.deleteById(refreshToken);
     }
 }

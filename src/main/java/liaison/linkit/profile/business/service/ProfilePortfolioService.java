@@ -102,6 +102,26 @@ public class ProfilePortfolioService {
         return profilePortfolioMapper.toProfilePortfolioDetail(profilePortfolio, projectRoleAndContributions, projectSkillNames, portfolioImages);
     }
 
+    @Transactional(readOnly = true)
+    public ProfilePortfolioResponseDTO.ProfilePortfolioDetail getProfilePortfolioDetailInLogoutState(final Long profilePortfolioId) {
+        final ProfilePortfolio profilePortfolio = profilePortfolioQueryAdapter.getProfilePortfolio(profilePortfolioId);
+        log.info("profilePortfolio = {}가 성공적으로 조회되었습니다.", profilePortfolio);
+
+        // 해당 포트폴리오(프로젝트)의 연결된 역할 및 기여도 조회
+        final List<ProjectRoleContribution> projectRoleContributions = projectRoleContributionQueryAdapter.getProjectRoleContributions(profilePortfolioId);
+        final List<ProjectRoleAndContribution> projectRoleAndContributions = profilePortfolioMapper.toProjectRoleAndContributions(projectRoleContributions);
+
+        // 해당 포트폴리오(프로젝트)의 연결된 사용 스킬 조회
+        final List<ProjectSkill> projectSkills = projectSkillQueryAdapter.getProjectSkills(profilePortfolio.getId());
+        final List<ProjectSkillName> projectSkillNames = profilePortfolioMapper.toProjectSkillNames(projectSkills);
+
+        // 해당 포트폴리오(프로젝트)의 연결된 이미지 조회
+        final List<String> projectSubImagePaths = projectSubImageQueryAdapter.getProjectSubImagePaths(profilePortfolio.getId());
+        final PortfolioImages portfolioImages = profilePortfolioMapper.toPortfolioImages(profilePortfolio.getProjectRepresentImagePath(), projectSubImagePaths);
+
+        return profilePortfolioMapper.toProfilePortfolioDetail(profilePortfolio, projectRoleAndContributions, projectSkillNames, portfolioImages);
+    }
+
 
     public ProfilePortfolioResponseDTO.AddProfilePortfolioResponse addProfilePortfolio(
             final Long memberId,

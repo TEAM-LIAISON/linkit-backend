@@ -34,6 +34,7 @@ import liaison.linkit.team.presentation.teamMember.TeamMemberController;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.AddTeamMemberRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.RemoveTeamMemberRequest;
+import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.TeamJoinRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberRequestDTO.UpdateTeamMemberTypeRequest;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO;
 import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.AcceptedTeamMemberItem;
@@ -142,11 +143,13 @@ public class TeamMemberControllerTest extends ControllerTest {
         );
     }
 
-    private ResultActions performJoinTeam(final String teamCode) throws Exception {
+    private ResultActions performJoinTeam(final String teamCode, final TeamJoinRequest request) throws Exception {
         return mockMvc.perform(
                 RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/member/join", teamCode)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
         );
     }
 
@@ -259,6 +262,8 @@ public class TeamMemberControllerTest extends ControllerTest {
     void getTeamMemberEditItems() throws Exception {
         // given
         final TeamMemberItems teamMemberItems = TeamMemberItems.builder()
+                .isTeamOwner(true)
+                .isTeamManager(true)
                 .acceptedTeamMemberItems(
                         Arrays.asList(
                                 AcceptedTeamMemberItem.builder()
@@ -340,6 +345,12 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         fieldWithPath("result")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("결과 데이터"),
+                                        fieldWithPath("result.isTeamOwner")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀의 오너인지 여부"),
+                                        fieldWithPath("result.isTeamManager")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀의 관리자인지 여부 (오너 포함)"),
                                         fieldWithPath("result.acceptedTeamMemberItems")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("초대 수락 완료된 팀 멤버 목록"),
@@ -736,6 +747,10 @@ public class TeamMemberControllerTest extends ControllerTest {
     @Test
     void joinTeam() throws Exception {
         // given
+        final TeamJoinRequest teamJoinRequest = TeamJoinRequest.builder()
+                .isTeamJoin(true)
+                .build();
+
         final TeamJoinResponse teamJoinResponse = TeamJoinResponse.builder()
                 .teamCode("liaison")
                 .emailId("kwondm7")
@@ -744,7 +759,7 @@ public class TeamMemberControllerTest extends ControllerTest {
         // when
         when(teamMemberService.joinTeam(anyLong(), any(), any())).thenReturn(teamJoinResponse);
 
-        final ResultActions resultActions = performJoinTeam("liaison");
+        final ResultActions resultActions = performJoinTeam("liaison", teamJoinRequest);
 
         // then
         final MvcResult mvcResult = resultActions
@@ -757,6 +772,11 @@ public class TeamMemberControllerTest extends ControllerTest {
                                 pathParameters(
                                         parameterWithName("teamCode")
                                                 .description("팀 아이디 (팀 코드)")
+                                ),
+                                requestFields(
+                                        fieldWithPath("isTeamJoin")
+                                                .description("팀 초대 수락 여부")
+                                                .attributes(field("constraint", "boolean 값"))
                                 ),
                                 responseFields(
                                         fieldWithPath("isSuccess")

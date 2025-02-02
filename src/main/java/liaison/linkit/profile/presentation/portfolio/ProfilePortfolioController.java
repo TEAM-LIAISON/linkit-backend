@@ -40,13 +40,16 @@ public class ProfilePortfolioController {
 
     // 포트폴리오 단일 조회
     @GetMapping("/{profilePortfolioId}")
-    @MemberOnly
     public CommonResponse<ProfilePortfolioResponseDTO.ProfilePortfolioDetail> getProfilePortfolioDetail(
             @Auth final Accessor accessor,
             @PathVariable final Long profilePortfolioId
     ) {
-        log.info("memberId = {}의 포트폴리오 ID = {}에 대한 단일 조회 요청이 발생했습니다.", accessor.getMemberId(), profilePortfolioId);
-        return CommonResponse.onSuccess(profilePortfolioService.getProfilePortfolioDetail(accessor.getMemberId(), profilePortfolioId));
+        if (accessor.isMember()) {
+            log.info("memberId = {}의 포트폴리오 ID = {}에 대한 단일 조회 요청이 발생했습니다.", accessor.getMemberId(), profilePortfolioId);
+            return CommonResponse.onSuccess(profilePortfolioService.getProfilePortfolioDetail(accessor.getMemberId(), profilePortfolioId));
+        } else {
+            return CommonResponse.onSuccess(profilePortfolioService.getProfilePortfolioDetailInLogoutState(profilePortfolioId));
+        }
     }
 
     // 포트폴리오 단일 생성

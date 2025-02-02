@@ -428,6 +428,45 @@ public class ChatControllerTest extends ControllerTest {
                 .totalElements(2L)
                 .totalPages(1)
                 .hasNext(false)
+                .chatPartnerInformation(
+                        ChatPartnerInformation.builder()
+                                .chatPartnerName("채팅 상대방 이름")
+                                .chatPartnerImageUrl("채팅 상대방의 프로필 이미지")
+                                .partnerProfileDetailInformation(
+                                        PartnerProfileDetailInformation.builder()
+                                                .profilePositionDetail(
+                                                        ProfilePositionDetail.builder()
+                                                                .majorPosition("프로필 포지션 대분류")
+                                                                .subPosition("프로필 포지션 소분류")
+                                                                .build()
+                                                )
+                                                .regionDetail(
+                                                        RegionDetail.builder()
+                                                                .cityName("프로필 지역 시/도")
+                                                                .divisionName("프로필 지역 시/군/구")
+                                                                .build()
+                                                )
+                                                .build()
+                                )
+                                .partnerTeamDetailInformation(
+                                        PartnerTeamDetailInformation.builder()
+                                                .teamScaleItem(
+                                                        TeamScaleItem.builder()
+                                                                .teamScaleName("팀 규모 (1인, 5인, ...)")
+                                                                .build()
+                                                )
+                                                .regionDetail(
+                                                        RegionDetail.builder()
+                                                                .cityName("팀 활동 지역 시/도")
+                                                                .divisionName("팀 활동 지역 시/군/구")
+                                                                .build()
+                                                )
+                                                .build()
+                                )
+                                .lastMessage("해당 채팅방에서의 마지막 메시지")
+                                .lastMessageTime(LocalDateTime.now())
+                                .build()
+                )
                 .messages(
                         Arrays.asList(
                                 ChatResponseDTO.ChatMessageResponse.builder()
@@ -454,6 +493,7 @@ public class ChatControllerTest extends ControllerTest {
                                         .build()
                         )
                 )
+                .isChatPartnerOnline(true)
                 .build();
 
         CommonResponse<ChatMessageHistoryResponse> commonResponse = CommonResponse.onSuccess(chatMessageHistoryResponse);
@@ -469,33 +509,134 @@ public class ChatControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
                 .andDo(
                         restDocs.document(
+                                queryParameters(
+                                        parameterWithName("senderType")
+                                                .optional()
+                                                .description("발신자 타입 (선택적) - [PROFILE, TEAM]"),
+                                        parameterWithName("page")
+                                                .optional()
+                                                .description("페이지 번호 (기본값: 0)"),
+                                        parameterWithName("size")
+                                                .optional()
+                                                .description("페이지 크기 (기본값: 20)"),
+                                        parameterWithName("sort")
+                                                .optional()
+                                                .description("정렬 기준 (예: timestamp,desc)")
+                                ),
                                 pathParameters(
                                         parameterWithName("chatRoomId")
                                                 .description("채팅방 ID")
                                 ),
-                                queryParameters(
-                                        parameterWithName("page").description("페이지 번호 (기본값: 0)"),
-                                        parameterWithName("size").description("페이지 크기 (기본값: 50)"),
-                                        parameterWithName("sort").description("정렬 기준 (예: timestamp,desc)")
-                                ),
                                 responseFields(
-                                        fieldWithPath("isSuccess").type(JsonFieldType.BOOLEAN).description("요청 성공 여부"),
-                                        fieldWithPath("code").type(JsonFieldType.STRING).description("요청 성공 코드"),
-                                        fieldWithPath("message").type(JsonFieldType.STRING).description("요청 성공 메시지"),
-                                        fieldWithPath("result.totalElements").type(JsonFieldType.NUMBER).description("전체 메시지 수"),
-                                        fieldWithPath("result.totalPages").type(JsonFieldType.NUMBER).description("전체 페이지 수"),
-                                        fieldWithPath("result.hasNext").type(JsonFieldType.BOOLEAN).description("다음 페이지 존재 여부"),
-                                        fieldWithPath("result.messages").type(JsonFieldType.ARRAY).description("채팅 메시지 목록"),
-                                        fieldWithPath("result.messages[].messageId").type(JsonFieldType.STRING).description("메시지 ID"),
-                                        fieldWithPath("result.messages[].chatRoomId").type(JsonFieldType.NUMBER).description("채팅방 ID"),
-                                        fieldWithPath("result.messages[].content").type(JsonFieldType.STRING).description("메시지 내용"),
-                                        fieldWithPath("result.messages[].timestamp").type(JsonFieldType.STRING).description("메시지 전송 시간"),
-                                        fieldWithPath("result.messages[].read").type(JsonFieldType.BOOLEAN).description("메시지 읽음 여부"),
-                                        // 누락된 필드 추가
-                                        fieldWithPath("result.messages[].myParticipantType").type(JsonFieldType.STRING).description("현재 사용자의 참여 타입 (A_TYPE / B_TYPE / 기타)"),
-                                        fieldWithPath("result.messages[].messageSenderParticipantType").type(JsonFieldType.STRING).description("메시지 발신자의 참여 타입 (A_TYPE / B_TYPE / 기타)"),
-                                        fieldWithPath("result.messages[].isMyMessage").type(JsonFieldType.BOOLEAN).description("내가 보낸 메시지인지 여부"),
-                                        fieldWithPath("result.messages[].messageSenderLogoImagePath").type(JsonFieldType.STRING).description("메시지 발신자의 로고 이미지 경로")
+                                        fieldWithPath("isSuccess")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("요청 성공 여부"),
+                                        fieldWithPath("code")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 코드"),
+                                        fieldWithPath("message")
+                                                .type(JsonFieldType.STRING)
+                                                .description("요청 성공 메시지"),
+
+                                        // result 객체 내부 (페이징 및 메시지 목록)
+                                        fieldWithPath("result.totalElements")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("전체 메시지 수"),
+                                        fieldWithPath("result.totalPages")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("전체 페이지 수"),
+                                        fieldWithPath("result.hasNext")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("다음 페이지 존재 여부"),
+                                        fieldWithPath("result.messages")
+                                                .type(JsonFieldType.ARRAY)
+                                                .description("채팅 메시지 목록"),
+                                        fieldWithPath("result.messages[].messageId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("메시지 ID"),
+                                        fieldWithPath("result.messages[].chatRoomId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("채팅방 ID"),
+                                        fieldWithPath("result.messages[].myParticipantType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("현재 사용자의 참여 타입 (예: A_TYPE 또는 B_TYPE)"),
+                                        fieldWithPath("result.messages[].messageSenderParticipantType")
+                                                .type(JsonFieldType.STRING)
+                                                .description("메시지 발신자의 참여 타입 (예: A_TYPE 또는 B_TYPE)"),
+                                        fieldWithPath("result.messages[].isMyMessage")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("내가 보낸 메시지 여부"),
+                                        fieldWithPath("result.messages[].messageSenderLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("메시지 발신자의 프로필 로고 이미지 경로"),
+                                        fieldWithPath("result.messages[].content")
+                                                .type(JsonFieldType.STRING)
+                                                .description("메시지 내용"),
+                                        fieldWithPath("result.messages[].timestamp")
+                                                .type(JsonFieldType.STRING)
+                                                .description("메시지 전송 시간"),
+                                        fieldWithPath("result.messages[].read")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("메시지 읽음 여부"),
+
+                                        // 최상위 result 내 채팅 파트너 관련 정보
+                                        fieldWithPath("result.chatPartnerInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("채팅 파트너 정보"),
+                                        fieldWithPath("result.chatPartnerInformation.chatPartnerName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너 이름"),
+                                        fieldWithPath("result.chatPartnerInformation.chatPartnerImageUrl")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너 프로필 이미지 URL"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerProfileDetailInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("채팅 파트너의 프로필 상세 정보"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerProfileDetailInformation.profilePositionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("채팅 파트너 포지션 상세 정보"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerProfileDetailInformation.profilePositionDetail.majorPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너 포지션 대분류"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerProfileDetailInformation.profilePositionDetail.subPosition")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너 포지션 소분류"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerProfileDetailInformation.regionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("채팅 파트너 지역 정보"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerProfileDetailInformation.regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너 도시 이름"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerProfileDetailInformation.regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너 구/도 정보"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerTeamDetailInformation")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("채팅 파트너의 팀 상세 정보"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerTeamDetailInformation.teamScaleItem")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("채팅 파트너의 팀 규모 정보"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerTeamDetailInformation.teamScaleItem.teamScaleName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너 팀의 규모명"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerTeamDetailInformation.regionDetail")
+                                                .type(JsonFieldType.OBJECT)
+                                                .description("채팅 파트너의 팀 지역 정보"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerTeamDetailInformation.regionDetail.cityName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너 팀의 도시 이름"),
+                                        fieldWithPath("result.chatPartnerInformation.partnerTeamDetailInformation.regionDetail.divisionName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너 팀의 구/도 정보"),
+                                        fieldWithPath("result.chatPartnerInformation.lastMessage")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너가 보낸 마지막 메시지 내용"),
+                                        fieldWithPath("result.chatPartnerInformation.lastMessageTime")
+                                                .type(JsonFieldType.STRING)
+                                                .description("채팅 파트너가 보낸 마지막 메시지 전송 시간"),
+                                        fieldWithPath("result.chatPartnerOnline")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("채팅 파트너의 온라인 여부")
                                 )
                         )
                 );

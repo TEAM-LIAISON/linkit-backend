@@ -903,9 +903,9 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 2 Feb 2025 07:28:42 GMT; Secure; HttpOnly; SameSite=None
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 9 Feb 2025 08:17:59 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
-Content-Length: 242
+Content-Length: 278
 
 {
   "isSuccess" : true,
@@ -915,6 +915,7 @@ Content-Length: 242
     "accessToken" : "accessToken",
     "email" : "linkit@gmail.com",
     "emailId" : "linkit",
+    "memberName" : "회원 이름",
     "isMemberBasicInform" : false
   }
 }</code></pre>
@@ -963,6 +964,11 @@ Content-Length: 242
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.emailId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 유저 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.memberName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isMemberBasicInform</code></p></td>
@@ -1037,14 +1043,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 158
+Content-Length: 159
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2025-01-26T16:28:42.92114"
+    "logoutAt" : "2025-02-02T17:17:59.145124"
   }
 }</code></pre>
 </div>
@@ -1198,7 +1204,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2025-01-26T16:28:42.985475"
+    "quitAt" : "2025-02-02T17:17:59.197772"
   }
 }</code></pre>
 </div>
@@ -1293,14 +1299,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 178
+Content-Length: 177
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2025-01-26T16:28:44.689537"
+    "reAuthenticationEmailSendAt" : "2025-02-02T17:18:00.16227"
   }
 }</code></pre>
 </div>
@@ -1410,7 +1416,7 @@ Content-Length: 214
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2025-01-26T16:28:44.647964"
+    "verificationSuccessAt" : "2025-02-02T17:18:00.144786"
   }
 }</code></pre>
 </div>
@@ -1809,7 +1815,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 266
+Content-Length: 329
 
 {
   "isSuccess" : true,
@@ -1820,7 +1826,9 @@ Content-Length: 266
     "isServiceUseAgree" : true,
     "isPrivateInformAgree" : true,
     "isAgeCheck" : true,
-    "isMarketingAgree" : true
+    "isMarketingAgree" : true,
+    "emailId" : "kwondm7",
+    "memberName" : "회원 이름"
   }
 }</code></pre>
 </div>
@@ -1878,6 +1886,16 @@ Content-Length: 266
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isMarketingAgree</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">광고성 정보 수신 동의</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.emailId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 유저 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.memberName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
 </tr>
 </tbody>
 </table>
@@ -2908,7 +2926,7 @@ Content-Length: 899
     "logInformMenus" : [ {
       "id" : 1,
       "domainType" : "PROFILE",
-      "createdAt" : "2025-01-26T16:28:50.510497",
+      "createdAt" : "2025-02-02T17:18:04.592912",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용",
       "logInformDetails" : {
@@ -2920,7 +2938,7 @@ Content-Length: 899
     }, {
       "id" : 2,
       "domainType" : "TEAM",
-      "createdAt" : "2025-01-26T16:28:50.510864",
+      "createdAt" : "2025-02-02T17:18:04.593275",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용",
       "logInformDetails" : {
@@ -3139,7 +3157,7 @@ Content-Length: 5120
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-26T16:28:46.970573",
+      "modifiedAt" : "2025-02-02T17:18:01.827845",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     },
@@ -4132,7 +4150,7 @@ Content-Length: 465
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "profileId" : 1,
-    "modifiedAt" : "2025-01-26T16:28:45.884884",
+    "modifiedAt" : "2025-02-02T17:18:00.882993",
     "majorPosition" : "대분류 포지션",
     "subPosition" : "소분류 포지션",
     "cityName" : "활동지역 시/도",
@@ -4359,14 +4377,14 @@ Content-Length: 587
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-26T16:28:48.226361",
+      "modifiedAt" : "2025-02-02T17:18:02.932546",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-01-26T16:28:48.226365",
+      "modifiedAt" : "2025-02-02T17:18:02.932549",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -4486,7 +4504,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 319
+Content-Length: 318
 
 {
   "isSuccess" : true,
@@ -4496,7 +4514,7 @@ Content-Length: 319
     "profileLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-01-26T16:28:48.198339",
+    "modifiedAt" : "2025-02-02T17:18:02.90921",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -4608,7 +4626,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-26T16:28:48.176167",
+    "createdAt" : "2025-02-02T17:18:02.890774",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -4765,7 +4783,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 321
+Content-Length: 320
 
 {
   "isSuccess" : true,
@@ -4775,7 +4793,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-26T16:28:48.236958",
+    "createdAt" : "2025-02-02T17:18:02.94148",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -7061,7 +7079,7 @@ Content-Type: multipart/form-data
 Content-Disposition: form-data; name=updateProfilePortfolioRequest
 Content-Type: application/json
 
-{"projectName":"수정 프로젝트 이름","projectLineDescription":"수정 프로젝트 한 줄 소개","projectSize":"TEAM","projectHeadCount":5,"projectTeamComposition":"프로젝트 팀 구성","projectStartDate":"수정 프로젝트 시작 날짜","projectEndDate":"수정 프로젝트 종료 날짜","isProjectInProgress":false,"projectRoleAndContributions":[{"projectRole":"수정 프로젝트 역할 1","projectContribution":"HIGH"},{"projectRole":"수정 프로젝트 역할 2","projectContribution":"MIDDLE"}],"projectSkillNames":[{"projectSkillName":"수정 프로젝트 스킬 이름 1"},{"projectSkillName":"수정 프로젝트 스킬 이름 2"}],"projectLink":"수정 프로젝트 링크","projectDescription":"수정 프로젝트 설명"}
+{"projectName":"수정 프로젝트 이름","projectLineDescription":"수정 프로젝트 한 줄 소개","projectSize":"TEAM","projectHeadCount":5,"projectTeamComposition":"프로젝트 팀 구성","projectStartDate":"수정 프로젝트 시작 날짜","projectEndDate":"수정 프로젝트 종료 날짜","isProjectInProgress":false,"projectRoleAndContributions":[{"projectRole":"수정 프로젝트 역할 1","projectContribution":"HIGH"},{"projectRole":"수정 프로젝트 역할 2","projectContribution":"MIDDLE"}],"projectSkillNames":[{"projectSkillName":"수정 프로젝트 스킬 이름 1"},{"projectSkillName":"수정 프로젝트 스킬 이름 2"}],"projectLink":"수정 프로젝트 링크","projectDescription":"수정 프로젝트 설명","portfolioImages":{"projectRepresentImagePath":"포트폴리오 대표 이미지 경로","portfolioSubImages":[{"projectSubImagePath":"포트폴리오 보조 이미지 경로"},{"projectSubImagePath":"포트폴리오 보조 이미지 경로 2"}]}}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -7198,6 +7216,26 @@ Content-Type: application/json
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>projectDescription</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로젝트 설명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>portfolioImages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로덕트 이미지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>portfolioImages.projectRepresentImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유지되는 대표 이미지 경로</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>portfolioImages.portfolioSubImages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유지되는 보조 이미지 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>portfolioImages.portfolioSubImages[].projectSubImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유지되는 보조 이미지 경로</p></td>
 </tr>
 </tbody>
 </table>
@@ -11119,7 +11157,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 826
+Content-Length: 890
 
 {
   "isSuccess" : true,
@@ -11127,8 +11165,10 @@ Content-Length: 826
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "isMyTeam" : true,
+    "isTeamManager" : true,
     "isTeamInvitationInProgress" : true,
     "isTeamDeleteInProgress" : false,
+    "isTeamDeleteRequester" : true,
     "teamInformMenu" : {
       "teamCurrentStates" : [ {
         "teamStateName" : "투자 유치 중"
@@ -11188,6 +11228,11 @@ Content-Length: 826
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인 사용자가 팀의 멤버인지 여부</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isTeamManager</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 사용자가 팀의 관리자인지 여부</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isTeamInvitationInProgress</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인 사용자가 팀원으로 초대 받았는지 여부 (true &#8594; 초대 수락 버튼 on)</p></td>
@@ -11196,6 +11241,11 @@ Content-Length: 826
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isTeamDeleteInProgress</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">로그인 사용자가 관리자이고, 팀 삭제에 대해서 수락 요청을 진행해아 하는 경우 &#8594; (true)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isTeamDeleteRequester</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 사용자가 팀 삭제 요청자인지 여부</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.teamInformMenu</code></p></td>
@@ -11614,14 +11664,14 @@ Content-Length: 586
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-26T16:28:52.545257",
+      "modifiedAt" : "2025-02-02T17:18:05.647087",
       "logTitle" : "로그 제목 1",
       "logContent" : "로그 내용 1"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-01-26T16:28:52.545266",
+      "modifiedAt" : "2025-02-02T17:18:05.647095",
       "logTitle" : "로그 제목 2",
       "logContent" : "로그 내용 2"
     } ]
@@ -11752,14 +11802,14 @@ Content-Length: 578
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-01-26T16:28:52.568852",
+      "modifiedAt" : "2025-02-02T17:18:05.665969",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-01-26T16:28:52.568856",
+      "modifiedAt" : "2025-02-02T17:18:05.665972",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -11891,7 +11941,7 @@ Content-Length: 316
     "teamLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-01-26T16:28:52.531375",
+    "modifiedAt" : "2025-02-02T17:18:05.636954",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -12058,7 +12108,7 @@ Content-Length: 318
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-26T16:28:52.603426",
+    "createdAt" : "2025-02-02T17:18:05.687578",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -12229,7 +12279,7 @@ Content-Length: 318
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-01-26T16:28:52.615197",
+    "createdAt" : "2025-02-02T17:18:05.696751",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -13833,13 +13883,15 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1355
+Content-Length: 1409
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
+    "isTeamOwner" : true,
+    "isTeamManager" : true,
     "acceptedTeamMemberItems" : [ {
       "emailId" : "회원 유저 아이디 1",
       "profileImagePath" : "프로필 이미지 경로 1",
@@ -13909,6 +13961,16 @@ Content-Length: 1355
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">결과 데이터</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isTeamOwner</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀의 오너인지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.isTeamManager</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀의 관리자인지 여부 (오너 포함)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.acceptedTeamMemberItems</code></p></td>
@@ -15238,7 +15300,7 @@ Content-Type: multipart/form-data
 Content-Disposition: form-data; name=updateTeamProductRequest
 Content-Type: application/json
 
-{"productName":"프로덕트 이름","productLineDescription":"프로덕트 한 줄 소개","productField":"프로덕트 분야","productStartDate":"2012.12","productEndDate":"2013.12","isProductInProgress":false,"teamProductLinks":[{"productLinkName":"프로덕트 링크 이름 1","productLinkPath":"https://www.naver.com"},{"productLinkName":"프로덕트 링크 이름 2","productLinkPath":"https://www.naver.com"}],"productDescription":"프로덕트 설명"}
+{"productName":"프로덕트 이름","productLineDescription":"프로덕트 한 줄 소개","productField":"프로덕트 분야","productStartDate":"2012.12","productEndDate":"2013.12","isProductInProgress":false,"teamProductLinks":[{"productLinkName":"프로덕트 링크 이름 1","productLinkPath":"https://www.naver.com"},{"productLinkName":"프로덕트 링크 이름 2","productLinkPath":"https://www.naver.com"}],"productDescription":"프로덕트 설명","teamProductImages":{"productRepresentImagePath":"유지되는 대표 이미지 경로","productSubImages":[{"productSubImagePath":"유지되는 프로덕트 보조 이미지 경로 1"},{"productSubImagePath":"유지되는 프로덕트 보조 이미지 경로 2"}]}}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -15323,12 +15385,12 @@ Content-Type: application/json
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>productStartDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로덕트 시작 날짜</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로덕트 시작 날짜 (YYYY.MM)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>productEndDate</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로덕트 종료 날짜</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로덕트 종료 날짜 (YYYY.MM)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>isProductInProgress</code></p></td>
@@ -15354,6 +15416,26 @@ Content-Type: application/json
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>productDescription</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로덕트 설명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamProductImages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로덕트 이미지 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamProductImages.productRepresentImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유지되는 대표 이미지 경로</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamProductImages.productSubImages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유지되는 보조 이미지 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>teamProductImages.productSubImages[].productSubImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유지되는 보조 이미지 경로</p></td>
 </tr>
 </tbody>
 </table>
@@ -16532,9 +16614,13 @@ Content-Length: 349
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/team/liaison/member/join HTTP/1.1
+Content-Type: application/json;charset=UTF-8
 Authorization: accessToken
 Cookie: refreshToken=refreshToken
-Content-Type: application/x-www-form-urlencoded</code></pre>
+
+{
+  "isTeamJoin" : true
+}</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -16910,7 +16996,7 @@ Content-Length: 197
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "teamCode" : "liaison",
-    "deletedRequestedAt" : "2025-01-26T16:28:51.651106"
+    "deletedRequestedAt" : "2025-02-02T17:18:05.216084"
   }
 }</code></pre>
 </div>
@@ -17213,8 +17299,8 @@ Content-Length: 2484
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -17228,8 +17314,8 @@ Content-Length: 2484
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -17578,8 +17664,8 @@ Content-Length: 1861
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -17593,8 +17679,8 @@ Content-Length: 1861
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -17945,8 +18031,8 @@ Content-Length: 2417
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -17960,8 +18046,8 @@ Content-Length: 2417
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -19384,7 +19470,7 @@ Content-Length: 2355
           }
         },
         "lastMessage" : "해당 채팅방에서의 마지막 메시지",
-        "lastMessageTime" : "2025-01-26T16:28:41.829981"
+        "lastMessageTime" : "2025-02-02T17:17:58.110661"
       },
       "unreadChatMessageCount" : 10,
       "chatPartnerOnline" : true
@@ -19413,7 +19499,7 @@ Content-Length: 2355
           }
         },
         "lastMessage" : "해당 채팅방에서의 마지막 메시지",
-        "lastMessageTime" : "2025-01-26T16:28:41.829999"
+        "lastMessageTime" : "2025-02-02T17:17:58.110685"
       },
       "unreadChatMessageCount" : 20,
       "chatPartnerOnline" : false
@@ -19578,12 +19664,16 @@ Cookie: refresh-token=refreshToken</code></pre>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>senderType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">발신자 타입 (선택적) - [PROFILE, TEAM]</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호 (기본값: 0)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기 (기본값: 50)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기 (기본값: 20)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>sort</code></p></td>
@@ -19601,7 +19691,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 990
+Content-Length: 1976
 
 {
   "isSuccess" : true,
@@ -19611,6 +19701,31 @@ Content-Length: 990
     "totalElements" : 2,
     "totalPages" : 1,
     "hasNext" : false,
+    "chatPartnerInformation" : {
+      "chatPartnerName" : "채팅 상대방 이름",
+      "chatPartnerImageUrl" : "채팅 상대방의 프로필 이미지",
+      "partnerProfileDetailInformation" : {
+        "profilePositionDetail" : {
+          "majorPosition" : "프로필 포지션 대분류",
+          "subPosition" : "프로필 포지션 소분류"
+        },
+        "regionDetail" : {
+          "cityName" : "프로필 지역 시/도",
+          "divisionName" : "프로필 지역 시/군/구"
+        }
+      },
+      "partnerTeamDetailInformation" : {
+        "teamScaleItem" : {
+          "teamScaleName" : "팀 규모 (1인, 5인, ...)"
+        },
+        "regionDetail" : {
+          "cityName" : "팀 활동 지역 시/도",
+          "divisionName" : "팀 활동 지역 시/군/구"
+        }
+      },
+      "lastMessage" : "해당 채팅방에서의 마지막 메시지",
+      "lastMessageTime" : "2025-02-02T17:17:58.153521"
+    },
     "messages" : [ {
       "messageId" : "메시지 ID",
       "chatRoomId" : 1,
@@ -19619,7 +19734,7 @@ Content-Length: 990
       "isMyMessage" : true,
       "messageSenderLogoImagePath" : "메시지 발신자의 프로필 로고 이미지 경로",
       "content" : "첫 번째 메시지",
-      "timestamp" : "2025-01-26T16:28:41.86204",
+      "timestamp" : "2025-02-02T17:17:58.154105",
       "read" : false
     }, {
       "messageId" : "메시지 ID",
@@ -19629,9 +19744,10 @@ Content-Length: 990
       "isMyMessage" : true,
       "messageSenderLogoImagePath" : "메시지 발신자의 프로필 로고 이미지 경로",
       "content" : "두 번째 메시지",
-      "timestamp" : "2025-01-26T16:28:41.862051",
+      "timestamp" : "2025-02-02T17:17:58.154124",
       "read" : false
-    } ]
+    } ],
+    "chatPartnerOnline" : true
   }
 }</code></pre>
 </div>
@@ -19696,6 +19812,26 @@ Content-Length: 990
 <td class="tableblock halign-left valign-top"><p class="tableblock">채팅방 ID</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.messages[].myParticipantType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 사용자의 참여 타입 (예: A_TYPE 또는 B_TYPE)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.messages[].messageSenderParticipantType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메시지 발신자의 참여 타입 (예: A_TYPE 또는 B_TYPE)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.messages[].isMyMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">내가 보낸 메시지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.messages[].messageSenderLogoImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">메시지 발신자의 프로필 로고 이미지 경로</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.messages[].content</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">메시지 내용</p></td>
@@ -19711,24 +19847,99 @@ Content-Length: 990
 <td class="tableblock halign-left valign-top"><p class="tableblock">메시지 읽음 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.messages[].myParticipantType</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 사용자의 참여 타입 (A_TYPE / B_TYPE / 기타)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 정보</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.messages[].messageSenderParticipantType</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.chatPartnerName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메시지 발신자의 참여 타입 (A_TYPE / B_TYPE / 기타)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.messages[].isMyMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.chatPartnerImageUrl</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 프로필 이미지 URL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerProfileDetailInformation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너의 프로필 상세 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerProfileDetailInformation.profilePositionDetail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 포지션 상세 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerProfileDetailInformation.profilePositionDetail.majorPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 포지션 대분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerProfileDetailInformation.profilePositionDetail.subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 포지션 소분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerProfileDetailInformation.regionDetail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 지역 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerProfileDetailInformation.regionDetail.cityName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 도시 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerProfileDetailInformation.regionDetail.divisionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 구/도 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerTeamDetailInformation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너의 팀 상세 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerTeamDetailInformation.teamScaleItem</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너의 팀 규모 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerTeamDetailInformation.teamScaleItem.teamScaleName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 팀의 규모명</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerTeamDetailInformation.regionDetail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너의 팀 지역 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerTeamDetailInformation.regionDetail.cityName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 팀의 도시 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.partnerTeamDetailInformation.regionDetail.divisionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너 팀의 구/도 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.lastMessage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너가 보낸 마지막 메시지 내용</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerInformation.lastMessageTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너가 보낸 마지막 메시지 전송 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.chatPartnerOnline</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">내가 보낸 메시지인지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.messages[].messageSenderLogoImagePath</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메시지 발신자의 로고 이미지 경로</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅 파트너의 온라인 여부</p></td>
 </tr>
 </tbody>
 </table>
@@ -20326,7 +20537,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2106
+Content-Length: 2236
 
 {
   "isSuccess" : true,
@@ -20372,7 +20583,10 @@ Content-Length: 2106
       }
     },
     "receiverAnnouncementInformation" : {
+      "teamMemberAnnouncementId" : 1,
+      "teamName" : "팀 이름",
       "announcementTitle" : "공고 제목",
+      "teamLogoImagePath" : "팀 로고 이미지 경로",
       "announcementPositionItem" : {
         "majorPosition" : "공고 포지션 대분류",
         "subPosition" : "공고 포지션 소분류"
@@ -20575,9 +20789,24 @@ Content-Length: 2106
 <td class="tableblock halign-left valign-top"><p class="tableblock">수신자 공고 정보</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.receiverAnnouncementInformation.teamMemberAnnouncementId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공고 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.receiverAnnouncementInformation.teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공고 올림 팀의 이름</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.receiverAnnouncementInformation.announcementTitle</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">공고 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.receiverAnnouncementInformation.teamLogoImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공고 올림 팀의 로고 이미지 경로</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.receiverAnnouncementInformation.announcementPositionItem</code></p></td>
@@ -21258,7 +21487,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 5010
+Content-Length: 5282
 
 {
   "isSuccess" : true,
@@ -21306,7 +21535,10 @@ Content-Length: 5010
         }
       },
       "receiverAnnouncementInformation" : {
+        "teamMemberAnnouncementId" : 1,
+        "teamName" : "팀 이름",
         "announcementTitle" : "공고 제목",
+        "teamLogoImagePath" : "팀 로고 이미지 경로",
         "announcementPositionItem" : {
           "majorPosition" : "공고 포지션 대분류",
           "subPosition" : "공고 포지션 소분류"
@@ -21362,7 +21594,10 @@ Content-Length: 5010
         }
       },
       "receiverAnnouncementInformation" : {
+        "teamMemberAnnouncementId" : 1,
+        "teamName" : "팀 이름",
         "announcementTitle" : "공고 제목",
+        "teamLogoImagePath" : "팀 로고 이미지 경로",
         "announcementPositionItem" : {
           "majorPosition" : "공고 포지션 대분류",
           "subPosition" : "공고 포지션 소분류"
@@ -21383,8 +21618,8 @@ Content-Length: 5010
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -21398,8 +21633,8 @@ Content-Length: 5010
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -21602,9 +21837,24 @@ Content-Length: 5010
 <td class="tableblock halign-left valign-top"><p class="tableblock">수신자 공고 정보</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.teamMemberAnnouncementId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공고 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공고 올림 팀의 이름</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.announcementTitle</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">공고 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.teamLogoImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공고 올림 팀의 로고 이미지 경로</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.announcementPositionItem</code></p></td>
@@ -21817,7 +22067,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 5001
+Content-Length: 5273
 
 {
   "isSuccess" : true,
@@ -21865,7 +22115,10 @@ Content-Length: 5001
         }
       },
       "receiverAnnouncementInformation" : {
+        "teamMemberAnnouncementId" : 1,
+        "teamName" : "팀 이름",
         "announcementTitle" : "공고 제목",
+        "teamLogoImagePath" : "팀 로고 이미지 경로",
         "announcementPositionItem" : {
           "majorPosition" : "공고 포지션 대분류",
           "subPosition" : "공고 포지션 소분류"
@@ -21921,7 +22174,10 @@ Content-Length: 5001
         }
       },
       "receiverAnnouncementInformation" : {
+        "teamMemberAnnouncementId" : 1,
+        "teamName" : "팀 이름",
         "announcementTitle" : "공고 제목",
+        "teamLogoImagePath" : "팀 로고 이미지 경로",
         "announcementPositionItem" : {
           "majorPosition" : "공고 포지션 대분류",
           "subPosition" : "공고 포지션 소분류"
@@ -21942,8 +22198,8 @@ Content-Length: 5001
       "pageSize" : 20,
       "sort" : {
         "empty" : true,
-        "sorted" : false,
-        "unsorted" : true
+        "unsorted" : true,
+        "sorted" : false
       },
       "offset" : 0,
       "paged" : true,
@@ -21957,8 +22213,8 @@ Content-Length: 5001
     "number" : 0,
     "sort" : {
       "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
+      "unsorted" : true,
+      "sorted" : false
     },
     "numberOfElements" : 2,
     "empty" : false
@@ -22161,9 +22417,24 @@ Content-Length: 5001
 <td class="tableblock halign-left valign-top"><p class="tableblock">수신자 공고 정보</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.teamMemberAnnouncementId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공고 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공고 올림 팀의 이름</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.announcementTitle</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">공고 제목</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.teamLogoImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">공고 올림 팀의 로고 이미지 경로</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].receiverAnnouncementInformation.announcementPositionItem</code></p></td>

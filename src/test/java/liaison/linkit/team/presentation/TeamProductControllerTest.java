@@ -30,6 +30,7 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.team.presentation.product.TeamProductController;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO.AddTeamProductRequest;
+import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO.TeamProductLinkRequest;
 import liaison.linkit.team.presentation.product.dto.TeamProductRequestDTO.UpdateTeamProductRequest;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO;
 import liaison.linkit.team.presentation.product.dto.TeamProductResponseDTO.AddTeamProductResponse;
@@ -819,16 +820,29 @@ public class TeamProductControllerTest extends ControllerTest {
                 .productEndDate("2013.12")
                 .isProductInProgress(false)
                 .teamProductLinks(Arrays.asList(
-                        TeamProductRequestDTO.TeamProductLinkRequest.builder()
+                        TeamProductLinkRequest.builder()
                                 .productLinkName("프로덕트 링크 이름 1")
                                 .productLinkPath("https://www.naver.com")
                                 .build(),
-                        TeamProductRequestDTO.TeamProductLinkRequest.builder()
+                        TeamProductLinkRequest.builder()
                                 .productLinkName("프로덕트 링크 이름 2")
                                 .productLinkPath("https://www.naver.com")
                                 .build()
                 ))
                 .productDescription("프로덕트 설명")
+                .teamProductImages(
+                        TeamProductRequestDTO.TeamProductImages.builder()
+                                .productRepresentImagePath("유지되는 대표 이미지 경로")
+                                .productSubImages(Arrays.asList(
+                                        TeamProductRequestDTO.ProductSubImage.builder()
+                                                .productSubImagePath("유지되는 프로덕트 보조 이미지 경로 1")
+                                                .build(),
+                                        TeamProductRequestDTO.ProductSubImage.builder()
+                                                .productSubImagePath("유지되는 프로덕트 보조 이미지 경로 2")
+                                                .build()
+                                ))
+                                .build()
+                )
                 .build();
 
         final MockMultipartFile updateRequest = new MockMultipartFile(
@@ -950,14 +964,20 @@ public class TeamProductControllerTest extends ControllerTest {
                                 fieldWithPath("productName").type(JsonFieldType.STRING).description("프로덕트 이름"),
                                 fieldWithPath("productLineDescription").type(JsonFieldType.STRING).description("프로덕트 한 줄 소개"),
                                 fieldWithPath("productField").type(JsonFieldType.STRING).description("프로덕트 분야"),
-                                fieldWithPath("productStartDate").type(JsonFieldType.STRING).description("프로덕트 시작 날짜"),
-                                fieldWithPath("productEndDate").type(JsonFieldType.STRING).description("프로덕트 종료 날짜"),
+                                fieldWithPath("productStartDate").type(JsonFieldType.STRING).description("프로덕트 시작 날짜 (YYYY.MM)"),
+                                fieldWithPath("productEndDate").type(JsonFieldType.STRING).description("프로덕트 종료 날짜 (YYYY.MM)"),
                                 fieldWithPath("isProductInProgress").type(JsonFieldType.BOOLEAN).description("프로덕트 진행 중 여부"),
                                 fieldWithPath("teamProductLinks").type(JsonFieldType.ARRAY).description("프로덕트 링크 목록"),
                                 fieldWithPath("teamProductLinks[].productLinkName").type(JsonFieldType.STRING).description("프로덕트 링크 이름"),
                                 fieldWithPath("teamProductLinks[].productLinkPath").type(JsonFieldType.STRING).description("프로덕트 링크 경로"),
-                                fieldWithPath("productDescription").type(JsonFieldType.STRING).description("프로덕트 설명")
+                                fieldWithPath("productDescription").type(JsonFieldType.STRING).description("프로덕트 설명"),
+                                // 추가: teamProductImages 객체
+                                fieldWithPath("teamProductImages").type(JsonFieldType.OBJECT).description("프로덕트 이미지 정보"),
+                                fieldWithPath("teamProductImages.productRepresentImagePath").type(JsonFieldType.STRING).description("유지되는 대표 이미지 경로"),
+                                fieldWithPath("teamProductImages.productSubImages").type(JsonFieldType.ARRAY).description("유지되는 보조 이미지 목록"),
+                                fieldWithPath("teamProductImages.productSubImages[].productSubImagePath").type(JsonFieldType.STRING).description("유지되는 보조 이미지 경로")
                         ),
+
                         responseFields(
                                 fieldWithPath("isSuccess")
                                         .type(JsonFieldType.BOOLEAN)
@@ -1048,7 +1068,7 @@ public class TeamProductControllerTest extends ControllerTest {
                         .build();
 
         // when
-        when(teamProductService.removeTeamProduct(anyLong(), any(), anyLong())).thenReturn(removeTeamProductResponse);
+        when(teamProductService.removeTeamProduct(any(), anyLong())).thenReturn(removeTeamProductResponse);
 
         final ResultActions resultActions = performRemoveTeamProduct("liaison", 1L);
 

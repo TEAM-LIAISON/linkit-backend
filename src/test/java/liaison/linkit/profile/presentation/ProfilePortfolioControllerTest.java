@@ -37,6 +37,7 @@ import liaison.linkit.profile.domain.portfolio.ProjectSize;
 import liaison.linkit.profile.presentation.portfolio.ProfilePortfolioController;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO.AddProfilePortfolioRequest;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO.UpdateProfilePortfolioRequest;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.AddProfilePortfolioResponse;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.PortfolioImages;
@@ -606,12 +607,34 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                         .build()
         );
 
-        final AddProfilePortfolioRequest addProfilePortfolioRequest
-                = new AddProfilePortfolioRequest(
-                "수정 프로젝트 이름", "수정 프로젝트 한 줄 소개", ProjectSize.TEAM, 5,
-                "프로젝트 팀 구성", "수정 프로젝트 시작 날짜", "수정 프로젝트 종료 날짜",
-                false, projectRoleAndContributions, projectSkillNames,
-                "수정 프로젝트 링크", "수정 프로젝트 설명");
+        final UpdateProfilePortfolioRequest updateProfilePortfolioRequest
+                = UpdateProfilePortfolioRequest.builder()
+                .projectName("수정 프로젝트 이름")
+                .projectLineDescription("수정 프로젝트 한 줄 소개")
+                .projectSize(ProjectSize.TEAM)
+                .projectHeadCount(5)
+                .projectTeamComposition("프로젝트 팀 구성")
+                .projectStartDate("수정 프로젝트 시작 날짜")
+                .projectEndDate("수정 프로젝트 종료 날짜")
+                .isProjectInProgress(false)
+                .projectRoleAndContributions(projectRoleAndContributions)
+                .projectSkillNames(projectSkillNames)
+                .projectLink("수정 프로젝트 링크")
+                .projectDescription("수정 프로젝트 설명")
+                .portfolioImages(ProfilePortfolioRequestDTO.PortfolioImages.builder()
+                        .projectRepresentImagePath("포트폴리오 대표 이미지 경로")
+                        .portfolioSubImages(
+                                Arrays.asList(
+                                        ProfilePortfolioRequestDTO.PortfolioSubImage.builder()
+                                                .projectSubImagePath("포트폴리오 보조 이미지 경로")
+                                                .build(),
+                                        ProfilePortfolioRequestDTO.PortfolioSubImage.builder()
+                                                .projectSubImagePath("포트폴리오 보조 이미지 경로 2")
+                                                .build()
+                                )
+                        ).build()
+                )
+                .build();
 
         final MockMultipartFile projectRepresentImage = new MockMultipartFile(
                 "projectRepresentImage",
@@ -639,7 +662,7 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                 "updateProfilePortfolioRequest",
                 null,
                 "application/json",
-                objectMapper.writeValueAsString(addProfilePortfolioRequest).getBytes(StandardCharsets.UTF_8)
+                objectMapper.writeValueAsString(updateProfilePortfolioRequest).getBytes(StandardCharsets.UTF_8)
         );
 
         final List<ProfilePortfolioResponseDTO.ProjectRoleAndContribution> projectRoleAndContributionsResponse = Arrays.asList(
@@ -740,7 +763,12 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                                 fieldWithPath("projectSkillNames").type(JsonFieldType.ARRAY).description("프로젝트 스킬 이름 목록"),
                                 fieldWithPath("projectSkillNames[].projectSkillName").type(JsonFieldType.STRING).description("프로젝트 스킬 이름"),
                                 fieldWithPath("projectLink").type(JsonFieldType.STRING).description("프로젝트 링크"),
-                                fieldWithPath("projectDescription").type(JsonFieldType.STRING).description("프로젝트 설명")
+                                fieldWithPath("projectDescription").type(JsonFieldType.STRING).description("프로젝트 설명"),
+
+                                fieldWithPath("portfolioImages").type(JsonFieldType.OBJECT).description("프로덕트 이미지 정보"),
+                                fieldWithPath("portfolioImages.projectRepresentImagePath").type(JsonFieldType.STRING).description("유지되는 대표 이미지 경로"),
+                                fieldWithPath("portfolioImages.portfolioSubImages").type(JsonFieldType.ARRAY).description("유지되는 보조 이미지 목록"),
+                                fieldWithPath("portfolioImages.portfolioSubImages[].projectSubImagePath").type(JsonFieldType.STRING).description("유지되는 보조 이미지 경로")
                         ),
                         responseFields(fieldWithPath("isSuccess")
                                         .type(JsonFieldType.BOOLEAN)

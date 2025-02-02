@@ -76,10 +76,23 @@ public class LoginControllerTest extends ControllerTest {
         // given
         final AccountRequestDTO.LoginRequest loginRequest = new LoginRequest("code");
         final AccountResponseDTO.LoginServiceResponse loginServiceResponse
-                = new LoginServiceResponse(ACCESS_TOKEN, REFRESH_TOKEN, EMAIL, EMAIL_ID, false);
+                = LoginServiceResponse.builder()
+                .accessToken(ACCESS_TOKEN)
+                .refreshToken(REFRESH_TOKEN)
+                .email(EMAIL)
+                .emailId(EMAIL_ID)
+                .memberName("회원 이름")
+                .isMemberBasicInform(false)
+                .build();
 
         final AccountResponseDTO.LoginResponse loginResponse
-                = new LoginResponse(ACCESS_TOKEN, EMAIL, EMAIL_ID, false);
+                = LoginResponse.builder()
+                .accessToken(ACCESS_TOKEN)
+                .email(EMAIL)
+                .emailId(EMAIL_ID)
+                .memberName("회원 이름")
+                .isMemberBasicInform(false)
+                .build();
 
         // when
         when(loginService.login(anyString(), anyString())).thenReturn(loginServiceResponse);
@@ -130,6 +143,10 @@ public class LoginControllerTest extends ControllerTest {
                                         fieldWithPath("result.emailId")
                                                 .type(JsonFieldType.STRING)
                                                 .description("회원 유저 아이디")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이름")
                                                 .attributes(field("constraint", "문자열")),
                                         fieldWithPath("result.isMemberBasicInform")
                                                 .type(JsonFieldType.BOOLEAN)
