@@ -261,7 +261,15 @@ class MemberControllerTest extends ControllerTest {
                 = new UpdateConsentServiceUseRequest(true, true, true, true);
 
         final MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse updateConsentServiceUseResponse
-                = new UpdateConsentServiceUseResponse(1L, true, true, true, true);
+                = UpdateConsentServiceUseResponse.builder()
+                .memberBasicInformId(1L)
+                .isServiceUseAgree(true)
+                .isPrivateInformAgree(true)
+                .isAgeCheck(true)
+                .isMarketingAgree(true)
+                .emailId("kwondm7")
+                .memberName("회원 이름")
+                .build();
 
         // when
         when(memberService.updateConsentServiceUse(anyLong(), any())).thenReturn(updateConsentServiceUseResponse);
@@ -325,7 +333,15 @@ class MemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.isMarketingAgree")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("광고성 정보 수신 동의")
-                                                .attributes(field("constraint", "boolean"))
+                                                .attributes(field("constraint", "boolean")),
+                                        fieldWithPath("result.emailId")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 유저 아이디")
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.memberName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("회원 이름")
+                                                .attributes(field("constraint", "문자열"))
                                 )
                         )).andReturn();
 

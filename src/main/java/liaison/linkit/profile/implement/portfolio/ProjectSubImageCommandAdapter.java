@@ -18,4 +18,8 @@ public class ProjectSubImageCommandAdapter {
     public void deleteAll(final List<ProjectSubImage> projectSubImages) {
         projectSubImageRepository.deleteAll(projectSubImages);
     }
+
+    public void delete(final ProjectSubImage projectSubImage) {
+        projectSubImageRepository.delete(projectSubImage);
+    }
 }

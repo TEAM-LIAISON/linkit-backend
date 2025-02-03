@@ -275,7 +275,10 @@ public class MatchingControllerTest extends ControllerTest {
                 )
                 .receiverAnnouncementInformation(
                         ReceiverAnnouncementInformation.builder()
+                                .teamMemberAnnouncementId(1L)
+                                .teamName("팀 이름")
                                 .announcementTitle("공고 제목")
+                                .teamLogoImagePath("팀 로고 이미지 경로")
                                 .announcementPositionItem(
                                         AnnouncementPositionItem.builder()
                                                 .majorPosition("공고 포지션 대분류")
@@ -463,9 +466,22 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.receiverAnnouncementInformation")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("수신자 공고 정보"),
+
+                                        fieldWithPath("result.receiverAnnouncementInformation.teamMemberAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("공고 아이디"),
+                                        fieldWithPath("result.receiverAnnouncementInformation.teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 올림 팀의 이름"),
+
                                         fieldWithPath("result.receiverAnnouncementInformation.announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),
+
+                                        fieldWithPath("result.receiverAnnouncementInformation.teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 올림 팀의 로고 이미지 경로"),
+
                                         fieldWithPath("result.receiverAnnouncementInformation.announcementPositionItem")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("공고 포지션 정보"),
@@ -997,7 +1013,10 @@ public class MatchingControllerTest extends ControllerTest {
                 )
                 .receiverAnnouncementInformation(
                         ReceiverAnnouncementInformation.builder()
+                                .teamMemberAnnouncementId(1L)
+                                .teamName("팀 이름")
                                 .announcementTitle("공고 제목")
+                                .teamLogoImagePath("팀 로고 이미지 경로")
                                 .announcementPositionItem(
                                         AnnouncementPositionItem.builder()
                                                 .majorPosition("공고 포지션 대분류")
@@ -1080,7 +1099,10 @@ public class MatchingControllerTest extends ControllerTest {
                 )
                 .receiverAnnouncementInformation(
                         ReceiverAnnouncementInformation.builder()
+                                .teamMemberAnnouncementId(1L)
+                                .teamName("팀 이름")
                                 .announcementTitle("공고 제목")
+                                .teamLogoImagePath("팀 로고 이미지 경로")
                                 .announcementPositionItem(
                                         AnnouncementPositionItem.builder()
                                                 .majorPosition("공고 포지션 대분류")
@@ -1266,9 +1288,20 @@ public class MatchingControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].receiverAnnouncementInformation")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("수신자 공고 정보"),
+
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.teamMemberAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("공고 아이디"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 올림 팀의 이름"),
                                         fieldWithPath("result.content[].receiverAnnouncementInformation.announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 올림 팀의 로고 이미지 경로"),
+
                                         fieldWithPath("result.content[].receiverAnnouncementInformation.announcementPositionItem")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("공고 포지션 정보"),
@@ -1438,7 +1471,10 @@ public class MatchingControllerTest extends ControllerTest {
                 )
                 .receiverAnnouncementInformation(
                         ReceiverAnnouncementInformation.builder()
+                                .teamMemberAnnouncementId(1L)
+                                .teamName("팀 이름")
                                 .announcementTitle("공고 제목")
+                                .teamLogoImagePath("팀 로고 이미지 경로")
                                 .announcementPositionItem(
                                         AnnouncementPositionItem.builder()
                                                 .majorPosition("공고 포지션 대분류")
@@ -1521,7 +1557,10 @@ public class MatchingControllerTest extends ControllerTest {
                 )
                 .receiverAnnouncementInformation(
                         ReceiverAnnouncementInformation.builder()
+                                .teamMemberAnnouncementId(1L)
+                                .teamName("팀 이름")
                                 .announcementTitle("공고 제목")
+                                .teamLogoImagePath("팀 로고 이미지 경로")
                                 .announcementPositionItem(
                                         AnnouncementPositionItem.builder()
                                                 .majorPosition("공고 포지션 대분류")
@@ -1591,22 +1630,19 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .description("요청 성공 메시지")
                                                 .attributes(field("constraint", "문자열")),
 
-                                        // ★ result
+                                        // result 객체
                                         fieldWithPath("result.content")
                                                 .type(JsonFieldType.ARRAY)
                                                 .description("매칭 발신 목록"),
                                         fieldWithPath("result.content[].matchingId")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("매칭 ID (PK)"),
-
                                         fieldWithPath("result.content[].isChatRoomCreated")
                                                 .type(JsonFieldType.BOOLEAN)
                                                 .description("채팅방 생성 여부"),
-
                                         fieldWithPath("result.content[].chatRoomId")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("채팅방이 생성된 경우 해당 채팅방의 ID"),
-
                                         fieldWithPath("result.content[].senderType")
                                                 .type(JsonFieldType.STRING)
                                                 .description("발신자 타입 - [PROFILE, TEAM]"),
@@ -1614,7 +1650,7 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("수신자 타입 - [PROFILE, TEAM, ANNOUNCEMENT]"),
 
-                                        // ★ senderProfileInformation
+                                        // senderProfileInformation
                                         fieldWithPath("result.content[].senderProfileInformation")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("발신자 프로필 정보"),
@@ -1639,7 +1675,7 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .optional()
                                                 .description("발신자 포지션 소분류 (null 가능)"),
 
-                                        // ★ senderTeamInformation
+                                        // senderTeamInformation
                                         fieldWithPath("result.content[].senderTeamInformation")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("발신자 팀 정보"),
@@ -1659,7 +1695,7 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("발신자 팀 규모명"),
 
-                                        // ★ receiverProfileInformation
+                                        // receiverProfileInformation
                                         fieldWithPath("result.content[].receiverProfileInformation")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("수신자 프로필 정보"),
@@ -1684,7 +1720,7 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .optional()
                                                 .description("수신자 포지션 소분류 (null 가능)"),
 
-                                        // ★ receiverTeamInformation
+                                        // receiverTeamInformation
                                         fieldWithPath("result.content[].receiverTeamInformation")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("수신자 팀 정보"),
@@ -1704,13 +1740,22 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("수신자 팀 규모명"),
 
-                                        // ----- receiverAnnouncementInformation 추가
+                                        // receiverAnnouncementInformation (수정된 부분: content[] 내부)
                                         fieldWithPath("result.content[].receiverAnnouncementInformation")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("수신자 공고 정보"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.teamMemberAnnouncementId")
+                                                .type(JsonFieldType.NUMBER)
+                                                .description("공고 아이디"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.teamName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 올림 팀의 이름"),
                                         fieldWithPath("result.content[].receiverAnnouncementInformation.announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),
+                                        fieldWithPath("result.content[].receiverAnnouncementInformation.teamLogoImagePath")
+                                                .type(JsonFieldType.STRING)
+                                                .description("공고 올림 팀의 로고 이미지 경로"),
                                         fieldWithPath("result.content[].receiverAnnouncementInformation.announcementPositionItem")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("공고 포지션 정보"),
@@ -1727,7 +1772,7 @@ public class MatchingControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 요구 스킬 이름"),
 
-                                        // ★ 일반 필드
+                                        // 일반 필드
                                         fieldWithPath("result.content[].requestMessage")
                                                 .type(JsonFieldType.STRING)
                                                 .description("매칭 요청 메시지"),

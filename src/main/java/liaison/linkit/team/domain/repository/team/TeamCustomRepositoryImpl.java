@@ -20,6 +20,8 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
@@ -262,4 +264,36 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             throw new IllegalStateException("No team found with ID: " + team.getId());
         }
     }
+
+    /**
+     * 주어진 teamCode로 팀을 조회하여, 팀의 기본 상태(status)가 DELETED 인지를 반환한다. 단, 엔티티에 걸려있는 SQL 제한(@SQLRestriction("status = 'USABLE'")) 를 우회하기 위해 해당 필터를 비활성화한 후 조회한다.
+     *
+     * @param teamCode 팀 코드
+     * @return 팀이 존재하지 않거나 status가 DELETED이면 true, 그렇지 않으면 false.
+     */
+    @Override
+    public boolean isTeamDeleted(final String teamCode) {
+        // Hibernate 세션을 얻어 SQL 제한 필터를 비활성화
+        Session session = entityManager.unwrap(Session.class);
+        Filter filter = session.getEnabledFilter("hibernateFilter"); // 만약 필터 이름이 있다면 사용 (필요에 따라)
+        // 또는 @SQLRestriction으로 인해 적용된 글로벌 제한은 Hibernate의 "where" 절에 자동 포함되므로,
+        // 이를 우회하기 위해 native query 또는 Hibernate의 세션 API를 활용할 수 있다.
+        // 여기서는 native query 예시로 구현하겠습니다.
+
+        String sql = "SELECT t.* FROM team t WHERE t.team_code = :teamCode";
+        // SQL 제한은 엔티티 매핑 시 @SQLRestriction에 의해 자동 추가되지만,
+        // native query는 그 제한을 우회할 수 있습니다.
+        List<Team> teams = session.createNativeQuery(sql, Team.class)
+                .setParameter("teamCode", teamCode)
+                .getResultList();
+
+        Team team = teams.isEmpty() ? null : teams.get(0);
+        if (team == null) {
+            // 팀이 존재하지 않으면 삭제된 것으로 간주
+            return true;
+        }
+        // BaseEntity의 status 필드가 DELETED 인지 확인 (StatusType은 DELETED, USABLE 등)
+        return team.getStatus() == StatusType.DELETED;
+    }
+
 }

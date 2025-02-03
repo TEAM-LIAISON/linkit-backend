@@ -54,7 +54,7 @@ public class TeamProductMapper {
         List<TeamProductResponseDTO.TeamProductViewItem> items = teamProducts.stream()
                 .map(teamProduct -> {
                     // 1) SubImagePaths 조회
-                    List<String> productSubImagePaths = productSubImageQueryAdapter.getProjectSubImagePaths(teamProduct.getId());
+                    List<String> productSubImagePaths = productSubImageQueryAdapter.getProductSubImagePaths(teamProduct.getId());
 
                     // 2) 대표이미지 + 서브이미지를 묶은 TeamProductImages 생성
                     TeamProductImages teamProductImages = toTeamProductImages(

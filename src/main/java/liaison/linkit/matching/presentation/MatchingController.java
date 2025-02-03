@@ -77,7 +77,7 @@ public class MatchingController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ReceivedMatchingMenu> matchingReceivedMenus = matchingService.getReceivedMatchingMenuResponse(accessor.getMemberId(), receiverType, pageable);
         return CommonResponse.onSuccess(matchingReceivedMenus);
     }
@@ -122,7 +122,7 @@ public class MatchingController {
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "20") int size
     ) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<RequestedMatchingMenu> requestedMatchingMenus = matchingService.getRequestedMatchingMenuResponse(accessor.getMemberId(), senderType, pageable);
         return CommonResponse.onSuccess(requestedMatchingMenus);
     }

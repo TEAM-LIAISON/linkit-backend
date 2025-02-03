@@ -56,5 +56,7 @@ public class TeamQueryAdapter {
         return teamRepository.isTeamDeleteInProgress(teamCode);
     }
 
-
+    public boolean isTeamDeleted(final String teamCode) {
+        return teamRepository.isTeamDeleted(teamCode);
+    }
 }

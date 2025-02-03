@@ -12,6 +12,7 @@ public class AccountMapper {
             final MemberTokens memberTokens,
             final String email,
             final String emailId,
+            final String memberName,
             final boolean isMemberBasicInform
     ) {
         return AccountResponseDTO.LoginServiceResponse.builder()
@@ -19,6 +20,7 @@ public class AccountMapper {
                 .refreshToken(memberTokens.getRefreshToken())
                 .email(email)
                 .emailId(emailId)
+                .memberName(memberName)
                 .isMemberBasicInform(isMemberBasicInform)
                 .build();
     }

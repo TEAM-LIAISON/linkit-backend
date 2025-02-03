@@ -11,11 +11,11 @@ import lombok.RequiredArgsConstructor;
 public class ProductSubImageQueryAdapter {
     private final ProductSubImageRepository productSubImageRepository;
 
-    public List<ProductSubImage> getProjectSubImages(final Long teamProductId) {
+    public List<ProductSubImage> getProductSubImages(final Long teamProductId) {
         return productSubImageRepository.getProductSubImages(teamProductId);
     }
 
-    public List<String> getProjectSubImagePaths(final Long teamProductId) {
+    public List<String> getProductSubImagePaths(final Long teamProductId) {
         return productSubImageRepository.getProductSubImagePaths(teamProductId);
     }
 }

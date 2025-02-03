@@ -100,7 +100,8 @@ public class MemberService {
                 NotificationDetails teamInvitationNotificationDetails = NotificationDetails.teamInvitationRequested(
                         team.getTeamCode(),
                         team.getTeamLogoImagePath(),
-                        team.getTeamName()
+                        team.getTeamName(),
+                        false
                 );
 
                 notificationCommandAdapter.save(notificationMapper.toNotification(

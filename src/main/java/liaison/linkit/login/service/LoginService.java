@@ -14,7 +14,6 @@ import liaison.linkit.login.exception.DuplicateEmailRequestException;
 import liaison.linkit.login.infrastructure.BearerAuthorizationExtractor;
 import liaison.linkit.login.infrastructure.JwtProvider;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
-import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.type.Platform;
@@ -22,28 +21,8 @@ import liaison.linkit.member.exception.member.FailMemberGenerateException;
 import liaison.linkit.member.implement.MemberBasicInformCommandAdapter;
 import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.notification.business.NotificationMapper;
-import liaison.linkit.notification.implement.NotificationCommandAdapter;
-import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.profile.Profile;
-import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.profile.implement.log.ProfileLogCommandAdapter;
 import liaison.linkit.profile.implement.profile.ProfileCommandAdapter;
-import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
-import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommandAdapter;
-import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
-import liaison.linkit.scrap.implement.profileScrap.ProfileScrapCommandAdapter;
-import liaison.linkit.scrap.implement.teamScrap.TeamScrapCommandAdapter;
-import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
-import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
-import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
-import liaison.linkit.team.implement.log.TeamLogCommandAdapter;
-import liaison.linkit.team.implement.team.TeamCommandAdapter;
-import liaison.linkit.team.implement.team.TeamQueryAdapter;
-import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
-import liaison.linkit.team.implement.teamMember.TeamMemberInvitationCommandAdapter;
-import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
-import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -67,30 +46,7 @@ public class LoginService {
     private final MemberBasicInformCommandAdapter memberBasicInformCommandAdapter;
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private final ProfileRepository profileRepository;
-    private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileCommandAdapter profileCommandAdapter;
-
-    private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
-    private final TeamMemberInvitationCommandAdapter teamMemberInvitationCommandAdapter;
-    private final NotificationCommandAdapter notificationCommandAdapter;
-    private final NotificationService notificationService;
-    private final NotificationMapper notificationMapper;
-
-    private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
-    private final TeamScrapCommandAdapter teamScrapCommandAdapter;
-    private final ProfileScrapCommandAdapter profileScrapCommandAdapter;
-    private final TeamMemberAnnouncementCommandAdapter teamMemberAnnouncementCommandAdapter;
-    private final TeamMemberCommandAdapter teamMemberCommandAdapter;
-    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
-    private final MatchingCommandAdapter matchingCommandAdapter;
-    private final TeamQueryAdapter teamQueryAdapter;
-    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
-    private final TeamCommandAdapter teamCommandAdapter;
-    private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
-    private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
-    private final TeamLogCommandAdapter teamLogCommandAdapter;
-    private final ProfileLogCommandAdapter profileLogCommandAdapter;
     private final DeleteUtil deleteUtil;
 
     // 회원이 로그인한다
@@ -113,11 +69,20 @@ public class LoginService {
         final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
         refreshTokenRepository.save(savedRefreshToken);
 
+        // 1) memberName 가져오기 (null-safe)
+        String memberName = null;
+        if (member.getMemberBasicInform() != null) {
+            memberName = member.getMemberBasicInform().getMemberName();
+            // 여기서 memberName이 null일 수도 있음
+        }
+
         return accountMapper.toLogin(
                 memberTokens,
                 member.getEmail(),
                 member.getEmailId(),
-                isMemberBasicInform);
+                memberName,
+                isMemberBasicInform
+        );
     }
 
     private Member findOrCreateMember(final String socialLoginId, final String email, final Platform platform) {
@@ -180,7 +145,7 @@ public class LoginService {
         deleteUtil.quitAccount(memberId, refreshToken);
     }
 
-    private void removeRefreshToken(final String refreshToken) {    // 리프레시 토큰을 삭제한다
+    public void removeRefreshToken(final String refreshToken) {    // 리프레시 토큰을 삭제한다
         refreshTokenRepository.deleteById(refreshToken);
     }
 }

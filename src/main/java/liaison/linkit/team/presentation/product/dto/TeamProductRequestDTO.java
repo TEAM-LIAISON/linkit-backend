@@ -1,10 +1,10 @@
 package liaison.linkit.team.presentation.product.dto;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
@@ -84,6 +84,9 @@ public class TeamProductRequestDTO {
         private List<TeamProductLinkRequest> teamProductLinks = new ArrayList<>();
 
         private String productDescription;
+
+        @Builder.Default
+        private TeamProductImages teamProductImages = new TeamProductImages();
     }
 
     @Builder
@@ -97,5 +100,24 @@ public class TeamProductRequestDTO {
 
         @NotBlank(message = "링크 주소를 입력해주세요.")
         private String productLinkPath;
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TeamProductImages {
+        private String productRepresentImagePath; // 대표 이미지
+
+        @Builder.Default
+        private List<ProductSubImage> productSubImages = new ArrayList<>();
+    }
+
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ProductSubImage {
+        private String productSubImagePath;
     }
 }

@@ -50,6 +50,9 @@ public class MemberBasicInformResponseDTO {
         private Boolean isPrivateInformAgree;
         private Boolean isAgeCheck;
         private Boolean isMarketingAgree;
+
+        private String emailId;
+        private String memberName;
     }
 
     @Builder
