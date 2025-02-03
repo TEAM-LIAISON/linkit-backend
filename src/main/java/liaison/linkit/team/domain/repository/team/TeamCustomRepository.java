@@ -29,4 +29,6 @@ public interface TeamCustomRepository {
     void updateTeam(final Team team);
 
     boolean isTeamDeleteInProgress(final String teamCode);
+
+    boolean isTeamDeleted(final String teamCode);
 }

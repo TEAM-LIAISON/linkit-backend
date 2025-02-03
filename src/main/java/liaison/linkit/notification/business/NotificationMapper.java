@@ -14,9 +14,16 @@ import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.Noti
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItem;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.NotificationItems;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.ReadNotificationResponse;
+import liaison.linkit.team.implement.team.TeamQueryAdapter;
 
 @Mapper
 public class NotificationMapper {
+
+    private final TeamQueryAdapter teamQueryAdapter;
+
+    public NotificationMapper(TeamQueryAdapter teamQueryAdapter) {
+        this.teamQueryAdapter = teamQueryAdapter;
+    }
 
     public NotificationResponseDTO.ReadNotificationResponse toReadNotification(
             final Notification notification
@@ -152,13 +159,11 @@ public class NotificationMapper {
                             notification.getMatchingDetails().getMatchingTargetImagePath(),
                             notification.getMatchingDetails().getMatchingTargetName()
                     );
-
                     case MATCHING_REJECTED -> notificationDetails = NotificationDetails.matchingRejected(
                             notification.getMatchingDetails().getMatchingId(),
                             notification.getMatchingDetails().getMatchingTargetImagePath(),
                             notification.getMatchingDetails().getMatchingTargetName()
                     );
-
                     case MATCHING_ACCEPTED -> notificationDetails = NotificationDetails.matchingAccepted(
                             notification.getMatchingDetails().getMatchingId(),
                             notification.getMatchingDetails().getMatchingTargetImagePath(),
@@ -169,8 +174,8 @@ public class NotificationMapper {
 
             // 2) CHATTING 타입
             case CHATTING -> {
-                switch (subType) {
-                    case NEW_CHAT -> notificationDetails = NotificationDetails.chat(
+                if (subType == SubNotificationType.NEW_CHAT) {
+                    notificationDetails = NotificationDetails.chat(
                             notification.getChatDetails().getChatRoomId(),
                             notification.getChatDetails().getChatSenderImagePath(),
                             notification.getChatDetails().getChatSenderName()
@@ -181,42 +186,66 @@ public class NotificationMapper {
             // 3) TEAM_INVITATION 타입
             case TEAM_INVITATION -> {
                 switch (subType) {
-                    case TEAM_INVITATION_REQUESTED -> notificationDetails = NotificationDetails.teamInvitationRequested(
-                            notification.getTeamInvitationDetails().getTeamCode(),
-                            notification.getTeamInvitationDetails().getTeamLogoImagePath(),
-                            notification.getTeamInvitationDetails().getTeamName()
-                    );
-                    case TEAM_MEMBER_JOINED -> notificationDetails = NotificationDetails.teamMemberJoined(
-                            notification.getTeamInvitationDetails().getTeamCode(),
-                            notification.getTeamInvitationDetails().getTeamLogoImagePath(),
-                            notification.getTeamInvitationDetails().getTeamMemberName(),
-                            notification.getTeamInvitationDetails().getTeamName()
-                    );
+                    case TEAM_INVITATION_REQUESTED -> {
+                        String teamCode = notification.getTeamInvitationDetails().getTeamCode();
+                        // 동적 조회: 현재 팀 삭제 여부
+                        boolean isTeamDeleted = teamQueryAdapter.isTeamDeleted(teamCode);
+                        notificationDetails = NotificationDetails.teamInvitationRequested(
+                                teamCode,
+                                notification.getTeamInvitationDetails().getTeamLogoImagePath(),
+                                notification.getTeamInvitationDetails().getTeamName(),
+                                isTeamDeleted
+                        );
+                    }
+                    case TEAM_MEMBER_JOINED -> {
+                        String teamCode = notification.getTeamInvitationDetails().getTeamCode();
+                        boolean isTeamDeleted = teamQueryAdapter.isTeamDeleted(teamCode);
+                        notificationDetails = NotificationDetails.teamMemberJoined(
+                                teamCode,
+                                notification.getTeamInvitationDetails().getTeamLogoImagePath(),
+                                notification.getTeamInvitationDetails().getTeamMemberName(),
+                                notification.getTeamInvitationDetails().getTeamName(),
+                                isTeamDeleted
+                        );
+                    }
                 }
             }
 
             // 4) TEAM 타입
             case TEAM -> {
                 switch (subType) {
-                    case REMOVE_TEAM_REQUESTED -> notificationDetails = NotificationDetails.removeTeamRequested(
-                            notification.getTeamDetails().getTeamCode(),
-                            notification.getTeamDetails().getTeamLogoImagePath(),
-                            notification.getTeamDetails().getTeamMemberName(),
-                            notification.getTeamDetails().getTeamName()
-                    );
-
-                    case REMOVE_TEAM_REJECTED -> notificationDetails = NotificationDetails.removeTeamRejected(
-                            notification.getTeamDetails().getTeamCode(),
-                            notification.getTeamDetails().getTeamLogoImagePath(),
-                            notification.getTeamDetails().getTeamMemberName(),
-                            notification.getTeamDetails().getTeamName()
-                    );
-
-                    case REMOVE_TEAM_COMPLETED -> notificationDetails = NotificationDetails.removeTeamCompleted(
-                            notification.getTeamDetails().getTeamCode(),
-                            notification.getTeamDetails().getTeamLogoImagePath(),
-                            notification.getTeamDetails().getTeamName()
-                    );
+                    case REMOVE_TEAM_REQUESTED -> {
+                        String teamCode = notification.getTeamDetails().getTeamCode();
+                        boolean isTeamDeleted = teamQueryAdapter.isTeamDeleted(teamCode);
+                        notificationDetails = NotificationDetails.removeTeamRequested(
+                                teamCode,
+                                notification.getTeamDetails().getTeamLogoImagePath(),
+                                notification.getTeamDetails().getTeamMemberName(),
+                                notification.getTeamDetails().getTeamName(),
+                                isTeamDeleted
+                        );
+                    }
+                    case REMOVE_TEAM_REJECTED -> {
+                        String teamCode = notification.getTeamDetails().getTeamCode();
+                        boolean isTeamDeleted = teamQueryAdapter.isTeamDeleted(teamCode);
+                        notificationDetails = NotificationDetails.removeTeamRejected(
+                                teamCode,
+                                notification.getTeamDetails().getTeamLogoImagePath(),
+                                notification.getTeamDetails().getTeamMemberName(),
+                                notification.getTeamDetails().getTeamName(),
+                                isTeamDeleted
+                        );
+                    }
+                    case REMOVE_TEAM_COMPLETED -> {
+                        String teamCode = notification.getTeamDetails().getTeamCode();
+                        boolean isTeamDeleted = teamQueryAdapter.isTeamDeleted(teamCode);
+                        notificationDetails = NotificationDetails.removeTeamCompleted(
+                                teamCode,
+                                notification.getTeamDetails().getTeamLogoImagePath(),
+                                notification.getTeamDetails().getTeamName(),
+                                isTeamDeleted
+                        );
+                    }
                 }
             }
 

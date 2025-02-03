@@ -100,6 +100,8 @@ public class NotificationResponseDTO {
         private String teamMemberName;
         private String teamName;
 
+        private Boolean isTeamDeleted;
+
         // 시스템 알림
         private String systemTitle;
 
@@ -120,6 +122,8 @@ public class NotificationResponseDTO {
                 final String teamMemberName,
                 final String teamName,
 
+                final Boolean isTeamDeleted,
+
                 final String systemTitle
         ) {
             this.emailId = emailId;
@@ -137,30 +141,40 @@ public class NotificationResponseDTO {
             this.teamMemberName = teamMemberName;
             this.teamName = teamName;
 
+            this.isTeamDeleted = isTeamDeleted;
+
             this.systemTitle = systemTitle;
         }
 
-        // 팀 초대 요청에 대한 알림생성
-        public static NotificationDetails teamInvitationRequested(final String teamCode, final String teamLogoImagePath, final String teamName) {
+        // 팀 초대 요청 알림 생성 (팀 삭제 여부 포함)
+        public static NotificationDetails teamInvitationRequested(
+                final String teamCode,
+                final String teamLogoImagePath,
+                final String teamName,
+                final boolean isTeamDeleted
+        ) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
                     .teamLogoImagePath(teamLogoImagePath)
                     .teamName(teamName)
+                    .isTeamDeleted(isTeamDeleted)
                     .build();
         }
 
-        // 팀 초대 완료에 대한 알림 생성
+        // 팀 멤버 가입 알림 생성 (팀 삭제 여부 포함)
         public static NotificationDetails teamMemberJoined(
                 final String teamCode,
                 final String teamLogoImagePath,
                 final String teamMemberName,
-                final String teamName
+                final String teamName,
+                final boolean isTeamDeleted
         ) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
                     .teamLogoImagePath(teamLogoImagePath)
                     .teamMemberName(teamMemberName)
                     .teamName(teamName)
+                    .isTeamDeleted(isTeamDeleted)
                     .build();
         }
 
@@ -216,18 +230,20 @@ public class NotificationResponseDTO {
                     .build();
         }
 
-        // 팀 삭제 요청 알림 생성
+        // 팀 관련 기타 알림 생성 메서드도 동일하게 isTeamDeleted 인자를 추가하여 구현
         public static NotificationDetails removeTeamRequested(
                 final String teamCode,
                 final String teamLogoImagePath,
                 final String teamMemberName,
-                final String teamName
+                final String teamName,
+                final boolean isTeamDeleted
         ) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
                     .teamLogoImagePath(teamLogoImagePath)
                     .teamMemberName(teamMemberName)
                     .teamName(teamName)
+                    .isTeamDeleted(isTeamDeleted)
                     .build();
         }
 
@@ -236,13 +252,15 @@ public class NotificationResponseDTO {
                 final String teamCode,
                 final String teamLogoImagePath,
                 final String teamMemberName,
-                final String teamName
+                final String teamName,
+                final boolean isTeamDeleted
         ) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
                     .teamLogoImagePath(teamLogoImagePath)
                     .teamMemberName(teamMemberName)
                     .teamName(teamName)
+                    .isTeamDeleted(isTeamDeleted)
                     .build();
         }
 
@@ -250,12 +268,14 @@ public class NotificationResponseDTO {
         public static NotificationDetails removeTeamCompleted(
                 final String teamCode,
                 final String teamLogoImagePath,
-                final String teamName
+                final String teamName,
+                final boolean isTeamDeleted
         ) {
             return NotificationDetails.builder()
                     .teamCode(teamCode)
                     .teamLogoImagePath(teamLogoImagePath)
                     .teamName(teamName)
+                    .isTeamDeleted(isTeamDeleted)
                     .build();
         }
 

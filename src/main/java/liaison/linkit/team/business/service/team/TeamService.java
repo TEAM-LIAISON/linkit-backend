@@ -402,7 +402,8 @@ public class TeamService {
                         teamCode,
                         targetTeam.getTeamLogoImagePath(),
                         targetTeam.getTeamName(),
-                        member.getMemberBasicInform().getMemberName()
+                        member.getMemberBasicInform().getMemberName(),
+                        false
                 );
 
                 notificationService.alertNewNotification(
@@ -422,7 +423,8 @@ public class TeamService {
             NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamCompleted(
                     teamCode,
                     targetTeam.getTeamLogoImagePath(),
-                    targetTeam.getTeamName()
+                    targetTeam.getTeamName(),
+                    false
             );
 
             notificationService.alertNewNotification(

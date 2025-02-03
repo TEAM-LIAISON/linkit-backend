@@ -136,7 +136,8 @@ public class TeamMemberService {
         NotificationDetails teamInvitationNotificationDetails = NotificationDetails.teamInvitationRequested(
                 teamCode,
                 team.getTeamLogoImagePath(),
-                team.getTeamName()
+                team.getTeamName(),
+                false
         );
 
         // 링킷의 회원이라면
@@ -287,7 +288,8 @@ public class TeamMemberService {
                         teamCode,
                         targetTeam.getTeamLogoImagePath(),
                         member.getMemberBasicInform().getMemberName(),
-                        targetTeam.getTeamName()
+                        targetTeam.getTeamName(),
+                        false
                 );
 
                 final List<TeamMember> teamMembers = teamMemberQueryAdapter.getAllTeamManagers(targetTeam);
@@ -341,7 +343,8 @@ public class TeamMemberService {
                 NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamCompleted(
                         teamCode,
                         targetTeamLogoImagePath,
-                        targetTeamName
+                        targetTeamName,
+                        false
                 );
 
                 notificationService.alertNewNotification(
@@ -370,7 +373,8 @@ public class TeamMemberService {
                     targetTeam.getTeamCode(),
                     targetTeam.getTeamLogoImagePath(),
                     member.getMemberBasicInform().getMemberName(),
-                    targetTeam.getTeamName()
+                    targetTeam.getTeamName(),
+                    false
             );
 
             // 관리자에게 개별 발송
