@@ -324,7 +324,7 @@ public class TeamLogControllerTest extends ControllerTest {
                 = new TeamLogItems(Arrays.asList(firstTeamLogItem, secondTeamLogItem));
 
         // when
-        when(teamLogService.getTeamLogItems(anyLong(), any())).thenReturn(teamLogItems);
+        when(teamLogService.getTeamLogItems(any())).thenReturn(teamLogItems);
 
         final ResultActions resultActions = performGetTeamLogItems("liaison");
 

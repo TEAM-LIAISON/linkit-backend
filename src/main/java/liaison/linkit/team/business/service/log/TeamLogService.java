@@ -73,9 +73,7 @@ public class TeamLogService {
     }
 
     @Transactional(readOnly = true)
-    public TeamLogResponseDTO.TeamLogItems getTeamLogItems(final Long memberId, final String teamCode) {
-        log.info("memberId = {}의 팀 로그 Items 조회 요청 발생했습니다.", memberId);
-
+    public TeamLogResponseDTO.TeamLogItems getTeamLogItems(final String teamCode) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final List<TeamLog> teamLogs = teamLogQueryAdapter.getTeamLogs(team.getId());
 
