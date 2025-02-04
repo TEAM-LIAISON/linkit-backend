@@ -66,10 +66,11 @@ spring:
     jdbc:
       initialize-schema: never
 
-    #  flyway:
-    #    enabled: true
-    #    baseline-on-migrate: true
-    #    baseline-version: 0
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
+
   sql:
     init:
       mode: never

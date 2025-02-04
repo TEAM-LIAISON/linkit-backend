@@ -66,10 +66,10 @@ spring:
     jdbc:
       initialize-schema: never
 
-    #  flyway:
-    #    enabled: true
-    #    baseline-on-migrate: true
-    #    baseline-version: 0
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 0
   sql:
     init:
       mode: never
@@ -81,13 +81,13 @@ spring:
       max-file-size: 60MB # 한 개 파일의 최대 사이즈
       max-request-size: 60MB # 한 개 요청의 최대 사이즈
 
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        web:
-#          socket: TRACE
-#        messaging: TRACE
-#        simp:
-#          broker: TRACE
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          socket: TRACE
+        messaging: TRACE
+        simp:
+          broker: TRACE
 #    root: debug

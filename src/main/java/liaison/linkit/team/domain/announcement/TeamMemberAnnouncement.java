@@ -38,23 +38,23 @@ public class TeamMemberAnnouncement extends BaseEntity {
     private String announcementEndDate;                 // 공고 마감 기간
     private boolean isRegionFlexible;                   // 지역 무관
 
-    @Column(nullable = false, length = 500)
-    private String mainTasks;                           // 주요 업무
+    @Column(nullable = false, length = 10000)
+    private String mainTasks;
 
-    @Column(nullable = false, length = 500)
-    private String workMethod;                          // 업무 방식
+    @Column(nullable = false, length = 10000)
+    private String workMethod;
 
-    @Column(nullable = false, length = 500)
-    private String idealCandidate;                      // 이런 분을 찾고 있어요
+    @Column(nullable = false, length = 10000)
+    private String idealCandidate;
 
-    @Column(length = 500)
-    private String preferredQualifications;             // 이런 분이면 더 좋아요
+    @Column(length = 10000)
+    private String preferredQualifications;
 
-    @Column(length = 500)
-    private String joiningProcess;                      // 이런 과정으로 합류해요
+    @Column(length = 10000)
+    private String joiningProcess;
 
-    @Column(length = 500)
-    private String benefits;                            // 합류하면 이런 것들을 얻어 갈 수 있어요
+    @Column(length = 10000)
+    private String benefits;
 
     private boolean isAnnouncementPublic;               // 공고 공개/비공개 설정
     private boolean isAnnouncementInProgress;           // 공고 진행/완료 여부
