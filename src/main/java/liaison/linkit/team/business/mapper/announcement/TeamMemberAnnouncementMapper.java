@@ -49,6 +49,7 @@ public class TeamMemberAnnouncementMapper {
                 .teamScaleItem(teamScaleItem)
                 .regionDetail(regionDetail)
                 .announcementDDay(announcementDDay)
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .isAnnouncementScrap(isAnnouncementScrap)
                 .announcementScrapCount(announcementScrapCount)
@@ -136,6 +137,8 @@ public class TeamMemberAnnouncementMapper {
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
+
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())
@@ -153,6 +156,7 @@ public class TeamMemberAnnouncementMapper {
                 .team(team)
                 .announcementTitle(request.getAnnouncementTitle())
                 .announcementEndDate(request.getAnnouncementEndDate())
+                .isPermanentRecruitment(request.getIsPermanentRecruitment())
                 .isRegionFlexible(request.getIsRegionFlexible())
                 .mainTasks(request.getMainTasks())
                 .workMethod(request.getWorkMethod())
@@ -165,13 +169,6 @@ public class TeamMemberAnnouncementMapper {
                 .build();
     }
 
-//    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems toTeamMemberAnnouncementItems(final List<TeamMemberAnnouncementItem> teamMemberAnnouncementItems) {
-//        return TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems
-//                .builder()
-//                .teamMemberAnnouncementItems(teamMemberAnnouncementItems)
-//                .build();
-//    }
-
     public TeamMemberAnnouncementItem toTeamMemberAnnouncementItem(
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final int announcementDDay,
@@ -183,6 +180,7 @@ public class TeamMemberAnnouncementMapper {
         return TeamMemberAnnouncementItem.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementDDay(announcementDDay)
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .majorPosition(majorPosition)
                 .announcementSkillNames(announcementSkillNames)
@@ -213,6 +211,8 @@ public class TeamMemberAnnouncementMapper {
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
+
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())
@@ -235,6 +235,7 @@ public class TeamMemberAnnouncementMapper {
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())

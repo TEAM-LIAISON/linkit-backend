@@ -36,7 +36,10 @@ public class TeamMemberAnnouncement extends BaseEntity {
 
     @Column(nullable = false, length = 100)
     private String announcementTitle;                   // 공고 제목
+
     private String announcementEndDate;                 // 공고 마감 기간
+    private boolean isPermanentRecruitment;             // 상시 모집 여부
+
     private boolean isRegionFlexible;                   // 지역 무관
 
     @Lob
