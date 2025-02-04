@@ -48,13 +48,10 @@ public class TeamLogController {
 
     // 로그 전체 조회
     @GetMapping
-    @MemberOnly
     public CommonResponse<TeamLogResponseDTO.TeamLogItems> getTeamLogItems(
-            @Auth final Accessor accessor,
             @PathVariable final String teamCode
     ) {
-        log.info("memberId = {}의 teamCode = {}에 대한 팀 로그 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
-        return CommonResponse.onSuccess(teamLogService.getTeamLogItems(accessor.getMemberId(), teamCode));
+        return CommonResponse.onSuccess(teamLogService.getTeamLogItems(teamCode));
     }
 
     // 로그 상세 조회
