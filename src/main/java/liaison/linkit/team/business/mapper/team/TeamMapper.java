@@ -121,10 +121,11 @@ public class TeamMapper {
                 .build();
     }
 
-    public TeamResponseDTO.DeleteTeamResponse toDeleteTeam(final String teamCode) {
+    public TeamResponseDTO.DeleteTeamResponse toDeleteTeam(final String teamCode, final Boolean isTeamLastDeleteRequester) {
         return DeleteTeamResponse.builder()
                 .teamCode(teamCode)
                 .deletedRequestedAt(LocalDateTime.now())
+                .isTeamLastDeleteRequester(isTeamLastDeleteRequester)
                 .build();
     }
 }

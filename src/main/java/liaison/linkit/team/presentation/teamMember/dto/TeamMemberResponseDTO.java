@@ -130,6 +130,7 @@ public class TeamMemberResponseDTO {
     @AllArgsConstructor
     public static class UpdateManagingTeamStateResponse {
         private String teamCode;
+        private Boolean isTeamLastDeleteRequester;
     }
 
     @Builder
