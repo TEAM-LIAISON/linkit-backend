@@ -14,4 +14,8 @@ public class AnnouncementSkillQueryAdapter {
     public List<AnnouncementSkill> getAnnouncementSkills(final Long teamMemberAnnouncementId) {
         return announcementSkillRepository.getAnnouncementSkills(teamMemberAnnouncementId);
     }
+
+    public boolean existsAnnouncementSkillsByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
+        return announcementSkillRepository.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+    }
 }

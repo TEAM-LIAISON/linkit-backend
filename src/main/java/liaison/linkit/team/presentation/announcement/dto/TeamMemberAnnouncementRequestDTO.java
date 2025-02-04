@@ -110,8 +110,6 @@ public class TeamMemberAnnouncementRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementSkillName {
-        @NotBlank(message = "기술 스택 이름은 필수입니다")
-        @Size(min = 1, message = "기술 스택 이름은 1자 이상이어야 합니다")
         private String announcementSkillName;
     }
 }
