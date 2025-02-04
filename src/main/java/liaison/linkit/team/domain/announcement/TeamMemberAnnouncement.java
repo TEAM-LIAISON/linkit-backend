@@ -40,27 +40,27 @@ public class TeamMemberAnnouncement extends BaseEntity {
     private boolean isRegionFlexible;                   // 지역 무관
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String mainTasks;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String workMethod;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String idealCandidate;
 
     @Lob
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String preferredQualifications;
 
     @Lob
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String joiningProcess;
 
     @Lob
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String benefits;
 
     private boolean isAnnouncementPublic;               // 공고 공개/비공개 설정
