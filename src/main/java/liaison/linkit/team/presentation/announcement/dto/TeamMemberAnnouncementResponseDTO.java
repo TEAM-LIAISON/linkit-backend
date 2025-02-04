@@ -40,6 +40,7 @@ public class TeamMemberAnnouncementResponseDTO {
         private RegionDetail regionDetail = new RegionDetail();
 
         private int announcementDDay;           // 디데이
+        private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;       // 공고 제목
 
         private Boolean isAnnouncementScrap;    // 공고 스크랩 여부
@@ -64,6 +65,7 @@ public class TeamMemberAnnouncementResponseDTO {
         private int announcementScrapCount;
 
         private int announcementDDay;           // 디데이
+        private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;
 
         @Builder.Default
@@ -102,7 +104,7 @@ public class TeamMemberAnnouncementResponseDTO {
         private Long teamMemberAnnouncementId;
 
         private int announcementDDay;
-
+        private Boolean isPermanentRecruitment;     // 상시 모집 여부
         private String announcementTitle;
         private String majorPosition;
 
@@ -115,31 +117,6 @@ public class TeamMemberAnnouncementResponseDTO {
         private Boolean isAnnouncementScrap;        // 공고 스크랩 여부
         private int announcementScrapCount;         // 공고의 전체 스크랩 개수
     }
-
-//    @Builder
-//    @Getter
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class TeamMemberAnnouncementItem {
-//        private Long teamMemberAnnouncementId;
-//        private String announcementTitle;
-//        private String majorPosition;
-//
-//        @Builder.Default
-//        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
-//
-//        private Boolean isAnnouncementPublic;       // 공고 공개/비공개 여부
-//        private Boolean isAnnouncementInProgress;   // 공고 현재 진행 여부
-//    }
-//
-//    @Builder
-//    @Getter
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class TeamMemberAnnouncementItems {
-//        @Builder.Default
-//        private List<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem> teamMemberAnnouncementItems = new ArrayList<>();
-//    }
 
     @Builder
     @Getter
@@ -156,6 +133,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
 
         private String announcementEndDate;
+
+        private Boolean isPermanentRecruitment;
 
         private Boolean isRegionFlexible; // 지역 무관
 
@@ -184,6 +163,7 @@ public class TeamMemberAnnouncementResponseDTO {
         private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
 
         private String announcementEndDate;
+        private Boolean isPermanentRecruitment;
 
         private Boolean isRegionFlexible; // 지역 무관
 

@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.team.domain.team.Team;
 import lombok.AllArgsConstructor;
@@ -36,7 +38,10 @@ public class TeamMemberAnnouncement extends BaseEntity {
 
     @Column(nullable = false, length = 100)
     private String announcementTitle;                   // 공고 제목
+
     private String announcementEndDate;                 // 공고 마감 기간
+    private boolean isPermanentRecruitment;             // 상시 모집 여부
+
     private boolean isRegionFlexible;                   // 지역 무관
 
     @Lob
@@ -68,5 +73,13 @@ public class TeamMemberAnnouncement extends BaseEntity {
 
     public void setIsAnnouncementPublic(final boolean isAnnouncementPublic) {
         this.isAnnouncementPublic = isAnnouncementPublic;
+    }
+    
+    @PrePersist
+    @PreUpdate
+    private void prePersistOrUpdate() {
+        if (this.announcementEndDate != null && this.announcementEndDate.trim().isEmpty()) {
+            this.announcementEndDate = null;
+        }
     }
 }

@@ -88,6 +88,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 .update(qTeamMemberAnnouncement)
                 .set(qTeamMemberAnnouncement.announcementTitle, request.getAnnouncementTitle())
                 .set(qTeamMemberAnnouncement.announcementEndDate, request.getAnnouncementEndDate())
+                .set(qTeamMemberAnnouncement.isPermanentRecruitment, request.getIsPermanentRecruitment())
                 .set(qTeamMemberAnnouncement.isRegionFlexible, request.getIsRegionFlexible())
                 .set(qTeamMemberAnnouncement.mainTasks, request.getMainTasks())
                 .set(qTeamMemberAnnouncement.workMethod, request.getWorkMethod())

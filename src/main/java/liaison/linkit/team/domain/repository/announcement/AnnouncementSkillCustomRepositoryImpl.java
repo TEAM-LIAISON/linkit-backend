@@ -24,4 +24,16 @@ public class AnnouncementSkillCustomRepositoryImpl implements AnnouncementSkillC
                 .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncementId))
                 .fetch();
     }
+
+    @Override
+    public boolean existsAnnouncementSkillsByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
+        QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
+
+        // 최소 1개의 스킬이 존재하는지 확인
+        return jpaQueryFactory
+                .selectOne()
+                .from(qAnnouncementSkill)
+                .where(qAnnouncementSkill.teamMemberAnnouncement.id.eq(teamMemberAnnouncementId))
+                .fetchFirst() != null; // 존재하면 true, 없으면 false 반환
+    }
 }

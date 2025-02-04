@@ -49,6 +49,7 @@ public class TeamMemberAnnouncementMapper {
                 .teamScaleItem(teamScaleItem)
                 .regionDetail(regionDetail)
                 .announcementDDay(announcementDDay)
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .isAnnouncementScrap(isAnnouncementScrap)
                 .announcementScrapCount(announcementScrapCount)
@@ -66,23 +67,39 @@ public class TeamMemberAnnouncementMapper {
     ) {
         List<TeamMemberAnnouncementItem> items = teamMemberAnnouncements.stream()
                 .map(teamMemberAnnouncement -> {
-                    final AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+                    final AnnouncementPosition announcementPosition = announcementPositionQueryAdapter
+                            .findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
 
-                    final List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+                    final List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter
+                            .getAnnouncementSkills(teamMemberAnnouncement.getId());
+                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
+                            announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
-                    final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+                    final int announcementScrapCount = announcementScrapQueryAdapter
+                            .getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
 
-                    final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+                    // D-Day 계산 (공고 마감일이 있을 때만)
+                    int announcementDDay = -1; // 기본값 설정 (예: 마감일이 없는 경우 -1)
+                    if (teamMemberAnnouncement.getAnnouncementEndDate() != null) {
+                        announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+                    }
 
-                    return toTeamMemberAnnouncementItem(teamMemberAnnouncement, announcementDDay, announcementPosition.getPosition().getMajorPosition(), announcementSkillNames, false,
-                            announcementScrapCount);
-                }).toList();
+                    return toTeamMemberAnnouncementItem(
+                            teamMemberAnnouncement,
+                            announcementDDay,
+                            announcementPosition.getPosition().getMajorPosition(),
+                            announcementSkillNames,
+                            false,
+                            announcementScrapCount
+                    );
+                })
+                .toList();
 
         return TeamMemberAnnouncemenItems.builder()
                 .teamMemberAnnouncementItems(items)
                 .build();
     }
+
 
     public TeamMemberAnnouncemenItems toLoggedInTeamMemberAnnouncementViewItems(
             final Long memberId,
@@ -94,24 +111,46 @@ public class TeamMemberAnnouncementMapper {
     ) {
         List<TeamMemberAnnouncementItem> items = teamMemberAnnouncements.stream()
                 .map(teamMemberAnnouncement -> {
-                    final AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+                    final AnnouncementPosition announcementPosition =
+                            announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
 
-                    final List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+                    final List<AnnouncementSkill> announcementSkills =
+                            announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
+                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
+                            announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
-                    final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
-                    final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+                    final boolean isAnnouncementScrap =
+                            announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
+                    final int announcementScrapCount =
+                            announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
 
-                    final int dDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+                    // D-Day 계산 (마감일이 있는 경우에만)
+                    int dDay = -1; // 기본값 설정
+                    if (teamMemberAnnouncement.getAnnouncementEndDate() != null) {
+                        dDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+                    }
 
-                    return toTeamMemberAnnouncementItem(teamMemberAnnouncement, dDay, announcementPosition.getPosition().getMajorPosition(), announcementSkillNames, isAnnouncementScrap,
-                            announcementScrapCount);
-                }).toList();
+                    // announcementPosition이 null일 경우 방어 코드 추가
+                    String majorPosition = (announcementPosition != null && announcementPosition.getPosition() != null)
+                            ? announcementPosition.getPosition().getMajorPosition()
+                            : "N/A"; // 기본값 설정 가능
+
+                    return toTeamMemberAnnouncementItem(
+                            teamMemberAnnouncement,
+                            dDay,
+                            majorPosition,
+                            announcementSkillNames,
+                            isAnnouncementScrap,
+                            announcementScrapCount
+                    );
+                })
+                .toList();
 
         return TeamMemberAnnouncemenItems.builder()
                 .teamMemberAnnouncementItems(items)
                 .build();
     }
+
 
     public AnnouncementInformMenus toAnnouncementInformMenus(final List<AnnouncementInformMenu> announcementInformMenus) {
         return AnnouncementInformMenus.builder()
@@ -126,16 +165,24 @@ public class TeamMemberAnnouncementMapper {
             final AnnouncementPositionItem announcementPositionItem,
             final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
+        // D-Day 계산 (isPermanentRecruitment가 true이면 -1, 아니면 정상 계산)
+        int announcementDDay = -1;
+        if (!teamMemberAnnouncement.isPermanentRecruitment() && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
+            announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+        }
+
         return TeamMemberAnnouncementDetail
                 .builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .isAnnouncementScrap(isAnnouncementScrap)
                 .announcementScrapCount(announcementScrapCount)
-                .announcementDDay(DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate()))
+                .announcementDDay(announcementDDay)  // 수정된 부분
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
+
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())
@@ -153,6 +200,7 @@ public class TeamMemberAnnouncementMapper {
                 .team(team)
                 .announcementTitle(request.getAnnouncementTitle())
                 .announcementEndDate(request.getAnnouncementEndDate())
+                .isPermanentRecruitment(request.getIsPermanentRecruitment())
                 .isRegionFlexible(request.getIsRegionFlexible())
                 .mainTasks(request.getMainTasks())
                 .workMethod(request.getWorkMethod())
@@ -165,13 +213,6 @@ public class TeamMemberAnnouncementMapper {
                 .build();
     }
 
-//    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems toTeamMemberAnnouncementItems(final List<TeamMemberAnnouncementItem> teamMemberAnnouncementItems) {
-//        return TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems
-//                .builder()
-//                .teamMemberAnnouncementItems(teamMemberAnnouncementItems)
-//                .build();
-//    }
-
     public TeamMemberAnnouncementItem toTeamMemberAnnouncementItem(
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final int announcementDDay,
@@ -183,6 +224,7 @@ public class TeamMemberAnnouncementMapper {
         return TeamMemberAnnouncementItem.builder()
                 .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
                 .announcementDDay(announcementDDay)
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
                 .majorPosition(majorPosition)
                 .announcementSkillNames(announcementSkillNames)
@@ -213,6 +255,8 @@ public class TeamMemberAnnouncementMapper {
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
+
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())
@@ -235,6 +279,7 @@ public class TeamMemberAnnouncementMapper {
                 .announcementPositionItem(announcementPositionItem)
                 .announcementSkillNames(announcementSkillNames)
                 .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
+                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
                 .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
                 .mainTasks(teamMemberAnnouncement.getMainTasks())
                 .workMethod(teamMemberAnnouncement.getWorkMethod())
