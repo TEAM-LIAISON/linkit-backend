@@ -1,5 +1,3 @@
--- V1.0.0__Update_Announcement_Length.sql
-
 ALTER TABLE team_member_announcement
     MODIFY COLUMN main_tasks VARCHAR(10000) NOT NULL,
     MODIFY COLUMN work_method VARCHAR(10000) NOT NULL,
