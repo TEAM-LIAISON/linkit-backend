@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.team.domain.team.Team;
@@ -38,22 +39,28 @@ public class TeamMemberAnnouncement extends BaseEntity {
     private String announcementEndDate;                 // 공고 마감 기간
     private boolean isRegionFlexible;                   // 지역 무관
 
-    @Column(nullable = false, length = 10000)
+    @Lob
+    @Column(nullable = false)
     private String mainTasks;
 
-    @Column(nullable = false, length = 10000)
+    @Lob
+    @Column(nullable = false)
     private String workMethod;
 
-    @Column(nullable = false, length = 10000)
+    @Lob
+    @Column(nullable = false)
     private String idealCandidate;
 
-    @Column(length = 10000)
+    @Lob
+    @Column
     private String preferredQualifications;
 
-    @Column(length = 10000)
+    @Lob
+    @Column
     private String joiningProcess;
 
-    @Column(length = 10000)
+    @Lob
+    @Column
     private String benefits;
 
     private boolean isAnnouncementPublic;               // 공고 공개/비공개 설정
