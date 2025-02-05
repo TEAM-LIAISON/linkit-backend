@@ -18,10 +18,8 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
         QChatRoom qChatRoom = QChatRoom.chatRoom;
 
         return jpaQueryFactory
-                .selectFrom(qChatRoom).distinct()
+                .selectFrom(qChatRoom)
                 .where(
-                        // (A_Member = memberId AND A_Status = USABLE)
-                        //    OR (B_Member = memberId AND B_Status = USABLE)
                         qChatRoom.participantAMemberId.eq(memberId)
                                 .and(qChatRoom.participantAStatus.eq(StatusType.USABLE))
                                 .or(
@@ -29,6 +27,7 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
                                                 .and(qChatRoom.participantBStatus.eq(StatusType.USABLE))
                                 )
                 )
+                .groupBy(qChatRoom.id)  // ChatRoom ID 기준으로 중복 제거
                 .fetch();
     }
 

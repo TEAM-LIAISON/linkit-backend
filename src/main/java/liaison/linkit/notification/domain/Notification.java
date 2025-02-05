@@ -42,6 +42,7 @@ public class Notification {
     private LocalDateTime createdAt;                            // 생성 시간
 
     private MatchingDetails matchingDetails;
+    private AnnouncementDetails announcementDetails;
     private ChatDetails chatDetails;
 
     private TeamInvitationDetails teamInvitationDetails;
@@ -54,6 +55,16 @@ public class Notification {
     @NoArgsConstructor(access = PROTECTED)
     @AllArgsConstructor
     public static class MatchingDetails {
+        private Long matchingId;
+        private String matchingTargetImagePath;
+        private String matchingTargetName;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor(access = PROTECTED)
+    @AllArgsConstructor
+    public static class AnnouncementDetails {
         private Long matchingId;
         private String matchingTargetImagePath;
         private String matchingTargetName;
@@ -103,6 +114,10 @@ public class Notification {
 
     public void setMatchingDetails(final MatchingDetails matchingDetails) {
         this.matchingDetails = matchingDetails;
+    }
+
+    public void setAnnouncementDetails(final AnnouncementDetails announcementDetails) {
+        this.announcementDetails = announcementDetails;
     }
 
     public void setChatDetails(final ChatDetails chatDetails) {

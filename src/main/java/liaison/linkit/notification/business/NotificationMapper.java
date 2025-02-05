@@ -63,6 +63,19 @@ public class NotificationMapper {
                 }
             }
 
+            // 공고 케이스
+            case ANNOUNCEMENT -> {
+                switch (subNotificationType) {
+                    case ANNOUNCEMENT_REQUESTED, ANNOUNCEMENT_ACCEPTED, ANNOUNCEMENT_REJECTED -> notification.setAnnouncementDetails(
+                            Notification.AnnouncementDetails.builder()
+                                    .matchingId(notificationDetails.getMatchingId())
+                                    .matchingTargetImagePath(notificationDetails.getMatchingTargetLogoImagePath())
+                                    .matchingTargetName(notificationDetails.getMatchingTargetName())
+                                    .build()
+                    );
+                }
+            }
+
             // 채팅 케이스
             case CHATTING -> {
                 switch (subNotificationType) {
