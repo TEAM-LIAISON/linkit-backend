@@ -19,6 +19,7 @@ import liaison.linkit.team.business.mapper.log.TeamLogMapper;
 import liaison.linkit.team.domain.log.TeamLog;
 import liaison.linkit.team.domain.log.TeamLogImage;
 import liaison.linkit.team.domain.team.Team;
+import liaison.linkit.team.exception.log.UpdateTeamLogTypeBadRequestException;
 import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
 import liaison.linkit.team.implement.log.TeamLogCommandAdapter;
 import liaison.linkit.team.implement.log.TeamLogImageCommandAdapter;
@@ -234,6 +235,10 @@ public class TeamLogService {
         // 2. 현재 프로필 조회
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
+        if (!teamLog.isLogPublic()) {
+            throw UpdateTeamLogTypeBadRequestException.EXCEPTION;
+        }
+
         // 3. 기존 대표 로그 조회
         TeamLog existingRepresentativeTeamLog = null;
         if (teamLogQueryAdapter.existsRepresentativeTeamLogByTeam(team.getId())) {
@@ -253,6 +258,11 @@ public class TeamLogService {
     // 팀 로그 공개 여부 수정
     public UpdateTeamLogPublicStateResponse updateTeamLogPublicState(final Long memberId, final String teamCode, final Long teamLogId) {
         final TeamLog teamLog = teamLogQueryAdapter.getTeamLog(teamLogId);
+
+//        if (teamLog.getLogType().equals(LogType.REPRESENTATIVE_LOG)) {
+//            throw UpdateTeamLogPublicBadRequestException.EXCEPTION;
+//        }
+
         final boolean isTeamLogCurrentPublicState = teamLog.isLogPublic();
         final TeamLog updatedTeamLog = teamLogCommandAdapter.updateTeamLogPublicState(teamLog, isTeamLogCurrentPublicState);
 

@@ -19,6 +19,7 @@ import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.log.ProfileLogImage;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.type.LogType;
+import liaison.linkit.profile.exception.log.UpdateProfileLogTypeBadRequestException;
 import liaison.linkit.profile.implement.log.ProfileLogCommandAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogImageCommandAdapter;
 import liaison.linkit.profile.implement.log.ProfileLogImageQueryAdapter;
@@ -276,6 +277,10 @@ public class ProfileLogService {
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
         log.info("ProfileLog = {}가 성공적으로 조회되었습니다.", profileLog);
 
+        if (!profileLog.isLogPublic()) {
+            throw UpdateProfileLogTypeBadRequestException.EXCEPTION;
+        }
+
         // 2. 현재 프로필 조회
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
@@ -307,6 +312,11 @@ public class ProfileLogService {
         log.info("memberId = {}의 프로필 로그 = {}에 대한 프로필 로그 공개 여부 수정 요청 발생했습니다.", memberId, profileLogId);
 
         final ProfileLog profileLog = profileLogQueryAdapter.getProfileLog(profileLogId);
+
+//        if (profileLog.getLogType().equals(LogType.REPRESENTATIVE_LOG)) {
+//            throw UpdateProfileLogPublicBadRequestException.EXCEPTION;
+//        }
+
         final boolean isProfileLogCurrentPublicState = profileLog.isLogPublic();
         final ProfileLog updatedProfileLog = profileLogCommandAdapter.updateProfileLogPublicState(profileLog, isProfileLogCurrentPublicState);
 

@@ -317,6 +317,7 @@ public class TeamMemberService {
     }
 
     public UpdateManagingTeamStateResponse updateManagingTeamState(final Long memberId, final String teamCode, final UpdateManagingTeamStateRequest updateManagingTeamStateRequest) {
+        boolean isTeamLastDeleteRequester = false;
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
         if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
@@ -332,6 +333,7 @@ public class TeamMemberService {
         if (updateManagingTeamStateRequest.getTeamMemberManagingTeamState().equals(TeamMemberManagingTeamState.ALLOW_DELETE)) {
             // 모든 TeamMember가 허용을 했는지 확인
             if (teamMemberQueryAdapter.isTeamMembersAllowDelete(targetTeam)) {
+                isTeamLastDeleteRequester = true;
                 final String targetTeamName = targetTeam.getTeamName();
                 final String targetTeamLogoImagePath = targetTeam.getTeamLogoImagePath();
 
@@ -394,7 +396,7 @@ public class TeamMemberService {
 
         }
 
-        return teamMemberMapper.toUpdateManagingTeamStateResponse(teamCode);
+        return teamMemberMapper.toUpdateManagingTeamStateResponse(teamCode, isTeamLastDeleteRequester);
     }
 
     // 오너 / 관리자가 팀원을 삭제할 수 있다.

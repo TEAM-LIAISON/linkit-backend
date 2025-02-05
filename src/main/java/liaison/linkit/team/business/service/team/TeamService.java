@@ -376,6 +376,8 @@ public class TeamService {
 
     // 팀 삭제 요청
     public TeamResponseDTO.DeleteTeamResponse deleteTeam(final Long memberId, final String teamCode) {
+        boolean isTeamLastDeleteRequester = false;
+
         final Member member = memberQueryAdapter.findById(memberId);
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
@@ -418,6 +420,7 @@ public class TeamService {
                 headerNotificationService.publishNotificationCount(currentTeamMember.getMember().getId());
             }
         } else {    // 오너만 해당 팀을 소유하고 있는 경우
+            isTeamLastDeleteRequester = true;
             deleteUtil.deleteTeam(teamCode);
 
             NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamCompleted(
@@ -439,7 +442,7 @@ public class TeamService {
             headerNotificationService.publishNotificationCount(memberId);
         }
 
-        return teamMapper.toDeleteTeam(teamCode);
+        return teamMapper.toDeleteTeam(teamCode, isTeamLastDeleteRequester);
     }
 
     // 홈화면에서 로그인 상태에서 팀 조회

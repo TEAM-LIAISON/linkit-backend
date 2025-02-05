@@ -691,6 +691,7 @@ public class ChatService {
         final List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
 
         final List<ChatRoomSummary> chatRoomSummaries = new ArrayList<>();
+
         for (ChatRoom chatRoom : chatRooms) {
             if (chatRoom.getParticipantAMemberId().equals(memberId)) {
                 final Member chatPartnerMember = memberQueryAdapter.findById(chatRoom.getParticipantBMemberId());

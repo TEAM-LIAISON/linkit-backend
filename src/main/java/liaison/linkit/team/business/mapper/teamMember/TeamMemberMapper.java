@@ -109,9 +109,10 @@ public class TeamMemberMapper {
                 .build();
     }
 
-    public TeamMemberResponseDTO.UpdateManagingTeamStateResponse toUpdateManagingTeamStateResponse(final String teamCode) {
+    public TeamMemberResponseDTO.UpdateManagingTeamStateResponse toUpdateManagingTeamStateResponse(final String teamCode, final boolean isTeamLastDeleteRequester) {
         return UpdateManagingTeamStateResponse.builder()
                 .teamCode(teamCode)
+                .isTeamLastDeleteRequester(isTeamLastDeleteRequester)
                 .build();
     }
 

@@ -163,5 +163,6 @@ public class TeamResponseDTO {
     public static class DeleteTeamResponse {
         private String teamCode;
         private LocalDateTime deletedRequestedAt;
+        private Boolean isTeamLastDeleteRequester;
     }
 }
