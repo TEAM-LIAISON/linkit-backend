@@ -89,7 +89,7 @@ public class NotificationResponseDTO {
         private String chatSenderLogoImagePath;
         private String chatSenderName;
 
-        // 매칭 알림
+        // 매칭 알림, 공고 알림
         private Long matchingId;
         private String matchingTargetLogoImagePath;
         private String matchingTargetName;
@@ -219,6 +219,45 @@ public class NotificationResponseDTO {
 
         // 매칭 거절 알림 생성
         public static NotificationDetails matchingRejected(
+                final Long matchingId,
+                final String matchingTargetLogoImagePath,
+                final String matchingTargetName
+        ) {
+            return NotificationDetails.builder()
+                    .matchingId(matchingId)
+                    .matchingTargetLogoImagePath(matchingTargetLogoImagePath)
+                    .matchingTargetName(matchingTargetName)
+                    .build();
+        }
+
+        // 공고 지원 알림 생성
+        public static NotificationDetails announcementRequested(
+                final Long matchingId,
+                final String matchingTargetLogoImagePath,
+                final String matchingTargetName
+        ) {
+            return NotificationDetails.builder()
+                    .matchingId(matchingId)
+                    .matchingTargetLogoImagePath(matchingTargetLogoImagePath)
+                    .matchingTargetName(matchingTargetName)
+                    .build();
+        }
+
+        // 공고 지원 성사 알림 생성
+        public static NotificationDetails announcementAccepted(
+                final Long matchingId,
+                final String matchingTargetLogoImagePath,
+                final String matchingTargetName
+        ) {
+            return NotificationDetails.builder()
+                    .matchingId(matchingId)
+                    .matchingTargetLogoImagePath(matchingTargetLogoImagePath)
+                    .matchingTargetName(matchingTargetName)
+                    .build();
+        }
+
+        // 공고 지원 거절 알림 생성
+        public static NotificationDetails announcementRejected(
                 final Long matchingId,
                 final String matchingTargetLogoImagePath,
                 final String matchingTargetName

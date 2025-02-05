@@ -1,5 +1,6 @@
 package liaison.linkit.chat.domain.repository.chatRoom;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import liaison.linkit.chat.domain.ChatRoom;
@@ -17,19 +18,21 @@ public class ChatRoomCustomRepositoryImpl implements ChatRoomCustomRepository {
     public List<ChatRoom> findAllChatRoomsByMemberId(final Long memberId) {
         QChatRoom qChatRoom = QChatRoom.chatRoom;
 
+        // 조건 A: participant A가 해당 멤버이고, A의 상태가 USABLE
+        BooleanExpression conditionA = qChatRoom.participantAMemberId.eq(memberId)
+                .and(qChatRoom.participantAStatus.eq(StatusType.USABLE));
+
+        // 조건 B: participant B가 해당 멤버이고, B의 상태가 USABLE
+        BooleanExpression conditionB = qChatRoom.participantBMemberId.eq(memberId)
+                .and(qChatRoom.participantBStatus.eq(StatusType.USABLE));
+
         return jpaQueryFactory
                 .selectFrom(qChatRoom)
-                .where(
-                        qChatRoom.participantAMemberId.eq(memberId)
-                                .and(qChatRoom.participantAStatus.eq(StatusType.USABLE))
-                                .or(
-                                        qChatRoom.participantBMemberId.eq(memberId)
-                                                .and(qChatRoom.participantBStatus.eq(StatusType.USABLE))
-                                )
-                )
+                .where(conditionA.or(conditionB))
                 .groupBy(qChatRoom.id)  // ChatRoom ID 기준으로 중복 제거
                 .fetch();
     }
+
 
     @Override
     public boolean existsChatRoomByMatchingId(final Long matchingId) {

@@ -496,61 +496,23 @@ public class MatchingService {
             );
             log.info("이메일 발송 완료");
 
-            // 매칭 성사된 경우, 수신자에게 알림 발송
-            NotificationDetails receiverNotificationDetails = NotificationDetails.matchingAccepted(
-                    matchingId,
-                    getSenderLogoImagePath(matching),
-                    getSenderName(matching)
-            );
-
-            notificationService.alertNewNotification(
-                    notificationMapper.toNotification(
-                            getReceiverMemberId(matching),
-                            NotificationType.MATCHING,
-                            SubNotificationType.MATCHING_ACCEPTED,
-                            receiverNotificationDetails
-                    )
-            );
+            NotificationDetails acceptedStateReceiverNotificationDetails = generateAcceptedStateReceiverNotificationDetails(matching);
+            alertNewAcceptedNotificationToReceiver(matching, acceptedStateReceiverNotificationDetails);
             log.info("수신자에게 알림 발송 완료: memberId={}, matchingId={}", getReceiverMemberId(matching), matchingId);
 
             headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
             log.info("수신자 헤더 알림 카운트 업데이트 완료: memberId={}", getReceiverMemberId(matching));
 
             // 매칭 성사된 경우, 발신자에게 알림 발송
-            NotificationDetails senderNotificationDetails = NotificationDetails.matchingAccepted(
-                    matchingId,
-                    getReceiverLogoImagePath(matching),
-                    getReceiverName(matching)
-            );
-
-            notificationService.alertNewNotification(
-                    notificationMapper.toNotification(
-                            getSenderMemberId(matching),
-                            NotificationType.MATCHING,
-                            SubNotificationType.MATCHING_ACCEPTED,
-                            senderNotificationDetails
-                    )
-            );
+            NotificationDetails acceptedStateSenderNotificationDetails = generateAcceptedStateSenderNotificationDetails(matching);
+            alertNewAcceptedNotificationToSender(matching, acceptedStateSenderNotificationDetails);
             log.info("발신자에게 알림 발송 완료: memberId={}, matchingId={}", getSenderMemberId(matching), matchingId);
 
             headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
             log.info("발신자 헤더 알림 카운트 업데이트 완료: memberId={}", getSenderMemberId(matching));
         } else {
-            NotificationDetails senderRejectedNotificationDetails = NotificationDetails.matchingRejected(
-                    matchingId,
-                    getReceiverLogoImagePath(matching),
-                    getReceiverName(matching)
-            );
-
-            notificationService.alertNewNotification(
-                    notificationMapper.toNotification(
-                            getSenderMemberId(matching),
-                            NotificationType.MATCHING,
-                            SubNotificationType.MATCHING_REJECTED,
-                            senderRejectedNotificationDetails
-                    )
-            );
-
+            NotificationDetails rejectedStateReceiverNotificationDetails = generatedRejectedStateSenderNotificationDetails(matching);
+            alertNewRejectedNotificationToSender(matching, rejectedStateReceiverNotificationDetails);
             headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
         }
 
@@ -701,8 +663,6 @@ public class MatchingService {
             senderProfileInformation = matchingMapper.toSenderProfileInformation(senderProfile, senderProfilePositionDetail);
         }
 
-        log.info("Adding new matching 1: " + matching);
-
         if (addMatchingRequest.getSenderType().equals(SenderType.TEAM)) {
             final Team senderTeam = teamQueryAdapter.findByTeamCode(addMatchingRequest.getSenderTeamCode());
             TeamScaleItem senderTeamScaleItem = new TeamScaleItem();
@@ -713,8 +673,6 @@ public class MatchingService {
 
             senderTeamInformation = matchingMapper.toSenderTeamInformation(senderTeam, senderTeamScaleItem);
         }
-
-        log.info("Adding new matching 2: " + matching);
 
         if (addMatchingRequest.getReceiverType().equals(ReceiverType.PROFILE)) {
             final Profile receiverProfile = profileQueryAdapter.findByEmailId(addMatchingRequest.getReceiverEmailId());
@@ -727,8 +685,6 @@ public class MatchingService {
             receiverProfileInformation = matchingMapper.toReceiverProfileInformation(receiverProfile, receiverProfilePositionDetail);
         }
 
-        log.info("Adding new matching 3: " + matching);
-
         if (addMatchingRequest.getReceiverType().equals(ReceiverType.TEAM)) {
             final Team receiverTeam = teamQueryAdapter.findByTeamCode(addMatchingRequest.getReceiverTeamCode());
             TeamScaleItem receiverTeamScaleItem = new TeamScaleItem();
@@ -739,8 +695,6 @@ public class MatchingService {
 
             receiverTeamInformation = matchingMapper.toReceiverTeamInformation(receiverTeam, receiverTeamScaleItem);
         }
-
-        log.info("Adding new matching 4: " + matching);
 
         if (addMatchingRequest.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
             final TeamMemberAnnouncement receiverAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(addMatchingRequest.getReceiverAnnouncementId());
@@ -759,34 +713,10 @@ public class MatchingService {
             receiverAnnouncementInformation = matchingMapper.toReceiverAnnouncementInformation(receiverAnnouncement, announcementPositionItem, announcementSkillNames);
         }
 
-        log.info("Adding new matching 5: " + matching);
-
-        log.info("getSenderLogoImagePath: " + getSenderLogoImagePath(matching));
-
-        final NotificationDetails receiverNotificationDetails = NotificationDetails.matchingRequested(
-                // matchingTargetName 필요
-                savedMatching.getId(),
-                getSenderLogoImagePath(matching),
-                getSenderName(matching)
-        );
-
-        log.info("receiverNotificationDetails: " + receiverNotificationDetails);
-
-        notificationService.alertNewNotification(
-                notificationMapper.toNotification(
-                        getReceiverMemberId(matching),
-                        NotificationType.MATCHING,
-                        SubNotificationType.MATCHING_REQUESTED,
-                        receiverNotificationDetails
-                )
-        );
-
-        log.info("Adding new matching 6: " + matching);
-
+        NotificationDetails requestedStateReceiverNotificationDetails = generateRequestedStateReceiverNotificationDetails(savedMatching);
+        alertNewRequestedNotificationToReceiver(savedMatching, requestedStateReceiverNotificationDetails);
         headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
-
-        log.info("Adding new matching 7: " + matching);
-
+        
         return matchingMapper.toAddMatchingResponse(matching, senderProfileInformation, senderTeamInformation, receiverProfileInformation, receiverTeamInformation, receiverAnnouncementInformation);
     }
 
@@ -1316,7 +1246,7 @@ public class MatchingService {
      */
     private String generateSubTitle(SenderType senderType, ReceiverType receiverType, boolean isSender) {
         if (senderType.equals(SenderType.PROFILE) && receiverType.equals(ReceiverType.PROFILE)) {
-            return isSender ? "님과 매칭 성사" : "님과 매칭 성사";
+            return "님과 매칭 성사";
         } else if (senderType.equals(SenderType.PROFILE) && receiverType.equals(ReceiverType.TEAM)) {
             return isSender ? "팀과 매칭 성사" : "님과 매칭 성사";
         } else if (senderType.equals(SenderType.TEAM) && receiverType.equals(ReceiverType.PROFILE)) {
@@ -1327,4 +1257,179 @@ public class MatchingService {
         return "매칭 성사";
     }
 
+    /**
+     * 수신자 매칭 요청 알림 생성
+     */
+    private NotificationDetails generateRequestedStateReceiverNotificationDetails(final Matching matching) {
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            return NotificationDetails.announcementRequested(
+                    matching.getId(),
+                    getSenderLogoImagePath(matching),
+                    getSenderName(matching)
+            );
+        } else {
+            return NotificationDetails.matchingRequested(
+                    matching.getId(),
+                    getSenderLogoImagePath(matching),
+                    getSenderName(matching)
+            );
+        }
+    }
+
+    /**
+     * 수신자 매칭 성사 알림 생성
+     */
+    private NotificationDetails generateAcceptedStateReceiverNotificationDetails(final Matching matching) {
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            return NotificationDetails.announcementAccepted(
+                    matching.getId(),
+                    getSenderLogoImagePath(matching),
+                    getSenderName(matching)
+            );
+        } else {
+            return NotificationDetails.matchingAccepted(
+                    matching.getId(),
+                    getSenderLogoImagePath(matching),
+                    getSenderName(matching)
+            );
+        }
+    }
+
+    /**
+     * 발신자 매칭 성사 알림 생성
+     */
+    private NotificationDetails generateAcceptedStateSenderNotificationDetails(final Matching matching) {
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            return NotificationDetails.announcementAccepted(
+                    matching.getId(),
+                    getReceiverLogoImagePath(matching),
+                    getReceiverName(matching)
+            );
+        } else {
+            return NotificationDetails.matchingAccepted(
+                    matching.getId(),
+                    getReceiverLogoImagePath(matching),
+                    getReceiverName(matching)
+            );
+        }
+    }
+
+    /**
+     * 발신자 매칭 거절 알림 생성
+     */
+    private NotificationDetails generatedRejectedStateSenderNotificationDetails(final Matching matching) {
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            return NotificationDetails.announcementRejected(
+                    matching.getId(),
+                    getReceiverLogoImagePath(matching),
+                    getReceiverName(matching)
+            );
+        } else {
+            return NotificationDetails.matchingRejected(
+                    matching.getId(),
+                    getReceiverLogoImagePath(matching),
+                    getReceiverName(matching)
+            );
+        }
+    }
+
+    /**
+     * 수신자에게 매칭 요청 알림 발송
+     */
+    private void alertNewRequestedNotificationToReceiver(final Matching matching, final NotificationDetails notificationDetails) {
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getReceiverMemberId(matching),
+                            NotificationType.ANNOUNCEMENT,
+                            SubNotificationType.ANNOUNCEMENT_REQUESTED,
+                            notificationDetails
+                    )
+            );
+        } else {
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getReceiverMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_REQUESTED,
+                            notificationDetails
+                    )
+            );
+        }
+    }
+
+    /**
+     * 수신자에게 매칭 성사 알림 발송
+     */
+    private void alertNewAcceptedNotificationToReceiver(final Matching matching, final NotificationDetails notificationDetails) {
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getReceiverMemberId(matching),
+                            NotificationType.ANNOUNCEMENT,
+                            SubNotificationType.ANNOUNCEMENT_ACCEPTED,
+                            notificationDetails
+                    )
+            );
+        } else {
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getReceiverMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_ACCEPTED,
+                            notificationDetails
+                    )
+            );
+        }
+    }
+
+    /**
+     * 발신자에게 매칭 성사 알림 발송
+     */
+    private void alertNewAcceptedNotificationToSender(final Matching matching, final NotificationDetails notificationDetails) {
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getSenderMemberId(matching),
+                            NotificationType.ANNOUNCEMENT,
+                            SubNotificationType.ANNOUNCEMENT_ACCEPTED,
+                            notificationDetails
+                    )
+            );
+        } else {
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getSenderMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_ACCEPTED,
+                            notificationDetails
+                    )
+            );
+        }
+    }
+
+    /**
+     * 발신자에게 매칭 거절 알림 발송
+     */
+    private void alertNewRejectedNotificationToSender(final Matching matching, final NotificationDetails notificationDetails) {
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getSenderMemberId(matching),
+                            NotificationType.ANNOUNCEMENT,
+                            SubNotificationType.ANNOUNCEMENT_REJECTED,
+                            notificationDetails
+                    )
+            );
+        } else {
+            notificationService.alertNewNotification(
+                    notificationMapper.toNotification(
+                            getSenderMemberId(matching),
+                            NotificationType.MATCHING,
+                            SubNotificationType.MATCHING_REJECTED,
+                            notificationDetails
+                    )
+            );
+        }
+    }
 }
