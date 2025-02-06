@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain.repository.profile;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.util.Optional;
@@ -121,6 +122,21 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .execute();
     }
 
+//    @Override
+//    public List<Profile> findTopProfiles(final int limit) {
+//        QProfile qProfile = QProfile.profile;
+//
+//        return jpaQueryFactory
+//                .selectFrom(qProfile)
+//                .where(
+//                        qProfile.status.eq(StatusType.USABLE)
+//                                .and(qProfile.isProfilePublic.eq(true))
+//                )
+//                .orderBy(qProfile.createdAt.desc()) // 최신순으로 정렬
+//                .limit(limit)
+//                .fetch();
+//    }
+
     @Override
     public List<Profile> findTopProfiles(final int limit) {
         QProfile qProfile = QProfile.profile;
@@ -131,8 +147,17 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         qProfile.status.eq(StatusType.USABLE)
                                 .and(qProfile.isProfilePublic.eq(true))
                 )
-                .orderBy(qProfile.createdAt.desc()) // 최신순으로 정렬
-                .limit(limit)
+                .orderBy(
+                        new CaseBuilder()
+                                .when(qProfile.id.eq(14L)).then(0)
+                                .when(qProfile.id.eq(6L)).then(1)
+                                .when(qProfile.id.eq(9L)).then(2)
+                                .when(qProfile.id.eq(29L)).then(3)
+                                .when(qProfile.id.eq(26L)).then(4)
+                                .when(qProfile.id.eq(27L)).then(5)
+                                .otherwise(6)
+                                .asc()
+                )
                 .fetch();
     }
 

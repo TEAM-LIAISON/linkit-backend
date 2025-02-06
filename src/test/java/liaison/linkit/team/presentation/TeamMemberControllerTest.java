@@ -620,6 +620,7 @@ public class TeamMemberControllerTest extends ControllerTest {
         // given
         final UpdateManagingTeamStateResponse updateManagingTeamStateResponse = UpdateManagingTeamStateResponse.builder()
                 .teamCode("liaison")
+                .isTeamLastDeleteRequester(true)
                 .build();
 
         final UpdateManagingTeamStateRequest updateManagingTeamStateRequest = UpdateManagingTeamStateRequest.builder()
@@ -667,7 +668,11 @@ public class TeamMemberControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamCode")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 아이디 (팀 코드)")
-                                                .attributes(field("constraint", "문자열"))
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.isTeamLastDeleteRequester")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀 삭제 마지막 요청자 여부")
+                                                .attributes(field("constraint", "boolean 값"))
                                 )
                         )
                 ).andReturn();

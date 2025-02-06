@@ -91,6 +91,7 @@ public class NotificationControllerTest extends ControllerTest {
                 .notificationItems(Arrays.asList(
                         // 1) TEAM_INVITATION_REQUESTED (팀 이름만)
                         NotificationItem.builder()
+                                .notificationId("알림 ID 1")
                                 .notificationType(NotificationType.TEAM_INVITATION)
                                 .subNotificationType(SubNotificationType.TEAM_INVITATION_REQUESTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
@@ -99,12 +100,14 @@ public class NotificationControllerTest extends ControllerTest {
                                         NotificationResponseDTO.NotificationDetails.teamInvitationRequested(
                                                 "팀 코드",
                                                 "팀원으로 초대된 팀의 로고 이미지 경로",
-                                                "팀원으로 초대한 팀의 이름"
+                                                "팀원으로 초대한 팀의 이름",
+                                                false
                                         )
                                 )
                                 .build(),
                         // 2) TEAM_MEMBER_JOINED (팀 이름 + 팀원 이름)
                         NotificationItem.builder()
+                                .notificationId("알림 ID 2")
                                 .notificationType(NotificationType.TEAM_INVITATION)
                                 .subNotificationType(SubNotificationType.TEAM_MEMBER_JOINED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
@@ -114,13 +117,15 @@ public class NotificationControllerTest extends ControllerTest {
                                                 "팀 코드",
                                                 "팀원으로 들어간 팀의 로고 이미지 경로",
                                                 "팀원으로 들어온 회원의 이름",
-                                                "팀원으로 초대한 팀의 이름"
+                                                "팀원으로 초대한 팀의 이름",
+                                                false
                                         )
                                 )
                                 .build(),
 
                         // 3) CHATTING: NEW_CHAT
                         NotificationItem.builder()
+                                .notificationId("알림 ID 3")
                                 .notificationType(NotificationType.CHATTING)
                                 .subNotificationType(SubNotificationType.NEW_CHAT)
                                 .notificationReadStatus(NotificationReadStatus.READ)
@@ -136,6 +141,7 @@ public class NotificationControllerTest extends ControllerTest {
 
                         // 4) MATCHING_REQUESTED
                         NotificationItem.builder()
+                                .notificationId("알림 ID 4")
                                 .notificationType(NotificationType.MATCHING)
                                 .subNotificationType(SubNotificationType.MATCHING_REQUESTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
@@ -150,6 +156,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .build(),
                         // 5) MATCHING_ACCEPTED
                         NotificationItem.builder()
+                                .notificationId("알림 ID 5")
                                 .notificationType(NotificationType.MATCHING)
                                 .subNotificationType(SubNotificationType.MATCHING_ACCEPTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
@@ -164,6 +171,7 @@ public class NotificationControllerTest extends ControllerTest {
                                 .build(),
                         // 6) MATCHING_REJECTED
                         NotificationItem.builder()
+                                .notificationId("알림 ID 6")
                                 .notificationType(NotificationType.MATCHING)
                                 .subNotificationType(SubNotificationType.MATCHING_REJECTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
@@ -177,8 +185,54 @@ public class NotificationControllerTest extends ControllerTest {
                                 )
                                 .build(),
 
+                        NotificationItem.builder()
+                                .notificationId("알림 ID 7")
+                                .notificationType(NotificationType.ANNOUNCEMENT)
+                                .subNotificationType(SubNotificationType.ANNOUNCEMENT_REQUESTED)
+                                .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("1일 전")
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.announcementRequested(
+                                                1L,
+                                                "매칭 상대방의 로고 이미지 경로",
+                                                "매칭 상대방의 이름"
+                                        )
+                                )
+                                .build(),
+
+                        NotificationItem.builder()
+                                .notificationId("알림 ID 8")
+                                .notificationType(NotificationType.ANNOUNCEMENT)
+                                .subNotificationType(SubNotificationType.ANNOUNCEMENT_ACCEPTED)
+                                .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("1일 전")
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.announcementAccepted(
+                                                1L,
+                                                "매칭 상대방의 로고 이미지 경로",
+                                                "매칭 상대방의 이름"
+                                        )
+                                )
+                                .build(),
+
+                        NotificationItem.builder()
+                                .notificationId("알림 ID 9")
+                                .notificationType(NotificationType.ANNOUNCEMENT)
+                                .subNotificationType(SubNotificationType.ANNOUNCEMENT_REJECTED)
+                                .notificationReadStatus(NotificationReadStatus.READ)
+                                .notificationOccurTime("1일 전")
+                                .notificationDetails(
+                                        NotificationResponseDTO.NotificationDetails.announcementRejected(
+                                                1L,
+                                                "매칭 상대방의 로고 이미지 경로",
+                                                "매칭 상대방의 이름"
+                                        )
+                                )
+                                .build(),
+
                         // 7) TEAM: REMOVE_TEAM_REQUESTED (팀 + 팀원)
                         NotificationItem.builder()
+                                .notificationId("알림 ID 10")
                                 .notificationType(NotificationType.TEAM)
                                 .subNotificationType(SubNotificationType.REMOVE_TEAM_REQUESTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
@@ -188,13 +242,15 @@ public class NotificationControllerTest extends ControllerTest {
                                                 "팀 코드",
                                                 "삭제 요청된 팀 로고 이미지 경로",
                                                 "팀 삭제 요청을 진행한 팀원(오너/관리자)의 이름",
-                                                "팀 이름"
+                                                "팀 이름",
+                                                false
                                         )
                                 )
                                 .build(),
 
                         // 8) TEAM: REMOVE_TEAM_REJECTED (팀 + 팀원)
                         NotificationItem.builder()
+                                .notificationId("알림 ID 11")
                                 .notificationType(NotificationType.TEAM)
                                 .subNotificationType(SubNotificationType.REMOVE_TEAM_REJECTED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
@@ -204,13 +260,15 @@ public class NotificationControllerTest extends ControllerTest {
                                                 "팀 코드",
                                                 "삭제 거절된 팀 로고 이미지 경로",
                                                 "팀 삭제 요청을 거절한 팀원(오너/관리자)의 이름",
-                                                "삭제 완료된 팀 이름"
+                                                "삭제 완료된 팀 이름",
+                                                false
                                         )
                                 )
                                 .build(),
 
                         // 9) TEAM: REMOVE_TEAM_COMPLETED (팀 이름만)
                         NotificationItem.builder()
+                                .notificationId("알림 ID 12")
                                 .notificationType(NotificationType.TEAM)
                                 .subNotificationType(SubNotificationType.REMOVE_TEAM_COMPLETED)
                                 .notificationReadStatus(NotificationReadStatus.READ)
@@ -219,7 +277,8 @@ public class NotificationControllerTest extends ControllerTest {
                                         NotificationResponseDTO.NotificationDetails.removeTeamCompleted(
                                                 "팀 코드",
                                                 "삭제 완료된 팀 로고 이미지 경로",
-                                                "삭제 완료된 팀 이름"
+                                                "삭제 완료된 팀 이름",
+                                                false
                                         )
                                 )
                                 .build()
@@ -278,6 +337,9 @@ public class NotificationControllerTest extends ControllerTest {
                                                             - MATCHING_REQUESTED: 매칭 요청
                                                             - MATCHING_ACCEPTED: 매칭 수락
                                                             - MATCHING_REJECTED: 매칭 거절
+                                                            - ANNOUNCEMENT_REQUESTED: 공고 지원 요청
+                                                            - ANNOUNCEMENT_ACCEPTED: 공고 지원 수락
+                                                            - ANNOUNCEMENT_REJECTED: 공고 지원 거절
                                                             - NEW_CHAT: 새로운 채팅 메시지 수신
                                                             - TEAM_INVITATION_REQUESTED: 팀 초대 요청
                                                             - TEAM_MEMBER_JOINED: 팀에 새로운 멤버 추가
@@ -306,6 +368,10 @@ public class NotificationControllerTest extends ControllerTest {
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 로고 이미지 경로 (팀 관련 알림)")
                                                 .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.isTeamDeleted")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("조회 시점에서 팀 삭제 여부 (팀 삭제 알림인 경우)")
+                                                .optional(),
 
                                         // [TEAM_INVITATION] 관련 (이미 documented: teamName, teamMemberName),
                                         // [CHATTING] 관련 추가 필드
@@ -321,11 +387,15 @@ public class NotificationControllerTest extends ControllerTest {
                                         // [MATCHING] 관련 추가 필드
                                         fieldWithPath("result.notificationItems[].notificationDetails.matchingId")
                                                 .type(JsonFieldType.NUMBER)
-                                                .description("매칭 ID (매칭 알림일 경우)")
+                                                .description("매칭 ID (매칭 알림/공고 지원 알림일 경우)")
                                                 .optional(),
                                         fieldWithPath("result.notificationItems[].notificationDetails.matchingTargetLogoImagePath")
                                                 .type(JsonFieldType.STRING)
-                                                .description("매칭 상대방의 로고 이미지 경로 (매칭 알림일 경우)")
+                                                .description("매칭/공고 지원 상대방의 로고 이미지 경로 (매칭 알림/공고 지원일 경우)")
+                                                .optional(),
+                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingTargetName")
+                                                .type(JsonFieldType.STRING)
+                                                .description("매칭 상대방의 이름 (매칭 알림인 경우)")
                                                 .optional(),
 
                                         // 이미 정의된 필드 (기존)
@@ -340,10 +410,6 @@ public class NotificationControllerTest extends ControllerTest {
                                         fieldWithPath("result.notificationItems[].notificationDetails.chatSenderName")
                                                 .type(JsonFieldType.STRING)
                                                 .description("메시지 발신자 이름 (채팅 알림인 경우)")
-                                                .optional(),
-                                        fieldWithPath("result.notificationItems[].notificationDetails.matchingTargetName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("매칭 상대방의 이름 (매칭 알림인 경우)")
                                                 .optional()
                                 )
                         )

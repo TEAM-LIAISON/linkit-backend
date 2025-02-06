@@ -1,6 +1,7 @@
 package liaison.linkit.team.domain.repository.announcement;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -277,6 +278,21 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         return qScale.scaleName.in(scaleName);
     }
 
+//    @Override
+//    public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
+//        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+//
+//        return jpaQueryFactory
+//                .selectFrom(qTeamMemberAnnouncement)
+//                .where(
+//                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
+//                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+//                )
+//                .orderBy(qTeamMemberAnnouncement.createdAt.desc()) // 최신순으로 정렬
+//                .limit(limit)
+//                .fetch();
+//    }
+
     @Override
     public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
@@ -287,10 +303,24 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                         qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
                         qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
                 )
-                .orderBy(qTeamMemberAnnouncement.createdAt.desc()) // 최신순으로 정렬
-                .limit(limit)
+                .orderBy(
+                        // CASE WHEN 구문으로 지정한 순서대로 정렬
+                        new CaseBuilder()
+                                .when(qTeamMemberAnnouncement.id.eq(6L)).then(0)
+                                .when(qTeamMemberAnnouncement.id.eq(4L)).then(1)
+                                .when(qTeamMemberAnnouncement.id.eq(3L)).then(2)
+                                .when(qTeamMemberAnnouncement.id.eq(10L)).then(3)
+                                .when(qTeamMemberAnnouncement.id.eq(16L)).then(4)
+                                .when(qTeamMemberAnnouncement.id.eq(8L)).then(5)
+                                .when(qTeamMemberAnnouncement.id.eq(9L)).then(6)
+                                .when(qTeamMemberAnnouncement.id.eq(22L)).then(7)
+                                .when(qTeamMemberAnnouncement.id.eq(21L)).then(8)
+                                .otherwise(9)
+                                .asc()
+                )
                 .fetch();
     }
+
 
     @Override
     public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds) {

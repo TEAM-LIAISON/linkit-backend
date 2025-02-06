@@ -1,6 +1,7 @@
 package liaison.linkit.team.domain.repository.team;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -191,6 +192,21 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         }
     }
 
+//    @Override
+//    public List<Team> findTopTeams(final int limit) {
+//        QTeam qTeam = QTeam.team;
+//
+//        return jpaQueryFactory
+//                .selectFrom(qTeam)
+//                .where(
+//                        qTeam.isTeamPublic.eq(true),
+//                        qTeam.status.eq(StatusType.USABLE)
+//                )
+//                .orderBy(qTeam.createdAt.desc()) // 최신순으로 정렬
+//                .limit(limit)
+//                .fetch();
+//    }
+
     @Override
     public List<Team> findTopTeams(final int limit) {
         QTeam qTeam = QTeam.team;
@@ -201,8 +217,18 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                         qTeam.isTeamPublic.eq(true),
                         qTeam.status.eq(StatusType.USABLE)
                 )
-                .orderBy(qTeam.createdAt.desc()) // 최신순으로 정렬
-                .limit(limit)
+                .orderBy(
+                        // CASE WHEN 구문으로 지정한 순서대로 정렬
+                        new CaseBuilder()
+                                .when(qTeam.id.eq(10L)).then(0)
+                                .when(qTeam.id.eq(4L)).then(1)
+                                .when(qTeam.id.eq(2L)).then(2)
+                                .when(qTeam.id.eq(15L)).then(3)
+                                .when(qTeam.id.eq(19L)).then(4)
+                                .when(qTeam.id.eq(21L)).then(5)
+                                .otherwise(6)
+                                .asc()
+                )
                 .fetch();
     }
 
