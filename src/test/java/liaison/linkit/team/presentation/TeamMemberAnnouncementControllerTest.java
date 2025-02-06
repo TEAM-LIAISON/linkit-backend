@@ -349,6 +349,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                         TeamMemberAnnouncementItem.builder()
                                 .teamMemberAnnouncementId(1L)
                                 .announcementDDay(19)
+                                .isPermanentRecruitment(false)
                                 .announcementTitle("공고 제목")
                                 .majorPosition("포지션 대분류")
                                 .announcementSkillNames(
@@ -369,6 +370,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                         TeamMemberAnnouncementItem.builder()
                                 .teamMemberAnnouncementId(2L)
                                 .announcementDDay(20)
+                                .isPermanentRecruitment(false)
                                 .announcementTitle("공고 제목 2")
                                 .majorPosition("포지션 대분류")
                                 .announcementSkillNames(
@@ -431,6 +433,10 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.teamMemberAnnouncementItems[].announcementDDay")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("팀원 공고 마감 디데이"),
+                                        fieldWithPath("result.teamMemberAnnouncementItems[].isPermanentRecruitment")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀원 공고 상시 모집 여부"),
+
                                         fieldWithPath("result.teamMemberAnnouncementItems[].announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),
@@ -569,6 +575,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 .isAnnouncementScrap(true)
                 .announcementScrapCount(100)
                 .announcementDDay(20)
+                .isPermanentRecruitment(false)
                 .announcementTitle("팀원 공고 제목")
                 .announcementPositionItem(
                         AnnouncementPositionItem.builder()
@@ -643,6 +650,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementDDay")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("팀원 공고 디데이"),
+                                        fieldWithPath("result.isPermanentRecruitment")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀원 공고 상시 모집 여부"),
                                         fieldWithPath("result.announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),
@@ -710,8 +720,21 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
 
         final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
-                = new AddTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 종료 날짜", false, "주요 업무", "업무 방식",
-                "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
+                = AddTeamMemberAnnouncementRequest.builder()
+                .announcementTitle("공고 제목")
+                .majorPosition("대분류 포지션")
+                .subPosition("소분류 포지션")
+                .announcementSkillNames(announcementSkillNames)
+                .announcementEndDate("공고 종료 날짜")
+                .isPermanentRecruitment(true)
+                .isRegionFlexible(false)
+                .mainTasks("주요 업무")
+                .workMethod("업무 방식")
+                .idealCandidate("이런 분을 찾고 있어요")
+                .preferredQualifications("이런 분이면 더 좋아요")
+                .joiningProcess("이런 과정으로 합류해요")
+                .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+                .build();
 
         final AddTeamMemberAnnouncementResponse addTeamMemberAnnouncementResponse = getAddTeamMemberAnnouncementResponse();
 
@@ -751,7 +774,12 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
 
                                         fieldWithPath("announcementEndDate")
                                                 .type(JsonFieldType.STRING)
-                                                .description("공고 종료 날짜"),
+                                                .description("공고 종료 날짜")
+                                                .optional(),
+                                        fieldWithPath("isPermanentRecruitment")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("상시 모집 여부")
+                                                .optional(),
 
                                         fieldWithPath("isRegionFlexible")
                                                 .type(JsonFieldType.BOOLEAN)
@@ -798,6 +826,10 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),
+                                        fieldWithPath("result.isPermanentRecruitment")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("공고 상시 모집 여부"),
+
                                         fieldWithPath("result.announcementPositionItem")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("공고 포지션 정보"),
@@ -862,8 +894,21 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                 = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
 
         final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
-                = new UpdateTeamMemberAnnouncementRequest("공고 제목", "대분류 포지션", "소분류 포지션", announcementSkillNames, "공고 종료 날짜", false, "주요 업무", "업무 방식",
-                "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
+                = UpdateTeamMemberAnnouncementRequest.builder()
+                .announcementTitle("공고 제목")
+                .majorPosition("대분류 포지션")
+                .subPosition("소분류 포지션")
+                .announcementSkillNames(announcementSkillNames)
+                .announcementEndDate("공고 종료 날짜")
+                .isPermanentRecruitment(true)
+                .isRegionFlexible(false)
+                .mainTasks("주요 업무")
+                .workMethod("업무 방식")
+                .idealCandidate("이런 분을 찾고 있어요")
+                .preferredQualifications("이런 분이면 더 좋아요")
+                .joiningProcess("이런 과정으로 합류해요")
+                .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+                .build();
 
         final UpdateTeamMemberAnnouncementResponse updateTeamMemberAnnouncementResponse = getUpdateTeamMemberAnnouncementResponse();
 
@@ -906,6 +951,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("announcementEndDate")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 종료 날짜"),
+                                        fieldWithPath("isPermanentRecruitment")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("공고 상시 모집 여부"),
 
                                         fieldWithPath("isRegionFlexible")
                                                 .type(JsonFieldType.BOOLEAN)
@@ -952,6 +1000,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         fieldWithPath("result.announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),
+                                        fieldWithPath("result.isPermanentRecruitment")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("공고 상시 모집 여부"),
                                         fieldWithPath("result.announcementPositionItem")
                                                 .type(JsonFieldType.OBJECT)
                                                 .description("공고 포지션 정보"),
@@ -1135,8 +1186,21 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNamesResponse
                 = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
 
-        return new AddTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 종료 날짜", false, "주요 업무",
-                "업무 방식", "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
+        return AddTeamMemberAnnouncementResponse.builder()
+                .teamMemberAnnouncementId(1L)
+                .announcementTitle("공고 제목")
+                .announcementPositionItem(announcementPositionItem)
+                .announcementSkillNames(announcementSkillNamesResponse)
+                .announcementEndDate("공고 종료 날짜")
+                .isPermanentRecruitment(true)
+                .isRegionFlexible(false)
+                .mainTasks("주요 업무")
+                .workMethod("업무 방식")
+                .idealCandidate("이런 분을 찾고 있어요")
+                .preferredQualifications("이런 분이면 더 좋아요")
+                .joiningProcess("이런 과정으로 합류해요")
+                .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+                .build();
     }
 
     @NotNull
@@ -1147,7 +1211,20 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNamesResponse
                 = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
 
-        return new UpdateTeamMemberAnnouncementResponse(1L, "공고 제목", announcementPositionItem, announcementSkillNamesResponse, "공고 종료 날짜", false, "주요 업무",
-                "업무 방식", "이런 분을 찾고 있어요", "이런 분이면 더 좋아요", "이런 과정으로 합류해요", "합류하면 이런 것들을 얻어 갈 수 있어요");
+        return UpdateTeamMemberAnnouncementResponse.builder()
+                .teamMemberAnnouncementId(1L)
+                .announcementTitle("공고 제목")
+                .announcementPositionItem(announcementPositionItem)
+                .announcementSkillNames(announcementSkillNamesResponse)
+                .announcementEndDate("공고 종료 날짜")
+                .isPermanentRecruitment(true)
+                .isRegionFlexible(false)
+                .mainTasks("주요 업무")
+                .workMethod("업무 방식")
+                .idealCandidate("이런 분을 찾고 있어요")
+                .preferredQualifications("이런 분이면 더 좋아요")
+                .joiningProcess("이런 과정으로 합류해요")
+                .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+                .build();
     }
 }

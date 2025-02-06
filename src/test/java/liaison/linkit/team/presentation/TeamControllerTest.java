@@ -802,6 +802,7 @@ public class TeamControllerTest extends ControllerTest {
         final DeleteTeamResponse deleteTeamResponse = DeleteTeamResponse.builder()
                 .teamCode("liaison")
                 .deletedRequestedAt(LocalDateTime.now())
+                .isTeamLastDeleteRequester(true)
                 .build();
 
         // when
@@ -842,7 +843,11 @@ public class TeamControllerTest extends ControllerTest {
                                         fieldWithPath("result.deletedRequestedAt")
                                                 .type(JsonFieldType.STRING)
                                                 .description("팀 삭제 시간")
-                                                .attributes(field("constraint", "문자열"))
+                                                .attributes(field("constraint", "문자열")),
+                                        fieldWithPath("result.isTeamLastDeleteRequester")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("팀을 마지막으로 삭제 수락하여 삭제하게 만든 회원 여부")
+                                                .attributes(field("constraint", "boolean 값"))
                                 )
                         )
                 ).andReturn();

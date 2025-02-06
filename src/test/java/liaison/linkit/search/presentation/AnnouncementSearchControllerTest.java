@@ -94,6 +94,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                 .build()
                 )
                 .announcementDDay(20)
+                .isPermanentRecruitment(false)
                 .announcementTitle("공고 제목")
                 .isAnnouncementScrap(true)
                 .announcementScrapCount(100)
@@ -132,6 +133,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                 .build()
                 )
                 .announcementDDay(20)
+                .isPermanentRecruitment(false)
                 .announcementTitle("공고 제목 2")
                 .isAnnouncementScrap(true)
                 .announcementScrapCount(100)
@@ -245,6 +247,9 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                         fieldWithPath("result.content[].announcementDDay")
                                                 .type(JsonFieldType.NUMBER)
                                                 .description("공고 마감까지 남은 일수 (디데이)"),
+                                        fieldWithPath("result.content[].isPermanentRecruitment")
+                                                .type(JsonFieldType.BOOLEAN)
+                                                .description("상시 모집 여부 (false이면 상시 모집하지 않음)"),
                                         fieldWithPath("result.content[].announcementTitle")
                                                 .type(JsonFieldType.STRING)
                                                 .description("공고 제목"),
