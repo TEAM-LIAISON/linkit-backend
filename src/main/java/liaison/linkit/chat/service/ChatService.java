@@ -337,6 +337,9 @@ public class ChatService {
 
         ChatRoom saved = chatRoomCommandAdapter.createChatRoom(chatRoom);
 
+        final Matching matching = matchingQueryAdapter.findByMatchingId(request.getMatchingId());
+        matchingCommandAdapter.updateMatchingToCreatedRoomState(matching);
+        
         return chatMapper.toCreateChatRoomResponse(saved);
     }
 
