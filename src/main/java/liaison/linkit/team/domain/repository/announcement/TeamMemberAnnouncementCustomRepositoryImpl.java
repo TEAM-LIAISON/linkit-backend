@@ -318,6 +318,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                                 .otherwise(9)
                                 .asc()
                 )
+                .limit(limit)
                 .fetch();
     }
 

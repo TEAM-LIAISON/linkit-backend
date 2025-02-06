@@ -229,6 +229,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                                 .otherwise(6)
                                 .asc()
                 )
+                .limit(limit)
                 .fetch();
     }
 
