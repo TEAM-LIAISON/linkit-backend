@@ -158,6 +158,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                                 .otherwise(6)
                                 .asc()
                 )
+                .limit(limit)
                 .fetch();
     }
 

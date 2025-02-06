@@ -304,7 +304,7 @@ public class TeamMemberAnnouncementService {
 
     public AnnouncementInformMenus getHomeAnnouncementInformMenusInLoginState(final Long memberId) {
         // 최대 6개의 TeamMemberAnnouncement 조회
-        List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(6);
+        List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(9);
 
         // TeamMemberAnnouncements -> AnnouncementInformMenus 변환
         List<AnnouncementInformMenu> announcementInformMenus = teamMemberAnnouncements.stream()
@@ -316,7 +316,7 @@ public class TeamMemberAnnouncementService {
 
     public AnnouncementInformMenus getHomeAnnouncementInformMenusInLogoutState() {
         // 최대 6개의 TeamMemberAnnouncement 조회
-        List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(6);
+        List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(9);
 
         // TeamMemberAnnouncements -> AnnouncementInformMenus 변환
         List<AnnouncementInformMenu> announcementInformMenus = teamMemberAnnouncements.stream()
@@ -393,7 +393,7 @@ public class TeamMemberAnnouncementService {
                     announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
             announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
         }
-        
+
         // D-Day 계산
         int announcementDDay = -1;
         if (!teamMemberAnnouncement.isPermanentRecruitment() && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
