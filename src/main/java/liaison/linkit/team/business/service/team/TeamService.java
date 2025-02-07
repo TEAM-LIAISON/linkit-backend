@@ -318,7 +318,7 @@ public class TeamService {
 
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(isMyTeam, isTeamManager, isTeamInvitationInProgress, isTeamDeleteInProgress, isTeamDeleteRequester, teamInformMenu);
+        return teamMapper.toTeamDetail(isMyTeam, isTeamManager, isTeamInvitationInProgress, isTeamDeleteInProgress, isTeamDeleteRequester, teamInformMenu, targetTeam.isTeamPublic());
     }
 
     // 로그인하지 않은 사용자가 팀을 상세 조회한 케이스
@@ -344,7 +344,7 @@ public class TeamService {
         final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(teamCode);
         final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(false, false, false, false, false, teamInformMenu);
+        return teamMapper.toTeamDetail(false, false, false, false, false, teamInformMenu, targetTeam.isTeamPublic());
     }
 
     public TeamResponseDTO.TeamItems getTeamItems(final Long memberId) {
