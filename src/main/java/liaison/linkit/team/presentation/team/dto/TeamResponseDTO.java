@@ -33,6 +33,8 @@ public class TeamResponseDTO {
 
         @Builder.Default
         private TeamInformMenu teamInformMenu = new TeamInformMenu();
+    
+        private Boolean isTeamPublic;
     }
 
     @Builder
