@@ -43,6 +43,7 @@ import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import liaison.linkit.notification.service.HeaderNotificationService;
 import liaison.linkit.profile.business.mapper.ProfilePositionMapper;
 import liaison.linkit.profile.domain.position.ProfilePosition;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -101,6 +102,7 @@ public class ChatService {
     private final MatchingCommandAdapter matchingCommandAdapter;
     private final SessionRegistry sessionRegistry;
     private final ChatQueryAdapter chatQueryAdapter;
+    private final HeaderNotificationService headerNotificationService;
 
     /**
      * 새로운 채팅방 생성
@@ -339,7 +341,7 @@ public class ChatService {
 
         final Matching matching = matchingQueryAdapter.findByMatchingId(request.getMatchingId());
         matchingCommandAdapter.updateMatchingToCreatedRoomState(matching);
-        
+
         return chatMapper.toCreateChatRoomResponse(saved);
     }
 
@@ -360,8 +362,10 @@ public class ChatService {
         unreadMessages.forEach(ChatMessage::markAsRead);
         chatMessageRepository.saveAll(unreadMessages);
 
+        headerNotificationService.publishNotificationCount(memberId);
         // 5. 응답 DTO 생성
         long updatedCount = unreadMessages.size();
+        
         return chatMapper.toReadChatMessageResponse(chatRoomId, updatedCount);
     }
 
@@ -388,6 +392,9 @@ public class ChatService {
 
         // 4. 메시지 전송
         sendChatMessages(savedChatRoom, savedChatMessage, memberId, sessionId);
+
+        // 5. 헤더 알림 전송
+        headerNotificationService.publishNotificationCount(chatMessage.getMessageReceiverMemberId());
     }
 
     private String getParticipantLogoImagePath(SenderType type, String id) {
