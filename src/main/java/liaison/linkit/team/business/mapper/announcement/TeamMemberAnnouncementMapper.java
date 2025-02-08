@@ -12,6 +12,7 @@ import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
@@ -28,281 +29,316 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 public class TeamMemberAnnouncementMapper {
 
     public AnnouncementInformMenu toTeamMemberAnnouncementInform(
-            final String teamLogoImagePath,
-            final String teamName,
-            final String teamCode,
-            final TeamScaleItem teamScaleItem,
-            final RegionDetail regionDetail,
-            final TeamMemberAnnouncement teamMemberAnnouncement,
-            final int announcementDDay,
-            final boolean isAnnouncementScrap,
-            final int announcementScrapCount,
-            final AnnouncementPositionItem announcementPositionItem,
-            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
+        final String teamLogoImagePath,
+        final String teamName,
+        final String teamCode,
+        final TeamScaleItem teamScaleItem,
+        final RegionDetail regionDetail,
+        final TeamMemberAnnouncement teamMemberAnnouncement,
+        final int announcementDDay,
+        final boolean isAnnouncementScrap,
+        final int announcementScrapCount,
+        final AnnouncementPositionItem announcementPositionItem,
+        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
 
         return AnnouncementInformMenu.builder()
-                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
-                .teamLogoImagePath(teamLogoImagePath)
-                .teamName(teamName)
-                .teamCode(teamCode)
-                .teamScaleItem(teamScaleItem)
-                .regionDetail(regionDetail)
-                .announcementDDay(announcementDDay)
-                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
-                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
-                .isAnnouncementScrap(isAnnouncementScrap)
-                .announcementScrapCount(announcementScrapCount)
-                .announcementPositionItem(announcementPositionItem)
-                .announcementSkillNames(announcementSkillNames)
-                .build();
+            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+            .teamLogoImagePath(teamLogoImagePath)
+            .teamName(teamName)
+            .teamCode(teamCode)
+            .teamScaleItem(teamScaleItem)
+            .regionDetail(regionDetail)
+            .announcementDDay(announcementDDay)
+            .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
+            .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+            .isAnnouncementScrap(isAnnouncementScrap)
+            .announcementScrapCount(announcementScrapCount)
+            .announcementPositionItem(announcementPositionItem)
+            .announcementSkillNames(announcementSkillNames)
+            .build();
     }
 
     public TeamMemberAnnouncemenItems toLoggedOutTeamMemberAnnouncementViewItems(
-            final List<TeamMemberAnnouncement> teamMemberAnnouncements,
-            final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter,
-            final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter,
-            final AnnouncementSkillMapper announcementSkillMapper,
-            final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter
+        final List<TeamMemberAnnouncement> teamMemberAnnouncements,
+        final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter,
+        final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter,
+        final AnnouncementSkillMapper announcementSkillMapper,
+        final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter
     ) {
         List<TeamMemberAnnouncementItem> items = teamMemberAnnouncements.stream()
-                .map(teamMemberAnnouncement -> {
-                    final AnnouncementPosition announcementPosition = announcementPositionQueryAdapter
-                            .findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+            .map(teamMemberAnnouncement -> {
+                final AnnouncementPosition announcementPosition = announcementPositionQueryAdapter
+                    .findAnnouncementPositionByTeamMemberAnnouncementId(
+                        teamMemberAnnouncement.getId());
 
-                    final List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter
-                            .getAnnouncementSkills(teamMemberAnnouncement.getId());
-                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
-                            announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+                final List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter
+                    .getAnnouncementSkills(teamMemberAnnouncement.getId());
+                List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
+                    announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
-                    final int announcementScrapCount = announcementScrapQueryAdapter
-                            .getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+                final int announcementScrapCount = announcementScrapQueryAdapter
+                    .getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
 
-                    // D-Day 계산 (공고 마감일이 있을 때만)
-                    int announcementDDay = -1; // 기본값 설정 (예: 마감일이 없는 경우 -1)
-                    if (teamMemberAnnouncement.getAnnouncementEndDate() != null) {
-                        announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-                    }
+                // D-Day 계산 (공고 마감일이 있을 때만)
+                int announcementDDay = -1; // 기본값 설정 (예: 마감일이 없는 경우 -1)
+                if (teamMemberAnnouncement.getAnnouncementEndDate() != null) {
+                    announcementDDay = DateUtils.calculateDDay(
+                        teamMemberAnnouncement.getAnnouncementEndDate());
+                }
 
-                    return toTeamMemberAnnouncementItem(
-                            teamMemberAnnouncement,
-                            announcementDDay,
-                            announcementPosition.getPosition().getMajorPosition(),
-                            announcementSkillNames,
-                            false,
-                            announcementScrapCount
-                    );
-                })
-                .toList();
+                return toTeamMemberAnnouncementItem(
+                    teamMemberAnnouncement,
+                    announcementDDay,
+                    announcementPosition.getPosition().getMajorPosition(),
+                    announcementSkillNames,
+                    false,
+                    announcementScrapCount
+                );
+            })
+            .toList();
 
         return TeamMemberAnnouncemenItems.builder()
-                .teamMemberAnnouncementItems(items)
-                .build();
+            .teamMemberAnnouncementItems(items)
+            .build();
     }
 
 
     public TeamMemberAnnouncemenItems toLoggedInTeamMemberAnnouncementViewItems(
-            final Long memberId,
-            final List<TeamMemberAnnouncement> teamMemberAnnouncements,
-            final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter,
-            final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter,
-            final AnnouncementSkillMapper announcementSkillMapper,
-            final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter
+        final Long memberId,
+        final List<TeamMemberAnnouncement> teamMemberAnnouncements,
+        final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter,
+        final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter,
+        final AnnouncementSkillMapper announcementSkillMapper,
+        final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter
     ) {
         List<TeamMemberAnnouncementItem> items = teamMemberAnnouncements.stream()
-                .map(teamMemberAnnouncement -> {
-                    final AnnouncementPosition announcementPosition =
-                            announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
+            .map(teamMemberAnnouncement -> {
+                final AnnouncementPosition announcementPosition =
+                    announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(
+                        teamMemberAnnouncement.getId());
 
-                    final List<AnnouncementSkill> announcementSkills =
-                            announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-                    List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
-                            announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+                final List<AnnouncementSkill> announcementSkills =
+                    announcementSkillQueryAdapter.getAnnouncementSkills(
+                        teamMemberAnnouncement.getId());
+                List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
+                    announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
-                    final boolean isAnnouncementScrap =
-                            announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
-                    final int announcementScrapCount =
-                            announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+                final boolean isAnnouncementScrap =
+                    announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(
+                        memberId, teamMemberAnnouncement.getId());
+                final int announcementScrapCount =
+                    announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(
+                        teamMemberAnnouncement.getId());
 
-                    // D-Day 계산 (마감일이 있는 경우에만)
-                    int dDay = -1; // 기본값 설정
-                    if (teamMemberAnnouncement.getAnnouncementEndDate() != null) {
-                        dDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-                    }
+                // D-Day 계산 (마감일이 있는 경우에만)
+                int dDay = -1; // 기본값 설정
+                if (teamMemberAnnouncement.getAnnouncementEndDate() != null) {
+                    dDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+                }
 
-                    // announcementPosition이 null일 경우 방어 코드 추가
-                    String majorPosition = (announcementPosition != null && announcementPosition.getPosition() != null)
-                            ? announcementPosition.getPosition().getMajorPosition()
-                            : "N/A"; // 기본값 설정 가능
+                // announcementPosition이 null일 경우 방어 코드 추가
+                String majorPosition =
+                    (announcementPosition != null && announcementPosition.getPosition() != null)
+                        ? announcementPosition.getPosition().getMajorPosition()
+                        : "N/A"; // 기본값 설정 가능
 
-                    return toTeamMemberAnnouncementItem(
-                            teamMemberAnnouncement,
-                            dDay,
-                            majorPosition,
-                            announcementSkillNames,
-                            isAnnouncementScrap,
-                            announcementScrapCount
-                    );
-                })
-                .toList();
+                return toTeamMemberAnnouncementItem(
+                    teamMemberAnnouncement,
+                    dDay,
+                    majorPosition,
+                    announcementSkillNames,
+                    isAnnouncementScrap,
+                    announcementScrapCount
+                );
+            })
+            .toList();
 
         return TeamMemberAnnouncemenItems.builder()
-                .teamMemberAnnouncementItems(items)
-                .build();
+            .teamMemberAnnouncementItems(items)
+            .build();
     }
 
 
-    public AnnouncementInformMenus toAnnouncementInformMenus(final List<AnnouncementInformMenu> announcementInformMenus) {
+    public AnnouncementInformMenus toAnnouncementInformMenus(
+        final List<AnnouncementInformMenu> announcementInformMenus) {
         return AnnouncementInformMenus.builder()
-                .announcementInformMenus(announcementInformMenus)
-                .build();
+            .announcementInformMenus(announcementInformMenus)
+            .build();
     }
 
     public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail toTeamMemberAnnouncementDetail(
-            final TeamMemberAnnouncement teamMemberAnnouncement,
-            final boolean isAnnouncementScrap,
-            final int announcementScrapCount,
-            final AnnouncementPositionItem announcementPositionItem,
-            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
+        final TeamMemberAnnouncement teamMemberAnnouncement,
+        final boolean isAnnouncementScrap,
+        final int announcementScrapCount,
+        final AnnouncementPositionItem announcementPositionItem,
+        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
         // D-Day 계산 (isPermanentRecruitment가 true이면 -1, 아니면 정상 계산)
         int announcementDDay = -1;
-        if (!teamMemberAnnouncement.isPermanentRecruitment() && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
-            announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+        if (!teamMemberAnnouncement.isPermanentRecruitment()
+            && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
+            announcementDDay = DateUtils.calculateDDay(
+                teamMemberAnnouncement.getAnnouncementEndDate());
         }
 
         return TeamMemberAnnouncementDetail
-                .builder()
-                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
-                .isAnnouncementScrap(isAnnouncementScrap)
-                .announcementScrapCount(announcementScrapCount)
-                .announcementDDay(announcementDDay)  // 수정된 부분
-                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
-                .announcementPositionItem(announcementPositionItem)
-                .announcementSkillNames(announcementSkillNames)
-                .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
-                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
+            .builder()
+            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+            .isAnnouncementScrap(isAnnouncementScrap)
+            .announcementScrapCount(announcementScrapCount)
+            .announcementDDay(announcementDDay)  // 수정된 부분
+            .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+            .announcementPositionItem(announcementPositionItem)
+            .announcementSkillNames(announcementSkillNames)
+            .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
+            .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
 
-                .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
-                .mainTasks(teamMemberAnnouncement.getMainTasks())
-                .workMethod(teamMemberAnnouncement.getWorkMethod())
-                .idealCandidate(teamMemberAnnouncement.getIdealCandidate())
-                .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
-                .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
-                .benefits(teamMemberAnnouncement.getBenefits())
-                .build();
+            .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
+            .mainTasks(teamMemberAnnouncement.getMainTasks())
+            .workMethod(teamMemberAnnouncement.getWorkMethod())
+            .idealCandidate(teamMemberAnnouncement.getIdealCandidate())
+            .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
+            .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
+            .benefits(teamMemberAnnouncement.getBenefits())
+            .build();
     }
 
-    public TeamMemberAnnouncement toAddTeamMemberAnnouncement(final Team team, final AddTeamMemberAnnouncementRequest request) {
+    public TeamMemberAnnouncement toAddTeamMemberAnnouncement(final Team team,
+        final AddTeamMemberAnnouncementRequest request) {
         return TeamMemberAnnouncement
-                .builder()
-                .id(null)
-                .team(team)
-                .announcementTitle(request.getAnnouncementTitle())
-                .announcementEndDate(request.getAnnouncementEndDate())
-                .isPermanentRecruitment(request.getIsPermanentRecruitment())
-                .isRegionFlexible(request.getIsRegionFlexible())
-                .mainTasks(request.getMainTasks())
-                .workMethod(request.getWorkMethod())
-                .idealCandidate(request.getIdealCandidate())
-                .preferredQualifications(request.getPreferredQualifications())
-                .joiningProcess(request.getJoiningProcess())
-                .benefits(request.getBenefits())
-                .isAnnouncementPublic(true)
-                .isAnnouncementInProgress(true)
-                .build();
+            .builder()
+            .id(null)
+            .team(team)
+            .announcementTitle(request.getAnnouncementTitle())
+            .announcementEndDate(request.getAnnouncementEndDate())
+            .isPermanentRecruitment(request.getIsPermanentRecruitment())
+            .isRegionFlexible(request.getIsRegionFlexible())
+            .mainTasks(request.getMainTasks())
+            .workMethod(request.getWorkMethod())
+            .idealCandidate(request.getIdealCandidate())
+            .preferredQualifications(request.getPreferredQualifications())
+            .joiningProcess(request.getJoiningProcess())
+            .benefits(request.getBenefits())
+            .isAnnouncementPublic(true)
+            .isAnnouncementInProgress(true)
+            .build();
+    }
+
+    public TeamMemberAnnouncement toUpdateTeamMemberAnnouncement(final Team team,
+        final UpdateTeamMemberAnnouncementRequest request) {
+        return TeamMemberAnnouncement
+            .builder()
+            .id(null)
+            .team(team)
+            .announcementTitle(request.getAnnouncementTitle())
+            .announcementEndDate(request.getAnnouncementEndDate())
+            .isPermanentRecruitment(request.getIsPermanentRecruitment())
+            .isRegionFlexible(request.getIsRegionFlexible())
+            .mainTasks(request.getMainTasks())
+            .workMethod(request.getWorkMethod())
+            .idealCandidate(request.getIdealCandidate())
+            .preferredQualifications(request.getPreferredQualifications())
+            .joiningProcess(request.getJoiningProcess())
+            .benefits(request.getBenefits())
+            .isAnnouncementPublic(true)
+            .isAnnouncementInProgress(true)
+            .build();
     }
 
     public TeamMemberAnnouncementItem toTeamMemberAnnouncementItem(
-            final TeamMemberAnnouncement teamMemberAnnouncement,
-            final int announcementDDay,
-            final String majorPosition,
-            final List<AnnouncementSkillName> announcementSkillNames,
-            final boolean isAnnouncementScrap,
-            final int announcementScrapCount
+        final TeamMemberAnnouncement teamMemberAnnouncement,
+        final int announcementDDay,
+        final String majorPosition,
+        final List<AnnouncementSkillName> announcementSkillNames,
+        final boolean isAnnouncementScrap,
+        final int announcementScrapCount
     ) {
         return TeamMemberAnnouncementItem.builder()
-                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
-                .announcementDDay(announcementDDay)
-                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
-                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
-                .majorPosition(majorPosition)
-                .announcementSkillNames(announcementSkillNames)
-                .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
-                .isAnnouncementInProgress(teamMemberAnnouncement.isAnnouncementInProgress())
-                .isAnnouncementScrap(isAnnouncementScrap)
-                .announcementScrapCount(announcementScrapCount)
-                .build();
+            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+            .announcementDDay(announcementDDay)
+            .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
+            .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+            .majorPosition(majorPosition)
+            .announcementSkillNames(announcementSkillNames)
+            .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
+            .isAnnouncementInProgress(teamMemberAnnouncement.isAnnouncementInProgress())
+            .isAnnouncementScrap(isAnnouncementScrap)
+            .announcementScrapCount(announcementScrapCount)
+            .build();
     }
 
-    public TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem toAnnouncementPositionItem(final AnnouncementPosition announcementPosition) {
+    public TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem toAnnouncementPositionItem(
+        final AnnouncementPosition announcementPosition) {
         return AnnouncementPositionItem
-                .builder()
-                .majorPosition(announcementPosition.getPosition().getMajorPosition())
-                .subPosition(announcementPosition.getPosition().getSubPosition())
-                .build();
+            .builder()
+            .majorPosition(announcementPosition.getPosition().getMajorPosition())
+            .subPosition(announcementPosition.getPosition().getSubPosition())
+            .build();
     }
 
     public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse toAddTeamMemberAnnouncementResponse(
-            final TeamMemberAnnouncement teamMemberAnnouncement,
-            final AnnouncementPositionItem announcementPositionItem,
-            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
+        final TeamMemberAnnouncement teamMemberAnnouncement,
+        final AnnouncementPositionItem announcementPositionItem,
+        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
         return AddTeamMemberAnnouncementResponse
-                .builder()
-                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
-                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
-                .announcementPositionItem(announcementPositionItem)
-                .announcementSkillNames(announcementSkillNames)
-                .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
-                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
+            .builder()
+            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+            .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+            .announcementPositionItem(announcementPositionItem)
+            .announcementSkillNames(announcementSkillNames)
+            .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
+            .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
 
-                .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
-                .mainTasks(teamMemberAnnouncement.getMainTasks())
-                .workMethod(teamMemberAnnouncement.getWorkMethod())
-                .idealCandidate(teamMemberAnnouncement.getIdealCandidate())
-                .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
-                .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
-                .benefits(teamMemberAnnouncement.getBenefits())
-                .build();
+            .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
+            .mainTasks(teamMemberAnnouncement.getMainTasks())
+            .workMethod(teamMemberAnnouncement.getWorkMethod())
+            .idealCandidate(teamMemberAnnouncement.getIdealCandidate())
+            .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
+            .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
+            .benefits(teamMemberAnnouncement.getBenefits())
+            .build();
     }
 
     public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse toUpdateTeamMemberAnnouncementResponse(
-            final TeamMemberAnnouncement teamMemberAnnouncement,
-            final AnnouncementPositionItem announcementPositionItem,
-            final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
+        final TeamMemberAnnouncement teamMemberAnnouncement,
+        final AnnouncementPositionItem announcementPositionItem,
+        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
     ) {
         return UpdateTeamMemberAnnouncementResponse
-                .builder()
-                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
-                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
-                .announcementPositionItem(announcementPositionItem)
-                .announcementSkillNames(announcementSkillNames)
-                .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
-                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
-                .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
-                .mainTasks(teamMemberAnnouncement.getMainTasks())
-                .workMethod(teamMemberAnnouncement.getWorkMethod())
-                .idealCandidate(teamMemberAnnouncement.getIdealCandidate())
-                .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
-                .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
-                .benefits(teamMemberAnnouncement.getBenefits())
-                .build();
+            .builder()
+            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+            .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+            .announcementPositionItem(announcementPositionItem)
+            .announcementSkillNames(announcementSkillNames)
+            .announcementEndDate(teamMemberAnnouncement.getAnnouncementEndDate())
+            .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
+            .isRegionFlexible(teamMemberAnnouncement.isRegionFlexible())
+            .mainTasks(teamMemberAnnouncement.getMainTasks())
+            .workMethod(teamMemberAnnouncement.getWorkMethod())
+            .idealCandidate(teamMemberAnnouncement.getIdealCandidate())
+            .preferredQualifications(teamMemberAnnouncement.getPreferredQualifications())
+            .joiningProcess(teamMemberAnnouncement.getJoiningProcess())
+            .benefits(teamMemberAnnouncement.getBenefits())
+            .build();
     }
 
-    public TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse toRemoveTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
+    public TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse toRemoveTeamMemberAnnouncementId(
+        final Long teamMemberAnnouncementId) {
         return TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse
-                .builder()
-                .teamMemberAnnouncementId(teamMemberAnnouncementId)
-                .build();
+            .builder()
+            .teamMemberAnnouncementId(teamMemberAnnouncementId)
+            .build();
     }
 
-    public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse toUpdateTeamMemberAnnouncementPublicState(final TeamMemberAnnouncement teamMemberAnnouncement) {
+    public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse toUpdateTeamMemberAnnouncementPublicState(
+        final TeamMemberAnnouncement teamMemberAnnouncement) {
         return TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse
-                .builder()
-                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
-                .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
-                .build();
+            .builder()
+            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+            .isAnnouncementPublic(teamMemberAnnouncement.isAnnouncementPublic())
+            .build();
     }
 
 }

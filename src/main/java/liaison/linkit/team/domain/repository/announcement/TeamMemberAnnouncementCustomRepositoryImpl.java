@@ -33,7 +33,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnnouncementCustomRepository {
+public class TeamMemberAnnouncementCustomRepositoryImpl implements
+    TeamMemberAnnouncementCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -45,9 +46,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         return jpaQueryFactory
-                .selectFrom(qTeamMemberAnnouncement)
-                .where(qTeamMemberAnnouncement.team.id.eq(teamId))
-                .fetch();
+            .selectFrom(qTeamMemberAnnouncement)
+            .where(qTeamMemberAnnouncement.team.id.eq(teamId))
+            .fetch();
     }
 
     @Override
@@ -62,9 +63,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
         // 쿼리 실행
         return jpaQueryFactory
-                .selectFrom(qAnnouncement)
-                .where(qAnnouncement.team.id.in(teamIds))
-                .fetch();
+            .selectFrom(qAnnouncement)
+            .where(qAnnouncement.team.id.in(teamIds))
+            .fetch();
     }
 
     @Override
@@ -72,66 +73,74 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         return jpaQueryFactory
-                .selectFrom(qTeamMemberAnnouncement)
-                .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncementId))
-                .fetchOne();
+            .selectFrom(qTeamMemberAnnouncement)
+            .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncementId))
+            .fetchOne();
     }
 
     @Override
     public TeamMemberAnnouncement updateTeamMemberAnnouncement(
-            final TeamMemberAnnouncement teamMemberAnnouncement,
-            final UpdateTeamMemberAnnouncementRequest request
+        final TeamMemberAnnouncement teamMemberAnnouncement,
+        final UpdateTeamMemberAnnouncementRequest request
     ) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
-        // 1) QueryDSL 부분 업데이트
-        long updatedCount = jpaQueryFactory
-                .update(qTeamMemberAnnouncement)
-                .set(qTeamMemberAnnouncement.announcementTitle, request.getAnnouncementTitle())
-                .set(qTeamMemberAnnouncement.announcementEndDate, request.getAnnouncementEndDate())
-                .set(qTeamMemberAnnouncement.isPermanentRecruitment, request.getIsPermanentRecruitment())
-                .set(qTeamMemberAnnouncement.isRegionFlexible, request.getIsRegionFlexible())
-                .set(qTeamMemberAnnouncement.mainTasks, request.getMainTasks())
-                .set(qTeamMemberAnnouncement.workMethod, request.getWorkMethod())
-                .set(qTeamMemberAnnouncement.idealCandidate, request.getIdealCandidate())
-                .set(qTeamMemberAnnouncement.preferredQualifications, request.getPreferredQualifications())
-                .set(qTeamMemberAnnouncement.joiningProcess, request.getJoiningProcess())
-                .set(qTeamMemberAnnouncement.benefits, request.getBenefits())
-                .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
-                .execute();
+        // isPermanentRecruitment가 true이면 announcementEndDate를 null로, 아니면 요청 값 사용
+        String announcementEndDateValue = request.getIsPermanentRecruitment()
+            ? null
+            : request.getAnnouncementEndDate();
 
-        // 2) flush & clear
+        long updatedCount = jpaQueryFactory
+            .update(qTeamMemberAnnouncement)
+            .set(qTeamMemberAnnouncement.announcementTitle, request.getAnnouncementTitle())
+            .set(qTeamMemberAnnouncement.announcementEndDate, announcementEndDateValue)
+            .set(qTeamMemberAnnouncement.isPermanentRecruitment,
+                request.getIsPermanentRecruitment())
+            .set(qTeamMemberAnnouncement.isRegionFlexible, request.getIsRegionFlexible())
+            .set(qTeamMemberAnnouncement.mainTasks, request.getMainTasks())
+            .set(qTeamMemberAnnouncement.workMethod, request.getWorkMethod())
+            .set(qTeamMemberAnnouncement.idealCandidate, request.getIdealCandidate())
+            .set(qTeamMemberAnnouncement.preferredQualifications,
+                request.getPreferredQualifications())
+            .set(qTeamMemberAnnouncement.joiningProcess, request.getJoiningProcess())
+            .set(qTeamMemberAnnouncement.benefits, request.getBenefits())
+            .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
+            .execute();
+
         entityManager.flush();
         entityManager.clear();
 
-        // 3) 변경된 행이 있으면, 다시 select 해서 엔티티 리턴
         if (updatedCount > 0) {
             return jpaQueryFactory
-                    .selectFrom(qTeamMemberAnnouncement)
-                    .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
-                    .fetchOne(); // 새로 로드된 엔티티(영속 상태)
+                .selectFrom(qTeamMemberAnnouncement)
+                .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
+                .fetchOne();
         } else {
-            return null; // 또는 Optional.empty() 처리 등
+            return null;
         }
     }
 
 
     @Override
-    public TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(final TeamMemberAnnouncement teamMemberAnnouncement, final boolean isTeamMemberAnnouncementCurrentPublicState) {
+    public TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(
+        final TeamMemberAnnouncement teamMemberAnnouncement,
+        final boolean isTeamMemberAnnouncementCurrentPublicState) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
         long updatedCount = jpaQueryFactory
-                .update(qTeamMemberAnnouncement)
-                .set(qTeamMemberAnnouncement.isAnnouncementPublic, !isTeamMemberAnnouncementCurrentPublicState)
-                .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
-                .execute();
+            .update(qTeamMemberAnnouncement)
+            .set(qTeamMemberAnnouncement.isAnnouncementPublic,
+                !isTeamMemberAnnouncementCurrentPublicState)
+            .where(qTeamMemberAnnouncement.id.eq(teamMemberAnnouncement.getId()))
+            .execute();
 
         entityManager.flush();
         entityManager.clear();
 
         if (updatedCount > 0) { // 업데이트 성공 확인
-            teamMemberAnnouncement.setIsAnnouncementPublic(!isTeamMemberAnnouncementCurrentPublicState); // 메모리 내 객체 업데이트
+            teamMemberAnnouncement.setIsAnnouncementPublic(
+                !isTeamMemberAnnouncementCurrentPublicState); // 메모리 내 객체 업데이트
             return teamMemberAnnouncement;
         } else {
             throw new IllegalStateException("팀원 공고 공개/비공개 업데이트 실패");
@@ -140,11 +149,11 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
     @Override
     public Page<TeamMemberAnnouncement> findAll(
-            final List<String> majorPosition,
-            final List<String> skillName,
-            final List<String> cityName,
-            final List<String> scaleName,
-            final Pageable pageable
+        final List<String> majorPosition,
+        final List<String> skillName,
+        final List<String> cityName,
+        final List<String> scaleName,
+        final Pageable pageable
     ) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
@@ -165,75 +174,79 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         log.info("Starting query to fetch Announcements");
 
         List<TeamMemberAnnouncement> content = jpaQueryFactory
-                .selectDistinct(qTeamMemberAnnouncement)
-                .from(qTeamMemberAnnouncement)
+            .selectDistinct(qTeamMemberAnnouncement)
+            .from(qTeamMemberAnnouncement)
 
-                .leftJoin(qTeamMemberAnnouncement.team, qTeam)
+            .leftJoin(qTeamMemberAnnouncement.team, qTeam)
 
-                .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
-                .leftJoin(qTeamScale.scale, qScale)
+            .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
+            .leftJoin(qTeamScale.scale, qScale)
 
-                .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
-                .leftJoin(qTeamRegion.region, qRegion)
+            .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
+            .leftJoin(qTeamRegion.region, qRegion)
 
-                .leftJoin(qAnnouncementPosition).on(qAnnouncementPosition.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
-                .leftJoin(qAnnouncementPosition.position, qPosition)
+            .leftJoin(qAnnouncementPosition)
+            .on(qAnnouncementPosition.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
+            .leftJoin(qAnnouncementPosition.position, qPosition)
 
-                .leftJoin(qAnnouncementSkill).on(qAnnouncementSkill.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
-                .leftJoin(qAnnouncementSkill.skill, qSkill)
+            .leftJoin(qAnnouncementSkill)
+            .on(qAnnouncementSkill.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
+            .leftJoin(qAnnouncementSkill.skill, qSkill)
 
-                .where(
-                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
-                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-                        hasMajorPositions(majorPosition),
-                        hasSkillNames(skillName),
-                        hasCityName(cityName),
-                        hasScaleNames(scaleName)
+            .where(
+                qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
+                qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
+                hasMajorPositions(majorPosition),
+                hasSkillNames(skillName),
+                hasCityName(cityName),
+                hasScaleNames(scaleName)
+            )
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .orderBy(
+                QueryDslUtil.getOrderAnnouncementSpecifier(
+                    pageable.getSort(),
+                    qTeamMemberAnnouncement,
+                    qAnnouncementPosition,
+                    qAnnouncementSkill,
+                    qTeamRegion,
+                    qTeamScale
                 )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(
-                        QueryDslUtil.getOrderAnnouncementSpecifier(
-                                pageable.getSort(),
-                                qTeamMemberAnnouncement,
-                                qAnnouncementPosition,
-                                qAnnouncementSkill,
-                                qTeamRegion,
-                                qTeamScale
-                        )
-                )
-                .fetch();
+            )
+            .fetch();
 
         log.info("Fetched {} announcements from database", content.size());
 
         // 카운트 쿼리
         Long totalLong = jpaQueryFactory
-                .selectDistinct(qTeamMemberAnnouncement.count())
-                .from(qTeamMemberAnnouncement)
+            .selectDistinct(qTeamMemberAnnouncement.count())
+            .from(qTeamMemberAnnouncement)
 
-                .leftJoin(qTeamMemberAnnouncement.team, qTeam)
+            .leftJoin(qTeamMemberAnnouncement.team, qTeam)
 
-                .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
-                .leftJoin(qTeamScale.scale, qScale)
+            .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
+            .leftJoin(qTeamScale.scale, qScale)
 
-                .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
-                .leftJoin(qTeamRegion.region, qRegion)
+            .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
+            .leftJoin(qTeamRegion.region, qRegion)
 
-                .leftJoin(qAnnouncementPosition).on(qAnnouncementPosition.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
-                .leftJoin(qAnnouncementPosition.position, qPosition)
+            .leftJoin(qAnnouncementPosition)
+            .on(qAnnouncementPosition.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
+            .leftJoin(qAnnouncementPosition.position, qPosition)
 
-                .leftJoin(qAnnouncementSkill).on(qAnnouncementSkill.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
-                .leftJoin(qAnnouncementSkill.skill, qSkill)
+            .leftJoin(qAnnouncementSkill)
+            .on(qAnnouncementSkill.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
+            .leftJoin(qAnnouncementSkill.skill, qSkill)
 
-                .where(
-                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
-                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-                        hasMajorPositions(majorPosition),
-                        hasSkillNames(skillName),
-                        hasCityName(cityName),
-                        hasScaleNames(scaleName)
-                )
-                .fetchOne();
+            .where(
+                qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
+                qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
+                hasMajorPositions(majorPosition),
+                hasSkillNames(skillName),
+                hasCityName(cityName),
+                hasScaleNames(scaleName)
+            )
+            .fetchOne();
 
         long total = (totalLong == null) ? 0L : totalLong;
 
@@ -298,33 +311,34 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         return jpaQueryFactory
-                .selectFrom(qTeamMemberAnnouncement)
-                .where(
-                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
-                )
-                .orderBy(
-                        // CASE WHEN 구문으로 지정한 순서대로 정렬
-                        new CaseBuilder()
-                                .when(qTeamMemberAnnouncement.id.eq(6L)).then(0)
-                                .when(qTeamMemberAnnouncement.id.eq(4L)).then(1)
-                                .when(qTeamMemberAnnouncement.id.eq(3L)).then(2)
-                                .when(qTeamMemberAnnouncement.id.eq(10L)).then(3)
-                                .when(qTeamMemberAnnouncement.id.eq(16L)).then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(8L)).then(5)
-                                .when(qTeamMemberAnnouncement.id.eq(9L)).then(6)
-                                .when(qTeamMemberAnnouncement.id.eq(22L)).then(7)
-                                .when(qTeamMemberAnnouncement.id.eq(21L)).then(8)
-                                .otherwise(9)
-                                .asc()
-                )
-                .limit(limit)
-                .fetch();
+            .selectFrom(qTeamMemberAnnouncement)
+            .where(
+                qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
+                qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+            )
+            .orderBy(
+                // CASE WHEN 구문으로 지정한 순서대로 정렬
+                new CaseBuilder()
+                    .when(qTeamMemberAnnouncement.id.eq(6L)).then(0)
+                    .when(qTeamMemberAnnouncement.id.eq(4L)).then(1)
+                    .when(qTeamMemberAnnouncement.id.eq(3L)).then(2)
+                    .when(qTeamMemberAnnouncement.id.eq(10L)).then(3)
+                    .when(qTeamMemberAnnouncement.id.eq(16L)).then(4)
+                    .when(qTeamMemberAnnouncement.id.eq(8L)).then(5)
+                    .when(qTeamMemberAnnouncement.id.eq(9L)).then(6)
+                    .when(qTeamMemberAnnouncement.id.eq(22L)).then(7)
+                    .when(qTeamMemberAnnouncement.id.eq(21L)).then(8)
+                    .otherwise(9)
+                    .asc()
+            )
+            .limit(limit)
+            .fetch();
     }
 
 
     @Override
-    public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds) {
+    public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(
+        final List<Long> teamIds) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         if (teamIds == null || teamIds.isEmpty()) {
@@ -333,15 +347,16 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         }
 
         return new HashSet<>(
-                jpaQueryFactory
-                        .selectFrom(qTeamMemberAnnouncement)
-                        .where(qTeamMemberAnnouncement.team.id.in(teamIds))
-                        .fetch()
+            jpaQueryFactory
+                .selectFrom(qTeamMemberAnnouncement)
+                .where(qTeamMemberAnnouncement.team.id.in(teamIds))
+                .fetch()
         );
     }
 
     @Override
-    public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamId(final Long teamId) {
+    public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamId(
+        final Long teamId) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         if (teamId == null) {
@@ -350,12 +365,12 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         }
 
         return new HashSet<>(
-                jpaQueryFactory
-                        .selectFrom(qTeamMemberAnnouncement)
-                        .where(
-                                qTeamMemberAnnouncement.team.id.eq(teamId) // 특정 팀 ID와 일치
-                        )
-                        .fetch()
+            jpaQueryFactory
+                .selectFrom(qTeamMemberAnnouncement)
+                .where(
+                    qTeamMemberAnnouncement.team.id.eq(teamId) // 특정 팀 ID와 일치
+                )
+                .fetch()
         );
     }
 
@@ -365,10 +380,10 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
         try {
             long updatedCount = jpaQueryFactory
-                    .update(qAnnouncement)
-                    .set(qAnnouncement.status, StatusType.DELETED)
-                    .where(qAnnouncement.id.in(announcementIds))
-                    .execute();
+                .update(qAnnouncement)
+                .set(qAnnouncement.status, StatusType.DELETED)
+                .where(qAnnouncement.id.in(announcementIds))
+                .execute();
 
             log.info("Deleted {} announcements with IDs: {}", updatedCount, announcementIds);
 
@@ -376,7 +391,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             entityManager.clear();
 
         } catch (Exception e) {
-            log.error("Error occurred while deleting announcements with IDs: {}", announcementIds, e);
+            log.error("Error occurred while deleting announcements with IDs: {}", announcementIds,
+                e);
         }
     }
 }
