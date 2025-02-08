@@ -1,11 +1,10 @@
 package liaison.linkit.team.presentation.announcement.dto;
 
-import jakarta.validation.constraints.Pattern;
-import java.util.ArrayList;
-import java.util.List;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -64,6 +63,7 @@ public class TeamMemberAnnouncementRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateTeamMemberAnnouncementRequest {
+
         @NotBlank(message = "공고 제목은 필수입니다")
         @Size(min = 1, message = "공고 제목은 1자 이상이어야 합니다")
         private String announcementTitle;
@@ -79,8 +79,6 @@ public class TeamMemberAnnouncementRequestDTO {
         @Builder.Default
         private List<AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
 
-        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
-                message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
         private String announcementEndDate;
 
         private Boolean isPermanentRecruitment;
@@ -110,6 +108,7 @@ public class TeamMemberAnnouncementRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementSkillName {
+
         private String announcementSkillName;
     }
 }
