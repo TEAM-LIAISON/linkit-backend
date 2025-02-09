@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 @Adapter
 @RequiredArgsConstructor
 public class TeamMemberQueryAdapter {
+
     private final TeamMemberRepository teamMemberRepository;
 
     public List<TeamMember> getTeamMembers(final Long teamId) {
@@ -44,11 +45,16 @@ public class TeamMemberQueryAdapter {
         return teamMemberRepository.getAllTeamsByMemberId(memberId);
     }
 
+    public List<Team> getAllPublicTeamsByMemberId(final Long memberId) {
+        return teamMemberRepository.getAllPublicTeamsByMemberId(memberId);
+    }
+
     public List<Team> getAllTeamsInOwnerStateByMemberId(final Long memberId) {
         return teamMemberRepository.getAllTeamsInOwnerStateByMemberId(memberId);
     }
 
-    public TeamMember getTeamMemberByTeamCodeAndEmailId(final String teamCode, final String emailId) {
+    public TeamMember getTeamMemberByTeamCodeAndEmailId(final String teamCode,
+        final String emailId) {
         return teamMemberRepository.getTeamMemberByTeamCodeAndEmailId(teamCode, emailId);
     }
 

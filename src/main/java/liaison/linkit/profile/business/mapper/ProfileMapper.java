@@ -26,116 +26,112 @@ import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO.Pro
 public class ProfileMapper {
 
     public ProfileResponseDTO.ProfileLeftMenu toProfileLeftMenu(
-            final ProfileCompletionMenu profileCompletionMenu,
-            final ProfileInformMenu profileInformMenu,
-            final ProfileBooleanMenu profileBooleanMenu,
-            final ProfileScrapMenu profileScrapMenu
+        final ProfileCompletionMenu profileCompletionMenu,
+        final ProfileBooleanMenu profileBooleanMenu
     ) {
         return ProfileResponseDTO.ProfileLeftMenu
-                .builder()
-                .profileCompletionMenu(profileCompletionMenu)
-                .profileInformMenu(profileInformMenu)
-                .profileBooleanMenu(profileBooleanMenu)
-                .profileScrapMenu(profileScrapMenu)
-                .build();
+            .builder()
+            .profileCompletionMenu(profileCompletionMenu)
+            .profileBooleanMenu(profileBooleanMenu)
+            .build();
     }
 
     public ProfileResponseDTO.ProfileScrapMenu toProfileScrapMenu(
-            final Profile profile
+        final Profile profile
     ) {
         return ProfileScrapMenu
-                .builder()
-                .profileScrapCount(profile.getMember().getProfileScrapCount())
-                .build();
+            .builder()
+            .profileScrapCount(profile.getMember().getProfileScrapCount())
+            .build();
     }
 
     public ProfileResponseDTO.ProfileCompletionMenu toProfileCompletionMenu(
-            final Profile profile
+        final Profile profile
     ) {
         return ProfileResponseDTO.ProfileCompletionMenu
-                .builder()
-                .profileCompletion(profile.getProfileCompletion())
-                .build();
+            .builder()
+            .profileCompletion(profile.getProfileCompletion())
+            .build();
     }
 
     public ProfileResponseDTO.ProfileInformMenus toProfileInformMenus(
-            final List<ProfileInformMenu> profileInformMenus
+        final List<ProfileInformMenu> profileInformMenus
     ) {
         return ProfileInformMenus.builder()
-                .profileInformMenus(profileInformMenus)
-                .build();
+            .profileInformMenus(profileInformMenus)
+            .build();
     }
 
     public ProfileResponseDTO.ProfileInformMenu toProfileInformMenu(
-            final List<ProfileCurrentStateItem> profileCurrentStateItems,
-            final boolean isProfileScrap,
-            final int profileScrapCount,
-            final Profile profile,
-            final ProfilePositionDetail profilePositionDetail,
-            final RegionDetail regionDetail,
-            final List<ProfileTeamInform> profileTeamInforms
+        final List<ProfileCurrentStateItem> profileCurrentStateItems,
+        final boolean isProfileScrap,
+        final int profileScrapCount,
+        final Profile profile,
+        final ProfilePositionDetail profilePositionDetail,
+        final RegionDetail regionDetail,
+        final List<ProfileTeamInform> profileTeamInforms
     ) {
         return ProfileResponseDTO.ProfileInformMenu
-                .builder()
-                .profileCurrentStates(profileCurrentStateItems)
-                .isProfileScrap(isProfileScrap)
-                .profileScrapCount(profileScrapCount)
-                .profileImagePath(profile.getProfileImagePath())
-                .memberName(profile.getMember().getMemberBasicInform().getMemberName())
-                .emailId(profile.getMember().getEmailId())
-                .isProfilePublic(profile.isProfilePublic())
-                .majorPosition(profilePositionDetail.getMajorPosition())
-                .regionDetail(regionDetail)
-                .profileTeamInforms(profileTeamInforms)
-                .build();
+            .builder()
+            .profileCurrentStates(profileCurrentStateItems)
+            .isProfileScrap(isProfileScrap)
+            .profileScrapCount(profileScrapCount)
+            .profileImagePath(profile.getProfileImagePath())
+            .memberName(profile.getMember().getMemberBasicInform().getMemberName())
+            .emailId(profile.getMember().getEmailId())
+            .isProfilePublic(profile.isProfilePublic())
+            .majorPosition(profilePositionDetail.getMajorPosition())
+            .regionDetail(regionDetail)
+            .profileTeamInforms(profileTeamInforms)
+            .build();
     }
 
 
     public ProfileResponseDTO.ProfileBooleanMenu toProfileBooleanMenu(
-            final Profile profile
+        final Profile profile
     ) {
         return ProfileResponseDTO.ProfileBooleanMenu
-                .builder()
-                .isMiniProfile(profile.isProfileMiniProfile())
-                .isProfileSkill(profile.isProfileSkill())
-                .isProfileActivity(profile.isProfileActivity())
-                .isProfilePortfolio(profile.isProfilePortfolio())
-                .isProfileEducation(profile.isProfileEducation())
-                .isProfileAwards(profile.isProfileAwards())
-                .isProfileLicense(profile.isProfileLicense())
-                .isProfileLink(profile.isProfileLink())
-                .build();
+            .builder()
+            .isMiniProfile(profile.isProfileMiniProfile())
+            .isProfileSkill(profile.isProfileSkill())
+            .isProfileActivity(profile.isProfileActivity())
+            .isProfilePortfolio(profile.isProfilePortfolio())
+            .isProfileEducation(profile.isProfileEducation())
+            .isProfileAwards(profile.isProfileAwards())
+            .isProfileLicense(profile.isProfileLicense())
+            .isProfileLink(profile.isProfileLink())
+            .build();
     }
 
     public ProfileResponseDTO.ProfileDetail toProfileDetail(
-            final boolean isMyProfile,
-            final ProfileCompletionMenu profileCompletionMenu,
-            final ProfileInformMenu profileInformMenu,
-            final int profileScrapCount,
-            final ProfileLogItem profileLogItem,
-            final List<ProfileSkillItem> profileSkillItems,
-            final List<ProfileActivityItem> profileActivityItems,
-            final List<ProfilePortfolioItem> profilePortfolioItems,
-            final List<ProfileEducationItem> profileEducationItems,
-            final List<ProfileAwardsItem> profileAwardsItems,
-            final List<ProfileLicenseItem> profileLicenseItems,
-            final List<ProfileLinkItem> profileLinkItems // 타입 변경
+        final boolean isMyProfile,
+        final ProfileCompletionMenu profileCompletionMenu,
+        final ProfileInformMenu profileInformMenu,
+        final int profileScrapCount,
+        final ProfileLogItem profileLogItem,
+        final List<ProfileSkillItem> profileSkillItems,
+        final List<ProfileActivityItem> profileActivityItems,
+        final List<ProfilePortfolioItem> profilePortfolioItems,
+        final List<ProfileEducationItem> profileEducationItems,
+        final List<ProfileAwardsItem> profileAwardsItems,
+        final List<ProfileLicenseItem> profileLicenseItems,
+        final List<ProfileLinkItem> profileLinkItems // 타입 변경
     ) {
         return ProfileResponseDTO.ProfileDetail
-                .builder()
-                .isMyProfile(isMyProfile)
-                .profileCompletionMenu(profileCompletionMenu)
-                .profileInformMenu(profileInformMenu)
-                .profileScrapCount(profileScrapCount)
-                .profileLogItem(profileLogItem)
-                .profileSkillItems(profileSkillItems)
-                .profileActivityItems(profileActivityItems)
-                .profilePortfolioItems(profilePortfolioItems)
-                .profileEducationItems(profileEducationItems)
-                .profileAwardsItems(profileAwardsItems)
-                .profileLicenseItems(profileLicenseItems)
-                .profileLinkItems(profileLinkItems)  // 수정된 필드 사용
-                .build();
+            .builder()
+            .isMyProfile(isMyProfile)
+            .profileCompletionMenu(profileCompletionMenu)
+            .profileInformMenu(profileInformMenu)
+            .profileScrapCount(profileScrapCount)
+            .profileLogItem(profileLogItem)
+            .profileSkillItems(profileSkillItems)
+            .profileActivityItems(profileActivityItems)
+            .profilePortfolioItems(profilePortfolioItems)
+            .profileEducationItems(profileEducationItems)
+            .profileAwardsItems(profileAwardsItems)
+            .profileLicenseItems(profileLicenseItems)
+            .profileLinkItems(profileLinkItems)  // 수정된 필드 사용
+            .build();
     }
 
 
