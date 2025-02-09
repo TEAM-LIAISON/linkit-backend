@@ -27,11 +27,9 @@ public class ProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfileLeftMenu {
 
-        // 프로필 완성도
         @Builder.Default
         private ProfileCompletionMenu profileCompletionMenu = new ProfileCompletionMenu();
 
-        // 프로필 관리
         @Builder.Default
         private ProfileBooleanMenu profileBooleanMenu = new ProfileBooleanMenu(
             false,
@@ -70,6 +68,8 @@ public class ProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfileInformMenu {
 
+        private Boolean isProfilePublic;
+
         @Builder.Default
         private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
 
@@ -79,13 +79,12 @@ public class ProfileResponseDTO {
         private String profileImagePath;
         private String memberName;
         private String emailId;
-        private Boolean isProfilePublic;
+
         private String majorPosition;
 
         @Builder.Default
         private RegionDetail regionDetail = new RegionDetail();
 
-        // 회원의 팀 정보
         @Builder.Default
         private List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
     }
@@ -149,8 +148,7 @@ public class ProfileResponseDTO {
 
         @Builder.Default
         private ProfileInformMenu profileInformMenu = new ProfileInformMenu(); // 프로필 카드
-
-        private int profileScrapCount;
+        
         private ProfileLogItem profileLogItem;
         private List<ProfileSkillItem> profileSkillItems;
         private List<ProfileActivityItem> profileActivityItems;

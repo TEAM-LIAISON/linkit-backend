@@ -111,9 +111,9 @@ public class TeamService {
 
     // 초기 팀 생성
     public TeamResponseDTO.AddTeamResponse createTeam(
-            final Long memberId,
-            final MultipartFile teamLogoImage,
-            final AddTeamRequest addTeamRequest
+        final Long memberId,
+        final MultipartFile teamLogoImage,
+        final AddTeamRequest addTeamRequest
     ) {
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
@@ -147,7 +147,8 @@ public class TeamService {
         final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
 
         // 팀 지역 저장
-        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamRequest.getCityName(), addTeamRequest.getDivisionName());
+        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(addTeamRequest.getCityName(),
+            addTeamRequest.getDivisionName());
         final TeamRegion teamRegion = new TeamRegion(null, savedTeam, region);
         teamRegionCommandAdapter.save(teamRegion);
         final RegionDetail regionDetail = regionMapper.toRegionDetail(region);
@@ -174,10 +175,10 @@ public class TeamService {
     }
 
     public UpdateTeamResponse updateTeam(
-            final Long memberId,
-            final String teamCode,
-            final MultipartFile teamLogoImage,
-            final UpdateTeamRequest updateTeamRequest
+        final Long memberId,
+        final String teamCode,
+        final MultipartFile teamLogoImage,
+        final UpdateTeamRequest updateTeamRequest
     ) {
         String teamLogoImagePath = null;
 
@@ -185,7 +186,8 @@ public class TeamService {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         // 팀 이름 업데이트
-        team.updateTeam(updateTeamRequest.getTeamName(), updateTeamRequest.getTeamCode(), updateTeamRequest.getTeamShortDescription(), updateTeamRequest.getIsTeamPublic());
+        team.updateTeam(updateTeamRequest.getTeamName(), updateTeamRequest.getTeamCode(),
+            updateTeamRequest.getTeamShortDescription(), updateTeamRequest.getIsTeamPublic());
 
         log.info("Updating team {}", teamCode);
 
@@ -229,7 +231,8 @@ public class TeamService {
             teamRegionCommandAdapter.deleteAllByTeamId(team.getId());
         }
 
-        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(updateTeamRequest.getCityName(), updateTeamRequest.getDivisionName());
+        final Region region = regionQueryAdapter.findByCityNameAndDivisionName(updateTeamRequest.getCityName(),
+            updateTeamRequest.getDivisionName());
         final TeamRegion teamRegion = new TeamRegion(null, team, region);
         teamRegionCommandAdapter.save(teamRegion);
         final RegionDetail regionDetail = regionMapper.toRegionDetail(region);
@@ -271,19 +274,16 @@ public class TeamService {
         log.info("getLoggedInTeamDetail isTeamManager = {}", isTeamManager);
 
         if (teamMemberQueryAdapter.isMemberOfTeam(targetTeam.getTeamCode(), member.getEmailId())) {
-            final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(targetTeam.getTeamCode(), member.getEmailId());
+            final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(targetTeam.getTeamCode(),
+                member.getEmailId());
             log.info("getLoggedInTeamDetail teamMember = {}", teamMember);
             if (teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId)) {
                 isTeamManager = true;
             }
         }
-
-        // 1) 기존 로직
+        
         boolean isMyTeam = teamMemberQueryAdapter.isOwnerOrManagerOfTeam(targetTeam.getId(), memberId);
-        log.info("getLoggedInTeamDetail isMyTeam = {}", isMyTeam);
-
         boolean isTeamInvitationInProgress = teamMemberInvitationQueryAdapter.existsByEmailAndTeam(member.getEmail(), targetTeam);
-        log.info("isTeamInvitationInProgress = {}", isTeamInvitationInProgress);
 
         boolean isTeamDeleteRequester = teamMemberQueryAdapter.isTeamDeleteRequester(member.getId(), targetTeam.getId());
 
@@ -297,7 +297,8 @@ public class TeamService {
         log.info("getLoggedInTeamDetail isTeamDeleteInProgress(final) = {}", isTeamDeleteInProgress);
 
         final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
-        final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
+        final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(
+            teamCurrentStates);
         log.info("팀 상태 정보 조회 성공");
 
         TeamScaleItem teamScaleItem = null;
@@ -316,9 +317,11 @@ public class TeamService {
         final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, teamCode);
         final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(teamCode);
 
-        final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
+        final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, isTeamScrap, teamScrapCount,
+            teamCurrentStateItems, teamScaleItem, regionDetail);
 
-        return teamMapper.toTeamDetail(isMyTeam, isTeamManager, isTeamInvitationInProgress, isTeamDeleteInProgress, isTeamDeleteRequester, teamInformMenu, targetTeam.isTeamPublic());
+        return teamMapper.toTeamDetail(isMyTeam, isTeamManager, isTeamInvitationInProgress, isTeamDeleteInProgress,
+            isTeamDeleteRequester, teamInformMenu, targetTeam.isTeamPublic());
     }
 
     // 로그인하지 않은 사용자가 팀을 상세 조회한 케이스
@@ -326,7 +329,8 @@ public class TeamService {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
 
         final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
-        final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
+        final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(
+            teamCurrentStates);
         log.info("팀 상태 정보 조회 성공");
 
         TeamScaleItem teamScaleItem = null;
@@ -342,7 +346,8 @@ public class TeamService {
         }
         log.info("팀 지역 정보 조회 성공");
         final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(teamCode);
-        final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, false, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
+        final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(targetTeam, false, teamScrapCount,
+            teamCurrentStateItems, teamScaleItem, regionDetail);
 
         return teamMapper.toTeamDetail(false, false, false, false, false, teamInformMenu, targetTeam.isTeamPublic());
     }
@@ -385,7 +390,8 @@ public class TeamService {
             throw DeleteTeamBadRequestException.EXCEPTION;
         }
 
-        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(targetTeam.getTeamCode(), member.getEmailId());
+        final TeamMember teamMember = teamMemberQueryAdapter.getTeamMemberByTeamCodeAndEmailId(targetTeam.getTeamCode(),
+            member.getEmailId());
 
         // 해당 회원이 삭제 요청을 보낸 것으로 수정
         teamMember.setTeamMemberManagingTeamState(TeamMemberManagingTeamState.REQUEST_DELETE);
@@ -401,20 +407,20 @@ public class TeamService {
                 // 팀원들에게 요청 알림 발송 (수정 필요)
                 // (상대방님의 뫄뫄팀 삭제 요청)
                 NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamRequested(
-                        teamCode,
-                        targetTeam.getTeamLogoImagePath(),
-                        targetTeam.getTeamName(),
-                        member.getMemberBasicInform().getMemberName(),
-                        false
+                    teamCode,
+                    targetTeam.getTeamLogoImagePath(),
+                    targetTeam.getTeamName(),
+                    member.getMemberBasicInform().getMemberName(),
+                    false
                 );
 
                 notificationService.alertNewNotification(
-                        notificationMapper.toNotification(
-                                currentTeamMember.getMember().getId(),
-                                NotificationType.TEAM,
-                                SubNotificationType.REMOVE_TEAM_REQUESTED,
-                                removeTeamNotificationDetails
-                        )
+                    notificationMapper.toNotification(
+                        currentTeamMember.getMember().getId(),
+                        NotificationType.TEAM,
+                        SubNotificationType.REMOVE_TEAM_REQUESTED,
+                        removeTeamNotificationDetails
+                    )
                 );
 
                 headerNotificationService.publishNotificationCount(currentTeamMember.getMember().getId());
@@ -424,19 +430,19 @@ public class TeamService {
             deleteUtil.deleteTeam(teamCode);
 
             NotificationDetails removeTeamNotificationDetails = NotificationDetails.removeTeamCompleted(
-                    teamCode,
-                    targetTeam.getTeamLogoImagePath(),
-                    targetTeam.getTeamName(),
-                    false
+                teamCode,
+                targetTeam.getTeamLogoImagePath(),
+                targetTeam.getTeamName(),
+                false
             );
 
             notificationService.alertNewNotification(
-                    notificationMapper.toNotification(
-                            memberId,
-                            NotificationType.TEAM,
-                            SubNotificationType.REMOVE_TEAM_COMPLETED,
-                            removeTeamNotificationDetails
-                    )
+                notificationMapper.toNotification(
+                    memberId,
+                    NotificationType.TEAM,
+                    SubNotificationType.REMOVE_TEAM_COMPLETED,
+                    removeTeamNotificationDetails
+                )
             );
 
             headerNotificationService.publishNotificationCount(memberId);
@@ -447,15 +453,15 @@ public class TeamService {
 
     // 홈화면에서 로그인 상태에서 팀 조회
     public TeamResponseDTO.TeamInformMenus getHomeTeamInformMenusInLoginState(
-            final Long memberId
+        final Long memberId
     ) {
         // 최대 4개의 Team 조회
         List<Team> teams = teamQueryAdapter.findTopTeams(4);
 
         // Teams -> TeamInformMenus 변환
         List<TeamResponseDTO.TeamInformMenu> teamInformMenus = teams.stream()
-                .map(team -> buildTeamInformMenuInLoginState(team, memberId))
-                .toList();
+            .map(team -> buildTeamInformMenuInLoginState(team, memberId))
+            .toList();
 
         return teamMapper.toTeamInformMenus(teamInformMenus);
     }
@@ -467,8 +473,8 @@ public class TeamService {
 
         // Teams -> TeamInformMenus 변환
         List<TeamResponseDTO.TeamInformMenu> teamInformMenus = teams.stream()
-                .map(this::buildTeamInformMenuInLogoutState)
-                .toList();
+            .map(this::buildTeamInformMenuInLogoutState)
+            .toList();
 
         return teamMapper.toTeamInformMenus(teamInformMenus);
     }

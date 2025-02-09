@@ -107,7 +107,6 @@ public class ProfileMapper {
         final boolean isMyProfile,
         final ProfileCompletionMenu profileCompletionMenu,
         final ProfileInformMenu profileInformMenu,
-        final int profileScrapCount,
         final ProfileLogItem profileLogItem,
         final List<ProfileSkillItem> profileSkillItems,
         final List<ProfileActivityItem> profileActivityItems,
@@ -122,7 +121,6 @@ public class ProfileMapper {
             .isMyProfile(isMyProfile)
             .profileCompletionMenu(profileCompletionMenu)
             .profileInformMenu(profileInformMenu)
-            .profileScrapCount(profileScrapCount)
             .profileLogItem(profileLogItem)
             .profileSkillItems(profileSkillItems)
             .profileActivityItems(profileActivityItems)
