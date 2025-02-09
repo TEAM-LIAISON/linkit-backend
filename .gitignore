@@ -56,3 +56,4 @@ src/main/resources/static/docs/
 
 ### Logback ###
 /logs/
+*.log
