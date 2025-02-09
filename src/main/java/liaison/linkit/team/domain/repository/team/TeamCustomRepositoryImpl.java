@@ -41,9 +41,9 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         Team team = jpaQueryFactory
-                .selectFrom(qTeam)
-                .where(qTeam.teamCode.eq(teamCode).and(qTeam.status.eq(StatusType.USABLE)))
-                .fetchOne();
+            .selectFrom(qTeam)
+            .where(qTeam.teamCode.eq(teamCode).and(qTeam.status.eq(StatusType.USABLE)))
+            .fetchOne();
 
         return Optional.ofNullable(team);
     }
@@ -53,20 +53,20 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         return jpaQueryFactory
-                .selectOne()
-                .from(qTeam)
-                .where(qTeam.teamCode.eq(teamCode)
-                        .and(qTeam.status.eq(StatusType.USABLE)))
-                .fetchFirst() != null;
+            .selectOne()
+            .from(qTeam)
+            .where(qTeam.teamCode.eq(teamCode)
+                .and(qTeam.status.eq(StatusType.USABLE)))
+            .fetchFirst() != null;
     }
 
     @Override
     public Page<Team> findAllByFiltering(
-            final List<String> scaleName,
-            final Boolean isAnnouncement,
-            final List<String> cityName,
-            final List<String> teamStateName,
-            final Pageable pageable
+        final List<String> scaleName,
+        final Boolean isAnnouncement,
+        final List<String> cityName,
+        final List<String> teamStateName,
+        final Pageable pageable
     ) {
         QTeam qTeam = QTeam.team;
 
@@ -83,61 +83,61 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
         try {
             List<Team> content = jpaQueryFactory
-                    .selectDistinct(qTeam)
-                    .from(qTeam)
+                .selectDistinct(qTeam)
+                .from(qTeam)
 
-                    .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
-                    .leftJoin(qTeamRegion.region, qRegion)
+                .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
+                .leftJoin(qTeamRegion.region, qRegion)
 
-                    .leftJoin(qTeamCurrentState).on(qTeamCurrentState.team.eq(qTeam))
-                    .leftJoin(qTeamCurrentState.teamState, qTeamState)
+                .leftJoin(qTeamCurrentState).on(qTeamCurrentState.team.eq(qTeam))
+                .leftJoin(qTeamCurrentState.teamState, qTeamState)
 
-                    .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
-                    .leftJoin(qTeamScale.scale, qScale)
+                .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
+                .leftJoin(qTeamScale.scale, qScale)
 
-                    .leftJoin(qTeamMemberAnnouncement).on(qTeamMemberAnnouncement.team.eq(qTeam))
+                .leftJoin(qTeamMemberAnnouncement).on(qTeamMemberAnnouncement.team.eq(qTeam))
 
-                    .where(
-                            qTeam.status.eq(StatusType.USABLE),
-                            qTeam.isTeamPublic.eq(true),
-                            hasScaleNames(scaleName),
-                            hasCityName(cityName),
-                            hasTeamStateNames(teamStateName)
-                    )
-                    .offset(pageable.getOffset())
-                    .limit(pageable.getPageSize())
-                    .orderBy(QueryDslUtil.getOrderTeamSpecifier(
-                            pageable.getSort(),
-                            qTeam,
-                            qTeamScale,
-                            qTeamRegion,
-                            qTeamCurrentState
-                    ))
-                    .fetch();
+                .where(
+                    qTeam.status.eq(StatusType.USABLE),
+                    qTeam.isTeamPublic.eq(true),
+                    hasScaleNames(scaleName),
+                    hasCityName(cityName),
+                    hasTeamStateNames(teamStateName)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(QueryDslUtil.getOrderTeamSpecifier(
+                    pageable.getSort(),
+                    qTeam,
+                    qTeamScale,
+                    qTeamRegion,
+                    qTeamCurrentState
+                ))
+                .fetch();
 
             // 카운트 쿼리
             Long totalLong = jpaQueryFactory
-                    .select(qTeam.countDistinct())
-                    .from(qTeam)
+                .select(qTeam.countDistinct())
+                .from(qTeam)
 
-                    .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
-                    .leftJoin(qTeamRegion.region, qRegion)
+                .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
+                .leftJoin(qTeamRegion.region, qRegion)
 
-                    .leftJoin(qTeamCurrentState).on(qTeamCurrentState.team.eq(qTeam))
-                    .leftJoin(qTeamCurrentState.teamState, qTeamState)
+                .leftJoin(qTeamCurrentState).on(qTeamCurrentState.team.eq(qTeam))
+                .leftJoin(qTeamCurrentState.teamState, qTeamState)
 
-                    .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
-                    .leftJoin(qTeamScale.scale, qScale)
+                .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
+                .leftJoin(qTeamScale.scale, qScale)
 
-                    .leftJoin(qTeamMemberAnnouncement).on(qTeamMemberAnnouncement.team.eq(qTeam))
-                    .where(
-                            qTeam.status.eq(StatusType.USABLE),
-                            qTeam.isTeamPublic.eq(true),
-                            hasScaleNames(scaleName),
-                            hasCityName(cityName),
-                            hasTeamStateNames(teamStateName)
-                    )
-                    .fetchOne();
+                .leftJoin(qTeamMemberAnnouncement).on(qTeamMemberAnnouncement.team.eq(qTeam))
+                .where(
+                    qTeam.status.eq(StatusType.USABLE),
+                    qTeam.isTeamPublic.eq(true),
+                    hasScaleNames(scaleName),
+                    hasCityName(cityName),
+                    hasTeamStateNames(teamStateName)
+                )
+                .fetchOne();
 
             long total = (totalLong == null) ? 0L : totalLong;
 
@@ -182,10 +182,10 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
         try {
             long updatedRows = jpaQueryFactory
-                    .update(qTeam)
-                    .set(qTeam.status, StatusType.DELETED)
-                    .where(qTeam.teamCode.eq(teamCode))
-                    .execute();
+                .update(qTeam)
+                .set(qTeam.status, StatusType.DELETED)
+                .where(qTeam.teamCode.eq(teamCode))
+                .execute();
         } catch (Exception e) {
             log.error("Error occurred while deleting team with teamCode: {}", teamCode, e);
             throw e; // 필요에 따라 커스텀 예외로 변환하여 던질 수 있습니다.
@@ -212,25 +212,23 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         return jpaQueryFactory
-                .selectFrom(qTeam)
-                .where(
-                        qTeam.isTeamPublic.eq(true),
-                        qTeam.status.eq(StatusType.USABLE)
-                )
-                .orderBy(
-                        // CASE WHEN 구문으로 지정한 순서대로 정렬
-                        new CaseBuilder()
-                                .when(qTeam.id.eq(10L)).then(0)
-                                .when(qTeam.id.eq(4L)).then(1)
-                                .when(qTeam.id.eq(2L)).then(2)
-                                .when(qTeam.id.eq(15L)).then(3)
-                                .when(qTeam.id.eq(19L)).then(4)
-                                .when(qTeam.id.eq(21L)).then(5)
-                                .otherwise(6)
-                                .asc()
-                )
-                .limit(limit)
-                .fetch();
+            .selectFrom(qTeam)
+            .where(
+                qTeam.isTeamPublic.eq(true),
+                qTeam.status.eq(StatusType.USABLE)
+            )
+            .orderBy(
+                // CASE WHEN 구문으로 지정한 순서대로 정렬
+                new CaseBuilder()
+                    .when(qTeam.id.eq(1L)).then(0)
+                    .when(qTeam.id.eq(10L)).then(1)
+                    .when(qTeam.id.eq(4L)).then(2)
+                    .when(qTeam.id.eq(2L)).then(3)
+                    .otherwise(4)
+                    .asc()
+            )
+            .limit(limit)
+            .fetch();
     }
 
     @Override
@@ -239,19 +237,19 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
         // 프로필 활동 업데이트
         long updatedCount = jpaQueryFactory
-                .update(qTeam)
-                .set(qTeam.teamStatus, teamStatus)
-                .where(qTeam.teamCode.eq(teamCode))
-                .execute();
+            .update(qTeam)
+            .set(qTeam.teamStatus, teamStatus)
+            .where(qTeam.teamCode.eq(teamCode))
+            .execute();
 
         entityManager.flush();
         entityManager.clear();
 
         if (updatedCount > 0) {
             return jpaQueryFactory
-                    .selectFrom(qTeam)
-                    .where(qTeam.teamCode.eq(teamCode))
-                    .fetchOne();
+                .selectFrom(qTeam)
+                .where(qTeam.teamCode.eq(teamCode))
+                .fetchOne();
         } else {
             return null;
         }
@@ -262,11 +260,11 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         return jpaQueryFactory
-                .selectOne()
-                .from(qTeam)
-                .where(qTeam.teamCode.eq(teamCode)
-                        .and(qTeam.teamStatus.eq(TeamStatus.DELETE_PENDING)))
-                .fetchFirst() != null;
+            .selectOne()
+            .from(qTeam)
+            .where(qTeam.teamCode.eq(teamCode)
+                .and(qTeam.teamStatus.eq(TeamStatus.DELETE_PENDING)))
+            .fetchFirst() != null;
     }
 
     @Override
@@ -274,15 +272,15 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         long updatedRows = jpaQueryFactory.update(qTeam)
-                .set(qTeam.teamName, team.getTeamName())
-                .set(qTeam.teamCode, team.getTeamCode())
-                .set(qTeam.teamShortDescription, team.getTeamShortDescription())
-                .set(qTeam.teamLogoImagePath, team.getTeamLogoImagePath())
-                .set(qTeam.isTeamPublic, team.isTeamPublic())
-                .set(qTeam.teamStatus, team.getTeamStatus())
-                .set(qTeam.status, team.getStatus())
-                .where(qTeam.id.eq(team.getId()))
-                .execute();
+            .set(qTeam.teamName, team.getTeamName())
+            .set(qTeam.teamCode, team.getTeamCode())
+            .set(qTeam.teamShortDescription, team.getTeamShortDescription())
+            .set(qTeam.teamLogoImagePath, team.getTeamLogoImagePath())
+            .set(qTeam.isTeamPublic, team.isTeamPublic())
+            .set(qTeam.teamStatus, team.getTeamStatus())
+            .set(qTeam.status, team.getStatus())
+            .where(qTeam.id.eq(team.getId()))
+            .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -311,8 +309,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         // SQL 제한은 엔티티 매핑 시 @SQLRestriction에 의해 자동 추가되지만,
         // native query는 그 제한을 우회할 수 있습니다.
         List<Team> teams = session.createNativeQuery(sql, Team.class)
-                .setParameter("teamCode", teamCode)
-                .getResultList();
+            .setParameter("teamCode", teamCode)
+            .getResultList();
 
         Team team = teams.isEmpty() ? null : teams.get(0);
         if (team == null) {

@@ -53,3 +53,7 @@ src/main/resources/static/docs/
 
 ### Querydsl ###
 /src/main/generated
+
+### Logback ###
+/logs/
+*.log

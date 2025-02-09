@@ -25,19 +25,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 @Slf4j
 public class ChatController {
+
     private final ChatService chatService;
 
-    // ==============================
-    // 1) REST API: 채팅방 생성
-    // ==============================
     @PostMapping("/api/v1/chat/room")
     @MemberOnly
     public CommonResponse<CreateChatRoomResponse> createChatRoom(
-            @RequestBody CreateChatRoomRequest request,
-            @Auth Accessor accessor
+        @RequestBody CreateChatRoomRequest request,
+        @Auth Accessor accessor
     ) {
         log.info("createChatRoom {}", request);
-        return CommonResponse.onSuccess(chatService.createChatRoom(request, accessor.getMemberId()));
+        return CommonResponse.onSuccess(
+            chatService.createChatRoom(request, accessor.getMemberId()));
     }
 
     /**
@@ -49,12 +48,12 @@ public class ChatController {
     @GetMapping("/api/v1/chat/room/{chatRoomId}/messages")
     @MemberOnly
     public CommonResponse<ChatResponseDTO.ChatMessageHistoryResponse> getChatMessages(
-            @PathVariable final Long chatRoomId,
-            @Auth final Accessor accessor,
-            @PageableDefault(size = 50, sort = "timestamp", direction = Sort.Direction.DESC) final Pageable pageable
+        @PathVariable final Long chatRoomId,
+        @Auth final Accessor accessor,
+        @PageableDefault(size = 50, sort = "timestamp", direction = Sort.Direction.DESC) final Pageable pageable
     ) {
         return CommonResponse.onSuccess(
-                chatService.getChatMessages(chatRoomId, accessor.getMemberId(), pageable)
+            chatService.getChatMessages(chatRoomId, accessor.getMemberId(), pageable)
         );
     }
 
@@ -64,7 +63,7 @@ public class ChatController {
     @GetMapping("/api/v1/chat/left/menu")
     @MemberOnly
     public CommonResponse<ChatResponseDTO.ChatLeftMenu> getChatLeftMenu(
-            @Auth final Accessor accessor
+        @Auth final Accessor accessor
     ) {
         return CommonResponse.onSuccess(chatService.getChatLeftMenu(accessor.getMemberId()));
     }
@@ -72,9 +71,10 @@ public class ChatController {
     @PostMapping("/api/v1/chat/room/{chatRoomId}/leave")
     @MemberOnly
     public CommonResponse<ChatResponseDTO.ChatRoomLeaveResponse> leaveChatRoom(
-            @Auth final Accessor accessor,
-            @PathVariable final Long chatRoomId
+        @Auth final Accessor accessor,
+        @PathVariable final Long chatRoomId
     ) {
-        return CommonResponse.onSuccess(chatService.leaveChatRoom(accessor.getMemberId(), chatRoomId));
+        return CommonResponse.onSuccess(
+            chatService.leaveChatRoom(accessor.getMemberId(), chatRoomId));
     }
 }

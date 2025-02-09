@@ -23,6 +23,8 @@ public interface TeamMemberCustomRepository {
 
     List<Team> getAllTeamsByMemberId(final Long memberId);
 
+    List<Team> getAllPublicTeamsByMemberId(final Long memberId);
+
     List<Team> getAllTeamsInOwnerStateByMemberId(final Long memberId);
 
     TeamMember getTeamMemberByTeamCodeAndEmailId(final String teamCode, final String emailId);
@@ -37,7 +39,8 @@ public interface TeamMemberCustomRepository {
 
     List<Long> getAllTeamMemberIds(final String teamCode);
 
-    void updateTeamMemberManagingTeamState(final TeamMember teamMember, final TeamMemberManagingTeamState teamMemberManagingTeamState);
+    void updateTeamMemberManagingTeamState(final TeamMember teamMember,
+        final TeamMemberManagingTeamState teamMemberManagingTeamState);
 
     boolean isMemberOfTeam(final String teamCode, final String emailId);
 

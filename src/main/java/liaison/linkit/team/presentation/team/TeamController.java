@@ -1,6 +1,7 @@
 package liaison.linkit.team.presentation.team;
 
 import jakarta.validation.Valid;
+import java.util.Optional;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -31,24 +32,21 @@ public class TeamController {
     // 홈화면에서 팀 조회하기 (최대 4개)
     @GetMapping("/home/team")
     public CommonResponse<TeamResponseDTO.TeamInformMenus> getHomeTeamInformMenus(
-            @Auth final Accessor accessor
+        @Auth final Accessor accessor
     ) {
-        if (accessor.isMember()) {
-            return CommonResponse.onSuccess(teamService.getHomeTeamInformMenusInLoginState(accessor.getMemberId()));
-        } else {
-            return CommonResponse.onSuccess(teamService.getHomeTeamInformMenusInLogoutState());
-        }
+        Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        return CommonResponse.onSuccess(teamService.getHomeTeamInformMenus(optionalMemberId));
     }
 
     // 팀 생성하기
     @PostMapping("/team")
     @MemberOnly
     public CommonResponse<TeamResponseDTO.AddTeamResponse> createTeam(
-            @Auth final Accessor accessor,
-            @RequestPart(required = false) MultipartFile teamLogoImage,
-            @RequestPart @Valid TeamRequestDTO.AddTeamRequest addTeamRequest
+        @Auth final Accessor accessor,
+        @RequestPart(required = false) MultipartFile teamLogoImage,
+        @RequestPart @Valid TeamRequestDTO.AddTeamRequest addTeamRequest
     ) {
-        log.info("Creating team");
         return CommonResponse.onSuccess(teamService.createTeam(accessor.getMemberId(), teamLogoImage, addTeamRequest));
     }
 
@@ -56,37 +54,31 @@ public class TeamController {
     @PostMapping("/team/{teamCode}")
     @MemberOnly
     public CommonResponse<UpdateTeamResponse> updateTeam(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @RequestPart(required = false) MultipartFile teamLogoImage,
-            @RequestPart @Valid TeamRequestDTO.UpdateTeamRequest updateTeamRequest
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @RequestPart(required = false) MultipartFile teamLogoImage,
+        @RequestPart @Valid TeamRequestDTO.UpdateTeamRequest updateTeamRequest
     ) {
         return CommonResponse.onSuccess(teamService.updateTeam(accessor.getMemberId(), teamCode, teamLogoImage, updateTeamRequest));
     }
 
     // 팀 상단 메뉴
     @GetMapping("/team/{teamCode}")
-    @MemberOnly
     public CommonResponse<TeamResponseDTO.TeamDetail> getTeamDetail(
-            @PathVariable final String teamCode,
-            @Auth final Accessor accessor
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode
     ) {
-        log.info("teamCode = {}", teamCode);
-        if (accessor.isMember()) {
-            log.info("memberId = {}의 팀 코드 = {}에 대한 팀 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
-            return CommonResponse.onSuccess(teamService.getLoggedInTeamDetail(accessor.getMemberId(), teamCode));
-        } else {
-            log.info("teamCode = {}에 대한 팀 상세 조회 요청이 발생했습니다.", teamCode);
-            return CommonResponse.onSuccess(teamService.getLoggedOutTeamDetail(teamCode));
-        }
+        Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        return CommonResponse.onSuccess(teamService.getTeamDetail(optionalMemberId, teamCode));
     }
 
     // 팀 삭제 요청
     @DeleteMapping("/team/{teamCode}")
     @MemberOnly
     public CommonResponse<TeamResponseDTO.DeleteTeamResponse> deleteTeam(
-            @PathVariable final String teamCode,
-            @Auth final Accessor accessor
+        @PathVariable final String teamCode,
+        @Auth final Accessor accessor
     ) {
         return CommonResponse.onSuccess(teamService.deleteTeam(accessor.getMemberId(), teamCode));
     }
@@ -95,7 +87,7 @@ public class TeamController {
     @GetMapping("/my/teams")
     @MemberOnly
     public CommonResponse<TeamResponseDTO.TeamItems> getTeamItems(
-            @Auth final Accessor accessor
+        @Auth final Accessor accessor
     ) {
         return CommonResponse.onSuccess(teamService.getTeamItems(accessor.getMemberId()));
     }

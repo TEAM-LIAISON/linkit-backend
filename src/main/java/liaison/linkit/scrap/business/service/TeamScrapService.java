@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class TeamScrapService {
+
     private final MemberQueryAdapter memberQueryAdapter;
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
     private final TeamQueryAdapter teamQueryAdapter;
@@ -54,16 +55,11 @@ public class TeamScrapService {
 
     // 회원이 팀 스크랩 버튼을 눌렀을 떄의 메서드
     public TeamScrapResponseDTO.UpdateTeamScrap updateTeamScrap(
-            final Long memberId,
-            final String teamCode,
-            final UpdateTeamScrapRequest updateTeamScrapRequest
+        final Long memberId,
+        final String teamCode,
+        final UpdateTeamScrapRequest updateTeamScrapRequest
     ) {
-
         boolean shouldAddScrap = updateTeamScrapRequest.isChangeScrapValue();
-
-//        scrapValidator.validateSelfTeamScrap(memberId, teamCode); // 자기 자신이 속한 팀 스크랩에 대한 예외 처리
-//        scrapValidator.validateMemberMaxTeamScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
-
         boolean scrapExists = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, teamCode);
 
         if (scrapExists) {
@@ -85,8 +81,8 @@ public class TeamScrapService {
 
         // 2) TeamScrap -> Team 리스트 추출
         final List<Team> teams = teamScraps.stream()
-                .map(TeamScrap::getTeam)
-                .toList();
+            .map(TeamScrap::getTeam)
+            .toList();
 
         // 3) 각 팀에 대해 필요한 정보를 조회한 뒤, TeamInformMenu 형태로 매핑
         final List<TeamInformMenu> teamInformMenus = new ArrayList<>();

@@ -38,13 +38,13 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
      */
     @GetMapping
     public CommonResponse<Page<TeamInformMenu>> searchTeams(
-            @Auth final Accessor accessor,
-            @RequestParam(value = "scaleName", required = false) List<String> scaleName,
-            @RequestParam(value = "isAnnouncement", required = false) Boolean isAnnouncement,
-            @RequestParam(value = "cityName", required = false) List<String> cityName,
-            @RequestParam(value = "teamStateName", required = false) List<String> teamStateName,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size
+        @Auth final Accessor accessor,
+        @RequestParam(value = "scaleName", required = false) List<String> scaleName,
+        @RequestParam(value = "isAnnouncement", required = false) Boolean isAnnouncement,
+        @RequestParam(value = "cityName", required = false) List<String> cityName,
+        @RequestParam(value = "teamStateName", required = false) List<String> teamStateName,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         if (accessor.isMember()) {
             Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
@@ -55,8 +55,6 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
             Page<TeamInformMenu> teams = teamSearchService.searchTeamsInLogoutState(scaleName, isAnnouncement, cityName, teamStateName, pageable);
             return CommonResponse.onSuccess(teams);
         }
-
-
     }
 
 }
