@@ -32,7 +32,7 @@ public class ProfileService {
     /*
         Method
      */
-
+    
     // 수정창에서 내 프로필 왼쪽 메뉴 조회
     public ProfileLeftMenu getProfileLeftMenu(final Long memberId) {
         final Profile targetProfile = profileQueryAdapter.findByMemberId(memberId);
@@ -77,9 +77,7 @@ public class ProfileService {
     }
 
     // 홈화면에서 로그인 상태에서 팀원 정보를 조회한다.
-    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLoginState(
-        final Long memberId) {
-        // 최대 6개의 Profile 조회
+    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLoginState(final Long memberId) {
         List<Profile> profiles = profileQueryAdapter.findTopProfiles(6);
 
         // Profiles -> ProfileInformMenus 변환
@@ -87,13 +85,11 @@ public class ProfileService {
             .map(profile -> toHomeProfileInformMenuInLoginState(profile, memberId))
             .toList();
 
-        // ProfileInformMenus DTO 반환
         return profileMapper.toProfileInformMenus(profileInformMenus);
     }
 
     // 홈화면에서 로그아웃 상태에서 팀원 정보를 조회한다.
     public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLogoutState() {
-        // 최대 6개의 Profile 조회
         List<Profile> profiles = profileQueryAdapter.findTopProfiles(6);
 
         // Profiles -> ProfileInformMenus 변환
@@ -101,12 +97,9 @@ public class ProfileService {
             .map(this::toHomeProfileInformMenuInLogoutState)
             .toList();
 
-        // ProfileInformMenus DTO 반환
         return profileMapper.toProfileInformMenus(profileInformMenus);
     }
 
-
-    // 개별 Profile -> ProfileInformMenu 변환
     private ProfileInformMenu toHomeProfileInformMenuInLoginState(final Profile targetProfile, final Long memberId) {
         return profileInformMenuAssembler.assembleProfileInformMenu(
             targetProfile, Optional.of(memberId)

@@ -96,7 +96,7 @@ public class ProfileDetailAssembler {
     /* ─── 헬퍼 메서드들 ─────────────────────────────────────────────── */
 
     // 프로필 로그 정보를 조회하여 ProfileLogItem으로 매핑
-    private ProfileLogItem resolveProfileLogItem(Profile targetProfile) {
+    private ProfileLogItem resolveProfileLogItem(final Profile targetProfile) {
         if (profileLogQueryAdapter.existsProfileLogByProfileId(targetProfile.getId())) {
             ProfileLog profileLog = profileLogQueryAdapter.getRepresentativeProfileLog(targetProfile.getId());
             return profileLogMapper.toProfileLogItem(profileLog);

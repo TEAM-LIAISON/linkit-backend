@@ -22,9 +22,19 @@ public class ProfileSearchService {
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileInformMenuAssembler profileInformMenuAssembler;
 
-
-    public Page<ProfileInformMenu> searchProfilesInLoginState(
-        final Long memberId,
+    /**
+     * Optional로 로그인한 회원의 ID가 전달되면 로그인 상태로, 그렇지 않으면 로그아웃 상태로 프로필 목록을 검색합니다.
+     *
+     * @param optionalMemberId 로그인한 회원의 ID(Optional)
+     * @param majorPosition    포지션 대분류 필터
+     * @param skillName        스킬 필터
+     * @param cityName         시/도 필터
+     * @param profileStateName 프로필 상태 필터
+     * @param pageable         페이징 정보
+     * @return 검색된 프로필 정보를 ProfileInformMenu DTO로 매핑한 Page
+     */
+    public Page<ProfileInformMenu> searchProfiles(
+        final Optional<Long> optionalMemberId,
         List<String> majorPosition,
         List<String> skillName,
         List<String> cityName,
@@ -32,33 +42,10 @@ public class ProfileSearchService {
         Pageable pageable
     ) {
         Page<Profile> profiles = profileQueryAdapter.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
-        return profiles.map(
-            profile -> toSearchProfileInformMenuInLoginState(memberId, profile)
+
+        return profiles.map(profile ->
+            profileInformMenuAssembler.assembleProfileInformMenu(profile, optionalMemberId)
         );
     }
-
-    public Page<ProfileInformMenu> searchProfilesInLogoutState(
-        List<String> majorPosition,
-        List<String> skillName,
-        List<String> cityName,
-        List<String> profileStateName,
-        Pageable pageable
-    ) {
-        Page<Profile> profiles = profileQueryAdapter.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
-        return profiles.map(this::toSearchProfileInformMenuInLogoutState);
-    }
-
-    private ProfileInformMenu toSearchProfileInformMenuInLoginState(
-        final Long memberId,
-        final Profile targetProfile
-    ) {
-        return profileInformMenuAssembler.assembleProfileInformMenu(targetProfile, Optional.ofNullable(memberId));
-    }
-
-    private ProfileInformMenu toSearchProfileInformMenuInLogoutState(
-        final Profile targetProfile
-    ) {
-        return profileInformMenuAssembler.assembleProfileInformMenu(targetProfile, Optional.empty());
-    }
-
 }
+

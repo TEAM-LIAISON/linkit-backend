@@ -97,15 +97,19 @@ public class ProfileInformMenuAssembler {
      * @param profile 조회 대상 프로필
      * @return 조회된 팀 정보를 ProfileTeamInform 리스트로 반환, 없으면 빈 리스트 반환
      */
-    public List<ProfileTeamInform> assembleProfileTeamInforms(final Profile profile) {
-        List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
+    public List<ProfileTeamInform> assembleProfileTeamInforms(final Profile profile, final Optional<Long> loggedInMemberId) {
+        boolean isMyProfile = loggedInMemberId.isPresent() && profile.getMember().getId().equals(loggedInMemberId.get());
+
+        List<ProfileTeamInform> targetProfileTeamInforms = new ArrayList<>();
         Long memberIdForTeam = profile.getMember().getId();
-        if (teamMemberQueryAdapter.existsTeamByMemberId(memberIdForTeam)) {
+        if (teamMemberQueryAdapter.existsTeamByMemberId(memberIdForTeam) && isMyProfile) {
             List<Team> teams = teamMemberQueryAdapter.getAllTeamsByMemberId(memberIdForTeam);
-            profileTeamInforms = teamMemberMapper.toProfileTeamInforms(teams);
-            log.info("팀 정보 조회 성공, 팀 수: {}", profileTeamInforms.size());
+            targetProfileTeamInforms = teamMemberMapper.toProfileTeamInforms(teams);
+        } else if (teamMemberQueryAdapter.existsTeamByMemberId(memberIdForTeam) && !isMyProfile) {
+            List<Team> teams = teamMemberQueryAdapter.getAllPublicTeamsByMemberId(memberIdForTeam);
+            targetProfileTeamInforms = teamMemberMapper.toProfileTeamInforms(teams);
         }
-        return profileTeamInforms;
+        return targetProfileTeamInforms;
     }
 
     /**
@@ -149,7 +153,7 @@ public class ProfileInformMenuAssembler {
         List<ProfileCurrentStateItem> currentStateItems = assembleProfileCurrentStateItems(profile);
         ProfilePositionDetail profilePositionDetail = assembleProfilePositionDetail(profile);
         RegionDetail regionDetail = assembleRegionDetail(profile);
-        List<ProfileTeamInform> profileTeamInforms = assembleProfileTeamInforms(profile);
+        List<ProfileTeamInform> profileTeamInforms = assembleProfileTeamInforms(profile, loggedInMemberId);
         boolean isProfileScrap = assembleIsProfileScrap(profile, loggedInMemberId);
         int profileScrapCount = assembleProfileScrapCount(profile);
 
