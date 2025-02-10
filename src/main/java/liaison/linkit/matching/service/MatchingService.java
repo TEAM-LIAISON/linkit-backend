@@ -1186,6 +1186,7 @@ public class MatchingService {
     private String getReceiverMajorPosition(final Matching matching) {
         final TeamMemberAnnouncement targetTeamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
         final AnnouncementPositionItem announcementPositionItem = announcementCommonAssembler.fetchAnnouncementPositionItem(targetTeamMemberAnnouncement);
+        log.info("majorPosition: " + announcementPositionItem.getMajorPosition());
         return announcementPositionItem.getMajorPosition();
     }
 
