@@ -1,6 +1,7 @@
 package liaison.linkit.team.presentation.log;
 
 import jakarta.validation.Valid;
+import java.util.Optional;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -25,40 +26,37 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/v1/team/{teamCode}/log")
 @Slf4j
 public class TeamLogController {
+
     private final TeamLogService teamLogService;
 
     // 로그 첨부 이미지 저장
     @PostMapping("/body/image")
     @MemberOnly
     public CommonResponse<TeamLogResponseDTO.AddTeamLogBodyImageResponse> addTeamLogBodyImage(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @RequestPart @Valid final MultipartFile teamLogBodyImage
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @RequestPart @Valid final MultipartFile teamLogBodyImage
     ) {
         return CommonResponse.onSuccess(teamLogService.addTeamLogBodyImage(accessor.getMemberId(), teamCode, teamLogBodyImage));
-    }
-
-    // 로그 전체 뷰어 조회 (public만 허용)
-    @GetMapping("/view")
-    public CommonResponse<TeamLogResponseDTO.TeamLogItems> getTeamLogViewItems(
-            @PathVariable final String teamCode
-    ) {
-        return CommonResponse.onSuccess(teamLogService.getTeamLogViewItems(teamCode));
     }
 
     // 로그 전체 조회
     @GetMapping
     public CommonResponse<TeamLogResponseDTO.TeamLogItems> getTeamLogItems(
-            @PathVariable final String teamCode
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode
     ) {
-        return CommonResponse.onSuccess(teamLogService.getTeamLogItems(teamCode));
+        Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+        log.info("memberId = {}의 teamCode = {}에 대한 팀 로그 전체 조회 요청이 발생했습니다.", optionalMemberId, teamCode);
+
+        return CommonResponse.onSuccess(teamLogService.getTeamLogItems(optionalMemberId, teamCode));
     }
 
     // 로그 상세 조회
     @GetMapping("/{teamLogId}")
     public CommonResponse<TeamLogResponseDTO.TeamLogItem> getTeamLogItem(
-            @PathVariable final String teamCode,
-            @PathVariable final Long teamLogId
+        @PathVariable final String teamCode,
+        @PathVariable final Long teamLogId
     ) {
         log.info("teamCode = {}에 대한 팀 로그 ID = {}의 단일 조회 요청이 발생했습니다.", teamCode, teamLogId);
         return CommonResponse.onSuccess(teamLogService.getTeamLogItem(teamCode, teamLogId));
@@ -68,9 +66,9 @@ public class TeamLogController {
     @PostMapping
     @MemberOnly
     public CommonResponse<TeamLogResponseDTO.AddTeamLogResponse> addTeamLog(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @RequestBody TeamLogRequestDTO.AddTeamLogRequest addTeamLogRequest
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @RequestBody TeamLogRequestDTO.AddTeamLogRequest addTeamLogRequest
     ) {
         log.info("memberId = {}의 teamCode = {}에 대한 팀 로그에 생성 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
         return CommonResponse.onSuccess(teamLogService.addTeamLog(accessor.getMemberId(), teamCode, addTeamLogRequest));
@@ -80,10 +78,10 @@ public class TeamLogController {
     @PostMapping("/{teamLogId}")
     @MemberOnly
     public CommonResponse<TeamLogResponseDTO.UpdateTeamLogResponse> updateTeamLog(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @PathVariable final Long teamLogId,
-            @RequestBody TeamLogRequestDTO.UpdateTeamLogRequest updateTeamLogRequest
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @PathVariable final Long teamLogId,
+        @RequestBody TeamLogRequestDTO.UpdateTeamLogRequest updateTeamLogRequest
     ) {
 
         return CommonResponse.onSuccess(teamLogService.updateTeamLog(accessor.getMemberId(), teamCode, teamLogId, updateTeamLogRequest));
@@ -93,9 +91,9 @@ public class TeamLogController {
     @DeleteMapping("/{teamLogId}")
     @MemberOnly
     public CommonResponse<TeamLogResponseDTO.RemoveTeamLogResponse> deleteTeamLog(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @PathVariable final Long teamLogId
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @PathVariable final Long teamLogId
     ) {
         log.info("memberId = {}가 teamCode = {}의 팀 로그 = {}에 대한 삭제 요청이 발생했습니다.", accessor.getMemberId(), teamCode, teamLogId);
         return CommonResponse.onSuccess(teamLogService.removeTeamLog(accessor.getMemberId(), teamCode, teamLogId));
@@ -105,9 +103,9 @@ public class TeamLogController {
     @PostMapping("/type/{teamLogId}")
     @MemberOnly
     public CommonResponse<TeamLogResponseDTO.UpdateTeamLogTypeResponse> updateTeamLogType(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @PathVariable final Long teamLogId
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @PathVariable final Long teamLogId
     ) {
         return CommonResponse.onSuccess(teamLogService.updateTeamLogType(accessor.getMemberId(), teamCode, teamLogId));
     }
@@ -116,9 +114,9 @@ public class TeamLogController {
     @PostMapping("/state/{teamLogId}")
     @MemberOnly
     public CommonResponse<TeamLogResponseDTO.UpdateTeamLogPublicStateResponse> updateTeamLogPublicState(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @PathVariable final Long teamLogId
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @PathVariable final Long teamLogId
     ) {
         log.info("memberId = {}가 teamCode = {}의 팀 로그 = {}에 대한 공개 여부 수정 요청이 발생했습니다.", accessor.getMemberId(), teamCode, teamLogId);
         return CommonResponse.onSuccess(teamLogService.updateTeamLogPublicState(accessor.getMemberId(), teamCode, teamLogId));
