@@ -5,6 +5,7 @@ import static liaison.linkit.profile.domain.type.LogType.GENERAL_LOG;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import liaison.linkit.common.validator.ImageValidator;
@@ -47,6 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @Slf4j
 public class TeamLogService {
+
     private final TeamQueryAdapter teamQueryAdapter;
 
     private final TeamLogQueryAdapter teamLogQueryAdapter;
@@ -66,17 +68,19 @@ public class TeamLogService {
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
 
     @Transactional(readOnly = true)
-    public TeamLogResponseDTO.TeamLogItems getTeamLogViewItems(final String teamCode) {
+    public TeamLogResponseDTO.TeamLogItems getTeamLogItems(
+        final Optional<Long> optionalMemberId,
+        final String teamCode
+    ) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        final List<TeamLog> teamLogs = teamLogQueryAdapter.getTeamLogsPublic(team.getId());
-
-        return teamLogMapper.toTeamLogItems(teamLogs);
-    }
-
-    @Transactional(readOnly = true)
-    public TeamLogResponseDTO.TeamLogItems getTeamLogItems(final String teamCode) {
-        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        final List<TeamLog> teamLogs = teamLogQueryAdapter.getTeamLogs(team.getId());
+        boolean isOwnerOrManager = false;
+        List<TeamLog> teamLogs;
+        if (optionalMemberId.isPresent()) {
+            isOwnerOrManager = teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), optionalMemberId.get());
+            teamLogs = teamLogQueryAdapter.getTeamLogs(team.getId());
+        } else {
+            teamLogs = teamLogQueryAdapter.getTeamLogsPublic(team.getId());
+        }
 
         return teamLogMapper.toTeamLogItems(teamLogs);
     }
@@ -120,13 +124,13 @@ public class TeamLogService {
 
         // 2. TeamLog 엔티티 생성 및 저장
         final TeamLog teamLog = new TeamLog(
-                null,
-                team,
-                addTeamLogRequest.getLogTitle(),
-                addTeamLogRequest.getLogContent(),
-                addTeamLogRequest.getIsLogPublic(),
-                addTeamLogType,
-                0L
+            null,
+            team,
+            addTeamLogRequest.getLogTitle(),
+            addTeamLogRequest.getLogContent(),
+            addTeamLogRequest.getIsLogPublic(),
+            addTeamLogType,
+            0L
         );
 
         final TeamLog savedTeamLog = teamLogCommandAdapter.addTeamLog(teamLog);
@@ -138,9 +142,9 @@ public class TeamLogService {
 
             for (Image image : images) {
                 TeamLogImage teamLogImage = TeamLogImage.builder()
-                        .teamLog(savedTeamLog)
-                        .image(image)
-                        .build();
+                    .teamLog(savedTeamLog)
+                    .image(image)
+                    .build();
 
                 teamLogImageCommandAdapter.addTeamLogImage(teamLogImage);
 
@@ -167,13 +171,13 @@ public class TeamLogService {
 
         // 현재 사용되는 이미지 ID
         Set<Long> currentImageIds = images.stream()
-                .map(Image::getId)
-                .collect(Collectors.toSet());
+            .map(Image::getId)
+            .collect(Collectors.toSet());
 
         // 기존에 사용되던 이미지 ID
         Set<Long> existingImageIds = existingTeamLogImages.stream()
-                .map(teamLogImage -> teamLogImage.getImage().getId())
-                .collect(Collectors.toSet());
+            .map(teamLogImage -> teamLogImage.getImage().getId())
+            .collect(Collectors.toSet());
 
         // 새로운 이미지 ID
         Set<Long> newImageIds = new HashSet<>(currentImageIds);
@@ -187,9 +191,9 @@ public class TeamLogService {
         for (Image image : images) {
             if (newImageIds.contains(image.getId())) {
                 TeamLogImage teamLogImage = TeamLogImage.builder()
-                        .teamLog(teamLog)
-                        .image(image)
-                        .build();
+                    .teamLog(teamLog)
+                    .image(image)
+                    .build();
                 teamLogImageCommandAdapter.addTeamLogImage(teamLogImage);
 
                 // 이미지의 isTemporary를 false로 업데이트

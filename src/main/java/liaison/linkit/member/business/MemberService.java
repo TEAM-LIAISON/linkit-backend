@@ -1,6 +1,7 @@
 package liaison.linkit.member.business;
 
 import jakarta.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.Random;
 import liaison.linkit.login.exception.AuthCodeBadRequestException;
@@ -77,17 +78,17 @@ public class MemberService {
 
         // 회원 가입 시 시스템 알림 발송
         NotificationDetails welcomeLinkitNotificationDetails = NotificationDetails.welcomeLinkit(
-                updatedMember.getEmailId(),
-                "프로필을 완성하러 가볼까요?"
+            updatedMember.getEmailId(),
+            "프로필을 완성하러 가볼까요?"
         );
 
         notificationService.alertNewNotification(
-                notificationMapper.toNotification(
-                        updatedMember.getId(),
-                        NotificationType.SYSTEM,
-                        SubNotificationType.WELCOME_LINKIT,
-                        welcomeLinkitNotificationDetails
-                )
+            notificationMapper.toNotification(
+                updatedMember.getId(),
+                NotificationType.SYSTEM,
+                SubNotificationType.WELCOME_LINKIT,
+                welcomeLinkitNotificationDetails
+            )
         );
 
         headerNotificationService.publishNotificationCount(updatedMember.getId());
@@ -98,17 +99,17 @@ public class MemberService {
             for (Team team : teams) {
                 // 매칭 성사된 경우, 수신자에게 알림 발송
                 NotificationDetails teamInvitationNotificationDetails = NotificationDetails.teamInvitationRequested(
-                        team.getTeamCode(),
-                        team.getTeamLogoImagePath(),
-                        team.getTeamName(),
-                        false
+                    team.getTeamCode(),
+                    team.getTeamLogoImagePath(),
+                    team.getTeamName(),
+                    false
                 );
 
                 notificationCommandAdapter.save(notificationMapper.toNotification(
-                        updatedMember.getId(),
-                        NotificationType.TEAM_INVITATION,
-                        SubNotificationType.TEAM_INVITATION_REQUESTED,
-                        teamInvitationNotificationDetails
+                    updatedMember.getId(),
+                    NotificationType.TEAM_INVITATION,
+                    SubNotificationType.TEAM_INVITATION_REQUESTED,
+                    teamInvitationNotificationDetails
                 ));
             }
         }
@@ -159,9 +160,9 @@ public class MemberService {
 
 
     public MailReAuthenticationResponse reAuthenticationEmail(
-            final Long memberId,
-            final MailReAuthenticationRequest mailReAuthenticationRequest
-    ) throws MessagingException {
+        final Long memberId,
+        final MailReAuthenticationRequest mailReAuthenticationRequest
+    ) throws MessagingException, UnsupportedEncodingException {
 
         // 레디스에서 이메일 해시키가 존재한다면 데이터를 삭제한다. (5분 만료 이전에 다시 요청 보내는 경우 대비)
         if (mailReAuthenticationRedisUtil.existData(mailReAuthenticationRequest.getEmail())) {
@@ -191,9 +192,9 @@ public class MemberService {
         Random random = new Random();
 
         return random.ints(leftLimit, rightLimit + 1)
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
+            .limit(targetStringLength)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+            .toString();
     }
 
     public MailVerificationResponse verifyAuthCodeAndChangeAccountEmail(final Long memberId, final AuthCodeVerificationRequest authCodeVerificationRequest) {

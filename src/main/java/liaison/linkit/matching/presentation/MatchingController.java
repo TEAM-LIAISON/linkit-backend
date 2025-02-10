@@ -1,6 +1,7 @@
 package liaison.linkit.matching.presentation;
 
 import jakarta.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -41,8 +42,8 @@ public class MatchingController {
     // 프로필 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
     @GetMapping("/profile/{emailId}/select/request/menu")
     public CommonResponse<SelectMatchingRequestToProfileMenu> selectMatchingRequestToProfileMenu(
-            @Auth final Accessor accessor,
-            @PathVariable final String emailId
+        @Auth final Accessor accessor,
+        @PathVariable final String emailId
     ) {
         log.info("selectMatchingRequestToProfileMenu");
         return CommonResponse.onSuccess(matchingService.selectMatchingRequestToProfileMenu(accessor.getMemberId(), emailId));
@@ -52,8 +53,8 @@ public class MatchingController {
     @GetMapping("/team/{teamCode}/select/request/menu")
     @MemberOnly
     public CommonResponse<MatchingResponseDTO.SelectMatchingRequestToTeamMenu> selectMatchingRequestToTeamMenu(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode
     ) {
         return CommonResponse.onSuccess(matchingService.selectMatchingRequestToTeamMenu(accessor.getMemberId(), teamCode));
     }
@@ -62,9 +63,9 @@ public class MatchingController {
     @PostMapping
     @MemberOnly
     public CommonResponse<MatchingResponseDTO.AddMatchingResponse> addMatching(
-            @Auth final Accessor accessor,
-            @RequestBody final MatchingRequestDTO.AddMatchingRequest addMatchingRequest
-    ) throws MessagingException {
+        @Auth final Accessor accessor,
+        @RequestBody final MatchingRequestDTO.AddMatchingRequest addMatchingRequest
+    ) throws MessagingException, UnsupportedEncodingException {
         return CommonResponse.onSuccess(matchingService.addMatching(accessor.getMemberId(), addMatchingRequest));
     }
 
@@ -72,10 +73,10 @@ public class MatchingController {
     @GetMapping("/received/menu")
     @MemberOnly
     public CommonResponse<Page<ReceivedMatchingMenu>> getReceivedMatchingMenu(
-            @Auth final Accessor accessor,
-            @RequestParam(value = "receiverType", required = false) final ReceiverType receiverType,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size
+        @Auth final Accessor accessor,
+        @RequestParam(value = "receiverType", required = false) final ReceiverType receiverType,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<ReceivedMatchingMenu> matchingReceivedMenus = matchingService.getReceivedMatchingMenuResponse(accessor.getMemberId(), receiverType, pageable);
@@ -86,8 +87,8 @@ public class MatchingController {
     @PostMapping("/received/menu/read")
     @MemberOnly
     public CommonResponse<UpdateReceivedMatchingCompletedStateReadItems> updateReceivedMatchingStateRead(
-            @Auth final Accessor accessor,
-            @RequestBody final UpdateReceivedMatchingReadRequest request
+        @Auth final Accessor accessor,
+        @RequestBody final UpdateReceivedMatchingReadRequest request
     ) {
         return CommonResponse.onSuccess(matchingService.updateReceivedMatchingStateToRead(accessor.getMemberId(), request));
     }
@@ -96,8 +97,8 @@ public class MatchingController {
     @PostMapping("/received/menu/delete")
     @MemberOnly
     public CommonResponse<MatchingResponseDTO.DeleteReceivedMatchingItems> deleteReceivedMatchingItems(
-            @Auth final Accessor accessor,
-            @RequestBody final MatchingRequestDTO.DeleteReceivedMatchingRequest request
+        @Auth final Accessor accessor,
+        @RequestBody final MatchingRequestDTO.DeleteReceivedMatchingRequest request
     ) {
         return CommonResponse.onSuccess(matchingService.deleteReceivedMatchingItems(accessor.getMemberId(), request));
     }
@@ -106,10 +107,10 @@ public class MatchingController {
     @PostMapping("/{matchingId}")
     @MemberOnly
     public CommonResponse<MatchingResponseDTO.UpdateMatchingStatusTypeResponse> updateMatchingStatusTypeResponse(
-            @Auth final Accessor accessor,
-            @PathVariable final Long matchingId,
-            @RequestBody final MatchingRequestDTO.UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
-    ) throws MessagingException {
+        @Auth final Accessor accessor,
+        @PathVariable final Long matchingId,
+        @RequestBody final MatchingRequestDTO.UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
+    ) throws MessagingException, UnsupportedEncodingException {
         return CommonResponse.onSuccess(matchingService.updateMatchingStatusType(accessor.getMemberId(), matchingId, updateMatchingStatusTypeRequest));
     }
 
@@ -117,10 +118,10 @@ public class MatchingController {
     @GetMapping("/requested/menu")
     @MemberOnly
     public CommonResponse<Page<RequestedMatchingMenu>> getRequestedMatchingMenuResponse(
-            @Auth final Accessor accessor,
-            @RequestParam(value = "senderType", required = false) final SenderType senderType,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size
+        @Auth final Accessor accessor,
+        @RequestParam(value = "senderType", required = false) final SenderType senderType,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<RequestedMatchingMenu> requestedMatchingMenus = matchingService.getRequestedMatchingMenuResponse(accessor.getMemberId(), senderType, pageable);
@@ -131,8 +132,8 @@ public class MatchingController {
     @PostMapping("/requested/menu/delete")
     @MemberOnly
     public CommonResponse<MatchingResponseDTO.DeleteRequestedMatchingItems> deleteRequestedMatchingItems(
-            @Auth final Accessor accessor,
-            @RequestBody final MatchingRequestDTO.DeleteRequestedMatchingRequest request
+        @Auth final Accessor accessor,
+        @RequestBody final MatchingRequestDTO.DeleteRequestedMatchingRequest request
     ) {
         return CommonResponse.onSuccess(matchingService.deleteRequestedMatchingItems(accessor.getMemberId(), request));
     }
@@ -140,7 +141,7 @@ public class MatchingController {
     // 상단 메뉴 (명세 완료)
     @GetMapping("/notification/menu")
     public CommonResponse<MatchingNotificationMenu> getMatchingNotificationMenu(
-            @Auth final Accessor accessor
+        @Auth final Accessor accessor
     ) {
         return CommonResponse.onSuccess(matchingService.getMatchingNotificationMenu(accessor.getMemberId()));
     }
