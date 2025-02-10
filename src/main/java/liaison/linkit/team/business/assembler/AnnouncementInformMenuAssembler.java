@@ -86,19 +86,14 @@ public class AnnouncementInformMenuAssembler {
         // 2. 공고 스킬 정보 조회
         List<AnnouncementSkillName> announcementSkillNames = fetchAnnouncementSkills(teamMemberAnnouncement);
 
-        // 3. D-Day 계산 (상시 모집이 아니며 종료 날짜가 있을 때 계산)
-        int announcementDDay = -1;
-        if (!teamMemberAnnouncement.isPermanentRecruitment() && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
-            announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-        }
+        // 3. D-Day 계산
+        int announcementDDay = calculateAnnouncementDDay(teamMemberAnnouncement);
 
-        // 4. 공고 스크랩 여부 (로그인 상태이면 조회, 아니면 false)
-        boolean isAnnouncementScrap = optionalMemberId
-            .map(memberId -> announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId()))
-            .orElse(false);
+        // 4. 공고 스크랩 여부 조회
+        boolean isAnnouncementScrap = checkAnnouncementScrap(teamMemberAnnouncement, optionalMemberId);
 
-        // 5. 공고 스크랩 수 조회 (로그인 여부와 무관하게 조회)
-        int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+        // 5. 공고 스크랩 수 조회
+        int announcementScrapCount = getAnnouncementScrapCount(teamMemberAnnouncement);
 
         // 6. 추가 정보 조회: 팀 규모, 팀 지역, 공고 포지션 정보
         TeamScaleItem teamScaleItem = fetchTeamScaleItem(team);
@@ -121,6 +116,45 @@ public class AnnouncementInformMenuAssembler {
         );
     }
 
+    /**
+     * 공고의 D-Day를 계산합니다. 공고가 상시 모집이 아니고 종료 날짜가 존재하면 D-Day를 계산하고, 그렇지 않으면 -1을 반환합니다.
+     *
+     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
+     * @return 계산된 D-Day 값.
+     */
+    public int calculateAnnouncementDDay(final TeamMemberAnnouncement teamMemberAnnouncement) {
+        if (!teamMemberAnnouncement.isPermanentRecruitment() && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
+            return DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
+        }
+        return -1;
+    }
+
+    /**
+     * 로그인 상태인 경우, 공고 스크랩 여부를 조회합니다. 로그아웃 상태이면 false를 반환합니다.
+     *
+     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
+     * @param optionalMemberId       로그인한 회원의 ID(Optional).
+     * @return 공고가 스크랩된 상태이면 true, 아니면 false.
+     */
+    public boolean checkAnnouncementScrap(
+        final TeamMemberAnnouncement teamMemberAnnouncement,
+        final Optional<Long> optionalMemberId
+    ) {
+        return optionalMemberId
+            .map(memberId -> announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId()))
+            .orElse(false);
+    }
+
+    /**
+     * 공고의 스크랩 수를 조회합니다.
+     *
+     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
+     * @return 공고의 총 스크랩 수.
+     */
+    public int getAnnouncementScrapCount(final TeamMemberAnnouncement teamMemberAnnouncement) {
+        return announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
+    }
+
     // ─────────────────────────────────────────────────────────────
     // 헬퍼 메서드들
     // ─────────────────────────────────────────────────────────────
@@ -131,7 +165,7 @@ public class AnnouncementInformMenuAssembler {
      * @param team 조회 대상 팀.
      * @return 팀 규모 정보 DTO, 정보가 없으면 null 반환.
      */
-    private TeamScaleItem fetchTeamScaleItem(final Team team) {
+    public TeamScaleItem fetchTeamScaleItem(final Team team) {
         if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
             TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
             return teamScaleMapper.toTeamScaleItem(teamScale);
@@ -146,7 +180,7 @@ public class AnnouncementInformMenuAssembler {
      * @param team 조회 대상 팀.
      * @return 조회된 RegionDetail. 정보가 없으면 기본 RegionDetail 인스턴스 반환.
      */
-    private RegionDetail fetchRegionDetail(final Team team) {
+    public RegionDetail fetchRegionDetail(final Team team) {
         if (regionQueryAdapter.existsTeamRegionByTeamId(team.getId())) {
             TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
             return regionMapper.toRegionDetail(teamRegion.getRegion());
@@ -160,7 +194,7 @@ public class AnnouncementInformMenuAssembler {
      * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
      * @return AnnouncementPositionItem DTO, 정보가 없으면 기본 인스턴스 반환.
      */
-    private AnnouncementPositionItem fetchAnnouncementPositionItem(final TeamMemberAnnouncement teamMemberAnnouncement) {
+    public AnnouncementPositionItem fetchAnnouncementPositionItem(final TeamMemberAnnouncement teamMemberAnnouncement) {
         if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
             AnnouncementPosition announcementPosition =
                 announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
@@ -175,7 +209,7 @@ public class AnnouncementInformMenuAssembler {
      * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
      * @return 공고 스킬 이름 리스트, 정보가 없으면 빈 리스트 반환.
      */
-    private List<AnnouncementSkillName> fetchAnnouncementSkills(final TeamMemberAnnouncement teamMemberAnnouncement) {
+    public List<AnnouncementSkillName> fetchAnnouncementSkills(final TeamMemberAnnouncement teamMemberAnnouncement) {
         if (announcementSkillQueryAdapter.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
             List<AnnouncementSkill> announcementSkills =
                 announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());

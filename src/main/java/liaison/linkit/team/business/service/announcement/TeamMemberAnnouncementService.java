@@ -9,6 +9,7 @@ import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
+import liaison.linkit.team.business.assembler.AnnouncementDetailAssembler;
 import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementPositionMapper;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
@@ -62,29 +63,16 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
+    private final AnnouncementDetailAssembler announcementDetailAssembler;
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncemenItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamCode) {
+    public TeamMemberAnnouncemenItems getTeamMemberAnnouncementViewItems(final Optional<Long> optionalMemberId, final String teamCode) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
 
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
 
-        return teamMemberAnnouncementMapper.toLoggedInTeamMemberAnnouncementViewItems(
-            memberId,
-            teamMemberAnnouncements,
-            announcementPositionQueryAdapter,
-            announcementSkillQueryAdapter,
-            announcementSkillMapper,
-            announcementScrapQueryAdapter
-        );
-    }
-
-    @Transactional(readOnly = true)
-    public TeamMemberAnnouncemenItems getLoggedOutTeamMemberAnnouncementViewItems(final String teamCode) {
-        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
-
-        return teamMemberAnnouncementMapper.toLoggedOutTeamMemberAnnouncementViewItems(
+        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementViewItems(
+            optionalMemberId,
             teamMemberAnnouncements,
             announcementPositionQueryAdapter,
             announcementSkillQueryAdapter,
@@ -116,28 +104,6 @@ public class TeamMemberAnnouncementService {
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementDetail(teamMemberAnnouncement, false, announcementScrapCount, announcementPositionItem, announcementSkillNames);
     }
 
-    @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail getTeamMemberAnnouncementDetailInLoginState(final Long memberId, final String teamCode, final Long teamMemberAnnouncementId) {
-        final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
-
-        // 포지션 조회
-        AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-            announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-        }
-
-        // 스킬 조회
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = Collections.emptyList();
-        if (announcementSkillQueryAdapter.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncementId)) {
-            List<AnnouncementSkill> announcementSkills =
-                announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
-            announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-        }
-        final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
-        final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncementId);
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementDetail(teamMemberAnnouncement, isAnnouncementScrap, announcementScrapCount, announcementPositionItem, announcementSkillNames);
-    }
 
     // 팀원 공고 생성 메서드
     public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse addTeamMemberAnnouncement(
@@ -290,10 +256,33 @@ public class TeamMemberAnnouncementService {
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementPublicState(updatedTeamMemberAnnouncement);
     }
 
+    /**
+     * 홈 화면에 표시할 공고 목록(AnnouncementInformMenus)을 반환합니다. 로그인 상태(Optional memberId 값 존재)와 로그아웃 상태(Optional.empty()) 모두 처리합니다.
+     *
+     * @param optionalMemberId 로그인한 회원의 ID(Optional). 값이 있으면 로그인 상태, 없으면 로그아웃 상태로 처리합니다.
+     * @return AnnouncementInformMenus DTO.
+     */
+    @Transactional(readOnly = true)
     public AnnouncementInformMenus getHomeAnnouncementInformMenus(
         final Optional<Long> optionalMemberId
     ) {
         return announcementInformMenuAssembler.assembleHomeAnnouncementInformMenus(optionalMemberId);
     }
 
+    /**
+     * 공고 상세 정보를 반환합니다. 로그인한 사용자와 로그아웃 상태 모두 처리할 수 있습니다.
+     *
+     * @param optionalMemberId         로그인한 회원의 ID(Optional). 값이 있으면 로그인 상태, 없으면 로그아웃 상태로 처리합니다.
+     * @param teamCode                 조회할 팀의 코드.
+     * @param teamMemberAnnouncementId 조회할 팀원 공고의 ID.
+     * @return 조립된 TeamDetail DTO.
+     */
+    @Transactional(readOnly = true)
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail getTeamMemberAnnouncementDetail(
+        final Optional<Long> optionalMemberId,
+        final String teamCode,
+        final Long teamMemberAnnouncementId
+    ) {
+        return announcementDetailAssembler.assemblerTeamMemberAnnouncementDetail(optionalMemberId, teamCode, teamMemberAnnouncementId);
+    }
 }

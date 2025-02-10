@@ -43,15 +43,9 @@ public class TeamMemberAnnouncementController {
         @Auth final Accessor accessor,
         @PathVariable final String teamCode
     ) {
-        log.info("teamCode = {}에 대한 팀원 공고 뷰어 전체 조회 요청이 발생했습니다.", teamCode);
-        if (accessor.isMember()) {
-            final Long memberId = accessor.getMemberId();
-            log.info("memberId = {}의 팀원 공고 뷰어 조회 요청이 발생했습니다.", memberId);
-            return CommonResponse.onSuccess(teamMemberAnnouncementService.getLoggedInTeamMemberAnnouncementViewItems(memberId, teamCode));
-        } else {
-            log.info("teamCode = {}에 팀원 공고 뷰어 조회 요청이 발생했습니다.", teamCode);
-            return CommonResponse.onSuccess(teamMemberAnnouncementService.getLoggedOutTeamMemberAnnouncementViewItems(teamCode));
-        }
+        Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementViewItems(optionalMemberId, teamCode));
     }
 
 
@@ -76,13 +70,10 @@ public class TeamMemberAnnouncementController {
         @PathVariable final String teamCode,
         @PathVariable final Long teamMemberAnnouncementId
     ) {
-        if (accessor.isMember()) {
-            log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
-            return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementDetailInLoginState(accessor.getMemberId(), teamCode, teamMemberAnnouncementId));
-        } else {
-            log.info("teamCode = {}에 대한 팀원 공고 상세 조회 요청이 발생했습니다. (로그아웃 상태)", teamCode);
-            return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementDetailInLogoutState(teamCode, teamMemberAnnouncementId));
-        }
+        Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementDetail(optionalMemberId, teamCode, teamMemberAnnouncementId));
+
     }
 
     // 팀원 공고 생성
