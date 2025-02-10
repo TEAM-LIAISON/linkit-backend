@@ -42,16 +42,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
     private EntityManager entityManager; // EntityManager 주입
 
     @Override
-    public List<TeamMemberAnnouncement> getTeamMemberAnnouncements(final Long teamId) {
-        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
-
-        return jpaQueryFactory
-            .selectFrom(qTeamMemberAnnouncement)
-            .where(qTeamMemberAnnouncement.team.id.eq(teamId))
-            .fetch();
-    }
-
-    @Override
     public List<TeamMemberAnnouncement> getAllByTeamIds(final List<Long> teamIds) {
         // 팀 ID 리스트가 비어있으면 바로 빈 리스트 반환
         if (teamIds == null || teamIds.isEmpty()) {
@@ -394,5 +384,27 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
             log.error("Error occurred while deleting announcements with IDs: {}", announcementIds,
                 e);
         }
+    }
+
+
+    @Override
+    public List<TeamMemberAnnouncement> findAllAnnouncementsByTeamId(final Long teamId) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        return jpaQueryFactory
+            .selectFrom(qTeamMemberAnnouncement)
+            .where(qTeamMemberAnnouncement.team.id.eq(teamId))
+            .fetch();
+    }
+
+    @Override
+    public List<TeamMemberAnnouncement> findPublicAnnouncementsByTeamId(final Long teamId) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        return jpaQueryFactory
+            .selectFrom(qTeamMemberAnnouncement)
+            .where(qTeamMemberAnnouncement.team.id.eq(teamId)
+                .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true)))
+            .fetch();
     }
 }

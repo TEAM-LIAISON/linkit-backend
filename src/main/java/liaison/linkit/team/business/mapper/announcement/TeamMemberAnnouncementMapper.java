@@ -5,10 +5,10 @@ import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest;
@@ -39,7 +39,7 @@ public class TeamMemberAnnouncementMapper {
         final boolean isAnnouncementScrap,
         final int announcementScrapCount,
         final AnnouncementPositionItem announcementPositionItem,
-        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
+        final List<AnnouncementSkillName> announcementSkillNames
     ) {
 
         return AnnouncementInformMenu.builder()
@@ -74,7 +74,7 @@ public class TeamMemberAnnouncementMapper {
 
                 final List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter
                     .getAnnouncementSkills(teamMemberAnnouncement.getId());
-                List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
+                List<AnnouncementSkillName> announcementSkillNames =
                     announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
                 final int announcementScrapCount = announcementScrapQueryAdapter
@@ -103,65 +103,9 @@ public class TeamMemberAnnouncementMapper {
             .build();
     }
 
-
-    public TeamMemberAnnouncemenItems toLoggedInTeamMemberAnnouncementViewItems(
-        final Long memberId,
-        final List<TeamMemberAnnouncement> teamMemberAnnouncements,
-        final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter,
-        final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter,
-        final AnnouncementSkillMapper announcementSkillMapper,
-        final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter
-    ) {
-        List<TeamMemberAnnouncementItem> items = teamMemberAnnouncements.stream()
-            .map(teamMemberAnnouncement -> {
-                final AnnouncementPosition announcementPosition =
-                    announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(
-                        teamMemberAnnouncement.getId());
-
-                final List<AnnouncementSkill> announcementSkills =
-                    announcementSkillQueryAdapter.getAnnouncementSkills(
-                        teamMemberAnnouncement.getId());
-                List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
-                    announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-
-                final boolean isAnnouncementScrap =
-                    announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(
-                        memberId, teamMemberAnnouncement.getId());
-                final int announcementScrapCount =
-                    announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(
-                        teamMemberAnnouncement.getId());
-
-                // D-Day 계산 (마감일이 있는 경우에만)
-                int dDay = -1; // 기본값 설정
-                if (teamMemberAnnouncement.getAnnouncementEndDate() != null) {
-                    dDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-                }
-
-                // announcementPosition이 null일 경우 방어 코드 추가
-                String majorPosition =
-                    (announcementPosition != null && announcementPosition.getPosition() != null)
-                        ? announcementPosition.getPosition().getMajorPosition()
-                        : "N/A"; // 기본값 설정 가능
-
-                return toTeamMemberAnnouncementItem(
-                    teamMemberAnnouncement,
-                    dDay,
-                    majorPosition,
-                    announcementSkillNames,
-                    isAnnouncementScrap,
-                    announcementScrapCount
-                );
-            })
-            .toList();
-
-        return TeamMemberAnnouncemenItems.builder()
-            .teamMemberAnnouncementItems(items)
-            .build();
-    }
-
-
     public AnnouncementInformMenus toAnnouncementInformMenus(
-        final List<AnnouncementInformMenu> announcementInformMenus) {
+        final List<AnnouncementInformMenu> announcementInformMenus
+    ) {
         return AnnouncementInformMenus.builder()
             .announcementInformMenus(announcementInformMenus)
             .build();
@@ -172,7 +116,7 @@ public class TeamMemberAnnouncementMapper {
         final boolean isAnnouncementScrap,
         final int announcementScrapCount,
         final AnnouncementPositionItem announcementPositionItem,
-        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
+        final List<AnnouncementSkillName> announcementSkillNames
     ) {
         // D-Day 계산 (isPermanentRecruitment가 true이면 -1, 아니면 정상 계산)
         int announcementDDay = -1;
@@ -280,7 +224,7 @@ public class TeamMemberAnnouncementMapper {
     public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse toAddTeamMemberAnnouncementResponse(
         final TeamMemberAnnouncement teamMemberAnnouncement,
         final AnnouncementPositionItem announcementPositionItem,
-        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
+        final List<AnnouncementSkillName> announcementSkillNames
     ) {
         return AddTeamMemberAnnouncementResponse
             .builder()
@@ -304,7 +248,7 @@ public class TeamMemberAnnouncementMapper {
     public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse toUpdateTeamMemberAnnouncementResponse(
         final TeamMemberAnnouncement teamMemberAnnouncement,
         final AnnouncementPositionItem announcementPositionItem,
-        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames
+        final List<AnnouncementSkillName> announcementSkillNames
     ) {
         return UpdateTeamMemberAnnouncementResponse
             .builder()

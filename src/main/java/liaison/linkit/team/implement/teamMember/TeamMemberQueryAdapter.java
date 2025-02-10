@@ -74,16 +74,16 @@ public class TeamMemberQueryAdapter {
         return teamMemberRepository.getAllTeamMemberIds(teamCode);
     }
 
-    public boolean isMemberOfTeam(final String teamCode, final String emailId) {
-        return teamMemberRepository.isMemberOfTeam(teamCode, emailId);
+    public Set<Team> getAllDeletableTeamsByMemberId(final Long memberId) {
+        return teamMemberRepository.getAllDeletableTeamsByMemberId(memberId);
     }
 
     public List<TeamMember> getAllTeamManagers(final Team team) {
         return teamMemberRepository.getAllTeamManagers(team);
     }
 
-    public Set<Team> getAllDeletableTeamsByMemberId(final Long memberId) {
-        return teamMemberRepository.getAllDeletableTeamsByMemberId(memberId);
+    public boolean isMemberOfTeam(final String teamCode, final String emailId) {
+        return teamMemberRepository.isMemberOfTeam(teamCode, emailId);
     }
 
     public boolean isTeamMembersAllowDelete(final Team team) {

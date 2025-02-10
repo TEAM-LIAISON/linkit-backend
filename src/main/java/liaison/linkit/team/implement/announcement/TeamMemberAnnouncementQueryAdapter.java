@@ -13,15 +13,12 @@ import org.springframework.data.domain.Pageable;
 @Adapter
 @RequiredArgsConstructor
 public class TeamMemberAnnouncementQueryAdapter {
+
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
 
     public TeamMemberAnnouncement findById(final Long teamMemberAnnouncementId) {
         return teamMemberAnnouncementRepository.findById(teamMemberAnnouncementId)
-                .orElseThrow(() -> TeamMemberAnnouncementNotFoundException.EXCEPTION);
-    }
-
-    public List<TeamMemberAnnouncement> getTeamMemberAnnouncements(final Long teamId) {
-        return teamMemberAnnouncementRepository.getTeamMemberAnnouncements(teamId);
+            .orElseThrow(() -> TeamMemberAnnouncementNotFoundException.EXCEPTION);
     }
 
     public List<TeamMemberAnnouncement> getAllByTeamIds(final List<Long> teamIds) {
@@ -33,11 +30,11 @@ public class TeamMemberAnnouncementQueryAdapter {
     }
 
     public Page<TeamMemberAnnouncement> findAll(
-            final List<String> majorPosition,
-            final List<String> skillName,
-            final List<String> cityName,
-            final List<String> scaleName,
-            final Pageable pageable
+        final List<String> majorPosition,
+        final List<String> skillName,
+        final List<String> cityName,
+        final List<String> scaleName,
+        final Pageable pageable
     ) {
         return teamMemberAnnouncementRepository.findAll(majorPosition, skillName, cityName, scaleName, pageable);
     }
@@ -52,5 +49,13 @@ public class TeamMemberAnnouncementQueryAdapter {
 
     public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamId(final Long teamId) {
         return teamMemberAnnouncementRepository.getAllDeletableTeamMemberAnnouncementsByTeamId(teamId);
+    }
+
+    public List<TeamMemberAnnouncement> findAllAnnouncementsByTeamId(final Long teamId) {
+        return teamMemberAnnouncementRepository.findAllAnnouncementsByTeamId(teamId);
+    }
+
+    public List<TeamMemberAnnouncement> findPublicAnnouncementsByTeamId(final Long teamId) {
+        return teamMemberAnnouncementRepository.findPublicAnnouncementsByTeamId(teamId);
     }
 }

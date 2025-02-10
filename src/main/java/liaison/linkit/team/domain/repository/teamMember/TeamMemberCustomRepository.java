@@ -13,13 +13,6 @@ public interface TeamMemberCustomRepository {
 
     Long getTeamOwnerMemberId(final Team team);
 
-    boolean isOwnerOrManagerOfTeam(final Long teamId, final Long memberId);
-
-    boolean existsTeamByMemberId(final Long memberId);
-
-    boolean existsTeamOwnerByMemberId(final Long memberId);
-
-    boolean existsTeamOwnerAndOtherManagerByMemberId(final Long memberId);
 
     List<Team> getAllTeamsByMemberId(final Long memberId);
 
@@ -55,4 +48,12 @@ public interface TeamMemberCustomRepository {
     boolean isTeamMembersAllowDelete(final Team team);
 
     boolean isTeamDeleteRequester(final Long memberId, final Long teamId);
+
+    boolean isOwnerOrManagerOfTeam(final Long teamId, final Long memberId);
+
+    boolean existsTeamByMemberId(final Long memberId);
+
+    boolean existsTeamOwnerByMemberId(final Long memberId);
+
+    boolean existsTeamOwnerAndOtherManagerByMemberId(final Long memberId);
 }

@@ -1,5 +1,6 @@
 package liaison.linkit.profile.domain.repository.log;
 
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -29,9 +30,40 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         return queryFactory
-                .selectFrom(qProfileLog)
-                .where(qProfileLog.profile.member.id.eq(memberId))
-                .fetch();
+            .selectFrom(qProfileLog)
+            .where(qProfileLog.profile.member.id.eq(memberId))
+            .orderBy(
+                // 대표 로그는 1, 일반 로그는 0으로 부여하고, 내림차순 정렬하여 대표 로그가 항상 최상단에 오도록 함
+                new CaseBuilder()
+                    .when(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+                    .then(1)
+                    .otherwise(0)
+                    .desc(),
+                // 그 후 나머지 로그는 수정일(modifiedAt)을 내림차순 정렬 (최신 로그가 위쪽에 오도록)
+                qProfileLog.createdAt.desc()
+            )
+            .fetch();
+    }
+    
+    @Override
+    public List<ProfileLog> getProfileLogsPublic(final Long memberId) {
+        QProfileLog qProfileLog = QProfileLog.profileLog;
+
+        return queryFactory
+            .selectFrom(qProfileLog)
+            .where(qProfileLog.profile.member.id.eq(memberId)
+                .and(qProfileLog.isLogPublic.eq(true)))
+            .orderBy(
+                // 대표 로그는 1, 일반 로그는 0으로 부여하고, 내림차순 정렬하여 대표 로그가 항상 최상단에 오도록 함
+                new CaseBuilder()
+                    .when(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+                    .then(1)
+                    .otherwise(0)
+                    .desc(),
+                // 그 후 나머지 로그는 수정일(modifiedAt)을 내림차순 정렬 (최신 로그가 위쪽에 오도록)
+                qProfileLog.createdAt.desc()
+            )
+            .fetch();
     }
 
     @Override
@@ -40,10 +72,10 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
         long updatedCount = queryFactory
-                .update(qProfileLog)
-                .set(qProfileLog.logType, LogType.REPRESENTATIVE_LOG)
-                .where(qProfileLog.id.eq(profileLog.getId()))
-                .execute();
+            .update(qProfileLog)
+            .set(qProfileLog.logType, LogType.REPRESENTATIVE_LOG)
+            .where(qProfileLog.id.eq(profileLog.getId()))
+            .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -62,10 +94,10 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
         long updatedCount = queryFactory
-                .update(qProfileLog)
-                .set(qProfileLog.logType, LogType.GENERAL_LOG)
-                .where(qProfileLog.id.eq(profileLog.getId()))
-                .execute();
+            .update(qProfileLog)
+            .set(qProfileLog.logType, LogType.GENERAL_LOG)
+            .where(qProfileLog.id.eq(profileLog.getId()))
+            .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -83,10 +115,10 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
         long updatedCount = queryFactory
-                .update(qProfileLog)
-                .set(qProfileLog.isLogPublic, !isProfileLogCurrentPublicState)
-                .where(qProfileLog.id.eq(profileLog.getId()))
-                .execute();
+            .update(qProfileLog)
+            .set(qProfileLog.isLogPublic, !isProfileLogCurrentPublicState)
+            .where(qProfileLog.id.eq(profileLog.getId()))
+            .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -104,12 +136,12 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         ProfileLog profileLog = queryFactory
-                .selectFrom(qProfileLog)
-                .where(
-                        qProfileLog.profile.id.eq(profileId)
-                                .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
-                )
-                .fetchFirst();
+            .selectFrom(qProfileLog)
+            .where(
+                qProfileLog.profile.id.eq(profileId)
+                    .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+            )
+            .fetchFirst();
 
         return Optional.ofNullable(profileLog);
     }
@@ -119,10 +151,10 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         return queryFactory
-                .selectOne()
-                .from(qProfileLog)
-                .where(qProfileLog.profile.id.eq(profileId))
-                .fetchFirst() != null;
+            .selectOne()
+            .from(qProfileLog)
+            .where(qProfileLog.profile.id.eq(profileId))
+            .fetchFirst() != null;
     }
 
     @Override
@@ -130,13 +162,13 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         return queryFactory
-                .selectOne()
-                .from(qProfileLog)
-                .where(
-                        qProfileLog.profile.id.eq(profileId)
-                                .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
-                )
-                .fetchFirst() != null;
+            .selectOne()
+            .from(qProfileLog)
+            .where(
+                qProfileLog.profile.id.eq(profileId)
+                    .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+            )
+            .fetchFirst() != null;
     }
 
     @Override
@@ -145,12 +177,12 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         // 프로필 활동 업데이트
         long updatedCount = queryFactory
-                .update(qProfileLog)
-                .set(qProfileLog.logTitle, updateProfileLogRequest.getLogTitle())
-                .set(qProfileLog.logContent, updateProfileLogRequest.getLogContent())
-                .set(qProfileLog.isLogPublic, updateProfileLogRequest.getIsLogPublic())
-                .where(qProfileLog.id.eq(profileLog.getId()))
-                .execute();
+            .update(qProfileLog)
+            .set(qProfileLog.logTitle, updateProfileLogRequest.getLogTitle())
+            .set(qProfileLog.logContent, updateProfileLogRequest.getLogContent())
+            .set(qProfileLog.isLogPublic, updateProfileLogRequest.getIsLogPublic())
+            .where(qProfileLog.id.eq(profileLog.getId()))
+            .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -158,9 +190,9 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         if (updatedCount > 0) {
             // 업데이트된 ProfileActivity 조회 및 반환
             return queryFactory
-                    .selectFrom(qProfileLog)
-                    .where(qProfileLog.id.eq(profileLog.getId()))
-                    .fetchOne();
+                .selectFrom(qProfileLog)
+                .where(qProfileLog.id.eq(profileLog.getId()))
+                .fetchOne();
         } else {
             return null;
         }
@@ -171,11 +203,11 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
         QProfileLog qProfileLog = QProfileLog.profileLog;
 
         return queryFactory
-                .selectFrom(qProfileLog)
-                .where(qProfileLog.isLogPublic.eq(true)) // 공개 여부가 true인 것만
-                .orderBy(qProfileLog.viewCount.desc())   // 조회수 높은 순
-                .limit(limit)
-                .fetch();
+            .selectFrom(qProfileLog)
+            .where(qProfileLog.isLogPublic.eq(true)) // 공개 여부가 true인 것만
+            .orderBy(qProfileLog.viewCount.desc())   // 조회수 높은 순
+            .limit(limit)
+            .fetch();
     }
 
     @Override
@@ -185,10 +217,10 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         // 1) 삭제 대상 ProfileLog의 ID 목록 조회
         List<Long> profileLogIds = queryFactory
-                .select(qProfileLog.id)
-                .from(qProfileLog)
-                .where(qProfileLog.profile.id.eq(profileId))
-                .fetch();
+            .select(qProfileLog.id)
+            .from(qProfileLog)
+            .where(qProfileLog.profile.id.eq(profileId))
+            .fetch();
 
         if (profileLogIds.isEmpty()) {
             log.info("No profile logs found for profileId={}, skip deletion", profileId);
@@ -197,16 +229,16 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
 
         // 2) ProfileLogImage 먼저 삭제 (자식 테이블)
         long deletedImageCount = queryFactory
-                .delete(qProfileLogImage)
-                .where(qProfileLogImage.profileLog.id.in(profileLogIds))
-                .execute();
+            .delete(qProfileLogImage)
+            .where(qProfileLogImage.profileLog.id.in(profileLogIds))
+            .execute();
         log.info("Deleted {} profile log images for profileId={}", deletedImageCount, profileId);
 
         // 3) ProfileLog 삭제 (부모 테이블)
         long deletedLogCount = queryFactory
-                .delete(qProfileLog)
-                .where(qProfileLog.id.in(profileLogIds))
-                .execute();
+            .delete(qProfileLog)
+            .where(qProfileLog.id.in(profileLogIds))
+            .execute();
         log.info("Deleted {} profile logs for profileId={}", deletedLogCount, profileId);
     }
 

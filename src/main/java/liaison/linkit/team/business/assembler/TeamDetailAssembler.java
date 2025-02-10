@@ -1,18 +1,11 @@
 package liaison.linkit.team.business.assembler;
 
 import java.util.Optional;
-import liaison.linkit.common.business.RegionMapper;
-import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
-import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
-import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
-import liaison.linkit.team.business.mapper.state.TeamCurrentStateMapper;
 import liaison.linkit.team.business.mapper.team.TeamMapper;
-import liaison.linkit.team.business.mapper.teamMember.TeamMemberMapper;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
-import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
@@ -28,23 +21,13 @@ import org.springframework.stereotype.Component;
 public class TeamDetailAssembler {
 
     // Adapters
-    private final RegionQueryAdapter regionQueryAdapter;
     private final MemberQueryAdapter memberQueryAdapter;
     private final TeamQueryAdapter teamQueryAdapter;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
-    private final TeamScrapQueryAdapter teamScrapQueryAdapter;
-    private final TeamScaleQueryAdapter teamScaleQueryAdapter;
 
     // Mappers
-    private final RegionMapper regionMapper;
     private final TeamMapper teamMapper;
-    private final TeamMemberMapper teamMemberMapper;
-    private final TeamCurrentStateMapper teamCurrentStateMapper;
-    private final TeamScaleMapper teamScaleMapper;
-
-    // Assembler
-    private final TeamInformMenuAssembler teamInformMenuAssembler;
 
     /**
      * 팀 상세 정보를 조립합니다. 로그인한 사용자와 로그아웃 상태 모두 처리할 수 있습니다.
