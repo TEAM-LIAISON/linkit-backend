@@ -1,6 +1,7 @@
 package liaison.linkit.matching.service;
 
 import jakarta.mail.MessagingException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
@@ -447,7 +448,7 @@ public class MatchingService {
     // 수신자가 매칭 요청 상태를 업데이트한다.
     public UpdateMatchingStatusTypeResponse updateMatchingStatusType(
         final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
-    ) throws MessagingException {
+    ) throws MessagingException, UnsupportedEncodingException {
         log.info("updateMatchingStatusType 호출: memberId={}, matchingId={}, updateRequest={}",
             memberId, matchingId, updateMatchingStatusTypeRequest);
 
@@ -573,7 +574,8 @@ public class MatchingService {
         return matchingMapper.toDeleteReceivedMatchingItems(deleteReceivedMatchingItems);
     }
 
-    public MatchingResponseDTO.AddMatchingResponse addMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest addMatchingRequest) throws MessagingException {
+    public MatchingResponseDTO.AddMatchingResponse addMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest addMatchingRequest)
+        throws MessagingException, UnsupportedEncodingException {
 
         if (addMatchingRequest.getSenderTeamCode() != null && addMatchingRequest.getReceiverAnnouncementId() != null) {
             throw MatchingRelationBadRequestException.EXCEPTION;
