@@ -11,6 +11,7 @@ import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.team.business.assembler.AnnouncementDetailAssembler;
 import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
+import liaison.linkit.team.business.assembler.AnnouncementViewItemsAssembler;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementPositionMapper;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
@@ -64,21 +65,11 @@ public class TeamMemberAnnouncementService {
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
     private final AnnouncementDetailAssembler announcementDetailAssembler;
+    private final AnnouncementViewItemsAssembler announcementViewItemsAssembler;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncemenItems getTeamMemberAnnouncementViewItems(final Optional<Long> optionalMemberId, final String teamCode) {
-        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-
-        final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
-
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementViewItems(
-            optionalMemberId,
-            teamMemberAnnouncements,
-            announcementPositionQueryAdapter,
-            announcementSkillQueryAdapter,
-            announcementSkillMapper,
-            announcementScrapQueryAdapter
-        );
+        return announcementViewItemsAssembler.assembleTeamMemberAnnouncementViewItems(optionalMemberId, teamCode);
     }
 
     @Transactional(readOnly = true)

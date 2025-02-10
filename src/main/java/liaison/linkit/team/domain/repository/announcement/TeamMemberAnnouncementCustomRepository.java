@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface TeamMemberAnnouncementCustomRepository {
-    List<TeamMemberAnnouncement> getTeamMemberAnnouncements(final Long teamId);
 
     List<TeamMemberAnnouncement> getAllByTeamIds(final List<Long> teamIds);
 
@@ -19,11 +18,11 @@ public interface TeamMemberAnnouncementCustomRepository {
     TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(final TeamMemberAnnouncement teamMemberAnnouncement, final boolean isTeamMemberAnnouncementCurrentPublicState);
 
     Page<TeamMemberAnnouncement> findAll(
-            final List<String> majorPosition,
-            final List<String> skillName,
-            final List<String> cityName,
-            final List<String> scaleName,
-            final Pageable pageable
+        final List<String> majorPosition,
+        final List<String> skillName,
+        final List<String> cityName,
+        final List<String> scaleName,
+        final Pageable pageable
     );
 
     List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit);
@@ -33,4 +32,8 @@ public interface TeamMemberAnnouncementCustomRepository {
     Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamId(final Long teamId);
 
     void deleteAllByIds(final List<Long> announcementIds);
+
+    List<TeamMemberAnnouncement> findAllAnnouncementsByTeamId(final Long teamId);
+
+    List<TeamMemberAnnouncement> findPublicAnnouncementsByTeamId(final Long teamId);
 }

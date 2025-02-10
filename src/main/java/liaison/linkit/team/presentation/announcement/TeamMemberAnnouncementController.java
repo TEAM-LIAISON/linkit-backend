@@ -47,22 +47,7 @@ public class TeamMemberAnnouncementController {
 
         return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementViewItems(optionalMemberId, teamCode));
     }
-
-
-    /*
-    deprecated API
-     */
-    // 팀원 공고 전체 조회
-//    @GetMapping("/team/{teamCode}/announcement/deprecated")
-//    @MemberOnly
-//    public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems> getTeamMemberAnnouncementItems(
-//            @Auth final Accessor accessor,
-//            @PathVariable final String teamCode
-//    ) {
-//        log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 전체 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
-//        return CommonResponse.onSuccess(teamMemberAnnouncementService.getTeamMemberAnnouncementItems(accessor.getMemberId(), teamCode));
-//    }
-
+    
     // 팀원 공고 단일 조회
     @GetMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail> getTeamMemberAnnouncementDetail(
