@@ -3,7 +3,7 @@ package liaison.linkit.team.business.assembler;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
+import liaison.linkit.team.business.assembler.common.AnnouncementCommonAssembler;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
@@ -33,13 +33,12 @@ public class AnnouncementViewItemsAssembler {
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
-    private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
     private final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter;
 
     // Mapper 및 Assembler
     private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
     private final AnnouncementSkillMapper announcementSkillMapper;
-    private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
+    private final AnnouncementCommonAssembler announcementCommonAssembler;
 
     /**
      * 팀 코드를 기반으로, 로그인 상태(Optional memberId 존재 여부)에 따라 팀원 공고 목록(TeamMemberAnnouncemenItems)을 조립하여 반환합니다.
@@ -94,18 +93,18 @@ public class AnnouncementViewItemsAssembler {
         return announcements.stream().map(announcement -> {
             // 1. 포지션 정보 조회 및 대분류 추출
             AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(announcement.getId());
-            String majorPosition = extractMajorPosition(announcementPosition);
+            String majorPosition = announcementCommonAssembler.extractMajorPosition(announcementPosition);
 
             // 2. 공고 스킬 정보 조회
             List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(announcement.getId());
             List<AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
 
             // 3. 공고 스크랩 여부 및 스크랩 수 조회
-            boolean isAnnouncementScrap = announcementInformMenuAssembler.checkAnnouncementScrap(announcement, optionalMemberId);
-            int announcementScrapCount = announcementInformMenuAssembler.getAnnouncementScrapCount(announcement);
+            boolean isAnnouncementScrap = announcementCommonAssembler.checkAnnouncementScrap(announcement, optionalMemberId);
+            int announcementScrapCount = announcementCommonAssembler.getAnnouncementScrapCount(announcement);
 
             // 4. D-Day 계산
-            int dDay = announcementInformMenuAssembler.calculateAnnouncementDDay(announcement);
+            int dDay = announcementCommonAssembler.calculateAnnouncementDDay(announcement);
 
             // 5. DTO 아이템으로 변환
             return teamMemberAnnouncementMapper.toTeamMemberAnnouncementItem(
@@ -117,22 +116,5 @@ public class AnnouncementViewItemsAssembler {
                 announcementScrapCount
             );
         }).collect(Collectors.toList());
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // Public 헬퍼 메서드 (스크랩 및 D-Day 관련)
-    // ─────────────────────────────────────────────────────────────
-
-    /**
-     * 포지션 정보를 바탕으로 대분류를 추출합니다.
-     *
-     * @param announcementPosition 조회된 공고 포지션.
-     * @return 대분류 문자열; 정보가 없으면 "N/A" 반환.
-     */
-    public String extractMajorPosition(final AnnouncementPosition announcementPosition) {
-        if (announcementPosition != null && announcementPosition.getPosition() != null) {
-            return announcementPosition.getPosition().getMajorPosition();
-        }
-        return "N/A";
     }
 }

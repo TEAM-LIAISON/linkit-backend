@@ -1,26 +1,14 @@
 package liaison.linkit.team.business.assembler;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import liaison.linkit.common.business.RegionMapper;
-import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
-import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
+import liaison.linkit.team.business.assembler.common.AnnouncementCommonAssembler;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
-import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
-import liaison.linkit.team.domain.announcement.AnnouncementPosition;
-import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
-import liaison.linkit.team.domain.region.TeamRegion;
-import liaison.linkit.team.domain.scale.TeamScale;
 import liaison.linkit.team.domain.team.Team;
-import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
-import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
-import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
@@ -37,17 +25,13 @@ public class AnnouncementInformMenuAssembler {
 
     // Adapters
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
-    private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
     private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
-    private final RegionQueryAdapter regionQueryAdapter;
 
     // Mappers
-    private final RegionMapper regionMapper;
     private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
-    private final AnnouncementSkillMapper announcementSkillMapper;
-    private final TeamScaleQueryAdapter teamScaleQueryAdapter;
-    private final TeamScaleMapper teamScaleMapper;
-    private final AnnouncementPositionQueryAdapter announcementPositionQueryAdapter;
+
+    // Assembler
+    private final AnnouncementCommonAssembler announcementCommonAssembler;
 
     /**
      * 홈 화면에 표시할 공고 목록(AnnouncementInformMenus)을 조립하여 반환합니다. 로그인 상태(Optional memberId 값 존재)와 로그아웃 상태(Optional.empty()) 모두 처리합니다.
@@ -84,21 +68,21 @@ public class AnnouncementInformMenuAssembler {
         final Team team = teamMemberAnnouncement.getTeam();
 
         // 2. 공고 스킬 정보 조회
-        List<AnnouncementSkillName> announcementSkillNames = fetchAnnouncementSkills(teamMemberAnnouncement);
+        List<AnnouncementSkillName> announcementSkillNames = announcementCommonAssembler.fetchAnnouncementSkills(teamMemberAnnouncement);
 
         // 3. D-Day 계산
-        int announcementDDay = calculateAnnouncementDDay(teamMemberAnnouncement);
+        int announcementDDay = announcementCommonAssembler.calculateAnnouncementDDay(teamMemberAnnouncement);
 
         // 4. 공고 스크랩 여부 조회
-        boolean isAnnouncementScrap = checkAnnouncementScrap(teamMemberAnnouncement, optionalMemberId);
+        boolean isAnnouncementScrap = announcementCommonAssembler.checkAnnouncementScrap(teamMemberAnnouncement, optionalMemberId);
 
         // 5. 공고 스크랩 수 조회
-        int announcementScrapCount = getAnnouncementScrapCount(teamMemberAnnouncement);
+        int announcementScrapCount = announcementCommonAssembler.getAnnouncementScrapCount(teamMemberAnnouncement);
 
         // 6. 추가 정보 조회: 팀 규모, 팀 지역, 공고 포지션 정보
-        TeamScaleItem teamScaleItem = fetchTeamScaleItem(team);
-        RegionDetail regionDetail = fetchRegionDetail(team);
-        AnnouncementPositionItem announcementPositionItem = fetchAnnouncementPositionItem(teamMemberAnnouncement);
+        TeamScaleItem teamScaleItem = announcementCommonAssembler.fetchTeamScaleItem(team);
+        RegionDetail regionDetail = announcementCommonAssembler.fetchRegionDetail(team);
+        AnnouncementPositionItem announcementPositionItem = announcementCommonAssembler.fetchAnnouncementPositionItem(teamMemberAnnouncement);
 
         // 7. 최종 DTO 변환 및 반환
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
@@ -114,107 +98,5 @@ public class AnnouncementInformMenuAssembler {
             announcementPositionItem,
             announcementSkillNames
         );
-    }
-
-    /**
-     * 공고의 D-Day를 계산합니다. 공고가 상시 모집이 아니고 종료 날짜가 존재하면 D-Day를 계산하고, 그렇지 않으면 -1을 반환합니다.
-     *
-     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
-     * @return 계산된 D-Day 값.
-     */
-    public int calculateAnnouncementDDay(final TeamMemberAnnouncement teamMemberAnnouncement) {
-        if (!teamMemberAnnouncement.isPermanentRecruitment() && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
-            return DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-        }
-        return -1;
-    }
-
-    /**
-     * 로그인 상태인 경우, 공고 스크랩 여부를 조회합니다. 로그아웃 상태이면 false를 반환합니다.
-     *
-     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
-     * @param optionalMemberId       로그인한 회원의 ID(Optional).
-     * @return 공고가 스크랩된 상태이면 true, 아니면 false.
-     */
-    public boolean checkAnnouncementScrap(
-        final TeamMemberAnnouncement teamMemberAnnouncement,
-        final Optional<Long> optionalMemberId
-    ) {
-        return optionalMemberId
-            .map(memberId -> announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId()))
-            .orElse(false);
-    }
-
-    /**
-     * 공고의 스크랩 수를 조회합니다.
-     *
-     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
-     * @return 공고의 총 스크랩 수.
-     */
-    public int getAnnouncementScrapCount(final TeamMemberAnnouncement teamMemberAnnouncement) {
-        return announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // 헬퍼 메서드들
-    // ─────────────────────────────────────────────────────────────
-
-    /**
-     * 팀 규모 정보를 조회하여 TeamScaleItem으로 반환합니다. 실제 구현에서는 teamScaleQueryAdapter와 teamScaleMapper를 사용합니다.
-     *
-     * @param team 조회 대상 팀.
-     * @return 팀 규모 정보 DTO, 정보가 없으면 null 반환.
-     */
-    public TeamScaleItem fetchTeamScaleItem(final Team team) {
-        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-            TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
-            return teamScaleMapper.toTeamScaleItem(teamScale);
-        }
-        return new TeamScaleItem();
-    }
-
-
-    /**
-     * 팀 지역 정보를 조회하여 RegionDetail로 반환합니다.
-     *
-     * @param team 조회 대상 팀.
-     * @return 조회된 RegionDetail. 정보가 없으면 기본 RegionDetail 인스턴스 반환.
-     */
-    public RegionDetail fetchRegionDetail(final Team team) {
-        if (regionQueryAdapter.existsTeamRegionByTeamId(team.getId())) {
-            TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
-            return regionMapper.toRegionDetail(teamRegion.getRegion());
-        }
-        return new RegionDetail();
-    }
-
-    /**
-     * 공고 포지션 정보를 조회하여 AnnouncementPositionItem으로 반환합니다.
-     *
-     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
-     * @return AnnouncementPositionItem DTO, 정보가 없으면 기본 인스턴스 반환.
-     */
-    public AnnouncementPositionItem fetchAnnouncementPositionItem(final TeamMemberAnnouncement teamMemberAnnouncement) {
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            AnnouncementPosition announcementPosition =
-                announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-            return teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-        }
-        return new AnnouncementPositionItem();
-    }
-
-    /**
-     * 공고 스킬 정보를 조회하여 AnnouncementSkillName 리스트로 반환합니다.
-     *
-     * @param teamMemberAnnouncement 조회 대상 공고 엔티티.
-     * @return 공고 스킬 이름 리스트, 정보가 없으면 빈 리스트 반환.
-     */
-    public List<AnnouncementSkillName> fetchAnnouncementSkills(final TeamMemberAnnouncement teamMemberAnnouncement) {
-        if (announcementSkillQueryAdapter.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            List<AnnouncementSkill> announcementSkills =
-                announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-            return announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-        }
-        return Collections.emptyList();
     }
 }

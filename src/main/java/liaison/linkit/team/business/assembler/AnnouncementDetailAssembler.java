@@ -1,6 +1,7 @@
 package liaison.linkit.team.business.assembler;
 
 import java.util.Optional;
+import liaison.linkit.team.business.assembler.common.AnnouncementCommonAssembler;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
@@ -15,9 +16,9 @@ import org.springframework.stereotype.Component;
 public class AnnouncementDetailAssembler {
 
     // Assembler
-    private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
     private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
+    private final AnnouncementCommonAssembler announcementCommonAssembler;
 
     /**
      * 공고 상세 정보를 조립합니다. 로그인한 사용자와 로그아웃 상태 모두 처리할 수 있습니다.
@@ -34,10 +35,10 @@ public class AnnouncementDetailAssembler {
 
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementDetail(
             teamMemberAnnouncement,
-            announcementInformMenuAssembler.checkAnnouncementScrap(teamMemberAnnouncement, optionalMemberId),
-            announcementInformMenuAssembler.getAnnouncementScrapCount(teamMemberAnnouncement),
-            announcementInformMenuAssembler.fetchAnnouncementPositionItem(teamMemberAnnouncement),
-            announcementInformMenuAssembler.fetchAnnouncementSkills(teamMemberAnnouncement)
+            announcementCommonAssembler.checkAnnouncementScrap(teamMemberAnnouncement, optionalMemberId),
+            announcementCommonAssembler.getAnnouncementScrapCount(teamMemberAnnouncement),
+            announcementCommonAssembler.fetchAnnouncementPositionItem(teamMemberAnnouncement),
+            announcementCommonAssembler.fetchAnnouncementSkills(teamMemberAnnouncement)
         );
     }
 
