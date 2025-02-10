@@ -65,7 +65,7 @@ public class ProfileLogService {
     private final S3Uploader s3Uploader;
     private final MemberQueryAdapter memberQueryAdapter;
 
-
+    // 로그 전체 조회
     @Transactional(readOnly = true)
     public ProfileLogItems getProfileLogItems(final Long memberId) {
         log.info("memberId = {}의 내 로그 Items 조회 요청 발생했습니다.", memberId);
@@ -76,10 +76,11 @@ public class ProfileLogService {
         return profileLogMapper.toProfileLogItems(profileLogs);
     }
 
+    // 로그 뷰어 전체 조회
     @Transactional(readOnly = true)
     public ProfileLogItems getProfileLogViewItems(final String emailId) {
         final Member member = memberQueryAdapter.findByEmailId(emailId);
-        final List<ProfileLog> profileLogs = profileLogQueryAdapter.getProfileLogs(member.getId());
+        final List<ProfileLog> profileLogs = profileLogQueryAdapter.getProfileLogsPublic(member.getId());
         return profileLogMapper.toProfileLogItems(profileLogs);
     }
 
@@ -135,13 +136,13 @@ public class ProfileLogService {
 
         // 2. ProfileLog 엔티티 생성 및 저장
         final ProfileLog profileLog = new ProfileLog(
-                null,
-                profile,
-                addProfileLogRequest.getLogTitle(),
-                addProfileLogRequest.getLogContent(),
-                addProfileLogRequest.getIsLogPublic(),
-                addProfileLogType,
-                0L
+            null,
+            profile,
+            addProfileLogRequest.getLogTitle(),
+            addProfileLogRequest.getLogContent(),
+            addProfileLogRequest.getIsLogPublic(),
+            addProfileLogType,
+            0L
         );
 
         final ProfileLog savedProfileLog = profileLogCommandAdapter.addProfileLog(profileLog);
@@ -160,9 +161,9 @@ public class ProfileLogService {
             for (Image image : images) {
                 // 5.1. ProfileLogImage 엔티티 생성
                 ProfileLogImage profileLogImage = ProfileLogImage.builder()
-                        .profileLog(savedProfileLog)
-                        .image(image)
-                        .build();
+                    .profileLog(savedProfileLog)
+                    .image(image)
+                    .build();
 
                 // 5.2. ProfileLogImage 저장
                 profileLogImageCommandAdapter.addProfileLogImage(profileLogImage);
@@ -196,13 +197,13 @@ public class ProfileLogService {
 
         // 현재 사용되는 이미지 ID
         Set<Long> currentImageIds = images.stream()
-                .map(Image::getId)
-                .collect(Collectors.toSet());
+            .map(Image::getId)
+            .collect(Collectors.toSet());
 
         // 기존에 사용되던 이미지 ID
         Set<Long> existingImageIds = existingProfileLogImages.stream()
-                .map(profileLogImage -> profileLogImage.getImage().getId())
-                .collect(Collectors.toSet());
+            .map(profileLogImage -> profileLogImage.getImage().getId())
+            .collect(Collectors.toSet());
 
         // 새로운 이미지 ID
         Set<Long> newImageIds = new HashSet<>(currentImageIds);
@@ -216,9 +217,9 @@ public class ProfileLogService {
         for (Image image : images) {
             if (newImageIds.contains(image.getId())) {
                 ProfileLogImage profileLogImage = ProfileLogImage.builder()
-                        .profileLog(profileLog)
-                        .image(image)
-                        .build();
+                    .profileLog(profileLog)
+                    .image(image)
+                    .build();
                 profileLogImageCommandAdapter.addProfileLogImage(profileLogImage);
 
                 // 이미지의 isTemporary를 false로 업데이트

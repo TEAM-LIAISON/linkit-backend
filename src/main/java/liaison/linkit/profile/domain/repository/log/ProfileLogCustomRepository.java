@@ -9,6 +9,8 @@ public interface ProfileLogCustomRepository {
 
     List<ProfileLog> getProfileLogs(final Long memberId);
 
+    List<ProfileLog> getProfileLogsPublic(final Long memberId);
+
     ProfileLog updateProfileLogTypeRepresent(final ProfileLog profileLog);
 
     void updateProfileLogTypeGeneral(final ProfileLog profileLog);

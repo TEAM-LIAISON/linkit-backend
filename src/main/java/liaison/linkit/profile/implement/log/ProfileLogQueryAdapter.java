@@ -10,20 +10,25 @@ import lombok.RequiredArgsConstructor;
 @Adapter
 @RequiredArgsConstructor
 public class ProfileLogQueryAdapter {
+
     private final ProfileLogRepository profileLogRepository;
 
     public ProfileLog getProfileLog(final Long profileLogId) {
         return profileLogRepository.findById(profileLogId)
-                .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
+            .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
     }
 
     public List<ProfileLog> getProfileLogs(final Long memberId) {
         return profileLogRepository.getProfileLogs(memberId);
     }
 
+    public List<ProfileLog> getProfileLogsPublic(final Long memberId) {
+        return profileLogRepository.getProfileLogsPublic(memberId);
+    }
+
     public ProfileLog getRepresentativeProfileLog(final Long profileId) {
         return profileLogRepository.findRepresentativeProfileLog(profileId)
-                .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
+            .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
     }
 
     public boolean existsProfileLogByProfileId(final Long profileId) {

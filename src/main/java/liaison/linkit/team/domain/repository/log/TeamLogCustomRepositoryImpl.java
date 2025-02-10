@@ -38,7 +38,7 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
                     .otherwise(0)
                     .desc(),
                 // 그 후 나머지 로그는 수정일(modifiedAt)을 내림차순 정렬 (최신 로그가 위쪽에 오도록)
-                qTeamLog.modifiedAt.desc()
+                qTeamLog.createdAt.desc()
             )
             .fetch();
     }
@@ -59,7 +59,7 @@ public class TeamLogCustomRepositoryImpl implements TeamLogCustomRepository {
                     .otherwise(0)
                     .desc(),
                 // 그 후 나머지 로그는 수정일(modifiedAt)을 내림차순 정렬 (최신 로그가 위쪽에 오도록)
-                qTeamLog.modifiedAt.desc()
+                qTeamLog.createdAt.desc()
             )
             .fetch();
     }
