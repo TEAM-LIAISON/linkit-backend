@@ -1,6 +1,7 @@
 package liaison.linkit.search.presentation;
 
 import java.util.List;
+import java.util.Optional;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
@@ -40,24 +41,20 @@ public class AnnouncementSearchController {
 
     @GetMapping
     public CommonResponse<Page<AnnouncementInformMenu>> searchAnnouncements(
-            @Auth final Accessor accessor,
-            @RequestParam(value = "majorPosition", required = false) List<String> majorPosition,
-            @RequestParam(value = "skillName", required = false) List<String> skillName,
-            @RequestParam(value = "cityName", required = false) List<String> cityName,
-            @RequestParam(value = "scaleName", required = false) List<String> scaleName,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "20") int size
+        @Auth final Accessor accessor,
+        @RequestParam(value = "majorPosition", required = false) List<String> majorPosition,
+        @RequestParam(value = "skillName", required = false) List<String> skillName,
+        @RequestParam(value = "cityName", required = false) List<String> cityName,
+        @RequestParam(value = "scaleName", required = false) List<String> scaleName,
+        @RequestParam(value = "page", defaultValue = "0") int page,
+        @RequestParam(value = "size", defaultValue = "20") int size
     ) {
-        if (accessor.isMember()) {
-            log.info("Searching announcements for member (login state)");
-            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-            Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncementsInLoginState(accessor.getMemberId(), majorPosition, skillName, cityName, scaleName, pageable);
-            return CommonResponse.onSuccess(announcements);
-        } else {
-            log.info("Searching announcements for member (logout state)");
-            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-            Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncementsInLogoutState(majorPosition, skillName, cityName, scaleName, pageable);
-            return CommonResponse.onSuccess(announcements);
-        }
+        Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+
+        Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncements(optionalMemberId, majorPosition, skillName, cityName, scaleName, pageable);
+        return CommonResponse.onSuccess(announcements);
+
     }
 }

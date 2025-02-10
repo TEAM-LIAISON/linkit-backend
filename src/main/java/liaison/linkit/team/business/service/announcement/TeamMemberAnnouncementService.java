@@ -4,42 +4,33 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.domain.Position;
-import liaison.linkit.common.implement.RegionQueryAdapter;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
+import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementPositionMapper;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
-import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
-import liaison.linkit.team.domain.region.TeamRegion;
-import liaison.linkit.team.domain.scale.TeamScale;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.announcement.AnnouncementPosition;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.exception.teamMember.TeamAdminNotRegisteredException;
-import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
-import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillCommandAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementCommandAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
+import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncemenItems;
-import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,11 +60,8 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementSkillMapper announcementSkillMapper;
 
     private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
-    private final TeamScaleQueryAdapter teamScaleQueryAdapter;
-    private final TeamScaleMapper teamScaleMapper;
-    private final RegionQueryAdapter regionQueryAdapter;
-    private final RegionMapper regionMapper;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
+    private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncemenItems getLoggedInTeamMemberAnnouncementViewItems(final Long memberId, final String teamCode) {
@@ -82,12 +70,12 @@ public class TeamMemberAnnouncementService {
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
 
         return teamMemberAnnouncementMapper.toLoggedInTeamMemberAnnouncementViewItems(
-                memberId,
-                teamMemberAnnouncements,
-                announcementPositionQueryAdapter,
-                announcementSkillQueryAdapter,
-                announcementSkillMapper,
-                announcementScrapQueryAdapter
+            memberId,
+            teamMemberAnnouncements,
+            announcementPositionQueryAdapter,
+            announcementSkillQueryAdapter,
+            announcementSkillMapper,
+            announcementScrapQueryAdapter
         );
     }
 
@@ -97,11 +85,11 @@ public class TeamMemberAnnouncementService {
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncements(team.getId());
 
         return teamMemberAnnouncementMapper.toLoggedOutTeamMemberAnnouncementViewItems(
-                teamMemberAnnouncements,
-                announcementPositionQueryAdapter,
-                announcementSkillQueryAdapter,
-                announcementSkillMapper,
-                announcementScrapQueryAdapter
+            teamMemberAnnouncements,
+            announcementPositionQueryAdapter,
+            announcementSkillQueryAdapter,
+            announcementSkillMapper,
+            announcementScrapQueryAdapter
         );
     }
 
@@ -120,7 +108,7 @@ public class TeamMemberAnnouncementService {
         List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = Collections.emptyList();
         if (announcementSkillQueryAdapter.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncementId)) {
             List<AnnouncementSkill> announcementSkills =
-                    announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
+                announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
             announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
         }
 
@@ -143,7 +131,7 @@ public class TeamMemberAnnouncementService {
         List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = Collections.emptyList();
         if (announcementSkillQueryAdapter.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncementId)) {
             List<AnnouncementSkill> announcementSkills =
-                    announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
+                announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
             announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
         }
         final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
@@ -153,7 +141,7 @@ public class TeamMemberAnnouncementService {
 
     // 팀원 공고 생성 메서드
     public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse addTeamMemberAnnouncement(
-            final Long memberId, final String teamCode, final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
+        final Long memberId, final String teamCode, final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
     ) {
         log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 추가 요청이 서비스 계층에 발생했습니다.", memberId, teamCode);
 
@@ -171,7 +159,7 @@ public class TeamMemberAnnouncementService {
 
         // 포지션 저장
         final Position position = positionQueryAdapter.findByMajorPositionAndSubPosition(
-                addTeamMemberAnnouncementRequest.getMajorPosition(), addTeamMemberAnnouncementRequest.getSubPosition()
+            addTeamMemberAnnouncementRequest.getMajorPosition(), addTeamMemberAnnouncementRequest.getSubPosition()
         );
         AnnouncementPosition announcementPosition = new AnnouncementPosition(null, savedTeamMemberAnnouncement, position);
         AnnouncementPosition savedAnnouncementPosition = announcementPositionCommandAdapter.save(announcementPosition);
@@ -179,10 +167,10 @@ public class TeamMemberAnnouncementService {
 
         // 스킬 저장 (필수값 아님)
         List<String> skillNames = Optional.ofNullable(addTeamMemberAnnouncementRequest.getAnnouncementSkillNames())
-                .orElse(Collections.emptyList())  // null 방지
-                .stream()
-                .map(TeamMemberAnnouncementRequestDTO.AnnouncementSkillName::getAnnouncementSkillName)
-                .collect(Collectors.toList());
+            .orElse(Collections.emptyList())  // null 방지
+            .stream()
+            .map(TeamMemberAnnouncementRequestDTO.AnnouncementSkillName::getAnnouncementSkillName)
+            .collect(Collectors.toList());
 
         List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = Collections.emptyList();
 
@@ -201,19 +189,19 @@ public class TeamMemberAnnouncementService {
         }
 
         return teamMemberAnnouncementMapper.toAddTeamMemberAnnouncementResponse(
-                teamMemberAnnouncement,
-                announcementPositionItem,
-                announcementSkillNames
+            teamMemberAnnouncement,
+            announcementPositionItem,
+            announcementSkillNames
         );
     }
 
 
     // 팀원 공고 수정 메서드
     public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse updateTeamMemberAnnouncement(
-            final Long memberId,
-            final String teamCode,
-            final Long teamMemberAnnouncementId,
-            final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
+        final Long memberId,
+        final String teamCode,
+        final Long teamMemberAnnouncementId,
+        final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
     ) {
         log.info("memberId = {}의 teamCode = {}의 팀원 공고 ID = {}에 대한 업데이트 요청이 서비스 계층에 발생했습니다.", memberId, teamCode, teamMemberAnnouncementId);
 
@@ -223,7 +211,7 @@ public class TeamMemberAnnouncementService {
 
         // 2. DTO를 통해 팀원 공고 업데이트
         final TeamMemberAnnouncement updatedTeamMemberAnnouncement =
-                teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncement(existingTeamMemberAnnouncement, updateTeamMemberAnnouncementRequest);
+            teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncement(existingTeamMemberAnnouncement, updateTeamMemberAnnouncementRequest);
         log.info("updatedTeamMemberAnnouncement = {}", updatedTeamMemberAnnouncement);
 
         // 기존 포지션 삭제
@@ -253,9 +241,9 @@ public class TeamMemberAnnouncementService {
 
         // 새로운 공고 스킬 추가
         List<String> newSkillNames = updateTeamMemberAnnouncementRequest.getAnnouncementSkillNames()
-                .stream()
-                .map(TeamMemberAnnouncementRequestDTO.AnnouncementSkillName::getAnnouncementSkillName)
-                .toList();
+            .stream()
+            .map(TeamMemberAnnouncementRequestDTO.AnnouncementSkillName::getAnnouncementSkillName)
+            .toList();
 
         final List<Skill> newSkills = skillQueryAdapter.getSkillsBySkillNames(newSkillNames);
         final List<AnnouncementSkill> newAnnouncementSkills = announcementSkillMapper.toAddProjectSkills(updatedTeamMemberAnnouncement, newSkills);
@@ -265,9 +253,9 @@ public class TeamMemberAnnouncementService {
         log.info("check bug 4");
 
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementResponse(
-                updatedTeamMemberAnnouncement,
-                announcementPositionItem,
-                announcementSkillNames
+            updatedTeamMemberAnnouncement,
+            announcementPositionItem,
+            announcementSkillNames
         );
     }
 
@@ -290,162 +278,22 @@ public class TeamMemberAnnouncementService {
     }
 
     public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse updateTeamMemberAnnouncementPublicState(
-            final Long memberId,
-            final String teamCode,
-            final Long teamMemberAnnouncementId
+        final Long memberId,
+        final String teamCode,
+        final Long teamMemberAnnouncementId
     ) {
         final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
         final boolean isTeamMemberAnnouncementCurrentPublicState = teamMemberAnnouncement.isAnnouncementPublic();
         final TeamMemberAnnouncement updatedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncementPublicState(teamMemberAnnouncement,
-                isTeamMemberAnnouncementCurrentPublicState);
+            isTeamMemberAnnouncementCurrentPublicState);
 
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementPublicState(updatedTeamMemberAnnouncement);
     }
 
-    public AnnouncementInformMenus getHomeAnnouncementInformMenusInLoginState(final Long memberId) {
-        // 최대 6개의 TeamMemberAnnouncement 조회
-        List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(9);
-
-        // TeamMemberAnnouncements -> AnnouncementInformMenus 변환
-        List<AnnouncementInformMenu> announcementInformMenus = teamMemberAnnouncements.stream()
-                .map(teamMemberAnnouncement -> mapToAnnouncementInformMenuInLoginState(teamMemberAnnouncement, memberId))
-                .toList();
-
-        return teamMemberAnnouncementMapper.toAnnouncementInformMenus(announcementInformMenus);
-    }
-
-    public AnnouncementInformMenus getHomeAnnouncementInformMenusInLogoutState() {
-        // 최대 6개의 TeamMemberAnnouncement 조회
-        List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(9);
-
-        // TeamMemberAnnouncements -> AnnouncementInformMenus 변환
-        List<AnnouncementInformMenu> announcementInformMenus = teamMemberAnnouncements.stream()
-                .map(this::mapToAnnouncementInformMenuInLogoutState)
-                .toList();
-
-        return teamMemberAnnouncementMapper.toAnnouncementInformMenus(announcementInformMenus);
-    }
-
-    private AnnouncementInformMenu mapToAnnouncementInformMenuInLoginState(final TeamMemberAnnouncement teamMemberAnnouncement, final Long memberId) {
-        final Team team = teamMemberAnnouncement.getTeam();
-
-        // 팀 규모 조회
-        TeamScaleItem teamScaleItem = fetchTeamScaleItem(team);
-
-        // 팀 지역 조회
-        RegionDetail regionDetail = fetchRegionDetail(team);
-
-        // 포지션 조회
-        AnnouncementPositionItem announcementPositionItem = fetchAnnouncementPositionItem(teamMemberAnnouncement);
-
-        // 스킬 조회
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = Collections.emptyList();
-        if (announcementSkillQueryAdapter.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            List<AnnouncementSkill> announcementSkills =
-                    announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-            announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-        }
-
-        // D-Day 계산
-        int announcementDDay = -1;
-        if (!teamMemberAnnouncement.isPermanentRecruitment() && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
-            announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-        }
-
-        // 공고 스크랩 여부 판단
-        final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
-
-        // 스크랩 수 조회
-        int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
-
-        // 결과 변환 및 반환
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
-                team.getTeamLogoImagePath(),
-                team.getTeamName(),
-                team.getTeamCode(),
-                teamScaleItem,
-                regionDetail,
-                teamMemberAnnouncement,
-                announcementDDay,
-                isAnnouncementScrap,
-                announcementScrapCount,
-                announcementPositionItem,
-                announcementSkillNames
-        );
-    }
-
-    private AnnouncementInformMenu mapToAnnouncementInformMenuInLogoutState(final TeamMemberAnnouncement teamMemberAnnouncement) {
-        final Team team = teamMemberAnnouncement.getTeam();
-
-        // 팀 규모 조회
-        TeamScaleItem teamScaleItem = fetchTeamScaleItem(team);
-
-        // 팀 지역 조회
-        RegionDetail regionDetail = fetchRegionDetail(team);
-
-        // 포지션 조회
-        AnnouncementPositionItem announcementPositionItem = fetchAnnouncementPositionItem(teamMemberAnnouncement);
-
-        // 스킬 조회
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = Collections.emptyList();
-        if (announcementSkillQueryAdapter.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            List<AnnouncementSkill> announcementSkills =
-                    announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-            announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-        }
-
-        // D-Day 계산
-        int announcementDDay = -1;
-        if (!teamMemberAnnouncement.isPermanentRecruitment() && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
-            announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-        }
-
-        // 스크랩 수 조회
-        int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
-
-        // 결과 변환 및 반환
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
-                team.getTeamLogoImagePath(),
-                team.getTeamName(),
-                team.getTeamCode(),
-                teamScaleItem,
-                regionDetail,
-                teamMemberAnnouncement,
-                announcementDDay,
-                false,
-                announcementScrapCount,
-                announcementPositionItem,
-                announcementSkillNames
-        );
-    }
-
-    private TeamScaleItem fetchTeamScaleItem(final Team team) {
-        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-            TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
-            return teamScaleMapper.toTeamScaleItem(teamScale);
-        }
-        return null;
-    }
-
-    private RegionDetail fetchRegionDetail(final Team team) {
-        if (regionQueryAdapter.existsTeamRegionByTeamId(team.getId())) {
-            TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
-            return regionMapper.toRegionDetail(teamRegion.getRegion());
-        }
-        return new RegionDetail();
-    }
-
-    private AnnouncementPositionItem fetchAnnouncementPositionItem(final TeamMemberAnnouncement teamMemberAnnouncement) {
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-            return teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-        }
-        return new AnnouncementPositionItem();
-    }
-
-    private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> fetchAnnouncementSkills(final TeamMemberAnnouncement teamMemberAnnouncement) {
-        List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-        return announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+    public AnnouncementInformMenus getHomeAnnouncementInformMenus(
+        final Optional<Long> optionalMemberId
+    ) {
+        return announcementInformMenuAssembler.assembleHomeAnnouncementInformMenus(optionalMemberId);
     }
 
 }

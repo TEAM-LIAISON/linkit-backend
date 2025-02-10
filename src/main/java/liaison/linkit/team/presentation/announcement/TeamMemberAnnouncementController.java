@@ -1,5 +1,6 @@
 package liaison.linkit.team.presentation.announcement;
 
+import java.util.Optional;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -25,24 +26,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 @Slf4j
 public class TeamMemberAnnouncementController {
+
     private final TeamMemberAnnouncementService teamMemberAnnouncementService;
 
     @GetMapping("/home/announcement")
     public CommonResponse<AnnouncementInformMenus> getHomeAnnouncementInformMenus(
-            @Auth final Accessor accessor
+        @Auth final Accessor accessor
     ) {
-        if (accessor.isMember()) {
-            return CommonResponse.onSuccess(teamMemberAnnouncementService.getHomeAnnouncementInformMenusInLoginState(accessor.getMemberId()));
-        } else {
-            return CommonResponse.onSuccess(teamMemberAnnouncementService.getHomeAnnouncementInformMenusInLogoutState());
-        }
+        Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+        return CommonResponse.onSuccess(teamMemberAnnouncementService.getHomeAnnouncementInformMenus(optionalMemberId));
     }
 
     // 팀원 공고 뷰어 전체 조회
     @GetMapping("/team/{teamCode}/announcement")
     public CommonResponse<TeamMemberAnnouncemenItems> getTeamMemberAnnouncementItems(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode
     ) {
         log.info("teamCode = {}에 대한 팀원 공고 뷰어 전체 조회 요청이 발생했습니다.", teamCode);
         if (accessor.isMember()) {
@@ -73,9 +72,9 @@ public class TeamMemberAnnouncementController {
     // 팀원 공고 단일 조회
     @GetMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail> getTeamMemberAnnouncementDetail(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @PathVariable final Long teamMemberAnnouncementId
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @PathVariable final Long teamMemberAnnouncementId
     ) {
         if (accessor.isMember()) {
             log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 상세 조회 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
@@ -90,9 +89,9 @@ public class TeamMemberAnnouncementController {
     @PostMapping("/team/{teamCode}/announcement")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse> addTeamMemberAnnouncement(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @RequestBody final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @RequestBody final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
     ) {
         log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 단일 생성 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
         return CommonResponse.onSuccess(teamMemberAnnouncementService.addTeamMemberAnnouncement(accessor.getMemberId(), teamCode, addTeamMemberAnnouncementRequest));
@@ -102,10 +101,10 @@ public class TeamMemberAnnouncementController {
     @PostMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse> updateTeamMemberAnnouncement(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @PathVariable final Long teamMemberAnnouncementId,
-            @RequestBody final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @PathVariable final Long teamMemberAnnouncementId,
+        @RequestBody final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
     ) {
         log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 단일 수정 요청이 발생했습니다.", accessor.getMemberId(), teamCode);
         return CommonResponse.onSuccess(teamMemberAnnouncementService.updateTeamMemberAnnouncement(accessor.getMemberId(), teamCode, teamMemberAnnouncementId, updateTeamMemberAnnouncementRequest));
@@ -115,9 +114,9 @@ public class TeamMemberAnnouncementController {
     @DeleteMapping("/team/{teamCode}/announcement/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse> removeTeamMemberAnnouncement(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @PathVariable final Long teamMemberAnnouncementId
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @PathVariable final Long teamMemberAnnouncementId
     ) {
         return CommonResponse.onSuccess(teamMemberAnnouncementService.removeTeamMemberAnnouncement(accessor.getMemberId(), teamCode, teamMemberAnnouncementId));
     }
@@ -126,9 +125,9 @@ public class TeamMemberAnnouncementController {
     @PostMapping("/team/{teamCode}/announcement/state/{teamMemberAnnouncementId}")
     @MemberOnly
     public CommonResponse<TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse> updateTeamMemberAnnouncementPublicState(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode,
-            @PathVariable final Long teamMemberAnnouncementId
+        @Auth final Accessor accessor,
+        @PathVariable final String teamCode,
+        @PathVariable final Long teamMemberAnnouncementId
     ) {
         return CommonResponse.onSuccess(teamMemberAnnouncementService.updateTeamMemberAnnouncementPublicState(accessor.getMemberId(), teamCode, teamMemberAnnouncementId));
     }
