@@ -64,6 +64,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 public class TeamMemberAnnouncementControllerTest extends ControllerTest {
+
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
     private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
@@ -82,62 +83,62 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
 
     private ResultActions performGetHomeAnnouncementInformMenus() throws Exception {
         return mockMvc.perform(
-                get("/api/v1/home/announcement")
+            get("/api/v1/home/announcement")
         );
     }
 
     // 팀원 공고 뷰어 전체 조회
     private ResultActions performGetLoggedOutTeamMemberAnnouncementViewItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/announcement", teamCode)
+            RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/announcement", teamCode)
         );
     }
 
     // 팀원 공고 단일 조회
     private ResultActions performGetTeamMemberAnnouncementDetail(final String teamCode, final Long teamMemberAnnouncementId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/announcement/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
+            RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/announcement/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
         );
     }
 
     // 팀원 공고 생성
     private ResultActions performAddTeamMemberAnnouncement(final String teamCode, final AddTeamMemberAnnouncementRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/announcement", teamCode)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8")
-                        .content(objectMapper.writeValueAsString(request))
+            RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/announcement", teamCode)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsString(request))
         );
     }
 
     // 팀원 공고 수정
     private ResultActions performUpdateTeamMemberAnnouncement(final String teamCode, final Long teamMemberAnnouncementId, final UpdateTeamMemberAnnouncementRequest request) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/announcement/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)));
+            RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/announcement/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
     }
 
     // 팀원 공고 삭제
     private ResultActions performRemoveTeamMemberAnnouncement(final String teamCode, final Long teamMemberAnnouncementId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamCode}/announcement/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE));
+            RestDocumentationRequestBuilders.delete("/api/v1/team/{teamCode}/announcement/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE));
     }
 
     // 팀원 공고 공개/비공개 여부 수정
     private ResultActions performUpdateTeamMemberAnnouncementPublicState(final String teamCode, final Long teamMemberAnnouncementId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/announcement/state/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE));
+            RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/announcement/state/{teamMemberAnnouncementId}", teamCode, teamMemberAnnouncementId)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE));
     }
 
     @DisplayName("회원/비회원이 홈화면의 팀원 공고를 조회할 수 있다.")
@@ -145,194 +146,194 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     void getHomeAnnouncementInformMenus() throws Exception {
         // given
         final AnnouncementInformMenus announcementInformMenus = AnnouncementInformMenus.builder()
-                .announcementInformMenus(Arrays.asList(
-                        AnnouncementInformMenu.builder()
-                                .teamMemberAnnouncementId(1L)
-                                .teamLogoImagePath("팀 로고 이미지 경로")
-                                .teamName("팀 이름")
-                                .teamScaleItem(
-                                        TeamScaleItem.builder()
-                                                .teamScaleName("팀 규모 이름 (1인)")
-                                                .build()
-                                )
-                                .regionDetail(
-                                        RegionDetail.builder()
-                                                .cityName("팀 활동지역 (시/도)")
-                                                .divisionName("팀 활동지역 (시/군/구)")
-                                                .build()
-                                )
-                                .announcementDDay(20)
-                                .announcementTitle("공고 제목")
-                                .isAnnouncementScrap(true)
-                                .announcementScrapCount(100)
-                                .announcementPositionItem(
-                                        AnnouncementPositionItem.builder()
-                                                .majorPosition("포지션 대분류")
-                                                .subPosition("포지션 소분류")
-                                                .build()
-                                )
-                                .announcementSkillNames(
-                                        Arrays.asList(
-                                                AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 요구 스킬 1")
-                                                        .build(),
-                                                AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 요구 스킬 2")
-                                                        .build()
-                                        )
-                                )
+            .announcementInformMenus(Arrays.asList(
+                AnnouncementInformMenu.builder()
+                    .teamMemberAnnouncementId(1L)
+                    .teamLogoImagePath("팀 로고 이미지 경로")
+                    .teamName("팀 이름")
+                    .teamScaleItem(
+                        TeamScaleItem.builder()
+                            .teamScaleName("팀 규모 이름 (1인)")
+                            .build()
+                    )
+                    .regionDetail(
+                        RegionDetail.builder()
+                            .cityName("팀 활동지역 (시/도)")
+                            .divisionName("팀 활동지역 (시/군/구)")
+                            .build()
+                    )
+                    .announcementDDay(20)
+                    .announcementTitle("공고 제목")
+                    .isAnnouncementScrap(true)
+                    .announcementScrapCount(100)
+                    .announcementPositionItem(
+                        AnnouncementPositionItem.builder()
+                            .majorPosition("포지션 대분류")
+                            .subPosition("포지션 소분류")
+                            .build()
+                    )
+                    .announcementSkillNames(
+                        Arrays.asList(
+                            AnnouncementSkillName.builder()
+                                .announcementSkillName("공고 요구 스킬 1")
                                 .build(),
-                        AnnouncementInformMenu.builder()
-                                .teamMemberAnnouncementId(2L)
-                                .teamLogoImagePath("팀 로고 이미지 경로")
-                                .teamName("팀 이름")
-                                .teamScaleItem(
-                                        TeamScaleItem.builder()
-                                                .teamScaleName("팀 규모 이름 (1인)")
-                                                .build()
-                                )
-                                .regionDetail(
-                                        RegionDetail.builder()
-                                                .cityName("팀 활동지역 (시/도)")
-                                                .divisionName("팀 활동지역 (시/군/구)")
-                                                .build()
-                                )
-                                .announcementDDay(20)
-                                .announcementTitle("공고 제목")
-                                .isAnnouncementScrap(true)
-                                .announcementScrapCount(100)
-                                .announcementPositionItem(
-                                        AnnouncementPositionItem.builder()
-                                                .majorPosition("포지션 대분류")
-                                                .subPosition("포지션 소분류")
-                                                .build()
-                                )
-                                .announcementSkillNames(
-                                        Arrays.asList(
-                                                AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 요구 스킬 1")
-                                                        .build(),
-                                                AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 요구 스킬 2")
-                                                        .build()
-                                        )
-                                )
+                            AnnouncementSkillName.builder()
+                                .announcementSkillName("공고 요구 스킬 2")
                                 .build()
-                ))
-                .build();
+                        )
+                    )
+                    .build(),
+                AnnouncementInformMenu.builder()
+                    .teamMemberAnnouncementId(2L)
+                    .teamLogoImagePath("팀 로고 이미지 경로")
+                    .teamName("팀 이름")
+                    .teamScaleItem(
+                        TeamScaleItem.builder()
+                            .teamScaleName("팀 규모 이름 (1인)")
+                            .build()
+                    )
+                    .regionDetail(
+                        RegionDetail.builder()
+                            .cityName("팀 활동지역 (시/도)")
+                            .divisionName("팀 활동지역 (시/군/구)")
+                            .build()
+                    )
+                    .announcementDDay(20)
+                    .announcementTitle("공고 제목")
+                    .isAnnouncementScrap(true)
+                    .announcementScrapCount(100)
+                    .announcementPositionItem(
+                        AnnouncementPositionItem.builder()
+                            .majorPosition("포지션 대분류")
+                            .subPosition("포지션 소분류")
+                            .build()
+                    )
+                    .announcementSkillNames(
+                        Arrays.asList(
+                            AnnouncementSkillName.builder()
+                                .announcementSkillName("공고 요구 스킬 1")
+                                .build(),
+                            AnnouncementSkillName.builder()
+                                .announcementSkillName("공고 요구 스킬 2")
+                                .build()
+                        )
+                    )
+                    .build()
+            ))
+            .build();
 
         // when
-        when(teamMemberAnnouncementService.getHomeAnnouncementInformMenusInLogoutState()).thenReturn(announcementInformMenus);
+        when(teamMemberAnnouncementService.getHomeAnnouncementInformMenus(any())).thenReturn(announcementInformMenus);
 
         final ResultActions resultActions = performGetHomeAnnouncementInformMenus();
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부"),
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부"),
 
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드"),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드"),
 
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지"),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지"),
 
-                                        // result
-                                        subsectionWithPath("result.announcementInformMenus")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고 정보 목록"),
+                        // result
+                        subsectionWithPath("result.announcementInformMenus")
+                            .type(JsonFieldType.ARRAY)
+                            .description("공고 정보 목록"),
 
-                                        fieldWithPath("result.announcementInformMenus[].teamMemberAnnouncementId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 공고 ID PK"),
+                        fieldWithPath("result.announcementInformMenus[].teamMemberAnnouncementId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 공고 ID PK"),
 
-                                        // announcementInformMenus[].teamLogoImagePath
-                                        fieldWithPath("result.announcementInformMenus[].teamLogoImagePath")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 로고 이미지 경로"),
+                        // announcementInformMenus[].teamLogoImagePath
+                        fieldWithPath("result.announcementInformMenus[].teamLogoImagePath")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 로고 이미지 경로"),
 
-                                        // announcementInformMenus[].teamName
-                                        fieldWithPath("result.announcementInformMenus[].teamName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 이름"),
+                        // announcementInformMenus[].teamName
+                        fieldWithPath("result.announcementInformMenus[].teamName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 이름"),
 
-                                        // announcementInformMenus[].teamScaleItem
-                                        fieldWithPath("result.announcementInformMenus[].teamScaleItem")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("팀 규모 정보 객체"),
-                                        fieldWithPath("result.announcementInformMenus[].teamScaleItem.teamScaleName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 규모 이름"),
+                        // announcementInformMenus[].teamScaleItem
+                        fieldWithPath("result.announcementInformMenus[].teamScaleItem")
+                            .type(JsonFieldType.OBJECT)
+                            .description("팀 규모 정보 객체"),
+                        fieldWithPath("result.announcementInformMenus[].teamScaleItem.teamScaleName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 규모 이름"),
 
-                                        // announcementInformMenus[].regionDetail
-                                        fieldWithPath("result.announcementInformMenus[].regionDetail")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("팀 활동지역 정보 객체"),
-                                        fieldWithPath("result.announcementInformMenus[].regionDetail.cityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 활동지역 (시/도)"),
-                                        fieldWithPath("result.announcementInformMenus[].regionDetail.divisionName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 활동지역 (시/군/구)"),
+                        // announcementInformMenus[].regionDetail
+                        fieldWithPath("result.announcementInformMenus[].regionDetail")
+                            .type(JsonFieldType.OBJECT)
+                            .description("팀 활동지역 정보 객체"),
+                        fieldWithPath("result.announcementInformMenus[].regionDetail.cityName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 활동지역 (시/도)"),
+                        fieldWithPath("result.announcementInformMenus[].regionDetail.divisionName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 활동지역 (시/군/구)"),
 
-                                        // announcementDDay
-                                        fieldWithPath("result.announcementInformMenus[].announcementDDay")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("공고 D-Day (마감까지 남은 일수)"),
+                        // announcementDDay
+                        fieldWithPath("result.announcementInformMenus[].announcementDDay")
+                            .type(JsonFieldType.NUMBER)
+                            .description("공고 D-Day (마감까지 남은 일수)"),
 
-                                        // announcementTitle
-                                        fieldWithPath("result.announcementInformMenus[].announcementTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 제목"),
+                        // announcementTitle
+                        fieldWithPath("result.announcementInformMenus[].announcementTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 제목"),
 
-                                        // isAnnouncementScrap
-                                        fieldWithPath("result.announcementInformMenus[].isAnnouncementScrap")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("공고 스크랩 여부"),
+                        // isAnnouncementScrap
+                        fieldWithPath("result.announcementInformMenus[].isAnnouncementScrap")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("공고 스크랩 여부"),
 
-                                        // announcementScrapCount
-                                        fieldWithPath("result.announcementInformMenus[].announcementScrapCount")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("공고 스크랩된 총 횟수"),
+                        // announcementScrapCount
+                        fieldWithPath("result.announcementInformMenus[].announcementScrapCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("공고 스크랩된 총 횟수"),
 
-                                        // announcementPositionItem
-                                        fieldWithPath("result.announcementInformMenus[].announcementPositionItem")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("공고 포지션 정보 객체"),
-                                        fieldWithPath("result.announcementInformMenus[].announcementPositionItem.majorPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("포지션 대분류"),
-                                        fieldWithPath("result.announcementInformMenus[].announcementPositionItem.subPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("포지션 소분류"),
+                        // announcementPositionItem
+                        fieldWithPath("result.announcementInformMenus[].announcementPositionItem")
+                            .type(JsonFieldType.OBJECT)
+                            .description("공고 포지션 정보 객체"),
+                        fieldWithPath("result.announcementInformMenus[].announcementPositionItem.majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 대분류"),
+                        fieldWithPath("result.announcementInformMenus[].announcementPositionItem.subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 소분류"),
 
-                                        // announcementSkillNames
-                                        fieldWithPath("result.announcementInformMenus[].announcementSkillNames")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고에 필요한 스킬 목록"),
-                                        fieldWithPath("result.announcementInformMenus[].announcementSkillNames[].announcementSkillName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요구 스킬 이름")
-                                )
-                        )
+                        // announcementSkillNames
+                        fieldWithPath("result.announcementInformMenus[].announcementSkillNames")
+                            .type(JsonFieldType.ARRAY)
+                            .description("공고에 필요한 스킬 목록"),
+                        fieldWithPath("result.announcementInformMenus[].announcementSkillNames[].announcementSkillName")
+                            .type(JsonFieldType.STRING)
+                            .description("요구 스킬 이름")
+                    )
                 )
-                .andReturn();
+            )
+            .andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<AnnouncementInformMenus> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<AnnouncementInformMenus>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<AnnouncementInformMenus>>() {
+            }
         );
 
         final CommonResponse<AnnouncementInformMenus> expected = CommonResponse.onSuccess(announcementInformMenus);
@@ -345,131 +346,131 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     void getLoggedOutTeamMemberAnnouncementItems() throws Exception {
         // given
         final TeamMemberAnnouncemenItems teamMemberAnnouncemenItems = TeamMemberAnnouncemenItems.builder()
-                .teamMemberAnnouncementItems(Arrays.asList(
-                        TeamMemberAnnouncementItem.builder()
-                                .teamMemberAnnouncementId(1L)
-                                .announcementDDay(19)
-                                .isPermanentRecruitment(false)
-                                .announcementTitle("공고 제목")
-                                .majorPosition("포지션 대분류")
-                                .announcementSkillNames(
-                                        Arrays.asList(
-                                                TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 스킬 이름 1")
-                                                        .build(),
-                                                TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 스킬 이름 2")
-                                                        .build()
-                                        )
-                                )
-                                .isAnnouncementPublic(true)
-                                .isAnnouncementInProgress(false)
-                                .isAnnouncementScrap(true)
-                                .announcementScrapCount(100)
+            .teamMemberAnnouncementItems(Arrays.asList(
+                TeamMemberAnnouncementItem.builder()
+                    .teamMemberAnnouncementId(1L)
+                    .announcementDDay(19)
+                    .isPermanentRecruitment(false)
+                    .announcementTitle("공고 제목")
+                    .majorPosition("포지션 대분류")
+                    .announcementSkillNames(
+                        Arrays.asList(
+                            TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
+                                .announcementSkillName("공고 스킬 이름 1")
                                 .build(),
-                        TeamMemberAnnouncementItem.builder()
-                                .teamMemberAnnouncementId(2L)
-                                .announcementDDay(20)
-                                .isPermanentRecruitment(false)
-                                .announcementTitle("공고 제목 2")
-                                .majorPosition("포지션 대분류")
-                                .announcementSkillNames(
-                                        Arrays.asList(
-                                                TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 스킬 이름 3")
-                                                        .build(),
-                                                TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 스킬 이름 4")
-                                                        .build()
-                                        )
-                                )
-                                .isAnnouncementPublic(true)
-                                .isAnnouncementInProgress(false)
-                                .isAnnouncementScrap(true)
-                                .announcementScrapCount(200)
+                            TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
+                                .announcementSkillName("공고 스킬 이름 2")
                                 .build()
-                ))
-                .build();
+                        )
+                    )
+                    .isAnnouncementPublic(true)
+                    .isAnnouncementInProgress(false)
+                    .isAnnouncementScrap(true)
+                    .announcementScrapCount(100)
+                    .build(),
+                TeamMemberAnnouncementItem.builder()
+                    .teamMemberAnnouncementId(2L)
+                    .announcementDDay(20)
+                    .isPermanentRecruitment(false)
+                    .announcementTitle("공고 제목 2")
+                    .majorPosition("포지션 대분류")
+                    .announcementSkillNames(
+                        Arrays.asList(
+                            TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
+                                .announcementSkillName("공고 스킬 이름 3")
+                                .build(),
+                            TeamMemberAnnouncementResponseDTO.AnnouncementSkillName.builder()
+                                .announcementSkillName("공고 스킬 이름 4")
+                                .build()
+                        )
+                    )
+                    .isAnnouncementPublic(true)
+                    .isAnnouncementInProgress(false)
+                    .isAnnouncementScrap(true)
+                    .announcementScrapCount(200)
+                    .build()
+            ))
+            .build();
 
         // when
-        when(teamMemberAnnouncementService.getLoggedOutTeamMemberAnnouncementViewItems(any())).thenReturn(teamMemberAnnouncemenItems);
+        when(teamMemberAnnouncementService.getTeamMemberAnnouncementViewItems(any(), any())).thenReturn(teamMemberAnnouncemenItems);
 
         final ResultActions resultActions = performGetLoggedOutTeamMemberAnnouncementViewItems("liaison");
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("응답 데이터 객체"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("팀원 공고 ViewItems 리스트"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].teamMemberAnnouncementId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 공고 ID"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementDDay")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 공고 마감 디데이"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].isPermanentRecruitment")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("팀원 공고 상시 모집 여부"),
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result")
+                            .type(JsonFieldType.OBJECT)
+                            .description("응답 데이터 객체"),
+                        fieldWithPath("result.teamMemberAnnouncementItems")
+                            .type(JsonFieldType.ARRAY)
+                            .description("팀원 공고 ViewItems 리스트"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].teamMemberAnnouncementId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 공고 ID"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementDDay")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 공고 마감 디데이"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].isPermanentRecruitment")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("팀원 공고 상시 모집 여부"),
 
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 제목"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].majorPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("포지션 대분류"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementSkillNames")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고에 필요한 스킬 이름 리스트"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementSkillNames[].announcementSkillName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 스킬 이름"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].isAnnouncementPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("공고 공개 여부"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].isAnnouncementInProgress")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("공고 진행 여부"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].isAnnouncementScrap")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("공고 스크랩 여부"),
-                                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementScrapCount")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("공고 스크랩된 횟수")
-                                )
-                        )
-                ).andReturn();
+                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 제목"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 대분류"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementSkillNames")
+                            .type(JsonFieldType.ARRAY)
+                            .description("공고에 필요한 스킬 이름 리스트"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementSkillNames[].announcementSkillName")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 스킬 이름"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].isAnnouncementPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("공고 공개 여부"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].isAnnouncementInProgress")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("공고 진행 여부"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].isAnnouncementScrap")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("공고 스크랩 여부"),
+                        fieldWithPath("result.teamMemberAnnouncementItems[].announcementScrapCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("공고 스크랩된 횟수")
+                    )
+                )
+            ).andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamMemberAnnouncemenItems> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<TeamMemberAnnouncemenItems>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<TeamMemberAnnouncemenItems>>() {
+            }
         );
 
         final CommonResponse<TeamMemberAnnouncemenItems> expected = CommonResponse.onSuccess(teamMemberAnnouncemenItems);
@@ -570,140 +571,140 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     void getTeamMemberAnnouncementDetail() throws Exception {
         // given
         final TeamMemberAnnouncementDetail teamMemberAnnouncementDetail
-                = TeamMemberAnnouncementDetail.builder()
-                .teamMemberAnnouncementId(1L)
-                .isAnnouncementScrap(true)
-                .announcementScrapCount(100)
-                .announcementDDay(20)
-                .isPermanentRecruitment(false)
-                .announcementTitle("팀원 공고 제목")
-                .announcementPositionItem(
-                        AnnouncementPositionItem.builder()
-                                .majorPosition("포지션 대분류")
-                                .subPosition("포지션 소분류")
-                                .build()
+            = TeamMemberAnnouncementDetail.builder()
+            .teamMemberAnnouncementId(1L)
+            .isAnnouncementScrap(true)
+            .announcementScrapCount(100)
+            .announcementDDay(20)
+            .isPermanentRecruitment(false)
+            .announcementTitle("팀원 공고 제목")
+            .announcementPositionItem(
+                AnnouncementPositionItem.builder()
+                    .majorPosition("포지션 대분류")
+                    .subPosition("포지션 소분류")
+                    .build()
+            )
+            .announcementSkillNames(
+                Arrays.asList(
+                    AnnouncementSkillName.builder()
+                        .announcementSkillName("스킬 이름 1")
+                        .build(),
+                    AnnouncementSkillName.builder()
+                        .announcementSkillName("스킬 이름 2")
+                        .build()
                 )
-                .announcementSkillNames(
-                        Arrays.asList(
-                                AnnouncementSkillName.builder()
-                                        .announcementSkillName("스킬 이름 1")
-                                        .build(),
-                                AnnouncementSkillName.builder()
-                                        .announcementSkillName("스킬 이름 2")
-                                        .build()
-                        )
-                )
-                .announcementEndDate("공고 종료 날짜")
-                .isRegionFlexible(true)
-                .mainTasks("주요 업무")
-                .workMethod("업무 방식")
-                .idealCandidate("이런 분을 찾고 있어요")
-                .preferredQualifications("이런 분이면 더 좋아요")
-                .joiningProcess("이런 과정으로 합류해요")
-                .benefits("합류하면 이런 것들을 얻어갈 수 있어요")
-                .build();
+            )
+            .announcementEndDate("공고 종료 날짜")
+            .isRegionFlexible(true)
+            .mainTasks("주요 업무")
+            .workMethod("업무 방식")
+            .idealCandidate("이런 분을 찾고 있어요")
+            .preferredQualifications("이런 분이면 더 좋아요")
+            .joiningProcess("이런 과정으로 합류해요")
+            .benefits("합류하면 이런 것들을 얻어갈 수 있어요")
+            .build();
 
         // when
-        when(teamMemberAnnouncementService.getTeamMemberAnnouncementDetailInLogoutState(any(), anyLong())).thenReturn(teamMemberAnnouncementDetail);
+        when(teamMemberAnnouncementService.getTeamMemberAnnouncementDetail(any(), any(), anyLong())).thenReturn(teamMemberAnnouncementDetail);
 
         final ResultActions resultActions = performGetTeamMemberAnnouncementDetail("liaison", 1L);
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)"),
-                                        parameterWithName("teamMemberAnnouncementId")
-                                                .description("팀원 공고 ID")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("응답 결과"),
-                                        fieldWithPath("result.teamMemberAnnouncementId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 공고 ID"),
-                                        fieldWithPath("result.isAnnouncementScrap")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("팀원 공고 스크랩 여부"),
-                                        fieldWithPath("result.announcementScrapCount")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 공고 스크랩 수"),
-                                        fieldWithPath("result.announcementDDay")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 공고 디데이"),
-                                        fieldWithPath("result.isPermanentRecruitment")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("팀원 공고 상시 모집 여부"),
-                                        fieldWithPath("result.announcementTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 제목"),
-                                        fieldWithPath("result.announcementPositionItem")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("공고 포지션 정보"),
-                                        fieldWithPath("result.announcementPositionItem.majorPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 대분류"),
-                                        fieldWithPath("result.announcementPositionItem.subPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 소분류"),
-                                        fieldWithPath("result.announcementSkillNames")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고 스킬 목록"),
-                                        fieldWithPath("result.announcementSkillNames[].announcementSkillName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 스킬 이름"),
-                                        fieldWithPath("result.announcementEndDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 종료 날짜"),
-                                        fieldWithPath("result.isRegionFlexible")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("지역 무관 여부"),
-                                        fieldWithPath("result.mainTasks")
-                                                .type(JsonFieldType.STRING)
-                                                .description("주요 업무"),
-                                        fieldWithPath("result.workMethod")
-                                                .type(JsonFieldType.STRING)
-                                                .description("업무 방식"),
-                                        fieldWithPath("result.idealCandidate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이런 분을 찾고 있어요"),
-                                        fieldWithPath("result.preferredQualifications")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이런 분이면 더 좋아요"),
-                                        fieldWithPath("result.joiningProcess")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이런 과정으로 합류해요"),
-                                        fieldWithPath("result.benefits")
-                                                .type(JsonFieldType.STRING)
-                                                .description("합류하면 이런 것들을 얻어 갈 수 있어요")
-                                )
-                        )
-                ).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)"),
+                        parameterWithName("teamMemberAnnouncementId")
+                            .description("팀원 공고 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result")
+                            .type(JsonFieldType.OBJECT)
+                            .description("응답 결과"),
+                        fieldWithPath("result.teamMemberAnnouncementId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 공고 ID"),
+                        fieldWithPath("result.isAnnouncementScrap")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("팀원 공고 스크랩 여부"),
+                        fieldWithPath("result.announcementScrapCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 공고 스크랩 수"),
+                        fieldWithPath("result.announcementDDay")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 공고 디데이"),
+                        fieldWithPath("result.isPermanentRecruitment")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("팀원 공고 상시 모집 여부"),
+                        fieldWithPath("result.announcementTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 제목"),
+                        fieldWithPath("result.announcementPositionItem")
+                            .type(JsonFieldType.OBJECT)
+                            .description("공고 포지션 정보"),
+                        fieldWithPath("result.announcementPositionItem.majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 대분류"),
+                        fieldWithPath("result.announcementPositionItem.subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 소분류"),
+                        fieldWithPath("result.announcementSkillNames")
+                            .type(JsonFieldType.ARRAY)
+                            .description("공고 스킬 목록"),
+                        fieldWithPath("result.announcementSkillNames[].announcementSkillName")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 스킬 이름"),
+                        fieldWithPath("result.announcementEndDate")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 종료 날짜"),
+                        fieldWithPath("result.isRegionFlexible")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("지역 무관 여부"),
+                        fieldWithPath("result.mainTasks")
+                            .type(JsonFieldType.STRING)
+                            .description("주요 업무"),
+                        fieldWithPath("result.workMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("업무 방식"),
+                        fieldWithPath("result.idealCandidate")
+                            .type(JsonFieldType.STRING)
+                            .description("이런 분을 찾고 있어요"),
+                        fieldWithPath("result.preferredQualifications")
+                            .type(JsonFieldType.STRING)
+                            .description("이런 분이면 더 좋아요"),
+                        fieldWithPath("result.joiningProcess")
+                            .type(JsonFieldType.STRING)
+                            .description("이런 과정으로 합류해요"),
+                        fieldWithPath("result.benefits")
+                            .type(JsonFieldType.STRING)
+                            .description("합류하면 이런 것들을 얻어 갈 수 있어요")
+                    )
+                )
+            ).andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamMemberAnnouncementDetail> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<TeamMemberAnnouncementDetail>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<TeamMemberAnnouncementDetail>>() {
+            }
         );
 
         final CommonResponse<TeamMemberAnnouncementDetail> expected = CommonResponse.onSuccess(teamMemberAnnouncementDetail);
@@ -717,24 +718,24 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     void addTeamMemberAnnouncement() throws Exception {
         // given
         final List<TeamMemberAnnouncementRequestDTO.AnnouncementSkillName> announcementSkillNames
-                = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
+            = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
 
         final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
-                = AddTeamMemberAnnouncementRequest.builder()
-                .announcementTitle("공고 제목")
-                .majorPosition("대분류 포지션")
-                .subPosition("소분류 포지션")
-                .announcementSkillNames(announcementSkillNames)
-                .announcementEndDate("공고 종료 날짜")
-                .isPermanentRecruitment(true)
-                .isRegionFlexible(false)
-                .mainTasks("주요 업무")
-                .workMethod("업무 방식")
-                .idealCandidate("이런 분을 찾고 있어요")
-                .preferredQualifications("이런 분이면 더 좋아요")
-                .joiningProcess("이런 과정으로 합류해요")
-                .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
-                .build();
+            = AddTeamMemberAnnouncementRequest.builder()
+            .announcementTitle("공고 제목")
+            .majorPosition("대분류 포지션")
+            .subPosition("소분류 포지션")
+            .announcementSkillNames(announcementSkillNames)
+            .announcementEndDate("공고 종료 날짜")
+            .isPermanentRecruitment(true)
+            .isRegionFlexible(false)
+            .mainTasks("주요 업무")
+            .workMethod("업무 방식")
+            .idealCandidate("이런 분을 찾고 있어요")
+            .preferredQualifications("이런 분이면 더 좋아요")
+            .joiningProcess("이런 과정으로 합류해요")
+            .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+            .build();
 
         final AddTeamMemberAnnouncementResponse addTeamMemberAnnouncementResponse = getAddTeamMemberAnnouncementResponse();
 
@@ -745,139 +746,139 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)")
-                                ),
-                                requestFields(
-                                        fieldWithPath("announcementTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀원 공고 제목"),
-                                        fieldWithPath("majorPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 대분류"),
-                                        fieldWithPath("subPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 소분류"),
-                                        fieldWithPath("announcementSkillNames[]")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고 스킬 배열"),
-                                        fieldWithPath("announcementSkillNames[].announcementSkillName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 스킬 이름"),
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)")
+                    ),
+                    requestFields(
+                        fieldWithPath("announcementTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("팀원 공고 제목"),
+                        fieldWithPath("majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 대분류"),
+                        fieldWithPath("subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 소분류"),
+                        fieldWithPath("announcementSkillNames[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("공고 스킬 배열"),
+                        fieldWithPath("announcementSkillNames[].announcementSkillName")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 스킬 이름"),
 
-                                        fieldWithPath("announcementEndDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 종료 날짜")
-                                                .optional(),
-                                        fieldWithPath("isPermanentRecruitment")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("상시 모집 여부")
-                                                .optional(),
+                        fieldWithPath("announcementEndDate")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 종료 날짜")
+                            .optional(),
+                        fieldWithPath("isPermanentRecruitment")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("상시 모집 여부")
+                            .optional(),
 
-                                        fieldWithPath("isRegionFlexible")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("지역 무관 여부"),
+                        fieldWithPath("isRegionFlexible")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("지역 무관 여부"),
 
-                                        fieldWithPath("mainTasks")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 주요 업무"),
-                                        fieldWithPath("workMethod")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 업무 방식"),
-                                        fieldWithPath("idealCandidate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 이런 분을 찾고 있어요"),
-                                        fieldWithPath("preferredQualifications")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 이런 분이면 더 좋아요"),
-                                        fieldWithPath("joiningProcess")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 이런 과정으로 합류해요"),
-                                        fieldWithPath("benefits")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 합류하면 이런 것들을 얻어 갈 수 있어요")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("응답 결과"),
-                                        fieldWithPath("result.teamMemberAnnouncementId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 모집 공고 ID"),
-                                        fieldWithPath("result.announcementTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 제목"),
-                                        fieldWithPath("result.isPermanentRecruitment")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("공고 상시 모집 여부"),
+                        fieldWithPath("mainTasks")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 주요 업무"),
+                        fieldWithPath("workMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 업무 방식"),
+                        fieldWithPath("idealCandidate")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 이런 분을 찾고 있어요"),
+                        fieldWithPath("preferredQualifications")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 이런 분이면 더 좋아요"),
+                        fieldWithPath("joiningProcess")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 이런 과정으로 합류해요"),
+                        fieldWithPath("benefits")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 합류하면 이런 것들을 얻어 갈 수 있어요")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result")
+                            .type(JsonFieldType.OBJECT)
+                            .description("응답 결과"),
+                        fieldWithPath("result.teamMemberAnnouncementId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 모집 공고 ID"),
+                        fieldWithPath("result.announcementTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 제목"),
+                        fieldWithPath("result.isPermanentRecruitment")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("공고 상시 모집 여부"),
 
-                                        fieldWithPath("result.announcementPositionItem")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("공고 포지션 정보"),
-                                        fieldWithPath("result.announcementPositionItem.majorPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 대분류"),
-                                        fieldWithPath("result.announcementPositionItem.subPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 소분류"),
-                                        fieldWithPath("result.announcementSkillNames")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고 스킬 목록"),
-                                        fieldWithPath("result.announcementSkillNames[].announcementSkillName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 스킬 이름"),
-                                        fieldWithPath("result.announcementEndDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 종료 날짜"),
-                                        fieldWithPath("result.isRegionFlexible")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("지역 무관 여부"),
-                                        fieldWithPath("result.mainTasks")
-                                                .type(JsonFieldType.STRING)
-                                                .description("주요 업무"),
-                                        fieldWithPath("result.workMethod")
-                                                .type(JsonFieldType.STRING)
-                                                .description("업무 방식"),
-                                        fieldWithPath("result.idealCandidate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이런 분을 찾고 있어요"),
-                                        fieldWithPath("result.preferredQualifications")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이런 분이면 더 좋아요"),
-                                        fieldWithPath("result.joiningProcess")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이런 과정으로 합류해요"),
-                                        fieldWithPath("result.benefits")
-                                                .type(JsonFieldType.STRING)
-                                                .description("합류하면 이런 것들을 얻어 갈 수 있어요")
-                                )
-                        )
-                ).andReturn();
+                        fieldWithPath("result.announcementPositionItem")
+                            .type(JsonFieldType.OBJECT)
+                            .description("공고 포지션 정보"),
+                        fieldWithPath("result.announcementPositionItem.majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 대분류"),
+                        fieldWithPath("result.announcementPositionItem.subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 소분류"),
+                        fieldWithPath("result.announcementSkillNames")
+                            .type(JsonFieldType.ARRAY)
+                            .description("공고 스킬 목록"),
+                        fieldWithPath("result.announcementSkillNames[].announcementSkillName")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 스킬 이름"),
+                        fieldWithPath("result.announcementEndDate")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 종료 날짜"),
+                        fieldWithPath("result.isRegionFlexible")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("지역 무관 여부"),
+                        fieldWithPath("result.mainTasks")
+                            .type(JsonFieldType.STRING)
+                            .description("주요 업무"),
+                        fieldWithPath("result.workMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("업무 방식"),
+                        fieldWithPath("result.idealCandidate")
+                            .type(JsonFieldType.STRING)
+                            .description("이런 분을 찾고 있어요"),
+                        fieldWithPath("result.preferredQualifications")
+                            .type(JsonFieldType.STRING)
+                            .description("이런 분이면 더 좋아요"),
+                        fieldWithPath("result.joiningProcess")
+                            .type(JsonFieldType.STRING)
+                            .description("이런 과정으로 합류해요"),
+                        fieldWithPath("result.benefits")
+                            .type(JsonFieldType.STRING)
+                            .description("합류하면 이런 것들을 얻어 갈 수 있어요")
+                    )
+                )
+            ).andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<AddTeamMemberAnnouncementResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<AddTeamMemberAnnouncementResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<AddTeamMemberAnnouncementResponse>>() {
+            }
         );
 
         final CommonResponse<AddTeamMemberAnnouncementResponse> expected = CommonResponse.onSuccess(addTeamMemberAnnouncementResponse);
@@ -891,24 +892,24 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     void updateTeamMemberAnnouncement() throws Exception {
         // given
         final List<TeamMemberAnnouncementRequestDTO.AnnouncementSkillName> announcementSkillNames
-                = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
+            = Arrays.asList(new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementRequestDTO.AnnouncementSkillName("React"));
 
         final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
-                = UpdateTeamMemberAnnouncementRequest.builder()
-                .announcementTitle("공고 제목")
-                .majorPosition("대분류 포지션")
-                .subPosition("소분류 포지션")
-                .announcementSkillNames(announcementSkillNames)
-                .announcementEndDate("공고 종료 날짜")
-                .isPermanentRecruitment(true)
-                .isRegionFlexible(false)
-                .mainTasks("주요 업무")
-                .workMethod("업무 방식")
-                .idealCandidate("이런 분을 찾고 있어요")
-                .preferredQualifications("이런 분이면 더 좋아요")
-                .joiningProcess("이런 과정으로 합류해요")
-                .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
-                .build();
+            = UpdateTeamMemberAnnouncementRequest.builder()
+            .announcementTitle("공고 제목")
+            .majorPosition("대분류 포지션")
+            .subPosition("소분류 포지션")
+            .announcementSkillNames(announcementSkillNames)
+            .announcementEndDate("공고 종료 날짜")
+            .isPermanentRecruitment(true)
+            .isRegionFlexible(false)
+            .mainTasks("주요 업무")
+            .workMethod("업무 방식")
+            .idealCandidate("이런 분을 찾고 있어요")
+            .preferredQualifications("이런 분이면 더 좋아요")
+            .joiningProcess("이런 과정으로 합류해요")
+            .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+            .build();
 
         final UpdateTeamMemberAnnouncementResponse updateTeamMemberAnnouncementResponse = getUpdateTeamMemberAnnouncementResponse();
 
@@ -919,138 +920,138 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)"),
-                                        parameterWithName("teamMemberAnnouncementId")
-                                                .description("팀원 공고 ID")
-                                ),
-                                requestFields(
-                                        fieldWithPath("announcementTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀원 공고 제목"),
-                                        fieldWithPath("majorPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 대분류"),
-                                        fieldWithPath("subPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 소분류"),
-                                        fieldWithPath("announcementSkillNames[]")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고 스킬 배열"),
-                                        fieldWithPath("announcementSkillNames[].announcementSkillName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 스킬 이름"),
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)"),
+                        parameterWithName("teamMemberAnnouncementId")
+                            .description("팀원 공고 ID")
+                    ),
+                    requestFields(
+                        fieldWithPath("announcementTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("팀원 공고 제목"),
+                        fieldWithPath("majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 대분류"),
+                        fieldWithPath("subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 소분류"),
+                        fieldWithPath("announcementSkillNames[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("공고 스킬 배열"),
+                        fieldWithPath("announcementSkillNames[].announcementSkillName")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 스킬 이름"),
 
-                                        fieldWithPath("announcementEndDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 종료 날짜"),
-                                        fieldWithPath("isPermanentRecruitment")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("공고 상시 모집 여부"),
+                        fieldWithPath("announcementEndDate")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 종료 날짜"),
+                        fieldWithPath("isPermanentRecruitment")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("공고 상시 모집 여부"),
 
-                                        fieldWithPath("isRegionFlexible")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("지역 무관 여부"),
+                        fieldWithPath("isRegionFlexible")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("지역 무관 여부"),
 
-                                        fieldWithPath("mainTasks")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 주요 업무"),
-                                        fieldWithPath("workMethod")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 업무 방식"),
-                                        fieldWithPath("idealCandidate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 이런 분을 찾고 있어요"),
-                                        fieldWithPath("preferredQualifications")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 이런 분이면 더 좋아요"),
-                                        fieldWithPath("joiningProcess")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 이런 과정으로 합류해요"),
-                                        fieldWithPath("benefits")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 합류하면 이런 것들을 얻어 갈 수 있어요")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("응답 결과"),
-                                        fieldWithPath("result.teamMemberAnnouncementId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 모집 공고 ID"),
-                                        fieldWithPath("result.announcementTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 제목"),
-                                        fieldWithPath("result.isPermanentRecruitment")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("공고 상시 모집 여부"),
-                                        fieldWithPath("result.announcementPositionItem")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("공고 포지션 정보"),
-                                        fieldWithPath("result.announcementPositionItem.majorPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 대분류"),
-                                        fieldWithPath("result.announcementPositionItem.subPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 포지션 소분류"),
-                                        fieldWithPath("result.announcementSkillNames")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고 스킬 목록"),
-                                        fieldWithPath("result.announcementSkillNames[].announcementSkillName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 스킬 이름"),
-                                        fieldWithPath("result.announcementEndDate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 종료 날짜"),
-                                        fieldWithPath("result.isRegionFlexible")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("지역 무관 여부"),
-                                        fieldWithPath("result.mainTasks")
-                                                .type(JsonFieldType.STRING)
-                                                .description("주요 업무"),
-                                        fieldWithPath("result.workMethod")
-                                                .type(JsonFieldType.STRING)
-                                                .description("업무 방식"),
-                                        fieldWithPath("result.idealCandidate")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이런 분을 찾고 있어요"),
-                                        fieldWithPath("result.preferredQualifications")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이런 분이면 더 좋아요"),
-                                        fieldWithPath("result.joiningProcess")
-                                                .type(JsonFieldType.STRING)
-                                                .description("이런 과정으로 합류해요"),
-                                        fieldWithPath("result.benefits")
-                                                .type(JsonFieldType.STRING)
-                                                .description("합류하면 이런 것들을 얻어 갈 수 있어요")
-                                )
-                        )
-                ).andReturn();
+                        fieldWithPath("mainTasks")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 주요 업무"),
+                        fieldWithPath("workMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 업무 방식"),
+                        fieldWithPath("idealCandidate")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 이런 분을 찾고 있어요"),
+                        fieldWithPath("preferredQualifications")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 이런 분이면 더 좋아요"),
+                        fieldWithPath("joiningProcess")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 이런 과정으로 합류해요"),
+                        fieldWithPath("benefits")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 합류하면 이런 것들을 얻어 갈 수 있어요")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result")
+                            .type(JsonFieldType.OBJECT)
+                            .description("응답 결과"),
+                        fieldWithPath("result.teamMemberAnnouncementId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 모집 공고 ID"),
+                        fieldWithPath("result.announcementTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 제목"),
+                        fieldWithPath("result.isPermanentRecruitment")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("공고 상시 모집 여부"),
+                        fieldWithPath("result.announcementPositionItem")
+                            .type(JsonFieldType.OBJECT)
+                            .description("공고 포지션 정보"),
+                        fieldWithPath("result.announcementPositionItem.majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 대분류"),
+                        fieldWithPath("result.announcementPositionItem.subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 소분류"),
+                        fieldWithPath("result.announcementSkillNames")
+                            .type(JsonFieldType.ARRAY)
+                            .description("공고 스킬 목록"),
+                        fieldWithPath("result.announcementSkillNames[].announcementSkillName")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 스킬 이름"),
+                        fieldWithPath("result.announcementEndDate")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 종료 날짜"),
+                        fieldWithPath("result.isRegionFlexible")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("지역 무관 여부"),
+                        fieldWithPath("result.mainTasks")
+                            .type(JsonFieldType.STRING)
+                            .description("주요 업무"),
+                        fieldWithPath("result.workMethod")
+                            .type(JsonFieldType.STRING)
+                            .description("업무 방식"),
+                        fieldWithPath("result.idealCandidate")
+                            .type(JsonFieldType.STRING)
+                            .description("이런 분을 찾고 있어요"),
+                        fieldWithPath("result.preferredQualifications")
+                            .type(JsonFieldType.STRING)
+                            .description("이런 분이면 더 좋아요"),
+                        fieldWithPath("result.joiningProcess")
+                            .type(JsonFieldType.STRING)
+                            .description("이런 과정으로 합류해요"),
+                        fieldWithPath("result.benefits")
+                            .type(JsonFieldType.STRING)
+                            .description("합류하면 이런 것들을 얻어 갈 수 있어요")
+                    )
+                )
+            ).andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<UpdateTeamMemberAnnouncementResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<UpdateTeamMemberAnnouncementResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<UpdateTeamMemberAnnouncementResponse>>() {
+            }
         );
 
         final CommonResponse<UpdateTeamMemberAnnouncementResponse> expected = CommonResponse.onSuccess(updateTeamMemberAnnouncementResponse);
@@ -1064,7 +1065,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     void removeTeamMemberAnnouncement() throws Exception {
         // given
         final TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse removeTeamMemberAnnouncementResponse
-                = new RemoveTeamMemberAnnouncementResponse(1L);
+            = new RemoveTeamMemberAnnouncementResponse(1L);
 
         // when
         when(teamMemberAnnouncementService.removeTeamMemberAnnouncement(anyLong(), any(), anyLong())).thenReturn(removeTeamMemberAnnouncementResponse);
@@ -1073,43 +1074,43 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)"),
-                                        parameterWithName("teamMemberAnnouncementId")
-                                                .description("팀원 공고 ID")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.teamMemberAnnouncementId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 모집 공고 ID")
-                                )
-                        )
-                ).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)"),
+                        parameterWithName("teamMemberAnnouncementId")
+                            .description("팀원 공고 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result.teamMemberAnnouncementId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 모집 공고 ID")
+                    )
+                )
+            ).andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<RemoveTeamMemberAnnouncementResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<RemoveTeamMemberAnnouncementResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<RemoveTeamMemberAnnouncementResponse>>() {
+            }
         );
 
         final CommonResponse<RemoveTeamMemberAnnouncementResponse> expected = CommonResponse.onSuccess(removeTeamMemberAnnouncementResponse);
@@ -1123,7 +1124,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     void updateTeamMemberAnnouncementPublicState() throws Exception {
         // given
         final TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse updateTeamMemberAnnouncementPublicStateResponse
-                = new UpdateTeamMemberAnnouncementPublicStateResponse(1L, true);
+            = new UpdateTeamMemberAnnouncementPublicStateResponse(1L, true);
 
         // when
         when(teamMemberAnnouncementService.updateTeamMemberAnnouncementPublicState(anyLong(), any(), anyLong())).thenReturn(updateTeamMemberAnnouncementPublicStateResponse);
@@ -1132,45 +1133,45 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)"),
-                                        parameterWithName("teamMemberAnnouncementId")
-                                                .description("팀원 공고 ID")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.teamMemberAnnouncementId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("해당 팀원 공고 ID"),
-                                        fieldWithPath("result.isAnnouncementPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("해당 팀원 공고 변경된 팀원 공고 공개 여부")
-                                )
-                        )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)"),
+                        parameterWithName("teamMemberAnnouncementId")
+                            .description("팀원 공고 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result.teamMemberAnnouncementId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("해당 팀원 공고 ID"),
+                        fieldWithPath("result.isAnnouncementPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("해당 팀원 공고 변경된 팀원 공고 공개 여부")
+                    )
+                )).andReturn();
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<UpdateTeamMemberAnnouncementPublicStateResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<UpdateTeamMemberAnnouncementPublicStateResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<UpdateTeamMemberAnnouncementPublicStateResponse>>() {
+            }
         );
 
         final CommonResponse<UpdateTeamMemberAnnouncementPublicStateResponse> expected = CommonResponse.onSuccess(updateTeamMemberAnnouncementPublicStateResponse);
@@ -1181,50 +1182,50 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     @NotNull
     private static AddTeamMemberAnnouncementResponse getAddTeamMemberAnnouncementResponse() {
         final AnnouncementPositionItem announcementPositionItem
-                = new AnnouncementPositionItem("대분류 포지션", "소분류 포지션");
+            = new AnnouncementPositionItem("대분류 포지션", "소분류 포지션");
 
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNamesResponse
-                = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
+            = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
 
         return AddTeamMemberAnnouncementResponse.builder()
-                .teamMemberAnnouncementId(1L)
-                .announcementTitle("공고 제목")
-                .announcementPositionItem(announcementPositionItem)
-                .announcementSkillNames(announcementSkillNamesResponse)
-                .announcementEndDate("공고 종료 날짜")
-                .isPermanentRecruitment(true)
-                .isRegionFlexible(false)
-                .mainTasks("주요 업무")
-                .workMethod("업무 방식")
-                .idealCandidate("이런 분을 찾고 있어요")
-                .preferredQualifications("이런 분이면 더 좋아요")
-                .joiningProcess("이런 과정으로 합류해요")
-                .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
-                .build();
+            .teamMemberAnnouncementId(1L)
+            .announcementTitle("공고 제목")
+            .announcementPositionItem(announcementPositionItem)
+            .announcementSkillNames(announcementSkillNamesResponse)
+            .announcementEndDate("공고 종료 날짜")
+            .isPermanentRecruitment(true)
+            .isRegionFlexible(false)
+            .mainTasks("주요 업무")
+            .workMethod("업무 방식")
+            .idealCandidate("이런 분을 찾고 있어요")
+            .preferredQualifications("이런 분이면 더 좋아요")
+            .joiningProcess("이런 과정으로 합류해요")
+            .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+            .build();
     }
 
     @NotNull
     private static UpdateTeamMemberAnnouncementResponse getUpdateTeamMemberAnnouncementResponse() {
         final AnnouncementPositionItem announcementPositionItem
-                = new AnnouncementPositionItem("대분류 포지션", "소분류 포지션");
+            = new AnnouncementPositionItem("대분류 포지션", "소분류 포지션");
 
         final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNamesResponse
-                = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
+            = Arrays.asList(new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("Java"), new TeamMemberAnnouncementResponseDTO.AnnouncementSkillName("React"));
 
         return UpdateTeamMemberAnnouncementResponse.builder()
-                .teamMemberAnnouncementId(1L)
-                .announcementTitle("공고 제목")
-                .announcementPositionItem(announcementPositionItem)
-                .announcementSkillNames(announcementSkillNamesResponse)
-                .announcementEndDate("공고 종료 날짜")
-                .isPermanentRecruitment(true)
-                .isRegionFlexible(false)
-                .mainTasks("주요 업무")
-                .workMethod("업무 방식")
-                .idealCandidate("이런 분을 찾고 있어요")
-                .preferredQualifications("이런 분이면 더 좋아요")
-                .joiningProcess("이런 과정으로 합류해요")
-                .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
-                .build();
+            .teamMemberAnnouncementId(1L)
+            .announcementTitle("공고 제목")
+            .announcementPositionItem(announcementPositionItem)
+            .announcementSkillNames(announcementSkillNamesResponse)
+            .announcementEndDate("공고 종료 날짜")
+            .isPermanentRecruitment(true)
+            .isRegionFlexible(false)
+            .mainTasks("주요 업무")
+            .workMethod("업무 방식")
+            .idealCandidate("이런 분을 찾고 있어요")
+            .preferredQualifications("이런 분이면 더 좋아요")
+            .joiningProcess("이런 과정으로 합류해요")
+            .benefits("합류하면 이런 것들을 얻어 갈 수 있어요")
+            .build();
     }
 }

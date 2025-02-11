@@ -401,6 +401,10 @@ public class NotificationControllerTest extends ControllerTest {
                             .type(JsonFieldType.STRING)
                             .description("매칭 상대방의 이름 (매칭 알림인 경우)")
                             .optional(),
+                        fieldWithPath("result.notificationItems[].notificationDetails.majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 포지션 대분류 이름 (공고 알림인 경우)")
+                            .optional(),
 
                         // 이미 정의된 필드 (기존)
                         fieldWithPath("result.notificationItems[].notificationDetails.teamName")
