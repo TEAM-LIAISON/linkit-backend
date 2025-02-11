@@ -30,6 +30,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
+
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
@@ -37,9 +38,9 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfile profile = QProfile.profile;
 
         Profile result = jpaQueryFactory
-                .selectFrom(profile)
-                .where(profile.member.id.eq(memberId))
-                .fetchOne();
+            .selectFrom(profile)
+            .where(profile.member.id.eq(memberId))
+            .fetchOne();
 
         return Optional.ofNullable(result);
     }
@@ -49,9 +50,9 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfile profile = QProfile.profile;
 
         Profile result = jpaQueryFactory
-                .selectFrom(profile)
-                .where(profile.member.emailId.eq(emailId))
-                .fetchOne();
+            .selectFrom(profile)
+            .where(profile.member.emailId.eq(emailId))
+            .fetchOne();
 
         return Optional.ofNullable(result);
     }
@@ -68,31 +69,31 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QRegion qRegion = QRegion.region;
 
         List<MiniProfileResponseDTO.ProfilePositionItem> profilePositionItems =
-                jpaQueryFactory
-                        .select(
-                                Projections.constructor(
-                                        MiniProfileResponseDTO.ProfilePositionItem.class,
-                                        qProfilePosition.position.majorPosition,
-                                        qProfilePosition.position.subPosition
-                                ))
-                        .from(qProfilePosition)
-                        .leftJoin(qPosition)
-                        .on(qProfilePosition.position.id.eq(qPosition.id))
-                        .where(qProfilePosition.profile.member.id.eq(memberId))
-                        .fetch();
+            jpaQueryFactory
+                .select(
+                    Projections.constructor(
+                        MiniProfileResponseDTO.ProfilePositionItem.class,
+                        qProfilePosition.position.majorPosition,
+                        qProfilePosition.position.subPosition
+                    ))
+                .from(qProfilePosition)
+                .leftJoin(qPosition)
+                .on(qProfilePosition.position.id.eq(qPosition.id))
+                .where(qProfilePosition.profile.member.id.eq(memberId))
+                .fetch();
 
         List<MiniProfileResponseDTO.ProfileCurrentStateItem> profileCurrentStateItems =
-                jpaQueryFactory
-                        .select(
-                                Projections.constructor(
-                                        MiniProfileResponseDTO.ProfileCurrentStateItem.class,
-                                        qProfileCurrentState.profileState.profileStateName
-                                ))
-                        .from(qProfileCurrentState)
-                        .leftJoin(qProfileCurrentState)
-                        .on(qProfileCurrentState.profileState.id.eq(qProfileCurrentState.id))
-                        .where(qProfileCurrentState.profile.member.id.eq(memberId))
-                        .fetch();
+            jpaQueryFactory
+                .select(
+                    Projections.constructor(
+                        MiniProfileResponseDTO.ProfileCurrentStateItem.class,
+                        qProfileCurrentState.profileState.profileStateName
+                    ))
+                .from(qProfileCurrentState)
+                .leftJoin(qProfileCurrentState)
+                .on(qProfileCurrentState.profileState.id.eq(qProfileCurrentState.id))
+                .where(qProfileCurrentState.profile.member.id.eq(memberId))
+                .fetch();
 
         return null;
     }
@@ -103,10 +104,10 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfile profile = QProfile.profile;
 
         Integer count = jpaQueryFactory
-                .selectOne()
-                .from(profile)
-                .where(profile.member.id.eq(memberId))
-                .fetchFirst();
+            .selectOne()
+            .from(profile)
+            .where(profile.member.id.eq(memberId))
+            .fetchFirst();
 
         return count != null;
     }
@@ -116,10 +117,10 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfile profile = QProfile.profile;
 
         jpaQueryFactory
-                .update(profile)
-                .set(profile.status, StatusType.DELETED)
-                .where(profile.member.id.eq(memberId))
-                .execute();
+            .update(profile)
+            .set(profile.status, StatusType.DELETED)
+            .where(profile.member.id.eq(memberId))
+            .execute();
     }
 
 //    @Override
@@ -142,33 +143,33 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         QProfile qProfile = QProfile.profile;
 
         return jpaQueryFactory
-                .selectFrom(qProfile)
-                .where(
-                        qProfile.status.eq(StatusType.USABLE)
-                                .and(qProfile.isProfilePublic.eq(true))
-                )
-                .orderBy(
-                        new CaseBuilder()
-                                .when(qProfile.id.eq(14L)).then(0)
-                                .when(qProfile.id.eq(6L)).then(1)
-                                .when(qProfile.id.eq(9L)).then(2)
-                                .when(qProfile.id.eq(29L)).then(3)
-                                .when(qProfile.id.eq(26L)).then(4)
-                                .when(qProfile.id.eq(27L)).then(5)
-                                .otherwise(6)
-                                .asc()
-                )
-                .limit(limit)
-                .fetch();
+            .selectFrom(qProfile)
+            .where(
+                qProfile.status.eq(StatusType.USABLE)
+                    .and(qProfile.isProfilePublic.eq(true))
+            )
+            .orderBy(
+                new CaseBuilder()
+                    .when(qProfile.id.eq(42L)).then(0)
+                    .when(qProfile.id.eq(14L)).then(1)
+                    .when(qProfile.id.eq(33L)).then(2)
+                    .when(qProfile.id.eq(6L)).then(3)
+                    .when(qProfile.id.eq(9L)).then(4)
+                    .when(qProfile.id.eq(27L)).then(5)
+                    .otherwise(6)
+                    .asc()
+            )
+            .limit(limit)
+            .fetch();
     }
 
     @Override
     public Page<Profile> findAll(
-            final List<String> majorPosition,
-            final List<String> skillName,
-            final List<String> cityName,
-            final List<String> profileStateName,
-            final Pageable pageable
+        final List<String> majorPosition,
+        final List<String> skillName,
+        final List<String> cityName,
+        final List<String> profileStateName,
+        final Pageable pageable
     ) {
         QProfile qProfile = QProfile.profile;
         QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
@@ -194,42 +195,42 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
             // 데이터 조회 쿼리
             List<Profile> content = jpaQueryFactory
-                    .selectDistinct(qProfile)
-                    .from(qProfile)
+                .selectDistinct(qProfile)
+                .from(qProfile)
 
-                    // Profile과 ProfilePosition 조인
-                    .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
-                    .leftJoin(qProfilePosition.position, qPosition)
-                    // Profile과 ProfileRegion 조인
-                    .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
-                    .leftJoin(qProfileRegion.region, qRegion)
-                    // Profile과 ProfileCurrentState 조인
-                    .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
-                    .leftJoin(qProfileCurrentState.profileState, qProfileState)
-                    // Profile과 ProfileSkill 조인
-                    .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
-                    .leftJoin(qProfileSkill.skill, qSkill)
+                // Profile과 ProfilePosition 조인
+                .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
+                .leftJoin(qProfilePosition.position, qPosition)
+                // Profile과 ProfileRegion 조인
+                .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
+                .leftJoin(qProfileRegion.region, qRegion)
+                // Profile과 ProfileCurrentState 조인
+                .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
+                .leftJoin(qProfileCurrentState.profileState, qProfileState)
+                // Profile과 ProfileSkill 조인
+                .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
+                .leftJoin(qProfileSkill.skill, qSkill)
 
-                    // 조건
-                    .where(
-                            qProfile.isProfilePublic.eq(true),
-                            qProfile.status.eq(StatusType.USABLE),
-                            hasMajorPositions(majorPosition),
-                            hasSkillNames(skillName),
-                            hasCityName(cityName),
-                            hasProfileStateNames(profileStateName)
-                    )
-                    .offset(pageable.getOffset())
-                    .limit(pageable.getPageSize())
-                    .orderBy(QueryDslUtil.getOrderProfileSpecifier(
-                            pageable.getSort(),
-                            qProfile,
-                            qProfilePosition,
-                            qProfileRegion,
-                            qProfileCurrentState,
-                            qProfileSkill
-                    ))
-                    .fetch();
+                // 조건
+                .where(
+                    qProfile.isProfilePublic.eq(true),
+                    qProfile.status.eq(StatusType.USABLE),
+                    hasMajorPositions(majorPosition),
+                    hasSkillNames(skillName),
+                    hasCityName(cityName),
+                    hasProfileStateNames(profileStateName)
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(QueryDslUtil.getOrderProfileSpecifier(
+                    pageable.getSort(),
+                    qProfile,
+                    qProfilePosition,
+                    qProfileRegion,
+                    qProfileCurrentState,
+                    qProfileSkill
+                ))
+                .fetch();
 
             // 조회된 데이터 수 로그
             log.info("Fetched {} profiles from database", content.size());
@@ -239,26 +240,26 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
             // 카운트 쿼리
             Long totalLong = jpaQueryFactory
-                    .selectDistinct(qProfile.count())
-                    .from(qProfile)
+                .selectDistinct(qProfile.count())
+                .from(qProfile)
 
-                    .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
-                    .leftJoin(qProfilePosition.position, qPosition)
-                    .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
-                    .leftJoin(qProfileRegion.region, qRegion)
-                    .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
-                    .leftJoin(qProfileCurrentState.profileState, qProfileState)
-                    .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
-                    .leftJoin(qProfileSkill.skill, qSkill)
-                    .where(
-                            qProfile.isProfilePublic.eq(true),
-                            qProfile.status.eq(StatusType.USABLE),
-                            hasMajorPositions(majorPosition),
-                            hasSkillNames(skillName),
-                            hasCityName(cityName),
-                            hasProfileStateNames(profileStateName)
-                    )
-                    .fetchOne();
+                .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
+                .leftJoin(qProfilePosition.position, qPosition)
+                .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
+                .leftJoin(qProfileRegion.region, qRegion)
+                .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
+                .leftJoin(qProfileCurrentState.profileState, qProfileState)
+                .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
+                .leftJoin(qProfileSkill.skill, qSkill)
+                .where(
+                    qProfile.isProfilePublic.eq(true),
+                    qProfile.status.eq(StatusType.USABLE),
+                    hasMajorPositions(majorPosition),
+                    hasSkillNames(skillName),
+                    hasCityName(cityName),
+                    hasProfileStateNames(profileStateName)
+                )
+                .fetchOne();
 
             long total = (totalLong == null) ? 0L : totalLong;
 
