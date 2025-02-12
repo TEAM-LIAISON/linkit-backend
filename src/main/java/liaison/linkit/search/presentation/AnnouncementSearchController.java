@@ -51,7 +51,7 @@ public class AnnouncementSearchController {
     ) {
         Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
 
         Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncements(optionalMemberId, majorPosition, skillName, cityName, scaleName, pageable);
         return CommonResponse.onSuccess(announcements);
