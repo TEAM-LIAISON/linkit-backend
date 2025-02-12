@@ -47,11 +47,11 @@ public class AnnouncementSearchController {
         @RequestParam(value = "cityName", required = false) List<String> cityName,
         @RequestParam(value = "scaleName", required = false) List<String> scaleName,
         @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "size", defaultValue = "20") int size
+        @RequestParam(value = "size", defaultValue = "80") int size
     ) {
         Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
 
         Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncements(optionalMemberId, majorPosition, skillName, cityName, scaleName, pageable);
         return CommonResponse.onSuccess(announcements);

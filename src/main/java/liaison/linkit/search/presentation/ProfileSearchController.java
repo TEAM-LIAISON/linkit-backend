@@ -52,8 +52,8 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
         Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
         // Pageable 객체 한 번만 생성 (정렬 기준도 통일)
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        
+        Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
+
         Page<ProfileInformMenu> profiles = profileSearchService.searchProfiles(optionalMemberId, majorPosition, skillName, cityName, profileStateName, pageable);
         return CommonResponse.onSuccess(profiles);
     }

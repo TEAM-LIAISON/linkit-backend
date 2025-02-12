@@ -47,11 +47,11 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
         @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         if (accessor.isMember()) {
-            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+            Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
             Page<TeamInformMenu> teams = teamSearchService.searchTeamsInLoginState(accessor.getMemberId(), scaleName, isAnnouncement, cityName, teamStateName, pageable);
             return CommonResponse.onSuccess(teams);
         } else {
-            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+            Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
             Page<TeamInformMenu> teams = teamSearchService.searchTeamsInLogoutState(scaleName, isAnnouncement, cityName, teamStateName, pageable);
             return CommonResponse.onSuccess(teams);
         }
