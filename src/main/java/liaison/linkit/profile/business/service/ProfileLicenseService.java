@@ -19,7 +19,7 @@ import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.AddProfileLicenseResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.RemoveProfileLicenseResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.UpdateProfileLicenseResponse;
-import liaison.linkit.report.certification.dto.ProfileLicenseCertificationReportDto;
+import liaison.linkit.report.certification.dto.license.ProfileLicenseCertificationReportDto;
 import liaison.linkit.report.certification.service.DiscordProfileCertificationReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -124,8 +124,8 @@ public class ProfileLicenseService {
 
         final ProfileLicenseCertificationReportDto profileLicenseCertificationReportDto = ProfileLicenseCertificationReportDto.builder()
             .profileLicenseId(profileLicense.getId())
+            .emailId(profileLicense.getProfile().getMember().getEmailId())
             .licenseName(profileLicense.getLicenseName())
-            .memberName(profileLicense.getProfile().getMember().getMemberBasicInform().getMemberName())
             .build();
 
         discordProfileCertificationReportService.sendProfileLicenseReport(profileLicenseCertificationReportDto);

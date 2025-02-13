@@ -1,7 +1,10 @@
 package liaison.linkit.report.certification.service;
 
 import liaison.linkit.global.external.discord.DiscordService;
-import liaison.linkit.report.certification.dto.ProfileLicenseCertificationReportDto;
+import liaison.linkit.report.certification.dto.activity.ProfileActivityCertificationReportDto;
+import liaison.linkit.report.certification.dto.awards.ProfileAwardsCertificationReportDto;
+import liaison.linkit.report.certification.dto.education.ProfileEducationCertificationReportDto;
+import liaison.linkit.report.certification.dto.license.ProfileLicenseCertificationReportDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,15 +17,47 @@ public class DiscordProfileCertificationReportService implements ProfileCertific
     private String url;
 
     private final DiscordService discordService;
-    private static final String TITLE = "프로필 증명서 알림";
+
+    @Override
+    public void sendProfileActivityReport(ProfileActivityCertificationReportDto profileActivityCertificationReportDto) {
+        var msg = "## 프로필 이력 알림"
+            + "\n\n**프로필 이력 ID:** " + profileActivityCertificationReportDto.profileActivityId()
+            + "\n**유저 아이디:** " + profileActivityCertificationReportDto.emailId()
+            + "\n**프로필 이력 활동명:** " + profileActivityCertificationReportDto.activityName()
+            + "\n**업로드 시간:** " + profileActivityCertificationReportDto.uploadTime();
+
+        discordService.sendMessages(url, msg);
+    }
+
+    @Override
+    public void sendProfileEducationReport(ProfileEducationCertificationReportDto profileEducationCertificationReportDto) {
+        var msg = "## 프로필 학력 알림"
+            + "\n\n**프로필 학력 ID:** " + profileEducationCertificationReportDto.profileEducationId()
+            + "\n**유저 아이디:** " + profileEducationCertificationReportDto.emailId()
+            + "\n**프로필 학력 학교명:** " + profileEducationCertificationReportDto.universityName()
+            + "\n**업로드 시간:** " + profileEducationCertificationReportDto.uploadTime();
+
+        discordService.sendMessages(url, msg);
+    }
+
+    @Override
+    public void sendProfileAwardsReport(ProfileAwardsCertificationReportDto profileAwardsCertificationReportDto) {
+        var msg = "## 프로필 수상 알림"
+            + "\n\n**프로필 수상 ID:** " + profileAwardsCertificationReportDto.profileAwardsId()
+            + "\n**유저 아이디:** " + profileAwardsCertificationReportDto.emailId()
+            + "\n**프로필 수상 대회명:** " + profileAwardsCertificationReportDto.awardsName()
+            + "\n**업로드 시간:** " + profileAwardsCertificationReportDto.uploadTime();
+
+        discordService.sendMessages(url, msg);
+    }
 
     @Override
     public void sendProfileLicenseReport(ProfileLicenseCertificationReportDto profileLicenseCertificationReportDto) {
-        var msg = TITLE
-            + "\n*프로필 자격증 ID:* " + profileLicenseCertificationReportDto.profileLicenseId()
-            + "\n*회원 이름:* " + profileLicenseCertificationReportDto.memberName()
-            + "\n*프로필 자격증명:* " + profileLicenseCertificationReportDto.licenseName()
-            + "\n*업로드 시간:* " + profileLicenseCertificationReportDto.uploadTime();
+        var msg = "## 프로필 증명서 알림"
+            + "\n\n**프로필 자격증 ID:** " + profileLicenseCertificationReportDto.profileLicenseId()
+            + "\n**유저 아이디:** " + profileLicenseCertificationReportDto.emailId()
+            + "\n**프로필 자격증 이름:** " + profileLicenseCertificationReportDto.licenseName()
+            + "\n**업로드 시간:** " + profileLicenseCertificationReportDto.uploadTime();
 
         discordService.sendMessages(url, msg);
     }

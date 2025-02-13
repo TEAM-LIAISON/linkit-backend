@@ -8,17 +8,19 @@ import liaison.linkit.common.validator.FileValidator;
 import liaison.linkit.file.domain.CertificationFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
 import liaison.linkit.profile.business.mapper.ProfileActivityMapper;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.activity.ProfileActivity;
-import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.implement.activity.ProfileActivityCommandAdapter;
 import liaison.linkit.profile.implement.activity.ProfileActivityQueryAdapter;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO.UpdateProfileActivityRequest;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.AddProfileActivityResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.RemoveProfileActivityResponse;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.UpdateProfileActivityResponse;
+import liaison.linkit.report.certification.dto.activity.ProfileActivityCertificationReportDto;
+import liaison.linkit.report.certification.service.DiscordProfileCertificationReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,7 @@ public class ProfileActivityService {
 
     private final FileValidator fileValidator;
     private final S3Uploader s3Uploader;
+    private final DiscordProfileCertificationReportService discordProfileCertificationReportService;
 
     @Transactional(readOnly = true)
     public ProfileActivityResponseDTO.ProfileActivityItems getProfileActivityItems(final Long memberId) {
@@ -100,9 +103,9 @@ public class ProfileActivityService {
     }
 
     public ProfileActivityResponseDTO.ProfileActivityCertificationResponse addProfileActivityCertification(
-            final Long memberId,
-            final Long profileActivityId,
-            final MultipartFile profileActivityCertificationFile
+        final Long memberId,
+        final Long profileActivityId,
+        final MultipartFile profileActivityCertificationFile
     ) {
         String activityCertificationAttachFileName = null;
         String activityCertificationAttachFilePath = null;
@@ -113,17 +116,25 @@ public class ProfileActivityService {
         if (fileValidator.validatingFileUpload(profileActivityCertificationFile)) {
             activityCertificationAttachFileName = Normalizer.normalize(Objects.requireNonNull(profileActivityCertificationFile.getOriginalFilename()), Form.NFC);
             activityCertificationAttachFilePath = s3Uploader.uploadProfileActivityFile(
-                    new CertificationFile(profileActivityCertificationFile)
+                new CertificationFile(profileActivityCertificationFile)
             );
             profileActivity.setProfileActivityCertification(true, false, activityCertificationAttachFileName, activityCertificationAttachFilePath);
         }
+
+        final ProfileActivityCertificationReportDto profileActivityCertificationReportDto = ProfileActivityCertificationReportDto.builder()
+            .profileActivityId(profileActivity.getId())
+            .emailId(profileActivity.getProfile().getMember().getEmailId())
+            .activityName(profileActivity.getActivityName())
+            .build();
+
+        discordProfileCertificationReportService.sendProfileActivityReport(profileActivityCertificationReportDto);
 
         return profileActivityMapper.toAddProfileActivityCertification(profileActivity);
     }
 
     public ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse removeProfileActivityCertification(
-            final Long memberId,
-            final Long profileActivityId
+        final Long memberId,
+        final Long profileActivityId
     ) {
         final ProfileActivity profileActivity = profileActivityQueryAdapter.getProfileActivity(profileActivityId);
 

@@ -1,5 +1,6 @@
 package liaison.linkit.profile.business.service;
 
+
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.List;
@@ -19,6 +20,8 @@ import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.AddProfileAwardsResponse;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.RemoveProfileAwardsResponse;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.UpdateProfileAwardsResponse;
+import liaison.linkit.report.certification.dto.awards.ProfileAwardsCertificationReportDto;
+import liaison.linkit.report.certification.service.DiscordProfileCertificationReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @Slf4j
 public class ProfileAwardsService {
+
     private final ProfileQueryAdapter profileQueryAdapter;
 
     private final ProfileAwardsQueryAdapter profileAwardsQueryAdapter;
@@ -38,6 +42,7 @@ public class ProfileAwardsService {
 
     private final FileValidator fileValidator;
     private final S3Uploader s3Uploader;
+    private final DiscordProfileCertificationReportService discordProfileCertificationReportService;
 
     @Transactional(readOnly = true)
     public ProfileAwardsResponseDTO.ProfileAwardsItems getProfileAwardsItems(final Long memberId) {
@@ -99,9 +104,9 @@ public class ProfileAwardsService {
     }
 
     public ProfileAwardsResponseDTO.ProfileAwardsCertificationResponse addProfileAwardsCertification(
-            final Long memberId,
-            final Long profileAwardsId,
-            final MultipartFile profileAwardsCertificationFile
+        final Long memberId,
+        final Long profileAwardsId,
+        final MultipartFile profileAwardsCertificationFile
     ) {
         String awardsCertificationAttachFileName = null;
         String awardsCertificationAttachFilePath = null;
@@ -115,12 +120,20 @@ public class ProfileAwardsService {
             profileAwards.setProfileAwardsCertification(true, false, awardsCertificationAttachFileName, awardsCertificationAttachFilePath);
         }
 
+        final ProfileAwardsCertificationReportDto profileAwardsCertificationReportDto = ProfileAwardsCertificationReportDto.builder()
+            .profileAwardsId(profileAwards.getId())
+            .emailId(profileAwards.getProfile().getMember().getEmailId())
+            .awardsName(profileAwards.getAwardsName())
+            .build();
+
+        discordProfileCertificationReportService.sendProfileAwardsReport(profileAwardsCertificationReportDto);
+
         return profileAwardsMapper.toAddProfileAwardsCertification(profileAwards);
     }
 
     public ProfileAwardsResponseDTO.RemoveProfileAwardsCertificationResponse removeProfileAwardsCertification(
-            final Long memberId,
-            final Long profileAwardsId
+        final Long memberId,
+        final Long profileAwardsId
     ) {
         final ProfileAwards profileAwards = profileAwardsQueryAdapter.getProfileAwards(profileAwardsId);
 
