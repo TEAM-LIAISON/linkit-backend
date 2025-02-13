@@ -19,6 +19,8 @@ import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.AddProfileLicenseResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.RemoveProfileLicenseResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.UpdateProfileLicenseResponse;
+import liaison.linkit.report.certification.dto.license.ProfileLicenseCertificationReportDto;
+import liaison.linkit.report.certification.service.DiscordProfileCertificationReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,7 @@ public class ProfileLicenseService {
 
     private final FileValidator fileValidator;
     private final S3Uploader s3Uploader;
+    private final DiscordProfileCertificationReportService discordProfileCertificationReportService;
 
     @Transactional(readOnly = true)
     public ProfileLicenseResponseDTO.ProfileLicenseItems getProfileLicenseItems(final Long memberId) {
@@ -103,9 +106,9 @@ public class ProfileLicenseService {
     }
 
     public ProfileLicenseResponseDTO.ProfileLicenseCertificationResponse addProfileLicenseCertification(
-            final Long memberId,
-            final Long profileLicenseId,
-            final MultipartFile profileLicenseCertificationFile
+        final Long memberId,
+        final Long profileLicenseId,
+        final MultipartFile profileLicenseCertificationFile
     ) {
         String LicenseCertificationAttachFileName = null;
         String LicenseCertificationAttachFilePath = null;
@@ -119,12 +122,20 @@ public class ProfileLicenseService {
             profileLicense.setProfileLicenseCertification(true, false, LicenseCertificationAttachFileName, LicenseCertificationAttachFilePath);
         }
 
+        final ProfileLicenseCertificationReportDto profileLicenseCertificationReportDto = ProfileLicenseCertificationReportDto.builder()
+            .profileLicenseId(profileLicense.getId())
+            .emailId(profileLicense.getProfile().getMember().getEmailId())
+            .licenseName(profileLicense.getLicenseName())
+            .build();
+
+        discordProfileCertificationReportService.sendProfileLicenseReport(profileLicenseCertificationReportDto);
+
         return profileLicenseMapper.toAddProfileLicenseCertification(profileLicense);
     }
 
     public ProfileLicenseResponseDTO.RemoveProfileLicenseCertificationResponse removeProfileLicenseCertification(
-            final Long memberId,
-            final Long profileLicenseId
+        final Long memberId,
+        final Long profileLicenseId
     ) {
         final ProfileLicense profileLicense = profileLicenseQueryAdapter.getProfileLicense(profileLicenseId);
 

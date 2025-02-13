@@ -8,7 +8,6 @@ import liaison.linkit.common.domain.Position;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
-import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.team.business.assembler.AnnouncementDetailAssembler;
 import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.business.assembler.AnnouncementViewItemsAssembler;
@@ -61,7 +60,6 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementSkillCommandAdapter announcementSkillCommandAdapter;
     private final AnnouncementSkillMapper announcementSkillMapper;
 
-    private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
     private final AnnouncementDetailAssembler announcementDetailAssembler;
@@ -71,30 +69,6 @@ public class TeamMemberAnnouncementService {
     public TeamMemberAnnouncemenItems getTeamMemberAnnouncementViewItems(final Optional<Long> optionalMemberId, final String teamCode) {
         return announcementViewItemsAssembler.assembleTeamMemberAnnouncementViewItems(optionalMemberId, teamCode);
     }
-
-    @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail getTeamMemberAnnouncementDetailInLogoutState(final String teamCode, final Long teamMemberAnnouncementId) {
-        final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
-
-        // 포지션 조회
-        AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-            AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-            announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-        }
-
-        // 스킬 조회
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = Collections.emptyList();
-        if (announcementSkillQueryAdapter.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncementId)) {
-            List<AnnouncementSkill> announcementSkills =
-                announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
-            announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-        }
-
-        final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncementId);
-        return teamMemberAnnouncementMapper.toTeamMemberAnnouncementDetail(teamMemberAnnouncement, false, announcementScrapCount, announcementPositionItem, announcementSkillNames);
-    }
-
 
     // 팀원 공고 생성 메서드
     public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse addTeamMemberAnnouncement(

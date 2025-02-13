@@ -47,7 +47,7 @@ public class AnnouncementSearchController {
         @RequestParam(value = "cityName", required = false) List<String> cityName,
         @RequestParam(value = "scaleName", required = false) List<String> scaleName,
         @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "size", defaultValue = "20") int size
+        @RequestParam(value = "size", defaultValue = "80") int size
     ) {
         Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 

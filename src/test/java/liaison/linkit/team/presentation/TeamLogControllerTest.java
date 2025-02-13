@@ -64,6 +64,7 @@ import org.springframework.test.web.servlet.ResultActions;
 @AutoConfigureRestDocs
 @Slf4j
 public class TeamLogControllerTest extends ControllerTest {
+
     private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
     private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
@@ -82,65 +83,65 @@ public class TeamLogControllerTest extends ControllerTest {
 
     private ResultActions performGetTeamLogViewItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log/view", teamCode)
+            RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log", teamCode)
         );
     }
 
     private ResultActions performGetTeamLogItems(final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log", teamCode)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
+            RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log", teamCode)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
         );
     }
 
     private ResultActions performGetTeamLogItem(final String teamCode, final Long teamLogId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log/{teamLogId}", teamCode, teamLogId)
+            RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log/{teamLogId}", teamCode, teamLogId)
         );
     }
 
     private ResultActions performPostTeamLog(final String teamCode, final AddTeamLogRequest addTeamLogRequest) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log", teamCode)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(addTeamLogRequest))
+            RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log", teamCode)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(addTeamLogRequest))
         );
     }
 
     private ResultActions performUpdateTeamLog(final String teamCode, final Long teamLogId, final UpdateTeamLogRequest updateTeamLogRequest) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log/{teamLogId}", teamCode, teamLogId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateTeamLogRequest))
+            RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log/{teamLogId}", teamCode, teamLogId)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateTeamLogRequest))
         );
     }
 
     private ResultActions performDeleteTeamLog(final String teamCode, final Long teamLogId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/api/v1/team/{teamCode}/log/{teamLogId}", teamCode, teamLogId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
+            RestDocumentationRequestBuilders.delete("/api/v1/team/{teamCode}/log/{teamLogId}", teamCode, teamLogId)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
         );
     }
 
     private ResultActions performUpdateTeamLogType(final Long teamLogId, final String teamCode) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log/type/{teamLogId}", teamCode, teamLogId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
+            RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log/type/{teamLogId}", teamCode, teamLogId)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
         );
     }
 
     private ResultActions performUpdateTeamLogPublicState(final String teamCode, final Long teamLogId) throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log/state/{teamLogId}", teamCode, teamLogId)
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
+            RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log/state/{teamLogId}", teamCode, teamLogId)
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE)
         );
     }
 
@@ -150,13 +151,13 @@ public class TeamLogControllerTest extends ControllerTest {
     void addTeamLogBodyImage() throws Exception {
         // given
         final TeamLogResponseDTO.AddTeamLogBodyImageResponse addTeamLogBodyImageResponse
-                = new AddTeamLogBodyImageResponse("https://image.linkit.im/logo.png");
+            = new AddTeamLogBodyImageResponse("https://image.linkit.im/logo.png");
 
         final MockMultipartFile teamLogBodyImage = new MockMultipartFile(
-                "teamLogBodyImage",
-                "logo.png",
-                "multipart/form-data",
-                "./src/test/resources/static/images/logo.png".getBytes()
+            "teamLogBodyImage",
+            "logo.png",
+            "multipart/form-data",
+            "./src/test/resources/static/images/logo.png".getBytes()
         );
         final String teamCode = "liaison";
 
@@ -164,53 +165,53 @@ public class TeamLogControllerTest extends ControllerTest {
         when(teamLogService.addTeamLogBodyImage(anyLong(), any(), any())).thenReturn(addTeamLogBodyImageResponse);
 
         final ResultActions resultActions = mockMvc.perform(
-                RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamCode}/log/body/image", teamCode)
-                        .file(teamLogBodyImage)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.MULTIPART_FORM_DATA)
-                        .characterEncoding("UTF-8")
-                        .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE));
+            RestDocumentationRequestBuilders.multipart("/api/v1/team/{teamCode}/log/body/image", teamCode)
+                .file(teamLogBodyImage)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .characterEncoding("UTF-8")
+                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                .cookie(COOKIE));
 
         // then
 
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(restDocs.document(
-                        pathParameters(
-                                parameterWithName("teamCode")
-                                        .description("팀 아이디 (팀 코드)")
-                        ),
-                        requestParts(
-                                partWithName("teamLogBodyImage").description("팀 본문 이미지")
-                        ),
-                        responseFields(fieldWithPath("isSuccess")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("요청 성공 여부")
-                                        .attributes(field("constraint", "boolean 값")),
-                                fieldWithPath("code")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 코드")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("message")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 메시지")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("result.teamLogBodyImagePath")
-                                        .type(JsonFieldType.STRING)
-                                        .description("팀 로그 본문 이미지 경로")
-                        )
-                )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(restDocs.document(
+                pathParameters(
+                    parameterWithName("teamCode")
+                        .description("팀 아이디 (팀 코드)")
+                ),
+                requestParts(
+                    partWithName("teamLogBodyImage").description("팀 본문 이미지")
+                ),
+                responseFields(fieldWithPath("isSuccess")
+                        .type(JsonFieldType.BOOLEAN)
+                        .description("요청 성공 여부")
+                        .attributes(field("constraint", "boolean 값")),
+                    fieldWithPath("code")
+                        .type(JsonFieldType.STRING)
+                        .description("요청 성공 코드")
+                        .attributes(field("constraint", "문자열")),
+                    fieldWithPath("message")
+                        .type(JsonFieldType.STRING)
+                        .description("요청 성공 메시지")
+                        .attributes(field("constraint", "문자열")),
+                    fieldWithPath("result.teamLogBodyImagePath")
+                        .type(JsonFieldType.STRING)
+                        .description("팀 로그 본문 이미지 경로")
+                )
+            )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<AddTeamLogBodyImageResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<AddTeamLogBodyImageResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<AddTeamLogBodyImageResponse>>() {
+            }
         );
 
         final CommonResponse<AddTeamLogBodyImageResponse> expected = CommonResponse.onSuccess(addTeamLogBodyImageResponse);
@@ -223,85 +224,85 @@ public class TeamLogControllerTest extends ControllerTest {
     void getTeamLogViewItems() throws Exception {
         // given
         final TeamLogResponseDTO.TeamLogItems teamLogItems = TeamLogResponseDTO.TeamLogItems.builder()
-                .teamLogItems(Arrays.asList(
-                        TeamLogItem.builder()
-                                .teamLogId(1L)
-                                .isLogPublic(true)
-                                .logType(REPRESENTATIVE_LOG)
-                                .modifiedAt(LocalDateTime.now())
-                                .logTitle("로그 제목 1")
-                                .logContent("로그 내용 1")
-                                .build(),
-                        TeamLogItem.builder()
-                                .teamLogId(2L)
-                                .isLogPublic(true)
-                                .logType(GENERAL_LOG)
-                                .modifiedAt(LocalDateTime.now())
-                                .logTitle("로그 제목 2")
-                                .logContent("로그 내용 2")
-                                .build()
-                ))
-                .build();
+            .teamLogItems(Arrays.asList(
+                TeamLogItem.builder()
+                    .teamLogId(1L)
+                    .isLogPublic(true)
+                    .logType(REPRESENTATIVE_LOG)
+                    .modifiedAt(LocalDateTime.now())
+                    .logTitle("로그 제목 1")
+                    .logContent("로그 내용 1")
+                    .build(),
+                TeamLogItem.builder()
+                    .teamLogId(2L)
+                    .isLogPublic(true)
+                    .logType(GENERAL_LOG)
+                    .modifiedAt(LocalDateTime.now())
+                    .logTitle("로그 제목 2")
+                    .logContent("로그 내용 2")
+                    .build()
+            ))
+            .build();
         // when
-        when(teamLogService.getTeamLogViewItems(any())).thenReturn(teamLogItems);
+        when(teamLogService.getTeamLogItems(any(), any())).thenReturn(teamLogItems);
 
         final ResultActions resultActions = performGetTeamLogViewItems("liaison");
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        subsectionWithPath("result.teamLogItems[]")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("팀 로그 아이템 배열"),
-                                        fieldWithPath("result.teamLogItems[].teamLogId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("내 로그 ID"),
-                                        fieldWithPath("result.teamLogItems[].isLogPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("로그 공개 여부"),
-                                        fieldWithPath("result.teamLogItems[].logType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 유형 (대표글 여부)"),
-                                        fieldWithPath("result.teamLogItems[].modifiedAt")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 수정 시간"),
-                                        fieldWithPath("result.teamLogItems[].logTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 제목"),
-                                        fieldWithPath("result.teamLogItems[].logContent")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 내용")
-                                )
-                        )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        subsectionWithPath("result.teamLogItems[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("팀 로그 아이템 배열"),
+                        fieldWithPath("result.teamLogItems[].teamLogId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("내 로그 ID"),
+                        fieldWithPath("result.teamLogItems[].isLogPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("로그 공개 여부"),
+                        fieldWithPath("result.teamLogItems[].logType")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 유형 (대표글 여부)"),
+                        fieldWithPath("result.teamLogItems[].modifiedAt")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 수정 시간"),
+                        fieldWithPath("result.teamLogItems[].logTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 제목"),
+                        fieldWithPath("result.teamLogItems[].logContent")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 내용")
+                    )
+                )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.TeamLogItems> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<TeamLogItems>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<TeamLogItems>>() {
+            }
         );
 
         final CommonResponse<TeamLogItems> expected = CommonResponse.onSuccess(teamLogItems);
@@ -315,74 +316,74 @@ public class TeamLogControllerTest extends ControllerTest {
     void getTeamLogItems() throws Exception {
         // given
         final TeamLogResponseDTO.TeamLogItem firstTeamLogItem
-                = new TeamLogItem(1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+            = new TeamLogItem(1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
 
         final TeamLogResponseDTO.TeamLogItem secondTeamLogItem
-                = new TeamLogItem(2L, true, GENERAL_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+            = new TeamLogItem(2L, true, GENERAL_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
 
         final TeamLogResponseDTO.TeamLogItems teamLogItems
-                = new TeamLogItems(Arrays.asList(firstTeamLogItem, secondTeamLogItem));
+            = new TeamLogItems(Arrays.asList(firstTeamLogItem, secondTeamLogItem));
 
         // when
-        when(teamLogService.getTeamLogItems(any())).thenReturn(teamLogItems);
+        when(teamLogService.getTeamLogItems(any(), any())).thenReturn(teamLogItems);
 
         final ResultActions resultActions = performGetTeamLogItems("liaison");
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        subsectionWithPath("result.teamLogItems[]")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("팀 로그 아이템 배열"),
-                                        fieldWithPath("result.teamLogItems[].teamLogId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("내 로그 ID"),
-                                        fieldWithPath("result.teamLogItems[].isLogPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("로그 공개 여부"),
-                                        fieldWithPath("result.teamLogItems[].logType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 유형 (대표글 여부)"),
-                                        fieldWithPath("result.teamLogItems[].modifiedAt")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 수정 시간"),
-                                        fieldWithPath("result.teamLogItems[].logTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 제목"),
-                                        fieldWithPath("result.teamLogItems[].logContent")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 내용")
-                                )
-                        )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        subsectionWithPath("result.teamLogItems[]")
+                            .type(JsonFieldType.ARRAY)
+                            .description("팀 로그 아이템 배열"),
+                        fieldWithPath("result.teamLogItems[].teamLogId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("내 로그 ID"),
+                        fieldWithPath("result.teamLogItems[].isLogPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("로그 공개 여부"),
+                        fieldWithPath("result.teamLogItems[].logType")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 유형 (대표글 여부)"),
+                        fieldWithPath("result.teamLogItems[].modifiedAt")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 수정 시간"),
+                        fieldWithPath("result.teamLogItems[].logTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 제목"),
+                        fieldWithPath("result.teamLogItems[].logContent")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 내용")
+                    )
+                )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.TeamLogItems> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<TeamLogItems>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<TeamLogItems>>() {
+            }
         );
 
         final CommonResponse<TeamLogItems> expected = CommonResponse.onSuccess(teamLogItems);
@@ -396,7 +397,7 @@ public class TeamLogControllerTest extends ControllerTest {
     void getTeamLogItem() throws Exception {
         // given
         final TeamLogResponseDTO.TeamLogItem teamLogItem
-                = new TeamLogItem(1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
+            = new TeamLogItem(1L, true, REPRESENTATIVE_LOG, LocalDateTime.now(), "로그 제목", "로그 내용");
 
         // when
         when(teamLogService.getTeamLogItem(any(), anyLong())).thenReturn(teamLogItem);
@@ -405,56 +406,56 @@ public class TeamLogControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)"),
-                                        parameterWithName("teamLogId")
-                                                .description("팀 로그 ID")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.teamLogId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("내 로그 ID"),
-                                        fieldWithPath("result.isLogPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("로그 공개 여부"),
-                                        fieldWithPath("result.logType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 유형 (대표글 여부)"),
-                                        fieldWithPath("result.modifiedAt")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 수정 시간"),
-                                        fieldWithPath("result.logTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 제목"),
-                                        fieldWithPath("result.logContent")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 내용")
-                                )
-                        )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)"),
+                        parameterWithName("teamLogId")
+                            .description("팀 로그 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result.teamLogId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("내 로그 ID"),
+                        fieldWithPath("result.isLogPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("로그 공개 여부"),
+                        fieldWithPath("result.logType")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 유형 (대표글 여부)"),
+                        fieldWithPath("result.modifiedAt")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 수정 시간"),
+                        fieldWithPath("result.logTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 제목"),
+                        fieldWithPath("result.logContent")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 내용")
+                    )
+                )).andReturn();
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.TeamLogItem> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<TeamLogItem>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<TeamLogItem>>() {
+            }
         );
 
         final CommonResponse<TeamLogItem> expected = CommonResponse.onSuccess(teamLogItem);
@@ -468,10 +469,10 @@ public class TeamLogControllerTest extends ControllerTest {
     void addTeamLog() throws Exception {
         // given
         final TeamLogRequestDTO.AddTeamLogRequest addTeamLogRequest
-                = new AddTeamLogRequest("제목제목제목", "내용내용내용", true);
+            = new AddTeamLogRequest("제목제목제목", "내용내용내용", true);
 
         final TeamLogResponseDTO.AddTeamLogResponse addTeamLogResponse
-                = new AddTeamLogResponse(1L, "제목제목제목", "내용내용내용", LocalDateTime.now(), GENERAL_LOG, true);
+            = new AddTeamLogResponse(1L, "제목제목제목", "내용내용내용", LocalDateTime.now(), GENERAL_LOG, true);
         // when
         when(teamLogService.addTeamLog(anyLong(), any(), any())).thenReturn(addTeamLogResponse);
 
@@ -479,67 +480,67 @@ public class TeamLogControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)")
-                                ),
-                                requestFields(
-                                        fieldWithPath("logTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 제목"),
-                                        fieldWithPath("logContent")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 내용"),
-                                        fieldWithPath("isLogPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("로그 공개 여부")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.teamLogId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("내 로그 ID"),
-                                        fieldWithPath("result.logTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 제목"),
-                                        fieldWithPath("result.logContent")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 내용"),
-                                        fieldWithPath("result.createdAt")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 생성 시간"),
-                                        fieldWithPath("result.logType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 유형 (대표글 여부)"),
-                                        fieldWithPath("result.isLogPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("로그 공개 여부")
-                                )
-                        )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)")
+                    ),
+                    requestFields(
+                        fieldWithPath("logTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 제목"),
+                        fieldWithPath("logContent")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 내용"),
+                        fieldWithPath("isLogPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("로그 공개 여부")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result.teamLogId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("내 로그 ID"),
+                        fieldWithPath("result.logTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 제목"),
+                        fieldWithPath("result.logContent")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 내용"),
+                        fieldWithPath("result.createdAt")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 생성 시간"),
+                        fieldWithPath("result.logType")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 유형 (대표글 여부)"),
+                        fieldWithPath("result.isLogPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("로그 공개 여부")
+                    )
+                )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.AddTeamLogResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<AddTeamLogResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<AddTeamLogResponse>>() {
+            }
         );
 
         final CommonResponse<AddTeamLogResponse> expected = CommonResponse.onSuccess(addTeamLogResponse);
@@ -553,10 +554,10 @@ public class TeamLogControllerTest extends ControllerTest {
     void updateTeamLog() throws Exception {
         // given
         final TeamLogRequestDTO.UpdateTeamLogRequest updateTeamLogRequest
-                = new UpdateTeamLogRequest("제목제목제목", "내용내용내용", true);
+            = new UpdateTeamLogRequest("제목제목제목", "내용내용내용", true);
 
         final TeamLogResponseDTO.UpdateTeamLogResponse updateTeamLogResponse
-                = new UpdateTeamLogResponse(1L, "제목제목제목", "내용내용내용", LocalDateTime.now(), GENERAL_LOG, true);
+            = new UpdateTeamLogResponse(1L, "제목제목제목", "내용내용내용", LocalDateTime.now(), GENERAL_LOG, true);
         // when
         when(teamLogService.updateTeamLog(anyLong(), any(), anyLong(), any())).thenReturn(updateTeamLogResponse);
 
@@ -564,69 +565,69 @@ public class TeamLogControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)"),
-                                        parameterWithName("teamLogId")
-                                                .description("팀 로그 ID")
-                                ),
-                                requestFields(
-                                        fieldWithPath("logTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 제목"),
-                                        fieldWithPath("logContent")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 내용"),
-                                        fieldWithPath("isLogPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("로그 공개 여부")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.teamLogId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("내 로그 ID"),
-                                        fieldWithPath("result.logTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 제목"),
-                                        fieldWithPath("result.logContent")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 내용"),
-                                        fieldWithPath("result.createdAt")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 생성 시간"),
-                                        fieldWithPath("result.logType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("로그 유형 (대표글 여부)"),
-                                        fieldWithPath("result.isLogPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("로그 공개 여부")
-                                )
-                        )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)"),
+                        parameterWithName("teamLogId")
+                            .description("팀 로그 ID")
+                    ),
+                    requestFields(
+                        fieldWithPath("logTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 제목"),
+                        fieldWithPath("logContent")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 내용"),
+                        fieldWithPath("isLogPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("로그 공개 여부")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result.teamLogId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("내 로그 ID"),
+                        fieldWithPath("result.logTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 제목"),
+                        fieldWithPath("result.logContent")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 내용"),
+                        fieldWithPath("result.createdAt")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 생성 시간"),
+                        fieldWithPath("result.logType")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 유형 (대표글 여부)"),
+                        fieldWithPath("result.isLogPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("로그 공개 여부")
+                    )
+                )).andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.UpdateTeamLogResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<UpdateTeamLogResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<UpdateTeamLogResponse>>() {
+            }
         );
 
         final CommonResponse<UpdateTeamLogResponse> expected = CommonResponse.onSuccess(updateTeamLogResponse);
@@ -640,7 +641,7 @@ public class TeamLogControllerTest extends ControllerTest {
     void removeTeamLog() throws Exception {
         // given
         final TeamLogResponseDTO.RemoveTeamLogResponse removeTeamLogResponse
-                = new TeamLogResponseDTO.RemoveTeamLogResponse(1L);
+            = new TeamLogResponseDTO.RemoveTeamLogResponse(1L);
 
         // when
         when(teamLogService.removeTeamLog(anyLong(), any(), anyLong())).thenReturn(removeTeamLogResponse);
@@ -649,42 +650,42 @@ public class TeamLogControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)"),
-                                        parameterWithName("teamLogId")
-                                                .description("팀 로그 ID")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.teamLogId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("해당 팀 로그 ID")
-                                )
-                        )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)"),
+                        parameterWithName("teamLogId")
+                            .description("팀 로그 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result.teamLogId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("해당 팀 로그 ID")
+                    )
+                )).andReturn();
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.RemoveTeamLogResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<RemoveTeamLogResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<RemoveTeamLogResponse>>() {
+            }
         );
 
         final CommonResponse<RemoveTeamLogResponse> expected = CommonResponse.onSuccess(removeTeamLogResponse);
@@ -698,7 +699,7 @@ public class TeamLogControllerTest extends ControllerTest {
         // given
 
         final TeamLogResponseDTO.UpdateTeamLogTypeResponse updateTeamLogTypeResponse
-                = new UpdateTeamLogTypeResponse(1L, GENERAL_LOG);
+            = new UpdateTeamLogTypeResponse(1L, GENERAL_LOG);
 
         // when
         when(teamLogService.updateTeamLogType(anyLong(), any(), anyLong())).thenReturn(updateTeamLogTypeResponse);
@@ -707,45 +708,45 @@ public class TeamLogControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)"),
-                                        parameterWithName("teamLogId")
-                                                .description("팀 로그 ID")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.teamLogId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("해당 로그 ID"),
-                                        fieldWithPath("result.logType")
-                                                .type(JsonFieldType.STRING)
-                                                .description("해당 로그 대표글 설정 여부")
-                                )
-                        )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)"),
+                        parameterWithName("teamLogId")
+                            .description("팀 로그 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result.teamLogId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("해당 로그 ID"),
+                        fieldWithPath("result.logType")
+                            .type(JsonFieldType.STRING)
+                            .description("해당 로그 대표글 설정 여부")
+                    )
+                )).andReturn();
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.UpdateTeamLogTypeResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<UpdateTeamLogTypeResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<UpdateTeamLogTypeResponse>>() {
+            }
         );
 
         final CommonResponse<UpdateTeamLogTypeResponse> expected = CommonResponse.onSuccess(updateTeamLogTypeResponse);
@@ -758,7 +759,7 @@ public class TeamLogControllerTest extends ControllerTest {
     void updateTeamLogPublicState() throws Exception {
         // given
         final TeamLogResponseDTO.UpdateTeamLogPublicStateResponse updateTeamLogPublicStateResponse
-                = new UpdateTeamLogPublicStateResponse(1L, true);
+            = new UpdateTeamLogPublicStateResponse(1L, true);
 
         // when
         when(teamLogService.updateTeamLogPublicState(anyLong(), any(), anyLong())).thenReturn(updateTeamLogPublicStateResponse);
@@ -767,45 +768,45 @@ public class TeamLogControllerTest extends ControllerTest {
 
         // then
         final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamCode")
-                                                .description("팀 아이디 (팀 코드)"),
-                                        parameterWithName("teamLogId")
-                                                .description("팀 로그 ID")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.teamLogId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("해당 팀 로그 ID"),
-                                        fieldWithPath("result.isLogPublic")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("해당 로그 변경된 로그 공개 여부")
-                                )
-                        )).andReturn();
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)"),
+                        parameterWithName("teamLogId")
+                            .description("팀 로그 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result.teamLogId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("해당 팀 로그 ID"),
+                        fieldWithPath("result.isLogPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("해당 로그 변경된 로그 공개 여부")
+                    )
+                )).andReturn();
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
         final CommonResponse<TeamLogResponseDTO.UpdateTeamLogPublicStateResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<UpdateTeamLogPublicStateResponse>>() {
-                }
+            jsonResponse,
+            new TypeReference<CommonResponse<UpdateTeamLogPublicStateResponse>>() {
+            }
         );
 
         final CommonResponse<UpdateTeamLogPublicStateResponse> expected = CommonResponse.onSuccess(updateTeamLogPublicStateResponse);

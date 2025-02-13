@@ -686,7 +686,13 @@ include::{snippets}/profile-education-controller-test/add-profile-education-cert
 === 학력 증명서 단일 삭제
 
 ====
-요청 응답
+요청
+include::{snippets}/profile-education-controller-test/remove-profile-education-certification/http-request.adoc[]
+include::{snippets}/profile-education-controller-test/remove-profile-education-certification/path-parameters.adoc[]
+
+응답
+include::{snippets}/profile-education-controller-test/remove-profile-education-certification/http-response.adoc[]
+include::{snippets}/profile-education-controller-test/remove-profile-education-certification/response-fields.adoc[]
 ====
 
 == #[프로필 - 나의 수상]#

@@ -167,7 +167,7 @@ public class TeamControllerTest extends ControllerTest {
             .build();
 
         // when
-        when(teamService.getHomeTeamInformMenusInLogoutState()).thenReturn(teamInformMenus);
+        when(teamService.getHomeTeamInformMenus(any())).thenReturn(teamInformMenus);
 
         final ResultActions resultActions = performGetHomeTeamInformMenus();
         // then
@@ -690,7 +690,7 @@ public class TeamControllerTest extends ControllerTest {
             .build();
 
         // when
-        when(teamService.getLoggedOutTeamDetail(any())).thenReturn(teamDetail);
+        when(teamService.getTeamDetail(any(), any())).thenReturn(teamDetail);
 
         final ResultActions resultActions = performGetTeamDetail("liaison");
 

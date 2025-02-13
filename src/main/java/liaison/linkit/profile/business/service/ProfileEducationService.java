@@ -9,18 +9,20 @@ import liaison.linkit.common.validator.FileValidator;
 import liaison.linkit.file.domain.CertificationFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
 import liaison.linkit.profile.business.mapper.ProfileEducationMapper;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.education.ProfileEducation;
-import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.implement.education.ProfileEducationCommandAdapter;
 import liaison.linkit.profile.implement.education.ProfileEducationQueryAdapter;
 import liaison.linkit.profile.implement.education.UniversityQueryAdapter;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO.UpdateProfileEducationRequest;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.AddProfileEducationResponse;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.RemoveProfileEducationResponse;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.UpdateProfileEducationResponse;
+import liaison.linkit.report.certification.dto.education.ProfileEducationCertificationReportDto;
+import liaison.linkit.report.certification.service.DiscordProfileCertificationReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @Slf4j
 public class ProfileEducationService {
+
     private final ProfileQueryAdapter profileQueryAdapter;
 
     private final ProfileEducationQueryAdapter profileEducationQueryAdapter;
@@ -42,6 +45,7 @@ public class ProfileEducationService {
 
     private final FileValidator fileValidator;
     private final S3Uploader s3Uploader;
+    private final DiscordProfileCertificationReportService discordProfileCertificationReportService;
 
     @Transactional(readOnly = true)
     public ProfileEducationResponseDTO.ProfileEducationItems getProfileEducationItems(final Long memberId) {
@@ -110,9 +114,9 @@ public class ProfileEducationService {
     }
 
     public ProfileEducationResponseDTO.ProfileEducationCertificationResponse addProfileEducationCertification(
-            final Long memberId,
-            final Long profileEducationId,
-            final MultipartFile profileEducationCertificationFile
+        final Long memberId,
+        final Long profileEducationId,
+        final MultipartFile profileEducationCertificationFile
     ) {
         String EducationCertificationAttachFileName = null;
         String EducationCertificationAttachFilePath = null;
@@ -126,12 +130,20 @@ public class ProfileEducationService {
             profileEducation.setProfileEducationCertification(true, false, EducationCertificationAttachFileName, EducationCertificationAttachFilePath);
         }
 
+        final ProfileEducationCertificationReportDto profileEducationCertificationReportDto = ProfileEducationCertificationReportDto.builder()
+            .profileEducationId(profileEducation.getId())
+            .emailId(profileEducation.getProfile().getMember().getEmailId())
+            .universityName(profileEducation.getUniversity().getUniversityName())
+            .build();
+
+        discordProfileCertificationReportService.sendProfileEducationReport(profileEducationCertificationReportDto);
+
         return profileEducationMapper.toAddProfileEducationCertification(profileEducation);
     }
 
     public ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse removeProfileEducationCertification(
-            final Long memberId,
-            final Long profileEducationId
+        final Long memberId,
+        final Long profileEducationId
     ) {
         final ProfileEducation profileEducation = profileEducationQueryAdapter.getProfileEducation(profileEducationId);
 
