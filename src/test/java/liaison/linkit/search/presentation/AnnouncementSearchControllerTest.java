@@ -54,7 +54,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
     private AnnouncementSearchService announcementSearchService;
 
     private ResultActions performSearchAnnouncements(
-        List<String> majorPosition,
+        List<String> subPosition,
         List<String> skillName,
         List<String> cityName,
         List<String> scaleName,
@@ -63,7 +63,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
     ) throws Exception {
         return mockMvc.perform(
             RestDocumentationRequestBuilders.get("/api/v1/announcement/search")
-                .param("majorPosition", majorPosition.toArray(new String[0]))
+                .param("subPosition", subPosition.toArray(new String[0]))
                 .param("skillName", skillName.toArray(new String[0]))
                 .param("cityName", cityName.toArray(new String[0]))
                 .param("scaleName", scaleName.toArray(new String[0]))
@@ -187,9 +187,9 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
             .andDo(
                 restDocs.document(
                     queryParameters(
-                        parameterWithName("majorPosition")
+                        parameterWithName("subPosition")
                             .optional()
-                            .description("포지션 대분류 (선택사항)"),
+                            .description("포지션 소분류 (선택사항)"),
                         parameterWithName("skillName")
                             .optional()
                             .description("스킬 이름 (선택사항)"),

@@ -53,7 +53,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
     private ProfileSearchService profileSearchService;
 
     private ResultActions performSearchProfiles(
-        List<String> majorPosition,
+        List<String> subPosition,
         List<String> skillName,
         List<String> cityName,
         List<String> profileStateName,
@@ -62,7 +62,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
     ) throws Exception {
         return mockMvc.perform(
             RestDocumentationRequestBuilders.get("/api/v1/profile/search")
-                .param("majorPosition", majorPosition.toArray(new String[0]))
+                .param("subPosition", subPosition.toArray(new String[0]))
                 .param("skillName", skillName.toArray(new String[0]))
                 .param("cityName", cityName.toArray(new String[0]))
                 .param("profileStateName", profileStateName.toArray(new String[0]))
@@ -186,9 +186,9 @@ public class ProfileSearchControllerTest extends ControllerTest {
             .andDo(
                 restDocs.document(
                     queryParameters(
-                        parameterWithName("majorPosition")
+                        parameterWithName("subPosition")
                             .optional()
-                            .description("포지션 대분류 (선택적)"),
+                            .description("포지션 소분류 (선택적)"),
                         parameterWithName("skillName")
                             .optional()
                             .description("스킬 이름 (선택적)"),

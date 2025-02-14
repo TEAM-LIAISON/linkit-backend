@@ -23,12 +23,12 @@ import org.springframework.data.domain.Sort;
 public class QueryDslUtil {
 
     public static OrderSpecifier<?>[] getOrderAnnouncementSpecifier(
-            Sort sort,
-            QTeamMemberAnnouncement qTeamMemberAnnouncement,
-            QAnnouncementPosition qAnnouncementPosition,
-            QAnnouncementSkill qAnnouncementSkill,
-            QTeamRegion qTeamRegion,
-            QTeamScale qTeamScale
+        Sort sort,
+        QTeamMemberAnnouncement qTeamMemberAnnouncement,
+        QAnnouncementPosition qAnnouncementPosition,
+        QAnnouncementSkill qAnnouncementSkill,
+        QTeamRegion qTeamRegion,
+        QTeamScale qTeamScale
     ) {
         if (sort.isUnsorted()) {
             return new OrderSpecifier<?>[]{};
@@ -43,32 +43,32 @@ public class QueryDslUtil {
             switch (order.getProperty()) {
                 case "id":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qTeamMemberAnnouncement.id
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qTeamMemberAnnouncement.id
                     );
                     break;
-                case "majorPosition":
+                case "subPosition":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qAnnouncementPosition.position.majorPosition
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qAnnouncementPosition.position.subPosition
                     );
                     break;
                 case "skillName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qAnnouncementSkill.skill.skillName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qAnnouncementSkill.skill.skillName
                     );
                     break;
                 case "cityName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qTeamRegion.region.cityName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qTeamRegion.region.cityName
                     );
                     break;
                 case "scaleName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qTeamScale.scale.scaleName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qTeamScale.scale.scaleName
                     );
                     break;
                 default:
@@ -84,12 +84,12 @@ public class QueryDslUtil {
     }
 
     public static OrderSpecifier<?>[] getOrderProfileSpecifier(
-            Sort sort,
-            QProfile qProfile,
-            QProfilePosition qProfilePosition,
-            QProfileRegion qProfileRegion,
-            QProfileCurrentState qProfileCurrentState,
-            QProfileSkill qProfileSkill
+        Sort sort,
+        QProfile qProfile,
+        QProfilePosition qProfilePosition,
+        QProfileRegion qProfileRegion,
+        QProfileCurrentState qProfileCurrentState,
+        QProfileSkill qProfileSkill
     ) {
         if (sort.isUnsorted()) {
             return new OrderSpecifier<?>[]{};
@@ -104,38 +104,38 @@ public class QueryDslUtil {
             switch (order.getProperty()) {
                 case "id":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qProfile.id
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qProfile.id
                     );
                     break;
                 case "memberName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qProfile.member.memberBasicInform.memberName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qProfile.member.memberBasicInform.memberName
                     );
                     break;
-                case "majorPosition":
+                case "subPosition":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qProfilePosition.position.majorPosition
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qProfilePosition.position.subPosition
                     );
                     break;
                 case "skillName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qProfileSkill.skill.skillName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qProfileSkill.skill.skillName
                     );
                     break;
                 case "cityName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qProfileRegion.region.cityName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qProfileRegion.region.cityName
                     );
                     break;
                 case "profileStateName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qProfileCurrentState.profileState.profileStateName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qProfileCurrentState.profileState.profileStateName
                     );
                     break;
                 default:
@@ -151,11 +151,11 @@ public class QueryDslUtil {
     }
 
     public static OrderSpecifier<?>[] getOrderTeamSpecifier(
-            Sort sort,
-            QTeam qTeam,
-            QTeamScale qTeamScale,
-            QTeamRegion qTeamRegion,
-            QTeamCurrentState qTeamCurrentState
+        Sort sort,
+        QTeam qTeam,
+        QTeamScale qTeamScale,
+        QTeamRegion qTeamRegion,
+        QTeamCurrentState qTeamCurrentState
     ) {
         if (sort.isUnsorted()) {
             return new OrderSpecifier<?>[]{};
@@ -170,26 +170,26 @@ public class QueryDslUtil {
             switch (order.getProperty()) {
                 case "id":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qTeam.id
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qTeam.id
                     );
                     break;
                 case "scaleName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qTeamScale.scale.scaleName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qTeamScale.scale.scaleName
                     );
                     break;
                 case "cityName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qTeamRegion.region.cityName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qTeamRegion.region.cityName
                     );
                     break;
                 case "teamStateName":
                     orderSpecifier = new OrderSpecifier<>(
-                            order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                            qTeamCurrentState.teamState.teamStateName
+                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
+                        qTeamCurrentState.teamState.teamStateName
                     );
                     break;
                 default:

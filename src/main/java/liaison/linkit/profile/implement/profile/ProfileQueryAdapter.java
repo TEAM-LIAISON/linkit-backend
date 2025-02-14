@@ -16,22 +16,23 @@ import org.springframework.data.domain.Pageable;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfileQueryAdapter {
+
     private final ProfileRepository profileRepository;
     private final ProfileCurrentStateRepository profileCurrentStateRepository;
 
     public Profile findById(final Long profileId) {
         return profileRepository.findById(profileId)
-                .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
+            .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
     public Profile findByMemberId(final Long memberId) {
         return profileRepository.findByMemberId(memberId)
-                .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
+            .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
     public Profile findByEmailId(final String emailId) {
         return profileRepository.findByEmailId(emailId)
-                .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
+            .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
     public List<ProfileCurrentState> findProfileCurrentStatesByProfileId(final Long profileId) {
@@ -39,14 +40,14 @@ public class ProfileQueryAdapter {
     }
 
     public Page<Profile> findAll(
-            final List<String> majorPosition,
-            final List<String> skillName,
-            final List<String> cityName,
-            final List<String> profileStateName,
-            final Pageable pageable
+        final List<String> subPosition,
+        final List<String> skillName,
+        final List<String> cityName,
+        final List<String> profileStateName,
+        final Pageable pageable
     ) {
         log.info("queryAdapter에서 실행됨");
-        return profileRepository.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
+        return profileRepository.findAll(subPosition, skillName, cityName, profileStateName, pageable);
     }
 
     public List<Profile> findTopProfiles(final int limit) {

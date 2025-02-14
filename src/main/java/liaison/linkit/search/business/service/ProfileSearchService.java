@@ -26,7 +26,7 @@ public class ProfileSearchService {
      * Optional로 로그인한 회원의 ID가 전달되면 로그인 상태로, 그렇지 않으면 로그아웃 상태로 프로필 목록을 검색합니다.
      *
      * @param optionalMemberId 로그인한 회원의 ID(Optional)
-     * @param majorPosition    포지션 대분류 필터
+     * @param subPosition      포지션 소분류 필터
      * @param skillName        스킬 필터
      * @param cityName         시/도 필터
      * @param profileStateName 프로필 상태 필터
@@ -35,13 +35,13 @@ public class ProfileSearchService {
      */
     public Page<ProfileInformMenu> searchProfiles(
         final Optional<Long> optionalMemberId,
-        List<String> majorPosition,
+        List<String> subPosition,
         List<String> skillName,
         List<String> cityName,
         List<String> profileStateName,
         Pageable pageable
     ) {
-        Page<Profile> profiles = profileQueryAdapter.findAll(majorPosition, skillName, cityName, profileStateName, pageable);
+        Page<Profile> profiles = profileQueryAdapter.findAll(subPosition, skillName, cityName, profileStateName, pageable);
 
         return profiles.map(profile ->
             profileInformMenuAssembler.assembleProfileInformMenu(profile, optionalMemberId)
