@@ -1,4 +1,4 @@
-package liaison.linkit.report.certification.dto.activity;
+package liaison.linkit.report.certification.dto.profile.activity;
 
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -7,6 +7,8 @@ public record ProfileActivityCertificationReportDto(
     Long profileActivityId,
     String emailId,
     String activityName,
+    String activityCertificationAttachFileName,
+    String activityCertificationAttachFilePath,
     LocalDateTime uploadTime
 ) {
 
@@ -14,12 +16,16 @@ public record ProfileActivityCertificationReportDto(
     public ProfileActivityCertificationReportDto(
         Long profileActivityId,
         String emailId,
-        String activityName
+        String activityName,
+        String activityCertificationAttachFileName,
+        String activityCertificationAttachFilePath
     ) {
         this(
             profileActivityId,
             emailId,
             activityName,
+            activityCertificationAttachFileName,
+            activityCertificationAttachFilePath,
             LocalDateTime.now()
         );
     }

@@ -30,7 +30,7 @@ public class Team extends BaseEntity {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 10)
     private String teamName;
 
     @Column(nullable = false, length = 50)
@@ -55,10 +55,10 @@ public class Team extends BaseEntity {
     }
 
     public void updateTeam(
-            final String teamName,
-            final String teamCode,
-            final String teamShortDescription,
-            final Boolean isTeamPublic
+        final String teamName,
+        final String teamCode,
+        final String teamShortDescription,
+        final Boolean isTeamPublic
     ) {
         this.teamName = teamName;
         this.teamCode = teamCode;

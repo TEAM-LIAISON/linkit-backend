@@ -1,6 +1,5 @@
 package liaison.linkit.profile.domain.repository.profile;
 
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,7 +9,6 @@ import liaison.linkit.common.domain.QPosition;
 import liaison.linkit.common.domain.QProfileState;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
-import liaison.linkit.member.domain.QMemberBasicInform;
 import liaison.linkit.profile.domain.position.QProfilePosition;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.profile.QProfile;
@@ -19,8 +17,6 @@ import liaison.linkit.profile.domain.region.QRegion;
 import liaison.linkit.profile.domain.skill.QProfileSkill;
 import liaison.linkit.profile.domain.skill.QSkill;
 import liaison.linkit.profile.domain.state.QProfileCurrentState;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
-import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.MiniProfileDetailResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -56,48 +52,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
         return Optional.ofNullable(result);
     }
-
-
-    // 수정 및 보완 필요
-    @Override
-    public MiniProfileDetailResponse findMiniProfileDetail(final Long memberId) {
-        QProfile qProfile = QProfile.profile;
-        QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
-        QPosition qPosition = QPosition.position;
-        QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
-        QMemberBasicInform qMemberBasicInform = QMemberBasicInform.memberBasicInform; // 멤버 기본 정보에 대한 Querydsl 메타 모델
-        QRegion qRegion = QRegion.region;
-
-        List<MiniProfileResponseDTO.ProfilePositionItem> profilePositionItems =
-            jpaQueryFactory
-                .select(
-                    Projections.constructor(
-                        MiniProfileResponseDTO.ProfilePositionItem.class,
-                        qProfilePosition.position.majorPosition,
-                        qProfilePosition.position.subPosition
-                    ))
-                .from(qProfilePosition)
-                .leftJoin(qPosition)
-                .on(qProfilePosition.position.id.eq(qPosition.id))
-                .where(qProfilePosition.profile.member.id.eq(memberId))
-                .fetch();
-
-        List<MiniProfileResponseDTO.ProfileCurrentStateItem> profileCurrentStateItems =
-            jpaQueryFactory
-                .select(
-                    Projections.constructor(
-                        MiniProfileResponseDTO.ProfileCurrentStateItem.class,
-                        qProfileCurrentState.profileState.profileStateName
-                    ))
-                .from(qProfileCurrentState)
-                .leftJoin(qProfileCurrentState)
-                .on(qProfileCurrentState.profileState.id.eq(qProfileCurrentState.id))
-                .where(qProfileCurrentState.profile.member.id.eq(memberId))
-                .fetch();
-
-        return null;
-    }
-
 
     @Override
     public boolean existsByMemberId(Long memberId) {
@@ -165,7 +119,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 
     @Override
     public Page<Profile> findAll(
-        final List<String> majorPosition,
+        final List<String> subPosition,
         final List<String> skillName,
         final List<String> cityName,
         final List<String> profileStateName,
@@ -184,7 +138,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         try {
             // 입력 파라미터 로그
             log.info("Executing findAll with parameters:");
-            log.info("Major Positions: {}", majorPosition);
+            log.info("Sub Positions: {}", subPosition);
             log.info("Skill Names: {}", skillName);
             log.info("City Names: {}", cityName);
             log.info("Profile State Names: {}", profileStateName);
@@ -215,7 +169,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .where(
                     qProfile.isProfilePublic.eq(true),
                     qProfile.status.eq(StatusType.USABLE),
-                    hasMajorPositions(majorPosition),
+                    hasSubPositions(subPosition),
                     hasSkillNames(skillName),
                     hasCityName(cityName),
                     hasProfileStateNames(profileStateName)
@@ -254,7 +208,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .where(
                     qProfile.isProfilePublic.eq(true),
                     qProfile.status.eq(StatusType.USABLE),
-                    hasMajorPositions(majorPosition),
+                    hasSubPositions(subPosition),
                     hasSkillNames(skillName),
                     hasCityName(cityName),
                     hasProfileStateNames(profileStateName)
@@ -270,14 +224,14 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         }
     }
 
-    private BooleanExpression hasMajorPositions(final List<String> majorPositions) {
-        if (majorPositions == null || majorPositions.isEmpty()) {
+    private BooleanExpression hasSubPositions(final List<String> subPositions) {
+        if (subPositions == null || subPositions.isEmpty()) {
             return null;
         }
 
         QPosition qPosition = QPosition.position;
 
-        return qPosition.majorPosition.in(majorPositions);
+        return qPosition.subPosition.in(subPositions);
     }
 
     private BooleanExpression hasSkillNames(final List<String> skillName) {

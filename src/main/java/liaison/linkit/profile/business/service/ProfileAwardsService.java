@@ -20,7 +20,7 @@ import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.AddProfileAwardsResponse;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.RemoveProfileAwardsResponse;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.UpdateProfileAwardsResponse;
-import liaison.linkit.report.certification.dto.awards.ProfileAwardsCertificationReportDto;
+import liaison.linkit.report.certification.dto.profile.awards.ProfileAwardsCertificationReportDto;
 import liaison.linkit.report.certification.service.DiscordProfileCertificationReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -124,6 +124,8 @@ public class ProfileAwardsService {
             .profileAwardsId(profileAwards.getId())
             .emailId(profileAwards.getProfile().getMember().getEmailId())
             .awardsName(profileAwards.getAwardsName())
+            .awardsCertificationAttachFileName(profileAwards.getAwardsCertificationAttachFileName())
+            .awardsCertificationAttachFilePath(profileAwards.getAwardsCertificationAttachFilePath())
             .build();
 
         discordProfileCertificationReportService.sendProfileAwardsReport(profileAwardsCertificationReportDto);

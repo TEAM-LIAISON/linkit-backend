@@ -139,7 +139,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
 
     @Override
     public Page<TeamMemberAnnouncement> findAll(
-        final List<String> majorPosition,
+        final List<String> subPosition,
         final List<String> skillName,
         final List<String> cityName,
         final List<String> scaleName,
@@ -186,7 +186,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
             .where(
                 qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
                 qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-                hasMajorPositions(majorPosition),
+                hasSubPositions(subPosition),
                 hasSkillNames(skillName),
                 hasCityName(cityName),
                 hasScaleNames(scaleName)
@@ -231,7 +231,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
             .where(
                 qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
                 qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-                hasMajorPositions(majorPosition),
+                hasSubPositions(subPosition),
                 hasSkillNames(skillName),
                 hasCityName(cityName),
                 hasScaleNames(scaleName)
@@ -245,13 +245,13 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }
 
-    private BooleanExpression hasMajorPositions(final List<String> majorPosition) {
-        if (majorPosition == null || majorPosition.isEmpty()) {
+    private BooleanExpression hasSubPositions(List<String> subPosition) {
+        if (subPosition == null || subPosition.isEmpty()) {
             return null;
         }
         QPosition qPosition = QPosition.position;
 
-        return qPosition.majorPosition.in(majorPosition);
+        return qPosition.subPosition.in(subPosition);
     }
 
     private BooleanExpression hasSkillNames(List<String> skillName) {

@@ -23,6 +23,8 @@ import liaison.linkit.member.implement.MemberCommandAdapter;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.implement.profile.ProfileCommandAdapter;
+import liaison.linkit.report.certification.dto.member.MemberCreateReportDto;
+import liaison.linkit.report.certification.service.DiscordMemberReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class LoginService {
+
     private static final int MAX_TRY_COUNT = 5;
 
     private final OauthProviders oauthProviders;
@@ -48,6 +51,7 @@ public class LoginService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final ProfileCommandAdapter profileCommandAdapter;
     private final DeleteUtil deleteUtil;
+    private final DiscordMemberReportService discordMemberReportService;
 
     // 회원이 로그인한다
     public AccountResponseDTO.LoginServiceResponse login(final String providerName, final String code) {
@@ -56,9 +60,9 @@ public class LoginService {
         final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
 
         final Member member = findOrCreateMember(
-                oauthUserInfo.getSocialLoginId(),
-                oauthUserInfo.getEmail(),
-                provider.getPlatform(providerName));
+            oauthUserInfo.getSocialLoginId(),
+            oauthUserInfo.getEmail(),
+            provider.getPlatform(providerName));
 
         final boolean isMemberBasicInform = member.isCreateMemberBasicInform();
 
@@ -77,11 +81,11 @@ public class LoginService {
         }
 
         return accountMapper.toLogin(
-                memberTokens,
-                member.getEmail(),
-                member.getEmailId(),
-                memberName,
-                isMemberBasicInform
+            memberTokens,
+            member.getEmail(),
+            member.getEmailId(),
+            memberName,
+            isMemberBasicInform
         );
     }
 
@@ -96,13 +100,21 @@ public class LoginService {
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberQueryAdapter.existsByEmail(email)) {
                 final Member member = memberCommandAdapter
-                        .create(new Member(socialLoginId, email, null, null, platform));
+                    .create(new Member(socialLoginId, email, null, null, platform));
 
                 memberBasicInformCommandAdapter.create(new MemberBasicInform(
-                        null, member, null, null, false, false, false, false));
+                    null, member, null, null, false, false, false, false));
 
                 profileCommandAdapter.create(new Profile(
-                        null, member, null, false, 0, false, false, false, false, false, false, false, false));
+                    null, member, null, false, 0, false, false, false, false, false, false, false, false));
+
+                MemberCreateReportDto memberCreateReportDto = MemberCreateReportDto.builder()
+                    .memberId(member.getId())
+                    .email(member.getEmail())
+                    .createdAt(member.getCreatedAt())
+                    .build();
+                
+                discordMemberReportService.sendCreateMemberReport(memberCreateReportDto);
 
                 return member;
             } else if (memberQueryAdapter.existsByEmail(email)) {
@@ -114,7 +126,7 @@ public class LoginService {
     }
 
     public AccountResponseDTO.RenewTokenResponse renewalAccessToken(
-            final String refreshTokenRequest, final String authorizationHeader) {
+        final String refreshTokenRequest, final String authorizationHeader) {
         // 기존에 사용하던 accessToken을 추출한다
         final String accessToken = bearerExtractor.extractAccessToken(authorizationHeader);
         return getRenewalToken(refreshTokenRequest);
@@ -122,9 +134,9 @@ public class LoginService {
 
     private AccountResponseDTO.RenewTokenResponse getRenewalToken(final String refreshTokenRequest) {
         final RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenRequest)
-                .orElseThrow(() -> RefreshTokenExpiredException.EXCEPTION);
+            .orElseThrow(() -> RefreshTokenExpiredException.EXCEPTION);
         return accountMapper
-                .toRenewTokenResponse(jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()));
+            .toRenewTokenResponse(jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()));
     }
 
     // 회원이 로그아웃한다

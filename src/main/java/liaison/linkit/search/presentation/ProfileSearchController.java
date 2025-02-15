@@ -29,7 +29,7 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
     /**
      * 팀원 검색 엔드포인트
      *
-     * @param majorPosition    포지션 대분류 (선택적)
+     * @param subPosition      포지션 소분류 (선택적)
      * @param skillName        스킬 이름 (선택적)
      * @param cityName         시/도 이름 (선택적)
      * @param profileStateName 프로필 상태 (선택적)
@@ -41,7 +41,7 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
     @GetMapping
     public CommonResponse<Page<ProfileInformMenu>> searchProfiles(
         @Auth final Accessor accessor,
-        @RequestParam(value = "majorPosition", required = false) List<String> majorPosition,
+        @RequestParam(value = "subPosition", required = false) List<String> subPosition,
         @RequestParam(value = "skillName", required = false) List<String> skillName,
         @RequestParam(value = "cityName", required = false) List<String> cityName,
         @RequestParam(value = "profileStateName", required = false) List<String> profileStateName,
@@ -54,7 +54,7 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
         // Pageable 객체 한 번만 생성 (정렬 기준도 통일)
         Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
 
-        Page<ProfileInformMenu> profiles = profileSearchService.searchProfiles(optionalMemberId, majorPosition, skillName, cityName, profileStateName, pageable);
+        Page<ProfileInformMenu> profiles = profileSearchService.searchProfiles(optionalMemberId, subPosition, skillName, cityName, profileStateName, pageable);
         return CommonResponse.onSuccess(profiles);
     }
 }

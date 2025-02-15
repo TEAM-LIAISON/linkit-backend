@@ -21,16 +21,16 @@ public class AnnouncementSearchService {
 
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
-    
+
     public Page<AnnouncementInformMenu> searchAnnouncements(
         final Optional<Long> optionalMemberId,
-        List<String> majorPosition,
+        List<String> subPosition,
         List<String> skillName,
         List<String> cityName,
         List<String> scaleName,
         Pageable pageable
     ) {
-        Page<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.findAll(majorPosition, skillName, cityName, scaleName, pageable);
+        Page<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.findAll(subPosition, skillName, cityName, scaleName, pageable);
 
         return announcements.map(teamMemberAnnouncement -> announcementInformMenuAssembler.mapToAnnouncementInformMenu(teamMemberAnnouncement, optionalMemberId));
     }

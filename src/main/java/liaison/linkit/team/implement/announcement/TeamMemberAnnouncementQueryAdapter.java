@@ -30,13 +30,13 @@ public class TeamMemberAnnouncementQueryAdapter {
     }
 
     public Page<TeamMemberAnnouncement> findAll(
-        final List<String> majorPosition,
+        final List<String> subPosition,
         final List<String> skillName,
         final List<String> cityName,
         final List<String> scaleName,
         final Pageable pageable
     ) {
-        return teamMemberAnnouncementRepository.findAll(majorPosition, skillName, cityName, scaleName, pageable);
+        return teamMemberAnnouncementRepository.findAll(subPosition, skillName, cityName, scaleName, pageable);
     }
 
     public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {

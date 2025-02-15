@@ -42,7 +42,7 @@ public class AnnouncementSearchController {
     @GetMapping
     public CommonResponse<Page<AnnouncementInformMenu>> searchAnnouncements(
         @Auth final Accessor accessor,
-        @RequestParam(value = "majorPosition", required = false) List<String> majorPosition,
+        @RequestParam(value = "subPosition", required = false) List<String> subPosition,
         @RequestParam(value = "skillName", required = false) List<String> skillName,
         @RequestParam(value = "cityName", required = false) List<String> cityName,
         @RequestParam(value = "scaleName", required = false) List<String> scaleName,
@@ -53,7 +53,7 @@ public class AnnouncementSearchController {
 
         Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
 
-        Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncements(optionalMemberId, majorPosition, skillName, cityName, scaleName, pageable);
+        Page<AnnouncementInformMenu> announcements = announcementSearchService.searchAnnouncements(optionalMemberId, subPosition, skillName, cityName, scaleName, pageable);
         return CommonResponse.onSuccess(announcements);
 
     }

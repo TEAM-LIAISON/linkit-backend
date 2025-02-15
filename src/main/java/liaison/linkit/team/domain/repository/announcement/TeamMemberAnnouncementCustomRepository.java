@@ -18,7 +18,7 @@ public interface TeamMemberAnnouncementCustomRepository {
     TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(final TeamMemberAnnouncement teamMemberAnnouncement, final boolean isTeamMemberAnnouncementCurrentPublicState);
 
     Page<TeamMemberAnnouncement> findAll(
-        final List<String> majorPosition,
+        final List<String> subPosition,
         final List<String> skillName,
         final List<String> cityName,
         final List<String> scaleName,
