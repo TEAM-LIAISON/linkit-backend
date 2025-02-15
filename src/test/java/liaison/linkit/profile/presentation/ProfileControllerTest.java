@@ -228,6 +228,7 @@ class ProfileControllerTest extends ControllerTest {
             .isProfilePublic(true)
             .profileScrapCount(100)
             .majorPosition("포지션 대분류")
+            .subPosition("포지션 소분류")
             .regionDetail(regionDetail)
             .profileTeamInforms(Arrays.asList(
                 ProfileTeamInform.builder()
@@ -401,7 +402,10 @@ class ProfileControllerTest extends ControllerTest {
                             .description("프로필 공개 여부"),
                         fieldWithPath("result.profileInformMenu.majorPosition")
                             .type(JsonFieldType.STRING)
-                            .description("대분류 포지션"),
+                            .description("포지션 대분류"),
+                        fieldWithPath("result.profileInformMenu.subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 소분류"),
                         fieldWithPath("result.profileInformMenu.regionDetail")
                             .type(JsonFieldType.OBJECT)
                             .description("지역 상세 정보"),
@@ -644,6 +648,7 @@ class ProfileControllerTest extends ControllerTest {
                         .emailId("이메일 ID")
                         .isProfilePublic(true)
                         .majorPosition("포지션 대분류")
+                        .subPosition("포지션 소분류")
                         .regionDetail(
                             RegionDetail.builder()
                                 .cityName("활동지역 시/도")
@@ -683,6 +688,7 @@ class ProfileControllerTest extends ControllerTest {
                         .emailId("이메일 ID 2")
                         .isProfilePublic(true)
                         .majorPosition("포지션 대분류")
+                        .subPosition("포지션 소분류")
                         .regionDetail(
                             RegionDetail.builder()
                                 .cityName("활동지역 시/도")
@@ -758,6 +764,9 @@ class ProfileControllerTest extends ControllerTest {
                         fieldWithPath("result.profileInformMenus[].majorPosition")
                             .type(JsonFieldType.STRING)
                             .description("포지션 대분류"),
+                        fieldWithPath("result.profileInformMenus[].subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 소분류"),
                         fieldWithPath("result.profileInformMenus[].regionDetail.cityName")
                             .type(JsonFieldType.STRING)
                             .description("활동지역 시/도"),
