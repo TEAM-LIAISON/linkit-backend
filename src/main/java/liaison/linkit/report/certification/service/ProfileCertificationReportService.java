@@ -1,9 +1,9 @@
 package liaison.linkit.report.certification.service;
 
-import liaison.linkit.report.certification.dto.activity.ProfileActivityCertificationReportDto;
-import liaison.linkit.report.certification.dto.awards.ProfileAwardsCertificationReportDto;
-import liaison.linkit.report.certification.dto.education.ProfileEducationCertificationReportDto;
-import liaison.linkit.report.certification.dto.license.ProfileLicenseCertificationReportDto;
+import liaison.linkit.report.certification.dto.profile.activity.ProfileActivityCertificationReportDto;
+import liaison.linkit.report.certification.dto.profile.awards.ProfileAwardsCertificationReportDto;
+import liaison.linkit.report.certification.dto.profile.education.ProfileEducationCertificationReportDto;
+import liaison.linkit.report.certification.dto.profile.license.ProfileLicenseCertificationReportDto;
 
 public interface ProfileCertificationReportService {
 

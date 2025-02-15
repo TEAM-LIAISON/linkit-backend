@@ -21,7 +21,7 @@ import liaison.linkit.profile.presentation.education.dto.ProfileEducationRespons
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.AddProfileEducationResponse;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.RemoveProfileEducationResponse;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.UpdateProfileEducationResponse;
-import liaison.linkit.report.certification.dto.education.ProfileEducationCertificationReportDto;
+import liaison.linkit.report.certification.dto.profile.education.ProfileEducationCertificationReportDto;
 import liaison.linkit.report.certification.service.DiscordProfileCertificationReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

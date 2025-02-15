@@ -19,7 +19,7 @@ import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.AddProfileLicenseResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.RemoveProfileLicenseResponse;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO.UpdateProfileLicenseResponse;
-import liaison.linkit.report.certification.dto.license.ProfileLicenseCertificationReportDto;
+import liaison.linkit.report.certification.dto.profile.license.ProfileLicenseCertificationReportDto;
 import liaison.linkit.report.certification.service.DiscordProfileCertificationReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

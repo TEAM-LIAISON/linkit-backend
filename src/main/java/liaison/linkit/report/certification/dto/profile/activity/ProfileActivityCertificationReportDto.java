@@ -1,4 +1,4 @@
-package liaison.linkit.report.certification.dto.activity;
+package liaison.linkit.report.certification.dto.profile.activity;
 
 import java.time.LocalDateTime;
 import lombok.Builder;

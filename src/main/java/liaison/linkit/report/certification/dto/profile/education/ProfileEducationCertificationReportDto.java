@@ -1,4 +1,4 @@
-package liaison.linkit.report.certification.dto.education;
+package liaison.linkit.report.certification.dto.profile.education;
 
 import java.time.LocalDateTime;
 import lombok.Builder;
