@@ -126,6 +126,8 @@ public class ProfileLicenseService {
             .profileLicenseId(profileLicense.getId())
             .emailId(profileLicense.getProfile().getMember().getEmailId())
             .licenseName(profileLicense.getLicenseName())
+            .licenseCertificationAttachFileName(profileLicense.getLicenseCertificationAttachFileName())
+            .licenseCertificationAttachFilePath(profileLicense.getLicenseCertificationAttachFilePath())
             .build();
 
         discordProfileCertificationReportService.sendProfileLicenseReport(profileLicenseCertificationReportDto);

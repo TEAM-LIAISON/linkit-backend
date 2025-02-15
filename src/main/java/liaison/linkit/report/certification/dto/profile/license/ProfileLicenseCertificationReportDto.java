@@ -7,6 +7,8 @@ public record ProfileLicenseCertificationReportDto(
     Long profileLicenseId,
     String emailId,
     String licenseName,
+    String licenseCertificationAttachFileName,
+    String licenseCertificationAttachFilePath,
     LocalDateTime uploadTime
 ) {
 
@@ -14,12 +16,16 @@ public record ProfileLicenseCertificationReportDto(
     public ProfileLicenseCertificationReportDto(
         Long profileLicenseId,
         String emailId,
-        String licenseName
+        String licenseName,
+        String licenseCertificationAttachFileName,
+        String licenseCertificationAttachFilePath
     ) {
         this(
             profileLicenseId,
             emailId,
             licenseName,
+            licenseCertificationAttachFileName,
+            licenseCertificationAttachFilePath,
             LocalDateTime.now()
         );
     }

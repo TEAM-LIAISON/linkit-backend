@@ -134,6 +134,8 @@ public class ProfileEducationService {
             .profileEducationId(profileEducation.getId())
             .emailId(profileEducation.getProfile().getMember().getEmailId())
             .universityName(profileEducation.getUniversity().getUniversityName())
+            .educationCertificationAttachFileName(profileEducation.getEducationCertificationAttachFileName())
+            .educationCertificationAttachFilePath(profileEducation.getEducationCertificationAttachFilePath())
             .build();
 
         discordProfileCertificationReportService.sendProfileEducationReport(profileEducationCertificationReportDto);

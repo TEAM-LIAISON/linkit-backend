@@ -17,10 +17,13 @@ public class DiscordChatReportService implements ChatReportService {
 
     @Override
     public void sendChatMessageReport(ChatMessageReportDto chatMessageReportDto) {
-        var msg = "## 채팅 알림"
+        var msg = "## 채팅 메시지 알림"
             + "\n\n**채팅 메시지 ID:** " + chatMessageReportDto.chatMessageId()
-            + "\n**채팅 내용:** " + chatMessageReportDto.content()
-            + "\n**업로드 시간:** " + chatMessageReportDto.timestamp();
+            + "\n**채팅 메시지 내용:** " + chatMessageReportDto.content()
+            + "\n**메시지 전송 시간:** " + chatMessageReportDto.timestamp()
+
+            + "\n\n**메시지 발신자 이메일:** " + chatMessageReportDto.chatMessageSenderEmail()
+            + "\n**메시지 수신자 이메일:** " + chatMessageReportDto.chatMessageReceiverEmail();
 
         discordService.sendMessages(url, msg);
     }

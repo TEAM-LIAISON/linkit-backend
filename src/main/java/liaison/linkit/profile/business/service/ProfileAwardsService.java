@@ -124,6 +124,8 @@ public class ProfileAwardsService {
             .profileAwardsId(profileAwards.getId())
             .emailId(profileAwards.getProfile().getMember().getEmailId())
             .awardsName(profileAwards.getAwardsName())
+            .awardsCertificationAttachFileName(profileAwards.getAwardsCertificationAttachFileName())
+            .awardsCertificationAttachFilePath(profileAwards.getAwardsCertificationAttachFilePath())
             .build();
 
         discordProfileCertificationReportService.sendProfileAwardsReport(profileAwardsCertificationReportDto);

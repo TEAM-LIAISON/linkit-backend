@@ -52,6 +52,8 @@ import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
+import liaison.linkit.report.certification.dto.chat.ChatMessageReportDto;
+import liaison.linkit.report.certification.service.DiscordChatReportService;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.region.TeamRegion;
@@ -104,6 +106,7 @@ public class ChatService {
     private final SessionRegistry sessionRegistry;
     private final ChatQueryAdapter chatQueryAdapter;
     private final HeaderNotificationService headerNotificationService;
+    private final DiscordChatReportService discordChatReportService;
 
     /**
      * 새로운 채팅방 생성
@@ -395,6 +398,17 @@ public class ChatService {
 
         // 4. 메시지 전송
         sendChatMessages(savedChatRoom, savedChatMessage, memberId, sessionId);
+
+        ChatMessageReportDto chatMessageReportDto = ChatMessageReportDto.builder()
+            .chatMessageId(savedChatMessage.getId())
+            .content(savedChatMessage.getContent())
+            .timestamp(savedChatMessage.getTimestamp())
+            
+            .chatMessageSenderEmail(memberQueryAdapter.findEmailById(savedChatMessage.getMessageSenderMemberId()))
+            .chatMessageReceiverEmail(memberQueryAdapter.findEmailById(savedChatMessage.getMessageReceiverMemberId()))
+            .build();
+
+        discordChatReportService.sendChatMessageReport(chatMessageReportDto);
 
         // 5. 헤더 알림 전송
         headerNotificationService.publishNotificationCount(chatMessage.getMessageReceiverMemberId());

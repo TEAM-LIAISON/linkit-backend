@@ -7,6 +7,8 @@ public record ProfileAwardsCertificationReportDto(
     Long profileAwardsId,
     String emailId,
     String awardsName,
+    String awardsCertificationAttachFileName,
+    String awardsCertificationAttachFilePath,
     LocalDateTime uploadTime
 ) {
 
@@ -14,12 +16,16 @@ public record ProfileAwardsCertificationReportDto(
     public ProfileAwardsCertificationReportDto(
         Long profileAwardsId,
         String emailId,
-        String awardsName
+        String awardsName,
+        String awardsCertificationAttachFileName,
+        String awardsCertificationAttachFilePath
     ) {
         this(
             profileAwardsId,
             emailId,
             awardsName,
+            awardsCertificationAttachFileName,
+            awardsCertificationAttachFilePath,
             LocalDateTime.now()
         );
     }

@@ -125,6 +125,8 @@ public class ProfileActivityService {
             .profileActivityId(profileActivity.getId())
             .emailId(profileActivity.getProfile().getMember().getEmailId())
             .activityName(profileActivity.getActivityName())
+            .activityCertificationAttachFileName(profileActivity.getActivityCertificationAttachFileName())
+            .activityCertificationAttachFilePath(profileActivity.getActivityCertificationAttachFilePath())
             .build();
 
         discordProfileCertificationReportService.sendProfileActivityReport(profileActivityCertificationReportDto);
