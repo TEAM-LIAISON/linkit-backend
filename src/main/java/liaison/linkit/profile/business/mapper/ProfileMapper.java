@@ -81,6 +81,7 @@ public class ProfileMapper {
             .emailId(profile.getMember().getEmailId())
             .isProfilePublic(profile.isProfilePublic())
             .majorPosition(profilePositionDetail.getMajorPosition())
+            .subPosition(profilePositionDetail.getSubPosition())
             .regionDetail(regionDetail)
             .profileTeamInforms(profileTeamInforms)
             .build();

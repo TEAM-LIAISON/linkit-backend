@@ -94,6 +94,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
             .emailId("이메일 ID 1")
             .isProfilePublic(true)
             .majorPosition("포지션 대분류")
+            .subPosition("포지션 소분류")
             .regionDetail(
                 RegionDetail.builder()
                     .cityName("활동지역 시/도")
@@ -133,6 +134,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
             .emailId("이메일 ID 2")
             .isProfilePublic(true)
             .majorPosition("포지션 대분류")
+            .subPosition("포지션 소분류")
             .regionDetail(
                 RegionDetail.builder()
                     .cityName("활동지역 시/도")
@@ -248,6 +250,9 @@ public class ProfileSearchControllerTest extends ControllerTest {
                         fieldWithPath("result.content[].majorPosition")
                             .type(JsonFieldType.STRING)
                             .description("포지션 대분류"),
+                        fieldWithPath("result.content[].subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 소분류"),
                         fieldWithPath("result.content[].profileTeamInforms")
                             .type(JsonFieldType.ARRAY)
                             .description("프로필 팀 정보 목록"),
