@@ -81,6 +81,7 @@ public class ProfileResponseDTO {
         private String emailId;
 
         private String majorPosition;
+        private String subPosition;
 
         @Builder.Default
         private RegionDetail regionDetail = new RegionDetail();
@@ -148,7 +149,7 @@ public class ProfileResponseDTO {
 
         @Builder.Default
         private ProfileInformMenu profileInformMenu = new ProfileInformMenu(); // 프로필 카드
-        
+
         private ProfileLogItem profileLogItem;
         private List<ProfileSkillItem> profileSkillItems;
         private List<ProfileActivityItem> profileActivityItems;
