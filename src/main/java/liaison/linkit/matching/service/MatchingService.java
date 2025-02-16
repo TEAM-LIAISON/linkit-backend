@@ -9,7 +9,8 @@ import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.mail.service.AsyncMatchingEmailService;
-import liaison.linkit.matching.business.MatchingMapper;
+import liaison.linkit.matching.business.assembler.MatchingRequestModalAssembler;
+import liaison.linkit.matching.business.mapper.MatchingMapper;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.MatchingEmailContent;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
@@ -24,7 +25,6 @@ import liaison.linkit.matching.exception.MatchingReceiverBadRequestException;
 import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
 import liaison.linkit.matching.exception.MatchingSenderBadRequestException;
 import liaison.linkit.matching.exception.MatchingStatusTypeBadRequestException;
-import liaison.linkit.matching.exception.NotAllowMatchingBadRequestException;
 import liaison.linkit.matching.exception.UpdateMatchingStatusTypeBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
@@ -127,103 +127,16 @@ public class MatchingService {
     private final NotificationMapper notificationMapper;
     private final HeaderNotificationService headerNotificationService;
     private final AnnouncementCommonAssembler announcementCommonAssembler;
+    private final MatchingRequestModalAssembler matchingRequestModalAssembler;
 
     @Transactional(readOnly = true)
-    public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long memberId, final String emailId) {
-        // 1. 프로필 조회
-        final Profile senderProfile = profileQueryAdapter.findByMemberId(memberId);
-
-        if (senderProfile.getMember().getEmailId().equals(emailId)) {
-            throw NotAllowMatchingBadRequestException.EXCEPTION;
-        }
-
-        log.info("Selecting matching request to profile {}", senderProfile);
-        ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
-
-        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
-            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
-            senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
-        }
-
-        // 2. 팀 정보 조회 및 변환
-        List<SenderTeamInformation> senderTeamInformations = new ArrayList<>();
-        boolean isTeamInformationExists = false;
-
-        if (teamMemberQueryAdapter.existsTeamOwnerByMemberId(memberId)) {
-            isTeamInformationExists = true;
-            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
-            senderTeamInformations = teams.stream()
-                .map(team -> SenderTeamInformation.builder()
-                    .teamCode(team.getTeamCode())
-                    .teamName(team.getTeamName())
-                    .teamLogoImagePath(team.getTeamLogoImagePath())
-                    .build())
-                .toList();
-        }
-
-        final Profile receiverProfile = profileQueryAdapter.findByEmailId(emailId);
-        log.info("Selecting matching request to profile {}", receiverProfile);
-        ProfilePositionDetail receiverProfilePositionDetail = new ProfilePositionDetail();
-        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(receiverProfile.getId())) {
-            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(receiverProfile.getId());
-            receiverProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
-        }
-
-        return matchingMapper.toSelectMatchingRequestToProfileMenu(
-            isTeamInformationExists,
-            senderProfile,
-            senderProfilePositionDetail,
-            senderTeamInformations,
-            receiverProfile,
-            receiverProfilePositionDetail
-        );
+    public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long senderMemberId, final String receiverEmailId) {
+        return matchingRequestModalAssembler.assembleSelectMatchingRequestToProfileMenu(senderMemberId, receiverEmailId);
     }
 
     @Transactional(readOnly = true)
-    public SelectMatchingRequestToTeamMenu selectMatchingRequestToTeamMenu(final Long memberId, final String teamCode) {
-        // 1. 프로필 조회
-        final Profile senderProfile = profileQueryAdapter.findByMemberId(memberId);
-
-        ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
-        if (profilePositionQueryAdapter.existsProfilePositionByProfileId(senderProfile.getId())) {
-            final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(senderProfile.getId());
-            senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
-        }
-
-        // 2. 팀 정보 조회 및 변환
-        List<SenderTeamInformation> senderTeamInformations = new ArrayList<>();
-        boolean isTeamInformationExists = false;
-
-        if (teamMemberQueryAdapter.existsTeamOwnerByMemberId(memberId)) {
-            isTeamInformationExists = true;
-            final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
-            senderTeamInformations = teams.stream()
-                .map(team -> {
-                    TeamScaleItem teamScaleItem = new TeamScaleItem();
-                    if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-                        final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
-                        teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
-                    }
-
-                    return SenderTeamInformation.builder()
-                        .teamCode(team.getTeamCode())
-                        .teamName(team.getTeamName())
-                        .teamLogoImagePath(team.getTeamLogoImagePath())
-                        .teamScaleItem(teamScaleItem)
-                        .build();
-                }).toList();
-
-        }
-
-        final Team receiverTeam = teamQueryAdapter.findByTeamCode(teamCode);
-
-        TeamScaleItem receiveTeamScaleItem = null;
-        if (teamScaleQueryAdapter.existsTeamScaleByTeamId(receiverTeam.getId())) {
-            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(receiverTeam.getId());
-            receiveTeamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
-        }
-
-        return matchingMapper.toSelectMatchingRequestTeamMenu(isTeamInformationExists, senderProfile, senderProfilePositionDetail, senderTeamInformations, receiverTeam, receiveTeamScaleItem);
+    public SelectMatchingRequestToTeamMenu selectMatchingRequestToTeamMenu(final Long senderMemberId, final String receiverTeamCode) {
+        return matchingRequestModalAssembler.assembleSelectMatchingRequestToTeamMenu(senderMemberId, receiverTeamCode);
     }
 
     // 매칭 상단 알림 조회 (수정 필요)
@@ -273,34 +186,23 @@ public class MatchingService {
 
     public Page<ReceivedMatchingMenu> getReceivedMatchingMenuResponse(final Long memberId, final ReceiverType receiverType, Pageable pageable) {
         List<Matching> combinedMatchingItems = new ArrayList<>();
-        log.info("Start getReceivedMatchingMenuResponse: memberId={}, receiverType={}", memberId, receiverType);
 
         // Profile 케이스
         if (receiverType == null || receiverType.equals(ReceiverType.PROFILE)) {
             final String emailId = memberQueryAdapter.findEmailIdById(memberId);
-            log.info("Profile case: emailId={}", emailId);
-
             final Page<Matching> profileMatchingItems = matchingQueryAdapter.findReceivedToProfile(emailId, pageable);
-            log.info("Profile matching items size: {}", profileMatchingItems.getContent().size());
-
             if (receiverType != null) {
-                log.info("Returning Profile case directly.");
                 return profileMatchingItems.map(this::toMatchingReceivedMenu);
             }
-
             combinedMatchingItems.addAll(profileMatchingItems.getContent());
         }
 
         // Team 케이스
         if (receiverType == null || receiverType.equals(ReceiverType.TEAM)) {
             final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
-            log.info("Team case: teams size={}", teams.size());
-
             final Page<Matching> teamMatchingItems = matchingQueryAdapter.findReceivedToTeam(teams, pageable);
-            log.info("Team matching items size: {}", teamMatchingItems.getContent().size());
 
             if (receiverType != null) {
-                log.info("Returning Team case directly.");
                 return teamMatchingItems.map(this::toMatchingReceivedMenu);
             }
 
@@ -310,26 +212,20 @@ public class MatchingService {
         // Announcement 케이스
         if (receiverType == null || receiverType.equals(ReceiverType.ANNOUNCEMENT)) {
             final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
-            log.info("Announcement case: teams size={}", teams.size());
 
             final List<Long> teamIds = teams.stream()
                 .map(Team::getId)
                 .toList();
-            log.info("Team IDs size: {}", teamIds.size());
 
             final List<TeamMemberAnnouncement> teamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllByTeamIds(teamIds);
-            log.info("TeamMemberAnnouncements size: {}", teamMemberAnnouncements.size());
 
             final List<Long> announcementIds = teamMemberAnnouncements.stream()
                 .map(TeamMemberAnnouncement::getId)
                 .toList();
-            log.info("Announcement IDs size: {}", announcementIds.size());
 
             final Page<Matching> announcementMatchingItems = matchingQueryAdapter.findReceivedToAnnouncement(announcementIds, pageable);
-            log.info("Announcement matching items size: {}", announcementMatchingItems.getContent().size());
 
             if (receiverType != null) {
-                log.info("Returning Announcement case directly.");
                 return announcementMatchingItems.map(this::toMatchingReceivedMenu);
             }
 
@@ -337,7 +233,6 @@ public class MatchingService {
         }
 
         // Null 케이스: Profile, Team, Announcement 데이터를 모두 병합
-        log.info("Combining all matching items: combined size={}", combinedMatchingItems.size());
         return new PageImpl<>(
             combinedMatchingItems.stream()
                 .map(this::toMatchingReceivedMenu)
@@ -449,8 +344,6 @@ public class MatchingService {
     public UpdateMatchingStatusTypeResponse updateMatchingStatusType(
         final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
     ) throws MessagingException, UnsupportedEncodingException {
-        log.info("updateMatchingStatusType 호출: memberId={}, matchingId={}, updateRequest={}",
-            memberId, matchingId, updateMatchingStatusTypeRequest);
 
         if (updateMatchingStatusTypeRequest == null || updateMatchingStatusTypeRequest.getMatchingStatusType().equals(MatchingStatusType.REQUESTED)) {
             log.error("Invalid updateMatchingStatusTypeRequest: {}", updateMatchingStatusTypeRequest);
@@ -458,19 +351,15 @@ public class MatchingService {
         }
 
         final Matching matching = matchingQueryAdapter.findByMatchingId(matchingId);
-        log.info("Matching 정보 조회 성공: {}", matching);
 
         if (!getReceiverMemberId(matching).equals(memberId)) {
-            log.error("수신자 ID 불일치: 요청자 ID={}, 수신자 ID={}", memberId, getReceiverMemberId(matching));
             throw UpdateMatchingStatusTypeBadRequestException.EXCEPTION;
         }
 
         matchingCommandAdapter.updateMatchingStatusType(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
-        log.info("매칭 상태 업데이트 성공: matchingId={}, statusType={}", matchingId, updateMatchingStatusTypeRequest.getMatchingStatusType());
 
         // COMPLETED 상태로 변경된 경우 비동기 이메일 발송
         if (updateMatchingStatusTypeRequest.getMatchingStatusType() == MatchingStatusType.COMPLETED) {
-            log.info("매칭 상태 COMPLETED - 이메일 발송 준비");
             MatchingEmailContent emailContent = generateMatchingCompletedEmailContent(matching);
 
             asyncMatchingEmailService.sendMatchingCompletedEmails(
@@ -497,22 +386,20 @@ public class MatchingService {
                 getReceiverRegionOrAnnouncementSkillText(matching),
                 getReceiverRegionOrAnnouncementSkill(matching)
             );
-            log.info("이메일 발송 완료");
 
             NotificationDetails acceptedStateReceiverNotificationDetails = generateAcceptedStateReceiverNotificationDetails(matching);
             alertNewAcceptedNotificationToReceiver(matching, acceptedStateReceiverNotificationDetails);
-            log.info("수신자에게 알림 발송 완료: memberId={}, matchingId={}", getReceiverMemberId(matching), matchingId);
 
             headerNotificationService.publishNotificationCount(getReceiverMemberId(matching));
-            log.info("수신자 헤더 알림 카운트 업데이트 완료: memberId={}", getReceiverMemberId(matching));
 
             // 매칭 성사된 경우, 발신자에게 알림 발송
             NotificationDetails acceptedStateSenderNotificationDetails = generateAcceptedStateSenderNotificationDetails(matching);
             alertNewAcceptedNotificationToSender(matching, acceptedStateSenderNotificationDetails);
-            log.info("발신자에게 알림 발송 완료: memberId={}, matchingId={}", getSenderMemberId(matching), matchingId);
 
             headerNotificationService.publishNotificationCount(getSenderMemberId(matching));
-            log.info("발신자 헤더 알림 카운트 업데이트 완료: memberId={}", getSenderMemberId(matching));
+
+            // 수신함에서 채팅방 생성
+
         } else {
             NotificationDetails rejectedStateReceiverNotificationDetails = generatedRejectedStateSenderNotificationDetails(matching);
             alertNewRejectedNotificationToSender(matching, rejectedStateReceiverNotificationDetails);
@@ -520,7 +407,6 @@ public class MatchingService {
         }
 
         UpdateMatchingStatusTypeResponse response = matchingMapper.toUpdateMatchingStatusTypeResponse(matching, updateMatchingStatusTypeRequest.getMatchingStatusType());
-        log.info("매칭 상태 업데이트 응답 생성 완료: {}", response);
 
         return response;
     }
@@ -619,18 +505,13 @@ public class MatchingService {
                 throw MatchingReceiverBadRequestException.EXCEPTION;
             }
             final Team team = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(addMatchingRequest.getReceiverAnnouncementId()).getTeam();
-            log.info("team 공고 지원의 팀 이름: {}", team.getTeamName());
             if (teamMemberQueryAdapter.findMembersByTeamCode(team.getTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
-                log.info("팀원에 속해있어요.");
                 throw CannotRequestMyAnnouncementException.EXCEPTION;
             }
         }
 
         final Matching matching = matchingMapper.toMatching(addMatchingRequest);
-        log.info("Add matching 0: " + matching);
         final Matching savedMatching = matchingCommandAdapter.addMatching(matching);
-
-        log.info("Add matching 0-1: " + matching);
 
         MatchingEmailContent emailContent = generateMatchingRequestedEmailContent(matching);
 
@@ -646,8 +527,6 @@ public class MatchingService {
             getSenderPositionOrTeamSize(matching),
             getSenderRegionDetail(matching)
         );
-
-        log.info("Add matching 0-2: " + matching);
 
         SenderProfileInformation senderProfileInformation = new SenderProfileInformation();
         SenderTeamInformation senderTeamInformation = new SenderTeamInformation();
@@ -894,7 +773,6 @@ public class MatchingService {
             return member.getMemberBasicInform().getMemberName();
         } else {
             final Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
-            log.info("team code " + team.getTeamCode());
             return team.getTeamName();
         }
     }
@@ -955,7 +833,6 @@ public class MatchingService {
             return profile.getProfileImagePath();
         } else {
             final Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
-            log.info("team logo image " + team.getTeamLogoImagePath());
             return team.getTeamLogoImagePath();
         }
     }
@@ -986,7 +863,6 @@ public class MatchingService {
             final Profile profile = profileQueryAdapter.findByEmailId(matching.getSenderEmailId());
 
             ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
-
             if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
                 final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
                 senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
@@ -1000,7 +876,6 @@ public class MatchingService {
                 final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
                 teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
             }
-            log.info("team code " + team.getTeamCode());
 
             return teamScaleItem.getTeamScaleName();
         }
@@ -1124,7 +999,6 @@ public class MatchingService {
         switch (matching.getReceiverType()) {
             case PROFILE -> {
                 Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
-                log.info("Found profile email: " + profile.getMember().getId());
                 return profile.getMember().getEmail();
             }
             case TEAM, ANNOUNCEMENT -> {
@@ -1134,12 +1008,8 @@ public class MatchingService {
                         .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
                         .getTeam()
                         .getTeamCode();
-                log.info("teamCode: " + teamCode);
                 final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-                log.info("Team: " + team.getTeamName());
                 final Member member = teamMemberQueryAdapter.findTeamOwnerByTeamCode(team.getTeamCode());
-
-                log.info("member email: " + member.getEmail());
                 return member.getEmail();
             }
             default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
@@ -1188,7 +1058,6 @@ public class MatchingService {
     private String getReceiverMajorPosition(final Matching matching) {
         final TeamMemberAnnouncement targetTeamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
         final AnnouncementPositionItem announcementPositionItem = announcementCommonAssembler.fetchAnnouncementPositionItem(targetTeamMemberAnnouncement);
-        log.info("majorPosition: " + announcementPositionItem.getMajorPosition());
         return announcementPositionItem.getMajorPosition();
     }
 

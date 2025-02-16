@@ -41,11 +41,11 @@ public class MatchingController {
 
     // 프로필 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
     @GetMapping("/profile/{emailId}/select/request/menu")
+    @MemberOnly
     public CommonResponse<SelectMatchingRequestToProfileMenu> selectMatchingRequestToProfileMenu(
         @Auth final Accessor accessor,
         @PathVariable final String emailId
     ) {
-        log.info("selectMatchingRequestToProfileMenu");
         return CommonResponse.onSuccess(matchingService.selectMatchingRequestToProfileMenu(accessor.getMemberId(), emailId));
     }
 
