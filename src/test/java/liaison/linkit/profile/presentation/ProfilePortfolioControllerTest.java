@@ -45,6 +45,7 @@ import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRespons
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioDetail;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItem;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProfilePortfolioItems;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectRoleAndContribution;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectSkillName;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse;
@@ -317,12 +318,16 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
             new PortfolioSubImage("프로젝트 보조 이미지 2")
         );
 
+        final List<ProjectLinkNameAndUrls> projectLinkNameAndUrls = Arrays.asList(
+            new ProjectLinkNameAndUrls("링크 이름", "링크 주소"),
+            new ProjectLinkNameAndUrls("링크 이름", "링크 주소")
+        );
+
         final PortfolioImages portfolioImages = new PortfolioImages("대표 이미지", portfolioSubImages);
 
         final ProfilePortfolioResponseDTO.ProfilePortfolioDetail profilePortfolioDetail
             = new ProfilePortfolioDetail(1L, "프로젝트 이름", "프로젝트 한 줄 설명", ProjectSize.TEAM, 4, "팀 구성", "2022.06", "2026.06", false, projectRoleAndContributions, projectSkillNames,
-            "프로젝트 링크",
-            "프로젝트 설명", portfolioImages);
+            projectLinkNameAndUrls, "프로젝트 설명", portfolioImages);
 
         // when
         when(profilePortfolioService.getProfilePortfolioDetailInLogoutState(anyLong())).thenReturn(profilePortfolioDetail);
@@ -396,9 +401,17 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                         fieldWithPath("result.projectSkillNames[].projectSkillName")
                             .type(JsonFieldType.STRING)
                             .description("프로젝트 스킬 이름"),
-                        fieldWithPath("result.projectLink")
+
+                        fieldWithPath("result.projectLinkNameAndUrls")
+                            .type(JsonFieldType.ARRAY)
+                            .description("포트폴리오 프로젝트 링크 제목 및 경로"),
+                        fieldWithPath("result.projectLinkNameAndUrls[].projectLinkName")
                             .type(JsonFieldType.STRING)
-                            .description("프로젝트 링크"),
+                            .description("프로젝트 링크 제목"),
+                        fieldWithPath("result.projectLinkNameAndUrls[].projectLinkUrl")
+                            .type(JsonFieldType.STRING)
+                            .description("프로젝트 링크 경로"),
+
                         fieldWithPath("result.projectDescription")
                             .type(JsonFieldType.STRING)
                             .description("프로젝트 설명"),
@@ -458,12 +471,17 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                 .build()
         );
 
+        final List<ProfilePortfolioRequestDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls = Arrays.asList(
+            new ProfilePortfolioRequestDTO.ProjectLinkNameAndUrls("링크 이름", "링크 주소"),
+            new ProfilePortfolioRequestDTO.ProjectLinkNameAndUrls("링크 이름", "링크 주소")
+        );
+
         final AddProfilePortfolioRequest addProfilePortfolioRequest
             = new AddProfilePortfolioRequest(
             "프로젝트 이름", "프로젝트 한 줄 소개", ProjectSize.PERSONAL, 3,
             "프로젝트 팀 구성", "프로젝트 시작 날짜", "프로젝트 종료 날짜",
             false, projectRoleAndContributions, projectSkillNames,
-            "프로젝트 링크", "프로젝트 설명");
+            projectLinkNameAndUrls, "프로젝트 설명");
 
         final MockMultipartFile projectRepresentImage = new MockMultipartFile(
             "projectRepresentImage",
@@ -526,11 +544,16 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
             )
         );
 
+        final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrlsResponse = Arrays.asList(
+            new ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls("링크 이름", "링크 주소"),
+            new ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls("링크 이름", "링크 주소")
+        );
+
         final AddProfilePortfolioResponse addProfilePortfolioResponse
             = new AddProfilePortfolioResponse("프로젝트 이름", "프로젝트 한 줄 소개", ProjectSize.PERSONAL, 3,
             "프로젝트 팀 구성", "프로젝트 시작 날짜", "프로젝트 종료 날짜",
             false, projectRoleAndContributionsResponse, projectSkillNamesResponse,
-            "프로젝트 링크", "프로젝트 설명", portfolioImages);
+            projectLinkNameAndUrlsResponse, "프로젝트 설명", portfolioImages);
 
         // when
         when(profilePortfolioService.addProfilePortfolio(anyLong(), any(), any(), any())).thenReturn(addProfilePortfolioResponse);
@@ -586,7 +609,11 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                         .description("프로젝트 기여도 (예: HIGH, UPPER_MIDDLE, MIDDLE, LOWER_MIDDLE, LOWER)"),
                     fieldWithPath("projectSkillNames").type(JsonFieldType.ARRAY).description("프로젝트 스킬 이름 목록"),
                     fieldWithPath("projectSkillNames[].projectSkillName").type(JsonFieldType.STRING).description("프로젝트 스킬 이름"),
-                    fieldWithPath("projectLink").type(JsonFieldType.STRING).description("프로젝트 링크"),
+
+                    fieldWithPath("projectLinkNameAndUrls").type(JsonFieldType.ARRAY).description("프로젝트 링크 이름 및 링크 경로"),
+                    fieldWithPath("projectLinkNameAndUrls[].projectLinkName").type(JsonFieldType.STRING).description("프로젝트 링크 이름"),
+                    fieldWithPath("projectLinkNameAndUrls[].projectLinkUrl").type(JsonFieldType.STRING).description("프로젝트 링크 경로"),
+
                     fieldWithPath("projectDescription").type(JsonFieldType.STRING).description("프로젝트 설명")
                 ),
                 responseFields(fieldWithPath("isSuccess")
@@ -644,9 +671,16 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                         .type(JsonFieldType.STRING)
                         .description("프로젝트 스킬 이름"),
 
-                    fieldWithPath("result.projectLink")
+                    fieldWithPath("result.projectLinkNameAndUrls")
+                        .type(JsonFieldType.ARRAY)
+                        .description("포트폴리오 프로젝트 링크 제목 및 경로"),
+                    fieldWithPath("result.projectLinkNameAndUrls[].projectLinkName")
                         .type(JsonFieldType.STRING)
-                        .description("프로젝트 링크"),
+                        .description("프로젝트 링크 제목"),
+                    fieldWithPath("result.projectLinkNameAndUrls[].projectLinkUrl")
+                        .type(JsonFieldType.STRING)
+                        .description("프로젝트 링크 경로"),
+
                     fieldWithPath("result.projectDescription")
                         .type(JsonFieldType.STRING)
                         .description("프로젝트 설명"),
@@ -706,6 +740,11 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                 .build()
         );
 
+        final List<ProfilePortfolioRequestDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls = Arrays.asList(
+            new ProfilePortfolioRequestDTO.ProjectLinkNameAndUrls("링크 이름", "링크 주소"),
+            new ProfilePortfolioRequestDTO.ProjectLinkNameAndUrls("링크 이름", "링크 주소")
+        );
+
         final UpdateProfilePortfolioRequest updateProfilePortfolioRequest
             = UpdateProfilePortfolioRequest.builder()
             .projectName("수정 프로젝트 이름")
@@ -718,8 +757,8 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
             .isProjectInProgress(false)
             .projectRoleAndContributions(projectRoleAndContributions)
             .projectSkillNames(projectSkillNames)
-            .projectLink("수정 프로젝트 링크")
             .projectDescription("수정 프로젝트 설명")
+            .projectLinkNameAndUrls(projectLinkNameAndUrls)
             .portfolioImages(ProfilePortfolioRequestDTO.PortfolioImages.builder()
                 .projectRepresentImagePath("포트폴리오 대표 이미지 경로")
                 .portfolioSubImages(
@@ -784,6 +823,11 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                 .build()
         );
 
+        final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrlsResponse = Arrays.asList(
+            new ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls("링크 이름", "링크 주소"),
+            new ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls("링크 이름", "링크 주소")
+        );
+
         final ProfilePortfolioResponseDTO.PortfolioImages portfolioImages = new PortfolioImages(
             "수정 프로젝트 대표 이미지 경로",
             Arrays.asList(
@@ -800,7 +844,7 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
             = new UpdateProfilePortfolioResponse(1L, "수정 프로젝트 이름", "수정 프로젝트 한 줄 소개", ProjectSize.TEAM, 5,
             "수정 프로젝트 팀 구성", "수정 프로젝트 시작 날짜", "수정 프로젝트 종료 날짜",
             false, projectRoleAndContributionsResponse, projectSkillNamesResponse,
-            "프로젝트 링크", "프로젝트 설명", portfolioImages);
+            projectLinkNameAndUrlsResponse, "프로젝트 설명", portfolioImages);
 
         final Long profilePortfolioId = 1L;
 
@@ -862,7 +906,11 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                         .description("프로젝트 기여도 (예: HIGH, UPPER_MIDDLE, MIDDLE, LOWER_MIDDLE, LOWER)"),
                     fieldWithPath("projectSkillNames").type(JsonFieldType.ARRAY).description("프로젝트 스킬 이름 목록"),
                     fieldWithPath("projectSkillNames[].projectSkillName").type(JsonFieldType.STRING).description("프로젝트 스킬 이름"),
-                    fieldWithPath("projectLink").type(JsonFieldType.STRING).description("프로젝트 링크"),
+
+                    fieldWithPath("projectLinkNameAndUrls").type(JsonFieldType.ARRAY).description("프로젝트 링크 이름 및 링크 경로"),
+                    fieldWithPath("projectLinkNameAndUrls[].projectLinkName").type(JsonFieldType.STRING).description("프로젝트 링크 이름"),
+                    fieldWithPath("projectLinkNameAndUrls[].projectLinkUrl").type(JsonFieldType.STRING).description("프로젝트 링크 경로"),
+
                     fieldWithPath("projectDescription").type(JsonFieldType.STRING).description("프로젝트 설명"),
 
                     fieldWithPath("portfolioImages").type(JsonFieldType.OBJECT).description("프로덕트 이미지 정보"),
@@ -928,9 +976,16 @@ public class ProfilePortfolioControllerTest extends ControllerTest {
                         .type(JsonFieldType.STRING)
                         .description("프로젝트 스킬 이름"),
 
-                    fieldWithPath("result.projectLink")
+                    fieldWithPath("result.projectLinkNameAndUrls")
+                        .type(JsonFieldType.ARRAY)
+                        .description("포트폴리오 프로젝트 링크 제목 및 경로"),
+                    fieldWithPath("result.projectLinkNameAndUrls[].projectLinkName")
                         .type(JsonFieldType.STRING)
-                        .description("프로젝트 링크"),
+                        .description("프로젝트 링크 제목"),
+                    fieldWithPath("result.projectLinkNameAndUrls[].projectLinkUrl")
+                        .type(JsonFieldType.STRING)
+                        .description("프로젝트 링크 경로"),
+                    
                     fieldWithPath("result.projectDescription")
                         .type(JsonFieldType.STRING)
                         .description("프로젝트 설명"),

@@ -5,7 +5,6 @@ import java.util.List;
 import liaison.linkit.profile.domain.portfolio.ProjectLink;
 import liaison.linkit.profile.domain.portfolio.QProfilePortfolio;
 import liaison.linkit.profile.domain.portfolio.QProjectLink;
-import liaison.linkit.profile.domain.portfolio.QProjectSkill;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
