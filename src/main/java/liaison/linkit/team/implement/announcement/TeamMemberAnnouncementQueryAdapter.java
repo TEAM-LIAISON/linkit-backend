@@ -39,6 +39,19 @@ public class TeamMemberAnnouncementQueryAdapter {
         return teamMemberAnnouncementRepository.findAll(subPosition, skillName, cityName, scaleName, pageable);
     }
 
+    public Page<TeamMemberAnnouncement> findHotAnnouncements(
+        final Pageable pageable
+    ) {
+        return teamMemberAnnouncementRepository.findHotAnnouncements(pageable);
+    }
+
+    public Page<TeamMemberAnnouncement> findExcludedAnnouncements(
+        final List<Long> excludeAnnouncementIds,
+        final Pageable pageable
+    ) {
+        return teamMemberAnnouncementRepository.findExcludedAnnouncements(excludeAnnouncementIds, pageable);
+    }
+
     public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
         return teamMemberAnnouncementRepository.findTopTeamMemberAnnouncements(limit);
     }

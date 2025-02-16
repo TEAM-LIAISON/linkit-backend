@@ -281,6 +281,65 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
         return qScale.scaleName.in(scaleName);
     }
 
+    @Override
+    public Page<TeamMemberAnnouncement> findHotAnnouncements(final Pageable pageable) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        List<TeamMemberAnnouncement> content = jpaQueryFactory
+            .selectFrom(qTeamMemberAnnouncement)
+            .where(
+                qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+                    .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
+            )
+            .orderBy(
+                new CaseBuilder()
+                    .when(qTeamMemberAnnouncement.id.eq(35L)).then(0)
+                    .when(qTeamMemberAnnouncement.id.eq(36L)).then(1)
+                    .when(qTeamMemberAnnouncement.id.eq(27L)).then(2)
+                    .when(qTeamMemberAnnouncement.id.eq(37L)).then(3)
+                    .when(qTeamMemberAnnouncement.id.eq(14L)).then(4)
+                    .when(qTeamMemberAnnouncement.id.eq(8L)).then(5)
+                    .when(qTeamMemberAnnouncement.id.eq(2L)).then(6)
+                    .when(qTeamMemberAnnouncement.id.eq(3L)).then(7)
+                    .otherwise(6)
+                    .asc()
+            )
+            .limit(6)
+            .fetch();
+
+        // Pageable 정보와 함께 Page 객체로 반환 (항상 최대 6개의 레코드)
+        return PageableExecutionUtils.getPage(content, pageable, content::size);
+    }
+
+    @Override
+    public Page<TeamMemberAnnouncement> findExcludedAnnouncements(final List<Long> excludeAnnouncementIds, final Pageable pageable) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        List<TeamMemberAnnouncement> content = jpaQueryFactory
+            .selectFrom(qTeamMemberAnnouncement)
+            .where(
+                qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+                    .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
+                    .and(qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds))
+            )
+            .orderBy(qTeamMemberAnnouncement.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        Long total = jpaQueryFactory
+            .selectDistinct(qTeamMemberAnnouncement.count())
+            .from(qTeamMemberAnnouncement)
+            .where(
+                qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+                    .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
+                    .and(qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds))
+            )
+            .fetchOne();
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+    }
+
 //    @Override
 //    public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
 //        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;

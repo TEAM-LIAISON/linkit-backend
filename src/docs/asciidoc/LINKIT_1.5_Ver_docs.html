@@ -904,7 +904,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Fri, 21 Feb 2025 04:04:43 GMT; Secure; HttpOnly; SameSite=Lax
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sun, 23 Feb 2025 07:46:55 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 278
 
@@ -1051,7 +1051,7 @@ Content-Length: 159
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2025-02-14T13:04:43.729302"
+    "logoutAt" : "2025-02-16T16:46:55.269932"
   }
 }</code></pre>
 </div>
@@ -1205,7 +1205,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2025-02-14T13:04:43.797575"
+    "quitAt" : "2025-02-16T16:46:55.302894"
   }
 }</code></pre>
 </div>
@@ -1307,7 +1307,7 @@ Content-Length: 178
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2025-02-14T13:04:45.058569"
+    "reAuthenticationEmailSendAt" : "2025-02-16T16:46:55.870497"
   }
 }</code></pre>
 </div>
@@ -1417,7 +1417,7 @@ Content-Length: 214
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2025-02-14T13:04:45.038845"
+    "verificationSuccessAt" : "2025-02-16T16:46:55.858706"
   }
 }</code></pre>
 </div>
@@ -2351,7 +2351,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1997
+Content-Length: 2087
 
 {
   "isSuccess" : true,
@@ -2371,6 +2371,7 @@ Content-Length: 1997
       "memberName" : "회원 이름",
       "emailId" : "이메일 ID",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -2397,6 +2398,7 @@ Content-Length: 1997
       "memberName" : "회원 이름 2",
       "emailId" : "이메일 ID 2",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -2483,6 +2485,11 @@ Content-Length: 1997
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].majorPosition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">포지션 대분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 소분류</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].regionDetail.cityName</code></p></td>
@@ -2929,7 +2936,7 @@ Content-Length: 899
     "logInformMenus" : [ {
       "id" : 1,
       "domainType" : "PROFILE",
-      "createdAt" : "2025-02-14T13:04:50.421403",
+      "createdAt" : "2025-02-16T16:46:59.529484",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용",
       "logInformDetails" : {
@@ -2941,7 +2948,7 @@ Content-Length: 899
     }, {
       "id" : 2,
       "domainType" : "TEAM",
-      "createdAt" : "2025-02-14T13:04:50.421767",
+      "createdAt" : "2025-02-16T16:46:59.529841",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용",
       "logInformDetails" : {
@@ -3117,7 +3124,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 5091
+Content-Length: 5135
 
 {
   "isSuccess" : true,
@@ -3141,6 +3148,7 @@ Content-Length: 5091
       "memberName" : "권동민",
       "emailId" : "이메일 아이디",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "서울특별시",
         "divisionName" : "강남구"
@@ -3159,7 +3167,7 @@ Content-Length: 5091
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-02-14T13:04:47.182075",
+      "modifiedAt" : "2025-02-16T16:46:57.11543",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     },
@@ -3369,7 +3377,12 @@ Content-Length: 5091
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.majorPosition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">대분류 포지션</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 대분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 소분류</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.regionDetail</code></p></td>
@@ -4047,7 +4060,7 @@ Content-Length: 465
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "profileId" : 1,
-    "modifiedAt" : "2025-02-14T13:04:45.989419",
+    "modifiedAt" : "2025-02-16T16:46:56.370571",
     "majorPosition" : "대분류 포지션",
     "subPosition" : "소분류 포지션",
     "cityName" : "활동지역 시/도",
@@ -4274,14 +4287,14 @@ Content-Length: 587
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-02-14T13:04:48.517691",
+      "modifiedAt" : "2025-02-16T16:46:58.098534",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-02-14T13:04:48.517694",
+      "modifiedAt" : "2025-02-16T16:46:58.098535",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -4401,7 +4414,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 318
+Content-Length: 319
 
 {
   "isSuccess" : true,
@@ -4411,7 +4424,7 @@ Content-Length: 318
     "profileLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-02-14T13:04:48.49317",
+    "modifiedAt" : "2025-02-16T16:46:58.075983",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -4523,7 +4536,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-02-14T13:04:48.474821",
+    "createdAt" : "2025-02-16T16:46:58.058981",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -4690,7 +4703,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-02-14T13:04:48.526088",
+    "createdAt" : "2025-02-16T16:46:58.107372",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -11729,14 +11742,14 @@ Content-Length: 586
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-02-14T13:04:51.805469",
+      "modifiedAt" : "2025-02-16T16:47:00.339959",
       "logTitle" : "로그 제목 1",
       "logContent" : "로그 내용 1"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-02-14T13:04:51.805476",
+      "modifiedAt" : "2025-02-16T16:47:00.339965",
       "logTitle" : "로그 제목 2",
       "logContent" : "로그 내용 2"
     } ]
@@ -11856,7 +11869,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 577
+Content-Length: 578
 
 {
   "isSuccess" : true,
@@ -11867,14 +11880,14 @@ Content-Length: 577
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-02-14T13:04:51.82047",
+      "modifiedAt" : "2025-02-16T16:47:00.354399",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-02-14T13:04:51.820473",
+      "modifiedAt" : "2025-02-16T16:47:00.354401",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -12006,7 +12019,7 @@ Content-Length: 316
     "teamLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-02-14T13:04:51.795573",
+    "modifiedAt" : "2025-02-16T16:47:00.329059",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -12163,7 +12176,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 317
+Content-Length: 318
 
 {
   "isSuccess" : true,
@@ -12173,7 +12186,7 @@ Content-Length: 317
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-02-14T13:04:51.84019",
+    "createdAt" : "2025-02-16T16:47:00.373896",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -12344,7 +12357,7 @@ Content-Length: 318
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-02-14T13:04:51.849984",
+    "createdAt" : "2025-02-16T16:47:00.382305",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -17100,7 +17113,7 @@ Content-Length: 237
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "teamCode" : "liaison",
-    "deletedRequestedAt" : "2025-02-14T13:04:51.216097",
+    "deletedRequestedAt" : "2025-02-16T16:46:59.931721",
     "isTeamLastDeleteRequester" : true
   }
 }</code></pre>
@@ -17350,14 +17363,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2484
+Content-Length: 4739
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "content" : [ {
+    "topCompletionProfiles" : [ {
       "isProfilePublic" : true,
       "profileCurrentStates" : [ {
         "profileStateName" : "팀원 찾는 중"
@@ -17370,6 +17383,7 @@ Content-Length: 2484
       "memberName" : "회원 이름 1",
       "emailId" : "이메일 ID 1",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -17396,6 +17410,7 @@ Content-Length: 2484
       "memberName" : "회원 이름 2",
       "emailId" : "이메일 ID 2",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -17410,31 +17425,88 @@ Content-Length: 2484
         "teamLogoImagePath" : "소속 팀 로고 이미지 2"
       } ]
     } ],
-    "pageable" : {
-      "pageNumber" : 0,
-      "pageSize" : 20,
+    "defaultProfiles" : {
+      "content" : [ {
+        "isProfilePublic" : true,
+        "profileCurrentStates" : [ {
+          "profileStateName" : "팀원 찾는 중"
+        }, {
+          "profileStateName" : "팀 찾는 중"
+        } ],
+        "isProfileScrap" : true,
+        "profileScrapCount" : 100,
+        "profileImagePath" : "프로필 이미지 경로 1",
+        "memberName" : "회원 이름 1",
+        "emailId" : "이메일 ID 1",
+        "majorPosition" : "포지션 대분류",
+        "subPosition" : "포지션 소분류",
+        "regionDetail" : {
+          "cityName" : "활동지역 시/도",
+          "divisionName" : "활동지역 시/군/구"
+        },
+        "profileTeamInforms" : [ {
+          "teamName" : "소속 팀 이름 1",
+          "teamCode" : "소속 팀 코드 1",
+          "teamLogoImagePath" : "소속 팀 로고 이미지 1"
+        }, {
+          "teamName" : "소속 팀 이름 2",
+          "teamCode" : "소속 팀 코드 2",
+          "teamLogoImagePath" : "소속 팀 로고 이미지 2"
+        } ]
+      }, {
+        "isProfilePublic" : true,
+        "profileCurrentStates" : [ {
+          "profileStateName" : "팀원 찾는 중"
+        }, {
+          "profileStateName" : "팀 찾는 중"
+        } ],
+        "isProfileScrap" : false,
+        "profileScrapCount" : 200,
+        "profileImagePath" : "프로필 이미지 경로 2",
+        "memberName" : "회원 이름 2",
+        "emailId" : "이메일 ID 2",
+        "majorPosition" : "포지션 대분류",
+        "subPosition" : "포지션 소분류",
+        "regionDetail" : {
+          "cityName" : "활동지역 시/도",
+          "divisionName" : "활동지역 시/군/구"
+        },
+        "profileTeamInforms" : [ {
+          "teamName" : "소속 팀 이름 1",
+          "teamCode" : "소속 팀 코드 1",
+          "teamLogoImagePath" : "소속 팀 로고 이미지 1"
+        }, {
+          "teamName" : "소속 팀 이름 2",
+          "teamCode" : "소속 팀 코드 2",
+          "teamLogoImagePath" : "소속 팀 로고 이미지 2"
+        } ]
+      } ],
+      "pageable" : {
+        "pageNumber" : 0,
+        "pageSize" : 20,
+        "sort" : {
+          "empty" : true,
+          "sorted" : false,
+          "unsorted" : true
+        },
+        "offset" : 0,
+        "paged" : true,
+        "unpaged" : false
+      },
+      "last" : true,
+      "totalPages" : 1,
+      "totalElements" : 2,
+      "size" : 20,
+      "number" : 0,
       "sort" : {
         "empty" : true,
         "sorted" : false,
         "unsorted" : true
       },
-      "offset" : 0,
-      "paged" : true,
-      "unpaged" : false
-    },
-    "last" : true,
-    "totalElements" : 2,
-    "totalPages" : 1,
-    "first" : true,
-    "size" : 20,
-    "number" : 0,
-    "sort" : {
-      "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
-    },
-    "numberOfElements" : 2,
-    "empty" : false
+      "first" : true,
+      "numberOfElements" : 2,
+      "empty" : false
+    }
   }
 }</code></pre>
 </div>
@@ -17469,194 +17541,294 @@ Content-Length: 2484
 <td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 정보 메뉴 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 완성도가 높은 팀원 목록 (최대 6명)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].profileCurrentStates</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 현재 상태 목록</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].profileCurrentStates[].profileStateName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 상태 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].isProfileScrap</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스크랩 여부 (로그인, 로그아웃 상태 반영 &amp; 스크랩 여부 반영)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].profileScrapCount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스크랩 전체 개수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].profileImagePath</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이미지 경로</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].memberName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].emailId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 ID</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].isProfilePublic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].isProfilePublic</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">프로필 공개 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].majorPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].profileCurrentStates</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 현재 상태 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].profileCurrentStates[].profileStateName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 상태 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].isProfileScrap</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스크랩 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].profileScrapCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스크랩 개수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].profileImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이미지 경로</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].memberName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].emailId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].majorPosition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">포지션 대분류</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].profileTeamInforms</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 팀 정보 목록</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 소분류</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].profileTeamInforms[].teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].profileTeamInforms</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소속 팀 정보 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].profileTeamInforms[].teamName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">소속 팀 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].profileTeamInforms[].teamCode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].profileTeamInforms[].teamCode</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">소속 팀 아이디 (팀 코드)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소속 팀 코드</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].profileTeamInforms[].teamLogoImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].profileTeamInforms[].teamLogoImagePath</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">소속 팀 로고 이미지 경로</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].regionDetail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].regionDetail</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지역 상세 정보</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].regionDetail.cityName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].regionDetail.cityName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">지역 시/도 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].regionDetail.divisionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.topCompletionProfiles[].regionDetail.divisionName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">시/군/구 이름</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지역 시/군/구 이름</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 정보</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">나머지 팀원 목록 (페이지네이션)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.sort.sorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">팀원 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].isProfilePublic</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 공개 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.sort.unsorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].profileCurrentStates</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 현재 상태 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].profileCurrentStates[].profileStateName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 상태 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].isProfileScrap</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">비정렬 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스크랩 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.sort.empty</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보 존재 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].profileScrapCount</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 스크랩 개수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.pageNumber</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].profileImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이미지 경로</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].memberName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].emailId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].majorPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 대분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 소분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].profileTeamInforms</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소속 팀 정보 목록</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].profileTeamInforms[].teamName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소속 팀 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].profileTeamInforms[].teamCode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소속 팀 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].profileTeamInforms[].teamLogoImagePath</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">소속 팀 로고 이미지 경로</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].regionDetail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지역 상세 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].regionDetail.cityName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지역 시/도 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.content[].regionDetail.divisionName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">지역 시/군/구 이름</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.pageable</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지네이션 정보</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.pageable.pageNumber</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.pageSize</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.pageable.pageSize</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.offset</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.pageable.offset</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">데이터 오프셋</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">오프셋</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.paged</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.pageable.paged</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이징 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.unpaged</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.pageable.unpaged</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">페이징 미적용 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.totalPages</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 페이지 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.totalElements</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 요소 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.last</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 페이지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.sort</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.sort</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.sort.sorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.sort.sorted</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">정렬 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.sort.unsorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.sort.unsorted</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">비정렬 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.sort.empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.sort.empty</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보 존재 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.first</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.pageable.sort.sorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.pageable.sort.unsorted</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비정렬 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.pageable.sort.empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보 없음 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.last</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 페이지 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.totalPages</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 페이지 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.totalElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">총 요소 수</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.size</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.first</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">첫 페이지 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.numberOfElements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.numberOfElements</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지의 요소 수</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.empty</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.defaultProfiles.empty</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">요소 존재 여부</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지가 비어있는지 여부</p></td>
 </tr>
 </tbody>
 </table>
@@ -17729,14 +17901,14 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1861
+Content-Length: 4527
 
 {
   "isSuccess" : true,
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "content" : [ {
+    "ventureTeams" : [ {
       "teamCurrentStates" : [ {
         "teamStateName" : "대회 준비 중"
       }, {
@@ -17775,246 +17947,115 @@ Content-Length: 1861
         "divisionName" : "활동지역 시/군/구"
       }
     } ],
-    "pageable" : {
-      "pageNumber" : 0,
-      "pageSize" : 20,
+    "supportProjectTeams" : [ {
+      "teamCurrentStates" : [ {
+        "teamStateName" : "대회 준비 중"
+      }, {
+        "teamStateName" : "투자 유치 중"
+      } ],
+      "isTeamScrap" : true,
+      "teamScrapCount" : 100,
+      "teamName" : "팀 이름 1",
+      "teamCode" : "팀 아이디 (팀 코드)",
+      "teamShortDescription" : "팀 한 줄 소개 1",
+      "teamLogoImagePath" : "팀 로고 이미지 경로 1",
+      "teamScaleItem" : {
+        "teamScaleName" : "1인"
+      },
+      "regionDetail" : {
+        "cityName" : "활동지역 시/도",
+        "divisionName" : "활동지역 시/군/구"
+      }
+    }, {
+      "teamCurrentStates" : [ {
+        "teamStateName" : "대회 준비 중"
+      }, {
+        "teamStateName" : "투자 유치 중"
+      } ],
+      "isTeamScrap" : false,
+      "teamScrapCount" : 200,
+      "teamName" : "팀 이름 2",
+      "teamCode" : "팀 아이디 2(팀 코드)",
+      "teamShortDescription" : "팀 한 줄 소개 2",
+      "teamLogoImagePath" : "팀 로고 이미지 경로 2",
+      "teamScaleItem" : {
+        "teamScaleName" : "2~5인"
+      },
+      "regionDetail" : {
+        "cityName" : "활동지역 시/도",
+        "divisionName" : "활동지역 시/군/구"
+      }
+    } ],
+    "defaultTeams" : {
+      "content" : [ {
+        "teamCurrentStates" : [ {
+          "teamStateName" : "대회 준비 중"
+        }, {
+          "teamStateName" : "투자 유치 중"
+        } ],
+        "isTeamScrap" : true,
+        "teamScrapCount" : 100,
+        "teamName" : "팀 이름 1",
+        "teamCode" : "팀 아이디 (팀 코드)",
+        "teamShortDescription" : "팀 한 줄 소개 1",
+        "teamLogoImagePath" : "팀 로고 이미지 경로 1",
+        "teamScaleItem" : {
+          "teamScaleName" : "1인"
+        },
+        "regionDetail" : {
+          "cityName" : "활동지역 시/도",
+          "divisionName" : "활동지역 시/군/구"
+        }
+      }, {
+        "teamCurrentStates" : [ {
+          "teamStateName" : "대회 준비 중"
+        }, {
+          "teamStateName" : "투자 유치 중"
+        } ],
+        "isTeamScrap" : false,
+        "teamScrapCount" : 200,
+        "teamName" : "팀 이름 2",
+        "teamCode" : "팀 아이디 2(팀 코드)",
+        "teamShortDescription" : "팀 한 줄 소개 2",
+        "teamLogoImagePath" : "팀 로고 이미지 경로 2",
+        "teamScaleItem" : {
+          "teamScaleName" : "2~5인"
+        },
+        "regionDetail" : {
+          "cityName" : "활동지역 시/도",
+          "divisionName" : "활동지역 시/군/구"
+        }
+      } ],
+      "pageable" : {
+        "pageNumber" : 0,
+        "pageSize" : 20,
+        "sort" : {
+          "empty" : true,
+          "sorted" : false,
+          "unsorted" : true
+        },
+        "offset" : 0,
+        "paged" : true,
+        "unpaged" : false
+      },
+      "last" : true,
+      "totalPages" : 1,
+      "totalElements" : 2,
+      "size" : 20,
+      "number" : 0,
       "sort" : {
         "empty" : true,
         "sorted" : false,
         "unsorted" : true
       },
-      "offset" : 0,
-      "paged" : true,
-      "unpaged" : false
-    },
-    "last" : true,
-    "totalElements" : 2,
-    "totalPages" : 1,
-    "first" : true,
-    "size" : 20,
-    "number" : 0,
-    "sort" : {
-      "empty" : true,
-      "sorted" : false,
-      "unsorted" : true
-    },
-    "numberOfElements" : 2,
-    "empty" : false
+      "first" : true,
+      "numberOfElements" : 2,
+      "empty" : false
+    }
   }
 }</code></pre>
 </div>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isSuccess</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">요청 성공 메시지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 정보 목록</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].teamCurrentStates</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 현재 상태 목록</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].teamCurrentStates[].teamStateName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 상태 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].isTeamScrap</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 스크랩 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].teamScrapCount</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 스크랩 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].teamName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].teamCode</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 아이디 (팀 코드)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].teamShortDescription</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 한 줄 소개</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].teamLogoImagePath</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 로고 이미지 경로</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].teamScaleItem</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 규모 정보</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].teamScaleItem.teamScaleName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">팀 규모 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].regionDetail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">지역 상세 정보</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].regionDetail.cityName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">지역 시/도 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].regionDetail.divisionName</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">지역 시/군/구 이름</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이징 정보</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.paged</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이징 적용 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.unpaged</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이징 미적용 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.sort</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.sort.sorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.sort.unsorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">비정렬 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.sort.empty</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보 없음 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.pageNumber</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.pageSize</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.pageable.offset</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">데이터 오프셋</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.totalPages</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 페이지 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.totalElements</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">총 요소 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.last</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">마지막 페이지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.size</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 크기</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지 번호</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.sort</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.sort.sorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.sort.unsorted</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">비정렬 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.sort.empty</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">정렬 정보 없음 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.first</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">첫 페이지 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.numberOfElements</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">현재 페이지의 요소 수</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.empty</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">요소 존재 여부</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 </div>
@@ -18157,9 +18198,8 @@ Content-Length: 2497
       "unpaged" : false
     },
     "last" : true,
-    "totalElements" : 2,
     "totalPages" : 1,
-    "first" : true,
+    "totalElements" : 2,
     "size" : 20,
     "number" : 0,
     "sort" : {
@@ -18167,6 +18207,7 @@ Content-Length: 2497
       "sorted" : false,
       "unsorted" : true
     },
+    "first" : true,
     "numberOfElements" : 2,
     "empty" : false
   }
@@ -18536,7 +18577,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1997
+Content-Length: 2087
 
 {
   "isSuccess" : true,
@@ -18556,6 +18597,7 @@ Content-Length: 1997
       "memberName" : "회원 이름",
       "emailId" : "이메일 ID",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -18582,6 +18624,7 @@ Content-Length: 1997
       "memberName" : "회원 이름 2",
       "emailId" : "이메일 ID 2",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -18668,6 +18711,11 @@ Content-Length: 1997
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].majorPosition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">포지션 대분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 소분류</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].regionDetail.cityName</code></p></td>
@@ -19595,7 +19643,7 @@ Content-Length: 2355
           }
         },
         "lastMessage" : "해당 채팅방에서의 마지막 메시지",
-        "lastMessageTime" : "2025-02-14T13:04:42.563981"
+        "lastMessageTime" : "2025-02-16T16:46:54.879796"
       },
       "unreadChatMessageCount" : 10,
       "chatPartnerOnline" : true
@@ -19624,7 +19672,7 @@ Content-Length: 2355
           }
         },
         "lastMessage" : "해당 채팅방에서의 마지막 메시지",
-        "lastMessageTime" : "2025-02-14T13:04:42.563998"
+        "lastMessageTime" : "2025-02-16T16:46:54.879805"
       },
       "unreadChatMessageCount" : 20,
       "chatPartnerOnline" : false
@@ -19816,7 +19864,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1975
+Content-Length: 1976
 
 {
   "isSuccess" : true,
@@ -19849,7 +19897,7 @@ Content-Length: 1975
         }
       },
       "lastMessage" : "해당 채팅방에서의 마지막 메시지",
-      "lastMessageTime" : "2025-02-14T13:04:42.592686"
+      "lastMessageTime" : "2025-02-16T16:46:54.896064"
     },
     "messages" : [ {
       "messageId" : "메시지 ID",
@@ -19859,7 +19907,7 @@ Content-Length: 1975
       "isMyMessage" : true,
       "messageSenderLogoImagePath" : "메시지 발신자의 프로필 로고 이미지 경로",
       "content" : "첫 번째 메시지",
-      "timestamp" : "2025-02-14T13:04:42.59316",
+      "timestamp" : "2025-02-16T16:46:54.896266",
       "read" : false
     }, {
       "messageId" : "메시지 ID",
@@ -19869,7 +19917,7 @@ Content-Length: 1975
       "isMyMessage" : true,
       "messageSenderLogoImagePath" : "메시지 발신자의 프로필 로고 이미지 경로",
       "content" : "두 번째 메시지",
-      "timestamp" : "2025-02-14T13:04:42.593169",
+      "timestamp" : "2025-02-16T16:46:54.896272",
       "read" : false
     } ],
     "chatPartnerOnline" : true
@@ -21805,9 +21853,8 @@ Content-Length: 5282
       "unpaged" : false
     },
     "last" : true,
-    "totalElements" : 2,
     "totalPages" : 1,
-    "first" : true,
+    "totalElements" : 2,
     "size" : 20,
     "number" : 0,
     "sort" : {
@@ -21815,6 +21862,7 @@ Content-Length: 5282
       "sorted" : false,
       "unsorted" : true
     },
+    "first" : true,
     "numberOfElements" : 2,
     "empty" : false
   }
@@ -22385,9 +22433,8 @@ Content-Length: 5273
       "unpaged" : false
     },
     "last" : true,
-    "totalElements" : 2,
     "totalPages" : 1,
-    "first" : true,
+    "totalElements" : 2,
     "size" : 20,
     "number" : 0,
     "sort" : {
@@ -22395,6 +22442,7 @@ Content-Length: 5273
       "sorted" : false,
       "unsorted" : true
     },
+    "first" : true,
     "numberOfElements" : 2,
     "empty" : false
   }

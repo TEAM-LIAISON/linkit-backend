@@ -224,6 +224,69 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         }
     }
 
+    @Override
+    public Page<Profile> findTopCompletionProfiles(final Pageable pageable) {
+        QProfile qProfile = QProfile.profile;
+
+        List<Profile> content = jpaQueryFactory
+            .selectFrom(qProfile)
+            .where(
+                qProfile.status.eq(StatusType.USABLE)
+                    .and(qProfile.isProfilePublic.eq(true))
+            )
+            .orderBy(
+                new CaseBuilder()
+                    .when(qProfile.id.eq(42L)).then(0)
+                    .when(qProfile.id.eq(58L)).then(1)
+                    .when(qProfile.id.eq(57L)).then(2)
+                    .when(qProfile.id.eq(55L)).then(3)
+                    .when(qProfile.id.eq(14L)).then(4)
+                    .when(qProfile.id.eq(6L)).then(5)
+                    .when(qProfile.id.eq(33L)).then(6)
+                    .when(qProfile.id.eq(26L)).then(7)
+                    .otherwise(8)
+                    .asc()
+            )
+            .limit(6)
+            .fetch();
+
+        // Pageable 정보와 함께 Page 객체로 반환 (항상 최대 6개의 레코드)
+        return PageableExecutionUtils.getPage(content, pageable, content::size);
+    }
+
+    @Override
+    public Page<Profile> findAllExcludingIds(
+        final List<Long> excludeIds,
+        final Pageable pageable
+    ) {
+        QProfile qProfile = QProfile.profile;
+
+        List<Profile> content = jpaQueryFactory
+            .selectFrom(qProfile)
+            .where(
+                qProfile.status.eq(StatusType.USABLE)
+                    .and(qProfile.isProfilePublic.eq(true))
+                    .and(qProfile.id.notIn(excludeIds))
+            )
+            .orderBy(qProfile.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        Long total = jpaQueryFactory
+            .selectDistinct(qProfile.count())
+            .from(qProfile)
+            .where(
+                qProfile.status.eq(StatusType.USABLE)
+                    .and(qProfile.isProfilePublic.eq(true))
+                    .and(qProfile.id.notIn(excludeIds))
+            )
+            .fetchOne();
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+    }
+
+
     private BooleanExpression hasSubPositions(final List<String> subPositions) {
         if (subPositions == null || subPositions.isEmpty()) {
             return null;

@@ -5,11 +5,10 @@ import java.util.Optional;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.search.business.service.ProfileSearchService;
+import liaison.linkit.search.presentation.dto.ProfileSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -39,7 +38,7 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
      * @return 팀원 목록과 페이지 정보
      */
     @GetMapping
-    public CommonResponse<Page<ProfileInformMenu>> searchProfiles(
+    public CommonResponse<ProfileSearchResponseDTO> searchProfiles(
         @Auth final Accessor accessor,
         @RequestParam(value = "subPosition", required = false) List<String> subPosition,
         @RequestParam(value = "skillName", required = false) List<String> skillName,
@@ -49,12 +48,17 @@ public class ProfileSearchController { // 팀원 찾기 컨트롤러
         @RequestParam(value = "size", defaultValue = "20") int size
     ) {
         // 로그인 여부에 따라 Optional 생성
-        Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+        Optional<Long> optionalMemberId = accessor.isMember()
+            ? Optional.of(accessor.getMemberId())
+            : Optional.empty();
 
         // Pageable 객체 한 번만 생성 (정렬 기준도 통일)
         Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
 
-        Page<ProfileInformMenu> profiles = profileSearchService.searchProfiles(optionalMemberId, subPosition, skillName, cityName, profileStateName, pageable);
-        return CommonResponse.onSuccess(profiles);
+        ProfileSearchResponseDTO profileSearchResponseDTO = profileSearchService.searchProfiles(
+            optionalMemberId, subPosition, skillName, cityName, profileStateName, pageable
+        );
+
+        return CommonResponse.onSuccess(profileSearchResponseDTO);
     }
 }

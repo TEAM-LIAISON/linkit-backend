@@ -1,6 +1,5 @@
 package liaison.linkit.search.presentation;
 
-import static liaison.linkit.global.restdocs.RestDocsConfiguration.field;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -21,6 +20,7 @@ import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDT
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.search.business.service.ProfileSearchService;
+import liaison.linkit.search.presentation.dto.ProfileSearchResponseDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -160,6 +160,11 @@ public class ProfileSearchControllerTest extends ControllerTest {
         List<ProfileInformMenu> profiles = Arrays.asList(profileInformMenu1, profileInformMenu2);
         Page<ProfileInformMenu> profilePage = new PageImpl<>(profiles, PageRequest.of(0, 20), profiles.size());
 
+        ProfileSearchResponseDTO profileSearchResponseDTO = ProfileSearchResponseDTO.builder()
+            .topCompletionProfiles(profiles)
+            .defaultProfiles(profilePage)
+            .build();
+
         // when
         when(profileSearchService.searchProfiles(
             any(),
@@ -168,7 +173,7 @@ public class ProfileSearchControllerTest extends ControllerTest {
             any(),
             any(),
             any(Pageable.class)
-        )).thenReturn(profilePage);
+        )).thenReturn(profileSearchResponseDTO);
 
         final ResultActions resultActions = performSearchProfiles(
             Arrays.asList("개발자"),
@@ -179,7 +184,6 @@ public class ProfileSearchControllerTest extends ControllerTest {
             20
         );
 
-        // then
         final MvcResult mvcResult = resultActions
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.isSuccess").value(true)) // boolean으로 변경
@@ -210,135 +214,183 @@ public class ProfileSearchControllerTest extends ControllerTest {
                     responseFields(
                         fieldWithPath("isSuccess")
                             .type(JsonFieldType.BOOLEAN)
-                            .description("요청 성공 여부")
-                            .attributes(field("constraint", "boolean 값")),
+                            .description("요청 성공 여부"),
                         fieldWithPath("code")
                             .type(JsonFieldType.STRING)
-                            .description("요청 성공 코드")
-                            .attributes(field("constraint", "문자열")),
+                            .description("요청 성공 코드"),
                         fieldWithPath("message")
                             .type(JsonFieldType.STRING)
-                            .description("요청 성공 메시지")
-                            .attributes(field("constraint", "문자열")),
-                        fieldWithPath("result.content")
+                            .description("요청 성공 메시지"),
+
+                        // ✅ 상단: 프로필 완성도가 높은 팀원 6명
+                        fieldWithPath("result.topCompletionProfiles")
                             .type(JsonFieldType.ARRAY)
-                            .description("팀 정보 메뉴 목록"),
-                        fieldWithPath("result.content[].profileCurrentStates")
-                            .type(JsonFieldType.ARRAY)
-                            .description("프로필 현재 상태 목록"),
-                        fieldWithPath("result.content[].profileCurrentStates[].profileStateName")
-                            .type(JsonFieldType.STRING)
-                            .description("프로필 상태 이름"),
-                        fieldWithPath("result.content[].isProfileScrap")
-                            .type(JsonFieldType.BOOLEAN)
-                            .description("프로필 스크랩 여부 (로그인, 로그아웃 상태 반영 & 스크랩 여부 반영)"),
-                        fieldWithPath("result.content[].profileScrapCount")
-                            .type(JsonFieldType.NUMBER)
-                            .description("프로필 스크랩 전체 개수"),
-                        fieldWithPath("result.content[].profileImagePath")
-                            .type(JsonFieldType.STRING)
-                            .description("프로필 이미지 경로"),
-                        fieldWithPath("result.content[].memberName")
-                            .type(JsonFieldType.STRING)
-                            .description("회원 이름"),
-                        fieldWithPath("result.content[].emailId")
-                            .type(JsonFieldType.STRING)
-                            .description("이메일 ID"),
-                        fieldWithPath("result.content[].isProfilePublic")
+                            .description("프로필 완성도가 높은 팀원 목록 (최대 6명)"),
+                        fieldWithPath("result.topCompletionProfiles[].isProfilePublic")
                             .type(JsonFieldType.BOOLEAN)
                             .description("프로필 공개 여부"),
-                        fieldWithPath("result.content[].majorPosition")
+                        fieldWithPath("result.topCompletionProfiles[].profileCurrentStates")
+                            .type(JsonFieldType.ARRAY)
+                            .description("프로필 현재 상태 목록"),
+                        fieldWithPath("result.topCompletionProfiles[].profileCurrentStates[].profileStateName")
+                            .type(JsonFieldType.STRING)
+                            .description("프로필 상태 이름"),
+                        fieldWithPath("result.topCompletionProfiles[].isProfileScrap")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("프로필 스크랩 여부"),
+                        fieldWithPath("result.topCompletionProfiles[].profileScrapCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("프로필 스크랩 개수"),
+                        fieldWithPath("result.topCompletionProfiles[].profileImagePath")
+                            .type(JsonFieldType.STRING)
+                            .description("프로필 이미지 경로"),
+                        fieldWithPath("result.topCompletionProfiles[].memberName")
+                            .type(JsonFieldType.STRING)
+                            .description("회원 이름"),
+                        fieldWithPath("result.topCompletionProfiles[].emailId")
+                            .type(JsonFieldType.STRING)
+                            .description("이메일 ID"),
+                        fieldWithPath("result.topCompletionProfiles[].majorPosition")
                             .type(JsonFieldType.STRING)
                             .description("포지션 대분류"),
-                        fieldWithPath("result.content[].subPosition")
+                        fieldWithPath("result.topCompletionProfiles[].subPosition")
                             .type(JsonFieldType.STRING)
                             .description("포지션 소분류"),
-                        fieldWithPath("result.content[].profileTeamInforms")
+                        fieldWithPath("result.topCompletionProfiles[].profileTeamInforms")
                             .type(JsonFieldType.ARRAY)
-                            .description("프로필 팀 정보 목록"),
-                        fieldWithPath("result.content[].profileTeamInforms[].teamName")
+                            .description("소속 팀 정보 목록"),
+                        fieldWithPath("result.topCompletionProfiles[].profileTeamInforms[].teamName")
                             .type(JsonFieldType.STRING)
                             .description("소속 팀 이름"),
-                        fieldWithPath("result.content[].profileTeamInforms[].teamCode")
+                        fieldWithPath("result.topCompletionProfiles[].profileTeamInforms[].teamCode")
                             .type(JsonFieldType.STRING)
-                            .description("소속 팀 아이디 (팀 코드)"),
-                        fieldWithPath("result.content[].profileTeamInforms[].teamLogoImagePath")
+                            .description("소속 팀 코드"),
+                        fieldWithPath("result.topCompletionProfiles[].profileTeamInforms[].teamLogoImagePath")
                             .type(JsonFieldType.STRING)
                             .description("소속 팀 로고 이미지 경로"),
-                        fieldWithPath("result.content[].regionDetail")
+                        fieldWithPath("result.topCompletionProfiles[].regionDetail")
                             .type(JsonFieldType.OBJECT)
                             .description("지역 상세 정보"),
-                        fieldWithPath("result.content[].regionDetail.cityName")
+                        fieldWithPath("result.topCompletionProfiles[].regionDetail.cityName")
                             .type(JsonFieldType.STRING)
                             .description("지역 시/도 이름"),
-                        fieldWithPath("result.content[].regionDetail.divisionName")
+                        fieldWithPath("result.topCompletionProfiles[].regionDetail.divisionName")
                             .type(JsonFieldType.STRING)
-                            .description("시/군/구 이름"),
-                        fieldWithPath("result.pageable")
+                            .description("지역 시/군/구 이름"),
+
+                        // ✅ 하단: 나머지 팀원 리스트 (페이지네이션)
+                        fieldWithPath("result.defaultProfiles")
                             .type(JsonFieldType.OBJECT)
-                            .description("페이지 정보"),
-                        fieldWithPath("result.pageable.sort.sorted")
+                            .description("나머지 팀원 목록 (페이지네이션)"),
+                        fieldWithPath("result.defaultProfiles.content")
+                            .type(JsonFieldType.ARRAY)
+                            .description("팀원 목록"),
+                        fieldWithPath("result.defaultProfiles.content[].isProfilePublic")
                             .type(JsonFieldType.BOOLEAN)
-                            .description("정렬 여부"),
-                        fieldWithPath("result.pageable.sort.unsorted")
+                            .description("프로필 공개 여부"),
+                        fieldWithPath("result.defaultProfiles.content[].profileCurrentStates")
+                            .type(JsonFieldType.ARRAY)
+                            .description("프로필 현재 상태 목록"),
+                        fieldWithPath("result.defaultProfiles.content[].profileCurrentStates[].profileStateName")
+                            .type(JsonFieldType.STRING)
+                            .description("프로필 상태 이름"),
+                        fieldWithPath("result.defaultProfiles.content[].isProfileScrap")
                             .type(JsonFieldType.BOOLEAN)
-                            .description("비정렬 여부"),
-                        fieldWithPath("result.pageable.sort.empty")
-                            .type(JsonFieldType.BOOLEAN)
-                            .description("정렬 정보 존재 여부"),
-                        fieldWithPath("result.pageable.pageNumber")
+                            .description("프로필 스크랩 여부"),
+                        fieldWithPath("result.defaultProfiles.content[].profileScrapCount")
                             .type(JsonFieldType.NUMBER)
+                            .description("프로필 스크랩 개수"),
+                        fieldWithPath("result.defaultProfiles.content[].profileImagePath")
+                            .type(JsonFieldType.STRING)
+                            .description("프로필 이미지 경로"),
+                        fieldWithPath("result.defaultProfiles.content[].memberName")
+                            .type(JsonFieldType.STRING)
+                            .description("회원 이름"),
+                        fieldWithPath("result.defaultProfiles.content[].emailId")
+                            .type(JsonFieldType.STRING)
+                            .description("이메일 ID"),
+                        fieldWithPath("result.defaultProfiles.content[].majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 대분류"),
+                        fieldWithPath("result.defaultProfiles.content[].subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 소분류"),
+                        fieldWithPath("result.defaultProfiles.content[].profileTeamInforms")
+                            .type(JsonFieldType.ARRAY)
+                            .description("소속 팀 정보 목록"),
+                        fieldWithPath("result.defaultProfiles.content[].profileTeamInforms[].teamName")
+                            .type(JsonFieldType.STRING)
+                            .description("소속 팀 이름"),
+                        fieldWithPath("result.defaultProfiles.content[].profileTeamInforms[].teamCode")
+                            .type(JsonFieldType.STRING)
+                            .description("소속 팀 코드"),
+                        fieldWithPath("result.defaultProfiles.content[].profileTeamInforms[].teamLogoImagePath")
+                            .type(JsonFieldType.STRING)
+                            .description("소속 팀 로고 이미지 경로"),
+                        fieldWithPath("result.defaultProfiles.content[].regionDetail")
+                            .type(JsonFieldType.OBJECT)
+                            .description("지역 상세 정보"),
+                        fieldWithPath("result.defaultProfiles.content[].regionDetail.cityName")
+                            .type(JsonFieldType.STRING)
+                            .description("지역 시/도 이름"),
+                        fieldWithPath("result.defaultProfiles.content[].regionDetail.divisionName")
+                            .type(JsonFieldType.STRING)
+                            .description("지역 시/군/구 이름"),
+
+                        // ✅ 페이지네이션 관련 필드 추가 (📢 여기에서 오류가 발생했었음)
+                        fieldWithPath("result.defaultProfiles.pageable").type(JsonFieldType.OBJECT)
+                            .description("페이지네이션 정보"),
+                        fieldWithPath("result.defaultProfiles.pageable.pageNumber").type(JsonFieldType.NUMBER)
                             .description("현재 페이지 번호"),
-                        fieldWithPath("result.pageable.pageSize")
-                            .type(JsonFieldType.NUMBER)
+                        fieldWithPath("result.defaultProfiles.pageable.pageSize").type(JsonFieldType.NUMBER)
                             .description("페이지 크기"),
-                        fieldWithPath("result.pageable.offset")
-                            .type(JsonFieldType.NUMBER)
-                            .description("데이터 오프셋"),
-                        fieldWithPath("result.pageable.paged")
-                            .type(JsonFieldType.BOOLEAN)
+                        fieldWithPath("result.defaultProfiles.pageable.offset").type(JsonFieldType.NUMBER)
+                            .description("오프셋"),
+                        fieldWithPath("result.defaultProfiles.pageable.paged").type(JsonFieldType.BOOLEAN)
                             .description("페이징 여부"),
-                        fieldWithPath("result.pageable.unpaged")
-                            .type(JsonFieldType.BOOLEAN)
+                        fieldWithPath("result.defaultProfiles.pageable.unpaged").type(JsonFieldType.BOOLEAN)
                             .description("페이징 미적용 여부"),
-                        fieldWithPath("result.totalPages")
-                            .type(JsonFieldType.NUMBER)
-                            .description("총 페이지 수"),
-                        fieldWithPath("result.totalElements")
-                            .type(JsonFieldType.NUMBER)
-                            .description("총 요소 수"),
-                        fieldWithPath("result.last")
-                            .type(JsonFieldType.BOOLEAN)
-                            .description("마지막 페이지 여부"),
-                        fieldWithPath("result.size")
-                            .type(JsonFieldType.NUMBER)
-                            .description("페이지 크기"),
-                        fieldWithPath("result.number")
-                            .type(JsonFieldType.NUMBER)
-                            .description("현재 페이지 번호"),
-                        fieldWithPath("result.sort")
-                            .type(JsonFieldType.OBJECT)
+
+                        // ✅ `sort`가 `defaultProfiles` 바로 아래에 존재하는 경우 (📢 기존 pageable.sort가 아닌 구조)
+                        fieldWithPath("result.defaultProfiles.sort").type(JsonFieldType.OBJECT)
                             .description("정렬 정보"),
-                        fieldWithPath("result.sort.sorted")
+                        fieldWithPath("result.defaultProfiles.sort.sorted").type(JsonFieldType.BOOLEAN)
+                            .description("정렬 여부"),
+                        fieldWithPath("result.defaultProfiles.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                            .description("비정렬 여부"),
+                        fieldWithPath("result.defaultProfiles.sort.empty").type(JsonFieldType.BOOLEAN)
+                            .description("정렬 정보 존재 여부"),
+
+                        fieldWithPath("result.defaultProfiles.pageable.sort.sorted")
                             .type(JsonFieldType.BOOLEAN)
                             .description("정렬 여부"),
-                        fieldWithPath("result.sort.unsorted")
+                        fieldWithPath("result.defaultProfiles.pageable.sort.unsorted")
                             .type(JsonFieldType.BOOLEAN)
                             .description("비정렬 여부"),
-                        fieldWithPath("result.sort.empty")
+                        fieldWithPath("result.defaultProfiles.pageable.sort.empty")
                             .type(JsonFieldType.BOOLEAN)
-                            .description("정렬 정보 존재 여부"),
-                        fieldWithPath("result.first")
-                            .type(JsonFieldType.BOOLEAN)
+                            .description("정렬 정보 없음 여부"),
+
+                        // ✅ 전체 페이지네이션 정보 추가 (📢 기존 result.last -> result.defaultProfiles.last)
+                        fieldWithPath("result.defaultProfiles.last").type(JsonFieldType.BOOLEAN)
+                            .description("마지막 페이지 여부"),
+                        fieldWithPath("result.defaultProfiles.totalPages").type(JsonFieldType.NUMBER)
+                            .description("총 페이지 수"),
+                        fieldWithPath("result.defaultProfiles.totalElements").type(JsonFieldType.NUMBER)
+                            .description("총 요소 수"),
+                        fieldWithPath("result.defaultProfiles.size").type(JsonFieldType.NUMBER)
+                            .description("페이지 크기"),
+                        fieldWithPath("result.defaultProfiles.number").type(JsonFieldType.NUMBER)
+                            .description("현재 페이지 번호"),
+                        fieldWithPath("result.defaultProfiles.first").type(JsonFieldType.BOOLEAN)
                             .description("첫 페이지 여부"),
-                        fieldWithPath("result.numberOfElements")
-                            .type(JsonFieldType.NUMBER)
+                        fieldWithPath("result.defaultProfiles.numberOfElements").type(JsonFieldType.NUMBER)
                             .description("현재 페이지의 요소 수"),
-                        fieldWithPath("result.empty")
-                            .type(JsonFieldType.BOOLEAN)
-                            .description("요소 존재 여부")
+                        fieldWithPath("result.defaultProfiles.empty").type(JsonFieldType.BOOLEAN)
+                            .description("페이지가 비어있는지 여부")
                     )
                 )
             ).andReturn();
+
     }
 }

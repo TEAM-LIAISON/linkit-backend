@@ -24,5 +24,14 @@ public interface ProfileCustomRepository {
         final Pageable pageable
     );
 
+    Page<Profile> findTopCompletionProfiles(
+        final Pageable pageable
+    );
+
+    Page<Profile> findAllExcludingIds(
+        final List<Long> excludeIds,
+        final Pageable pageable
+    );
+
     List<Profile> findTopProfiles(final int limit);
 }

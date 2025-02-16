@@ -25,6 +25,13 @@ public interface TeamMemberAnnouncementCustomRepository {
         final Pageable pageable
     );
 
+    Page<TeamMemberAnnouncement> findHotAnnouncements(final Pageable pageable);
+
+    Page<TeamMemberAnnouncement> findExcludedAnnouncements(
+        final List<Long> excludeAnnouncementIds,
+        final Pageable pageable
+    );
+
     List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit);
 
     Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds);

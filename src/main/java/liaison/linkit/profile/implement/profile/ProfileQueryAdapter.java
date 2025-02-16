@@ -46,8 +46,20 @@ public class ProfileQueryAdapter {
         final List<String> profileStateName,
         final Pageable pageable
     ) {
-        log.info("queryAdapter에서 실행됨");
         return profileRepository.findAll(subPosition, skillName, cityName, profileStateName, pageable);
+    }
+
+    public Page<Profile> findTopCompletionProfiles(
+        final Pageable pageable
+    ) {
+        return profileRepository.findTopCompletionProfiles(pageable);
+    }
+
+    public Page<Profile> findAllExcludingIds(
+        final List<Long> excludeIds,
+        final Pageable pageable
+    ) {
+        return profileRepository.findAllExcludingIds(excludeIds, pageable);
     }
 
     public List<Profile> findTopProfiles(final int limit) {
