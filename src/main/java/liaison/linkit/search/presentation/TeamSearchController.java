@@ -1,14 +1,14 @@
 package liaison.linkit.search.presentation;
 
 import java.util.List;
+import java.util.Optional;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.search.business.service.TeamSearchService;
-import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
+import liaison.linkit.search.presentation.dto.TeamSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -37,7 +37,7 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
      * @return 팀원 목록과 페이지 정보
      */
     @GetMapping
-    public CommonResponse<Page<TeamInformMenu>> searchTeams(
+    public CommonResponse<TeamSearchResponseDTO> searchTeams(
         @Auth final Accessor accessor,
         @RequestParam(value = "scaleName", required = false) List<String> scaleName,
         @RequestParam(value = "isAnnouncement", required = false) Boolean isAnnouncement,
@@ -46,15 +46,19 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
         @RequestParam(value = "page", defaultValue = "0") int page,
         @RequestParam(value = "size", defaultValue = "20") int size
     ) {
-        if (accessor.isMember()) {
-            Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
-            Page<TeamInformMenu> teams = teamSearchService.searchTeamsInLoginState(accessor.getMemberId(), scaleName, isAnnouncement, cityName, teamStateName, pageable);
-            return CommonResponse.onSuccess(teams);
-        } else {
-            Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
-            Page<TeamInformMenu> teams = teamSearchService.searchTeamsInLogoutState(scaleName, isAnnouncement, cityName, teamStateName, pageable);
-            return CommonResponse.onSuccess(teams);
-        }
+        // 로그인 여부에 따라 Optional 생성
+        Optional<Long> optionalMemberId = accessor.isMember()
+            ? Optional.of(accessor.getMemberId())
+            : Optional.empty();
+
+        // Pageable 객체 한 번만 생성 (정렬 기준도 통일)
+        Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
+
+        TeamSearchResponseDTO teamSearchResponseDTO = teamSearchService.searchTeams(
+            optionalMemberId, scaleName, isAnnouncement, cityName, teamStateName, pageable
+        );
+
+        return CommonResponse.onSuccess(teamSearchResponseDTO);
     }
 
 }

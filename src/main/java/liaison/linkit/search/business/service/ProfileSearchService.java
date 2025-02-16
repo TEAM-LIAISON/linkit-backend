@@ -67,7 +67,6 @@ public class ProfileSearchService {
                 .map(Profile::getId)
                 .collect(Collectors.toList());
 
-            // profileQueryAdapter에 exclude 조건을 추가한 메서드가 필요합니다.
             Page<Profile> remainingProfiles = profileQueryAdapter.findAllExcludingIds(excludeIds, pageable);
             Page<ProfileInformMenu> remainingProfileDTOs = remainingProfiles.map(profile ->
                 profileInformMenuAssembler.assembleProfileInformMenu(profile, optionalMemberId)

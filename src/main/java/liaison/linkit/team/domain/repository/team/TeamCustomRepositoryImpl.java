@@ -321,4 +321,94 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         return team.getStatus() == StatusType.DELETED;
     }
 
+    @Override
+    public Page<Team> findTopVentureTeams(
+        final Pageable pageable
+    ) {
+        QTeam qTeam = QTeam.team;
+
+        List<Team> content = jpaQueryFactory
+            .selectFrom(qTeam)
+            .where(
+                qTeam.status.eq(StatusType.USABLE)
+                    .and(qTeam.isTeamPublic.eq(true))
+            )
+            .orderBy(
+                new CaseBuilder()
+                    .when(qTeam.id.eq(10L)).then(0)
+                    .when(qTeam.id.eq(36L)).then(1)
+                    .when(qTeam.id.eq(4L)).then(2)
+                    .when(qTeam.id.eq(26L)).then(3)
+                    .when(qTeam.id.eq(1L)).then(4)
+                    .when(qTeam.id.eq(2L)).then(5)
+                    .otherwise(6)
+                    .asc()
+            )
+            .limit(4)
+            .fetch();
+
+        // Pageable 정보와 함께 Page 객체로 반환 (항상 최대 6개의 레코드)
+        return PageableExecutionUtils.getPage(content, pageable, content::size);
+    }
+
+    @Override
+    public Page<Team> findSupportProjectTeams(
+        final Pageable pageable
+    ) {
+        QTeam qTeam = QTeam.team;
+
+        List<Team> content = jpaQueryFactory
+            .selectFrom(qTeam)
+            .where(
+                qTeam.status.eq(StatusType.USABLE)
+                    .and(qTeam.isTeamPublic.eq(true))
+            )
+            .orderBy(
+                new CaseBuilder()
+                    .when(qTeam.id.eq(37L)).then(0)
+                    .when(qTeam.id.eq(29L)).then(1)
+                    .when(qTeam.id.eq(3L)).then(2)
+                    .when(qTeam.id.eq(19L)).then(3)
+                    .otherwise(4)
+                    .asc()
+            )
+            .limit(4)
+            .fetch();
+
+        // Pageable 정보와 함께 Page 객체로 반환 (항상 최대 6개의 레코드)
+        return PageableExecutionUtils.getPage(content, pageable, content::size);
+    }
+
+
+    @Override
+    public Page<Team> findAllExcludingIds(
+        final List<Long> excludeTeamIds,
+        final Pageable pageable
+    ) {
+        QTeam qTeam = QTeam.team;
+
+        List<Team> content = jpaQueryFactory
+            .selectFrom(qTeam)
+            .where(
+                qTeam.status.eq(StatusType.USABLE)
+                    .and(qTeam.isTeamPublic.eq(true))
+                    .and(qTeam.id.notIn(excludeTeamIds))
+            )
+            .orderBy(qTeam.createdAt.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        Long total = jpaQueryFactory
+            .selectDistinct(qTeam.count())
+            .from(qTeam)
+            .where(
+                qTeam.status.eq(StatusType.USABLE)
+                    .and(qTeam.isTeamPublic.eq(true))
+                    .and(qTeam.id.notIn(excludeTeamIds))
+            )
+            .fetchOne();
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+    }
 }

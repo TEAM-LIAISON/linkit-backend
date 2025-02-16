@@ -30,7 +30,7 @@ public class TeamQueryAdapter {
 
     public Team findByTeamCode(final String teamCode) {
         return teamRepository.findByTeamCode(teamCode)
-                .orElseThrow(() -> TeamNotFoundException.EXCEPTION);
+            .orElseThrow(() -> TeamNotFoundException.EXCEPTION);
     }
 
     public List<TeamCurrentState> findTeamCurrentStatesByTeamId(final Long teamId) {
@@ -38,14 +38,33 @@ public class TeamQueryAdapter {
     }
 
     public Page<Team> findAllByFiltering(
-            List<String> scaleName,
-            Boolean isAnnouncement,
-            List<String> cityName,
-            List<String> teamStateName,
-            Pageable pageable
+        List<String> scaleName,
+        Boolean isAnnouncement,
+        List<String> cityName,
+        List<String> teamStateName,
+        Pageable pageable
     ) {
         log.info("팀 필터링 요청 발생");
         return teamRepository.findAllByFiltering(scaleName, isAnnouncement, cityName, teamStateName, pageable);
+    }
+
+    public Page<Team> findTopVentureTeams(
+        final Pageable pageable
+    ) {
+        return teamRepository.findTopVentureTeams(pageable);
+    }
+
+    public Page<Team> findSupportProjectTeams(
+        final Pageable pageable
+    ) {
+        return teamRepository.findSupportProjectTeams(pageable);
+    }
+
+    public Page<Team> findAllExcludingIds(
+        final List<Long> excludeTeamIds,
+        final Pageable pageable
+    ) {
+        return teamRepository.findAllExcludingIds(excludeTeamIds, pageable);
     }
 
     public List<Team> findTopTeams(final int limit) {
