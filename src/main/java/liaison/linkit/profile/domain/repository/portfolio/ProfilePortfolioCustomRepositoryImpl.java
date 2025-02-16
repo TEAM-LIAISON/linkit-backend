@@ -64,7 +64,6 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
             .set(qProfilePortfolio.projectStartDate, updateProfilePortfolioRequest.getProjectStartDate())
             .set(qProfilePortfolio.projectEndDate, updateProfilePortfolioRequest.getProjectEndDate())
             .set(qProfilePortfolio.isProjectInProgress, updateProfilePortfolioRequest.getIsProjectInProgress())
-            .set(qProfilePortfolio.projectLinkName, updateProfilePortfolioRequest.getProjectLinkName())
             .set(qProfilePortfolio.projectLink, updateProfilePortfolioRequest.getProjectLink())
             .set(qProfilePortfolio.projectDescription, updateProfilePortfolioRequest.getProjectDescription())
             .where(qProfilePortfolio.id.eq(profilePortfolio.getId()))

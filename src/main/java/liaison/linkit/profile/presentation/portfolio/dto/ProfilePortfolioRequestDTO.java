@@ -35,7 +35,6 @@ public class ProfilePortfolioRequestDTO {
         @Builder.Default
         private List<ProfilePortfolioRequestDTO.ProjectSkillName> projectSkillNames = new ArrayList<>();
 
-        private String projectLinkName;
         private String projectLink;
         private String projectDescription;
     }
@@ -62,10 +61,9 @@ public class ProfilePortfolioRequestDTO {
 
         @Builder.Default
         private List<ProfilePortfolioRequestDTO.ProjectSkillName> projectSkillNames = new ArrayList<>();
-
-        private String projectLinkName;
-        private String projectLink;
         
+        private String projectLink;
+
         private String projectDescription;
 
         @Builder.Default
