@@ -54,7 +54,6 @@ public class TeamSearchControllerTest extends ControllerTest {
 
     private ResultActions performSearchTeams(
         List<String> scaleName,
-        Boolean isAnnouncement,
         List<String> cityName,
         List<String> teamStateName,
         int page,
@@ -63,7 +62,6 @@ public class TeamSearchControllerTest extends ControllerTest {
         return mockMvc.perform(
             RestDocumentationRequestBuilders.get("/api/v1/team/search")
                 .param("scaleName", scaleName.toArray(new String[0]))
-                .param("isAnnouncement", isAnnouncement != null ? isAnnouncement.toString() : "")
                 .param("cityName", cityName.toArray(new String[0]))
                 .param("teamStateName", teamStateName.toArray(new String[0]))
                 .param("page", String.valueOf(page))
@@ -129,7 +127,6 @@ public class TeamSearchControllerTest extends ControllerTest {
         // when
         final ResultActions resultActions = performSearchTeams(
             Arrays.asList("1인", "2~5인"),
-            true,
             Arrays.asList("서울특별시", "부산광역시"),
             Arrays.asList("팀원 찾는 중", "투자 유치 중"),
             0,
@@ -146,7 +143,6 @@ public class TeamSearchControllerTest extends ControllerTest {
                 restDocs.document(
                     queryParameters(
                         parameterWithName("scaleName").optional().description("팀 규모 (선택적)"),
-                        parameterWithName("isAnnouncement").optional().description("공고 존재 여부 (true/false)"),
                         parameterWithName("cityName").optional().description("시/도 이름 (선택적)"),
                         parameterWithName("teamStateName").optional().description("팀 상태 이름 (선택적)"),
                         parameterWithName("page").optional().description("페이지 번호 (기본값: 0)"),
@@ -253,7 +249,7 @@ public class TeamSearchControllerTest extends ControllerTest {
 
                         // ✅ 하단: 나머지 팀 리스트
                         fieldWithPath("result.defaultTeams")
-                            .type(JsonFieldType.ARRAY)
+                            .type(JsonFieldType.OBJECT)
                             .description("나머지 팀 목록 (최대 4팀)"),
                         fieldWithPath("result.defaultTeams.content[].teamCurrentStates")
                             .type(JsonFieldType.ARRAY)
