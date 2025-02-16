@@ -88,8 +88,7 @@ public class ProfilePortfolioController {
         return CommonResponse.onSuccess(
             profilePortfolioService.updateProfilePortfolio(accessor.getMemberId(), profilePortfolioId, updateProfilePortfolioRequest, projectRepresentImage, projectSubImages));
     }
-
-
+    
     @DeleteMapping("/{profilePortfolioId}")
     @MemberOnly
     public CommonResponse<ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse> removeProfilePortfolio(

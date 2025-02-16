@@ -5,13 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.portfolio.ProfilePortfolio;
+import liaison.linkit.profile.domain.portfolio.ProjectLink;
 import liaison.linkit.profile.domain.portfolio.ProjectRoleContribution;
 import liaison.linkit.profile.domain.portfolio.ProjectSkill;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO.AddProfilePortfolioRequest;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO.ProjectLinkNameAndUrls;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.AddProfilePortfolioResponse;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.PortfolioImages;
@@ -38,7 +40,6 @@ public class ProfilePortfolioMapper {
             .projectStartDate(addProfilePortfolioRequest.getProjectStartDate())
             .projectEndDate(addProfilePortfolioRequest.getProjectEndDate())
             .isProjectInProgress(addProfilePortfolioRequest.getIsProjectInProgress())
-            .projectLink(addProfilePortfolioRequest.getProjectLink())
             .projectDescription(addProfilePortfolioRequest.getProjectDescription())
             .build();
     }
@@ -56,10 +57,24 @@ public class ProfilePortfolioMapper {
             .collect(Collectors.toList());
     }
 
+    public List<ProjectLink> toAddProjectLinks(
+        final ProfilePortfolio profilePortfolio,
+        final List<ProjectLinkNameAndUrls> projectLinkNameAndUrls
+    ) {
+        return projectLinkNameAndUrls.stream()
+            .map(projectLink -> ProjectLink.builder()
+                .profilePortfolio(profilePortfolio)
+                .projectLinkName(projectLink.getProjectLinkName())
+                .projectLinkUrl(projectLink.getProjectLinkUrl())
+                .build())
+            .collect(Collectors.toList());
+    }
+
     public ProfilePortfolioResponseDTO.AddProfilePortfolioResponse toAddProfilePortfolioResponse(
         final ProfilePortfolio profilePortfolio,
         final List<ProjectRoleAndContribution> projectRoleAndContributions,
         final List<ProjectSkillName> projectSkillNames,
+        final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls,
         final PortfolioImages portfolioImages
     ) {
         return AddProfilePortfolioResponse
@@ -74,8 +89,8 @@ public class ProfilePortfolioMapper {
             .isProjectInProgress(profilePortfolio.isProjectInProgress())
             .projectRoleAndContributions(projectRoleAndContributions)
             .projectSkillNames(projectSkillNames)
-            .projectLink(profilePortfolio.getProjectLink())
             .projectDescription(profilePortfolio.getProjectDescription())
+            .projectLinkNameAndUrls(projectLinkNameAndUrls)
             .portfolioImages(portfolioImages)
             .build();
     }
@@ -84,6 +99,7 @@ public class ProfilePortfolioMapper {
         final ProfilePortfolio profilePortfolio,
         final List<ProjectRoleAndContribution> projectRoleAndContributions,
         final List<ProjectSkillName> projectSkillNames,
+        final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls,
         final PortfolioImages portfolioImages
     ) {
         return UpdateProfilePortfolioResponse
@@ -98,8 +114,8 @@ public class ProfilePortfolioMapper {
             .isProjectInProgress(profilePortfolio.isProjectInProgress())
             .projectRoleAndContributions(projectRoleAndContributions)
             .projectSkillNames(projectSkillNames)
-            .projectLink(profilePortfolio.getProjectLink())
             .projectDescription(profilePortfolio.getProjectDescription())
+            .projectLinkNameAndUrls(projectLinkNameAndUrls)
             .portfolioImages(portfolioImages)
             .build();
     }
@@ -108,6 +124,7 @@ public class ProfilePortfolioMapper {
         final ProfilePortfolio profilePortfolio,
         final List<ProjectRoleAndContribution> projectRoleAndContributions,
         final List<ProjectSkillName> projectSkillNames,
+        final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls,
         final PortfolioImages portfolioImages
     ) {
 
@@ -124,8 +141,8 @@ public class ProfilePortfolioMapper {
             .isProjectInProgress(profilePortfolio.isProjectInProgress())
             .projectRoleAndContributions(projectRoleAndContributions)
             .projectSkillNames(projectSkillNames)
-            .projectLink(profilePortfolio.getProjectLink())
             .projectDescription(profilePortfolio.getProjectDescription())
+            .projectLinkNameAndUrls(projectLinkNameAndUrls)
             .portfolioImages(portfolioImages)
             .build();
     }
@@ -203,6 +220,14 @@ public class ProfilePortfolioMapper {
             ).collect(Collectors.toList());
     }
 
+    public List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> toProjectLinks(final List<ProjectLink> projectLinks) {
+        return projectLinks.stream()
+            .map(pl -> ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls.builder()
+                .projectLinkName(pl.getProjectLinkName())
+                .projectLinkUrl(pl.getProjectLinkUrl())
+                .build())
+            .collect(Collectors.toList());
+    }
 
     public List<ProjectSkill> toAddProjectSkills(
         final ProfilePortfolio profilePortfolio,
