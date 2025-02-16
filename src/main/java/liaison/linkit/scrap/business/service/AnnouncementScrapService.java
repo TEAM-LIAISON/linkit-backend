@@ -2,10 +2,9 @@ package liaison.linkit.scrap.business.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
-import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
 import liaison.linkit.scrap.business.mapper.AnnouncementScrapMapper;
@@ -16,24 +15,17 @@ import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommand
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapRequestDTO.UpdateAnnouncementScrapRequest;
 import liaison.linkit.scrap.presentation.dto.announcementScrap.AnnouncementScrapResponseDTO;
+import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.business.mapper.announcement.AnnouncementSkillMapper;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
-import liaison.linkit.team.domain.announcement.AnnouncementPosition;
-import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
-import liaison.linkit.team.domain.region.TeamRegion;
-import liaison.linkit.team.domain.scale.TeamScale;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.announcement.AnnouncementPositionQueryAdapter;
 import liaison.linkit.team.implement.announcement.AnnouncementSkillQueryAdapter;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import liaison.linkit.team.implement.scale.TeamScaleQueryAdapter;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
-import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,11 +51,12 @@ public class AnnouncementScrapService {
     private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
     private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
     private final AnnouncementSkillMapper announcementSkillMapper;
+    private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
 
     public AnnouncementScrapResponseDTO.UpdateAnnouncementScrap updateAnnouncementScrap(
-            final Long memberId,
-            final Long teamMemberAnnouncementId,
-            final UpdateAnnouncementScrapRequest updateAnnouncementScrapRequest
+        final Long memberId,
+        final Long teamMemberAnnouncementId,
+        final UpdateAnnouncementScrapRequest updateAnnouncementScrapRequest
     ) {
 
         boolean shouldAddScrap = updateAnnouncementScrapRequest.isChangeScrapValue();
@@ -83,64 +76,20 @@ public class AnnouncementScrapService {
     }
 
     public AnnouncementInformMenus getAnnouncementScraps(
-            final Long memberId
+        final Long memberId
     ) {
         // 1) memberId로 Announcement 목록 조회
         final List<AnnouncementScrap> announcementScraps = announcementScrapQueryAdapter.findAllByMemberId(memberId);
 
         // 2) TeamScrap -> Team 리스트 추출
         final List<TeamMemberAnnouncement> teamMemberAnnouncements = announcementScraps.stream()
-                .map(AnnouncementScrap::getTeamMemberAnnouncement)
-                .toList();
+            .map(AnnouncementScrap::getTeamMemberAnnouncement)
+            .toList();
 
         final List<AnnouncementInformMenu> announcementInformMenus = new ArrayList<>();
 
         for (TeamMemberAnnouncement teamMemberAnnouncement : teamMemberAnnouncements) {
-            final Team team = teamMemberAnnouncement.getTeam();
-
-            // 팀 규모 조회
-            TeamScaleItem teamScaleItem = null;
-            if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-                final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
-                teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
-            }
-
-            // 팀 지역 조회
-            RegionDetail regionDetail = new RegionDetail();
-            if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
-                final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
-                regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
-            }
-
-            // 포지션 조회
-            AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
-            if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId())) {
-                AnnouncementPosition announcementPosition = announcementPositionQueryAdapter.findAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncement.getId());
-                announcementPositionItem = teamMemberAnnouncementMapper.toAnnouncementPositionItem(announcementPosition);
-            }
-
-            // 스킬 조회
-            List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-            List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
-
-            final int announcementDDay = DateUtils.calculateDDay(teamMemberAnnouncement.getAnnouncementEndDate());
-            final boolean isAnnouncementScrap = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncement.getId());
-            final int announcementScrapCount = announcementScrapQueryAdapter.getTotalAnnouncementScrapCount(teamMemberAnnouncement.getId());
-
-            final AnnouncementInformMenu announcementInformMenu = teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
-                    team.getTeamLogoImagePath(),
-                    team.getTeamName(),
-                    team.getTeamCode(),
-                    teamScaleItem,
-                    regionDetail,
-                    teamMemberAnnouncement,
-                    announcementDDay,
-                    isAnnouncementScrap,
-                    announcementScrapCount,
-                    announcementPositionItem,
-                    announcementSkillNames
-            );
-            announcementInformMenus.add(announcementInformMenu);
+            announcementInformMenus.add(announcementInformMenuAssembler.mapToAnnouncementInformMenu(teamMemberAnnouncement, Optional.ofNullable(memberId)));
         }
 
         return announcementScrapMapper.toAnnouncementInformMenus(announcementInformMenus);
