@@ -904,7 +904,7 @@ Content-Type: application/json;charset=UTF-8
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Fri, 21 Feb 2025 04:04:43 GMT; Secure; HttpOnly; SameSite=Lax
+Set-Cookie: refreshToken=refreshToken; Path=/; Max-Age=604800; Expires=Sat, 22 Feb 2025 17:18:05 GMT; Secure; HttpOnly; SameSite=None
 Content-Type: application/json;charset=UTF-8
 Content-Length: 278
 
@@ -1051,7 +1051,7 @@ Content-Length: 159
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "logoutAt" : "2025-02-14T13:04:43.729302"
+    "logoutAt" : "2025-02-16T02:18:04.984199"
   }
 }</code></pre>
 </div>
@@ -1205,7 +1205,7 @@ Content-Length: 157
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "quitAt" : "2025-02-14T13:04:43.797575"
+    "quitAt" : "2025-02-16T02:18:05.038594"
   }
 }</code></pre>
 </div>
@@ -1307,7 +1307,7 @@ Content-Length: 178
   "code" : "1000",
   "message" : "요청에 성공하였습니다.",
   "result" : {
-    "reAuthenticationEmailSendAt" : "2025-02-14T13:04:45.058569"
+    "reAuthenticationEmailSendAt" : "2025-02-16T02:18:06.604169"
   }
 }</code></pre>
 </div>
@@ -1417,7 +1417,7 @@ Content-Length: 214
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "changedEmail" : "kwondm7@gmail.com",
-    "verificationSuccessAt" : "2025-02-14T13:04:45.038845"
+    "verificationSuccessAt" : "2025-02-16T02:18:06.583573"
   }
 }</code></pre>
 </div>
@@ -2351,7 +2351,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1997
+Content-Length: 2087
 
 {
   "isSuccess" : true,
@@ -2371,6 +2371,7 @@ Content-Length: 1997
       "memberName" : "회원 이름",
       "emailId" : "이메일 ID",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -2397,6 +2398,7 @@ Content-Length: 1997
       "memberName" : "회원 이름 2",
       "emailId" : "이메일 ID 2",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -2483,6 +2485,11 @@ Content-Length: 1997
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].majorPosition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">포지션 대분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 소분류</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].regionDetail.cityName</code></p></td>
@@ -2929,7 +2936,7 @@ Content-Length: 899
     "logInformMenus" : [ {
       "id" : 1,
       "domainType" : "PROFILE",
-      "createdAt" : "2025-02-14T13:04:50.421403",
+      "createdAt" : "2025-02-16T02:18:12.447492",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용",
       "logInformDetails" : {
@@ -2941,7 +2948,7 @@ Content-Length: 899
     }, {
       "id" : 2,
       "domainType" : "TEAM",
-      "createdAt" : "2025-02-14T13:04:50.421767",
+      "createdAt" : "2025-02-16T02:18:12.447875",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용",
       "logInformDetails" : {
@@ -3117,7 +3124,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 5091
+Content-Length: 5136
 
 {
   "isSuccess" : true,
@@ -3141,6 +3148,7 @@ Content-Length: 5091
       "memberName" : "권동민",
       "emailId" : "이메일 아이디",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "서울특별시",
         "divisionName" : "강남구"
@@ -3159,7 +3167,7 @@ Content-Length: 5091
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-02-14T13:04:47.182075",
+      "modifiedAt" : "2025-02-16T02:18:08.958878",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     },
@@ -3369,7 +3377,12 @@ Content-Length: 5091
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.majorPosition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">대분류 포지션</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 대분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 소분류</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenu.regionDetail</code></p></td>
@@ -4047,7 +4060,7 @@ Content-Length: 465
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "profileId" : 1,
-    "modifiedAt" : "2025-02-14T13:04:45.989419",
+    "modifiedAt" : "2025-02-16T02:18:07.741399",
     "majorPosition" : "대분류 포지션",
     "subPosition" : "소분류 포지션",
     "cityName" : "활동지역 시/도",
@@ -4263,7 +4276,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 587
+Content-Length: 586
 
 {
   "isSuccess" : true,
@@ -4274,14 +4287,14 @@ Content-Length: 587
       "profileLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-02-14T13:04:48.517691",
+      "modifiedAt" : "2025-02-16T02:18:10.45071",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "profileLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-02-14T13:04:48.517694",
+      "modifiedAt" : "2025-02-16T02:18:10.450713",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -4401,7 +4414,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 318
+Content-Length: 319
 
 {
   "isSuccess" : true,
@@ -4411,7 +4424,7 @@ Content-Length: 318
     "profileLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-02-14T13:04:48.49317",
+    "modifiedAt" : "2025-02-16T02:18:10.367344",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -4523,7 +4536,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-02-14T13:04:48.474821",
+    "createdAt" : "2025-02-16T02:18:10.307359",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -4690,7 +4703,7 @@ Content-Length: 321
     "profileLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-02-14T13:04:48.526088",
+    "createdAt" : "2025-02-16T02:18:10.465234",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -11729,14 +11742,14 @@ Content-Length: 586
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-02-14T13:04:51.805469",
+      "modifiedAt" : "2025-02-16T02:18:13.798195",
       "logTitle" : "로그 제목 1",
       "logContent" : "로그 내용 1"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-02-14T13:04:51.805476",
+      "modifiedAt" : "2025-02-16T02:18:13.798202",
       "logTitle" : "로그 제목 2",
       "logContent" : "로그 내용 2"
     } ]
@@ -11856,7 +11869,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 577
+Content-Length: 578
 
 {
   "isSuccess" : true,
@@ -11867,14 +11880,14 @@ Content-Length: 577
       "teamLogId" : 1,
       "isLogPublic" : true,
       "logType" : "REPRESENTATIVE_LOG",
-      "modifiedAt" : "2025-02-14T13:04:51.82047",
+      "modifiedAt" : "2025-02-16T02:18:13.816885",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     }, {
       "teamLogId" : 2,
       "isLogPublic" : true,
       "logType" : "GENERAL_LOG",
-      "modifiedAt" : "2025-02-14T13:04:51.820473",
+      "modifiedAt" : "2025-02-16T02:18:13.816889",
       "logTitle" : "로그 제목",
       "logContent" : "로그 내용"
     } ]
@@ -11996,7 +12009,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 316
+Content-Length: 315
 
 {
   "isSuccess" : true,
@@ -12006,7 +12019,7 @@ Content-Length: 316
     "teamLogId" : 1,
     "isLogPublic" : true,
     "logType" : "REPRESENTATIVE_LOG",
-    "modifiedAt" : "2025-02-14T13:04:51.795573",
+    "modifiedAt" : "2025-02-16T02:18:13.78583",
     "logTitle" : "로그 제목",
     "logContent" : "로그 내용"
   }
@@ -12163,7 +12176,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 317
+Content-Length: 318
 
 {
   "isSuccess" : true,
@@ -12173,7 +12186,7 @@ Content-Length: 317
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-02-14T13:04:51.84019",
+    "createdAt" : "2025-02-16T02:18:13.844466",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -12344,7 +12357,7 @@ Content-Length: 318
     "teamLogId" : 1,
     "logTitle" : "제목제목제목",
     "logContent" : "내용내용내용",
-    "createdAt" : "2025-02-14T13:04:51.849984",
+    "createdAt" : "2025-02-16T02:18:13.857007",
     "logType" : "GENERAL_LOG",
     "isLogPublic" : true
   }
@@ -17100,7 +17113,7 @@ Content-Length: 237
   "message" : "요청에 성공하였습니다.",
   "result" : {
     "teamCode" : "liaison",
-    "deletedRequestedAt" : "2025-02-14T13:04:51.216097",
+    "deletedRequestedAt" : "2025-02-16T02:18:13.245476",
     "isTeamLastDeleteRequester" : true
   }
 }</code></pre>
@@ -17350,7 +17363,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 2484
+Content-Length: 2574
 
 {
   "isSuccess" : true,
@@ -17370,6 +17383,7 @@ Content-Length: 2484
       "memberName" : "회원 이름 1",
       "emailId" : "이메일 ID 1",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -17396,6 +17410,7 @@ Content-Length: 2484
       "memberName" : "회원 이름 2",
       "emailId" : "이메일 ID 2",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -17517,6 +17532,11 @@ Content-Length: 2484
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].majorPosition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">포지션 대분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 소분류</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.content[].profileTeamInforms</code></p></td>
@@ -18536,7 +18556,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1997
+Content-Length: 2087
 
 {
   "isSuccess" : true,
@@ -18556,6 +18576,7 @@ Content-Length: 1997
       "memberName" : "회원 이름",
       "emailId" : "이메일 ID",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -18582,6 +18603,7 @@ Content-Length: 1997
       "memberName" : "회원 이름 2",
       "emailId" : "이메일 ID 2",
       "majorPosition" : "포지션 대분류",
+      "subPosition" : "포지션 소분류",
       "regionDetail" : {
         "cityName" : "활동지역 시/도",
         "divisionName" : "활동지역 시/군/구"
@@ -18668,6 +18690,11 @@ Content-Length: 1997
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].majorPosition</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">포지션 대분류</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].subPosition</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">포지션 소분류</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileInformMenus[].regionDetail.cityName</code></p></td>
@@ -19595,7 +19622,7 @@ Content-Length: 2355
           }
         },
         "lastMessage" : "해당 채팅방에서의 마지막 메시지",
-        "lastMessageTime" : "2025-02-14T13:04:42.563981"
+        "lastMessageTime" : "2025-02-16T02:18:03.828218"
       },
       "unreadChatMessageCount" : 10,
       "chatPartnerOnline" : true
@@ -19624,7 +19651,7 @@ Content-Length: 2355
           }
         },
         "lastMessage" : "해당 채팅방에서의 마지막 메시지",
-        "lastMessageTime" : "2025-02-14T13:04:42.563998"
+        "lastMessageTime" : "2025-02-16T02:18:03.828236"
       },
       "unreadChatMessageCount" : 20,
       "chatPartnerOnline" : false
@@ -19816,7 +19843,7 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 1975
+Content-Length: 1976
 
 {
   "isSuccess" : true,
@@ -19849,7 +19876,7 @@ Content-Length: 1975
         }
       },
       "lastMessage" : "해당 채팅방에서의 마지막 메시지",
-      "lastMessageTime" : "2025-02-14T13:04:42.592686"
+      "lastMessageTime" : "2025-02-16T02:18:03.861198"
     },
     "messages" : [ {
       "messageId" : "메시지 ID",
@@ -19859,7 +19886,7 @@ Content-Length: 1975
       "isMyMessage" : true,
       "messageSenderLogoImagePath" : "메시지 발신자의 프로필 로고 이미지 경로",
       "content" : "첫 번째 메시지",
-      "timestamp" : "2025-02-14T13:04:42.59316",
+      "timestamp" : "2025-02-16T02:18:03.861753",
       "read" : false
     }, {
       "messageId" : "메시지 ID",
@@ -19869,7 +19896,7 @@ Content-Length: 1975
       "isMyMessage" : true,
       "messageSenderLogoImagePath" : "메시지 발신자의 프로필 로고 이미지 경로",
       "content" : "두 번째 메시지",
-      "timestamp" : "2025-02-14T13:04:42.593169",
+      "timestamp" : "2025-02-16T02:18:03.861763",
       "read" : false
     } ],
     "chatPartnerOnline" : true
