@@ -17,6 +17,7 @@ import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.search.business.service.TeamSearchService;
+import liaison.linkit.search.presentation.dto.TeamSearchResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
@@ -117,7 +118,13 @@ public class TeamSearchControllerTest extends ControllerTest {
         List<TeamInformMenu> teams = Arrays.asList(teamInformMenu1, teamInformMenu2);
         Page<TeamInformMenu> teamPage = new PageImpl<>(teams, PageRequest.of(0, 20), teams.size());
 
-        when(teamSearchService.searchTeams(any(), any(), any(), any(), any(), any(Pageable.class))).thenReturn(teamPage);
+        TeamSearchResponseDTO teamSearchResponseDTO = TeamSearchResponseDTO.builder()
+            .ventureTeams(teams)
+            .supportProjectTeams(teams)
+            .defaultTeams(teamPage)
+            .build();
+
+        when(teamSearchService.searchTeams(any(), any(), any(), any(), any(Pageable.class))).thenReturn(teamSearchResponseDTO);
 
         // when
         final ResultActions resultActions = performSearchTeams(
@@ -155,115 +162,190 @@ public class TeamSearchControllerTest extends ControllerTest {
                         fieldWithPath("message")
                             .type(JsonFieldType.STRING)
                             .description("요청 성공 메시지"),
-                        fieldWithPath("result.content")
+
+                        // ✅ 상단: 창업을 위한 팀원을 찾고 있어요 4팀
+                        fieldWithPath("result.ventureTeams")
                             .type(JsonFieldType.ARRAY)
-                            .description("팀 정보 목록"),
-                        fieldWithPath("result.content[].teamCurrentStates")
+                            .description("창업을 위한 팀원을 찾고 있어요 팀 목록 (최대 4팀)"),
+                        fieldWithPath("result.ventureTeams[].teamCurrentStates")
                             .type(JsonFieldType.ARRAY)
                             .description("팀 현재 상태 목록"),
-                        fieldWithPath("result.content[].teamCurrentStates[].teamStateName")
+                        fieldWithPath("result.ventureTeams[].teamCurrentStates[].teamStateName")
                             .type(JsonFieldType.STRING)
                             .description("팀 상태 이름"),
-                        fieldWithPath("result.content[].isTeamScrap")
+                        fieldWithPath("result.ventureTeams[].isTeamScrap")
                             .type(JsonFieldType.BOOLEAN)
                             .description("팀 스크랩 여부"),
-                        fieldWithPath("result.content[].teamScrapCount")
+                        fieldWithPath("result.ventureTeams[].teamScrapCount")
                             .type(JsonFieldType.NUMBER)
                             .description("팀 스크랩 수"),
-                        fieldWithPath("result.content[].teamName")
+                        fieldWithPath("result.ventureTeams[].teamName")
                             .type(JsonFieldType.STRING)
                             .description("팀 이름"),
-                        fieldWithPath("result.content[].teamCode")
+                        fieldWithPath("result.ventureTeams[].teamCode")
                             .type(JsonFieldType.STRING)
                             .description("팀 아이디 (팀 코드)"),
-                        fieldWithPath("result.content[].teamShortDescription")
+                        fieldWithPath("result.ventureTeams[].teamShortDescription")
                             .type(JsonFieldType.STRING)
                             .description("팀 한 줄 소개"),
-                        fieldWithPath("result.content[].teamLogoImagePath")
+                        fieldWithPath("result.ventureTeams[].teamLogoImagePath")
                             .type(JsonFieldType.STRING)
                             .description("팀 로고 이미지 경로"),
-                        fieldWithPath("result.content[].teamScaleItem")
+                        fieldWithPath("result.ventureTeams[].teamScaleItem")
                             .type(JsonFieldType.OBJECT)
                             .description("팀 규모 정보"),
-                        fieldWithPath("result.content[].teamScaleItem.teamScaleName")
+                        fieldWithPath("result.ventureTeams[].teamScaleItem.teamScaleName")
                             .type(JsonFieldType.STRING)
                             .description("팀 규모 이름"),
-                        fieldWithPath("result.content[].regionDetail")
+                        fieldWithPath("result.ventureTeams[].regionDetail")
                             .type(JsonFieldType.OBJECT)
                             .description("지역 상세 정보"),
-                        fieldWithPath("result.content[].regionDetail.cityName")
+                        fieldWithPath("result.ventureTeams[].regionDetail.cityName")
                             .type(JsonFieldType.STRING)
                             .description("지역 시/도 이름"),
-                        fieldWithPath("result.content[].regionDetail.divisionName")
+                        fieldWithPath("result.ventureTeams[].regionDetail.divisionName")
                             .type(JsonFieldType.STRING)
                             .description("지역 시/군/구 이름"),
 
-                        fieldWithPath("result.pageable")
+                        // ✅ 중단: 지원사업을 준비 중인 팀이에요 4팀
+                        fieldWithPath("result.supportProjectTeams")
+                            .type(JsonFieldType.ARRAY)
+                            .description("지원 사업을 준비 중인 팀 목록 (최대 4팀)"),
+                        fieldWithPath("result.supportProjectTeams[].teamCurrentStates")
+                            .type(JsonFieldType.ARRAY)
+                            .description("팀 현재 상태 목록"),
+                        fieldWithPath("result.supportProjectTeams[].teamCurrentStates[].teamStateName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 상태 이름"),
+                        fieldWithPath("result.supportProjectTeams[].isTeamScrap")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("팀 스크랩 여부"),
+                        fieldWithPath("result.supportProjectTeams[].teamScrapCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀 스크랩 수"),
+                        fieldWithPath("result.supportProjectTeams[].teamName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 이름"),
+                        fieldWithPath("result.supportProjectTeams[].teamCode")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 아이디 (팀 코드)"),
+                        fieldWithPath("result.supportProjectTeams[].teamShortDescription")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 한 줄 소개"),
+                        fieldWithPath("result.supportProjectTeams[].teamLogoImagePath")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 로고 이미지 경로"),
+                        fieldWithPath("result.supportProjectTeams[].teamScaleItem")
                             .type(JsonFieldType.OBJECT)
-                            .description("페이징 정보"),
-                        fieldWithPath("result.pageable.paged")
+                            .description("팀 규모 정보"),
+                        fieldWithPath("result.supportProjectTeams[].teamScaleItem.teamScaleName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 규모 이름"),
+                        fieldWithPath("result.supportProjectTeams[].regionDetail")
+                            .type(JsonFieldType.OBJECT)
+                            .description("지역 상세 정보"),
+                        fieldWithPath("result.supportProjectTeams[].regionDetail.cityName")
+                            .type(JsonFieldType.STRING)
+                            .description("지역 시/도 이름"),
+                        fieldWithPath("result.supportProjectTeams[].regionDetail.divisionName")
+                            .type(JsonFieldType.STRING)
+                            .description("지역 시/군/구 이름"),
+
+                        // ✅ 하단: 나머지 팀 리스트
+                        fieldWithPath("result.defaultTeams")
+                            .type(JsonFieldType.ARRAY)
+                            .description("나머지 팀 목록 (최대 4팀)"),
+                        fieldWithPath("result.defaultTeams.content[].teamCurrentStates")
+                            .type(JsonFieldType.ARRAY)
+                            .description("팀 현재 상태 목록"),
+                        fieldWithPath("result.defaultTeams.content[].teamCurrentStates[].teamStateName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 상태 이름"),
+                        fieldWithPath("result.defaultTeams.content[].isTeamScrap")
                             .type(JsonFieldType.BOOLEAN)
-                            .description("페이징 적용 여부"),
-                        fieldWithPath("result.pageable.unpaged")
-                            .type(JsonFieldType.BOOLEAN)
+                            .description("팀 스크랩 여부"),
+                        fieldWithPath("result.defaultTeams.content[].teamScrapCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀 스크랩 수"),
+                        fieldWithPath("result.defaultTeams.content[].teamName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 이름"),
+                        fieldWithPath("result.defaultTeams.content[].teamCode")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 아이디 (팀 코드)"),
+                        fieldWithPath("result.defaultTeams.content[].teamShortDescription")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 한 줄 소개"),
+                        fieldWithPath("result.defaultTeams.content[].teamLogoImagePath")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 로고 이미지 경로"),
+                        fieldWithPath("result.defaultTeams.content[].teamScaleItem")
+                            .type(JsonFieldType.OBJECT)
+                            .description("팀 규모 정보"),
+                        fieldWithPath("result.defaultTeams.content[].teamScaleItem.teamScaleName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 규모 이름"),
+                        fieldWithPath("result.defaultTeams.content[].regionDetail")
+                            .type(JsonFieldType.OBJECT)
+                            .description("지역 상세 정보"),
+                        fieldWithPath("result.defaultTeams.content[].regionDetail.cityName")
+                            .type(JsonFieldType.STRING)
+                            .description("지역 시/도 이름"),
+                        fieldWithPath("result.defaultTeams.content[].regionDetail.divisionName")
+                            .type(JsonFieldType.STRING)
+                            .description("지역 시/군/구 이름"),
+
+                        // ✅ 페이지네이션 관련 필드 추가 (📢 여기에서 오류가 발생했었음)
+                        fieldWithPath("result.defaultTeams.pageable").type(JsonFieldType.OBJECT)
+                            .description("페이지네이션 정보"),
+                        fieldWithPath("result.defaultTeams.pageable.pageNumber").type(JsonFieldType.NUMBER)
+                            .description("현재 페이지 번호"),
+                        fieldWithPath("result.defaultTeams.pageable.pageSize").type(JsonFieldType.NUMBER)
+                            .description("페이지 크기"),
+                        fieldWithPath("result.defaultTeams.pageable.offset").type(JsonFieldType.NUMBER)
+                            .description("오프셋"),
+                        fieldWithPath("result.defaultTeams.pageable.paged").type(JsonFieldType.BOOLEAN)
+                            .description("페이징 여부"),
+                        fieldWithPath("result.defaultTeams.pageable.unpaged").type(JsonFieldType.BOOLEAN)
                             .description("페이징 미적용 여부"),
-                        fieldWithPath("result.pageable.sort")
-                            .type(JsonFieldType.OBJECT)
+
+                        // ✅ `sort`가 `defaultProfiles` 바로 아래에 존재하는 경우 (📢 기존 pageable.sort가 아닌 구조)
+                        fieldWithPath("result.defaultTeams.sort").type(JsonFieldType.OBJECT)
                             .description("정렬 정보"),
-                        fieldWithPath("result.pageable.sort.sorted")
+                        fieldWithPath("result.defaultTeams.sort.sorted").type(JsonFieldType.BOOLEAN)
+                            .description("정렬 여부"),
+                        fieldWithPath("result.defaultTeams.sort.unsorted").type(JsonFieldType.BOOLEAN)
+                            .description("비정렬 여부"),
+                        fieldWithPath("result.defaultTeams.sort.empty").type(JsonFieldType.BOOLEAN)
+                            .description("정렬 정보 존재 여부"),
+
+                        fieldWithPath("result.defaultTeams.pageable.sort.sorted")
                             .type(JsonFieldType.BOOLEAN)
                             .description("정렬 여부"),
-                        fieldWithPath("result.pageable.sort.unsorted")
+                        fieldWithPath("result.defaultTeams.pageable.sort.unsorted")
                             .type(JsonFieldType.BOOLEAN)
                             .description("비정렬 여부"),
-                        fieldWithPath("result.pageable.sort.empty")
+                        fieldWithPath("result.defaultTeams.pageable.sort.empty")
                             .type(JsonFieldType.BOOLEAN)
                             .description("정렬 정보 없음 여부"),
-                        fieldWithPath("result.pageable.pageNumber")
-                            .type(JsonFieldType.NUMBER)
-                            .description("현재 페이지 번호"),
-                        fieldWithPath("result.pageable.pageSize")
-                            .type(JsonFieldType.NUMBER)
-                            .description("페이지 크기"),
-                        fieldWithPath("result.pageable.offset")
-                            .type(JsonFieldType.NUMBER)
-                            .description("데이터 오프셋"),
-                        fieldWithPath("result.totalPages")
-                            .type(JsonFieldType.NUMBER)
-                            .description("총 페이지 수"),
-                        fieldWithPath("result.totalElements")
-                            .type(JsonFieldType.NUMBER)
-                            .description("총 요소 수"),
-                        fieldWithPath("result.last")
-                            .type(JsonFieldType.BOOLEAN)
+
+                        // ✅ 전체 페이지네이션 정보 추가 (📢 기존 result.last -> result.defaultProfiles.last)
+                        fieldWithPath("result.defaultTeams.last").type(JsonFieldType.BOOLEAN)
                             .description("마지막 페이지 여부"),
-                        fieldWithPath("result.size")
-                            .type(JsonFieldType.NUMBER)
+                        fieldWithPath("result.defaultTeams.totalPages").type(JsonFieldType.NUMBER)
+                            .description("총 페이지 수"),
+                        fieldWithPath("result.defaultTeams.totalElements").type(JsonFieldType.NUMBER)
+                            .description("총 요소 수"),
+                        fieldWithPath("result.defaultTeams.size").type(JsonFieldType.NUMBER)
                             .description("페이지 크기"),
-                        fieldWithPath("result.number")
-                            .type(JsonFieldType.NUMBER)
+                        fieldWithPath("result.defaultTeams.number").type(JsonFieldType.NUMBER)
                             .description("현재 페이지 번호"),
-                        fieldWithPath("result.sort")
-                            .type(JsonFieldType.OBJECT)
-                            .description("정렬 정보"),
-                        fieldWithPath("result.sort.sorted")
-                            .type(JsonFieldType.BOOLEAN)
-                            .description("정렬 여부"),
-                        fieldWithPath("result.sort.unsorted")
-                            .type(JsonFieldType.BOOLEAN)
-                            .description("비정렬 여부"),
-                        fieldWithPath("result.sort.empty")
-                            .type(JsonFieldType.BOOLEAN)
-                            .description("정렬 정보 없음 여부"),
-                        fieldWithPath("result.first")
-                            .type(JsonFieldType.BOOLEAN)
+                        fieldWithPath("result.defaultTeams.first").type(JsonFieldType.BOOLEAN)
                             .description("첫 페이지 여부"),
-                        fieldWithPath("result.numberOfElements")
-                            .type(JsonFieldType.NUMBER)
+                        fieldWithPath("result.defaultTeams.numberOfElements").type(JsonFieldType.NUMBER)
                             .description("현재 페이지의 요소 수"),
-                        fieldWithPath("result.empty")
-                            .type(JsonFieldType.BOOLEAN)
-                            .description("요소 존재 여부")
+                        fieldWithPath("result.defaultTeams.empty").type(JsonFieldType.BOOLEAN)
+                            .description("페이지가 비어있는지 여부")
                     )
                 )
             ).andReturn();

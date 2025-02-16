@@ -39,13 +39,12 @@ public class TeamQueryAdapter {
 
     public Page<Team> findAllByFiltering(
         List<String> scaleName,
-        Boolean isAnnouncement,
         List<String> cityName,
         List<String> teamStateName,
         Pageable pageable
     ) {
         log.info("팀 필터링 요청 발생");
-        return teamRepository.findAllByFiltering(scaleName, isAnnouncement, cityName, teamStateName, pageable);
+        return teamRepository.findAllByFiltering(scaleName, cityName, teamStateName, pageable);
     }
 
     public Page<Team> findTopVentureTeams(

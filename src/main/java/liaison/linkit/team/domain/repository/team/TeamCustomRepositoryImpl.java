@@ -63,7 +63,6 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     @Override
     public Page<Team> findAllByFiltering(
         final List<String> scaleName,
-        final Boolean isAnnouncement,
         final List<String> cityName,
         final List<String> teamStateName,
         final Pageable pageable

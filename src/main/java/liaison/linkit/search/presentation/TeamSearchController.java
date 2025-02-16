@@ -28,19 +28,17 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
     /**
      * 팀원 검색 엔드포인트
      *
-     * @param scaleName      팀 규모 (선택적)
-     * @param isAnnouncement 모집 상태 (공고 존재 유무)
-     * @param cityName       활동 지역 (시/도)
-     * @param teamStateName  팀 현재 상태
-     * @param page           페이지 번호 (기본값: 0)
-     * @param size           페이지 크기 (기본값: 20)
+     * @param scaleName     팀 규모 (선택적)
+     * @param cityName      활동 지역 (시/도)
+     * @param teamStateName 팀 현재 상태
+     * @param page          페이지 번호 (기본값: 0)
+     * @param size          페이지 크기 (기본값: 20)
      * @return 팀원 목록과 페이지 정보
      */
     @GetMapping
     public CommonResponse<TeamSearchResponseDTO> searchTeams(
         @Auth final Accessor accessor,
         @RequestParam(value = "scaleName", required = false) List<String> scaleName,
-        @RequestParam(value = "isAnnouncement", required = false) Boolean isAnnouncement,
         @RequestParam(value = "cityName", required = false) List<String> cityName,
         @RequestParam(value = "teamStateName", required = false) List<String> teamStateName,
         @RequestParam(value = "page", defaultValue = "0") int page,
@@ -55,7 +53,7 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
         Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
 
         TeamSearchResponseDTO teamSearchResponseDTO = teamSearchService.searchTeams(
-            optionalMemberId, scaleName, isAnnouncement, cityName, teamStateName, pageable
+            optionalMemberId, scaleName, cityName, teamStateName, pageable
         );
 
         return CommonResponse.onSuccess(teamSearchResponseDTO);

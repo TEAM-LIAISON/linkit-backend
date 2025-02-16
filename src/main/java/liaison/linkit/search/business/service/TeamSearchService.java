@@ -29,66 +29,81 @@ public class TeamSearchService {
     public TeamSearchResponseDTO searchTeams(
         final Optional<Long> optionalMemberId,
         final List<String> scaleName,
-        final Boolean isAnnouncement,
         final List<String> cityName,
         final List<String> teamStateName,
         final Pageable pageable
     ) {
-        // 쿼리 파라미터가 모두 비어있는 경우: 기본 검색
-        boolean isDefaultSearch = (scaleName == null || scaleName.isEmpty())
-            && (!isAnnouncement)
+        if (isDefaultSearch(scaleName, cityName, teamStateName)) {
+            return buildDefaultTeamSearchResponse(optionalMemberId, pageable);
+        } else {
+            return buildFilteredTeamSearchResponse(optionalMemberId, scaleName, cityName, teamStateName, pageable);
+        }
+    }
+
+    /**
+     * 기본 검색 여부를 판단합니다.
+     */
+    private boolean isDefaultSearch(List<String> scaleName, List<String> cityName, List<String> teamStateName) {
+        return (scaleName == null || scaleName.isEmpty())
             && (cityName == null || cityName.isEmpty())
             && (teamStateName == null || teamStateName.isEmpty());
+    }
 
-        if (isDefaultSearch) {
-            Pageable venturePageable = PageRequest.of(0, 4);
-            List<Team> ventureTeams = teamQueryAdapter.findTopVentureTeams(venturePageable).getContent();
+    /**
+     * 기본 검색일 경우의 응답 DTO를 구성합니다. - 벤처 팀과 지원 프로젝트 팀을 조회하고, 해당 팀 ID들을 제외한 나머지 팀을 페이지네이션합니다.
+     */
+    private TeamSearchResponseDTO buildDefaultTeamSearchResponse(Optional<Long> optionalMemberId, Pageable pageable) {
+        // 벤처 팀 조회 (최대 4팀)
+        Pageable venturePageable = PageRequest.of(0, 4);
+        List<Team> ventureTeamEntities = teamQueryAdapter.findTopVentureTeams(venturePageable).getContent();
+        List<TeamInformMenu> ventureTeamDTOs = ventureTeamEntities.stream()
+            .map(team -> teamInformMenuAssembler.assembleTeamInformMenu(team, optionalMemberId))
+            .toList();
 
-            List<TeamInformMenu> ventureTeamDTOs = ventureTeams.stream()
-                .map(team -> teamInformMenuAssembler.assembleTeamInformMenu(team, optionalMemberId))
-                .toList();
+        // 지원 프로젝트 팀 조회 (최대 4팀)
+        Pageable supportPageable = PageRequest.of(0, 4);
+        List<Team> supportTeamEntities = teamQueryAdapter.findSupportProjectTeams(supportPageable).getContent();
+        List<TeamInformMenu> supportTeamDTOs = supportTeamEntities.stream()
+            .map(team -> teamInformMenuAssembler.assembleTeamInformMenu(team, optionalMemberId))
+            .toList();
 
-            Pageable supportPageable = PageRequest.of(0, 4);
-            List<Team> supportTeams = teamQueryAdapter.findSupportProjectTeams(supportPageable).getContent();
+        // 벤처팀과 지원팀의 ID를 제외할 리스트 생성
+        List<Long> excludeTeamIds = new ArrayList<>();
+        excludeTeamIds.addAll(ventureTeamEntities.stream().map(Team::getId).toList());
+        excludeTeamIds.addAll(supportTeamEntities.stream().map(Team::getId).toList());
 
-            List<TeamInformMenu> supportTeamDTOs = supportTeams.stream()
-                .map(team -> teamInformMenuAssembler.assembleTeamInformMenu(team, optionalMemberId))
-                .toList();
+        // 제외된 팀을 제외한 나머지 팀을 페이지네이션하여 조회
+        Page<Team> remainingTeams = teamQueryAdapter.findAllExcludingIds(excludeTeamIds, pageable);
+        Page<TeamInformMenu> remainingTeamDTOs = remainingTeams.map(team ->
+            teamInformMenuAssembler.assembleTeamInformMenu(team, optionalMemberId)
+        );
 
-            // 제외할 팀 ID 리스트 생성
-            List<Long> excludeTeamIds = new ArrayList<>();
+        return TeamSearchResponseDTO.builder()
+            .ventureTeams(ventureTeamDTOs)
+            .supportProjectTeams(supportTeamDTOs)
+            .defaultTeams(remainingTeamDTOs)
+            .build();
+    }
 
-            // 벤처 팀 ID 추가
-            excludeTeamIds.addAll(ventureTeams.stream()
-                .map(Team::getId)
-                .toList());
+    /**
+     * 필터링 조건이 있는 경우의 응답 DTO를 구성합니다.
+     */
+    private TeamSearchResponseDTO buildFilteredTeamSearchResponse(
+        Optional<Long> optionalMemberId,
+        List<String> scaleName,
+        List<String> cityName,
+        List<String> teamStateName,
+        Pageable pageable
+    ) {
+        Page<Team> teams = teamQueryAdapter.findAllByFiltering(scaleName, cityName, teamStateName, pageable);
+        Page<TeamInformMenu> teamDTOs = teams.map(team ->
+            teamInformMenuAssembler.assembleTeamInformMenu(team, optionalMemberId)
+        );
 
-            // 지원 프로젝트 팀 ID 추가
-            excludeTeamIds.addAll(supportTeams.stream()
-                .map(Team::getId)
-                .toList());
-
-            Page<Team> remainingTeams = teamQueryAdapter.findAllExcludingIds(excludeTeamIds, pageable);
-            Page<TeamInformMenu> remainingTeamDTOs = remainingTeams.map(team ->
-                teamInformMenuAssembler.assembleTeamInformMenu(team, optionalMemberId)
-            );
-
-            return TeamSearchResponseDTO.builder()
-                .ventureTeams(ventureTeamDTOs)
-                .supportProjectTeams(supportTeamDTOs)
-                .defaultTeams(remainingTeamDTOs)
-                .build();
-        } else {
-            Page<Team> teams = teamQueryAdapter.findAllByFiltering(scaleName, isAnnouncement, cityName, teamStateName, pageable);
-            Page<TeamInformMenu> teamDTOs = teams.map(team ->
-                teamInformMenuAssembler.assembleTeamInformMenu(team, optionalMemberId)
-            );
-
-            return TeamSearchResponseDTO.builder()
-                .ventureTeams(Collections.emptyList())
-                .supportProjectTeams(Collections.emptyList())
-                .defaultTeams(teamDTOs)
-                .build();
-        }
+        return TeamSearchResponseDTO.builder()
+            .ventureTeams(Collections.emptyList())
+            .supportProjectTeams(Collections.emptyList())
+            .defaultTeams(teamDTOs)
+            .build();
     }
 }
