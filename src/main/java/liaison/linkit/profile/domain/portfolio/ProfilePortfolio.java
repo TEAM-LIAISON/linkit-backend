@@ -29,6 +29,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ProfilePortfolio extends BaseDateTimeEntity {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -59,6 +60,8 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     @OneToMany(mappedBy = "profilePortfolio", fetch = FetchType.LAZY)
     private List<ProjectRoleContribution> projectRoleContributions = new ArrayList<>();
 
+    @Column(length = 5)
+    private String projectLinkName; // 링크명
     private String projectLink; // 링크
 
     @Column(length = 500) // 제목 길이 제한 추가 (50자)

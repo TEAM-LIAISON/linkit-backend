@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCustomRepository {
+
     private final JPAQueryFactory jpaQueryFactory;
 
     @PersistenceContext
@@ -30,9 +31,9 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
         QProfilePortfolio qProfilePortfolio = QProfilePortfolio.profilePortfolio;
 
         return jpaQueryFactory
-                .selectFrom(qProfilePortfolio)
-                .where(qProfilePortfolio.profile.id.eq(profileId))
-                .fetch();
+            .selectFrom(qProfilePortfolio)
+            .where(qProfilePortfolio.profile.id.eq(profileId))
+            .fetch();
     }
 
     @Override
@@ -40,9 +41,9 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
         QProfilePortfolio qProfilePortfolio = QProfilePortfolio.profilePortfolio;
 
         ProfilePortfolio result = jpaQueryFactory
-                .selectFrom(qProfilePortfolio)
-                .where(qProfilePortfolio.id.eq(profilePortfolioId))
-                .fetchOne();
+            .selectFrom(qProfilePortfolio)
+            .where(qProfilePortfolio.id.eq(profilePortfolioId))
+            .fetchOne();
 
         return Optional.ofNullable(result);
     }
@@ -54,28 +55,29 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
 
         // 프로필 포트폴리오 업데이트
         long updatedCount = jpaQueryFactory
-                .update(qProfilePortfolio)
-                .set(qProfilePortfolio.projectName, updateProfilePortfolioRequest.getProjectName())
-                .set(qProfilePortfolio.projectLineDescription, updateProfilePortfolioRequest.getProjectLineDescription())
-                .set(qProfilePortfolio.projectSize, updateProfilePortfolioRequest.getProjectSize())
-                .set(qProfilePortfolio.projectHeadCount, updateProfilePortfolioRequest.getProjectHeadCount())
-                .set(qProfilePortfolio.projectTeamComposition, updateProfilePortfolioRequest.getProjectTeamComposition())
-                .set(qProfilePortfolio.projectStartDate, updateProfilePortfolioRequest.getProjectStartDate())
-                .set(qProfilePortfolio.projectEndDate, updateProfilePortfolioRequest.getProjectEndDate())
-                .set(qProfilePortfolio.isProjectInProgress, updateProfilePortfolioRequest.getIsProjectInProgress())
-                .set(qProfilePortfolio.projectLink, updateProfilePortfolioRequest.getProjectLink())
-                .set(qProfilePortfolio.projectDescription, updateProfilePortfolioRequest.getProjectDescription())
-                .where(qProfilePortfolio.id.eq(profilePortfolio.getId()))
-                .execute();
+            .update(qProfilePortfolio)
+            .set(qProfilePortfolio.projectName, updateProfilePortfolioRequest.getProjectName())
+            .set(qProfilePortfolio.projectLineDescription, updateProfilePortfolioRequest.getProjectLineDescription())
+            .set(qProfilePortfolio.projectSize, updateProfilePortfolioRequest.getProjectSize())
+            .set(qProfilePortfolio.projectHeadCount, updateProfilePortfolioRequest.getProjectHeadCount())
+            .set(qProfilePortfolio.projectTeamComposition, updateProfilePortfolioRequest.getProjectTeamComposition())
+            .set(qProfilePortfolio.projectStartDate, updateProfilePortfolioRequest.getProjectStartDate())
+            .set(qProfilePortfolio.projectEndDate, updateProfilePortfolioRequest.getProjectEndDate())
+            .set(qProfilePortfolio.isProjectInProgress, updateProfilePortfolioRequest.getIsProjectInProgress())
+            .set(qProfilePortfolio.projectLinkName, updateProfilePortfolioRequest.getProjectLinkName())
+            .set(qProfilePortfolio.projectLink, updateProfilePortfolioRequest.getProjectLink())
+            .set(qProfilePortfolio.projectDescription, updateProfilePortfolioRequest.getProjectDescription())
+            .where(qProfilePortfolio.id.eq(profilePortfolio.getId()))
+            .execute();
 
         entityManager.flush();
         entityManager.clear();
 
         if (updatedCount > 0) {
             return jpaQueryFactory
-                    .selectFrom(qProfilePortfolio)
-                    .where(qProfilePortfolio.id.eq(profilePortfolio.getId()))
-                    .fetchOne();
+                .selectFrom(qProfilePortfolio)
+                .where(qProfilePortfolio.id.eq(profilePortfolio.getId()))
+                .fetchOne();
         } else {
             return null;
         }
@@ -86,10 +88,10 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
         QProfilePortfolio qProfilePortfolio = QProfilePortfolio.profilePortfolio;
 
         return jpaQueryFactory
-                .selectOne()
-                .from(qProfilePortfolio)
-                .where(qProfilePortfolio.profile.id.eq(profileId))
-                .fetchFirst() != null;
+            .selectOne()
+            .from(qProfilePortfolio)
+            .where(qProfilePortfolio.profile.id.eq(profileId))
+            .fetchFirst() != null;
     }
 
     @Override
@@ -101,10 +103,10 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
 
         // 1) profileId로 해당 ProfilePortfolio 목록의 ID를 조회
         List<Long> portfolioIds = jpaQueryFactory
-                .select(qProfilePortfolio.id)
-                .from(qProfilePortfolio)
-                .where(qProfilePortfolio.profile.id.eq(profileId))
-                .fetch();
+            .select(qProfilePortfolio.id)
+            .from(qProfilePortfolio)
+            .where(qProfilePortfolio.profile.id.eq(profileId))
+            .fetch();
 
         if (portfolioIds.isEmpty()) {
             log.info("No ProfilePortfolio found for profileId={}, skipping deletion", profileId);
@@ -113,30 +115,30 @@ public class ProfilePortfolioCustomRepositoryImpl implements ProfilePortfolioCus
 
         // 2) ProjectRoleContribution 삭제 (자식)
         long deletedRoleCount = jpaQueryFactory
-                .delete(qRoleContribution)
-                .where(qRoleContribution.profilePortfolio.id.in(portfolioIds))
-                .execute();
+            .delete(qRoleContribution)
+            .where(qRoleContribution.profilePortfolio.id.in(portfolioIds))
+            .execute();
         log.info("Deleted {} ProjectRoleContribution records for profileId={}", deletedRoleCount, profileId);
 
         // 3) ProjectSkill 삭제 (자식)
         long deletedSkillCount = jpaQueryFactory
-                .delete(qProjectSkill)
-                .where(qProjectSkill.portfolio.id.in(portfolioIds))
-                .execute();
+            .delete(qProjectSkill)
+            .where(qProjectSkill.portfolio.id.in(portfolioIds))
+            .execute();
         log.info("Deleted {} ProjectSkill records for profileId={}", deletedSkillCount, profileId);
 
         // 4) ProjectSubImage 삭제 (자식)
         long deletedSubImageCount = jpaQueryFactory
-                .delete(qProjectSubImage)
-                .where(qProjectSubImage.profilePortfolio.id.in(portfolioIds))
-                .execute();
+            .delete(qProjectSubImage)
+            .where(qProjectSubImage.profilePortfolio.id.in(portfolioIds))
+            .execute();
         log.info("Deleted {} ProjectSubImage records for profileId={}", deletedSubImageCount, profileId);
 
         // 5) ProfilePortfolio 삭제 (부모)
         long deletedPortfolioCount = jpaQueryFactory
-                .delete(qProfilePortfolio)
-                .where(qProfilePortfolio.profile.id.eq(profileId))
-                .execute();
+            .delete(qProfilePortfolio)
+            .where(qProfilePortfolio.profile.id.eq(profileId))
+            .execute();
         log.info("Deleted {} ProfilePortfolio records for profileId={}", deletedPortfolioCount, profileId);
 
         entityManager.flush();

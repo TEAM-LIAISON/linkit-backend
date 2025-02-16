@@ -18,6 +18,7 @@ public class ProfilePortfolioRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddProfilePortfolioRequest {
+
         private String projectName;
         private String projectLineDescription;
         private ProjectSize projectSize;
@@ -34,6 +35,7 @@ public class ProfilePortfolioRequestDTO {
         @Builder.Default
         private List<ProfilePortfolioRequestDTO.ProjectSkillName> projectSkillNames = new ArrayList<>();
 
+        private String projectLinkName;
         private String projectLink;
         private String projectDescription;
     }
@@ -44,6 +46,7 @@ public class ProfilePortfolioRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateProfilePortfolioRequest {
+
         private String projectName;
         private String projectLineDescription;
         private ProjectSize projectSize;
@@ -60,7 +63,9 @@ public class ProfilePortfolioRequestDTO {
         @Builder.Default
         private List<ProfilePortfolioRequestDTO.ProjectSkillName> projectSkillNames = new ArrayList<>();
 
+        private String projectLinkName;
         private String projectLink;
+        
         private String projectDescription;
 
         @Builder.Default
@@ -72,6 +77,7 @@ public class ProfilePortfolioRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProjectRoleAndContribution {
+
         private String projectRole;
         private ProjectContribution projectContribution;
     }
@@ -81,6 +87,7 @@ public class ProfilePortfolioRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProjectSkillName {
+
         private String projectSkillName;
     }
 
@@ -89,6 +96,7 @@ public class ProfilePortfolioRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PortfolioImages {
+
         private String projectRepresentImagePath; // 대표 이미지
 
         @Builder.Default
@@ -100,6 +108,7 @@ public class ProfilePortfolioRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PortfolioSubImage {
+
         private String projectSubImagePath;
     }
 }
