@@ -44,7 +44,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
             )
             .fetch();
     }
-    
+
     @Override
     public List<ProfileLog> getProfileLogsPublic(final Long memberId) {
         QProfileLog qProfileLog = QProfileLog.profileLog;
@@ -140,6 +140,7 @@ public class ProfileLogCustomRepositoryImpl implements ProfileLogCustomRepositor
             .where(
                 qProfileLog.profile.id.eq(profileId)
                     .and(qProfileLog.logType.eq(LogType.REPRESENTATIVE_LOG))
+                    .and(qProfileLog.isLogPublic.eq(true))
             )
             .fetchFirst();
 
