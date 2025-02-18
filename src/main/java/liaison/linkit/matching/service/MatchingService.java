@@ -23,8 +23,6 @@ import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.exception.CannotRequestMyAnnouncementException;
 import liaison.linkit.matching.exception.CannotRequestMyProfileException;
 import liaison.linkit.matching.exception.MatchingReceiverBadRequestException;
-import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
-import liaison.linkit.matching.exception.MatchingSenderBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
@@ -284,62 +282,6 @@ public class MatchingService {
         );
     }
 
-    public UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingStateToRead(final Long memberId, final UpdateReceivedMatchingReadRequest request) {
-        // 1) 요청 검증
-        List<Long> matchingIds = request.getMatchingIds();
-        if (matchingIds == null || matchingIds.isEmpty()) {
-            throw new IllegalArgumentException("Request must include valid matching IDs.");
-        }
-
-        // 2) 매칭 조회
-        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
-        if (matchings.isEmpty()) {
-            throw new IllegalArgumentException("No matchings found for the given IDs: " + matchingIds);
-        }
-
-        // 3) 상태별로 읽음 처리
-        for (Matching matching : matchings) {
-            MatchingStatusType statusType = matching.getMatchingStatusType();
-
-            switch (statusType) {
-                case REQUESTED:
-                    // 이미 READ_REQUESTED_MATCHING 상태인지 확인
-                    if (matching.getReceiverReadStatus() != ReceiverReadStatus.READ_REQUESTED_MATCHING) {
-                        matching.setReceiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING);
-                    }
-                    break;
-
-                case COMPLETED:
-                    // 이미 READ_COMPLETED_MATCHING 상태인지 확인
-                    if (matching.getReceiverReadStatus() != ReceiverReadStatus.READ_COMPLETED_MATCHING) {
-                        matching.setReceiverReadStatus(ReceiverReadStatus.READ_COMPLETED_MATCHING);
-                    }
-                    break;
-
-                default:
-                    // REQUESTED, COMPLETED가 아닌 경우 별도 처리
-                    // 예: "READ_REQUESTED_MATCHING와 READ_COMPLETED_MATCHING은 REQUESTED 또는 COMPLETED 상태에서만 적용 가능합니다."
-                    // 필요하다면 로그 남기거나, 예외를 던질 수 있음
-                    log.warn("Matching ID {} has status {}, which is not handled by read logic.",
-                            matching.getId(), statusType);
-                    break;
-            }
-        }
-
-        // 4) DB에 반영 (bulk update)
-        matchingCommandAdapter.updateAll(matchings);
-
-        // 5) 응답 DTO 구성
-        List<UpdateReceivedMatchingCompletedStateReadItem> readItems = matchings.stream()
-                .map(m -> new UpdateReceivedMatchingCompletedStateReadItem(
-                        m.getId(),
-                        m.getReceiverReadStatus()
-                ))
-                .toList();
-
-        return matchingMapper.toUpdateMatchingCompletedToReadItems(readItems);
-    }
-
     // 수신자가 매칭 요청 상태를 업데이트한다.
     public UpdateMatchingStatusTypeResponse updateMatchingStatusType(
             final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest req
@@ -405,6 +347,61 @@ public class MatchingService {
         return response;
     }
 
+    public UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingStateToRead(
+            final Long memberId,
+            final UpdateReceivedMatchingReadRequest request
+    ) {
+        // 1) 요청 검증
+        List<Long> matchingIds = request.getMatchingIds();
+
+        // 2) 매칭 조회
+        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
+        if (matchings.isEmpty()) {
+            throw new IllegalArgumentException("No matchings found for the given IDs: " + matchingIds);
+        }
+
+        // 3) 상태별로 읽음 처리
+        for (Matching matching : matchings) {
+            MatchingStatusType statusType = matching.getMatchingStatusType();
+
+            switch (statusType) {
+                case REQUESTED:
+                    // 이미 READ_REQUESTED_MATCHING 상태인지 확인
+                    if (matching.getReceiverReadStatus() != ReceiverReadStatus.READ_REQUESTED_MATCHING) {
+                        matching.setReceiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING);
+                    }
+                    break;
+
+                case COMPLETED:
+                    // 이미 READ_COMPLETED_MATCHING 상태인지 확인
+                    if (matching.getReceiverReadStatus() != ReceiverReadStatus.READ_COMPLETED_MATCHING) {
+                        matching.setReceiverReadStatus(ReceiverReadStatus.READ_COMPLETED_MATCHING);
+                    }
+                    break;
+
+                default:
+                    // REQUESTED, COMPLETED가 아닌 경우 별도 처리
+                    // 예: "READ_REQUESTED_MATCHING와 READ_COMPLETED_MATCHING은 REQUESTED 또는 COMPLETED 상태에서만 적용 가능합니다."
+                    // 필요하다면 로그 남기거나, 예외를 던질 수 있음
+                    log.warn("Matching ID {} has status {}, which is not handled by read logic.",
+                            matching.getId(), statusType);
+                    break;
+            }
+        }
+
+        // 4) DB에 반영 (bulk update)
+        matchingCommandAdapter.updateAll(matchings);
+
+        // 5) 응답 DTO 구성
+        List<UpdateReceivedMatchingCompletedStateReadItem> readItems = matchings.stream()
+                .map(m -> new UpdateReceivedMatchingCompletedStateReadItem(
+                        m.getId(),
+                        m.getReceiverReadStatus()
+                ))
+                .toList();
+
+        return matchingMapper.toUpdateMatchingCompletedToReadItems(readItems);
+    }
 
     public DeleteRequestedMatchingItems deleteRequestedMatchingItems(final Long memberId, final DeleteRequestedMatchingRequest request) {
         List<Long> matchingIds = request.getMatchingIds();
@@ -430,59 +427,25 @@ public class MatchingService {
         return matchingMapper.toDeleteRequestedMatchingItems(deleteRequestedMatchingItems);
     }
 
+    // 수신함에서 매칭 삭제
     public DeleteReceivedMatchingItems deleteReceivedMatchingItems(final Long memberId, final DeleteReceivedMatchingRequest request) {
         List<Long> matchingIds = request.getMatchingIds();
-
-        if (matchingIds == null || matchingIds.isEmpty()) {
-            throw new IllegalArgumentException("Request must include valid matching IDs.");
-        }
-
         List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
 
-        matchings.forEach(matching ->
-                matching.setReceiverDeleteStatus(ReceiverDeleteStatus.DELETED));
-
+        matchings.forEach(matching -> matching.setReceiverDeleteStatus(ReceiverDeleteStatus.DELETED));
         matchingCommandAdapter.updateAll(matchings);
 
-        List<DeleteReceivedMatchingItem> deleteReceivedMatchingItems = matchings.stream()
-                .map(matching -> new DeleteReceivedMatchingItem(
-                        matching.getId(),
-                        matching.getReceiverDeleteStatus()
-                ))
-                .toList();
-
+        List<DeleteReceivedMatchingItem> deleteReceivedMatchingItems = matchingMapper.toDeleteReceivedMatchingItemList(matchings);
         return matchingMapper.toDeleteReceivedMatchingItems(deleteReceivedMatchingItems);
     }
 
-    public MatchingResponseDTO.AddMatchingResponse addMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest addMatchingRequest)
-            throws MessagingException, UnsupportedEncodingException {
+    // 매칭 요청 발신 메서드
+    public MatchingResponseDTO.AddMatchingResponse addMatching(
+            final Long memberId,
+            final MatchingRequestDTO.AddMatchingRequest addMatchingRequest
+    ) throws MessagingException, UnsupportedEncodingException {
 
-        if (addMatchingRequest.getSenderTeamCode() != null && addMatchingRequest.getReceiverAnnouncementId() != null) {
-            throw MatchingRelationBadRequestException.EXCEPTION;
-        }
-
-        if (addMatchingRequest.getSenderType().equals(SenderType.PROFILE)) {
-            if (addMatchingRequest.getSenderEmailId() == null) {
-                throw MatchingSenderBadRequestException.EXCEPTION;
-            }
-        }
-
-        if (addMatchingRequest.getSenderType().equals(SenderType.TEAM)) {
-            if (addMatchingRequest.getSenderTeamCode() == null) {
-                throw MatchingSenderBadRequestException.EXCEPTION;
-            }
-        }
-
-        if (addMatchingRequest.getReceiverType().equals(ReceiverType.PROFILE)) {
-            if (addMatchingRequest.getReceiverEmailId() == null) {
-                throw MatchingReceiverBadRequestException.EXCEPTION;
-            }
-
-            final Profile profile = profileQueryAdapter.findByEmailId(addMatchingRequest.getReceiverEmailId());
-            if (profile.getMember().getId().equals(memberId)) {
-                throw CannotRequestMyProfileException.EXCEPTION;
-            }
-        }
+        matchingValidator.validateAddMatching(addMatchingRequest);
 
         if (addMatchingRequest.getReceiverType().equals(ReceiverType.TEAM)) {
             if (addMatchingRequest.getReceiverTeamCode() == null) {

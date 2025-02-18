@@ -287,6 +287,17 @@ public class MatchingMapper {
             .build();
     }
 
+    public List<DeleteReceivedMatchingItem> toDeleteReceivedMatchingItemList(
+        final List<Matching> matchings
+    ) {
+        return matchings.stream()
+            .map(matching -> new DeleteReceivedMatchingItem(
+                matching.getId(),
+                matching.getReceiverDeleteStatus()
+            ))
+            .toList();
+    }
+    
     public DeleteReceivedMatchingItems toDeleteReceivedMatchingItems(
         final List<DeleteReceivedMatchingItem> items
     ) {

@@ -1,8 +1,12 @@
 package liaison.linkit.matching.business.validator;
 
 import liaison.linkit.matching.domain.type.MatchingStatusType;
+import liaison.linkit.matching.domain.type.SenderType;
+import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
+import liaison.linkit.matching.exception.MatchingSenderBadRequestException;
 import liaison.linkit.matching.exception.MatchingStatusTypeBadRequestException;
 import liaison.linkit.matching.exception.UpdateMatchingStatusTypeBadRequestException;
+import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO.UpdateMatchingStatusTypeRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +22,6 @@ public class MatchingValidator {
      */
     public void validateUpdateStatusRequest(final UpdateMatchingStatusTypeRequest request) {
         if (request == null || MatchingStatusType.REQUESTED.equals(request.getMatchingStatusType())) {
-            log.error("UpdateMatchingStatusTypeRequest is null or status is REQUESTED");
             throw MatchingStatusTypeBadRequestException.EXCEPTION;
         }
     }
@@ -30,5 +33,25 @@ public class MatchingValidator {
         if (!receiverMemberId.equals(memberId)) {
             throw UpdateMatchingStatusTypeBadRequestException.EXCEPTION;
         }
+    }
+
+    public void validateAddMatching(final MatchingRequestDTO.AddMatchingRequest req) {
+        if (req.getSenderTeamCode() != null && req.getReceiverAnnouncementId() != null) {
+            throw MatchingRelationBadRequestException.EXCEPTION;
+        }
+
+        if (req.getSenderType().equals(SenderType.PROFILE)) {
+            if (req.getSenderEmailId() == null) {
+                throw MatchingSenderBadRequestException.EXCEPTION;
+            }
+        }
+
+        if (req.getSenderType().equals(SenderType.TEAM)) {
+            if (req.getSenderTeamCode() == null) {
+                throw MatchingSenderBadRequestException.EXCEPTION;
+            }
+        }
+
+
     }
 }
