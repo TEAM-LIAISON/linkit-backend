@@ -279,6 +279,17 @@ public class MatchingMapper {
             .build();
     }
 
+    public List<UpdateReceivedMatchingCompletedStateReadItem> toUpdateReceivedMatchingCompletedStateReadItems(
+        final List<Matching> matches
+    ) {
+        return matches.stream()
+            .map(m -> new UpdateReceivedMatchingCompletedStateReadItem(
+                m.getId(),
+                m.getReceiverReadStatus()
+            ))
+            .toList();
+    }
+
     public UpdateReceivedMatchingCompletedStateReadItems toUpdateMatchingCompletedToReadItems(
         final List<UpdateReceivedMatchingCompletedStateReadItem> items
     ) {
@@ -297,7 +308,7 @@ public class MatchingMapper {
             ))
             .toList();
     }
-    
+
     public DeleteReceivedMatchingItems toDeleteReceivedMatchingItems(
         final List<DeleteReceivedMatchingItem> items
     ) {

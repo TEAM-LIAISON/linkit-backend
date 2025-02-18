@@ -4,6 +4,7 @@ import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
@@ -20,9 +21,6 @@ import liaison.linkit.matching.domain.type.ReceiverReadStatus;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderDeleteStatus;
 import liaison.linkit.matching.domain.type.SenderType;
-import liaison.linkit.matching.exception.CannotRequestMyAnnouncementException;
-import liaison.linkit.matching.exception.CannotRequestMyProfileException;
-import liaison.linkit.matching.exception.MatchingReceiverBadRequestException;
 import liaison.linkit.matching.implement.MatchingCommandAdapter;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.matching.presentation.dto.MatchingRequestDTO;
@@ -123,8 +121,12 @@ public class MatchingService {
     private final RegionMapper regionMapper;
     private final NotificationMapper notificationMapper;
     private final HeaderNotificationService headerNotificationService;
+
+    // Assemblers
     private final AnnouncementCommonAssembler announcementCommonAssembler;
     private final MatchingRequestModalAssembler matchingRequestModalAssembler;
+
+    // Validators
     private final MatchingValidator matchingValidator;
 
     @Transactional(readOnly = true)
@@ -348,68 +350,22 @@ public class MatchingService {
     }
 
     public UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingStateToRead(
-            final Long memberId,
             final UpdateReceivedMatchingReadRequest request
     ) {
-        // 1) 요청 검증
-        List<Long> matchingIds = request.getMatchingIds();
+        List<Matching> matches = matchingQueryAdapter.findAllByIds(request.getMatchingIds());
+        matches.forEach(this::updateMatchingReadStatus);
 
-        // 2) 매칭 조회
-        List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
-        if (matchings.isEmpty()) {
-            throw new IllegalArgumentException("No matchings found for the given IDs: " + matchingIds);
-        }
+        matchingCommandAdapter.updateAll(matches);
 
-        // 3) 상태별로 읽음 처리
-        for (Matching matching : matchings) {
-            MatchingStatusType statusType = matching.getMatchingStatusType();
-
-            switch (statusType) {
-                case REQUESTED:
-                    // 이미 READ_REQUESTED_MATCHING 상태인지 확인
-                    if (matching.getReceiverReadStatus() != ReceiverReadStatus.READ_REQUESTED_MATCHING) {
-                        matching.setReceiverReadStatus(ReceiverReadStatus.READ_REQUESTED_MATCHING);
-                    }
-                    break;
-
-                case COMPLETED:
-                    // 이미 READ_COMPLETED_MATCHING 상태인지 확인
-                    if (matching.getReceiverReadStatus() != ReceiverReadStatus.READ_COMPLETED_MATCHING) {
-                        matching.setReceiverReadStatus(ReceiverReadStatus.READ_COMPLETED_MATCHING);
-                    }
-                    break;
-
-                default:
-                    // REQUESTED, COMPLETED가 아닌 경우 별도 처리
-                    // 예: "READ_REQUESTED_MATCHING와 READ_COMPLETED_MATCHING은 REQUESTED 또는 COMPLETED 상태에서만 적용 가능합니다."
-                    // 필요하다면 로그 남기거나, 예외를 던질 수 있음
-                    log.warn("Matching ID {} has status {}, which is not handled by read logic.",
-                            matching.getId(), statusType);
-                    break;
-            }
-        }
-
-        // 4) DB에 반영 (bulk update)
-        matchingCommandAdapter.updateAll(matchings);
-
-        // 5) 응답 DTO 구성
-        List<UpdateReceivedMatchingCompletedStateReadItem> readItems = matchings.stream()
-                .map(m -> new UpdateReceivedMatchingCompletedStateReadItem(
-                        m.getId(),
-                        m.getReceiverReadStatus()
-                ))
-                .toList();
-
+        List<UpdateReceivedMatchingCompletedStateReadItem> readItems = matchingMapper.toUpdateReceivedMatchingCompletedStateReadItems(matches);
         return matchingMapper.toUpdateMatchingCompletedToReadItems(readItems);
     }
 
-    public DeleteRequestedMatchingItems deleteRequestedMatchingItems(final Long memberId, final DeleteRequestedMatchingRequest request) {
+    public DeleteRequestedMatchingItems deleteRequestedMatchingItems(
+            final Long memberId,
+            final DeleteRequestedMatchingRequest request
+    ) {
         List<Long> matchingIds = request.getMatchingIds();
-
-        if (matchingIds == null || matchingIds.isEmpty()) {
-            throw new IllegalArgumentException("Request must include valid matching IDs.");
-        }
-
         List<Matching> matchings = matchingQueryAdapter.findAllByIds(matchingIds);
 
         matchings.forEach(matching ->
@@ -444,28 +400,7 @@ public class MatchingService {
             final Long memberId,
             final MatchingRequestDTO.AddMatchingRequest addMatchingRequest
     ) throws MessagingException, UnsupportedEncodingException {
-
-        matchingValidator.validateAddMatching(addMatchingRequest);
-
-        if (addMatchingRequest.getReceiverType().equals(ReceiverType.TEAM)) {
-            if (addMatchingRequest.getReceiverTeamCode() == null) {
-                throw MatchingReceiverBadRequestException.EXCEPTION;
-            }
-
-            if (teamMemberQueryAdapter.findMembersByTeamCode(addMatchingRequest.getReceiverTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
-                throw CannotRequestMyProfileException.EXCEPTION;
-            }
-        }
-
-        if (addMatchingRequest.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
-            if (addMatchingRequest.getReceiverAnnouncementId() == null) {
-                throw MatchingReceiverBadRequestException.EXCEPTION;
-            }
-            final Team team = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(addMatchingRequest.getReceiverAnnouncementId()).getTeam();
-            if (teamMemberQueryAdapter.findMembersByTeamCode(team.getTeamCode()).contains(memberQueryAdapter.findById(memberId))) {
-                throw CannotRequestMyAnnouncementException.EXCEPTION;
-            }
-        }
+        matchingValidator.validateAddMatching(memberId, addMatchingRequest);
 
         final Matching matching = matchingMapper.toMatching(addMatchingRequest);
         final Matching savedMatching = matchingCommandAdapter.addMatching(matching);
@@ -1270,6 +1205,23 @@ public class MatchingService {
                             notificationDetails
                     )
             );
+        }
+    }
+
+
+    private void updateMatchingReadStatus(Matching matching) {
+        MatchingStatusType statusType = matching.getMatchingStatusType();
+
+        Map<MatchingStatusType, ReceiverReadStatus> statusMapping = Map.of(
+                MatchingStatusType.REQUESTED, ReceiverReadStatus.READ_REQUESTED_MATCHING,
+                MatchingStatusType.COMPLETED, ReceiverReadStatus.READ_COMPLETED_MATCHING
+        );
+
+        if (statusMapping.containsKey(statusType)) {
+            ReceiverReadStatus newReadStatus = statusMapping.get(statusType);
+            if (matching.getReceiverReadStatus() != newReadStatus) {
+                matching.setReceiverReadStatus(newReadStatus);
+            }
         }
     }
 }

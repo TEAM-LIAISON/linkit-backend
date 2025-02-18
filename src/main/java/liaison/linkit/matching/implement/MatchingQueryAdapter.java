@@ -13,48 +13,55 @@ import org.springframework.data.domain.Pageable;
 @Adapter
 @RequiredArgsConstructor
 public class MatchingQueryAdapter {
+
     private final MatchingRepository matchingRepository;
 
     public Matching findByMatchingId(final Long matchingId) {
         return matchingRepository.findByMatchingId(matchingId)
-                .orElseThrow(() -> MatchingNotFoundException.EXCEPTION);
+            .orElseThrow(() -> MatchingNotFoundException.EXCEPTION);
     }
 
     public List<Matching> findAllByIds(final List<Long> matchingIds) {
-        return matchingRepository.findAllByIds(matchingIds);
+        List<Matching> matches = matchingRepository.findAllByIds(matchingIds);
+
+        if (matches.isEmpty()) {
+            throw MatchingNotFoundException.EXCEPTION;
+        }
+
+        return matches;
     }
 
     public Page<Matching> findReceivedToProfile(
-            final String emailId,
-            final Pageable pageable
+        final String emailId,
+        final Pageable pageable
     ) {
         return matchingRepository.findReceivedToProfile(emailId, pageable);
     }
 
     public Page<Matching> findReceivedToTeam(
-            final List<Team> teams,
-            final Pageable pageable
+        final List<Team> teams,
+        final Pageable pageable
     ) {
         return matchingRepository.findReceivedToTeam(teams, pageable);
     }
 
     public Page<Matching> findReceivedToAnnouncement(
-            final List<Long> announcementIds,
-            final Pageable pageable
+        final List<Long> announcementIds,
+        final Pageable pageable
     ) {
         return matchingRepository.findReceivedToAnnouncement(announcementIds, pageable);
     }
 
     public Page<Matching> findRequestedByProfile(
-            final String emailId,
-            final Pageable pageable
+        final String emailId,
+        final Pageable pageable
     ) {
         return matchingRepository.findRequestedByProfile(emailId, pageable);
     }
 
     public Page<Matching> findRequestedByTeam(
-            final List<Team> teams,
-            final Pageable pageable
+        final List<Team> teams,
+        final Pageable pageable
     ) {
         return matchingRepository.findRequestedByTeam(teams, pageable);
     }

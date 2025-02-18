@@ -88,10 +88,9 @@ public class MatchingController {
     @PostMapping("/received/menu/read")
     @MemberOnly
     public CommonResponse<UpdateReceivedMatchingCompletedStateReadItems> updateReceivedMatchingStateRead(
-        @Auth final Accessor accessor,
         @Valid @RequestBody final UpdateReceivedMatchingReadRequest request
     ) {
-        return CommonResponse.onSuccess(matchingService.updateReceivedMatchingStateToRead(accessor.getMemberId(), request));
+        return CommonResponse.onSuccess(matchingService.updateReceivedMatchingStateToRead(request));
     }
 
     // 매칭 수신함에서 삭제 처리 (명세 완료)
