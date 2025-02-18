@@ -1,5 +1,6 @@
 package liaison.linkit.matching.presentation.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import java.util.List;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverType;
@@ -18,6 +19,8 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DeleteRequestedMatchingRequest {
+
+        @NotEmpty(message = "matchingIds 리스트는 비어 있을 수 없습니다.")
         private List<Long> matchingIds;
     }
 
@@ -26,6 +29,8 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DeleteReceivedMatchingRequest {
+
+        @NotEmpty(message = "matchingIds 리스트는 비어 있을 수 없습니다.")
         private List<Long> matchingIds;
     }
 
@@ -34,6 +39,8 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateReceivedMatchingReadRequest {
+
+        @NotEmpty(message = "matchingIds 리스트는 비어 있을 수 없습니다.")
         private List<Long> matchingIds;
     }
 
@@ -42,6 +49,7 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AddMatchingRequest {
+
         private SenderType senderType;                  //     PROFILE, TEAM
         private ReceiverType receiverType;              //     PROFILE, TEAM, ANNOUNCEMENT
 
@@ -60,6 +68,8 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateMatchingStatusTypeRequest {
+
+        @NotEmpty(message = "matchingStatusType 값은 비어 있을 수 없습니다.")
         private MatchingStatusType matchingStatusType;
     }
 }

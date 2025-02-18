@@ -18,6 +18,7 @@ import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.search.business.service.AnnouncementSearchService;
+import liaison.linkit.search.presentation.dto.AnnouncementSearchResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
@@ -159,6 +160,11 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
         List<AnnouncementInformMenu> announcementInformMenus = Arrays.asList(announcementInformMenu1, announcementInformMenu2);
         Page<AnnouncementInformMenu> announcementInformPage = new PageImpl<>(announcementInformMenus, PageRequest.of(0, 20), announcementInformMenus.size());
 
+        AnnouncementSearchResponseDTO announcementSearchResponseDTO = AnnouncementSearchResponseDTO.builder()
+            .hotAnnouncements(announcementInformMenus)
+            .defaultAnnouncements(announcementInformPage)
+            .build();
+
         // when
         when(announcementSearchService.searchAnnouncements(
             any(),
@@ -167,7 +173,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
             any(),
             any(),
             any(Pageable.class)
-        )).thenReturn(announcementInformPage);
+        )).thenReturn(announcementSearchResponseDTO);
 
         final ResultActions resultActions = performSearchAnnouncements(
             Arrays.asList("개발자"),
@@ -220,129 +226,178 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                             .description("요청 성공 메시지")
                             .attributes(field("constraint", "문자열")),
 
-                        // result
-                        fieldWithPath("result.content")
+                        // ✅ 상단: 지금 핫한 공고에요 (6개)
+                        fieldWithPath("result.hotAnnouncements")
                             .type(JsonFieldType.ARRAY)
-                            .description("팀 공고 정보 목록"),
-                        fieldWithPath("result.content[].teamMemberAnnouncementId")
+                            .description("지금 핫한 공고 (자체 필터 적용)"),
+                        fieldWithPath("result.hotAnnouncements[].teamMemberAnnouncementId")
                             .type(JsonFieldType.NUMBER)
                             .description("팀원 공고 ID PK"),
-                        fieldWithPath("result.content[].teamLogoImagePath")
+                        fieldWithPath("result.hotAnnouncements[].teamLogoImagePath")
                             .type(JsonFieldType.STRING)
                             .description("팀 로고 이미지 경로"),
-                        fieldWithPath("result.content[].teamName")
+                        fieldWithPath("result.hotAnnouncements[].teamName")
                             .type(JsonFieldType.STRING)
                             .description("팀 이름"),
-                        fieldWithPath("result.content[].teamCode")
+                        fieldWithPath("result.hotAnnouncements[].teamCode")
                             .type(JsonFieldType.STRING)
                             .description("팀 아이디 (팀 코드)"),
-                        fieldWithPath("result.content[].teamScaleItem.teamScaleName")
+                        fieldWithPath("result.hotAnnouncements[].teamScaleItem.teamScaleName")
                             .type(JsonFieldType.STRING)
                             .description("팀 규모 이름"),
-                        fieldWithPath("result.content[].regionDetail.cityName")
+                        fieldWithPath("result.hotAnnouncements[].regionDetail.cityName")
                             .type(JsonFieldType.STRING)
                             .description("팀 활동 지역 (시/도)"),
-                        fieldWithPath("result.content[].regionDetail.divisionName")
+                        fieldWithPath("result.hotAnnouncements[].regionDetail.divisionName")
                             .type(JsonFieldType.STRING)
                             .description("팀 활동 지역 (시/군/구)"),
-
-                        fieldWithPath("result.content[].announcementDDay")
+                        fieldWithPath("result.hotAnnouncements[].announcementDDay")
                             .type(JsonFieldType.NUMBER)
                             .description("공고 마감까지 남은 일수 (디데이)"),
-                        fieldWithPath("result.content[].isPermanentRecruitment")
+                        fieldWithPath("result.hotAnnouncements[].isPermanentRecruitment")
                             .type(JsonFieldType.BOOLEAN)
                             .description("상시 모집 여부 (false이면 상시 모집하지 않음)"),
-                        fieldWithPath("result.content[].announcementTitle")
+                        fieldWithPath("result.hotAnnouncements[].announcementTitle")
                             .type(JsonFieldType.STRING)
                             .description("공고 제목"),
-
-                        fieldWithPath("result.content[].isAnnouncementScrap")
+                        fieldWithPath("result.hotAnnouncements[].isAnnouncementScrap")
                             .type(JsonFieldType.BOOLEAN)
                             .description("현재 사용자가 이 공고를 스크랩했는지 여부"),
-                        fieldWithPath("result.content[].announcementScrapCount")
+                        fieldWithPath("result.hotAnnouncements[].announcementScrapCount")
                             .type(JsonFieldType.NUMBER)
                             .description("공고가 스크랩된 총 횟수"),
-
-                        fieldWithPath("result.content[].announcementPositionItem.majorPosition")
+                        fieldWithPath("result.hotAnnouncements[].announcementPositionItem.majorPosition")
                             .type(JsonFieldType.STRING)
                             .description("포지션 대분류"),
-                        fieldWithPath("result.content[].announcementPositionItem.subPosition")
+                        fieldWithPath("result.hotAnnouncements[].announcementPositionItem.subPosition")
                             .type(JsonFieldType.STRING)
                             .description("포지션 소분류"),
-
-                        fieldWithPath("result.content[].announcementSkillNames")
+                        fieldWithPath("result.hotAnnouncements[].announcementSkillNames")
                             .type(JsonFieldType.ARRAY)
                             .description("공고에 필요한 스킬 목록"),
-                        fieldWithPath("result.content[].announcementSkillNames[].announcementSkillName")
+                        fieldWithPath("result.hotAnnouncements[].announcementSkillNames[].announcementSkillName")
+                            .type(JsonFieldType.STRING)
+                            .description("요구 스킬 이름"),
+
+                        // ✅ 하단: 나머지 팀원 공고 리스트
+                        fieldWithPath("result.defaultAnnouncements")
+                            .type(JsonFieldType.OBJECT)
+                            .description("자체 필터 제외, 선택된 필터에 의해서 보이는 팀원 공고 리스트"),
+                        fieldWithPath("result.defaultAnnouncements.content[].teamMemberAnnouncementId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("팀원 공고 ID PK"),
+                        fieldWithPath("result.defaultAnnouncements.content[].teamLogoImagePath")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 로고 이미지 경로"),
+                        fieldWithPath("result.defaultAnnouncements.content[].teamName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 이름"),
+                        fieldWithPath("result.defaultAnnouncements.content[].teamCode")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 아이디 (팀 코드)"),
+                        fieldWithPath("result.defaultAnnouncements.content[].teamScaleItem.teamScaleName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 규모 이름"),
+                        fieldWithPath("result.defaultAnnouncements.content[].regionDetail.cityName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 활동 지역 (시/도)"),
+                        fieldWithPath("result.defaultAnnouncements.content[].regionDetail.divisionName")
+                            .type(JsonFieldType.STRING)
+                            .description("팀 활동 지역 (시/군/구)"),
+                        fieldWithPath("result.defaultAnnouncements.content[].announcementDDay")
+                            .type(JsonFieldType.NUMBER)
+                            .description("공고 마감까지 남은 일수 (디데이)"),
+                        fieldWithPath("result.defaultAnnouncements.content[].isPermanentRecruitment")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("상시 모집 여부 (false이면 상시 모집하지 않음)"),
+                        fieldWithPath("result.defaultAnnouncements.content[].announcementTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("공고 제목"),
+                        fieldWithPath("result.defaultAnnouncements.content[].isAnnouncementScrap")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("현재 사용자가 이 공고를 스크랩했는지 여부"),
+                        fieldWithPath("result.defaultAnnouncements.content[].announcementScrapCount")
+                            .type(JsonFieldType.NUMBER)
+                            .description("공고가 스크랩된 총 횟수"),
+                        fieldWithPath("result.defaultAnnouncements.content[].announcementPositionItem.majorPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 대분류"),
+                        fieldWithPath("result.defaultAnnouncements.content[].announcementPositionItem.subPosition")
+                            .type(JsonFieldType.STRING)
+                            .description("포지션 소분류"),
+                        fieldWithPath("result.defaultAnnouncements.content[].announcementSkillNames")
+                            .type(JsonFieldType.ARRAY)
+                            .description("공고에 필요한 스킬 목록"),
+                        fieldWithPath("result.defaultAnnouncements.content[].announcementSkillNames[].announcementSkillName")
                             .type(JsonFieldType.STRING)
                             .description("요구 스킬 이름"),
 
                         // 페이징 정보
-                        fieldWithPath("result.pageable")
+                        fieldWithPath("result.defaultAnnouncements.pageable")
                             .type(JsonFieldType.OBJECT)
                             .description("페이징 상세 정보"),
-                        fieldWithPath("result.pageable.pageNumber")
+                        fieldWithPath("result.defaultAnnouncements.pageable.pageNumber")
                             .type(JsonFieldType.NUMBER)
                             .description("현재 페이지 번호"),
-                        fieldWithPath("result.pageable.pageSize")
+                        fieldWithPath("result.defaultAnnouncements.pageable.pageSize")
                             .type(JsonFieldType.NUMBER)
                             .description("페이지 크기"),
-                        fieldWithPath("result.pageable.sort")
+                        fieldWithPath("result.defaultAnnouncements.pageable.sort")
                             .type(JsonFieldType.OBJECT)
                             .description("정렬 정보"),
-                        fieldWithPath("result.pageable.sort.empty")
+                        fieldWithPath("result.defaultAnnouncements.pageable.sort.empty")
                             .type(JsonFieldType.BOOLEAN)
                             .description("정렬 기준이 비어있는지 여부"),
-                        fieldWithPath("result.pageable.sort.sorted")
+                        fieldWithPath("result.defaultAnnouncements.pageable.sort.sorted")
                             .type(JsonFieldType.BOOLEAN)
                             .description("정렬이 적용되었는지 여부"),
-                        fieldWithPath("result.pageable.sort.unsorted")
+                        fieldWithPath("result.defaultAnnouncements.pageable.sort.unsorted")
                             .type(JsonFieldType.BOOLEAN)
                             .description("정렬이 적용되지 않았는지 여부"),
-                        fieldWithPath("result.pageable.offset")
+                        fieldWithPath("result.defaultAnnouncements.pageable.offset")
                             .type(JsonFieldType.NUMBER)
                             .description("해당 페이지의 시작 데이터 위치"),
-                        fieldWithPath("result.pageable.paged")
+                        fieldWithPath("result.defaultAnnouncements.pageable.paged")
                             .type(JsonFieldType.BOOLEAN)
                             .description("페이징 방식 적용 여부"),
-                        fieldWithPath("result.pageable.unpaged")
+                        fieldWithPath("result.defaultAnnouncements.pageable.unpaged")
                             .type(JsonFieldType.BOOLEAN)
                             .description("페이징이 적용되지 않았는지 여부"),
 
-                        fieldWithPath("result.last")
+                        fieldWithPath("result.defaultAnnouncements.last")
                             .type(JsonFieldType.BOOLEAN)
                             .description("마지막 페이지인지 여부"),
-                        fieldWithPath("result.totalPages")
+                        fieldWithPath("result.defaultAnnouncements.totalPages")
                             .type(JsonFieldType.NUMBER)
                             .description("전체 페이지 수"),
-                        fieldWithPath("result.totalElements")
+                        fieldWithPath("result.defaultAnnouncements.totalElements")
                             .type(JsonFieldType.NUMBER)
                             .description("전체 데이터 개수"),
-                        fieldWithPath("result.first")
+                        fieldWithPath("result.defaultAnnouncements.first")
                             .type(JsonFieldType.BOOLEAN)
                             .description("첫 페이지인지 여부"),
-                        fieldWithPath("result.size")
+                        fieldWithPath("result.defaultAnnouncements.size")
                             .type(JsonFieldType.NUMBER)
                             .description("현재 페이지 크기"),
-                        fieldWithPath("result.number")
+                        fieldWithPath("result.defaultAnnouncements.number")
                             .type(JsonFieldType.NUMBER)
                             .description("현재 페이지 번호"),
-                        fieldWithPath("result.sort")
+                        fieldWithPath("result.defaultAnnouncements.sort")
                             .type(JsonFieldType.OBJECT)
                             .description("전체 정렬 정보 (페이지 단위)"),
-                        fieldWithPath("result.sort.empty")
+                        fieldWithPath("result.defaultAnnouncements.sort.empty")
                             .type(JsonFieldType.BOOLEAN)
                             .description("전체 정렬 기준이 비어있는지 여부"),
-                        fieldWithPath("result.sort.sorted")
+                        fieldWithPath("result.defaultAnnouncements.sort.sorted")
                             .type(JsonFieldType.BOOLEAN)
                             .description("전체 정렬이 적용되었는지 여부"),
-                        fieldWithPath("result.sort.unsorted")
+                        fieldWithPath("result.defaultAnnouncements.sort.unsorted")
                             .type(JsonFieldType.BOOLEAN)
                             .description("전체 정렬이 적용되지 않았는지 여부"),
-                        fieldWithPath("result.numberOfElements")
+                        fieldWithPath("result.defaultAnnouncements.numberOfElements")
                             .type(JsonFieldType.NUMBER)
                             .description("현재 페이지에 조회된 데이터 개수"),
-                        fieldWithPath("result.empty")
+                        fieldWithPath("result.defaultAnnouncements.empty")
                             .type(JsonFieldType.BOOLEAN)
                             .description("현재 페이지가 비어있는지 여부")
                     )

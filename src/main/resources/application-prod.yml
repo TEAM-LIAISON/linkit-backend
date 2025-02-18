@@ -1,95 +1,93 @@
 spring:
-  profiles:
-    group:
-      blue: blue, common, secret-prod
-      green: green, common, secret-prod
+    profiles:
+        group:
+            blue: blue, common, secret-prod
+            green: green, common, secret-prod
 
 server:
-  env: blue
+    env: blue
 
 ---
 
 spring:
-  config:
-    activate:
-      on-profile: blue
+    config:
+        activate:
+            on-profile: blue
 
 server:
-  port: 8080
+    port: 8080
 
 ---
 
 spring:
-  config:
-    activate:
-      on-profile: green
+    config:
+        activate:
+            on-profile: green
 
 server:
-  port: 8081
+    port: 8081
 
 ---
 
 spring:
-  config:
-    activate:
-      on-profile: common
+    config:
+        activate:
+            on-profile: common
 
-  security:
-    oauth2:
-      client:
-        registration:
-          naver:
-            redirect-uri: https://linkit.im/login/oauth2/callback/naver
-          kakao:
-            redirect-uri: https://linkit.im/login/oauth2/callback/kakao
-          google:
-            redirect-uri: https://linkit.im/login/oauth2/callback/google
+    security:
+        oauth2:
+            client:
+                registration:
+                    naver:
+                        redirect-uri: https://linkit.im/login/oauth2/callback/naver
+                    kakao:
+                        redirect-uri: https://linkit.im/login/oauth2/callback/kakao
+                    google:
+                        redirect-uri: https://linkit.im/login/oauth2/callback/google
 
-  jpa:
-    database: mysql
-    database-platform: org.hibernate.dialect.MySQL8Dialect
-    properties:
-      hibernate:
-        format_sql: false
-        show_sql: false
-        default_batch_fetch_size: 100
-    hibernate:
-      ddl-auto: validate
+    jpa:
+        database: mysql
+        database-platform: org.hibernate.dialect.MySQL8Dialect
+        properties:
+            hibernate:
+                format_sql: false
+                show_sql: false
+                default_batch_fetch_size: 100
+        hibernate:
+            ddl-auto: validate
 
-  mvc:
-    path match:
-      matching-strategy: ant_path_matcher
+    mvc:
+        path match:
+            matching-strategy: ant_path_matcher
 
-  batch:
-    job:
-      enabled: false
-    jdbc:
-      initialize-schema: never
+    batch:
+        job:
+            enabled: false
+        jdbc:
+            initialize-schema: never
 
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    baseline-version: 0
+    flyway:
+        enabled: true
+        baseline-on-migrate: true
+        baseline-version: 0
 
-  sql:
-    init:
-      mode: never
+    sql:
+        init:
+            mode: never
 
-  servlet:
-    multipart:
-      enabled: true # 멀티파트 업로드 지원 여부
-      file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
-      max-file-size: 60MB # 한 개 파일의 최대 사이즈
-      max-request-size: 60MB # 한 개 요청의 최대 사이즈
+    servlet:
+        multipart:
+            enabled: true # 멀티파트 업로드 지원 여부
+            file-size-threshold: 0B # 파일을 디스크에 저장하지 않고 메모리에 저장하는 최소 크기 (default: 0B)
+            max-file-size: 60MB # 한 개 파일의 최대 사이즈
+            max-request-size: 60MB # 한 개 요청의 최대 사이즈
 
-logging:
-  level:
-    org:
-      springframework:
-        web:
-          socket: TRACE
-        messaging: TRACE
-        simp:
-          broker: TRACE
-#    root: debug
-
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        web:
+#          socket: TRACE
+#        messaging: TRACE
+#        simp:
+#          broker: TRACE

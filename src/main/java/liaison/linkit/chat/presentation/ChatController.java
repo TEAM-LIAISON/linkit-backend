@@ -28,6 +28,7 @@ public class ChatController {
 
     private final ChatService chatService;
 
+    // 기존 채팅방 생성 API
     @PostMapping("/api/v1/chat/room")
     @MemberOnly
     public CommonResponse<CreateChatRoomResponse> createChatRoom(

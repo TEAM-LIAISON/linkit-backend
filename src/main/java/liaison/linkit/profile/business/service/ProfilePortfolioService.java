@@ -10,12 +10,15 @@ import liaison.linkit.common.validator.ImageValidator;
 import liaison.linkit.file.domain.ImageFile;
 import liaison.linkit.file.infrastructure.S3Uploader;
 import liaison.linkit.profile.business.mapper.ProfilePortfolioMapper;
+import liaison.linkit.profile.domain.portfolio.ProjectLink;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.portfolio.ProfilePortfolio;
 import liaison.linkit.profile.domain.portfolio.ProjectRoleContribution;
 import liaison.linkit.profile.domain.portfolio.ProjectSkill;
 import liaison.linkit.profile.domain.portfolio.ProjectSubImage;
 import liaison.linkit.profile.domain.skill.Skill;
+import liaison.linkit.profile.implement.portfolio.ProjectLinkCommandAdapter;
+import liaison.linkit.profile.implement.portfolio.ProjectLinkQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.portfolio.ProfilePortfolioCommandAdapter;
 import liaison.linkit.profile.implement.portfolio.ProfilePortfolioQueryAdapter;
@@ -29,6 +32,7 @@ import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.PortfolioImages;
+import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectRoleAndContribution;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO.ProjectSkillName;
 import lombok.RequiredArgsConstructor;
@@ -53,6 +57,9 @@ public class ProfilePortfolioService {
 
     private final ProjectSkillQueryAdapter projectSkillQueryAdapter;
     private final ProjectSkillCommandAdapter projectSkillCommandAdapter;
+
+    private final ProjectLinkQueryAdapter projectLinkQueryAdapter;
+    private final ProjectLinkCommandAdapter projectLinkCommandAdapter;
 
     private final ProjectSubImageQueryAdapter projectSubImageQueryAdapter;
     private final ProjectSubImageCommandAdapter projectSubImageCommandAdapter;
@@ -110,7 +117,16 @@ public class ProfilePortfolioService {
         final List<String> projectSubImagePaths = projectSubImageQueryAdapter.getProjectSubImagePaths(profilePortfolio.getId());
         final PortfolioImages portfolioImages = profilePortfolioMapper.toPortfolioImages(profilePortfolio.getProjectRepresentImagePath(), projectSubImagePaths);
 
-        return profilePortfolioMapper.toProfilePortfolioDetail(profilePortfolio, projectRoleAndContributions, projectSkillNames, portfolioImages);
+        final List<ProjectLink> projectLinks = projectLinkQueryAdapter.getProjectLinks(profilePortfolio.getId());
+        final List<ProjectLinkNameAndUrls> projectLinkNameAndUrls = profilePortfolioMapper.toProjectLinks(projectLinks);
+
+        return profilePortfolioMapper.toProfilePortfolioDetail(
+            profilePortfolio,
+            projectRoleAndContributions,
+            projectSkillNames,
+            projectLinkNameAndUrls,
+            portfolioImages
+        );
     }
 
     @Transactional(readOnly = true)
@@ -130,15 +146,19 @@ public class ProfilePortfolioService {
         final List<String> projectSubImagePaths = projectSubImageQueryAdapter.getProjectSubImagePaths(profilePortfolio.getId());
         final PortfolioImages portfolioImages = profilePortfolioMapper.toPortfolioImages(profilePortfolio.getProjectRepresentImagePath(), projectSubImagePaths);
 
-        return profilePortfolioMapper.toProfilePortfolioDetail(profilePortfolio, projectRoleAndContributions, projectSkillNames, portfolioImages);
+        // 해당 포트폴리오(프로젝트)의 연결된 프로젝트 링크 조회
+        final List<ProjectLink> projectLinks = projectLinkQueryAdapter.getProjectLinks(profilePortfolio.getId());
+        final List<ProjectLinkNameAndUrls> projectLinkNameAndUrls = profilePortfolioMapper.toProjectLinks(projectLinks);
+
+        return profilePortfolioMapper.toProfilePortfolioDetail(profilePortfolio, projectRoleAndContributions, projectSkillNames, projectLinkNameAndUrls, portfolioImages);
     }
 
 
     public ProfilePortfolioResponseDTO.AddProfilePortfolioResponse addProfilePortfolio(
-            final Long memberId,
-            final ProfilePortfolioRequestDTO.AddProfilePortfolioRequest addProfilePortfolioRequest,
-            final MultipartFile projectRepresentImage,
-            final List<MultipartFile> projectSubImages
+        final Long memberId,
+        final ProfilePortfolioRequestDTO.AddProfilePortfolioRequest addProfilePortfolioRequest,
+        final MultipartFile projectRepresentImage,
+        final List<MultipartFile> projectSubImages
     ) {
         log.info("memberId = {}의 프로필 포트폴리오 추가 요청이 서비스 계층에 발생했습니다.", memberId);
         String projectRepresentImagePath = null;
@@ -168,9 +188,9 @@ public class ProfilePortfolioService {
                     String subImagePath = s3Uploader.uploadProfileProjectSubImage(new ImageFile(subImage));
                     projectSubImagePaths.add(subImagePath);
                     ProjectSubImage projectSubImage = ProjectSubImage.builder()
-                            .profilePortfolio(profilePortfolio)
-                            .projectSubImagePath(subImagePath)
-                            .build();
+                        .profilePortfolio(profilePortfolio)
+                        .projectSubImagePath(subImagePath)
+                        .build();
                     projectSubImageEntities.add(projectSubImage);
                 }
             }
@@ -178,40 +198,47 @@ public class ProfilePortfolioService {
         }
 
         final PortfolioImages portfolioImages =
-                profilePortfolioMapper.toPortfolioImages(projectRepresentImagePath, projectSubImagePaths);
+            profilePortfolioMapper.toPortfolioImages(projectRepresentImagePath, projectSubImagePaths);
 
         // 역할 및 기여도 저장
         final List<ProjectRoleContribution> projectRoleContributions =
-                profilePortfolioMapper.toAddProjectRoleContributions(savedProfilePortfolio, addProfilePortfolioRequest.getProjectRoleAndContributions());
+            profilePortfolioMapper.toAddProjectRoleContributions(savedProfilePortfolio, addProfilePortfolioRequest.getProjectRoleAndContributions());
         final List<ProjectRoleContribution> savedProjectRoleContributions = projectRoleContributionCommandAdapter.addProjectRoleContributions(projectRoleContributions);
         final List<ProjectRoleAndContribution> projectRoleAndContributions = profilePortfolioMapper.toProjectRoleAndContributions(savedProjectRoleContributions);
 
         // 사용 스킬 저장
         List<String> skillNames = addProfilePortfolioRequest.getProjectSkillNames()
-                .stream()
-                .map(ProfilePortfolioRequestDTO.ProjectSkillName::getProjectSkillName) // 괄호 제거
-                .collect(Collectors.toList());
+            .stream()
+            .map(ProfilePortfolioRequestDTO.ProjectSkillName::getProjectSkillName) // 괄호 제거
+            .collect(Collectors.toList());
 
         final List<Skill> skills = skillQueryAdapter.getSkillsBySkillNames(skillNames);
         final List<ProjectSkill> projectSkills = profilePortfolioMapper.toAddProjectSkills(savedProfilePortfolio, skills);
         projectSkillCommandAdapter.saveAll(projectSkills);
         final List<ProjectSkillName> projectSkillNames = profilePortfolioMapper.toProjectSkillNames(projectSkills);
 
+        // 프로젝트 링크 저장
+
+        final List<ProjectLink> savedProjectLinks = projectLinkCommandAdapter.addProjectLinks(
+            profilePortfolioMapper.toAddProjectLinks(savedProfilePortfolio, addProfilePortfolioRequest.getProjectLinkNameAndUrls())
+        );
+        final List<ProjectLinkNameAndUrls> projectLinkNameAndUrls = profilePortfolioMapper.toProjectLinks(savedProjectLinks);
+
         if (!profile.isProfilePortfolio()) {
             profile.setIsProfilePortfolio(true);
             profile.addProfilePortfolioCompletion();
         }
 
-        return profilePortfolioMapper.toAddProfilePortfolioResponse(savedProfilePortfolio, projectRoleAndContributions, projectSkillNames, portfolioImages);
+        return profilePortfolioMapper.toAddProfilePortfolioResponse(savedProfilePortfolio, projectRoleAndContributions, projectSkillNames, projectLinkNameAndUrls, portfolioImages);
     }
 
     @Transactional
     public ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse updateProfilePortfolio(
-            final Long memberId,
-            final Long profilePortfolioId,
-            final ProfilePortfolioRequestDTO.UpdateProfilePortfolioRequest updateProfilePortfolioRequest,
-            final MultipartFile projectRepresentImage,
-            final List<MultipartFile> projectSubImages
+        final Long memberId,
+        final Long profilePortfolioId,
+        final ProfilePortfolioRequestDTO.UpdateProfilePortfolioRequest updateProfilePortfolioRequest,
+        final MultipartFile projectRepresentImage,
+        final List<MultipartFile> projectSubImages
     ) {
         log.info("memberId = {}의 포트폴리오 ID = {} 업데이트 요청이 서비스 계층에 발생했습니다.", memberId, profilePortfolioId);
 
@@ -220,8 +247,8 @@ public class ProfilePortfolioService {
 
         // 2. DTO를 통해 포트폴리오 업데이트 (텍스트 필드 등)
         final ProfilePortfolio updatedProfilePortfolio = profilePortfolioCommandAdapter.updateProfilePortfolio(
-                existingProfilePortfolio,
-                updateProfilePortfolioRequest
+            existingProfilePortfolio,
+            updateProfilePortfolioRequest
         );
 
         // =====================================
@@ -240,7 +267,7 @@ public class ProfilePortfolioService {
 
             // 새 대표 이미지 업로드
             String newRepresentImagePath = s3Uploader.uploadProfileProjectRepresentImage(
-                    new ImageFile(projectRepresentImage)
+                new ImageFile(projectRepresentImage)
             );
             // DB 반영
             updatedProfilePortfolio.updateProjectRepresentImagePath(newRepresentImagePath);
@@ -255,10 +282,10 @@ public class ProfilePortfolioService {
         List<String> keepPaths = new ArrayList<>();
         if (updateProfilePortfolioRequest.getPortfolioImages() != null) {
             keepPaths = updateProfilePortfolioRequest.getPortfolioImages().getPortfolioSubImages()
-                    .stream()
-                    .map(dto -> dto.getProjectSubImagePath())
-                    .filter(Objects::nonNull)
-                    .toList();
+                .stream()
+                .map(dto -> dto.getProjectSubImagePath())
+                .filter(Objects::nonNull)
+                .toList();
         }
 
         // (4-b) 기존 DB 서브 이미지 목록
@@ -296,9 +323,9 @@ public class ProfilePortfolioService {
 
                 // DB 엔티티 생성
                 ProjectSubImage newSubImage = ProjectSubImage.builder()
-                        .profilePortfolio(updatedProfilePortfolio)
-                        .projectSubImagePath(subImagePath)
-                        .build();
+                    .profilePortfolio(updatedProfilePortfolio)
+                    .projectSubImagePath(subImagePath)
+                    .build();
                 newProjectSubImageEntities.add(newSubImage);
             }
             projectSubImageCommandAdapter.saveAll(newProjectSubImageEntities);
@@ -306,12 +333,12 @@ public class ProfilePortfolioService {
 
         // 5. PortfolioImages DTO 생성 (대표+서브 이미지 경로들)
         final PortfolioImages portfolioImages = profilePortfolioMapper.toPortfolioImages(
-                updatedProfilePortfolio.getProjectRepresentImagePath(),
-                // 기존 유지 경로 + 새로 업로드된 경로를 합쳐서 응답에 넘길 수도 있음
-                Stream.concat(
-                        keepPaths.stream(),
-                        newProjectSubImagePaths.stream()
-                ).toList()
+            updatedProfilePortfolio.getProjectRepresentImagePath(),
+            // 기존 유지 경로 + 새로 업로드된 경로를 합쳐서 응답에 넘길 수도 있음
+            Stream.concat(
+                keepPaths.stream(),
+                newProjectSubImagePaths.stream()
+            ).toList()
         );
 
         // =====================================
@@ -325,12 +352,12 @@ public class ProfilePortfolioService {
 
         // 새로운 역할 및 기여도 추가
         final List<ProjectRoleContribution> newProjectRoleContributions = profilePortfolioMapper.toAddProjectRoleContributions(
-                updatedProfilePortfolio,
-                updateProfilePortfolioRequest.getProjectRoleAndContributions()
+            updatedProfilePortfolio,
+            updateProfilePortfolioRequest.getProjectRoleAndContributions()
         );
         projectRoleContributionCommandAdapter.addProjectRoleContributions(newProjectRoleContributions);
         final List<ProjectRoleAndContribution> projectRoleAndContributions =
-                profilePortfolioMapper.toProjectRoleAndContributions(newProjectRoleContributions);
+            profilePortfolioMapper.toProjectRoleAndContributions(newProjectRoleContributions);
 
         // =====================================
         // 7) 스킬 업데이트 (전부 삭제 후 새로 추가)
@@ -341,23 +368,36 @@ public class ProfilePortfolioService {
         }
 
         List<String> newSkillNames = updateProfilePortfolioRequest.getProjectSkillNames()
-                .stream()
-                .map(ProfilePortfolioRequestDTO.ProjectSkillName::getProjectSkillName)
-                .toList();
+            .stream()
+            .map(ProfilePortfolioRequestDTO.ProjectSkillName::getProjectSkillName)
+            .toList();
 
         final List<Skill> newSkills = skillQueryAdapter.getSkillsBySkillNames(newSkillNames);
         final List<ProjectSkill> newProjectSkills = profilePortfolioMapper.toAddProjectSkills(updatedProfilePortfolio, newSkills);
         projectSkillCommandAdapter.saveAll(newProjectSkills);
         final List<ProjectSkillName> projectSkillNames = profilePortfolioMapper.toProjectSkillNames(newProjectSkills);
 
+        List<ProjectLink> existingProjectLinks = projectLinkQueryAdapter.getProjectLinks(profilePortfolioId);
+        if (existingProjectLinks != null && !existingProjectLinks.isEmpty()) {
+            projectLinkCommandAdapter.deleteAll(existingProjectLinks);
+        }
+
+        final List<ProjectLink> newProjectLinks = profilePortfolioMapper.toAddProjectLinks(
+            updatedProfilePortfolio,
+            updateProfilePortfolioRequest.getProjectLinkNameAndUrls()
+        );
+        projectLinkCommandAdapter.addProjectLinks(newProjectLinks);
+        final List<ProjectLinkNameAndUrls> projectLinkNameAndUrls = profilePortfolioMapper.toProjectLinks(newProjectLinks);
+
         // =====================================
         // 8. 응답 DTO 생성 및 반환
         // =====================================
         return profilePortfolioMapper.toUpdateProfilePortfolioResponse(
-                updatedProfilePortfolio,
-                projectRoleAndContributions,
-                projectSkillNames,
-                portfolioImages
+            updatedProfilePortfolio,
+            projectRoleAndContributions,
+            projectSkillNames,
+            projectLinkNameAndUrls,
+            portfolioImages
         );
     }
 

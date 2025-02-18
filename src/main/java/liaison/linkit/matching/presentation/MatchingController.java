@@ -1,6 +1,7 @@
 package liaison.linkit.matching.presentation;
 
 import jakarta.mail.MessagingException;
+import jakarta.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
@@ -41,11 +42,11 @@ public class MatchingController {
 
     // 프로필 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
     @GetMapping("/profile/{emailId}/select/request/menu")
+    @MemberOnly
     public CommonResponse<SelectMatchingRequestToProfileMenu> selectMatchingRequestToProfileMenu(
         @Auth final Accessor accessor,
         @PathVariable final String emailId
     ) {
-        log.info("selectMatchingRequestToProfileMenu");
         return CommonResponse.onSuccess(matchingService.selectMatchingRequestToProfileMenu(accessor.getMemberId(), emailId));
     }
 
@@ -88,7 +89,7 @@ public class MatchingController {
     @MemberOnly
     public CommonResponse<UpdateReceivedMatchingCompletedStateReadItems> updateReceivedMatchingStateRead(
         @Auth final Accessor accessor,
-        @RequestBody final UpdateReceivedMatchingReadRequest request
+        @Valid @RequestBody final UpdateReceivedMatchingReadRequest request
     ) {
         return CommonResponse.onSuccess(matchingService.updateReceivedMatchingStateToRead(accessor.getMemberId(), request));
     }
@@ -98,7 +99,7 @@ public class MatchingController {
     @MemberOnly
     public CommonResponse<MatchingResponseDTO.DeleteReceivedMatchingItems> deleteReceivedMatchingItems(
         @Auth final Accessor accessor,
-        @RequestBody final MatchingRequestDTO.DeleteReceivedMatchingRequest request
+        @Valid @RequestBody final MatchingRequestDTO.DeleteReceivedMatchingRequest request
     ) {
         return CommonResponse.onSuccess(matchingService.deleteReceivedMatchingItems(accessor.getMemberId(), request));
     }
@@ -109,7 +110,7 @@ public class MatchingController {
     public CommonResponse<MatchingResponseDTO.UpdateMatchingStatusTypeResponse> updateMatchingStatusTypeResponse(
         @Auth final Accessor accessor,
         @PathVariable final Long matchingId,
-        @RequestBody final MatchingRequestDTO.UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
+        @Valid @RequestBody final MatchingRequestDTO.UpdateMatchingStatusTypeRequest updateMatchingStatusTypeRequest
     ) throws MessagingException, UnsupportedEncodingException {
         return CommonResponse.onSuccess(matchingService.updateMatchingStatusType(accessor.getMemberId(), matchingId, updateMatchingStatusTypeRequest));
     }
@@ -133,7 +134,7 @@ public class MatchingController {
     @MemberOnly
     public CommonResponse<MatchingResponseDTO.DeleteRequestedMatchingItems> deleteRequestedMatchingItems(
         @Auth final Accessor accessor,
-        @RequestBody final MatchingRequestDTO.DeleteRequestedMatchingRequest request
+        @Valid @RequestBody final MatchingRequestDTO.DeleteRequestedMatchingRequest request
     ) {
         return CommonResponse.onSuccess(matchingService.deleteRequestedMatchingItems(accessor.getMemberId(), request));
     }
