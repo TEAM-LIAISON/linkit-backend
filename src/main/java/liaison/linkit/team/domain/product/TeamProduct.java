@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class TeamProduct extends BaseDateTimeEntity {
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
@@ -41,7 +42,7 @@ public class TeamProduct extends BaseDateTimeEntity {
     private String productEndDate;                  // 프로덕트 종료 날짜
     private boolean isProductInProgress;            // 프로덕트 진행 중 여부
 
-    @Column(nullable = false, length = 500)
+    @Column(nullable = false, length = 1000)
     private String productDescription;              // 프로덕트 설명
     private String productRepresentImagePath;       // 프로덕트 대표 이미지
 
