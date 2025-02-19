@@ -5,6 +5,7 @@ import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.exception.CannotRequestMyAnnouncementException;
 import liaison.linkit.matching.exception.CannotRequestMyProfileException;
+import liaison.linkit.matching.exception.CannotRequestMyTeamException;
 import liaison.linkit.matching.exception.MatchingReceiverBadRequestException;
 import liaison.linkit.matching.exception.MatchingRelationBadRequestException;
 import liaison.linkit.matching.exception.MatchingSenderBadRequestException;
@@ -56,6 +57,8 @@ public class MatchingValidator {
         validateReceiver(memberId, req);
     }
 
+    // -------------------------------------------- private methods --------------------------------------------
+
     // 팀으로 팀원 공고에 매칭 요청을 보낼 수 없음
     private void validateSenderReceiverExclusivity(final MatchingRequestDTO.AddMatchingRequest req) {
         if (Objects.nonNull(req.getSenderTeamCode()) && Objects.nonNull(req.getReceiverAnnouncementId())) {
@@ -91,6 +94,7 @@ public class MatchingValidator {
         }
     }
 
+    // 프로필로 수신된 경우에 검증
     private void validateProfileReceiver(final Long memberId, final String receiverEmailId) {
         if (Objects.isNull(receiverEmailId)) {
             throw MatchingReceiverBadRequestException.EXCEPTION;
@@ -109,7 +113,7 @@ public class MatchingValidator {
 
         if (teamMemberQueryAdapter.findMembersByTeamCode(receiverTeamCode)
             .contains(memberQueryAdapter.findById(memberId))) {
-            throw CannotRequestMyProfileException.EXCEPTION;
+            throw CannotRequestMyTeamException.EXCEPTION;
         }
     }
 

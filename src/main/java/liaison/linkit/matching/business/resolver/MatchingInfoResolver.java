@@ -88,7 +88,7 @@ public class MatchingInfoResolver {
     }
 
     // 수신자 memberId 조회 헬퍼 메서드
-    public Long getReceiverMemberId(Matching matching) {
+    public Long getReceiverMemberId(final Matching matching) {
         switch (matching.getReceiverType()) {
             case PROFILE -> {
                 Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());

@@ -212,7 +212,10 @@ public class ReceiveMatchingService {
         matchingValidator.validateUpdateStatusRequest(req);
 
         final Matching matching = matchingQueryAdapter.findByMatchingId(matchingId);
-        matchingValidator.ensureReceiverAuthorized(memberId, matchingInfoResolver.getReceiverMemberId(matching));
+
+        matchingValidator.ensureReceiverAuthorized(
+            memberId, matchingInfoResolver.getReceiverMemberId(matching)
+        );
 
         matchingCommandAdapter.updateMatchingStatusType(matching, req.getMatchingStatusType());
 
