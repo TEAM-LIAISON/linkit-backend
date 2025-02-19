@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class MatchingRequestModalAssembler {
+public class SendMatchingModalAssembler {
 
     // Adapters
     private final ProfileQueryAdapter profileQueryAdapter;
@@ -38,7 +38,7 @@ public class MatchingRequestModalAssembler {
     private final ProfilePositionMapper profilePositionMapper;
     private final MatchingMapper matchingMapper;
     private final TeamScaleMapper teamScaleMapper;
-    
+
     public SelectMatchingRequestToProfileMenu assembleSelectMatchingRequestToProfileMenu(
         final Long senderMemberId,
         final String receiverEmailId

@@ -68,8 +68,7 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateMatchingStatusTypeRequest {
-
-        @NotEmpty(message = "matchingStatusType 값은 비어 있을 수 없습니다.")
+        
         private MatchingStatusType matchingStatusType;
     }
 }
