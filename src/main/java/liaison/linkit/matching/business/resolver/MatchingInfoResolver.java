@@ -5,6 +5,7 @@ import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.util.RegionUtil;
+import liaison.linkit.matching.business.assembler.common.MatchingCommonAssembler;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.type.ReceiverType;
 import liaison.linkit.matching.domain.type.SenderType;
@@ -54,7 +55,29 @@ public class MatchingInfoResolver {
     private final RegionMapper regionMapper;
     private final AnnouncementSkillQueryAdapter announcementSkillQueryAdapter;
     private final AnnouncementSkillMapper announcementSkillMapper;
+
+    // Assemblers
     private final AnnouncementCommonAssembler announcementCommonAssembler;
+    private final MatchingCommonAssembler matchingCommonAssembler;
+
+    public Object resolveSenderInfo(final Matching matching) {
+        if (matching.getSenderType() == SenderType.PROFILE) {
+            return matchingCommonAssembler.assembleSenderProfileInformation(matching.getSenderEmailId());
+        } else {
+            return matchingCommonAssembler.assembleSenderTeamInformation(matching.getSenderTeamCode());
+        }
+    }
+
+    public Object resolveReceiverInfo(final Matching matching) {
+        if (matching.getReceiverType() == ReceiverType.PROFILE) {
+            return matchingCommonAssembler.assembleReceiverProfileInformation(matching.getReceiverEmailId());
+        } else if (matching.getReceiverType() == ReceiverType.TEAM) {
+            return matchingCommonAssembler.assembleReceiverTeamInformation(matching.getReceiverTeamCode());
+        } else if (matching.getReceiverType() == ReceiverType.ANNOUNCEMENT) {
+            return matchingCommonAssembler.assembleReceiverAnnouncementInformation(matching.getReceiverAnnouncementId());
+        }
+        return null;
+    }
 
     // 발신자 이름 조회 헬퍼 메서드
     public String getSenderName(final Matching matching) {

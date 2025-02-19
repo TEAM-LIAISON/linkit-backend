@@ -49,7 +49,7 @@ public class MatchingValidator {
     }
 
     /**
-     * 매칭 요청 발신에 대한 검증.
+     * 매칭 요청 발신에 대한 검증
      */
     public void validateAddMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest req) {
         validateSenderReceiverExclusivity(req);

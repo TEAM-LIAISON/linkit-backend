@@ -1597,7 +1597,7 @@ public class MatchingControllerTest extends ControllerTest {
         Page<RequestedMatchingMenu> matchingReceivedMenus = new PageImpl<>(requestedMatchingMenus, PageRequest.of(0, 20), requestedMatchingMenus.size());
 
         // when
-        when(matchingService.getRequestedMatchingMenuResponse(anyLong(), any(), any(Pageable.class))).thenReturn(matchingReceivedMenus);
+        when(sendMatchingService.getRequestedMatchingMenuResponse(anyLong(), any(), any(Pageable.class))).thenReturn(matchingReceivedMenus);
 
         final ResultActions resultActions = performGetMatchingRequestedMenu(
             SenderType.PROFILE,
