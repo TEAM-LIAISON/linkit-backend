@@ -9,6 +9,32 @@ import liaison.linkit.matching.domain.type.SenderType;
 @Mapper
 public class MatchingMailContentMapper {
 
+    public MatchingEmailContent generateMatchingRequestedEmailContent(final Matching matching) {
+        String receiverMailTitle;
+        String receiverMailSubTitle;
+        String receiverMailSubText;
+
+        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
+            receiverMailTitle = "공고 지원";
+            receiverMailSubTitle = "님의 공고 지원";
+            receiverMailSubText = "새로운 지원이 왔어요";
+        } else if (matching.getSenderType().equals(SenderType.TEAM)) {
+            receiverMailTitle = "매칭 요청";
+            receiverMailSubTitle = "팀의 매칭 요청";
+            receiverMailSubText = "새로운 매칭 요청이 왔어요";
+        } else {
+            receiverMailTitle = "매칭 요청";
+            receiverMailSubTitle = "님의 매칭 요청";
+            receiverMailSubText = "새로운 매칭 요청이 왔어요";
+        }
+
+        return new MatchingEmailContent(
+            receiverMailTitle, receiverMailSubTitle, receiverMailSubText
+        );
+    }
+
+    // --- 매칭 성사에 대한 email_content ---
+
     /**
      * 이메일 제목, 소제목, 세부 내용을 생성하는 메서드
      */
@@ -64,29 +90,5 @@ public class MatchingMailContentMapper {
             return "팀과 매칭 성사";
         }
         return "매칭 성사";
-    }
-
-    public MatchingEmailContent generateMatchingRequestedEmailContent(final Matching matching) {
-        String receiverMailTitle;
-        String receiverMailSubTitle;
-        String receiverMailSubText;
-
-        if (matching.getReceiverType().equals(ReceiverType.ANNOUNCEMENT)) {
-            receiverMailTitle = "공고 지원";
-            receiverMailSubTitle = "님의 공고 지원";
-            receiverMailSubText = "새로운 지원이 왔어요";
-        } else if (matching.getSenderType().equals(SenderType.TEAM)) {
-            receiverMailTitle = "매칭 요청";
-            receiverMailSubTitle = "팀의 매칭 요청";
-            receiverMailSubText = "새로운 매칭 요청이 왔어요";
-        } else {
-            receiverMailTitle = "매칭 요청";
-            receiverMailSubTitle = "님의 매칭 요청";
-            receiverMailSubText = "새로운 매칭 요청이 왔어요";
-        }
-
-        return new MatchingEmailContent(
-            receiverMailTitle, receiverMailSubTitle, receiverMailSubText
-        );
     }
 }

@@ -50,17 +50,17 @@ public class MatchingRequestDTO {
     @AllArgsConstructor
     public static class AddMatchingRequest {
 
-        private SenderType senderType;                  //     PROFILE, TEAM
-        private ReceiverType receiverType;              //     PROFILE, TEAM, ANNOUNCEMENT
+        private SenderType senderType;
+        private ReceiverType receiverType;
 
-        private String senderEmailId;                     //     발신자 유저 아이디
-        private String senderTeamCode;                    //     발신자 팀 아이디
+        private String senderEmailId;
+        private String senderTeamCode;
 
-        private String receiverEmailId;                   //     수신자 유저 아이디
-        private String receiverTeamCode;                  //     수신자 팀 아이디
-        private Long receiverAnnouncementId;            //     수신자 공고 아이디
+        private String receiverEmailId;
+        private String receiverTeamCode;
+        private Long receiverAnnouncementId;
 
-        private String requestMessage;                  //     매칭 요청 메시지
+        private String requestMessage;
     }
 
     @Builder
@@ -68,7 +68,7 @@ public class MatchingRequestDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UpdateMatchingStatusTypeRequest {
-        
+
         private MatchingStatusType matchingStatusType;
     }
 }
