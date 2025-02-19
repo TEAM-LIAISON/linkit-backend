@@ -240,8 +240,7 @@ public class ReceiveMatchingService {
     /**
      * COMPLETED 상태로 변경된 경우의 후속 처리: - 매칭 완료 이메일 전송 - 수신자 및 발신자에게 알림 전송 및 카운트 업데이트
      */
-    private void handleCompletedState(final Matching matching)
-        throws MessagingException, UnsupportedEncodingException {
+    private void handleCompletedState(final Matching matching) throws MessagingException, UnsupportedEncodingException {
 
         sendMatchingCompleteEmail(matching);
 
@@ -252,6 +251,7 @@ public class ReceiveMatchingService {
         NotificationDetails acceptedSenderDetails = notificationHandler.generateAcceptedStateSenderNotificationDetails(matching);
         notificationHandler.alertNewAcceptedNotificationToSender(matching, acceptedSenderDetails);
         headerNotificationService.publishNotificationCount(matchingInfoResolver.getSenderMemberId(matching));
+        
     }
 
     /**

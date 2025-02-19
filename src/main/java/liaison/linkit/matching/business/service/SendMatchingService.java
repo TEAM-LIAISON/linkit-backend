@@ -49,26 +49,32 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class SendMatchingService {
 
-
-    private final MatchingQueryAdapter matchingQueryAdapter;
-    private final MatchingCommandAdapter matchingCommandAdapter;
-    private final MatchingMapper matchingMapper;
-    private final MatchingValidator matchingValidator;
-
-    private final MatchingMailContentMapper matchingMailContentMapper;
-    private final AsyncMatchingEmailService asyncMatchingEmailService;
-
-    private final NotificationHandler notificationHandler;
-    private final HeaderNotificationService headerNotificationService;
+    // Adapters
     private final MemberQueryAdapter memberQueryAdapter;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final ChatRoomQueryAdapter chatRoomQueryAdapter;
+    private final MatchingQueryAdapter matchingQueryAdapter;
+    private final MatchingCommandAdapter matchingCommandAdapter;
 
-    // Assemblers
-    private final SendMatchingModalAssembler sendMatchingModalAssembler;
+    // Mappers
+    private final MatchingMapper matchingMapper;
+    private final MatchingMailContentMapper matchingMailContentMapper;
+
+    // Validator
+    private final MatchingValidator matchingValidator;
 
     // Resolver
     private final MatchingInfoResolver matchingInfoResolver;
+
+    // Handler
+    private final NotificationHandler notificationHandler;
+
+    // Mail & Notification
+    private final AsyncMatchingEmailService asyncMatchingEmailService;
+    private final HeaderNotificationService headerNotificationService;
+
+    // Assemblers
+    private final SendMatchingModalAssembler sendMatchingModalAssembler;
 
     // 개인에게 매칭 요청 보낼 때 모달 정보 조회
     @Transactional(readOnly = true)
@@ -125,8 +131,6 @@ public class SendMatchingService {
     // ─── 매칭 요청 발신함 메뉴 조회 ──────────────────────────────────────────
 
     public Page<RequestedMatchingMenu> getRequestedMatchingMenuResponse(final Long memberId, final SenderType senderType, Pageable pageable) {
-        List<Matching> combinedMatchingItems = new ArrayList<>();
-
         if (senderType != null) {
             return getMatchingPageBySenderType(memberId, senderType, pageable)
                 .map(this::toMatchingRequestedMenu);

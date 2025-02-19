@@ -73,11 +73,16 @@ public class TeamLogService {
         final String teamCode
     ) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        boolean isOwnerOrManager = false;
+        boolean isOwnerOrManager;
         List<TeamLog> teamLogs;
         if (optionalMemberId.isPresent()) {
             isOwnerOrManager = teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), optionalMemberId.get());
-            teamLogs = teamLogQueryAdapter.getTeamLogs(team.getId());
+
+            if (isOwnerOrManager) {
+                teamLogs = teamLogQueryAdapter.getTeamLogs(team.getId());
+            } else {
+                teamLogs = teamLogQueryAdapter.getTeamLogsPublic(team.getId());
+            }
         } else {
             teamLogs = teamLogQueryAdapter.getTeamLogsPublic(team.getId());
         }
