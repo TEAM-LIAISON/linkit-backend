@@ -26,6 +26,7 @@ import java.util.List;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
+import liaison.linkit.matching.business.service.ReceiveMatchingService;
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.ReceiverDeleteStatus;
 import liaison.linkit.matching.domain.type.ReceiverReadStatus;
@@ -56,7 +57,8 @@ import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SenderTeamIn
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateMatchingStatusTypeResponse;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItem;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.UpdateReceivedMatchingCompletedStateReadItems;
-import liaison.linkit.matching.service.MatchingService;
+import liaison.linkit.matching.business.service.MatchingService;
+import liaison.linkit.matching.business.service.SendMatchingService;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfilePositionDetail;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
@@ -92,6 +94,12 @@ public class MatchingControllerTest extends ControllerTest {
 
     @MockBean
     private MatchingService matchingService;
+
+    @MockBean
+    private SendMatchingService sendMatchingService;
+
+    @MockBean
+    private ReceiveMatchingService receiveMatchingService;
 
     @BeforeEach
     void setUp() {
@@ -632,7 +640,7 @@ public class MatchingControllerTest extends ControllerTest {
             .build();
 
         // when
-        when(matchingService.selectMatchingRequestToProfileMenu(anyLong(), any())).thenReturn(selectMatchingRequestToProfileMenu);
+        when(sendMatchingService.selectMatchingRequestToProfileMenu(anyLong(), any())).thenReturn(selectMatchingRequestToProfileMenu);
 
         final ResultActions resultActions = performGetSelectMatchingRequestToProfileMenu("liaison");
 
@@ -794,7 +802,7 @@ public class MatchingControllerTest extends ControllerTest {
             .build();
 
         // when
-        when(matchingService.selectMatchingRequestToTeamMenu(anyLong(), any())).thenReturn(selectMatchingRequestToTeamMenu);
+        when(sendMatchingService.selectMatchingRequestToTeamMenu(anyLong(), any())).thenReturn(selectMatchingRequestToTeamMenu);
 
         final ResultActions resultActions = performGetSelectMatchingRequestToTeamMenu("liaison");
         // then
@@ -1885,7 +1893,7 @@ public class MatchingControllerTest extends ControllerTest {
             .build();
 
         // when
-        when(matchingService.updateReceivedMatchingStateToRead(any())).thenReturn(updateReceivedMatchingCompletedStateReadItems);
+        when(receiveMatchingService.updateReceivedMatchingStateToRead(any())).thenReturn(updateReceivedMatchingCompletedStateReadItems);
 
         final ResultActions resultActions = performUpdateReceivedMatchingStateRead(request);
 
@@ -1955,7 +1963,7 @@ public class MatchingControllerTest extends ControllerTest {
             .build();
 
         // when
-        when(matchingService.deleteReceivedMatchingItems(anyLong(), any())).thenReturn(deleteReceivedMatchingItems);
+        when(receiveMatchingService.deleteReceivedMatchingItems(any())).thenReturn(deleteReceivedMatchingItems);
 
         final ResultActions resultActions = performDeleteReceivedMatchingItems(request);
 
@@ -2021,7 +2029,7 @@ public class MatchingControllerTest extends ControllerTest {
             ))
             .build();
         // when
-        when(matchingService.deleteRequestedMatchingItems(anyLong(), any())).thenReturn(deleteRequestedMatchingItems);
+        when(sendMatchingService.deleteRequestedMatchingItems(any())).thenReturn(deleteRequestedMatchingItems);
 
         final ResultActions resultActions = performDeleteRequestedMatchingItems(request);
         // then

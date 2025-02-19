@@ -77,6 +77,9 @@ public class MatchingValidator {
     // 수신자 검증
     private void validateReceiver(final Long memberId, final MatchingRequestDTO.AddMatchingRequest req) {
         switch (req.getReceiverType()) {
+            case PROFILE:
+                validateProfileReceiver(memberId, req.getReceiverEmailId());
+                break;
             case TEAM:
                 validateTeamReceiver(memberId, req.getReceiverTeamCode());
                 break;
@@ -85,6 +88,16 @@ public class MatchingValidator {
                 break;
             default:
                 throw MatchingReceiverBadRequestException.EXCEPTION;
+        }
+    }
+
+    private void validateProfileReceiver(final Long memberId, final String receiverEmailId) {
+        if (Objects.isNull(receiverEmailId)) {
+            throw MatchingReceiverBadRequestException.EXCEPTION;
+        }
+
+        if (receiverEmailId.equals(memberQueryAdapter.findById(memberId).getEmail())) {
+            throw CannotRequestMyProfileException.EXCEPTION;
         }
     }
 
