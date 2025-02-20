@@ -1542,18 +1542,6 @@ include::{snippets}/announcement-scrap-controller-test/get-announcement-scraps/r
 
 == #[채팅]#
 
-=== 신규 채팅방 생성
-
-====
-*요청*
-include::{snippets}/chat-controller-test/create-chat-room/http-request.adoc[]
-include::{snippets}/chat-controller-test/create-chat-room/request-fields.adoc[]
-
-*응답*
-include::{snippets}/chat-controller-test/create-chat-room/http-response.adoc[]
-include::{snippets}/chat-controller-test/create-chat-room/response-fields.adoc[]
-====
-
 === 채팅방 왼쪽 메뉴 조회
 
 ====
