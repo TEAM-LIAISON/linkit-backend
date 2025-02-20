@@ -1,7 +1,7 @@
 package liaison.linkit.team.domain.repository.announcement;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -33,8 +33,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class TeamMemberAnnouncementCustomRepositoryImpl implements
-    TeamMemberAnnouncementCustomRepository {
+public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnnouncementCustomRepository {
+
+    private static final int HOT_ANNOUNCEMENT_SIZE = 6;
 
     private final JPAQueryFactory jpaQueryFactory;
 
@@ -145,140 +146,27 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
         final List<String> scaleName,
         final Pageable pageable
     ) {
-        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeamMemberAnnouncement announcement = QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeam team = QTeam.team;
 
-        QTeam qTeam = QTeam.team;
+        // Build main query
+        JPAQuery<TeamMemberAnnouncement> query = buildBaseQuery(announcement, team);
+        applyFilters(query, announcement, team, subPosition, skillName, cityName, scaleName);
+        applyDefaultConditions(query, announcement);
+        applySort(query, announcement, pageable);
 
-        QAnnouncementPosition qAnnouncementPosition = QAnnouncementPosition.announcementPosition;
-        QPosition qPosition = QPosition.position;
-
-        QAnnouncementSkill qAnnouncementSkill = QAnnouncementSkill.announcementSkill;
-        QSkill qSkill = QSkill.skill;
-
-        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
-        QRegion qRegion = QRegion.region;
-
-        QTeamScale qTeamScale = QTeamScale.teamScale;
-        QScale qScale = QScale.scale;
-
-        log.info("Starting query to fetch Announcements");
-
-        List<TeamMemberAnnouncement> content = jpaQueryFactory
-            .selectDistinct(qTeamMemberAnnouncement)
-            .from(qTeamMemberAnnouncement)
-
-            .leftJoin(qTeamMemberAnnouncement.team, qTeam)
-
-            .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
-            .leftJoin(qTeamScale.scale, qScale)
-
-            .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
-            .leftJoin(qTeamRegion.region, qRegion)
-
-            .leftJoin(qAnnouncementPosition)
-            .on(qAnnouncementPosition.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
-            .leftJoin(qAnnouncementPosition.position, qPosition)
-
-            .leftJoin(qAnnouncementSkill)
-            .on(qAnnouncementSkill.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
-            .leftJoin(qAnnouncementSkill.skill, qSkill)
-
-            .where(
-                qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
-                qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-                hasSubPositions(subPosition),
-                hasSkillNames(skillName),
-                hasCityName(cityName),
-                hasScaleNames(scaleName)
-            )
+        // Execute main query with pagination
+        List<TeamMemberAnnouncement> content = query
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
-            .orderBy(
-                QueryDslUtil.getOrderAnnouncementSpecifier(
-                    pageable.getSort(),
-                    qTeamMemberAnnouncement,
-                    qAnnouncementPosition,
-                    qAnnouncementSkill,
-                    qTeamRegion,
-                    qTeamScale
-                )
-            )
             .fetch();
 
-        log.info("Fetched {} announcements from database", content.size());
+        // Build and execute count query
+        JPAQuery<Long> countQuery = buildCountQuery(announcement, team);
+        applyFilters(countQuery, announcement, team, subPosition, skillName, cityName, scaleName);
+        applyDefaultConditions(countQuery, announcement);
 
-        // 카운트 쿼리
-        Long totalLong = jpaQueryFactory
-            .selectDistinct(qTeamMemberAnnouncement.count())
-            .from(qTeamMemberAnnouncement)
-
-            .leftJoin(qTeamMemberAnnouncement.team, qTeam)
-
-            .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
-            .leftJoin(qTeamScale.scale, qScale)
-
-            .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
-            .leftJoin(qTeamRegion.region, qRegion)
-
-            .leftJoin(qAnnouncementPosition)
-            .on(qAnnouncementPosition.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
-            .leftJoin(qAnnouncementPosition.position, qPosition)
-
-            .leftJoin(qAnnouncementSkill)
-            .on(qAnnouncementSkill.teamMemberAnnouncement.eq(qTeamMemberAnnouncement))
-            .leftJoin(qAnnouncementSkill.skill, qSkill)
-
-            .where(
-                qTeamMemberAnnouncement.status.eq(StatusType.USABLE),
-                qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-                hasSubPositions(subPosition),
-                hasSkillNames(skillName),
-                hasCityName(cityName),
-                hasScaleNames(scaleName)
-            )
-            .fetchOne();
-
-        long total = (totalLong == null) ? 0L : totalLong;
-
-        log.info("Fetched {} announcements from database", total);
-
-        return PageableExecutionUtils.getPage(content, pageable, () -> total);
-    }
-
-    private BooleanExpression hasSubPositions(List<String> subPosition) {
-        if (subPosition == null || subPosition.isEmpty()) {
-            return null;
-        }
-        QPosition qPosition = QPosition.position;
-
-        return qPosition.subPosition.in(subPosition);
-    }
-
-    private BooleanExpression hasSkillNames(List<String> skillName) {
-        if (skillName == null || skillName.isEmpty()) {
-            return null;
-        }
-        QSkill qSkill = QSkill.skill;
-
-        return qSkill.skillName.in(skillName);
-    }
-
-    private BooleanExpression hasCityName(List<String> cityName) {
-        if (cityName == null || cityName.isEmpty()) {
-            return null;
-        }
-        QRegion qRegion = QRegion.region;
-
-        return qRegion.cityName.in(cityName);
-    }
-
-    private BooleanExpression hasScaleNames(List<String> scaleName) {
-        if (scaleName == null || scaleName.isEmpty()) {
-            return null;
-        }
-        QScale qScale = QScale.scale;
-
-        return qScale.scaleName.in(scaleName);
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     @Override
@@ -340,21 +228,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }
-
-//    @Override
-//    public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
-//        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
-//
-//        return jpaQueryFactory
-//                .selectFrom(qTeamMemberAnnouncement)
-//                .where(
-//                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-//                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
-//                )
-//                .orderBy(qTeamMemberAnnouncement.createdAt.desc()) // 최신순으로 정렬
-//                .limit(limit)
-//                .fetch();
-//    }
 
     @Override
     public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
@@ -466,5 +339,110 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements
             .where(qTeamMemberAnnouncement.team.id.eq(teamId)
                 .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true)))
             .fetch();
+    }
+
+    private JPAQuery<TeamMemberAnnouncement> buildBaseQuery(QTeamMemberAnnouncement announcement, QTeam team) {
+        return jpaQueryFactory
+            .selectDistinct(announcement)
+            .from(announcement)
+            .innerJoin(announcement.team, team);
+    }
+
+    private JPAQuery<Long> buildCountQuery(QTeamMemberAnnouncement announcement, QTeam team) {
+        return jpaQueryFactory
+            .select(announcement.countDistinct())
+            .from(announcement)
+            .innerJoin(announcement.team, team);
+    }
+
+    private void applyFilters(
+        JPAQuery<?> query,
+        QTeamMemberAnnouncement announcement,
+        QTeam team,
+        List<String> subPosition,
+        List<String> skillName,
+        List<String> cityName,
+        List<String> scaleName
+    ) {
+        applyPositionFilter(query, announcement, subPosition);
+        applySkillFilter(query, announcement, skillName);
+        applyRegionFilter(query, team, cityName);
+        applyScaleFilter(query, team, scaleName);
+    }
+
+    private void applyPositionFilter(JPAQuery<?> query, QTeamMemberAnnouncement announcement, List<String> subPosition) {
+        if (isNotEmpty(subPosition)) {
+            QAnnouncementPosition announcementPosition = QAnnouncementPosition.announcementPosition;
+            QPosition position = QPosition.position;
+
+            query.innerJoin(announcementPosition)
+                .on(announcementPosition.teamMemberAnnouncement.eq(announcement))
+                .innerJoin(announcementPosition.position, position)
+                .where(position.subPosition.in(subPosition));
+        }
+    }
+
+    private void applySkillFilter(JPAQuery<?> query, QTeamMemberAnnouncement announcement, List<String> skillName) {
+        if (isNotEmpty(skillName)) {
+            QAnnouncementSkill announcementSkill = QAnnouncementSkill.announcementSkill;
+            QSkill skill = QSkill.skill;
+
+            query.innerJoin(announcementSkill)
+                .on(announcementSkill.teamMemberAnnouncement.eq(announcement))
+                .innerJoin(announcementSkill.skill, skill)
+                .where(skill.skillName.in(skillName));
+        }
+    }
+
+    private void applyRegionFilter(JPAQuery<?> query, QTeam team, List<String> cityName) {
+        if (isNotEmpty(cityName)) {
+            QTeamRegion teamRegion = QTeamRegion.teamRegion;
+            QRegion region = QRegion.region;
+
+            query.innerJoin(teamRegion)
+                .on(teamRegion.team.eq(team))
+                .innerJoin(teamRegion.region, region)
+                .where(region.cityName.in(cityName));
+        }
+    }
+
+    private void applyScaleFilter(JPAQuery<?> query, QTeam team, List<String> scaleName) {
+        if (isNotEmpty(scaleName)) {
+            QTeamScale teamScale = QTeamScale.teamScale;
+            QScale scale = QScale.scale;
+
+            query.innerJoin(teamScale)
+                .on(teamScale.team.eq(team))
+                .innerJoin(teamScale.scale, scale)
+                .where(scale.scaleName.in(scaleName));
+        }
+    }
+
+    private void applyDefaultConditions(JPAQuery<?> query, QTeamMemberAnnouncement announcement) {
+        query.where(
+            announcement.status.eq(StatusType.USABLE)
+                .and(announcement.isAnnouncementPublic.eq(true))
+        );
+    }
+
+    private void applySort(
+        JPAQuery<TeamMemberAnnouncement> query,
+        QTeamMemberAnnouncement announcement,
+        Pageable pageable
+    ) {
+        query.orderBy(
+            QueryDslUtil.getOrderAnnouncementSpecifier(
+                pageable.getSort(),
+                announcement,
+                QAnnouncementPosition.announcementPosition,
+                QAnnouncementSkill.announcementSkill,
+                QTeamRegion.teamRegion,
+                QTeamScale.teamScale
+            )
+        );
+    }
+
+    private boolean isNotEmpty(List<?> list) {
+        return list != null && !list.isEmpty();
     }
 }
