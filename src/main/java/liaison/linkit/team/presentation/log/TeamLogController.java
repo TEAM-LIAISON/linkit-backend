@@ -62,6 +62,14 @@ public class TeamLogController {
         return CommonResponse.onSuccess(teamLogService.getTeamLogItem(teamCode, teamLogId));
     }
 
+    @GetMapping("/represent")
+    public CommonResponse<TeamLogResponseDTO.TeamLogItem> getRepresentTeamLogItem(
+        @PathVariable final String teamCode
+    ) {
+        log.info("teamCode = {}에 대한 대표글 조회 요청이 발생했습니다.", teamCode);
+        return CommonResponse.onSuccess(teamLogService.getRepresentTeamLogItem(teamCode));
+    }
+
     // 로그 추가
     @PostMapping
     @MemberOnly

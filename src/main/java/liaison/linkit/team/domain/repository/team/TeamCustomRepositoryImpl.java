@@ -228,8 +228,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         // 여기서는 native query 예시로 구현하겠습니다.
 
         String sql = "SELECT t.* FROM team t WHERE t.team_code = :teamCode";
-        // SQL 제한은 엔티티 매핑 시 @SQLRestriction에 의해 자동 추가되지만,
-        // native query는 그 제한을 우회할 수 있습니다.
+
         List<Team> teams = session.createNativeQuery(sql, Team.class)
             .setParameter("teamCode", teamCode)
             .getResultList();

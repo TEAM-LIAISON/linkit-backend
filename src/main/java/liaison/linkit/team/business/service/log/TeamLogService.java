@@ -97,6 +97,13 @@ public class TeamLogService {
         return teamLogMapper.toTeamLogItem(teamLog);
     }
 
+    @Transactional(readOnly = true)
+    public TeamLogItem getRepresentTeamLogItem(final String teamCode) {
+        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+        final TeamLog teamLog = teamLogQueryAdapter.getRepresentativeTeamLog(team.getId());
+        return teamLogMapper.toTeamLogItem(teamLog);
+    }
+
     // 팀 로그 본문 이미지 추가
     public AddTeamLogBodyImageResponse addTeamLogBodyImage(final Long memberId, final String teamCode, final MultipartFile teamLogBodyImage) {
         String teamLogBodyImagePath = null;
