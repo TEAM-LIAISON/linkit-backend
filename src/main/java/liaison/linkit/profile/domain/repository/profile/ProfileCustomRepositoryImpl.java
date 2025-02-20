@@ -1,6 +1,5 @@
 package liaison.linkit.profile.domain.repository.profile;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -207,44 +206,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             .fetchOne();
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
-    }
-
-
-    private BooleanExpression hasSubPositions(final List<String> subPositions) {
-        if (subPositions == null || subPositions.isEmpty()) {
-            return null;
-        }
-
-        QPosition qPosition = QPosition.position;
-
-        return qPosition.subPosition.in(subPositions);
-    }
-
-    private BooleanExpression hasSkillNames(final List<String> skillName) {
-        if (skillName == null || skillName.isEmpty()) {
-            return null;
-        }
-        QSkill qSkill = QSkill.skill;
-
-        return qSkill.skillName.in(skillName);
-    }
-
-    private BooleanExpression hasCityName(final List<String> cityName) {
-        if (cityName == null || cityName.isEmpty()) {
-            return null;
-        }
-        QRegion qRegion = QRegion.region;
-
-        return qRegion.cityName.in(cityName);
-    }
-
-    private BooleanExpression hasProfileStateNames(final List<String> profileStateName) {
-        if (profileStateName == null || profileStateName.isEmpty()) {
-            return null;
-        }
-        QProfileState qProfileState = QProfileState.profileState;
-
-        return qProfileState.profileStateName.in(profileStateName);
     }
 
     private JPAQuery<Profile> buildBaseQuery(QProfile qProfile) {
