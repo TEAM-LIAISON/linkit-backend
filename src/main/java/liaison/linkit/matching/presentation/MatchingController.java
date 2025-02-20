@@ -46,8 +46,6 @@ public class MatchingController {
     private final SendMatchingService sendMatchingService;
     private final ReceiveMatchingService receiveMatchingService;
 
-    // 매칭 요청 수신 관리 서비스 계층
-
     // 프로필 뷰어에서 매칭 요청 버튼 클릭하면 뜨는 모달 정보
     @GetMapping("/profile/{emailId}/select/request/menu")
     @MemberOnly
