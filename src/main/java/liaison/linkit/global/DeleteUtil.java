@@ -57,6 +57,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Slf4j
 public class DeleteUtil {
+
     private final MemberQueryAdapter memberQueryAdapter;
     private final ProfileQueryAdapter profileQueryAdapter;
     private final TeamMemberQueryAdapter teamMemberQueryAdapter;
@@ -113,21 +114,21 @@ public class DeleteUtil {
 
         // 삭제 가능한 팀의 ID 리스트
         List<Long> deletableTeamIds = deletableTeams.stream()
-                .map(Team::getId)
-                .toList();
+            .map(Team::getId)
+            .toList();
         log.info("Deleting teams {}", deletableTeamIds);
 
         List<String> deletableTeamCodes = deletableTeams.stream()
-                .map(Team::getTeamCode)
-                .toList();
+            .map(Team::getTeamCode)
+            .toList();
 
         // ==================================================================================================================================================================
 
         // 회원이 참여하던 채팅방 나가기
         final List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
         final List<Long> deletableChatRooms = chatRooms.stream()
-                .map(ChatRoom::getId)
-                .toList();
+            .map(ChatRoom::getId)
+            .toList();
 
         for (Long chatRoomId : deletableChatRooms) {
             chatService.leaveChatRoom(memberId, chatRoomId);
@@ -179,8 +180,8 @@ public class DeleteUtil {
         // 3. 포트폴리오 데이터 삭제
         List<ProfilePortfolio> profilePortfolios = profilePortfolioQueryAdapter.getProfilePortfolios(profile.getId());
         final List<Long> deletablePortfolioIds = profilePortfolios.stream()
-                .map(ProfilePortfolio::getId)
-                .toList();
+            .map(ProfilePortfolio::getId)
+            .toList();
 
         for (Long portfolioId : deletablePortfolioIds) {
             profilePortfolioService.removeProfilePortfolio(profile.getMember().getId(), portfolioId);
@@ -203,8 +204,8 @@ public class DeleteUtil {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         final Set<TeamMemberAnnouncement> deletableTeamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllDeletableTeamMemberAnnouncementsByTeamId(team.getId());
         final List<Long> deletableAnnouncementIds = deletableTeamMemberAnnouncements.stream()
-                .map(TeamMemberAnnouncement::getId)
-                .toList();
+            .map(TeamMemberAnnouncement::getId)
+            .toList();
 
         // [1. 팀 로그 삭제]
         deleteTeamLog(team.getId());
@@ -227,8 +228,8 @@ public class DeleteUtil {
         // 프로덕트 데이터 삭제
         List<TeamProduct> teamProducts = teamProductQueryAdapter.getTeamProducts(team.getId());
         final List<Long> deletableTeamProductIds = teamProducts.stream()
-                .map(TeamProduct::getId)
-                .toList();
+            .map(TeamProduct::getId)
+            .toList();
         for (Long productId : deletableTeamProductIds) {
             deleteAllTeamProducts(team.getTeamCode(), productId);
         }
@@ -270,7 +271,7 @@ public class DeleteUtil {
     }
 
     // 스크랩 당한 공고가 삭제 될 때
-    private void deleteAnnouncementScrapByAnnouncement(final List<Long> announcementIds) {
+    public void deleteAnnouncementScrapByAnnouncement(final List<Long> announcementIds) {
         announcementScrapCommandAdapter.deleteAllByAnnouncementIds(announcementIds);
     }
 

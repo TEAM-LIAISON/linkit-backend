@@ -8,6 +8,7 @@ import liaison.linkit.common.domain.Position;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
+import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommandAdapter;
 import liaison.linkit.team.business.assembler.AnnouncementDetailAssembler;
 import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.business.assembler.AnnouncementViewItemsAssembler;
@@ -64,6 +65,7 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
     private final AnnouncementDetailAssembler announcementDetailAssembler;
     private final AnnouncementViewItemsAssembler announcementViewItemsAssembler;
+    private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncemenItems getTeamMemberAnnouncementViewItems(final Optional<Long> optionalMemberId, final String teamCode) {
@@ -192,6 +194,9 @@ public class TeamMemberAnnouncementService {
 
     public TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse removeTeamMemberAnnouncement(final Long memberId, final String teamCode, final Long teamMemberAnnouncementId) {
         final TeamMemberAnnouncement existingTeamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
+
+        // 스크랩 당한 공고가 삭제 될 때 스크랩도 삭제
+        announcementScrapCommandAdapter.deleteAllByAnnouncementIds(List.of(teamMemberAnnouncementId));
 
         // 기존 포지션 삭제
         if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncementId)) {
