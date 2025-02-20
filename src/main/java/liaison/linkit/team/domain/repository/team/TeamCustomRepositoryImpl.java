@@ -2,6 +2,7 @@ package liaison.linkit.team.domain.repository.team;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -10,7 +11,6 @@ import java.util.Optional;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
-import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
 import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
@@ -69,83 +69,21 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     ) {
         QTeam qTeam = QTeam.team;
 
-        QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
-        QRegion qRegion = QRegion.region;
+        JPAQuery<Team> query = buildBaseQuery(qTeam);
+        applyFilters(query, qTeam, scaleName, cityName, teamStateName);
+        applyDefaultConditions(query, qTeam);
+        applySort(query, qTeam, pageable);
 
-        QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
-        QTeamState qTeamState = QTeamState.teamState;
+        List<Team> content = query
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
-        QTeamScale qTeamScale = QTeamScale.teamScale;
-        QScale qScale = QScale.scale;
+        JPAQuery<Long> countQuery = buildCountQuery(qTeam);
+        applyFilters(countQuery, qTeam, scaleName, cityName, teamStateName);
+        applyDefaultConditions(countQuery, qTeam);
 
-        QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
-
-        try {
-            List<Team> content = jpaQueryFactory
-                .selectDistinct(qTeam)
-                .from(qTeam)
-
-                .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
-                .leftJoin(qTeamRegion.region, qRegion)
-
-                .leftJoin(qTeamCurrentState).on(qTeamCurrentState.team.eq(qTeam))
-                .leftJoin(qTeamCurrentState.teamState, qTeamState)
-
-                .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
-                .leftJoin(qTeamScale.scale, qScale)
-
-                .leftJoin(qTeamMemberAnnouncement).on(qTeamMemberAnnouncement.team.eq(qTeam))
-
-                .where(
-                    qTeam.status.eq(StatusType.USABLE),
-                    qTeam.isTeamPublic.eq(true),
-                    hasScaleNames(scaleName),
-                    hasCityName(cityName),
-                    hasTeamStateNames(teamStateName)
-                )
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(QueryDslUtil.getOrderTeamSpecifier(
-                    pageable.getSort(),
-                    qTeam,
-                    qTeamScale,
-                    qTeamRegion,
-                    qTeamCurrentState
-                ))
-                .fetch();
-
-            // 카운트 쿼리
-            Long totalLong = jpaQueryFactory
-                .select(qTeam.countDistinct())
-                .from(qTeam)
-
-                .leftJoin(qTeamRegion).on(qTeamRegion.team.eq(qTeam))
-                .leftJoin(qTeamRegion.region, qRegion)
-
-                .leftJoin(qTeamCurrentState).on(qTeamCurrentState.team.eq(qTeam))
-                .leftJoin(qTeamCurrentState.teamState, qTeamState)
-
-                .leftJoin(qTeamScale).on(qTeamScale.team.eq(qTeam))
-                .leftJoin(qTeamScale.scale, qScale)
-
-                .leftJoin(qTeamMemberAnnouncement).on(qTeamMemberAnnouncement.team.eq(qTeam))
-                .where(
-                    qTeam.status.eq(StatusType.USABLE),
-                    qTeam.isTeamPublic.eq(true),
-                    hasScaleNames(scaleName),
-                    hasCityName(cityName),
-                    hasTeamStateNames(teamStateName)
-                )
-                .fetchOne();
-
-            long total = (totalLong == null) ? 0L : totalLong;
-
-            return PageableExecutionUtils.getPage(content, pageable, () -> total);
-        } catch (Exception e) {
-            // 예외 발생 시 에러 로그
-            log.error("Error executing findAllTeamFiltering method", e);
-            throw e; // 예외를 다시 던져 상위 계층에서 처리하도록 합니다.
-        }
+        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
     private BooleanExpression hasScaleNames(final List<String> scaleName) {
@@ -190,21 +128,6 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             throw e; // 필요에 따라 커스텀 예외로 변환하여 던질 수 있습니다.
         }
     }
-
-//    @Override
-//    public List<Team> findTopTeams(final int limit) {
-//        QTeam qTeam = QTeam.team;
-//
-//        return jpaQueryFactory
-//                .selectFrom(qTeam)
-//                .where(
-//                        qTeam.isTeamPublic.eq(true),
-//                        qTeam.status.eq(StatusType.USABLE)
-//                )
-//                .orderBy(qTeam.createdAt.desc()) // 최신순으로 정렬
-//                .limit(limit)
-//                .fetch();
-//    }
 
     @Override
     public List<Team> findTopTeams(final int limit) {
@@ -305,8 +228,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         // 여기서는 native query 예시로 구현하겠습니다.
 
         String sql = "SELECT t.* FROM team t WHERE t.team_code = :teamCode";
-        // SQL 제한은 엔티티 매핑 시 @SQLRestriction에 의해 자동 추가되지만,
-        // native query는 그 제한을 우회할 수 있습니다.
+
         List<Team> teams = session.createNativeQuery(sql, Team.class)
             .setParameter("teamCode", teamCode)
             .getResultList();
@@ -409,5 +331,102 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             .fetchOne();
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
+    }
+
+    private JPAQuery<Team> buildBaseQuery(QTeam qTeam) {
+        return jpaQueryFactory
+            .selectFrom(qTeam)
+            .where(qTeam.status.eq(StatusType.USABLE));
+    }
+
+    private JPAQuery<Long> buildCountQuery(QTeam qTeam) {
+        return jpaQueryFactory
+            .selectDistinct(qTeam.count())
+            .from(qTeam);
+    }
+
+    private void applyFilters(
+        JPAQuery<?> query,
+        QTeam qTeam,
+        List<String> scaleName,
+        List<String> cityName,
+        List<String> teamStateName
+    ) {
+        applyScaleFilter(query, qTeam, scaleName);
+        applyRegionFilter(query, qTeam, cityName);
+        applyTeamStateFilter(query, qTeam, teamStateName);
+    }
+
+    private void applyScaleFilter(
+        JPAQuery<?> query,
+        QTeam qTeam,
+        List<String> scaleName
+    ) {
+        if (isNotEmpty(scaleName)) {
+            QTeamScale qTeamScale = QTeamScale.teamScale;
+            QScale qScale = QScale.scale;
+
+            query.innerJoin(qTeamScale)
+                .on(qTeamScale.team.eq(qTeam))
+                .innerJoin(qTeamScale.scale, qScale)
+                .where(qScale.scaleName.in(scaleName));
+        }
+    }
+
+    private void applyRegionFilter(
+        JPAQuery<?> query,
+        QTeam qTeam,
+        List<String> cityName
+    ) {
+        if (isNotEmpty(cityName)) {
+            QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+            QRegion qRegion = QRegion.region;
+
+            query.innerJoin(qTeamRegion)
+                .on(qTeamRegion.team.eq(qTeam))
+                .innerJoin(qTeamRegion.region, qRegion)
+                .where(qRegion.cityName.in(cityName));
+        }
+    }
+
+    private void applyTeamStateFilter(
+        JPAQuery<?> query,
+        QTeam qTeam,
+        List<String> teamStateName
+    ) {
+        if (isNotEmpty(teamStateName)) {
+            QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
+            QTeamState qTeamState = QTeamState.teamState;
+
+            query.innerJoin(qTeamCurrentState)
+                .on(qTeamCurrentState.team.eq(qTeam))
+                .innerJoin(qTeamCurrentState.teamState, qTeamState)
+                .where(qTeamState.teamStateName.in(teamStateName));
+        }
+    }
+
+    private void applyDefaultConditions(JPAQuery<?> query, QTeam qTeam) {
+        query.where(qTeam.isTeamPublic.eq(true)
+            .and(qTeam.status.eq(StatusType.USABLE)));
+    }
+
+    private void applySort(
+        JPAQuery<?> query,
+        QTeam qTeam,
+        Pageable pageable
+    ) {
+        if (pageable.getSort().isSorted()) {
+            query.orderBy(QueryDslUtil.getOrderTeamSpecifier(
+                pageable.getSort(),
+                qTeam,
+                QTeamScale.teamScale,
+                QTeamRegion.teamRegion,
+                QTeamCurrentState.teamCurrentState
+            ));
+        }
+    }
+
+    private boolean isNotEmpty(List<?> list) {
+        return list != null && !list.isEmpty();
     }
 }

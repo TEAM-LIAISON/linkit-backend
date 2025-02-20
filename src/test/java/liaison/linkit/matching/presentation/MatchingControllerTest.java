@@ -310,7 +310,7 @@ public class MatchingControllerTest extends ControllerTest {
             .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
             .build();
         // when
-        when(matchingService.addMatching(anyLong(), any())).thenReturn(addMatchingResponse);
+        when(sendMatchingService.addMatching(anyLong(), any())).thenReturn(addMatchingResponse);
 
         final ResultActions resultActions = performPostAddMatching(addMatchingRequest);
 
@@ -534,7 +534,7 @@ public class MatchingControllerTest extends ControllerTest {
             .matchingStatusType(MatchingStatusType.COMPLETED)
             .build();
         // when
-        when(matchingService.updateMatchingStatusType(anyLong(), anyLong(), any())).thenReturn(updateMatchingStatusTypeResponse);
+        when(receiveMatchingService.updateMatchingStatusType(anyLong(), anyLong(), any())).thenReturn(updateMatchingStatusTypeResponse);
 
         final ResultActions resultActions = performPostUpdateMatchingStatusType(1L, updateMatchingStatusTypeRequest);
         // then
@@ -1138,7 +1138,7 @@ public class MatchingControllerTest extends ControllerTest {
         List<ReceivedMatchingMenu> receivedMatchingMenus = Arrays.asList(receivedMatchingMenu1, receivedMatchingMenu2);
         Page<ReceivedMatchingMenu> matchingReceivedMenusPage = new PageImpl<>(receivedMatchingMenus, PageRequest.of(0, 20), receivedMatchingMenus.size());
 
-        when(matchingService.getReceivedMatchingMenuResponse(anyLong(), any(), any(Pageable.class))).thenReturn(matchingReceivedMenusPage);
+        when(receiveMatchingService.getReceivedMatchingMenuResponse(anyLong(), any(), any(Pageable.class))).thenReturn(matchingReceivedMenusPage);
 
         final ResultActions resultActions = performGetReceivedMatchingMenu(
             ReceiverType.PROFILE,

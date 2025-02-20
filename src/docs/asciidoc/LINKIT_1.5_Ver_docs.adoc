@@ -1021,6 +1021,18 @@ include::{snippets}/team-log-controller-test/get-team-log-item/http-response.ado
 include::{snippets}/team-log-controller-test/get-team-log-item/response-fields.adoc[]
 ====
 
+=== 팀 대표 로그 조회
+
+====
+*요청*
+include::{snippets}/team-log-controller-test/get-represent-team-log-item/http-request.adoc[]
+include::{snippets}/team-log-controller-test/get-represent-team-log-item/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/team-log-controller-test/get-represent-team-log-item/http-response.adoc[]
+include::{snippets}/team-log-controller-test/get-represent-team-log-item/response-fields.adoc[]
+====
+
 === 팀 로그 단일 생성
 
 ====
@@ -1541,18 +1553,6 @@ include::{snippets}/announcement-scrap-controller-test/get-announcement-scraps/r
 ====
 
 == #[채팅]#
-
-=== 신규 채팅방 생성
-
-====
-*요청*
-include::{snippets}/chat-controller-test/create-chat-room/http-request.adoc[]
-include::{snippets}/chat-controller-test/create-chat-room/request-fields.adoc[]
-
-*응답*
-include::{snippets}/chat-controller-test/create-chat-room/http-response.adoc[]
-include::{snippets}/chat-controller-test/create-chat-room/response-fields.adoc[]
-====
 
 === 채팅방 왼쪽 메뉴 조회
 

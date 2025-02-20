@@ -58,3 +58,7 @@ src/main/resources/static/docs/
 /logs/
 *.log
 logFile.*.log
+
+### docs.html ###
+LINKIT_1.5_Ver_docs.html
+LINKIT_1.5_Ver_socket_docs.html
