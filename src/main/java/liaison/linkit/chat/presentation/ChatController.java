@@ -3,9 +3,7 @@ package liaison.linkit.chat.presentation;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
-import liaison.linkit.chat.presentation.dto.ChatRequestDTO.CreateChatRoomRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
-import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.chat.service.ChatService;
 import liaison.linkit.common.presentation.CommonResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,18 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ChatController {
 
     private final ChatService chatService;
-
-    // 기존 채팅방 생성 API
-    @PostMapping("/api/v1/chat/room")
-    @MemberOnly
-    public CommonResponse<CreateChatRoomResponse> createChatRoom(
-        @RequestBody CreateChatRoomRequest request,
-        @Auth Accessor accessor
-    ) {
-        log.info("createChatRoom {}", request);
-        return CommonResponse.onSuccess(
-            chatService.createChatRoom(request, accessor.getMemberId()));
-    }
 
     /**
      * 채팅방의 이전 메시지 내역 조회

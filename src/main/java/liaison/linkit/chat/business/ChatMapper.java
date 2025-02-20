@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import liaison.linkit.chat.domain.ChatMessage;
 import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.domain.type.ParticipantType;
-import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatLeftMenu;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageHistoryResponse;
@@ -25,54 +24,54 @@ public class ChatMapper {
 
     public ReadChatMessageResponse toReadChatMessageResponse(final Long chatRoomId, final Long updatedCount) {
         return ReadChatMessageResponse.builder()
-                .chatRoomId(chatRoomId)
-                .readMessagesCount(updatedCount)
-                .build();
+            .chatRoomId(chatRoomId)
+            .readMessagesCount(updatedCount)
+            .build();
     }
 
     public ChatResponseDTO.CreateChatRoomResponse toCreateChatRoomResponse(
-            final ChatRoom chatRoom
+        final ChatRoom chatRoom
     ) {
         return CreateChatRoomResponse.builder()
-                .chatRoomId(chatRoom.getId())
-                .matchingId(chatRoom.getMatchingId())
-                .participantAId(chatRoom.getParticipantAId())
-                .participantAType(chatRoom.getParticipantAType())
-                .participantAName(chatRoom.getParticipantAName())
-                .participantBId(chatRoom.getParticipantBId())
-                .participantBType(chatRoom.getParticipantBType())
-                .participantBName(chatRoom.getParticipantBName())
-                .lastMessage(null)
-                .unreadCount(0L)
-                .build();
+            .chatRoomId(chatRoom.getId())
+            .matchingId(chatRoom.getMatchingId())
+            .participantAId(chatRoom.getParticipantAId())
+            .participantAType(chatRoom.getParticipantAType())
+            .participantAName(chatRoom.getParticipantAName())
+            .participantBId(chatRoom.getParticipantBId())
+            .participantBType(chatRoom.getParticipantBType())
+            .participantBName(chatRoom.getParticipantBName())
+            .lastMessage(null)
+            .unreadCount(0L)
+            .build();
     }
 
     // ChatMapper.java (예시)
     public ChatMessageHistoryResponse toChatMessageHistoryResponse(
-            final ChatRoom chatRoom,
-            final Page<ChatMessage> messagePage,
-            final Long memberId,
-            final ChatPartnerInformation partnerInfo,
-            final boolean isPartnerOnline
+        final ChatRoom chatRoom,
+        final Page<ChatMessage> messagePage,
+        final Long memberId,
+        final ChatPartnerInformation partnerInfo,
+        final boolean isPartnerOnline
     ) {
         return ChatMessageHistoryResponse.builder()
-                .totalElements(messagePage.getTotalElements())
-                .totalPages(messagePage.getTotalPages())
-                .hasNext(messagePage.hasNext())
-                .isChatPartnerOnline(isPartnerOnline)
-                .chatPartnerInformation(partnerInfo)
-                .messages(
-                        messagePage.getContent().stream()
-                                .map(message -> toChatMessageResponse(chatRoom, message, memberId))
-                                .collect(Collectors.toList())
-                )
-                .build();
+            .totalElements(messagePage.getTotalElements())
+            .totalPages(messagePage.getTotalPages())
+            .hasNext(messagePage.hasNext())
+            .isChatPartnerOnline(isPartnerOnline)
+            .chatPartnerInformation(partnerInfo)
+            .messages(
+                messagePage.getContent().stream()
+                    .map(message -> toChatMessageResponse(chatRoom, message, memberId))
+                    .collect(Collectors.toList())
+            )
+            .build();
     }
 
     public ChatResponseDTO.ChatMessageResponse toChatMessageResponse(
-            final ChatRoom chatRoom,
-            final ChatMessage message,
-            final Long memberId
+        final ChatRoom chatRoom,
+        final ChatMessage message,
+        final Long memberId
     ) {
         ParticipantType myType = determineMyParticipantType(chatRoom, message, memberId);
         ParticipantType messageSenderType = message.getMessageSenderParticipantType();
@@ -81,48 +80,48 @@ public class ChatMapper {
         boolean isMyMessage = myType.equals(messageSenderType);
 
         return ChatResponseDTO.ChatMessageResponse.builder()
-                .messageId(message.getId())
-                .chatRoomId(message.getChatRoomId())
-                .myParticipantType(myType.name())
-                .messageSenderParticipantType(message.getMessageSenderParticipantType())
-                .isMyMessage(isMyMessage)
-                .messageSenderLogoImagePath(message.getMessageSenderLogoImagePath())
-                .content(message.getContent())
-                .timestamp(message.getTimestamp())
-                .isRead(message.isRead())
-                .build();
+            .messageId(message.getId())
+            .chatRoomId(message.getChatRoomId())
+            .myParticipantType(myType.name())
+            .messageSenderParticipantType(message.getMessageSenderParticipantType())
+            .isMyMessage(isMyMessage)
+            .messageSenderLogoImagePath(message.getMessageSenderLogoImagePath())
+            .content(message.getContent())
+            .timestamp(message.getTimestamp())
+            .isRead(message.isRead())
+            .build();
     }
 
     public ChatMessage toChatMessage(
-            final Long chatRoomId,
-            final ChatMessageRequest chatMessageRequest,
-            final ParticipantType participantType,
-            final String senderKeyId,
-            final Long senderMemberId,
-            final String senderName,
-            final String senderLogoImagePath,
-            final SenderType senderType,
-            final Long receiverMemberId
+        final Long chatRoomId,
+        final String chatMessageContent,
+        final ParticipantType participantType,
+        final String senderKeyId,
+        final Long senderMemberId,
+        final String senderName,
+        final String senderLogoImagePath,
+        final SenderType senderType,
+        final Long receiverMemberId
     ) {
         return ChatMessage.builder()
-                .chatRoomId(chatRoomId)
-                .messageSenderParticipantType(participantType)
-                .messageSenderKeyId(senderKeyId)
-                .messageSenderMemberId(senderMemberId)
-                .messageSenderName(senderName)
-                .messageSenderLogoImagePath(senderLogoImagePath)
-                .messageSenderType(senderType)
-                .messageReceiverMemberId(receiverMemberId)
-                .content(chatMessageRequest.getContent())
-                .timestamp(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
-                .isRead(false)
-                .build();
+            .chatRoomId(chatRoomId)
+            .messageSenderParticipantType(participantType)
+            .messageSenderKeyId(senderKeyId)
+            .messageSenderMemberId(senderMemberId)
+            .messageSenderName(senderName)
+            .messageSenderLogoImagePath(senderLogoImagePath)
+            .messageSenderType(senderType)
+            .messageReceiverMemberId(receiverMemberId)
+            .content(chatMessageContent)
+            .timestamp(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
+            .isRead(false)
+            .build();
     }
 
     public ChatLeftMenu toChatLeftMenu(final List<ChatRoomSummary> chatRoomSummaries) {
         return ChatLeftMenu.builder()
-                .chatRoomSummaries(chatRoomSummaries)
-                .build();
+            .chatRoomSummaries(chatRoomSummaries)
+            .build();
     }
 
     private ParticipantType determineMyParticipantType(ChatRoom chatRoom, ChatMessage message, Long memberId) {
@@ -135,8 +134,8 @@ public class ChatMapper {
 
     public ChatResponseDTO.ChatRoomLeaveResponse toLeaveChatRoom(final Long chatRoomId, final ParticipantType participantType) {
         return ChatRoomLeaveResponse.builder()
-                .chatRoomId(chatRoomId)
-                .chatRoomLeaveParticipantType(participantType)
-                .build();
+            .chatRoomId(chatRoomId)
+            .chatRoomLeaveParticipantType(participantType)
+            .build();
     }
 }

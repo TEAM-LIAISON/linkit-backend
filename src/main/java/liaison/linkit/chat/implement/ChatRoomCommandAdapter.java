@@ -8,10 +8,11 @@ import lombok.RequiredArgsConstructor;
 @Adapter
 @RequiredArgsConstructor
 public class ChatRoomCommandAdapter {
+
     private final ChatRoomRepository chatRoomRepository;
 
-    public ChatRoom createChatRoom(final ChatRoom chatRoom) {
-        return chatRoomRepository.save(chatRoom);
+    public void createChatRoom(final ChatRoom chatRoom) {
+        chatRoomRepository.save(chatRoom);
     }
 
     public ChatRoom save(final ChatRoom chatRoom) {

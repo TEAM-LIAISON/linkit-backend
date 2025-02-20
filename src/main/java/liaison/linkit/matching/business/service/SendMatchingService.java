@@ -146,16 +146,17 @@ public class SendMatchingService {
     }
 
     private Page<Matching> getMatchingPageBySenderType(final Long memberId, final SenderType senderType, Pageable pageable) {
-        switch (senderType) {
-            case PROFILE:
+        return switch (senderType) {
+            case PROFILE -> {
                 final String emailId = memberQueryAdapter.findEmailIdById(memberId);
-                return matchingQueryAdapter.findRequestedByProfile(emailId, pageable);
-            case TEAM:
+                yield matchingQueryAdapter.findRequestedByProfile(emailId, pageable);
+            }
+            case TEAM -> {
                 final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
-                matchingQueryAdapter.findRequestedByTeam(teams, pageable);
-            default:
-                return Page.empty(pageable);
-        }
+                yield matchingQueryAdapter.findRequestedByTeam(teams, pageable);
+            }
+            default -> Page.empty(pageable);
+        };
     }
 
     private RequestedMatchingMenu toMatchingRequestedMenu(final Matching matching) {
