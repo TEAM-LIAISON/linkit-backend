@@ -101,6 +101,12 @@ public class TeamLogControllerTest extends ControllerTest {
         );
     }
 
+    private ResultActions performGetRepresentTeamLogItem(final String teamCode) throws Exception {
+        return mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/api/v1/team/{teamCode}/log/represent", teamCode)
+        );
+    }
+
     private ResultActions performPostTeamLog(final String teamCode, final AddTeamLogRequest addTeamLogRequest) throws Exception {
         return mockMvc.perform(
             RestDocumentationRequestBuilders.post("/api/v1/team/{teamCode}/log", teamCode)
@@ -417,6 +423,80 @@ public class TeamLogControllerTest extends ControllerTest {
                             .description("팀 아이디 (팀 코드)"),
                         parameterWithName("teamLogId")
                             .description("팀 로그 ID")
+                    ),
+                    responseFields(
+                        fieldWithPath("isSuccess")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("요청 성공 여부")
+                            .attributes(field("constraint", "boolean 값")),
+                        fieldWithPath("code")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 코드")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("message")
+                            .type(JsonFieldType.STRING)
+                            .description("요청 성공 메시지")
+                            .attributes(field("constraint", "문자열")),
+                        fieldWithPath("result.teamLogId")
+                            .type(JsonFieldType.NUMBER)
+                            .description("내 로그 ID"),
+                        fieldWithPath("result.isLogPublic")
+                            .type(JsonFieldType.BOOLEAN)
+                            .description("로그 공개 여부"),
+                        fieldWithPath("result.logType")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 유형 (대표글 여부)"),
+                        fieldWithPath("result.modifiedAt")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 수정 시간"),
+                        fieldWithPath("result.logTitle")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 제목"),
+                        fieldWithPath("result.logContent")
+                            .type(JsonFieldType.STRING)
+                            .description("로그 내용")
+                    )
+                )).andReturn();
+        final String jsonResponse = mvcResult.getResponse().getContentAsString();
+        final CommonResponse<TeamLogResponseDTO.TeamLogItem> actual = objectMapper.readValue(
+            jsonResponse,
+            new TypeReference<CommonResponse<TeamLogItem>>() {
+            }
+        );
+
+        final CommonResponse<TeamLogItem> expected = CommonResponse.onSuccess(teamLogItem);
+
+        // then
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+    }
+
+    @DisplayName("회원이 대표글을 조회할 수 있다.")
+    @Test
+    void getRepresentTeamLogItem() throws Exception {
+        final TeamLogResponseDTO.TeamLogItem teamLogItem
+            = TeamLogItem.builder()
+            .teamLogId(1L)
+            .isLogPublic(true)
+            .logType(REPRESENTATIVE_LOG)
+            .modifiedAt(LocalDateTime.now())
+            .logTitle("로그 제목")
+            .logContent("로그 내용")
+            .build();
+
+        when(teamLogService.getRepresentTeamLogItem(any())).thenReturn(teamLogItem);
+
+        final ResultActions resultActions = performGetRepresentTeamLogItem("liaison");
+
+        final MvcResult mvcResult = resultActions
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.isSuccess").value("true"))
+            .andExpect(jsonPath("$.code").value("1000"))
+            .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+            .andDo(
+                restDocs.document(
+                    pathParameters(
+                        parameterWithName("teamCode")
+                            .description("팀 아이디 (팀 코드)")
                     ),
                     responseFields(
                         fieldWithPath("isSuccess")
