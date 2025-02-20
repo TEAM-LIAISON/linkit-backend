@@ -43,6 +43,11 @@ spring:
                 show_sql: false
                 use_sql_comments: false
                 default_batch_fetch_size: 100
+                generate_statistics: true   # 성능 모니터링 설정
+                jdbc:
+                    batch_size: 50
+                order_inserts: true
+                order_updates: true
         hibernate:
             ddl-auto: validate
 
@@ -77,3 +82,6 @@ logging:
     level:
         root: INFO
         org.springframework.web: INFO
+        org.hibernate.SQL: DEBUG
+        org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+        org.hibernate.stat: DEBUG

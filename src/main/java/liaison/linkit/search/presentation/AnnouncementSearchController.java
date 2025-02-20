@@ -39,19 +39,19 @@ public class AnnouncementSearchController {
 
     @GetMapping
     public CommonResponse<AnnouncementSearchResponseDTO> searchAnnouncements(
-        @Auth final Accessor accessor,
-        @RequestParam(value = "subPosition", required = false) List<String> subPosition,
-        @RequestParam(value = "skillName", required = false) List<String> skillName,
-        @RequestParam(value = "cityName", required = false) List<String> cityName,
-        @RequestParam(value = "scaleName", required = false) List<String> scaleName,
-        @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "size", defaultValue = "80") int size
-    ) {
+            @Auth final Accessor accessor,
+            @RequestParam(value = "subPosition", required = false) List<String> subPosition,
+            @RequestParam(value = "skillName", required = false) List<String> skillName,
+            @RequestParam(value = "cityName", required = false) List<String> cityName,
+            @RequestParam(value = "scaleName", required = false) List<String> scaleName,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "80") int size) {
         Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
         Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
 
-        AnnouncementSearchResponseDTO announcementSearchResponseDTO = announcementSearchService.searchAnnouncements(optionalMemberId, subPosition, skillName, cityName, scaleName, pageable);
+        AnnouncementSearchResponseDTO announcementSearchResponseDTO = announcementSearchService
+                .searchAnnouncements(optionalMemberId, subPosition, skillName, cityName, scaleName, pageable);
         return CommonResponse.onSuccess(announcementSearchResponseDTO);
 
     }

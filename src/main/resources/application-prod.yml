@@ -82,12 +82,10 @@ spring:
             max-file-size: 60MB # 한 개 파일의 최대 사이즈
             max-request-size: 60MB # 한 개 요청의 최대 사이즈
 
-#logging:
-#  level:
-#    org:
-#      springframework:
-#        web:
-#          socket: TRACE
-#        messaging: TRACE
-#        simp:
-#          broker: TRACE
+logging:
+    level:
+        root: INFO
+        org.springframework.web: INFO
+        org.hibernate.SQL: DEBUG
+        org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+        org.hibernate.stat: DEBUG
