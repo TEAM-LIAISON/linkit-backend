@@ -344,9 +344,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
     private JPAQuery<TeamMemberAnnouncement> buildBaseQuery(QTeamMemberAnnouncement announcement, QTeam team) {
         return jpaQueryFactory
-            .selectFrom(announcement)
-            .distinct()
-            .join(announcement.team, team).fetchJoin();
+            .selectDistinct(announcement)
+            .from(announcement)
+            .innerJoin(announcement.team, team);
     }
 
     private JPAQuery<Long> buildCountQuery(QTeamMemberAnnouncement announcement, QTeam team) {
@@ -373,7 +373,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     private void applyPositionFilter(JPAQuery<?> query, QTeamMemberAnnouncement announcement, List<String> subPosition) {
-        log.info("SubPosition: {}", subPosition);
         if (isNotEmpty(subPosition)) {
             QAnnouncementPosition announcementPosition = QAnnouncementPosition.announcementPosition;
             QPosition position = QPosition.position;
