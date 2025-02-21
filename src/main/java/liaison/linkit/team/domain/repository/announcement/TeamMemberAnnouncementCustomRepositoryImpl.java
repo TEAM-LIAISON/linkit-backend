@@ -155,17 +155,18 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         applyDefaultConditions(query, announcement);
         applySort(query, announcement, pageable);
 
+        log.info("Query: {}", query.fetchOne());
         // Execute main query with pagination
         List<TeamMemberAnnouncement> content = query
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
-
+        log.info("Content: {}", content);
         // Build and execute count query
         JPAQuery<Long> countQuery = buildCountQuery(announcement, team);
         applyFilters(countQuery, announcement, team, subPosition, skillName, cityName, scaleName);
         applyDefaultConditions(countQuery, announcement);
-
+        log.info("Count: {}", countQuery.fetchOne());
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
@@ -364,6 +365,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         List<String> cityName,
         List<String> scaleName
     ) {
+        log.info("Applying filters");
         applyPositionFilter(query, announcement, subPosition);
         applySkillFilter(query, announcement, skillName);
         applyRegionFilter(query, team, cityName);
@@ -371,62 +373,59 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     private void applyPositionFilter(JPAQuery<?> query, QTeamMemberAnnouncement announcement, List<String> subPosition) {
+        log.info("SubPosition: {}", subPosition);
         if (isNotEmpty(subPosition)) {
             QAnnouncementPosition announcementPosition = QAnnouncementPosition.announcementPosition;
             QPosition position = QPosition.position;
 
             query.innerJoin(announcementPosition)
                 .on(announcementPosition.teamMemberAnnouncement.eq(announcement))
-                .fetchJoin()
                 .innerJoin(announcementPosition.position, position)
-                .fetchJoin()
                 .where(position.subPosition.in(subPosition));
         }
     }
 
     private void applySkillFilter(JPAQuery<?> query, QTeamMemberAnnouncement announcement, List<String> skillName) {
+        log.info("SkillName: {}", skillName);
         if (isNotEmpty(skillName)) {
             QAnnouncementSkill announcementSkill = QAnnouncementSkill.announcementSkill;
             QSkill skill = QSkill.skill;
 
             query.innerJoin(announcementSkill)
                 .on(announcementSkill.teamMemberAnnouncement.eq(announcement))
-                .fetchJoin()
                 .innerJoin(announcementSkill.skill, skill)
-                .fetchJoin()
                 .where(skill.skillName.in(skillName));
         }
     }
 
     private void applyRegionFilter(JPAQuery<?> query, QTeam team, List<String> cityName) {
+        log.info("CityName: {}", cityName);
         if (isNotEmpty(cityName)) {
             QTeamRegion teamRegion = QTeamRegion.teamRegion;
             QRegion region = QRegion.region;
 
             query.innerJoin(teamRegion)
                 .on(teamRegion.team.eq(team))
-                .fetchJoin()
                 .innerJoin(teamRegion.region, region)
-                .fetchJoin()
                 .where(region.cityName.in(cityName));
         }
     }
 
     private void applyScaleFilter(JPAQuery<?> query, QTeam team, List<String> scaleName) {
+        log.info("ScaleName: {}", scaleName);
         if (isNotEmpty(scaleName)) {
             QTeamScale teamScale = QTeamScale.teamScale;
             QScale scale = QScale.scale;
 
             query.innerJoin(teamScale)
                 .on(teamScale.team.eq(team))
-                .fetchJoin()
                 .innerJoin(teamScale.scale, scale)
-                .fetchJoin()
                 .where(scale.scaleName.in(scaleName));
         }
     }
 
     private void applyDefaultConditions(JPAQuery<?> query, QTeamMemberAnnouncement announcement) {
+        log.info("Default conditions applied");
         query.where(
             announcement.status.eq(StatusType.USABLE)
                 .and(announcement.isAnnouncementPublic.eq(true))
@@ -438,6 +437,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         QTeamMemberAnnouncement announcement,
         Pageable pageable
     ) {
+        log.info("Sort: {}", pageable.getSort());
         query.orderBy(
             QueryDslUtil.getOrderAnnouncementSpecifier(
                 pageable.getSort(),
