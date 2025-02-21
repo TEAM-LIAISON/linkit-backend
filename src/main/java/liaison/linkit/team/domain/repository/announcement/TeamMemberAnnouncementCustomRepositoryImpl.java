@@ -35,8 +35,6 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnnouncementCustomRepository {
 
-    private static final int HOT_ANNOUNCEMENT_SIZE = 6;
-
     private final JPAQueryFactory jpaQueryFactory;
 
     @PersistenceContext
@@ -72,8 +70,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     @Override
     public TeamMemberAnnouncement updateTeamMemberAnnouncement(
         final TeamMemberAnnouncement teamMemberAnnouncement,
-        final UpdateTeamMemberAnnouncementRequest request
-    ) {
+        final UpdateTeamMemberAnnouncementRequest request) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         // isPermanentRecruitment가 true이면 announcementEndDate를 null로, 아니면 요청 값 사용
@@ -111,7 +108,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         }
     }
 
-
     @Override
     public TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(
         final TeamMemberAnnouncement teamMemberAnnouncement,
@@ -144,8 +140,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         final List<String> skillName,
         final List<String> cityName,
         final List<String> scaleName,
-        final Pageable pageable
-    ) {
+        final Pageable pageable) {
         QTeamMemberAnnouncement announcement = QTeamMemberAnnouncement.teamMemberAnnouncement;
         QTeam team = QTeam.team;
 
@@ -155,17 +150,18 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         applyDefaultConditions(query, announcement);
         applySort(query, announcement, pageable);
 
+        log.info("Query: {}", query.fetchOne());
         // Execute main query with pagination
         List<TeamMemberAnnouncement> content = query
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
-
+        log.info("Content: {}", content);
         // Build and execute count query
         JPAQuery<Long> countQuery = buildCountQuery(announcement, team);
         applyFilters(countQuery, announcement, team, subPosition, skillName, cityName, scaleName);
         applyDefaultConditions(countQuery, announcement);
-
+        log.info("Count: {}", countQuery.fetchOne());
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
@@ -177,8 +173,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             .selectFrom(qTeamMemberAnnouncement)
             .where(
                 qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
-                    .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
-            )
+                    .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true)))
             .orderBy(
                 new CaseBuilder()
                     .when(qTeamMemberAnnouncement.id.eq(51L)).then(0)
@@ -191,8 +186,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                     .when(qTeamMemberAnnouncement.id.eq(39L)).then(7)
                     .when(qTeamMemberAnnouncement.id.eq(48L)).then(8)
                     .otherwise(9)
-                    .asc()
-            )
+                    .asc())
             .limit(6)
             .fetch();
 
@@ -201,7 +195,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     @Override
-    public Page<TeamMemberAnnouncement> findExcludedAnnouncements(final List<Long> excludeAnnouncementIds, final Pageable pageable) {
+    public Page<TeamMemberAnnouncement> findExcludedAnnouncements(final List<Long> excludeAnnouncementIds,
+        final Pageable pageable) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         List<TeamMemberAnnouncement> content = jpaQueryFactory
@@ -209,8 +204,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             .where(
                 qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
                     .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
-                    .and(qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds))
-            )
+                    .and(qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds)))
             .orderBy(qTeamMemberAnnouncement.createdAt.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -222,23 +216,21 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             .where(
                 qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
                     .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
-                    .and(qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds))
-            )
+                    .and(qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds)))
             .fetchOne();
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
     }
 
     @Override
-    public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
+    public List<TeamMemberAnnouncement> findHomeTopTeamMemberAnnouncements(final int limit) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
         return jpaQueryFactory
             .selectFrom(qTeamMemberAnnouncement)
             .where(
                 qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-                qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
-            )
+                qTeamMemberAnnouncement.status.eq(StatusType.USABLE))
             .orderBy(
                 // CASE WHEN 구문으로 지정한 순서대로 정렬
                 new CaseBuilder()
@@ -252,12 +244,10 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                     .when(qTeamMemberAnnouncement.id.eq(39L)).then(7)
                     .when(qTeamMemberAnnouncement.id.eq(48L)).then(8)
                     .otherwise(9)
-                    .asc()
-            )
+                    .asc())
             .limit(limit)
             .fetch();
     }
-
 
     @Override
     public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(
@@ -273,8 +263,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
             jpaQueryFactory
                 .selectFrom(qTeamMemberAnnouncement)
                 .where(qTeamMemberAnnouncement.team.id.in(teamIds))
-                .fetch()
-        );
+                .fetch());
     }
 
     @Override
@@ -293,8 +282,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 .where(
                     qTeamMemberAnnouncement.team.id.eq(teamId) // 특정 팀 ID와 일치
                 )
-                .fetch()
-        );
+                .fetch());
     }
 
     @Override
@@ -318,7 +306,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 e);
         }
     }
-
 
     @Override
     public List<TeamMemberAnnouncement> findAllAnnouncementsByTeamId(final Long teamId) {
@@ -362,15 +349,16 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
         List<String> subPosition,
         List<String> skillName,
         List<String> cityName,
-        List<String> scaleName
-    ) {
+        List<String> scaleName) {
+        log.info("Applying filters");
         applyPositionFilter(query, announcement, subPosition);
         applySkillFilter(query, announcement, skillName);
         applyRegionFilter(query, team, cityName);
         applyScaleFilter(query, team, scaleName);
     }
 
-    private void applyPositionFilter(JPAQuery<?> query, QTeamMemberAnnouncement announcement, List<String> subPosition) {
+    private void applyPositionFilter(JPAQuery<?> query, QTeamMemberAnnouncement announcement,
+        List<String> subPosition) {
         if (isNotEmpty(subPosition)) {
             QAnnouncementPosition announcementPosition = QAnnouncementPosition.announcementPosition;
             QPosition position = QPosition.position;
@@ -383,6 +371,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     private void applySkillFilter(JPAQuery<?> query, QTeamMemberAnnouncement announcement, List<String> skillName) {
+        log.info("SkillName: {}", skillName);
         if (isNotEmpty(skillName)) {
             QAnnouncementSkill announcementSkill = QAnnouncementSkill.announcementSkill;
             QSkill skill = QSkill.skill;
@@ -395,6 +384,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     private void applyRegionFilter(JPAQuery<?> query, QTeam team, List<String> cityName) {
+        log.info("CityName: {}", cityName);
         if (isNotEmpty(cityName)) {
             QTeamRegion teamRegion = QTeamRegion.teamRegion;
             QRegion region = QRegion.region;
@@ -407,6 +397,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     private void applyScaleFilter(JPAQuery<?> query, QTeam team, List<String> scaleName) {
+        log.info("ScaleName: {}", scaleName);
         if (isNotEmpty(scaleName)) {
             QTeamScale teamScale = QTeamScale.teamScale;
             QScale scale = QScale.scale;
@@ -419,17 +410,17 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     private void applyDefaultConditions(JPAQuery<?> query, QTeamMemberAnnouncement announcement) {
+        log.info("Default conditions applied");
         query.where(
             announcement.status.eq(StatusType.USABLE)
-                .and(announcement.isAnnouncementPublic.eq(true))
-        );
+                .and(announcement.isAnnouncementPublic.eq(true)));
     }
 
     private void applySort(
         JPAQuery<TeamMemberAnnouncement> query,
         QTeamMemberAnnouncement announcement,
-        Pageable pageable
-    ) {
+        Pageable pageable) {
+        log.info("Sort: {}", pageable.getSort());
         query.orderBy(
             QueryDslUtil.getOrderAnnouncementSpecifier(
                 pageable.getSort(),
@@ -437,9 +428,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
                 QAnnouncementPosition.announcementPosition,
                 QAnnouncementSkill.announcementSkill,
                 QTeamRegion.teamRegion,
-                QTeamScale.teamScale
-            )
-        );
+                QTeamScale.teamScale));
     }
 
     private boolean isNotEmpty(List<?> list) {

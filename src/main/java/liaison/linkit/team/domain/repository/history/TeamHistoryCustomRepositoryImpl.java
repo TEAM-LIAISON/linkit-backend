@@ -9,6 +9,8 @@ import liaison.linkit.team.domain.history.TeamHistory;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO.UpdateTeamHistoryRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,6 +20,8 @@ public class TeamHistoryCustomRepositoryImpl implements TeamHistoryCustomReposit
 
     @PersistenceContext
     private EntityManager entityManager; // EntityManager 주입
+
+    private static final Logger log = LoggerFactory.getLogger(TeamHistoryCustomRepositoryImpl.class);
 
     @Override
     public List<TeamHistory> getTeamHistories(final String teamCode) {
@@ -30,7 +34,8 @@ public class TeamHistoryCustomRepositoryImpl implements TeamHistoryCustomReposit
     }
 
     @Override
-    public TeamHistory updateTeamHistory(final Long teamHistoryId, final UpdateTeamHistoryRequest updateTeamHistoryRequest) {
+    public TeamHistory updateTeamHistory(final Long teamHistoryId,
+            final UpdateTeamHistoryRequest updateTeamHistoryRequest) {
         QTeamHistory qTeamHistory = QTeamHistory.teamHistory;
 
         // 프로필 활동 업데이트
@@ -65,6 +70,8 @@ public class TeamHistoryCustomRepositoryImpl implements TeamHistoryCustomReposit
                 .delete(qTeamHistory)
                 .where(qTeamHistory.team.id.eq(teamId))
                 .execute();
+
+        log.debug("Deleted {} team histories for team ID: {}", deletedCount, teamId);
 
         entityManager.flush();
         entityManager.clear();

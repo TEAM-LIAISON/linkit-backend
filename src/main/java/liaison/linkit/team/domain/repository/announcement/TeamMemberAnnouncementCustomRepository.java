@@ -32,7 +32,7 @@ public interface TeamMemberAnnouncementCustomRepository {
         final Pageable pageable
     );
 
-    List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit);
+    List<TeamMemberAnnouncement> findHomeTopTeamMemberAnnouncements(final int limit);
 
     Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds);
 

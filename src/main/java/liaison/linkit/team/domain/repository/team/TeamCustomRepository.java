@@ -22,7 +22,7 @@ public interface TeamCustomRepository {
 
     void deleteTeamByTeamCode(final String teamCode);
 
-    List<Team> findTopTeams(final int limit);
+    List<Team> findHomeTopTeams(final int limit);
 
     Page<Team> findTopVentureTeams(
         final Pageable pageable

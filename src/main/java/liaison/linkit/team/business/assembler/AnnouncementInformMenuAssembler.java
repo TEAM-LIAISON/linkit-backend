@@ -3,7 +3,6 @@ package liaison.linkit.team.business.assembler;
 import java.util.List;
 import java.util.Optional;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
-import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapQueryAdapter;
 import liaison.linkit.team.business.assembler.common.AnnouncementCommonAssembler;
 import liaison.linkit.team.business.mapper.announcement.TeamMemberAnnouncementMapper;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
@@ -25,7 +24,6 @@ public class AnnouncementInformMenuAssembler {
 
     // Adapters
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
-    private final AnnouncementScrapQueryAdapter announcementScrapQueryAdapter;
 
     // Mappers
     private final TeamMemberAnnouncementMapper teamMemberAnnouncementMapper;
@@ -41,8 +39,8 @@ public class AnnouncementInformMenuAssembler {
      */
     public AnnouncementInformMenus assembleHomeAnnouncementInformMenus(final Optional<Long> optionalMemberId) {
         // 최대 9개의 공고 조회 (예시)
-        List<TeamMemberAnnouncement> announcements =
-            teamMemberAnnouncementQueryAdapter.findTopTeamMemberAnnouncements(9);
+        List<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter
+            .findHomeTopTeamMemberAnnouncements(9);
 
         // 각 공고를 AnnouncementInformMenu DTO로 매핑
         List<AnnouncementInformMenu> announcementInformMenus = announcements.stream()
@@ -62,19 +60,20 @@ public class AnnouncementInformMenuAssembler {
      */
     public AnnouncementInformMenu mapToAnnouncementInformMenu(
         final TeamMemberAnnouncement teamMemberAnnouncement,
-        final Optional<Long> optionalMemberId
-    ) {
+        final Optional<Long> optionalMemberId) {
         // 1. 팀 정보 조회
         final Team team = teamMemberAnnouncement.getTeam();
 
         // 2. 공고 스킬 정보 조회
-        List<AnnouncementSkillName> announcementSkillNames = announcementCommonAssembler.fetchAnnouncementSkills(teamMemberAnnouncement);
+        List<AnnouncementSkillName> announcementSkillNames = announcementCommonAssembler
+            .fetchAnnouncementSkills(teamMemberAnnouncement);
 
         // 3. D-Day 계산
         int announcementDDay = announcementCommonAssembler.calculateAnnouncementDDay(teamMemberAnnouncement);
 
         // 4. 공고 스크랩 여부 조회
-        boolean isAnnouncementScrap = announcementCommonAssembler.checkAnnouncementScrap(teamMemberAnnouncement, optionalMemberId);
+        boolean isAnnouncementScrap = announcementCommonAssembler.checkAnnouncementScrap(teamMemberAnnouncement,
+            optionalMemberId);
 
         // 5. 공고 스크랩 수 조회
         int announcementScrapCount = announcementCommonAssembler.getAnnouncementScrapCount(teamMemberAnnouncement);
@@ -82,7 +81,8 @@ public class AnnouncementInformMenuAssembler {
         // 6. 추가 정보 조회: 팀 규모, 팀 지역, 공고 포지션 정보
         TeamScaleItem teamScaleItem = announcementCommonAssembler.fetchTeamScaleItem(team);
         RegionDetail regionDetail = announcementCommonAssembler.fetchRegionDetail(team);
-        AnnouncementPositionItem announcementPositionItem = announcementCommonAssembler.fetchAnnouncementPositionItem(teamMemberAnnouncement);
+        AnnouncementPositionItem announcementPositionItem = announcementCommonAssembler
+            .fetchAnnouncementPositionItem(teamMemberAnnouncement);
 
         // 7. 최종 DTO 변환 및 반환
         return teamMemberAnnouncementMapper.toTeamMemberAnnouncementInform(
@@ -96,7 +96,6 @@ public class AnnouncementInformMenuAssembler {
             isAnnouncementScrap,
             announcementScrapCount,
             announcementPositionItem,
-            announcementSkillNames
-        );
+            announcementSkillNames);
     }
 }

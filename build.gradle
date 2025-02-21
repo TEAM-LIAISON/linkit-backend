@@ -46,6 +46,9 @@ dependencies {
 
     implementation 'org.jsoup:jsoup:1.15.3'
 
+    // cache
+    implementation 'com.github.ben-manes.caffeine:caffeine:3.1.1'
+
     // p6spy 자리
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 

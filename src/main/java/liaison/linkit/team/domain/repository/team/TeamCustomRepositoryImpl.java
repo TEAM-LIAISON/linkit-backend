@@ -65,8 +65,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         final List<String> scaleName,
         final List<String> cityName,
         final List<String> teamStateName,
-        final Pageable pageable
-    ) {
+        final Pageable pageable) {
         QTeam qTeam = QTeam.team;
 
         JPAQuery<Team> query = buildBaseQuery(qTeam);
@@ -86,39 +85,12 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    private BooleanExpression hasScaleNames(final List<String> scaleName) {
-        if (scaleName == null || scaleName.isEmpty()) {
-            return null;
-        }
-        QScale qScale = QScale.scale;
-
-        return qScale.scaleName.in(scaleName);
-    }
-
-    private BooleanExpression hasCityName(List<String> cityName) {
-        if (cityName == null || cityName.isEmpty()) {
-            return null;
-        }
-        QRegion qRegion = QRegion.region;
-
-        return qRegion.cityName.in(cityName);
-    }
-
-    private BooleanExpression hasTeamStateNames(List<String> teamStateName) {
-        if (teamStateName == null || teamStateName.isEmpty()) {
-            return null;
-        }
-        QTeamState qTeamState = QTeamState.teamState;
-
-        return qTeamState.teamStateName.in(teamStateName);
-    }
-
     @Override
     public void deleteTeamByTeamCode(final String teamCode) {
         QTeam qTeam = QTeam.team;
 
         try {
-            long updatedRows = jpaQueryFactory
+            jpaQueryFactory
                 .update(qTeam)
                 .set(qTeam.status, StatusType.DELETED)
                 .where(qTeam.teamCode.eq(teamCode))
@@ -130,15 +102,14 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     @Override
-    public List<Team> findTopTeams(final int limit) {
+    public List<Team> findHomeTopTeams(final int limit) {
         QTeam qTeam = QTeam.team;
 
         return jpaQueryFactory
             .selectFrom(qTeam)
             .where(
                 qTeam.isTeamPublic.eq(true),
-                qTeam.status.eq(StatusType.USABLE)
-            )
+                qTeam.status.eq(StatusType.USABLE))
             .orderBy(
                 // CASE WHEN 구문으로 지정한 순서대로 정렬
                 new CaseBuilder()
@@ -147,8 +118,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     .when(qTeam.id.eq(1L)).then(2)
                     .when(qTeam.id.eq(19L)).then(3)
                     .otherwise(4)
-                    .asc()
-            )
+                    .asc())
             .limit(limit)
             .fetch();
     }
@@ -222,7 +192,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     public boolean isTeamDeleted(final String teamCode) {
         // Hibernate 세션을 얻어 SQL 제한 필터를 비활성화
         Session session = entityManager.unwrap(Session.class);
-        Filter filter = session.getEnabledFilter("hibernateFilter"); // 만약 필터 이름이 있다면 사용 (필요에 따라)
+        session.getEnabledFilter("hibernateFilter"); // 만약 필터 이름이 있다면 사용 (필요에 따라)
         // 또는 @SQLRestriction으로 인해 적용된 글로벌 제한은 Hibernate의 "where" 절에 자동 포함되므로,
         // 이를 우회하기 위해 native query 또는 Hibernate의 세션 API를 활용할 수 있다.
         // 여기서는 native query 예시로 구현하겠습니다.
@@ -244,16 +214,14 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
     @Override
     public Page<Team> findTopVentureTeams(
-        final Pageable pageable
-    ) {
+        final Pageable pageable) {
         QTeam qTeam = QTeam.team;
 
         List<Team> content = jpaQueryFactory
             .selectFrom(qTeam)
             .where(
                 qTeam.status.eq(StatusType.USABLE)
-                    .and(qTeam.isTeamPublic.eq(true))
-            )
+                    .and(qTeam.isTeamPublic.eq(true)))
             .orderBy(
                 new CaseBuilder()
                     .when(qTeam.id.eq(44L)).then(0)
@@ -263,8 +231,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     .when(qTeam.id.eq(1L)).then(4)
                     .when(qTeam.id.eq(2L)).then(5)
                     .otherwise(6)
-                    .asc()
-            )
+                    .asc())
             .limit(4)
             .fetch();
 
@@ -274,16 +241,14 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
     @Override
     public Page<Team> findSupportProjectTeams(
-        final Pageable pageable
-    ) {
+        final Pageable pageable) {
         QTeam qTeam = QTeam.team;
 
         List<Team> content = jpaQueryFactory
             .selectFrom(qTeam)
             .where(
                 qTeam.status.eq(StatusType.USABLE)
-                    .and(qTeam.isTeamPublic.eq(true))
-            )
+                    .and(qTeam.isTeamPublic.eq(true)))
             .orderBy(
                 new CaseBuilder()
                     .when(qTeam.id.eq(37L)).then(0)
@@ -291,8 +256,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
                     .when(qTeam.id.eq(3L)).then(2)
                     .when(qTeam.id.eq(19L)).then(3)
                     .otherwise(4)
-                    .asc()
-            )
+                    .asc())
             .limit(4)
             .fetch();
 
@@ -300,12 +264,10 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         return PageableExecutionUtils.getPage(content, pageable, content::size);
     }
 
-
     @Override
     public Page<Team> findAllExcludingIds(
         final List<Long> excludeTeamIds,
-        final Pageable pageable
-    ) {
+        final Pageable pageable) {
         QTeam qTeam = QTeam.team;
 
         List<Team> content = jpaQueryFactory
@@ -313,8 +275,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             .where(
                 qTeam.status.eq(StatusType.USABLE)
                     .and(qTeam.isTeamPublic.eq(true))
-                    .and(qTeam.id.notIn(excludeTeamIds))
-            )
+                    .and(qTeam.id.notIn(excludeTeamIds)))
             .orderBy(qTeam.createdAt.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
@@ -326,8 +287,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             .where(
                 qTeam.status.eq(StatusType.USABLE)
                     .and(qTeam.isTeamPublic.eq(true))
-                    .and(qTeam.id.notIn(excludeTeamIds))
-            )
+                    .and(qTeam.id.notIn(excludeTeamIds)))
             .fetchOne();
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
@@ -350,8 +310,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam,
         List<String> scaleName,
         List<String> cityName,
-        List<String> teamStateName
-    ) {
+        List<String> teamStateName) {
         applyScaleFilter(query, qTeam, scaleName);
         applyRegionFilter(query, qTeam, cityName);
         applyTeamStateFilter(query, qTeam, teamStateName);
@@ -360,8 +319,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     private void applyScaleFilter(
         JPAQuery<?> query,
         QTeam qTeam,
-        List<String> scaleName
-    ) {
+        List<String> scaleName) {
         if (isNotEmpty(scaleName)) {
             QTeamScale qTeamScale = QTeamScale.teamScale;
             QScale qScale = QScale.scale;
@@ -376,8 +334,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     private void applyRegionFilter(
         JPAQuery<?> query,
         QTeam qTeam,
-        List<String> cityName
-    ) {
+        List<String> cityName) {
         if (isNotEmpty(cityName)) {
             QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
             QRegion qRegion = QRegion.region;
@@ -392,8 +349,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     private void applyTeamStateFilter(
         JPAQuery<?> query,
         QTeam qTeam,
-        List<String> teamStateName
-    ) {
+        List<String> teamStateName) {
         if (isNotEmpty(teamStateName)) {
             QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
             QTeamState qTeamState = QTeamState.teamState;
@@ -413,16 +369,14 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     private void applySort(
         JPAQuery<?> query,
         QTeam qTeam,
-        Pageable pageable
-    ) {
+        Pageable pageable) {
         if (pageable.getSort().isSorted()) {
             query.orderBy(QueryDslUtil.getOrderTeamSpecifier(
                 pageable.getSort(),
                 qTeam,
                 QTeamScale.teamScale,
                 QTeamRegion.teamRegion,
-                QTeamCurrentState.teamCurrentState
-            ));
+                QTeamCurrentState.teamCurrentState));
         }
     }
 

@@ -2,6 +2,7 @@ package liaison.linkit.matching.business.service;
 
 import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -322,6 +323,8 @@ public class ReceiveMatchingService {
             .participantBName(participantB.name())
             .participantBType(participantB.type())
             .participantBStatus(StatusType.USABLE)
+            .lastMessage(matching.getRequestMessage())
+            .lastMessageTime(LocalDateTime.now())
             .build();
 
         chatRoomCommandAdapter.createChatRoom(chatRoom);
@@ -329,17 +332,13 @@ public class ReceiveMatchingService {
         // 참여자 프로필 이미지 로드
         String participantALogoImagePath = getParticipantLogoImagePath(chatRoom.getParticipantAType(),
             chatRoom.getParticipantAId());
-        
+
         ChatMessage chatMessage = createChatMessage(
             matching.getRequestMessage(),
             chatRoom,
             participantALogoImagePath
         );
-
         chatMessageRepository.save(chatMessage);
-
-        chatRoom.updateLastMessage(chatMessage.getContent(), chatMessage.getTimestamp());
-        chatRoomCommandAdapter.save(chatRoom);
 
         // 5. 매칭 상태 업데이트: 채팅방 생성 상태로 변경
         matchingCommandAdapter.updateMatchingToCreatedRoomState(matching);

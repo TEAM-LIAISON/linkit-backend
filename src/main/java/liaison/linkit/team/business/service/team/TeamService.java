@@ -19,7 +19,6 @@ import liaison.linkit.notification.presentation.dto.NotificationResponseDTO.Noti
 import liaison.linkit.notification.service.HeaderNotificationService;
 import liaison.linkit.notification.service.NotificationService;
 import liaison.linkit.profile.domain.region.Region;
-import liaison.linkit.scrap.implement.teamScrap.TeamScrapQueryAdapter;
 import liaison.linkit.team.business.assembler.TeamDetailAssembler;
 import liaison.linkit.team.business.assembler.TeamInformMenuAssembler;
 import liaison.linkit.team.business.mapper.scale.TeamScaleMapper;
@@ -49,7 +48,6 @@ import liaison.linkit.team.implement.state.TeamStateQueryAdapter;
 import liaison.linkit.team.implement.team.TeamCommandAdapter;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberCommandAdapter;
-import liaison.linkit.team.implement.teamMember.TeamMemberInvitationQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.AddTeamRequest;
 import liaison.linkit.team.presentation.team.dto.TeamRequestDTO.UpdateTeamRequest;
@@ -69,7 +67,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 @Slf4j
 public class TeamService {
-
 
     private final MemberQueryAdapter memberQueryAdapter;
 
@@ -99,8 +96,6 @@ public class TeamService {
 
     private final ImageValidator imageValidator;
     private final S3Uploader s3Uploader;
-    private final TeamScrapQueryAdapter teamScrapQueryAdapter;
-    private final TeamMemberInvitationQueryAdapter teamMemberInvitationQueryAdapter;
     private final NotificationService notificationService;
     private final NotificationMapper notificationMapper;
     private final HeaderNotificationService headerNotificationService;
@@ -108,13 +103,11 @@ public class TeamService {
     private final TeamInformMenuAssembler teamInformMenuAssembler;
     private final TeamDetailAssembler teamDetailAssembler;
 
-
     // 초기 팀 생성
     public TeamResponseDTO.AddTeamResponse createTeam(
         final Long memberId,
         final MultipartFile teamLogoImage,
-        final AddTeamRequest addTeamRequest
-    ) {
+        final AddTeamRequest addTeamRequest) {
         // 회원 조회
         final Member member = memberQueryAdapter.findById(memberId);
         log.info("Creating team {}", memberId);
@@ -168,7 +161,8 @@ public class TeamService {
         }
 
         teamCurrentStateCommandAdapter.saveAll(teamCurrentStates);
-        List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
+        List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper
+            .toTeamCurrentStateItems(teamCurrentStates);
 
         // 생성된 팀의 정보를 반환
         return teamMapper.toAddTeam(savedTeam, teamScaleItem, regionDetail, teamCurrentStateItems);
@@ -178,8 +172,7 @@ public class TeamService {
         final Long memberId,
         final String teamCode,
         final MultipartFile teamLogoImage,
-        final UpdateTeamRequest updateTeamRequest
-    ) {
+        final UpdateTeamRequest updateTeamRequest) {
         String teamLogoImagePath = null;
 
         // 팀 조회
@@ -258,7 +251,8 @@ public class TeamService {
         log.info("Updating team {}", teamCode);
 
         teamCurrentStateCommandAdapter.saveAll(teamCurrentStates);
-        List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
+        List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper
+            .toTeamCurrentStateItems(teamCurrentStates);
 
         return teamMapper.toUpdateTeam(team, teamScaleItem, regionDetail, teamCurrentStateItems);
     }
@@ -266,7 +260,8 @@ public class TeamService {
     // 사용자가 팀을 상세 조회한 케이스
     public TeamResponseDTO.TeamDetail getTeamDetail(final Optional<Long> optionalMemberId, final String teamCode) {
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
-        final TeamInformMenu teamInformMenu = teamInformMenuAssembler.assembleTeamInformMenu(targetTeam, optionalMemberId);
+        final TeamInformMenu teamInformMenu = teamInformMenuAssembler.assembleTeamInformMenu(targetTeam,
+            optionalMemberId);
 
         return teamDetailAssembler.assembleTeamDetail(optionalMemberId, teamCode, teamInformMenu);
     }
@@ -290,7 +285,8 @@ public class TeamService {
             }
             log.info("팀 지역 정보 조회 성공");
 
-            TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(team, false, 0, null, teamScaleItem, regionDetail);
+            TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(team, false, 0, null, teamScaleItem,
+                regionDetail);
 
             teamInformMenus.add(teamInformMenu);
         }
@@ -330,21 +326,18 @@ public class TeamService {
                     targetTeam.getTeamLogoImagePath(),
                     targetTeam.getTeamName(),
                     member.getMemberBasicInform().getMemberName(),
-                    false
-                );
+                    false);
 
                 notificationService.alertNewNotification(
                     notificationMapper.toNotification(
                         currentTeamMember.getMember().getId(),
                         NotificationType.TEAM,
                         SubNotificationType.REMOVE_TEAM_REQUESTED,
-                        removeTeamNotificationDetails
-                    )
-                );
+                        removeTeamNotificationDetails));
 
                 headerNotificationService.publishNotificationCount(currentTeamMember.getMember().getId());
             }
-        } else {    // 오너만 해당 팀을 소유하고 있는 경우
+        } else { // 오너만 해당 팀을 소유하고 있는 경우
             isTeamLastDeleteRequester = true;
             deleteUtil.deleteTeam(teamCode);
 
@@ -352,17 +345,14 @@ public class TeamService {
                 teamCode,
                 targetTeam.getTeamLogoImagePath(),
                 targetTeam.getTeamName(),
-                false
-            );
+                false);
 
             notificationService.alertNewNotification(
                 notificationMapper.toNotification(
                     memberId,
                     NotificationType.TEAM,
                     SubNotificationType.REMOVE_TEAM_COMPLETED,
-                    removeTeamNotificationDetails
-                )
-            );
+                    removeTeamNotificationDetails));
 
             headerNotificationService.publishNotificationCount(memberId);
         }
@@ -371,9 +361,8 @@ public class TeamService {
     }
 
     public TeamResponseDTO.TeamInformMenus getHomeTeamInformMenus(
-        final Optional<Long> optionalMemberId
-    ) {
-        List<Team> targetTopTeams = teamQueryAdapter.findTopTeams(4);
+        final Optional<Long> optionalMemberId) {
+        List<Team> targetTopTeams = teamQueryAdapter.findHomeTopTeams(4);
 
         // Teams -> TeamInformMenus 변환
         List<TeamResponseDTO.TeamInformMenu> teamInformMenus = targetTopTeams.stream()
@@ -383,7 +372,8 @@ public class TeamService {
         return teamMapper.toTeamInformMenus(teamInformMenus);
     }
 
-    private TeamResponseDTO.TeamInformMenu buildTeamInformMenu(final Team targetTeam, final Optional<Long> optionalMemberId) {
+    private TeamResponseDTO.TeamInformMenu buildTeamInformMenu(final Team targetTeam,
+        final Optional<Long> optionalMemberId) {
         return teamInformMenuAssembler.assembleTeamInformMenu(targetTeam, optionalMemberId);
     }
 
