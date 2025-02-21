@@ -58,6 +58,7 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     private boolean isProjectInProgress;
 
     @OneToMany(mappedBy = "profilePortfolio", fetch = FetchType.LAZY)
+    @Builder.Default
     private List<ProjectRoleContribution> projectRoleContributions = new ArrayList<>();
 
     @Column(length = 500) // 제목 길이 제한 추가 (50자)

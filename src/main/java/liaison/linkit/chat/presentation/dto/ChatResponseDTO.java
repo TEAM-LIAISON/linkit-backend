@@ -22,6 +22,8 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatLeftMenu {
+
+        @Builder.Default
         private List<ChatRoomSummary> chatRoomSummaries = new ArrayList<>();
     }
 
@@ -30,6 +32,7 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatRoomSummary {
+
         private Long chatRoomId;
 
         @Builder.Default
@@ -47,6 +50,7 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatPartnerInformation {
+
         private String chatPartnerName;             // 상대방 이름
         private String chatPartnerImageUrl;         // 상대방 프로필 이미지
 
@@ -65,6 +69,7 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PartnerProfileDetailInformation {
+
         @Builder.Default
         private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
 
@@ -77,6 +82,7 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PartnerTeamDetailInformation {
+
         // 팀 규모 정보
         @Builder.Default
         private TeamScaleItem teamScaleItem = new TeamScaleItem();
@@ -91,6 +97,7 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CreateChatRoomResponse {
+
         private Long chatRoomId;
 
         private Long matchingId;
@@ -113,6 +120,7 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ReadChatMessageResponse {
+
         private Long chatRoomId;      // 어떤 채팅방에서
         private long readMessagesCount; // 몇 개의 메시지를 읽었는지
     }
@@ -123,6 +131,7 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatMessageHistoryResponse {
+
         private Long totalElements;      // 전체 메시지 수
         private Integer totalPages;      // 전체 페이지 수
         private Boolean hasNext;         // 다음 페이지 존재 여부
@@ -143,6 +152,7 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatMessageResponse {
+
         private String messageId;                               // 메시지 ID
         private Long chatRoomId;                                // 채팅방 ID
 
@@ -164,6 +174,7 @@ public class ChatResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ChatRoomLeaveResponse {
+
         private Long chatRoomId;
 
         private ParticipantType chatRoomLeaveParticipantType;
