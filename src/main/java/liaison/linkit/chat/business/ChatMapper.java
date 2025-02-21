@@ -13,7 +13,6 @@ import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatMessageHistoryRe
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatPartnerInformation;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomLeaveResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ChatRoomSummary;
-import liaison.linkit.chat.presentation.dto.ChatResponseDTO.CreateChatRoomResponse;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO.ReadChatMessageResponse;
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.matching.domain.type.SenderType;
@@ -28,25 +27,7 @@ public class ChatMapper {
             .readMessagesCount(updatedCount)
             .build();
     }
-
-    public ChatResponseDTO.CreateChatRoomResponse toCreateChatRoomResponse(
-        final ChatRoom chatRoom
-    ) {
-        return CreateChatRoomResponse.builder()
-            .chatRoomId(chatRoom.getId())
-            .matchingId(chatRoom.getMatchingId())
-            .participantAId(chatRoom.getParticipantAId())
-            .participantAType(chatRoom.getParticipantAType())
-            .participantAName(chatRoom.getParticipantAName())
-            .participantBId(chatRoom.getParticipantBId())
-            .participantBType(chatRoom.getParticipantBType())
-            .participantBName(chatRoom.getParticipantBName())
-            .lastMessage(null)
-            .unreadCount(0L)
-            .build();
-    }
-
-    // ChatMapper.java (예시)
+    
     public ChatMessageHistoryResponse toChatMessageHistoryResponse(
         final ChatRoom chatRoom,
         final Page<ChatMessage> messagePage,
