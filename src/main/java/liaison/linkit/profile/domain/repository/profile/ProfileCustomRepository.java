@@ -33,5 +33,5 @@ public interface ProfileCustomRepository {
         final Pageable pageable
     );
 
-    List<Profile> findTopProfiles(final int limit);
+    List<Profile> findHomeTopProfiles(final int limit);
 }

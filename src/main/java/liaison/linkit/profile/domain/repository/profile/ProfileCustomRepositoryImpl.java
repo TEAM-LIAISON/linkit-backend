@@ -93,7 +93,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
 //    }
 
     @Override
-    public List<Profile> findTopProfiles(final int limit) {
+    public List<Profile> findHomeTopProfiles(final int limit) {
         QProfile qProfile = QProfile.profile;
 
         return jpaQueryFactory

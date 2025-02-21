@@ -57,8 +57,13 @@ public class TeamMemberAnnouncementQueryAdapter {
         return teamMemberAnnouncementRepository.findExcludedAnnouncements(excludeAnnouncementIds, pageable);
     }
 
-    public List<TeamMemberAnnouncement> findTopTeamMemberAnnouncements(final int limit) {
-        return teamMemberAnnouncementRepository.findTopTeamMemberAnnouncements(limit);
+
+    @Cacheable(
+        value = "homeTopAnnouncements",
+        key = "'homeTopAnnouncements'"
+    )
+    public List<TeamMemberAnnouncement> findHomeTopTeamMemberAnnouncements(final int limit) {
+        return teamMemberAnnouncementRepository.findHomeTopTeamMemberAnnouncements(limit);
     }
 
     public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds) {

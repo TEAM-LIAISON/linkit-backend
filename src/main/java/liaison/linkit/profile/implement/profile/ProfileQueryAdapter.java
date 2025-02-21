@@ -67,7 +67,11 @@ public class ProfileQueryAdapter {
         return profileRepository.findAllExcludingIds(excludeIds, pageable);
     }
 
-    public List<Profile> findTopProfiles(final int limit) {
-        return profileRepository.findTopProfiles(limit);
+    @Cacheable(
+        value = "homeTopProfiles",
+        key = "'homeTopProfiles'"  // 상수 키를 사용
+    )
+    public List<Profile> findHomeTopProfiles(final int limit) {
+        return profileRepository.findHomeTopProfiles(limit);
     }
 }

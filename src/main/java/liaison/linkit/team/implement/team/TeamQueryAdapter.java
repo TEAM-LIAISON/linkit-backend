@@ -75,8 +75,12 @@ public class TeamQueryAdapter {
         return teamRepository.findAllExcludingIds(excludeTeamIds, pageable);
     }
 
-    public List<Team> findTopTeams(final int limit) {
-        return teamRepository.findTopTeams(limit);
+    @Cacheable(
+        value = "homeTopTeams",
+        key = "'homeTopTeams'"  // 상수 키를 사용
+    )
+    public List<Team> findHomeTopTeams(final int limit) {
+        return teamRepository.findHomeTopTeams(limit);
     }
 
     public boolean isTeamDeleteInProgress(final String teamCode) {

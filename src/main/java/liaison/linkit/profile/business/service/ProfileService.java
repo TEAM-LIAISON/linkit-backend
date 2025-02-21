@@ -32,7 +32,7 @@ public class ProfileService {
     /*
         Method
      */
-    
+
     // 수정창에서 내 프로필 왼쪽 메뉴 조회
     public ProfileLeftMenu getProfileLeftMenu(final Long memberId) {
         final Profile targetProfile = profileQueryAdapter.findByMemberId(memberId);
@@ -78,7 +78,7 @@ public class ProfileService {
 
     // 홈화면에서 로그인 상태에서 팀원 정보를 조회한다.
     public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLoginState(final Long memberId) {
-        List<Profile> profiles = profileQueryAdapter.findTopProfiles(6);
+        List<Profile> profiles = profileQueryAdapter.findHomeTopProfiles(6);
 
         // Profiles -> ProfileInformMenus 변환
         List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus = profiles.stream()
@@ -90,7 +90,7 @@ public class ProfileService {
 
     // 홈화면에서 로그아웃 상태에서 팀원 정보를 조회한다.
     public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLogoutState() {
-        List<Profile> profiles = profileQueryAdapter.findTopProfiles(6);
+        List<Profile> profiles = profileQueryAdapter.findHomeTopProfiles(6);
 
         // Profiles -> ProfileInformMenus 변환
         List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus = profiles.stream()
