@@ -7,6 +7,7 @@ import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.exception.announcement.TeamMemberAnnouncementNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -39,6 +40,10 @@ public class TeamMemberAnnouncementQueryAdapter {
         return teamMemberAnnouncementRepository.findAll(subPosition, skillName, cityName, scaleName, pageable);
     }
 
+    @Cacheable(
+        value = "hotAnnouncements",
+        key = "'hotAnnouncements'"  // 상수 키를 사용
+    )
     public Page<TeamMemberAnnouncement> findHotAnnouncements(
         final Pageable pageable
     ) {

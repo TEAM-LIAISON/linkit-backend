@@ -58,6 +58,10 @@ public class TeamQueryAdapter {
         return teamRepository.findTopVentureTeams(pageable);
     }
 
+    @Cacheable(
+        value = "supportProjectTeams",
+        key = "'supportProjectTeams'"  // 상수 키를 사용
+    )
     public Page<Team> findSupportProjectTeams(
         final Pageable pageable
     ) {
