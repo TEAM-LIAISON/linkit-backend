@@ -343,9 +343,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
     private JPAQuery<TeamMemberAnnouncement> buildBaseQuery(QTeamMemberAnnouncement announcement, QTeam team) {
         return jpaQueryFactory
-            .selectDistinct(announcement)
-            .from(announcement)
-            .innerJoin(announcement.team, team);
+            .selectFrom(announcement)
+            .distinct()
+            .join(announcement.team, team).fetchJoin();
     }
 
     private JPAQuery<Long> buildCountQuery(QTeamMemberAnnouncement announcement, QTeam team) {
@@ -377,7 +377,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
             query.innerJoin(announcementPosition)
                 .on(announcementPosition.teamMemberAnnouncement.eq(announcement))
+                .fetchJoin()
                 .innerJoin(announcementPosition.position, position)
+                .fetchJoin()
                 .where(position.subPosition.in(subPosition));
         }
     }
@@ -389,7 +391,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
             query.innerJoin(announcementSkill)
                 .on(announcementSkill.teamMemberAnnouncement.eq(announcement))
+                .fetchJoin()
                 .innerJoin(announcementSkill.skill, skill)
+                .fetchJoin()
                 .where(skill.skillName.in(skillName));
         }
     }
@@ -401,7 +405,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
             query.innerJoin(teamRegion)
                 .on(teamRegion.team.eq(team))
+                .fetchJoin()
                 .innerJoin(teamRegion.region, region)
+                .fetchJoin()
                 .where(region.cityName.in(cityName));
         }
     }
@@ -413,7 +419,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
 
             query.innerJoin(teamScale)
                 .on(teamScale.team.eq(team))
+                .fetchJoin()
                 .innerJoin(teamScale.scale, scale)
+                .fetchJoin()
                 .where(scale.scaleName.in(scaleName));
         }
     }
