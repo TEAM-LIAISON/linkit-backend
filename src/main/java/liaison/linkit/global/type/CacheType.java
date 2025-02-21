@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum CacheType {
-    TOP_COMPLETION_PROFILE("top_completion_profile", 12, 100);
+    TOP_COMPLETION_PROFILE("topCompletionProfiles", 12, 100);
 
     private final String cacheName;
     private final int expiredAfterWrite;

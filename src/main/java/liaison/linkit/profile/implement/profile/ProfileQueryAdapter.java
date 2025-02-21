@@ -9,6 +9,7 @@ import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import liaison.linkit.profile.exception.profile.ProfileNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -49,6 +50,10 @@ public class ProfileQueryAdapter {
         return profileRepository.findAll(subPosition, skillName, cityName, profileStateName, pageable);
     }
 
+    @Cacheable(
+        value = "topCompletionProfiles",
+        key = "'topCompletionProfiles'"  // 상수 키를 사용
+    )
     public Page<Profile> findTopCompletionProfiles(
         final Pageable pageable
     ) {
