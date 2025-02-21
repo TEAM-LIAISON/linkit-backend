@@ -43,12 +43,14 @@ public class TeamHistoryService {
     }
 
     @Transactional(readOnly = true)
-    public TeamHistoryResponseDTO.TeamHistoryDetail getTeamHistoryDetail(final Long memberId, final String teamCode, final Long teamHistoryId) {
+    public TeamHistoryResponseDTO.TeamHistoryDetail getTeamHistoryDetail(final Long memberId, final String teamCode,
+            final Long teamHistoryId) {
         final TeamHistory teamHistory = teamHistoryQueryAdapter.getTeamHistory(teamHistoryId);
         return teamHistoryMapper.toTeamHistoryDetail(teamHistory);
     }
 
-    public TeamHistoryResponseDTO.AddTeamHistoryResponse addTeamHistory(final Long memberId, final String teamCode, final TeamHistoryRequestDTO.AddTeamHistoryRequest addTeamHistoryRequest) {
+    public TeamHistoryResponseDTO.AddTeamHistoryResponse addTeamHistory(final Long memberId, final String teamCode,
+            final TeamHistoryRequestDTO.AddTeamHistoryRequest addTeamHistoryRequest) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         log.info("team ={}", team);
         if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId)) {
@@ -63,14 +65,16 @@ public class TeamHistoryService {
     }
 
     public TeamHistoryResponseDTO.UpdateTeamHistoryResponse updateTeamHistory(
-            final Long memberId, final String teamCode, final Long teamHistoryId, final UpdateTeamHistoryRequest updateTeamHistoryRequest
-    ) {
-        final TeamHistory updatedTeamHistory = teamHistoryCommandAdapter.updateTeamHistory(teamHistoryId, updateTeamHistoryRequest);
+            final Long memberId, final String teamCode, final Long teamHistoryId,
+            final UpdateTeamHistoryRequest updateTeamHistoryRequest) {
+        final TeamHistory updatedTeamHistory = teamHistoryCommandAdapter.updateTeamHistory(teamHistoryId,
+                updateTeamHistoryRequest);
         return teamHistoryMapper.toUpdateTeamHistoryResponse(updatedTeamHistory);
     }
 
-    public TeamHistoryResponseDTO.RemoveTeamHistoryResponse removeTeamHistory(final Long memberId, final String teamCode, final Long teamHistoryId) {
-        final Team team = teamQueryAdapter.findByTeamCode(teamCode);
+    public TeamHistoryResponseDTO.RemoveTeamHistoryResponse removeTeamHistory(final Long memberId,
+            final String teamCode, final Long teamHistoryId) {
+
         final TeamHistory teamHistory = teamHistoryQueryAdapter.getTeamHistory(teamHistoryId);
 
         teamHistoryCommandAdapter.removeTeamHistory(teamHistory);
