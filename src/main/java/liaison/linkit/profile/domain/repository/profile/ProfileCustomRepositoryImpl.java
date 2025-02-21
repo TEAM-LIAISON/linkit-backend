@@ -14,8 +14,6 @@ import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.profile.QProfile;
 import liaison.linkit.profile.domain.region.QProfileRegion;
 import liaison.linkit.profile.domain.region.QRegion;
-import liaison.linkit.profile.domain.skill.QProfileSkill;
-import liaison.linkit.profile.domain.skill.QSkill;
 import liaison.linkit.profile.domain.state.QProfileCurrentState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,11 +103,14 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     @Override
     public Page<Profile> findAll(
         final List<String> subPosition,
-        final List<String> skillName,
         final List<String> cityName,
         final List<String> profileStateName,
         final Pageable pageable
     ) {
+        log.info("subPosition: {}", subPosition);
+        log.info("cityName: {}", cityName);
+        log.info("profileStateName: {}", profileStateName);
+
         QProfile qProfile = QProfile.profile;
 
         JPAQuery<Long> profileIdQuery = jpaQueryFactory
@@ -130,16 +131,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .where(qPosition.subPosition.in(subPosition));
         }
 
-        if (isNotEmpty(skillName)) {
-            QProfileSkill qProfileSkill = QProfileSkill.profileSkill;
-            QSkill qSkill = QSkill.skill;
-
-            profileIdQuery
-                .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
-                .leftJoin(qSkill).on(qProfileSkill.skill.eq(qSkill))
-                .where(qSkill.skillName.in(skillName));
-        }
-
         if (isNotEmpty(cityName)) {
             QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
             QRegion qRegion = QRegion.region;
@@ -151,13 +142,13 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         }
 
         if (isNotEmpty(profileStateName)) {
-            QProfileCurrentState qProfileState = QProfileCurrentState.profileCurrentState;
-            QProfileState qState = QProfileState.profileState;
+            QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+            QProfileState qProfileState = QProfileState.profileState;
 
             profileIdQuery
-                .leftJoin(qProfileState).on(qProfileState.profile.eq(qProfile))
-                .leftJoin(qState).on(qProfileState.profileState.eq(qState))
-                .where(qState.profileStateName.in(profileStateName));
+                .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
+                .leftJoin(qProfileState).on(qProfileCurrentState.profileState.eq(qProfileState))
+                .where(qProfileState.profileStateName.in(profileStateName));
         }
 
         // 3. 페이징 처리된 ID 목록 조회
@@ -172,7 +163,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             .leftJoin(qProfile.member).fetchJoin()
             .leftJoin(qProfile.profileRegion).fetchJoin()  // OneToOne은 fetch join 안전
             .leftJoin(qProfile.profilePositions)  // OneToMany는 fetch join 제한적 사용
-            .leftJoin(qProfile.profileSkills)
             .leftJoin(qProfile.profileCurrentStates)
             .where(qProfile.id.in(profileIds))
             .orderBy(QueryDslUtil.getOrderProfileSpecifier(
@@ -180,8 +170,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 qProfile,
                 QProfilePosition.profilePosition,
                 QProfileRegion.profileRegion,
-                QProfileCurrentState.profileCurrentState,
-                QProfileSkill.profileSkill
+                QProfileCurrentState.profileCurrentState
             ))
             .distinct()
             .fetch();
@@ -193,7 +182,7 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             .where(qProfile.status.eq(StatusType.USABLE)
                 .and(qProfile.isProfilePublic.eq(true)));
 
-        applyFiltersToCountQuery(countQuery, qProfile, subPosition, skillName, cityName, profileStateName);
+        applyFiltersToCountQuery(countQuery, qProfile, subPosition, cityName, profileStateName);
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
@@ -202,7 +191,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         JPAQuery<Long> countQuery,
         QProfile qProfile,
         List<String> subPosition,
-        List<String> skillName,
         List<String> cityName,
         List<String> profileStateName
     ) {
@@ -217,16 +205,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                 .where(qPosition.subPosition.in(subPosition));
         }
 
-        if (isNotEmpty(skillName)) {
-            QProfileSkill qProfileSkill = QProfileSkill.profileSkill;
-            QSkill qSkill = QSkill.skill;
-
-            countQuery
-                .leftJoin(qProfileSkill).on(qProfileSkill.profile.eq(qProfile))
-                .leftJoin(qSkill).on(qProfileSkill.skill.eq(qSkill))
-                .where(qSkill.skillName.in(skillName));
-        }
-
         if (isNotEmpty(cityName)) {
             QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
             QRegion qRegion = QRegion.region;
@@ -238,13 +216,13 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         }
 
         if (isNotEmpty(profileStateName)) {
-            QProfileCurrentState qProfileState = QProfileCurrentState.profileCurrentState;
-            QProfileState qState = QProfileState.profileState;
+            QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+            QProfileState qProfileState = QProfileState.profileState;
 
             countQuery
-                .leftJoin(qProfileState).on(qProfileState.profile.eq(qProfile))
-                .leftJoin(qState).on(qProfileState.profileState.eq(qState))
-                .where(qState.profileStateName.in(profileStateName));
+                .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
+                .leftJoin(qProfileState).on(qProfileCurrentState.profileState.eq(qProfileState))
+                .where(qProfileState.profileStateName.in(profileStateName));
         }
     }
 
