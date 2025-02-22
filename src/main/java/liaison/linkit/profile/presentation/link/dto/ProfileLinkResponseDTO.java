@@ -1,6 +1,7 @@
 package liaison.linkit.profile.presentation.link.dto;
 
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

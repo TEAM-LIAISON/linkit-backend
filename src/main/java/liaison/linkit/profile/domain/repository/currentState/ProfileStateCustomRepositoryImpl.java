@@ -1,7 +1,8 @@
 package liaison.linkit.profile.domain.repository.currentState;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.common.domain.ProfileState;
 import liaison.linkit.common.domain.QProfileState;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,12 @@ public class ProfileStateCustomRepositoryImpl implements ProfileStateCustomRepos
     public Optional<ProfileState> findByStateName(final String profileStateName) {
         QProfileState qProfileState = QProfileState.profileState;
 
-        ProfileState profileState = jpaQueryFactory
-                .selectFrom(qProfileState)
-                .where(qProfileState.profileStateName.eq(profileStateName))
-                .fetchOne();
+        ProfileState profileState =
+                jpaQueryFactory
+                        .selectFrom(qProfileState)
+                        .where(qProfileState.profileStateName.eq(profileStateName))
+                        .fetchOne();
 
         return Optional.ofNullable(profileState);
     }
-
 }

@@ -25,19 +25,26 @@ public class AnnouncementScrapController {
 
     @PostMapping("/{teamMemberAnnouncementId}")
     @MemberOnly
-    public CommonResponse<AnnouncementScrapResponseDTO.UpdateAnnouncementScrap> updateAnnouncementScrap(
-            @Auth final Accessor accessor,
-            @PathVariable final Long teamMemberAnnouncementId,
-            @RequestBody final AnnouncementScrapRequestDTO.UpdateAnnouncementScrapRequest updateAnnouncementScrapRequest  // 변경하고자 하는 boolean 상태
-    ) {
-        return CommonResponse.onSuccess(announcementScrapService.updateAnnouncementScrap(accessor.getMemberId(), teamMemberAnnouncementId, updateAnnouncementScrapRequest));
+    public CommonResponse<AnnouncementScrapResponseDTO.UpdateAnnouncementScrap>
+            updateAnnouncementScrap(
+                    @Auth final Accessor accessor,
+                    @PathVariable final Long teamMemberAnnouncementId,
+                    @RequestBody
+                            final AnnouncementScrapRequestDTO.UpdateAnnouncementScrapRequest
+                                    updateAnnouncementScrapRequest // 변경하고자 하는 boolean 상태
+                    ) {
+        return CommonResponse.onSuccess(
+                announcementScrapService.updateAnnouncementScrap(
+                        accessor.getMemberId(),
+                        teamMemberAnnouncementId,
+                        updateAnnouncementScrapRequest));
     }
 
     @GetMapping
     @MemberOnly
     public CommonResponse<AnnouncementInformMenus> getAnnouncementScraps(
-            @Auth final Accessor accessor
-    ) {
-        return CommonResponse.onSuccess(announcementScrapService.getAnnouncementScraps(accessor.getMemberId()));
+            @Auth final Accessor accessor) {
+        return CommonResponse.onSuccess(
+                announcementScrapService.getAnnouncementScraps(accessor.getMemberId()));
     }
 }

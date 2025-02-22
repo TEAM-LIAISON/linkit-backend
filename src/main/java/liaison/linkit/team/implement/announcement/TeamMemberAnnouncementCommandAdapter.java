@@ -1,26 +1,28 @@
 package liaison.linkit.team.implement.announcement;
 
+import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.domain.repository.announcement.TeamMemberAnnouncementRepository;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @Adapter
 @RequiredArgsConstructor
 public class TeamMemberAnnouncementCommandAdapter {
     private final TeamMemberAnnouncementRepository teamMemberAnnouncementRepository;
 
-    public TeamMemberAnnouncement addTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement) {
+    public TeamMemberAnnouncement addTeamMemberAnnouncement(
+            final TeamMemberAnnouncement teamMemberAnnouncement) {
         return teamMemberAnnouncementRepository.save(teamMemberAnnouncement);
     }
 
-    public TeamMemberAnnouncement updateTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement,
+    public TeamMemberAnnouncement updateTeamMemberAnnouncement(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
             final UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest) {
-        return teamMemberAnnouncementRepository.updateTeamMemberAnnouncement(teamMemberAnnouncement,
-                updateTeamMemberAnnouncementRequest);
+        return teamMemberAnnouncementRepository.updateTeamMemberAnnouncement(
+                teamMemberAnnouncement, updateTeamMemberAnnouncementRequest);
     }
 
     public void removeTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement) {
@@ -30,8 +32,8 @@ public class TeamMemberAnnouncementCommandAdapter {
     public TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(
             final TeamMemberAnnouncement teamMemberAnnouncement,
             final boolean isTeamMemberAnnouncementCurrentPublicState) {
-        return teamMemberAnnouncementRepository.updateTeamMemberAnnouncementPublicState(teamMemberAnnouncement,
-                isTeamMemberAnnouncementCurrentPublicState);
+        return teamMemberAnnouncementRepository.updateTeamMemberAnnouncementPublicState(
+                teamMemberAnnouncement, isTeamMemberAnnouncementCurrentPublicState);
     }
 
     public void deleteAllByIds(List<Long> announcementIds) {

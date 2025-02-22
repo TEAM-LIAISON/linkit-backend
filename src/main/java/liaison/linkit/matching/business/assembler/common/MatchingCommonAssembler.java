@@ -1,6 +1,7 @@
 package liaison.linkit.matching.business.assembler.common;
 
 import java.util.List;
+
 import liaison.linkit.matching.business.mapper.MatchingMapper;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverAnnouncementInformation;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.ReceiverProfileInformation;
@@ -43,7 +44,8 @@ public class MatchingCommonAssembler {
 
     public SenderProfileInformation assembleSenderProfileInformation(final String senderEmailId) {
         Profile profile = profileQueryAdapter.findByEmailId(senderEmailId);
-        ProfilePositionDetail positionDetail = profileInformMenuAssembler.assembleProfilePositionDetail(profile);
+        ProfilePositionDetail positionDetail =
+                profileInformMenuAssembler.assembleProfilePositionDetail(profile);
         return matchingMapper.toSenderProfileInformation(profile, positionDetail);
     }
 
@@ -53,9 +55,11 @@ public class MatchingCommonAssembler {
         return matchingMapper.toSenderTeamInformation(team, scaleItem);
     }
 
-    public ReceiverProfileInformation assembleReceiverProfileInformation(final String receiverEmailId) {
+    public ReceiverProfileInformation assembleReceiverProfileInformation(
+            final String receiverEmailId) {
         Profile profile = profileQueryAdapter.findByEmailId(receiverEmailId);
-        ProfilePositionDetail positionDetail = profileInformMenuAssembler.assembleProfilePositionDetail(profile);
+        ProfilePositionDetail positionDetail =
+                profileInformMenuAssembler.assembleProfilePositionDetail(profile);
         return matchingMapper.toReceiverProfileInformation(profile, positionDetail);
     }
 
@@ -65,10 +69,16 @@ public class MatchingCommonAssembler {
         return matchingMapper.toReceiverTeamInformation(team, scaleItem);
     }
 
-    public ReceiverAnnouncementInformation assembleReceiverAnnouncementInformation(final Long receiverAnnouncementId) {
-        TeamMemberAnnouncement announcement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(receiverAnnouncementId);
-        AnnouncementPositionItem positionItem = announcementCommonAssembler.fetchAnnouncementPositionItem(announcement);
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> skillNames = announcementCommonAssembler.fetchAnnouncementSkills(announcement);
-        return matchingMapper.toReceiverAnnouncementInformation(announcement, positionItem, skillNames);
+    public ReceiverAnnouncementInformation assembleReceiverAnnouncementInformation(
+            final Long receiverAnnouncementId) {
+        TeamMemberAnnouncement announcement =
+                teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
+                        receiverAnnouncementId);
+        AnnouncementPositionItem positionItem =
+                announcementCommonAssembler.fetchAnnouncementPositionItem(announcement);
+        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> skillNames =
+                announcementCommonAssembler.fetchAnnouncementSkills(announcement);
+        return matchingMapper.toReceiverAnnouncementInformation(
+                announcement, positionItem, skillNames);
     }
 }

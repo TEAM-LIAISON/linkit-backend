@@ -2,6 +2,7 @@ package liaison.linkit.search.business.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.implement.log.ProfileLogQueryAdapter;
 import liaison.linkit.search.business.mapper.LogMapper;
@@ -40,30 +41,35 @@ public class LogSearchService {
 
         // 4) combined를 viewCount로 내림차순 정렬
         //    (ProfileLog, TeamLog에 getViewCount()가 있다고 가정)
-        combined.sort((a, b) -> {
-            long av = (a instanceof ProfileLog) ? ((ProfileLog) a).getViewCount()
-                : ((TeamLog) a).getViewCount();
-            long bv = (b instanceof ProfileLog) ? ((ProfileLog) b).getViewCount()
-                : ((TeamLog) b).getViewCount();
-            return Long.compare(bv, av); // 내림차순
-        });
+        combined.sort(
+                (a, b) -> {
+                    long av =
+                            (a instanceof ProfileLog)
+                                    ? ((ProfileLog) a).getViewCount()
+                                    : ((TeamLog) a).getViewCount();
+                    long bv =
+                            (b instanceof ProfileLog)
+                                    ? ((ProfileLog) b).getViewCount()
+                                    : ((TeamLog) b).getViewCount();
+                    return Long.compare(bv, av); // 내림차순
+                });
 
         // 5) 상위 2개만 추출
-        List<Object> top4 = combined.stream()
-            .limit(2)
-            .toList();
+        List<Object> top4 = combined.stream().limit(2).toList();
 
         // 6) 각 엔티티를 LogInformMenu DTO로 변환
-        List<LogInformMenu> mergedDTOs = top4.stream()
-            .map(obj -> {
-                if (obj instanceof ProfileLog pl) {
-                    return mapProfileLogToMenu(pl);
-                } else {
-                    TeamLog tl = (TeamLog) obj;
-                    return mapTeamLogToMenu(tl);
-                }
-            })
-            .toList();
+        List<LogInformMenu> mergedDTOs =
+                top4.stream()
+                        .map(
+                                obj -> {
+                                    if (obj instanceof ProfileLog pl) {
+                                        return mapProfileLogToMenu(pl);
+                                    } else {
+                                        TeamLog tl = (TeamLog) obj;
+                                        return mapTeamLogToMenu(tl);
+                                    }
+                                })
+                        .toList();
 
         // 7) 필요한 형태로 감싸서 반환 (LogInformMenus)
         return logMapper.toLogInformMenus(mergedDTOs);
@@ -72,38 +78,34 @@ public class LogSearchService {
     // == ProfileLog -> LogInformMenu 변환 ==
     private LogInformMenu mapProfileLogToMenu(ProfileLog pl) {
         return LogInformMenu.builder()
-            .id(pl.getId())
-            .domainType("PROFILE")
-            .logTitle(pl.getLogTitle())
-            .logContent(pl.getLogContent())
-            .createdAt(pl.getCreatedAt())
-            .logInformDetails(
-                LogInformDetails.profileLogType(
-                    pl.getProfile().getMember().getEmailId(),
-                    pl.getId(),
-                    pl.getProfile().getMember().getMemberBasicInform().getMemberName(),
-                    pl.getProfile().getProfileImagePath()
-                )
-            )
-            .build();
+                .id(pl.getId())
+                .domainType("PROFILE")
+                .logTitle(pl.getLogTitle())
+                .logContent(pl.getLogContent())
+                .createdAt(pl.getCreatedAt())
+                .logInformDetails(
+                        LogInformDetails.profileLogType(
+                                pl.getProfile().getMember().getEmailId(),
+                                pl.getId(),
+                                pl.getProfile().getMember().getMemberBasicInform().getMemberName(),
+                                pl.getProfile().getProfileImagePath()))
+                .build();
     }
 
     // == TeamLog -> LogInformMenu 변환 ==
     private LogInformMenu mapTeamLogToMenu(TeamLog tl) {
         return LogInformMenu.builder()
-            .id(tl.getId())
-            .domainType("TEAM")
-            .logTitle(tl.getLogTitle())
-            .logContent(tl.getLogContent())
-            .createdAt(tl.getCreatedAt())
-            .logInformDetails(
-                LogInformDetails.teamLogType(
-                    tl.getTeam().getTeamCode(),
-                    tl.getId(),
-                    tl.getTeam().getTeamName(),
-                    tl.getTeam().getTeamLogoImagePath()
-                )
-            )
-            .build();
+                .id(tl.getId())
+                .domainType("TEAM")
+                .logTitle(tl.getLogTitle())
+                .logContent(tl.getLogContent())
+                .createdAt(tl.getCreatedAt())
+                .logInformDetails(
+                        LogInformDetails.teamLogType(
+                                tl.getTeam().getTeamCode(),
+                                tl.getId(),
+                                tl.getTeam().getTeamName(),
+                                tl.getTeam().getTeamLogoImagePath()))
+                .build();
     }
 }

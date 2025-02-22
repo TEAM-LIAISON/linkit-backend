@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain.repository.portfolio;
 
 import java.util.List;
 import java.util.Map;
+
 import liaison.linkit.profile.domain.portfolio.ProjectRoleContribution;
 
 public interface ProjectRoleContributionCustomRepository {

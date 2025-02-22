@@ -1,24 +1,24 @@
-//package liaison.linkit.global.config;
+// package liaison.linkit.global.config;
 //
-//import liaison.linkit.global.config.datasource.RoutingDataSource;
-//import org.springframework.beans.factory.annotation.Qualifier;
-//import org.springframework.boot.context.properties.ConfigurationProperties;
-//import org.springframework.boot.jdbc.DataSourceBuilder;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import org.springframework.context.annotation.Primary;
-//import org.springframework.context.annotation.Profile;
-//import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
+// import liaison.linkit.global.config.datasource.RoutingDataSource;
+// import org.springframework.beans.factory.annotation.Qualifier;
+// import org.springframework.boot.context.properties.ConfigurationProperties;
+// import org.springframework.boot.jdbc.DataSourceBuilder;
+// import org.springframework.context.annotation.Bean;
+// import org.springframework.context.annotation.Configuration;
+// import org.springframework.context.annotation.Primary;
+// import org.springframework.context.annotation.Profile;
+// import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 //
-//import javax.sql.DataSource;
-//import java.util.HashMap;
+// import javax.sql.DataSource;
+// import java.util.HashMap;
 //
-//import static liaison.linkit.global.config.datasource.DataSourceType.REPLICA;
-//import static liaison.linkit.global.config.datasource.DataSourceType.SOURCE;
+// import static liaison.linkit.global.config.datasource.DataSourceType.REPLICA;
+// import static liaison.linkit.global.config.datasource.DataSourceType.SOURCE;
 //
-//@Profile({"prod"})
-//@Configuration
-//public class DataSourceConfig {
+// @Profile({"prod"})
+// @Configuration
+// public class DataSourceConfig {
 //    private static final String SOURCE_SERVER = "SOURCE";
 //    private static final String REPLICA_SERVER = "REPLICA";
 //
@@ -56,7 +56,8 @@
 //    @Bean
 //    @Primary
 //    public DataSource dataSource() {
-//        final DataSource determinedDataSource = routingDataSource(sourceDataSource(), replicaDataSource());
+//        final DataSource determinedDataSource = routingDataSource(sourceDataSource(),
+// replicaDataSource());
 //        return new LazyConnectionDataSourceProxy(determinedDataSource);
 //    }
-//}
+// }

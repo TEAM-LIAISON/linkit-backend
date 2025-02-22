@@ -3,6 +3,7 @@ package liaison.linkit.profile.business.assembler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -54,7 +55,8 @@ public class ProfileInformMenuAssembler {
     public RegionDetail assembleRegionDetail(final Profile profile) {
         RegionDetail regionDetail = new RegionDetail();
         if (regionQueryAdapter.existsProfileRegionByProfileId(profile.getId())) {
-            ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+            ProfileRegion profileRegion =
+                    regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
             regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
         }
         log.info("지역 정보 조회 성공");
@@ -68,8 +70,10 @@ public class ProfileInformMenuAssembler {
      * @return 프로필 상태 목록을 ProfileCurrentStateItem 리스트로 변환한 결과
      */
     public List<ProfileCurrentStateItem> assembleProfileCurrentStateItems(final Profile profile) {
-        List<ProfileCurrentState> currentStates = profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
-        List<ProfileCurrentStateItem> currentStateItems = profileCurrentStateMapper.toProfileCurrentStateItems(currentStates);
+        List<ProfileCurrentState> currentStates =
+                profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
+        List<ProfileCurrentStateItem> currentStateItems =
+                profileCurrentStateMapper.toProfileCurrentStateItems(currentStates);
         log.info("상태 정보 조회 성공");
         return currentStateItems;
     }
@@ -83,9 +87,10 @@ public class ProfileInformMenuAssembler {
     public ProfilePositionDetail assembleProfilePositionDetail(final Profile profile) {
         ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
         if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
-            profilePositionDetail = profilePositionMapper.toProfilePositionDetail(
-                profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId())
-            );
+            profilePositionDetail =
+                    profilePositionMapper.toProfilePositionDetail(
+                            profilePositionQueryAdapter.findProfilePositionByProfileId(
+                                    profile.getId()));
         }
         log.info("대분류 포지션 정보 조회 성공");
         return profilePositionDetail;
@@ -97,8 +102,11 @@ public class ProfileInformMenuAssembler {
      * @param profile 조회 대상 프로필
      * @return 조회된 팀 정보를 ProfileTeamInform 리스트로 반환, 없으면 빈 리스트 반환
      */
-    public List<ProfileTeamInform> assembleProfileTeamInforms(final Profile profile, final Optional<Long> loggedInMemberId) {
-        boolean isMyProfile = loggedInMemberId.isPresent() && profile.getMember().getId().equals(loggedInMemberId.get());
+    public List<ProfileTeamInform> assembleProfileTeamInforms(
+            final Profile profile, final Optional<Long> loggedInMemberId) {
+        boolean isMyProfile =
+                loggedInMemberId.isPresent()
+                        && profile.getMember().getId().equals(loggedInMemberId.get());
 
         List<ProfileTeamInform> targetProfileTeamInforms = new ArrayList<>();
         Long memberIdForTeam = profile.getMember().getId();
@@ -115,16 +123,17 @@ public class ProfileInformMenuAssembler {
     /**
      * 5. 스크랩 여부 조회 메서드 (로그인 상태인 경우)
      *
-     * @param profile          조회 대상 프로필
+     * @param profile 조회 대상 프로필
      * @param loggedInMemberId 로그인한 사용자의 memberId(Optional)
      * @return 스크랩 여부, 로그인 상태가 아니면 기본 false 반환
      */
-    public boolean assembleIsProfileScrap(final Profile profile, final Optional<Long> loggedInMemberId) {
+    public boolean assembleIsProfileScrap(
+            final Profile profile, final Optional<Long> loggedInMemberId) {
         boolean isProfileScrap = false;
         if (loggedInMemberId.isPresent()) {
-            isProfileScrap = profileScrapQueryAdapter.existsByMemberIdAndEmailId(
-                loggedInMemberId.get(), profile.getMember().getEmailId()
-            );
+            isProfileScrap =
+                    profileScrapQueryAdapter.existsByMemberIdAndEmailId(
+                            loggedInMemberId.get(), profile.getMember().getEmailId());
         }
         return isProfileScrap;
     }
@@ -136,35 +145,34 @@ public class ProfileInformMenuAssembler {
      * @return 해당 프로필의 총 스크랩 수
      */
     public int assembleProfileScrapCount(final Profile profile) {
-        return profileScrapQueryAdapter.countTotalProfileScrapByEmailId(profile.getMember().getEmailId());
+        return profileScrapQueryAdapter.countTotalProfileScrapByEmailId(
+                profile.getMember().getEmailId());
     }
 
     /**
      * 7. 최종 ProfileInformMenu DTO 조립 메서드
      *
-     * @param profile          조회 대상 프로필
+     * @param profile 조회 대상 프로필
      * @param loggedInMemberId Optional 로그인한 사용자의 memberId. 값이 존재하면 로그인 상태, 없으면 로그아웃 상태로 처리
      * @return 최종 조립된 ProfileInformMenu DTO
      */
     public ProfileInformMenu assembleProfileInformMenu(
-        final Profile profile,
-        final Optional<Long> loggedInMemberId
-    ) {
+            final Profile profile, final Optional<Long> loggedInMemberId) {
         List<ProfileCurrentStateItem> currentStateItems = assembleProfileCurrentStateItems(profile);
         ProfilePositionDetail profilePositionDetail = assembleProfilePositionDetail(profile);
         RegionDetail regionDetail = assembleRegionDetail(profile);
-        List<ProfileTeamInform> profileTeamInforms = assembleProfileTeamInforms(profile, loggedInMemberId);
+        List<ProfileTeamInform> profileTeamInforms =
+                assembleProfileTeamInforms(profile, loggedInMemberId);
         boolean isProfileScrap = assembleIsProfileScrap(profile, loggedInMemberId);
         int profileScrapCount = assembleProfileScrapCount(profile);
 
         return profileMapper.toProfileInformMenu(
-            currentStateItems,
-            isProfileScrap,
-            profileScrapCount,
-            profile,
-            profilePositionDetail,
-            regionDetail,
-            profileTeamInforms
-        );
+                currentStateItems,
+                isProfileScrap,
+                profileScrapCount,
+                profile,
+                profilePositionDetail,
+                regionDetail,
+                profileTeamInforms);
     }
 }

@@ -2,8 +2,10 @@ package liaison.linkit.profile.presentation.skill.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

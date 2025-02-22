@@ -2,6 +2,7 @@ package liaison.linkit.global.util;
 
 import java.security.Principal;
 import java.util.List;
+
 import liaison.linkit.chat.event.ChatEvent.UserConnectedEvent;
 import liaison.linkit.chat.event.ChatEvent.UserDisconnectedEvent;
 import liaison.linkit.global.presentation.dto.ChatRoomConnectedEvent;
@@ -60,8 +61,12 @@ public class StompHandler implements ChannelInterceptor {
                 UserPrincipal principal = new UserPrincipal(memberId.toString());
                 headerAccessor.setUser(principal); // Principal 설정
 
-                log.info("sessionId={}, userPrincipal={}", headerAccessor.getSessionId(),
-                        (headerAccessor.getUser() != null ? headerAccessor.getUser().getName() : "null"));
+                log.info(
+                        "sessionId={}, userPrincipal={}",
+                        headerAccessor.getSessionId(),
+                        (headerAccessor.getUser() != null
+                                ? headerAccessor.getUser().getName()
+                                : "null"));
 
             } catch (Exception e) {
                 throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
@@ -73,7 +78,8 @@ public class StompHandler implements ChannelInterceptor {
             String sessionId = headerAccessor.getSessionId();
             Principal user = headerAccessor.getUser();
 
-            log.info("SUBSCRIBE - Destination: {}, SessionId: {}, User: {}",
+            log.info(
+                    "SUBSCRIBE - Destination: {}, SessionId: {}, User: {}",
                     destination,
                     sessionId,
                     user != null ? user.getName() : "null");
@@ -98,13 +104,19 @@ public class StompHandler implements ChannelInterceptor {
                     log.info("chatRoomId: {}", chatRoomId);
                     eventPublisher.publishEvent(new ChatRoomConnectedEvent(memberId, chatRoomId));
 
-                    log.info("sessionId={}, userPrincipal={}", headerAccessor.getSessionId(),
-                            (headerAccessor.getUser() != null ? headerAccessor.getUser().getName() : "null"));
-
+                    log.info(
+                            "sessionId={}, userPrincipal={}",
+                            headerAccessor.getSessionId(),
+                            (headerAccessor.getUser() != null
+                                    ? headerAccessor.getUser().getName()
+                                    : "null"));
                 }
             }
-            log.info("SUBSCRIBE: User [{}] subscribed to [{}] with session ID [{}]",
-                    memberId, destination, sessionId);
+            log.info(
+                    "SUBSCRIBE: User [{}] subscribed to [{}] with session ID [{}]",
+                    memberId,
+                    destination,
+                    sessionId);
         }
 
         if (StompCommand.SEND.equals(headerAccessor.getCommand())) {
@@ -136,8 +148,8 @@ public class StompHandler implements ChannelInterceptor {
                     headerAccessor.setNativeHeader("sessionId", sessionId);
                     headerAccessor.setNativeHeader("chatRoomId", chatRoomId); // chatRoomId 추가
 
-                    return MessageBuilder
-                            .createMessage(message.getPayload(), headerAccessor.getMessageHeaders());
+                    return MessageBuilder.createMessage(
+                            message.getPayload(), headerAccessor.getMessageHeaders());
                 } else {
                     throw new IllegalArgumentException("잘못된 destination 형식입니다.");
                 }
@@ -154,8 +166,8 @@ public class StompHandler implements ChannelInterceptor {
                     headerAccessor.setNativeHeader("memberId", memberId);
                     headerAccessor.setNativeHeader("chatRoomId", chatRoomId); // chatRoomId 추가
 
-                    return MessageBuilder
-                            .createMessage(message.getPayload(), headerAccessor.getMessageHeaders());
+                    return MessageBuilder.createMessage(
+                            message.getPayload(), headerAccessor.getMessageHeaders());
                 } else {
                     throw new IllegalArgumentException("잘못된 destination 형식입니다.");
                 }
@@ -198,7 +210,8 @@ public class StompHandler implements ChannelInterceptor {
     public void handleSessionConnected(SessionConnectedEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
         Principal userPrincipal = headerAccessor.getUser();
-        log.info("SessionConnectedEvent - Principal: {}",
+        log.info(
+                "SessionConnectedEvent - Principal: {}",
                 (userPrincipal != null ? userPrincipal.getName() : "null"));
     }
 

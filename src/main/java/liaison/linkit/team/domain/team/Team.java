@@ -1,9 +1,11 @@
 package liaison.linkit.team.domain.team;
 
-
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,8 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
+
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.team.domain.region.TeamRegion;
 import liaison.linkit.team.domain.scale.TeamScale;
@@ -37,12 +38,15 @@ public class Team extends BaseEntity {
     private Long id;
 
     @OneToMany(mappedBy = "team")
+    @Builder.Default
     private List<TeamScale> teamScales = new ArrayList<>();
 
     @OneToMany(mappedBy = "team")
+    @Builder.Default
     private List<TeamRegion> teamRegions = new ArrayList<>();
 
     @OneToMany(mappedBy = "team")
+    @Builder.Default
     private List<TeamCurrentState> teamCurrentStates = new ArrayList<>();
 
     @Column(nullable = false, length = 10)
@@ -70,11 +74,10 @@ public class Team extends BaseEntity {
     }
 
     public void updateTeam(
-        final String teamName,
-        final String teamCode,
-        final String teamShortDescription,
-        final Boolean isTeamPublic
-    ) {
+            final String teamName,
+            final String teamCode,
+            final String teamShortDescription,
+            final Boolean isTeamPublic) {
         this.teamName = teamName;
         this.teamCode = teamCode;
         this.teamShortDescription = teamShortDescription;

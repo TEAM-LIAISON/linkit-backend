@@ -1,8 +1,8 @@
 package liaison.linkit.member.domain.repository.member;
 
-import liaison.linkit.member.domain.Member;
-
 import java.util.Optional;
+
+import liaison.linkit.member.domain.Member;
 
 public interface MemberRepositoryCustom {
     Optional<Member> findBySocialLoginId(final String socialLoginId);

@@ -8,11 +8,7 @@ import liaison.linkit.member.presentation.dto.MemberResponseDTO.UpdateMemberUser
 @Mapper
 public class MemberMapper {
     public MemberResponseDTO.UpdateMemberUserIdResponse toUpdateUserIdResponse(
-            final Member member
-    ) {
-        return UpdateMemberUserIdResponse.builder()
-                .emailId(member.getEmailId())
-                .build();
+            final Member member) {
+        return UpdateMemberUserIdResponse.builder().emailId(member.getEmailId()).build();
     }
-
 }

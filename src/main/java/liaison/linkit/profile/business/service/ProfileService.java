@@ -3,6 +3,7 @@ package liaison.linkit.profile.business.service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.profile.business.assembler.ProfileDetailAssembler;
 import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
@@ -30,60 +31,60 @@ public class ProfileService {
     private final ProfileDetailAssembler profileDetailAssembler;
 
     /*
-        Method
-     */
+       Method
+    */
 
     // 수정창에서 내 프로필 왼쪽 메뉴 조회
     public ProfileLeftMenu getProfileLeftMenu(final Long memberId) {
         final Profile targetProfile = profileQueryAdapter.findByMemberId(memberId);
 
         return profileMapper.toProfileLeftMenu(
-            profileMapper.toProfileCompletionMenu(targetProfile),
-            profileMapper.toProfileBooleanMenu(targetProfile)
-        );
+                profileMapper.toProfileCompletionMenu(targetProfile),
+                profileMapper.toProfileBooleanMenu(targetProfile));
     }
 
     // 로그인한 사용자가 프로필을 조회한다.
-    public ProfileResponseDTO.ProfileDetail getLoggedInProfileDetail(final Long memberId, final String emailId) {
+    public ProfileResponseDTO.ProfileDetail getLoggedInProfileDetail(
+            final Long memberId, final String emailId) {
         final Profile targetProfile = profileQueryAdapter.findByEmailId(emailId);
         final Member targetMember = targetProfile.getMember();
 
         boolean isMyProfile = Objects.equals(targetMember.getId(), memberId);
 
-        final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(targetProfile);
-        final ProfileInformMenu profileInformMenu = profileInformMenuAssembler.assembleProfileInformMenu(targetProfile, Optional.ofNullable(memberId));
+        final ProfileCompletionMenu profileCompletionMenu =
+                profileMapper.toProfileCompletionMenu(targetProfile);
+        final ProfileInformMenu profileInformMenu =
+                profileInformMenuAssembler.assembleProfileInformMenu(
+                        targetProfile, Optional.ofNullable(memberId));
 
         return profileDetailAssembler.assembleProfileDetail(
-            targetProfile,
-            isMyProfile,
-            profileCompletionMenu,
-            profileInformMenu
-        );
+                targetProfile, isMyProfile, profileCompletionMenu, profileInformMenu);
     }
 
     // 로그인하지 않은 사용자가 프로필을 조회한다.
     public ProfileResponseDTO.ProfileDetail getLoggedOutProfileDetail(final String emailId) {
         final Profile targetProfile = profileQueryAdapter.findByEmailId(emailId);
 
-        final ProfileCompletionMenu profileCompletionMenu = profileMapper.toProfileCompletionMenu(targetProfile);
-        final ProfileInformMenu profileInformMenu = profileInformMenuAssembler.assembleProfileInformMenu(targetProfile, Optional.empty());
+        final ProfileCompletionMenu profileCompletionMenu =
+                profileMapper.toProfileCompletionMenu(targetProfile);
+        final ProfileInformMenu profileInformMenu =
+                profileInformMenuAssembler.assembleProfileInformMenu(
+                        targetProfile, Optional.empty());
 
         return profileDetailAssembler.assembleProfileDetail(
-            targetProfile,
-            false,
-            profileCompletionMenu,
-            profileInformMenu
-        );
+                targetProfile, false, profileCompletionMenu, profileInformMenu);
     }
 
     // 홈화면에서 로그인 상태에서 팀원 정보를 조회한다.
-    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLoginState(final Long memberId) {
+    public ProfileResponseDTO.ProfileInformMenus getHomeProfileInformMenusInLoginState(
+            final Long memberId) {
         List<Profile> profiles = profileQueryAdapter.findHomeTopProfiles(6);
 
         // Profiles -> ProfileInformMenus 변환
-        List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus = profiles.stream()
-            .map(profile -> toHomeProfileInformMenuInLoginState(profile, memberId))
-            .toList();
+        List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus =
+                profiles.stream()
+                        .map(profile -> toHomeProfileInformMenuInLoginState(profile, memberId))
+                        .toList();
 
         return profileMapper.toProfileInformMenus(profileInformMenus);
     }
@@ -93,22 +94,20 @@ public class ProfileService {
         List<Profile> profiles = profileQueryAdapter.findHomeTopProfiles(6);
 
         // Profiles -> ProfileInformMenus 변환
-        List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus = profiles.stream()
-            .map(this::toHomeProfileInformMenuInLogoutState)
-            .toList();
+        List<ProfileResponseDTO.ProfileInformMenu> profileInformMenus =
+                profiles.stream().map(this::toHomeProfileInformMenuInLogoutState).toList();
 
         return profileMapper.toProfileInformMenus(profileInformMenus);
     }
 
-    private ProfileInformMenu toHomeProfileInformMenuInLoginState(final Profile targetProfile, final Long memberId) {
+    private ProfileInformMenu toHomeProfileInformMenuInLoginState(
+            final Profile targetProfile, final Long memberId) {
         return profileInformMenuAssembler.assembleProfileInformMenu(
-            targetProfile, Optional.of(memberId)
-        );
+                targetProfile, Optional.of(memberId));
     }
 
     private ProfileInformMenu toHomeProfileInformMenuInLogoutState(final Profile targetProfile) {
         return profileInformMenuAssembler.assembleProfileInformMenu(
-            targetProfile, Optional.empty()
-        );
+                targetProfile, Optional.empty());
     }
 }

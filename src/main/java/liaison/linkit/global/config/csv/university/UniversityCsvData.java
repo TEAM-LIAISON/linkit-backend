@@ -3,6 +3,7 @@ package liaison.linkit.global.config.csv.university;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Data;
 
 @Data

@@ -1,6 +1,7 @@
 package liaison.linkit.notification.service;
 
 import java.util.List;
+
 import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.implement.ChatQueryAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
@@ -63,11 +64,11 @@ public class HeaderNotificationService {
             log.info("Found " + chatRooms.size() + " chat rooms");
 
             // 3. 채팅방 ID 추출
-            List<Long> chatRoomIds = chatRooms.stream()
-                    .map(ChatRoom::getId)
-                    .toList();
+            List<Long> chatRoomIds = chatRooms.stream().map(ChatRoom::getId).toList();
             log.info("Found " + chatRoomIds.size() + " chat rooms");
-            unreadChatCount = chatQueryAdapter.countUnreadMessagesByChatRoomIdsAndReceiver(memberId, chatRoomIds);
+            unreadChatCount =
+                    chatQueryAdapter.countUnreadMessagesByChatRoomIdsAndReceiver(
+                            memberId, chatRoomIds);
         }
 
         return notificationMapper.toNotificationCount(unreadChatCount, unreadNotificationCount);

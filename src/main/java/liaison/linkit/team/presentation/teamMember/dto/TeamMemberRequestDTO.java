@@ -1,6 +1,7 @@
 package liaison.linkit.team.presentation.teamMember.dto;
 
 import jakarta.validation.constraints.NotBlank;
+
 import liaison.linkit.team.domain.teamMember.TeamMemberType;
 import liaison.linkit.team.domain.teamMember.type.TeamMemberRegisterType;
 import lombok.AccessLevel;
@@ -23,7 +24,6 @@ public class TeamMemberRequestDTO {
 
         @NotBlank(message = "팀원 초대 시 권한을 선택해주세요.")
         private TeamMemberType teamMemberType;
-
     }
 
     @Builder
@@ -34,7 +34,6 @@ public class TeamMemberRequestDTO {
 
         @NotBlank(message = "변경하려고하는 팀원의 권한을 선택해주세요.")
         private TeamMemberType teamMemberType;
-
     }
 
     @Builder

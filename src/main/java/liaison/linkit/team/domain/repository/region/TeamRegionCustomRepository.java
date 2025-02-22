@@ -1,6 +1,7 @@
 package liaison.linkit.team.domain.repository.region;
 
 import java.util.Optional;
+
 import liaison.linkit.team.domain.region.TeamRegion;
 
 public interface TeamRegionCustomRepository {

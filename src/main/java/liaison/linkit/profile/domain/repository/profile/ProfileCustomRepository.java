@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain.repository.profile;
 
 import java.util.List;
 import java.util.Optional;
+
 import liaison.linkit.profile.domain.profile.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,20 +18,14 @@ public interface ProfileCustomRepository {
     void deleteByMemberId(final Long memberId);
 
     Page<Profile> findAll(
-        final List<String> majorPosition,
-        final List<String> cityName,
-        final List<String> profileStateName,
-        final Pageable pageable
-    );
-    
-    Page<Profile> findAllExcludingIds(
-        final List<Long> excludeIds,
-        final Pageable pageable
-    );
+            final List<String> majorPosition,
+            final List<String> cityName,
+            final List<String> profileStateName,
+            final Pageable pageable);
+
+    Page<Profile> findAllExcludingIds(final List<Long> excludeIds, final Pageable pageable);
 
     List<Profile> findHomeTopProfiles(final int limit);
 
-    Page<Profile> findTopCompletionProfiles(
-        final Pageable pageable
-    );
+    Page<Profile> findTopCompletionProfiles(final Pageable pageable);
 }

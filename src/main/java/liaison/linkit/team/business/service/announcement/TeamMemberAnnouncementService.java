@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import liaison.linkit.common.domain.Position;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
@@ -68,15 +69,23 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncemenItems getTeamMemberAnnouncementViewItems(final Optional<Long> optionalMemberId, final String teamCode) {
-        return announcementViewItemsAssembler.assembleTeamMemberAnnouncementViewItems(optionalMemberId, teamCode);
+    public TeamMemberAnnouncemenItems getTeamMemberAnnouncementViewItems(
+            final Optional<Long> optionalMemberId, final String teamCode) {
+        return announcementViewItemsAssembler.assembleTeamMemberAnnouncementViewItems(
+                optionalMemberId, teamCode);
     }
 
     // 팀원 공고 생성 메서드
-    public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse addTeamMemberAnnouncement(
-        final Long memberId, final String teamCode, final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest addTeamMemberAnnouncementRequest
-    ) {
-        log.info("memberId = {}의 teamCode = {}에 대한 팀원 공고 추가 요청이 서비스 계층에 발생했습니다.", memberId, teamCode);
+    public TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse
+            addTeamMemberAnnouncement(
+                    final Long memberId,
+                    final String teamCode,
+                    final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest
+                            addTeamMemberAnnouncementRequest) {
+        log.info(
+                "memberId = {}의 teamCode = {}에 대한 팀원 공고 추가 요청이 서비스 계층에 발생했습니다.",
+                memberId,
+                teamCode);
 
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
         if (!teamMemberQueryAdapter.isOwnerOrManagerOfTeam(team.getId(), memberId)) {
@@ -85,27 +94,39 @@ public class TeamMemberAnnouncementService {
 
         log.info("에러 체크 1");
 
-        final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementMapper.toAddTeamMemberAnnouncement(team, addTeamMemberAnnouncementRequest);
+        final TeamMemberAnnouncement teamMemberAnnouncement =
+                teamMemberAnnouncementMapper.toAddTeamMemberAnnouncement(
+                        team, addTeamMemberAnnouncementRequest);
         log.info("에러 체크 2");
-        final TeamMemberAnnouncement savedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.addTeamMemberAnnouncement(teamMemberAnnouncement);
+        final TeamMemberAnnouncement savedTeamMemberAnnouncement =
+                teamMemberAnnouncementCommandAdapter.addTeamMemberAnnouncement(
+                        teamMemberAnnouncement);
         log.info("에러 체크 3");
 
         // 포지션 저장
-        final Position position = positionQueryAdapter.findByMajorPositionAndSubPosition(
-            addTeamMemberAnnouncementRequest.getMajorPosition(), addTeamMemberAnnouncementRequest.getSubPosition()
-        );
-        AnnouncementPosition announcementPosition = new AnnouncementPosition(null, savedTeamMemberAnnouncement, position);
-        AnnouncementPosition savedAnnouncementPosition = announcementPositionCommandAdapter.save(announcementPosition);
-        final AnnouncementPositionItem announcementPositionItem = announcementPositionMapper.toAnnouncementPositionItem(savedAnnouncementPosition);
+        final Position position =
+                positionQueryAdapter.findByMajorPositionAndSubPosition(
+                        addTeamMemberAnnouncementRequest.getMajorPosition(),
+                        addTeamMemberAnnouncementRequest.getSubPosition());
+        AnnouncementPosition announcementPosition =
+                new AnnouncementPosition(null, savedTeamMemberAnnouncement, position);
+        AnnouncementPosition savedAnnouncementPosition =
+                announcementPositionCommandAdapter.save(announcementPosition);
+        final AnnouncementPositionItem announcementPositionItem =
+                announcementPositionMapper.toAnnouncementPositionItem(savedAnnouncementPosition);
 
         // 스킬 저장 (필수값 아님)
-        List<String> skillNames = Optional.ofNullable(addTeamMemberAnnouncementRequest.getAnnouncementSkillNames())
-            .orElse(Collections.emptyList())  // null 방지
-            .stream()
-            .map(TeamMemberAnnouncementRequestDTO.AnnouncementSkillName::getAnnouncementSkillName)
-            .collect(Collectors.toList());
+        List<String> skillNames =
+                Optional.ofNullable(addTeamMemberAnnouncementRequest.getAnnouncementSkillNames())
+                        .orElse(Collections.emptyList()) // null 방지
+                        .stream()
+                        .map(
+                                TeamMemberAnnouncementRequestDTO.AnnouncementSkillName
+                                        ::getAnnouncementSkillName)
+                        .collect(Collectors.toList());
 
-        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = Collections.emptyList();
+        List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
+                Collections.emptyList();
 
         if (!skillNames.isEmpty()) {
             log.info("check bug 0 - 스킬 검색 시작");
@@ -113,59 +134,75 @@ public class TeamMemberAnnouncementService {
             log.info("check bug 1 - 검색된 스킬 수: {}", skills.size());
 
             if (!skills.isEmpty()) {
-                final List<AnnouncementSkill> announcementSkills = announcementSkillMapper.toAddProjectSkills(savedTeamMemberAnnouncement, skills);
+                final List<AnnouncementSkill> announcementSkills =
+                        announcementSkillMapper.toAddProjectSkills(
+                                savedTeamMemberAnnouncement, skills);
                 announcementSkillCommandAdapter.saveAll(announcementSkills);
-                announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+                announcementSkillNames =
+                        announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
             }
         } else {
             log.info("check bug 0 - 스킬이 제공되지 않았습니다.");
         }
 
         return teamMemberAnnouncementMapper.toAddTeamMemberAnnouncementResponse(
-            teamMemberAnnouncement,
-            announcementPositionItem,
-            announcementSkillNames
-        );
+                teamMemberAnnouncement, announcementPositionItem, announcementSkillNames);
     }
 
-
     // 팀원 공고 수정 메서드
-    public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse updateTeamMemberAnnouncement(
-        final Long memberId,
-        final String teamCode,
-        final Long teamMemberAnnouncementId,
-        final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest
-    ) {
-        log.info("memberId = {}의 teamCode = {}의 팀원 공고 ID = {}에 대한 업데이트 요청이 서비스 계층에 발생했습니다.", memberId, teamCode, teamMemberAnnouncementId);
+    public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse
+            updateTeamMemberAnnouncement(
+                    final Long memberId,
+                    final String teamCode,
+                    final Long teamMemberAnnouncementId,
+                    final TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest
+                            updateTeamMemberAnnouncementRequest) {
+        log.info(
+                "memberId = {}의 teamCode = {}의 팀원 공고 ID = {}에 대한 업데이트 요청이 서비스 계층에 발생했습니다.",
+                memberId,
+                teamCode,
+                teamMemberAnnouncementId);
 
         // 1. 기존 팀원 공고 조회
-        final TeamMemberAnnouncement existingTeamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
+        final TeamMemberAnnouncement existingTeamMemberAnnouncement =
+                teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
+                        teamMemberAnnouncementId);
         log.info("existingTeamMemberAnnouncement = {}", existingTeamMemberAnnouncement);
 
         // 2. DTO를 통해 팀원 공고 업데이트
         final TeamMemberAnnouncement updatedTeamMemberAnnouncement =
-            teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncement(existingTeamMemberAnnouncement, updateTeamMemberAnnouncementRequest);
+                teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncement(
+                        existingTeamMemberAnnouncement, updateTeamMemberAnnouncementRequest);
         log.info("updatedTeamMemberAnnouncement = {}", updatedTeamMemberAnnouncement);
 
         // 기존 포지션 삭제
-        final Position position = positionQueryAdapter.findByMajorPositionAndSubPosition(updateTeamMemberAnnouncementRequest.getMajorPosition(), updateTeamMemberAnnouncementRequest.getSubPosition());
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncementId)) {
-            announcementPositionCommandAdapter.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+        final Position position =
+                positionQueryAdapter.findByMajorPositionAndSubPosition(
+                        updateTeamMemberAnnouncementRequest.getMajorPosition(),
+                        updateTeamMemberAnnouncementRequest.getSubPosition());
+        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(
+                teamMemberAnnouncementId)) {
+            announcementPositionCommandAdapter.deleteAllByTeamMemberAnnouncementId(
+                    teamMemberAnnouncementId);
         }
 
         log.info("error check bug 1");
 
         // 새로운 포지션 추가
-        final AnnouncementPosition announcementPosition = new AnnouncementPosition(null, updatedTeamMemberAnnouncement, position);
+        final AnnouncementPosition announcementPosition =
+                new AnnouncementPosition(null, updatedTeamMemberAnnouncement, position);
         log.info("check bug 1-1");
-        final AnnouncementPosition savedAnnouncementPosition = announcementPositionCommandAdapter.save(announcementPosition);
+        final AnnouncementPosition savedAnnouncementPosition =
+                announcementPositionCommandAdapter.save(announcementPosition);
         log.info("check bug 1-2");
-        final AnnouncementPositionItem announcementPositionItem = announcementPositionMapper.toAnnouncementPositionItem(savedAnnouncementPosition);
+        final AnnouncementPositionItem announcementPositionItem =
+                announcementPositionMapper.toAnnouncementPositionItem(savedAnnouncementPosition);
 
         log.info("check bug 2");
 
         // 기존 공고 스킬 삭제
-        List<AnnouncementSkill> existingAnnouncementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
+        List<AnnouncementSkill> existingAnnouncementSkills =
+                announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
         if (existingAnnouncementSkills != null & !existingAnnouncementSkills.isEmpty()) {
             announcementSkillCommandAdapter.deleteAll(existingAnnouncementSkills);
         }
@@ -173,86 +210,107 @@ public class TeamMemberAnnouncementService {
         log.info("check bug 3");
 
         // 새로운 공고 스킬 추가
-        List<String> newSkillNames = updateTeamMemberAnnouncementRequest.getAnnouncementSkillNames()
-            .stream()
-            .map(TeamMemberAnnouncementRequestDTO.AnnouncementSkillName::getAnnouncementSkillName)
-            .toList();
+        List<String> newSkillNames =
+                updateTeamMemberAnnouncementRequest.getAnnouncementSkillNames().stream()
+                        .map(
+                                TeamMemberAnnouncementRequestDTO.AnnouncementSkillName
+                                        ::getAnnouncementSkillName)
+                        .toList();
 
         final List<Skill> newSkills = skillQueryAdapter.getSkillsBySkillNames(newSkillNames);
-        final List<AnnouncementSkill> newAnnouncementSkills = announcementSkillMapper.toAddProjectSkills(updatedTeamMemberAnnouncement, newSkills);
+        final List<AnnouncementSkill> newAnnouncementSkills =
+                announcementSkillMapper.toAddProjectSkills(
+                        updatedTeamMemberAnnouncement, newSkills);
         announcementSkillCommandAdapter.saveAll(newAnnouncementSkills);
-        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(newAnnouncementSkills);
+        final List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames =
+                announcementSkillMapper.toAnnouncementSkillNames(newAnnouncementSkills);
 
         log.info("check bug 4");
 
         return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementResponse(
-            updatedTeamMemberAnnouncement,
-            announcementPositionItem,
-            announcementSkillNames
-        );
+                updatedTeamMemberAnnouncement, announcementPositionItem, announcementSkillNames);
     }
 
-    public TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse removeTeamMemberAnnouncement(final Long memberId, final String teamCode, final Long teamMemberAnnouncementId) {
-        final TeamMemberAnnouncement existingTeamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
+    public TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse
+            removeTeamMemberAnnouncement(
+                    final Long memberId,
+                    final String teamCode,
+                    final Long teamMemberAnnouncementId) {
+        final TeamMemberAnnouncement existingTeamMemberAnnouncement =
+                teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
+                        teamMemberAnnouncementId);
 
         // 스크랩 당한 공고가 삭제 될 때 스크랩도 삭제
-        announcementScrapCommandAdapter.deleteAllByAnnouncementIds(List.of(teamMemberAnnouncementId));
+        announcementScrapCommandAdapter.deleteAllByAnnouncementIds(
+                List.of(teamMemberAnnouncementId));
 
         // 기존 포지션 삭제
-        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(teamMemberAnnouncementId)) {
-            announcementPositionCommandAdapter.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+        if (announcementPositionQueryAdapter.existsAnnouncementPositionByTeamMemberAnnouncementId(
+                teamMemberAnnouncementId)) {
+            announcementPositionCommandAdapter.deleteAllByTeamMemberAnnouncementId(
+                    teamMemberAnnouncementId);
         }
 
-        List<AnnouncementSkill> existingAnnouncementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
+        List<AnnouncementSkill> existingAnnouncementSkills =
+                announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncementId);
         if (existingAnnouncementSkills != null & !existingAnnouncementSkills.isEmpty()) {
             announcementSkillCommandAdapter.deleteAll(existingAnnouncementSkills);
         }
 
-        teamMemberAnnouncementCommandAdapter.removeTeamMemberAnnouncement(existingTeamMemberAnnouncement);
+        teamMemberAnnouncementCommandAdapter.removeTeamMemberAnnouncement(
+                existingTeamMemberAnnouncement);
 
-        return teamMemberAnnouncementMapper.toRemoveTeamMemberAnnouncementId(teamMemberAnnouncementId);
+        return teamMemberAnnouncementMapper.toRemoveTeamMemberAnnouncementId(
+                teamMemberAnnouncementId);
     }
 
-    public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse updateTeamMemberAnnouncementPublicState(
-        final Long memberId,
-        final String teamCode,
-        final Long teamMemberAnnouncementId
-    ) {
-        final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(teamMemberAnnouncementId);
-        final boolean isTeamMemberAnnouncementCurrentPublicState = teamMemberAnnouncement.isAnnouncementPublic();
-        final TeamMemberAnnouncement updatedTeamMemberAnnouncement = teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncementPublicState(teamMemberAnnouncement,
-            isTeamMemberAnnouncementCurrentPublicState);
+    public TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse
+            updateTeamMemberAnnouncementPublicState(
+                    final Long memberId,
+                    final String teamCode,
+                    final Long teamMemberAnnouncementId) {
+        final TeamMemberAnnouncement teamMemberAnnouncement =
+                teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
+                        teamMemberAnnouncementId);
+        final boolean isTeamMemberAnnouncementCurrentPublicState =
+                teamMemberAnnouncement.isAnnouncementPublic();
+        final TeamMemberAnnouncement updatedTeamMemberAnnouncement =
+                teamMemberAnnouncementCommandAdapter.updateTeamMemberAnnouncementPublicState(
+                        teamMemberAnnouncement, isTeamMemberAnnouncementCurrentPublicState);
 
-        return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementPublicState(updatedTeamMemberAnnouncement);
+        return teamMemberAnnouncementMapper.toUpdateTeamMemberAnnouncementPublicState(
+                updatedTeamMemberAnnouncement);
     }
 
     /**
-     * 홈 화면에 표시할 공고 목록(AnnouncementInformMenus)을 반환합니다. 로그인 상태(Optional memberId 값 존재)와 로그아웃 상태(Optional.empty()) 모두 처리합니다.
+     * 홈 화면에 표시할 공고 목록(AnnouncementInformMenus)을 반환합니다. 로그인 상태(Optional memberId 값 존재)와 로그아웃
+     * 상태(Optional.empty()) 모두 처리합니다.
      *
      * @param optionalMemberId 로그인한 회원의 ID(Optional). 값이 있으면 로그인 상태, 없으면 로그아웃 상태로 처리합니다.
      * @return AnnouncementInformMenus DTO.
      */
     @Transactional(readOnly = true)
     public AnnouncementInformMenus getHomeAnnouncementInformMenus(
-        final Optional<Long> optionalMemberId
-    ) {
-        return announcementInformMenuAssembler.assembleHomeAnnouncementInformMenus(optionalMemberId);
+            final Optional<Long> optionalMemberId) {
+        return announcementInformMenuAssembler.assembleHomeAnnouncementInformMenus(
+                optionalMemberId);
     }
 
     /**
      * 공고 상세 정보를 반환합니다. 로그인한 사용자와 로그아웃 상태 모두 처리할 수 있습니다.
      *
-     * @param optionalMemberId         로그인한 회원의 ID(Optional). 값이 있으면 로그인 상태, 없으면 로그아웃 상태로 처리합니다.
-     * @param teamCode                 조회할 팀의 코드.
+     * @param optionalMemberId 로그인한 회원의 ID(Optional). 값이 있으면 로그인 상태, 없으면 로그아웃 상태로 처리합니다.
+     * @param teamCode 조회할 팀의 코드.
      * @param teamMemberAnnouncementId 조회할 팀원 공고의 ID.
      * @return 조립된 TeamDetail DTO.
      */
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail getTeamMemberAnnouncementDetail(
-        final Optional<Long> optionalMemberId,
-        final String teamCode,
-        final Long teamMemberAnnouncementId
-    ) {
-        return announcementDetailAssembler.assemblerTeamMemberAnnouncementDetail(optionalMemberId, teamCode, teamMemberAnnouncementId);
+    public TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail
+            getTeamMemberAnnouncementDetail(
+                    final Optional<Long> optionalMemberId,
+                    final String teamCode,
+                    final Long teamMemberAnnouncementId) {
+        return announcementDetailAssembler.assemblerTeamMemberAnnouncementDetail(
+                optionalMemberId, teamCode, teamMemberAnnouncementId);
     }
 }

@@ -1,9 +1,10 @@
 package liaison.linkit.profile.business.service;
 
 import java.util.List;
+
 import liaison.linkit.profile.business.mapper.ProfileLinkMapper;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.link.ProfileLink;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.implement.link.ProfileLinkCommandAdapter;
 import liaison.linkit.profile.implement.link.ProfileLinkQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
@@ -31,13 +32,16 @@ public class ProfileLinkService {
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
         log.info("memberId = {}의 내 링크 Items 조회 요청 발생했습니다.", memberId);
 
-        final List<ProfileLink> profileLinks = profileLinkQueryAdapter.getProfileLinks(profile.getId());
+        final List<ProfileLink> profileLinks =
+                profileLinkQueryAdapter.getProfileLinks(profile.getId());
         log.info("profileLinks = {}가 성공적으로 조회되었습니다.", profileLinks);
 
         return profileLinkMapper.toProfileLinkItems(profileLinks);
     }
 
-    public ProfileLinkResponseDTO.ProfileLinkItems updateProfileLinkItems(final Long memberId, final ProfileLinkRequestDTO.AddProfileLinkRequest addProfileLinkRequest) {
+    public ProfileLinkResponseDTO.ProfileLinkItems updateProfileLinkItems(
+            final Long memberId,
+            final ProfileLinkRequestDTO.AddProfileLinkRequest addProfileLinkRequest) {
         log.info("memberId = {}의 내 링크 Items 수정 요청이 발생했습니다.", memberId);
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
@@ -49,9 +53,10 @@ public class ProfileLinkService {
             profile.removeProfileLinkCompletion();
         }
 
-        List<ProfileLink> profileLinks = addProfileLinkRequest.getProfileLinkItems().stream()
-                .map(requestItem -> profileLinkMapper.toProfileLink(profile, requestItem))
-                .toList();
+        List<ProfileLink> profileLinks =
+                addProfileLinkRequest.getProfileLinkItems().stream()
+                        .map(requestItem -> profileLinkMapper.toProfileLink(profile, requestItem))
+                        .toList();
 
         profileLinkCommandAdapter.addProfileLinks(profileLinks);
 

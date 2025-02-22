@@ -3,6 +3,7 @@ package liaison.linkit.notification.domain.repository.emitter;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -50,8 +51,7 @@ public class EmitterRepositoryImpl implements EmitterRepository {
                     if (key.startsWith(memberId)) {
                         emitters.remove(key);
                     }
-                }
-        );
+                });
     }
 
     @Override
@@ -61,7 +61,6 @@ public class EmitterRepositoryImpl implements EmitterRepository {
                     if (key.startsWith(memberId)) {
                         eventCache.remove(key);
                     }
-                }
-        );
+                });
     }
 }

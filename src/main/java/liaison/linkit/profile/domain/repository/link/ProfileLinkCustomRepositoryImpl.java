@@ -1,9 +1,11 @@
 package liaison.linkit.profile.domain.repository.link;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.link.ProfileLink;
 import liaison.linkit.profile.domain.link.QProfileLink;
 import lombok.RequiredArgsConstructor;
@@ -15,18 +17,18 @@ public class ProfileLinkCustomRepositoryImpl implements ProfileLinkCustomReposit
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @PersistenceContext
-    private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public boolean existsByProfileId(Long profileId) {
         QProfileLink profileLink = QProfileLink.profileLink;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(profileLink)
-                .where(profileLink.profile.id.eq(profileId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(profileLink)
+                        .where(profileLink.profile.id.eq(profileId))
+                        .fetchFirst();
 
         return count != null;
     }
@@ -45,10 +47,7 @@ public class ProfileLinkCustomRepositoryImpl implements ProfileLinkCustomReposit
     public void deleteAllByProfileId(Long profileId) {
         QProfileLink profileLink = QProfileLink.profileLink;
 
-        jpaQueryFactory
-                .delete(profileLink)
-                .where(profileLink.profile.id.eq(profileId))
-                .execute();
+        jpaQueryFactory.delete(profileLink).where(profileLink.profile.id.eq(profileId)).execute();
 
         entityManager.flush();
         entityManager.clear();

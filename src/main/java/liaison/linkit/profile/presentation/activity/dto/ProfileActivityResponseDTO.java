@@ -2,6 +2,7 @@ package liaison.linkit.profile.presentation.activity.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +17,7 @@ public class ProfileActivityResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProfileActivityItems {
-        @Builder.Default
-        private List<ProfileActivityItem> profileActivityItems = new ArrayList<>();
+        @Builder.Default private List<ProfileActivityItem> profileActivityItems = new ArrayList<>();
     }
 
     @Builder

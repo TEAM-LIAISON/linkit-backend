@@ -2,6 +2,7 @@ package liaison.linkit.team.domain.repository.teamMember;
 
 import java.util.List;
 import java.util.Set;
+
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMember;
@@ -12,7 +13,6 @@ public interface TeamMemberCustomRepository {
     List<TeamMember> getTeamMembers(final Long teamId);
 
     Long getTeamOwnerMemberId(final Team team);
-
 
     List<Team> getAllTeamsByMemberId(final Long memberId);
 
@@ -32,8 +32,9 @@ public interface TeamMemberCustomRepository {
 
     List<Long> getAllTeamMemberIds(final String teamCode);
 
-    void updateTeamMemberManagingTeamState(final TeamMember teamMember,
-        final TeamMemberManagingTeamState teamMemberManagingTeamState);
+    void updateTeamMemberManagingTeamState(
+            final TeamMember teamMember,
+            final TeamMemberManagingTeamState teamMemberManagingTeamState);
 
     boolean isMemberOfTeam(final String teamCode, final String emailId);
 

@@ -2,9 +2,11 @@ package liaison.linkit.login;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+import java.util.Arrays;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Arrays;
+
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
@@ -33,8 +35,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
-        return parameter.withContainingClass(Long.class)
-                .hasParameterAnnotation(Auth.class);
+        return parameter.withContainingClass(Long.class).hasParameterAnnotation(Auth.class);
     }
 
     @Override
@@ -42,8 +43,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
             final MethodParameter parameter,
             final ModelAndViewContainer mavContainer,
             final NativeWebRequest webRequest,
-            final WebDataBinderFactory binderFactory
-    ) {
+            final WebDataBinderFactory binderFactory) {
         final HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         try {
             final String authorizationHeader = webRequest.getHeader(AUTHORIZATION);
@@ -77,7 +77,7 @@ public class LoginArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     private boolean isValidRefreshToken(final Cookie cookie) {
-        return REFRESH_TOKEN.equals(cookie.getName()) &&
-                refreshTokenRepository.existsById(cookie.getValue());
+        return REFRESH_TOKEN.equals(cookie.getName())
+                && refreshTokenRepository.existsById(cookie.getValue());
     }
 }

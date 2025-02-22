@@ -1,6 +1,5 @@
 package liaison.linkit.team.domain.state;
 
-
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 import jakarta.persistence.Entity;
@@ -9,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.team.domain.team.Team;
 import lombok.AccessLevel;

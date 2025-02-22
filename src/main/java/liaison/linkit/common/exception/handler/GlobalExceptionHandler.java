@@ -1,13 +1,15 @@
 package liaison.linkit.common.exception.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import liaison.linkit.common.exception.BaseCodeException;
 import liaison.linkit.common.exception.BaseDynamicException;
 import liaison.linkit.common.exception.BaseErrorCode;
@@ -44,21 +46,21 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpServletRequest servletRequest = servletWebRequest.getRequest();
 
         // HttpServletRequest를 사용하여 URL 생성
-        String url = UriComponentsBuilder.fromHttpUrl(servletRequest.getRequestURL().toString())
-                .query(servletRequest.getQueryString()) // 쿼리 문자열 추가
-                .build()
-                .toUriString();
+        String url =
+                UriComponentsBuilder.fromHttpUrl(servletRequest.getRequestURL().toString())
+                        .query(servletRequest.getQueryString()) // 쿼리 문자열 추가
+                        .build()
+                        .toUriString();
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                status.value(),
-                HttpStatus.valueOf(status.value()).name(),
-                ex.getMessage(),
-                url
-        );
+        ErrorResponse errorResponse =
+                new ErrorResponse(
+                        status.value(),
+                        HttpStatus.valueOf(status.value()).name(),
+                        ex.getMessage(),
+                        url);
 
         return super.handleExceptionInternal(ex, errorResponse, headers, status, request);
     }
-
 
     @SneakyThrows
     @Override
@@ -73,22 +75,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         HttpServletRequest servletRequest = servletWebRequest.getRequest();
 
         // HttpServletRequest를 사용하여 URL 생성
-        String url = UriComponentsBuilder.fromHttpUrl(servletRequest.getRequestURL().toString())
-                .query(servletRequest.getQueryString()) // 쿼리 문자열 추가
-                .build()
-                .toUriString();
+        String url =
+                UriComponentsBuilder.fromHttpUrl(servletRequest.getRequestURL().toString())
+                        .query(servletRequest.getQueryString()) // 쿼리 문자열 추가
+                        .build()
+                        .toUriString();
 
-        Map<String, Object> fieldAndErrorMessages = errors.stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+        Map<String, Object> fieldAndErrorMessages =
+                errors.stream()
+                        .collect(
+                                Collectors.toMap(
+                                        FieldError::getField, FieldError::getDefaultMessage));
 
         String errorsToJsonString = new ObjectMapper().writeValueAsString(fieldAndErrorMessages);
 
-        ErrorResponse errorResponse = new ErrorResponse(
-                status.value(),
-                HttpStatus.valueOf(status.value()).name(),
-                errorsToJsonString,
-                url
-        );
+        ErrorResponse errorResponse =
+                new ErrorResponse(
+                        status.value(),
+                        HttpStatus.valueOf(status.value()).name(),
+                        errorsToJsonString,
+                        url);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
@@ -154,10 +160,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleException(Exception e, HttpServletRequest request)
             throws IOException {
         // HttpServletRequest에서 직접 URL을 생성
-        String url = UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString())
-                .query(request.getQueryString())  // 쿼리 문자열 포함
-                .build()
-                .toUriString();
+        String url =
+                UriComponentsBuilder.fromHttpUrl(request.getRequestURL().toString())
+                        .query(request.getQueryString()) // 쿼리 문자열 포함
+                        .build()
+                        .toUriString();
 
         GlobalErrorCode internalServerError = GlobalErrorCode.INTERNAL_SERVER_ERROR;
         ErrorResponse errorResponse =
@@ -171,24 +178,24 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(errorResponse);
     }
 
-//    @ExceptionHandler(BadCredentialsException.class)
-//    protected ResponseEntity<ErrorResponse> handleBadCredentialsException(
-//            BadCredentialsException e, HttpServletRequest request) throws IOException {
-//        String url =
-//                UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
-//                        .build()
-//                        .toUriString();
-//
-//        AdminErrorCode unauthorizedError = AdminErrorCode.ADMIN_BAD_CREDENTIALS_EXCEPTION;
-//
-//        ErrorResponse errorResponse =
-//                new ErrorResponse(
-//                        unauthorizedError.getStatus(),
-//                        unauthorizedError.getCode(),
-//                        unauthorizedError.getReason(),
-//                        url);
-//
-//        return ResponseEntity.status(HttpStatus.valueOf(unauthorizedError.getStatus()))
-//                .body(errorResponse);
-//    }
+    //    @ExceptionHandler(BadCredentialsException.class)
+    //    protected ResponseEntity<ErrorResponse> handleBadCredentialsException(
+    //            BadCredentialsException e, HttpServletRequest request) throws IOException {
+    //        String url =
+    //                UriComponentsBuilder.fromHttpRequest(new ServletServerHttpRequest(request))
+    //                        .build()
+    //                        .toUriString();
+    //
+    //        AdminErrorCode unauthorizedError = AdminErrorCode.ADMIN_BAD_CREDENTIALS_EXCEPTION;
+    //
+    //        ErrorResponse errorResponse =
+    //                new ErrorResponse(
+    //                        unauthorizedError.getStatus(),
+    //                        unauthorizedError.getCode(),
+    //                        unauthorizedError.getReason(),
+    //                        url);
+    //
+    //        return ResponseEntity.status(HttpStatus.valueOf(unauthorizedError.getStatus()))
+    //                .body(errorResponse);
+    //    }
 }

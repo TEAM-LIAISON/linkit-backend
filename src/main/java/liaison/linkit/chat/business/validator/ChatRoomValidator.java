@@ -1,6 +1,7 @@
 package liaison.linkit.chat.business.validator;
 
 import java.util.List;
+
 import liaison.linkit.chat.exception.CreateChatReceiverBadRequestException;
 import liaison.linkit.chat.exception.CreateChatRoomBadRequestException;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
@@ -31,15 +32,20 @@ public class ChatRoomValidator {
         }
     }
 
-    public void validateReceiverLogic(final Matching matching, final Long memberId, final Profile profile) {
+    public void validateReceiverLogic(
+            final Matching matching, final Long memberId, final Profile profile) {
         if (matching.getReceiverType() == ReceiverType.PROFILE) {
             if (!matching.getReceiverEmailId().equals(profile.getMember().getEmailId())) {
                 throw CreateChatReceiverBadRequestException.EXCEPTION;
             }
         } else if (matching.getReceiverType().equals(ReceiverType.TEAM)) {
             List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
-            boolean hasTeam = teams.stream()
-                .anyMatch(team -> team.getTeamCode().equals(matching.getReceiverTeamCode()));
+            boolean hasTeam =
+                    teams.stream()
+                            .anyMatch(
+                                    team ->
+                                            team.getTeamCode()
+                                                    .equals(matching.getReceiverTeamCode()));
             if (!hasTeam) {
                 throw CreateChatReceiverBadRequestException.EXCEPTION;
             }
@@ -47,15 +53,19 @@ public class ChatRoomValidator {
             List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
             List<Long> teamIds = teams.stream().map(Team::getId).toList();
 
-            List<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.getAllByTeamIds(teamIds);
+            List<TeamMemberAnnouncement> announcements =
+                    teamMemberAnnouncementQueryAdapter.getAllByTeamIds(teamIds);
 
-            boolean hasAnnouncement = announcements.stream()
-                .anyMatch(ann -> ann.getId().equals(matching.getReceiverAnnouncementId()));
+            boolean hasAnnouncement =
+                    announcements.stream()
+                            .anyMatch(
+                                    ann ->
+                                            ann.getId()
+                                                    .equals(matching.getReceiverAnnouncementId()));
 
             if (!hasAnnouncement) {
                 throw CreateChatReceiverBadRequestException.EXCEPTION;
             }
         }
     }
-
 }

@@ -1,11 +1,13 @@
 package liaison.linkit.matching.business.service;
 
-import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import jakarta.mail.MessagingException;
+
 import liaison.linkit.chat.business.ChatMapper;
 import liaison.linkit.chat.business.validator.ChatRoomValidator;
 import liaison.linkit.chat.domain.ChatMessage;
@@ -102,22 +104,26 @@ public class ReceiveMatchingService {
 
     // ─── 매칭 수신함에서 매칭 데이터 삭제 처리 ───────────────────────────────────────────────
 
-    public DeleteReceivedMatchingItems deleteReceivedMatchingItems(final DeleteReceivedMatchingRequest req) {
+    public DeleteReceivedMatchingItems deleteReceivedMatchingItems(
+            final DeleteReceivedMatchingRequest req) {
         List<Matching> matches = matchingQueryAdapter.findAllByIds(req.getMatchingIds());
         matches.forEach(matching -> matching.setReceiverDeleteStatus(ReceiverDeleteStatus.DELETED));
         matchingCommandAdapter.updateAll(matches);
-        List<DeleteReceivedMatchingItem> items = matchingMapper.toDeleteReceivedMatchingItemList(matches);
+        List<DeleteReceivedMatchingItem> items =
+                matchingMapper.toDeleteReceivedMatchingItemList(matches);
         return matchingMapper.toDeleteReceivedMatchingItems(items);
     }
 
     // ─── 매칭 수신함에서 읽음 처리 업데이트 ──────────────────────────────────
 
-    public UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingStateToRead(final UpdateReceivedMatchingReadRequest req) {
+    public UpdateReceivedMatchingCompletedStateReadItems updateReceivedMatchingStateToRead(
+            final UpdateReceivedMatchingReadRequest req) {
         List<Matching> matches = matchingQueryAdapter.findAllByIds(req.getMatchingIds());
         matches.forEach(this::updateMatchingReadStatus);
         matchingCommandAdapter.updateAll(matches);
 
-        List<UpdateReceivedMatchingCompletedStateReadItem> readItems = matchingMapper.toUpdateReceivedMatchingCompletedStateReadItems(matches);
+        List<UpdateReceivedMatchingCompletedStateReadItem> readItems =
+                matchingMapper.toUpdateReceivedMatchingCompletedStateReadItems(matches);
         return matchingMapper.toUpdateMatchingCompletedToReadItems(readItems);
     }
 
@@ -125,10 +131,10 @@ public class ReceiveMatchingService {
     private void updateMatchingReadStatus(final Matching matching) {
         MatchingStatusType statusType = matching.getMatchingStatusType();
 
-        Map<MatchingStatusType, ReceiverReadStatus> statusMapping = Map.of(
-            MatchingStatusType.REQUESTED, ReceiverReadStatus.READ_REQUESTED_MATCHING,
-            MatchingStatusType.COMPLETED, ReceiverReadStatus.READ_COMPLETED_MATCHING
-        );
+        Map<MatchingStatusType, ReceiverReadStatus> statusMapping =
+                Map.of(
+                        MatchingStatusType.REQUESTED, ReceiverReadStatus.READ_REQUESTED_MATCHING,
+                        MatchingStatusType.COMPLETED, ReceiverReadStatus.READ_COMPLETED_MATCHING);
 
         if (statusMapping.containsKey(statusType)) {
             ReceiverReadStatus newReadStatus = statusMapping.get(statusType);
@@ -140,59 +146,67 @@ public class ReceiveMatchingService {
 
     // ─── 매칭 수신함에서 메뉴 조회 ──────────────────────────────────────
 
-    public Page<ReceivedMatchingMenu> getReceivedMatchingMenuResponse(final Long memberId, final ReceiverType receiverType, Pageable pageable) {
+    public Page<ReceivedMatchingMenu> getReceivedMatchingMenuResponse(
+            final Long memberId, final ReceiverType receiverType, Pageable pageable) {
         if (receiverType != null) {
             // 특정 타입이 지정된 경우 해당 타입의 Matching 페이지를 조회하고 매핑해서 반환
             return getMatchingPageByReceiverType(memberId, receiverType, pageable)
-                .map(this::toMatchingReceivedMenu);
+                    .map(this::toMatchingReceivedMenu);
         } else {
             // receiverType null 경우 모든 타입(Profile, Team, Announcement)을 병합
             List<Matching> combined = new ArrayList<>();
-            combined.addAll(getMatchingPageByReceiverType(memberId, ReceiverType.PROFILE, pageable).getContent());
-            combined.addAll(getMatchingPageByReceiverType(memberId, ReceiverType.TEAM, pageable).getContent());
-            combined.addAll(getMatchingPageByReceiverType(memberId, ReceiverType.ANNOUNCEMENT, pageable).getContent());
-            List<ReceivedMatchingMenu> menus = combined.stream()
-                .map(this::toMatchingReceivedMenu)
-                .toList();
+            combined.addAll(
+                    getMatchingPageByReceiverType(memberId, ReceiverType.PROFILE, pageable)
+                            .getContent());
+            combined.addAll(
+                    getMatchingPageByReceiverType(memberId, ReceiverType.TEAM, pageable)
+                            .getContent());
+            combined.addAll(
+                    getMatchingPageByReceiverType(memberId, ReceiverType.ANNOUNCEMENT, pageable)
+                            .getContent());
+            List<ReceivedMatchingMenu> menus =
+                    combined.stream().map(this::toMatchingReceivedMenu).toList();
             return new PageImpl<>(menus, pageable, combined.size());
         }
     }
 
-    private Page<Matching> getMatchingPageByReceiverType(Long memberId, ReceiverType receiverType, Pageable pageable) {
+    private Page<Matching> getMatchingPageByReceiverType(
+            Long memberId, ReceiverType receiverType, Pageable pageable) {
         switch (receiverType) {
             case PROFILE:
                 final String emailId = memberQueryAdapter.findEmailIdById(memberId);
                 return matchingQueryAdapter.findReceivedToProfile(emailId, pageable);
             case TEAM:
-                final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+                final List<Team> teams =
+                        teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
                 return matchingQueryAdapter.findReceivedToTeam(teams, pageable);
             case ANNOUNCEMENT:
-                final List<Team> teamsForAnnouncement = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
-                List<Long> teamIds = teamsForAnnouncement.stream()
-                    .map(Team::getId)
-                    .toList();
+                final List<Team> teamsForAnnouncement =
+                        teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+                List<Long> teamIds = teamsForAnnouncement.stream().map(Team::getId).toList();
                 final List<TeamMemberAnnouncement> teamMemberAnnouncements =
-                    teamMemberAnnouncementQueryAdapter.getAllByTeamIds(teamIds);
-                List<Long> announcementIds = teamMemberAnnouncements.stream()
-                    .map(TeamMemberAnnouncement::getId)
-                    .toList();
+                        teamMemberAnnouncementQueryAdapter.getAllByTeamIds(teamIds);
+                List<Long> announcementIds =
+                        teamMemberAnnouncements.stream()
+                                .map(TeamMemberAnnouncement::getId)
+                                .toList();
                 return matchingQueryAdapter.findReceivedToAnnouncement(announcementIds, pageable);
             default:
                 return Page.empty(pageable);
         }
     }
 
-
     // 수신자가 매칭 요청 상태를 업데이트한다.
     public UpdateMatchingStatusTypeResponse updateMatchingStatusType(
-        final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest req
-    ) throws MessagingException, UnsupportedEncodingException {
+            final Long memberId, final Long matchingId, final UpdateMatchingStatusTypeRequest req)
+            throws MessagingException, UnsupportedEncodingException {
 
         matchingValidator.validateUpdateStatusRequest(req);
 
         final Matching matching = matchingQueryAdapter.findByMatchingId(matchingId);
 
-        matchingValidator.ensureReceiverAuthorized(memberId, matchingInfoResolver.getReceiverMemberId(matching));
+        matchingValidator.ensureReceiverAuthorized(
+                memberId, matchingInfoResolver.getReceiverMemberId(matching));
         matchingCommandAdapter.updateMatchingStatusType(matching, req.getMatchingStatusType());
 
         if (req.getMatchingStatusType() == MatchingStatusType.COMPLETED) {
@@ -205,85 +219,99 @@ public class ReceiveMatchingService {
             handleNotificationInRejectedState(matching);
         }
 
-        return matchingMapper.toUpdateMatchingStatusTypeResponse(matching, req.getMatchingStatusType());
+        return matchingMapper.toUpdateMatchingStatusTypeResponse(
+                matching, req.getMatchingStatusType());
     }
 
     // ─── 수신 매칭 메뉴 변환 ─────────────────────────────────────────
 
     private ReceivedMatchingMenu toMatchingReceivedMenu(final Matching matching) {
         // 채팅방 존재 여부 확인
-        final Long chatRoomId = chatRoomQueryAdapter.existsChatRoomByMatchingId(matching.getId())
-            ? chatRoomQueryAdapter.getChatRoomIdByMatchingId(matching.getId())
-            : null;
+        final Long chatRoomId =
+                chatRoomQueryAdapter.existsChatRoomByMatchingId(matching.getId())
+                        ? chatRoomQueryAdapter.getChatRoomIdByMatchingId(matching.getId())
+                        : null;
 
         Object senderInfo = matchingInfoResolver.resolveSenderInfo(matching);
         Object receiverInfo = matchingInfoResolver.resolveReceiverInfo(matching);
 
-        return matchingMapper.toMatchingReceivedMenu(matching, chatRoomId,
-            (senderInfo instanceof SenderProfileInformation ? (SenderProfileInformation) senderInfo : null),
-            (senderInfo instanceof SenderTeamInformation ? (SenderTeamInformation) senderInfo : null),
-            (receiverInfo instanceof ReceiverProfileInformation ? (ReceiverProfileInformation) receiverInfo : null),
-            (receiverInfo instanceof ReceiverTeamInformation ? (ReceiverTeamInformation) receiverInfo : null),
-            (receiverInfo instanceof ReceiverAnnouncementInformation ? (ReceiverAnnouncementInformation) receiverInfo : null));
+        return matchingMapper.toMatchingReceivedMenu(
+                matching,
+                chatRoomId,
+                (senderInfo instanceof SenderProfileInformation
+                        ? (SenderProfileInformation) senderInfo
+                        : null),
+                (senderInfo instanceof SenderTeamInformation
+                        ? (SenderTeamInformation) senderInfo
+                        : null),
+                (receiverInfo instanceof ReceiverProfileInformation
+                        ? (ReceiverProfileInformation) receiverInfo
+                        : null),
+                (receiverInfo instanceof ReceiverTeamInformation
+                        ? (ReceiverTeamInformation) receiverInfo
+                        : null),
+                (receiverInfo instanceof ReceiverAnnouncementInformation
+                        ? (ReceiverAnnouncementInformation) receiverInfo
+                        : null));
     }
 
     // ─── 매칭 요청 성사용 이메일 전송 ───────────────────────────────────────────
 
-    private void sendMatchingCompleteEmail(final Matching matching) throws MessagingException, UnsupportedEncodingException {
-        MatchingEmailContent emailContent = matchingMailContentMapper.generateMatchingCompletedEmailContent(matching);
+    private void sendMatchingCompleteEmail(final Matching matching)
+            throws MessagingException, UnsupportedEncodingException {
+        MatchingEmailContent emailContent =
+                matchingMailContentMapper.generateMatchingCompletedEmailContent(matching);
 
         asyncMatchingEmailService.sendMatchingCompletedEmails(
-            emailContent.getSenderMailTitle(),
-            emailContent.getSenderMailSubTitle(),
-            emailContent.getSenderMailSubText(),
-
-            emailContent.getReceiverMailTitle(),
-            emailContent.getReceiverMailSubTitle(),
-            emailContent.getReceiverMailSubText(),
-
-            matchingInfoResolver.getSenderEmail(matching),
-            matchingInfoResolver.getSenderName(matching),
-            matchingInfoResolver.getSenderLogoImagePath(matching),
-            matchingInfoResolver.getSenderPositionOrTeamSizeText(matching),
-            matchingInfoResolver.getSenderPositionOrTeamSize(matching),
-            matchingInfoResolver.getSenderRegionDetail(matching),
-
-            matchingInfoResolver.getReceiverEmail(matching),
-            matchingInfoResolver.getReceiverName(matching),
-            matchingInfoResolver.getReceiverLogoImagePath(matching),
-            matchingInfoResolver.getReceiverPositionOrTeamSizeText(matching),
-            matchingInfoResolver.getReceiverPositionOrTeamSize(matching),
-            matchingInfoResolver.getReceiverRegionOrAnnouncementSkillText(matching),
-            matchingInfoResolver.getReceiverRegionOrAnnouncementSkill(matching)
-        );
+                emailContent.getSenderMailTitle(),
+                emailContent.getSenderMailSubTitle(),
+                emailContent.getSenderMailSubText(),
+                emailContent.getReceiverMailTitle(),
+                emailContent.getReceiverMailSubTitle(),
+                emailContent.getReceiverMailSubText(),
+                matchingInfoResolver.getSenderEmail(matching),
+                matchingInfoResolver.getSenderName(matching),
+                matchingInfoResolver.getSenderLogoImagePath(matching),
+                matchingInfoResolver.getSenderPositionOrTeamSizeText(matching),
+                matchingInfoResolver.getSenderPositionOrTeamSize(matching),
+                matchingInfoResolver.getSenderRegionDetail(matching),
+                matchingInfoResolver.getReceiverEmail(matching),
+                matchingInfoResolver.getReceiverName(matching),
+                matchingInfoResolver.getReceiverLogoImagePath(matching),
+                matchingInfoResolver.getReceiverPositionOrTeamSizeText(matching),
+                matchingInfoResolver.getReceiverPositionOrTeamSize(matching),
+                matchingInfoResolver.getReceiverRegionOrAnnouncementSkillText(matching),
+                matchingInfoResolver.getReceiverRegionOrAnnouncementSkill(matching));
     }
 
-
-    /**
-     * COMPLETED 상태로 변경된 경우의 후속 처리: - 매칭 완료 이메일 전송 - 수신자 및 발신자에게 알림 전송 및 카운트 업데이트
-     */
-    private void handleMailAndNotificationInCompletedState(final Matching matching) throws MessagingException, UnsupportedEncodingException {
+    /** COMPLETED 상태로 변경된 경우의 후속 처리: - 매칭 완료 이메일 전송 - 수신자 및 발신자에게 알림 전송 및 카운트 업데이트 */
+    private void handleMailAndNotificationInCompletedState(final Matching matching)
+            throws MessagingException, UnsupportedEncodingException {
 
         sendMatchingCompleteEmail(matching);
 
-        NotificationDetails acceptedReceiverDetails = notificationHandler.generateAcceptedStateReceiverNotificationDetails(matching);
-        notificationHandler.alertNewAcceptedNotificationToReceiver(matching, acceptedReceiverDetails);
-        headerNotificationService.publishNotificationCount(matchingInfoResolver.getReceiverMemberId(matching));
+        NotificationDetails acceptedReceiverDetails =
+                notificationHandler.generateAcceptedStateReceiverNotificationDetails(matching);
+        notificationHandler.alertNewAcceptedNotificationToReceiver(
+                matching, acceptedReceiverDetails);
+        headerNotificationService.publishNotificationCount(
+                matchingInfoResolver.getReceiverMemberId(matching));
 
-        NotificationDetails acceptedSenderDetails = notificationHandler.generateAcceptedStateSenderNotificationDetails(matching);
+        NotificationDetails acceptedSenderDetails =
+                notificationHandler.generateAcceptedStateSenderNotificationDetails(matching);
         notificationHandler.alertNewAcceptedNotificationToSender(matching, acceptedSenderDetails);
-        headerNotificationService.publishNotificationCount(matchingInfoResolver.getSenderMemberId(matching));
-
+        headerNotificationService.publishNotificationCount(
+                matchingInfoResolver.getSenderMemberId(matching));
     }
 
-    /**
-     * COMPLETED 상태가 아닌 경우(거절 등)의 후속 처리: - 발신자에게 거절 알림 전송 및 카운트 업데이트
-     */
+    /** COMPLETED 상태가 아닌 경우(거절 등)의 후속 처리: - 발신자에게 거절 알림 전송 및 카운트 업데이트 */
     private void handleNotificationInRejectedState(final Matching matching) {
 
-        NotificationDetails rejectedDetails = notificationHandler.generatedRejectedStateSenderNotificationDetails(matching);
+        NotificationDetails rejectedDetails =
+                notificationHandler.generatedRejectedStateSenderNotificationDetails(matching);
         notificationHandler.alertNewRejectedNotificationToSender(matching, rejectedDetails);
-        headerNotificationService.publishNotificationCount(matchingInfoResolver.getSenderMemberId(matching));
+        headerNotificationService.publishNotificationCount(
+                matchingInfoResolver.getSenderMemberId(matching));
     }
 
     // ※ 예제에서는 handleChatRoomSetting() 메서드에서 buildAndSaveChatRoomAsReceiver()를 호출하는 형태로 사용합니다.
@@ -295,10 +323,11 @@ public class ReceiveMatchingService {
     /**
      * 채팅방 생성 및 매칭 상태 업데이트 처리
      *
-     * @param matching         생성할 채팅방과 연관된 매칭
+     * @param matching 생성할 채팅방과 연관된 매칭
      * @param receiverMemberId 현재 사용자의 memberId (수신자)
      */
-    private void buildAndSaveChatRoomAsReceiver(final Matching matching, final Long receiverMemberId) {
+    private void buildAndSaveChatRoomAsReceiver(
+            final Matching matching, final Long receiverMemberId) {
         // 1. 현재 사용자 프로필 조회
         final Profile receiverProfile = profileQueryAdapter.findByMemberId(receiverMemberId);
 
@@ -307,37 +336,37 @@ public class ReceiveMatchingService {
 
         // 3. 발신자와 수신자 정보를 분리하여 ParticipantInfo 생성
         ParticipantInfo participantA = buildSenderParticipant(matching);
-        ParticipantInfo participantB = buildReceiverParticipant(matching, receiverMemberId, receiverProfile);
+        ParticipantInfo participantB =
+                buildReceiverParticipant(matching, receiverMemberId, receiverProfile);
 
         // 4. ChatRoom 생성
-        ChatRoom chatRoom = ChatRoom.builder()
-            .matchingId(matching.getId())
-            .participantAId(participantA.id())
-            .participantAMemberId(participantA.memberId())
-            .participantAName(participantA.name())
-            .participantAType(participantA.type())
-            .participantAStatus(StatusType.USABLE)
-
-            .participantBId(participantB.id())
-            .participantBMemberId(participantB.memberId())
-            .participantBName(participantB.name())
-            .participantBType(participantB.type())
-            .participantBStatus(StatusType.USABLE)
-            .lastMessage(matching.getRequestMessage())
-            .lastMessageTime(LocalDateTime.now())
-            .build();
+        ChatRoom chatRoom =
+                ChatRoom.builder()
+                        .matchingId(matching.getId())
+                        .participantAId(participantA.id())
+                        .participantAMemberId(participantA.memberId())
+                        .participantAName(participantA.name())
+                        .participantAType(participantA.type())
+                        .participantAStatus(StatusType.USABLE)
+                        .participantBId(participantB.id())
+                        .participantBMemberId(participantB.memberId())
+                        .participantBName(participantB.name())
+                        .participantBType(participantB.type())
+                        .participantBStatus(StatusType.USABLE)
+                        .lastMessage(matching.getRequestMessage())
+                        .lastMessageTime(LocalDateTime.now())
+                        .build();
 
         chatRoomCommandAdapter.createChatRoom(chatRoom);
 
         // 참여자 프로필 이미지 로드
-        String participantALogoImagePath = getParticipantLogoImagePath(chatRoom.getParticipantAType(),
-            chatRoom.getParticipantAId());
+        String participantALogoImagePath =
+                getParticipantLogoImagePath(
+                        chatRoom.getParticipantAType(), chatRoom.getParticipantAId());
 
-        ChatMessage chatMessage = createChatMessage(
-            matching.getRequestMessage(),
-            chatRoom,
-            participantALogoImagePath
-        );
+        ChatMessage chatMessage =
+                createChatMessage(
+                        matching.getRequestMessage(), chatRoom, participantALogoImagePath);
         chatMessageRepository.save(chatMessage);
 
         // 5. 매칭 상태 업데이트: 채팅방 생성 상태로 변경
@@ -354,7 +383,11 @@ public class ReceiveMatchingService {
         if (matching.getSenderType() == SenderType.PROFILE) {
             String id = matching.getSenderEmailId();
             Member member = memberQueryAdapter.findByEmailId(id);
-            return new ParticipantInfo(id, member.getId(), member.getMemberBasicInform().getMemberName(), SenderType.PROFILE);
+            return new ParticipantInfo(
+                    id,
+                    member.getId(),
+                    member.getMemberBasicInform().getMemberName(),
+                    SenderType.PROFILE);
         } else { // SenderType.TEAM
             String id = matching.getSenderTeamCode();
             Team team = teamQueryAdapter.findByTeamCode(id);
@@ -366,12 +399,13 @@ public class ReceiveMatchingService {
     /**
      * 수신자(ParticipantB) 정보 생성
      *
-     * @param matching         매칭 객체 (수신자 정보 포함)
+     * @param matching 매칭 객체 (수신자 정보 포함)
      * @param receiverMemberId 현재 사용자 memberId (수신자)
-     * @param receiverProfile  현재 사용자 프로필
+     * @param receiverProfile 현재 사용자 프로필
      * @return ParticipantInfo containing 수신자 정보
      */
-    private ParticipantInfo buildReceiverParticipant(final Matching matching, final Long receiverMemberId, final Profile receiverProfile) {
+    private ParticipantInfo buildReceiverParticipant(
+            final Matching matching, final Long receiverMemberId, final Profile receiverProfile) {
         String id;
         String name;
         SenderType type;
@@ -386,7 +420,9 @@ public class ReceiveMatchingService {
             name = team.getTeamName();
             type = SenderType.TEAM;
         } else { // ReceiverType.ANNOUNCEMENT
-            TeamMemberAnnouncement announcement = teamMemberAnnouncementQueryAdapter.findById(matching.getReceiverAnnouncementId());
+            TeamMemberAnnouncement announcement =
+                    teamMemberAnnouncementQueryAdapter.findById(
+                            matching.getReceiverAnnouncementId());
             id = announcement.getTeam().getTeamCode();
             name = announcement.getTeam().getTeamName();
             type = SenderType.TEAM;
@@ -395,22 +431,20 @@ public class ReceiveMatchingService {
     }
 
     private ChatMessage createChatMessage(
-        final String matchingRequestMessage,
-        final ChatRoom chatRoom,
-        final String participantALogoImagePath
-    ) {
+            final String matchingRequestMessage,
+            final ChatRoom chatRoom,
+            final String participantALogoImagePath) {
         // 수신자 측에서만 생성이 가능하다. (수신자는 ParticipantB로 확정)
         return chatMapper.toChatMessage(
-            chatRoom.getId(),
-            matchingRequestMessage,
-            ParticipantType.A_TYPE,
-            chatRoom.getParticipantAId(),
-            chatRoom.getParticipantAMemberId(),
-            chatRoom.getParticipantAName(),
-            participantALogoImagePath,
-            chatRoom.getParticipantAType(),
-            chatRoom.getParticipantBMemberId()
-        );
+                chatRoom.getId(),
+                matchingRequestMessage,
+                ParticipantType.A_TYPE,
+                chatRoom.getParticipantAId(),
+                chatRoom.getParticipantAMemberId(),
+                chatRoom.getParticipantAName(),
+                participantALogoImagePath,
+                chatRoom.getParticipantAType(),
+                chatRoom.getParticipantBMemberId());
     }
 
     private String getParticipantLogoImagePath(SenderType type, String id) {
@@ -423,12 +457,11 @@ public class ReceiveMatchingService {
     }
 
     /**
-     * @param id       Profile의 경우 emailId, Team의 경우 teamCode
+     * @param id Profile의 경우 emailId, Team의 경우 teamCode
      * @param memberId 해당 참여자의 memberId
-     * @param name     사용자 이름 또는 팀 이름
-     * @param type     PROFILE 또는 TEAM
-     */ // 내부 DTO: 채팅방 참여자 정보
-    private record ParticipantInfo(String id, Long memberId, String name, SenderType type) {
-
-    }
+     * @param name 사용자 이름 또는 팀 이름
+     * @param type PROFILE 또는 TEAM
+     */
+    // 내부 DTO: 채팅방 참여자 정보
+    private record ParticipantInfo(String id, Long memberId, String name, SenderType type) {}
 }

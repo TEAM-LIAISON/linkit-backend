@@ -1,8 +1,9 @@
 package liaison.linkit.common.presentation;
 
+import java.time.LocalDateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import java.time.LocalDateTime;
 import liaison.linkit.common.exception.ErrorReason;
 import lombok.Getter;
 

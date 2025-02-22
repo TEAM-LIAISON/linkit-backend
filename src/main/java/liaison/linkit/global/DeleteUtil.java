@@ -2,6 +2,7 @@ package liaison.linkit.global;
 
 import java.util.List;
 import java.util.Set;
+
 import liaison.linkit.chat.domain.ChatRoom;
 import liaison.linkit.chat.implement.ChatRoomCommandAdapter;
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
@@ -95,6 +96,7 @@ public class DeleteUtil {
     private final ChatService chatService;
     private final TeamProductService teamProductService;
     private final TeamProductQueryAdapter teamProductQueryAdapter;
+
     // 회원 탈퇴 케이스
 
     public void quitAccount(final Long memberId, final String refreshToken) {
@@ -109,26 +111,21 @@ public class DeleteUtil {
         }
 
         // 탈퇴하려는 회원이 속한 삭제 가능한 팀들
-        Set<Team> deletableTeams = teamMemberQueryAdapter.getAllDeletableTeamsByMemberId(member.getId());
+        Set<Team> deletableTeams =
+                teamMemberQueryAdapter.getAllDeletableTeamsByMemberId(member.getId());
         log.info("Deleting teams {}", deletableTeams);
 
         // 삭제 가능한 팀의 ID 리스트
-        List<Long> deletableTeamIds = deletableTeams.stream()
-            .map(Team::getId)
-            .toList();
+        List<Long> deletableTeamIds = deletableTeams.stream().map(Team::getId).toList();
         log.info("Deleting teams {}", deletableTeamIds);
 
-        List<String> deletableTeamCodes = deletableTeams.stream()
-            .map(Team::getTeamCode)
-            .toList();
+        List<String> deletableTeamCodes = deletableTeams.stream().map(Team::getTeamCode).toList();
 
         // ==================================================================================================================================================================
 
         // 회원이 참여하던 채팅방 나가기
         final List<ChatRoom> chatRooms = chatRoomQueryAdapter.findAllChatRoomsByMemberId(memberId);
-        final List<Long> deletableChatRooms = chatRooms.stream()
-            .map(ChatRoom::getId)
-            .toList();
+        final List<Long> deletableChatRooms = chatRooms.stream().map(ChatRoom::getId).toList();
 
         for (Long chatRoomId : deletableChatRooms) {
             chatService.leaveChatRoom(memberId, chatRoomId);
@@ -178,13 +175,14 @@ public class DeleteUtil {
         profileActivityCommandAdapter.removeProfileActivitiesByProfileId(profile.getId());
 
         // 3. 포트폴리오 데이터 삭제
-        List<ProfilePortfolio> profilePortfolios = profilePortfolioQueryAdapter.getProfilePortfolios(profile.getId());
-        final List<Long> deletablePortfolioIds = profilePortfolios.stream()
-            .map(ProfilePortfolio::getId)
-            .toList();
+        List<ProfilePortfolio> profilePortfolios =
+                profilePortfolioQueryAdapter.getProfilePortfolios(profile.getId());
+        final List<Long> deletablePortfolioIds =
+                profilePortfolios.stream().map(ProfilePortfolio::getId).toList();
 
         for (Long portfolioId : deletablePortfolioIds) {
-            profilePortfolioService.removeProfilePortfolio(profile.getMember().getId(), portfolioId);
+            profilePortfolioService.removeProfilePortfolio(
+                    profile.getMember().getId(), portfolioId);
         }
 
         // 4. 학력 데이터 삭제
@@ -202,10 +200,13 @@ public class DeleteUtil {
 
     public void deleteTeam(final String teamCode) {
         final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-        final Set<TeamMemberAnnouncement> deletableTeamMemberAnnouncements = teamMemberAnnouncementQueryAdapter.getAllDeletableTeamMemberAnnouncementsByTeamId(team.getId());
-        final List<Long> deletableAnnouncementIds = deletableTeamMemberAnnouncements.stream()
-            .map(TeamMemberAnnouncement::getId)
-            .toList();
+        final Set<TeamMemberAnnouncement> deletableTeamMemberAnnouncements =
+                teamMemberAnnouncementQueryAdapter.getAllDeletableTeamMemberAnnouncementsByTeamId(
+                        team.getId());
+        final List<Long> deletableAnnouncementIds =
+                deletableTeamMemberAnnouncements.stream()
+                        .map(TeamMemberAnnouncement::getId)
+                        .toList();
 
         // [1. 팀 로그 삭제]
         deleteTeamLog(team.getId());
@@ -227,9 +228,8 @@ public class DeleteUtil {
 
         // 프로덕트 데이터 삭제
         List<TeamProduct> teamProducts = teamProductQueryAdapter.getTeamProducts(team.getId());
-        final List<Long> deletableTeamProductIds = teamProducts.stream()
-            .map(TeamProduct::getId)
-            .toList();
+        final List<Long> deletableTeamProductIds =
+                teamProducts.stream().map(TeamProduct::getId).toList();
         for (Long productId : deletableTeamProductIds) {
             deleteAllTeamProducts(team.getTeamCode(), productId);
         }

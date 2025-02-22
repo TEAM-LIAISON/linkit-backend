@@ -19,8 +19,11 @@ public class ProfileAwardsCommandAdapter {
         profileAwardsRepository.delete(profileAwards);
     }
 
-    public ProfileAwards updateProfileAwards(final Long profileAwardsId, final UpdateProfileAwardsRequest updateProfileAwardsRequest) {
-        return profileAwardsRepository.updateProfileAwards(profileAwardsId, updateProfileAwardsRequest);
+    public ProfileAwards updateProfileAwards(
+            final Long profileAwardsId,
+            final UpdateProfileAwardsRequest updateProfileAwardsRequest) {
+        return profileAwardsRepository.updateProfileAwards(
+                profileAwardsId, updateProfileAwardsRequest);
     }
 
     public void removeProfileAwardsByProfileId(final Long profileId) {

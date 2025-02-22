@@ -18,11 +18,7 @@ public class RegionRepositoryCustomImpl implements RegionRepositoryCustom {
 
         return jpaQueryFactory
                 .selectFrom(region)
-                .where(
-                        region.cityName.eq(cityName),
-                        region.divisionName.eq(divisionName)
-                )
+                .where(region.cityName.eq(cityName), region.divisionName.eq(divisionName))
                 .fetchOne();
-
     }
 }

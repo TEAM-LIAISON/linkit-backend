@@ -1,6 +1,7 @@
 package liaison.linkit.team.implement.product;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.product.ProductLink;
 import liaison.linkit.team.domain.repository.product.ProductLinkRepository;

@@ -1,6 +1,7 @@
 package liaison.linkit.global.util;
 
 import java.security.Principal;
+
 import lombok.Getter;
 
 @Getter

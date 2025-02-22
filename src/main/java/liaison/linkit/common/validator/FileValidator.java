@@ -15,7 +15,6 @@ public class FileValidator {
         if (multipartFile != null) {
             validateSizeOfFile(multipartFile);
             return true;
-
         }
         return false;
     }

@@ -14,5 +14,4 @@ public class TeamScrapRequestDTO {
     public static class UpdateTeamScrapRequest {
         private boolean changeScrapValue;
     }
-
 }

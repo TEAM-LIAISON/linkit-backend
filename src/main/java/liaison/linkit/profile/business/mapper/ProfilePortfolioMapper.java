@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.profile.domain.portfolio.ProfilePortfolio;
 import liaison.linkit.profile.domain.portfolio.ProjectLink;
@@ -27,226 +28,239 @@ import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRespons
 @Mapper
 public class ProfilePortfolioMapper {
 
-    public ProfilePortfolio toAddProfilePortfolio(final Profile profile, final AddProfilePortfolioRequest addProfilePortfolioRequest) {
-        return ProfilePortfolio
-            .builder()
-            .id(null)
-            .profile(profile)
-            .projectName(addProfilePortfolioRequest.getProjectName())
-            .projectLineDescription(addProfilePortfolioRequest.getProjectLineDescription())
-            .projectSize(addProfilePortfolioRequest.getProjectSize())
-            .projectHeadCount(addProfilePortfolioRequest.getProjectHeadCount())
-            .projectTeamComposition(addProfilePortfolioRequest.getProjectTeamComposition())
-            .projectStartDate(addProfilePortfolioRequest.getProjectStartDate())
-            .projectEndDate(addProfilePortfolioRequest.getProjectEndDate())
-            .isProjectInProgress(addProfilePortfolioRequest.getIsProjectInProgress())
-            .projectDescription(addProfilePortfolioRequest.getProjectDescription())
-            .build();
+    public ProfilePortfolio toAddProfilePortfolio(
+            final Profile profile, final AddProfilePortfolioRequest addProfilePortfolioRequest) {
+        return ProfilePortfolio.builder()
+                .id(null)
+                .profile(profile)
+                .projectName(addProfilePortfolioRequest.getProjectName())
+                .projectLineDescription(addProfilePortfolioRequest.getProjectLineDescription())
+                .projectSize(addProfilePortfolioRequest.getProjectSize())
+                .projectHeadCount(addProfilePortfolioRequest.getProjectHeadCount())
+                .projectTeamComposition(addProfilePortfolioRequest.getProjectTeamComposition())
+                .projectStartDate(addProfilePortfolioRequest.getProjectStartDate())
+                .projectEndDate(addProfilePortfolioRequest.getProjectEndDate())
+                .isProjectInProgress(addProfilePortfolioRequest.getIsProjectInProgress())
+                .projectDescription(addProfilePortfolioRequest.getProjectDescription())
+                .build();
     }
 
     public List<ProjectRoleContribution> toAddProjectRoleContributions(
-        final ProfilePortfolio profilePortfolio,
-        final List<ProfilePortfolioRequestDTO.ProjectRoleAndContribution> projectRoleAndContributions
-    ) {
+            final ProfilePortfolio profilePortfolio,
+            final List<ProfilePortfolioRequestDTO.ProjectRoleAndContribution>
+                    projectRoleAndContributions) {
         return projectRoleAndContributions.stream()
-            .map(projectRoleContribution -> ProjectRoleContribution.builder()
-                .profilePortfolio(profilePortfolio)
-                .projectRole(projectRoleContribution.getProjectRole())
-                .projectContribution(projectRoleContribution.getProjectContribution())
-                .build())
-            .collect(Collectors.toList());
+                .map(
+                        projectRoleContribution ->
+                                ProjectRoleContribution.builder()
+                                        .profilePortfolio(profilePortfolio)
+                                        .projectRole(projectRoleContribution.getProjectRole())
+                                        .projectContribution(
+                                                projectRoleContribution.getProjectContribution())
+                                        .build())
+                .collect(Collectors.toList());
     }
 
     public List<ProjectLink> toAddProjectLinks(
-        final ProfilePortfolio profilePortfolio,
-        final List<ProjectLinkNameAndUrls> projectLinkNameAndUrls
-    ) {
+            final ProfilePortfolio profilePortfolio,
+            final List<ProjectLinkNameAndUrls> projectLinkNameAndUrls) {
         return projectLinkNameAndUrls.stream()
-            .map(projectLink -> ProjectLink.builder()
-                .profilePortfolio(profilePortfolio)
-                .projectLinkName(projectLink.getProjectLinkName())
-                .projectLinkUrl(projectLink.getProjectLinkUrl())
-                .build())
-            .collect(Collectors.toList());
+                .map(
+                        projectLink ->
+                                ProjectLink.builder()
+                                        .profilePortfolio(profilePortfolio)
+                                        .projectLinkName(projectLink.getProjectLinkName())
+                                        .projectLinkUrl(projectLink.getProjectLinkUrl())
+                                        .build())
+                .collect(Collectors.toList());
     }
 
     public ProfilePortfolioResponseDTO.AddProfilePortfolioResponse toAddProfilePortfolioResponse(
-        final ProfilePortfolio profilePortfolio,
-        final List<ProjectRoleAndContribution> projectRoleAndContributions,
-        final List<ProjectSkillName> projectSkillNames,
-        final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls,
-        final PortfolioImages portfolioImages
-    ) {
-        return AddProfilePortfolioResponse
-            .builder()
-            .projectName(profilePortfolio.getProjectName())
-            .projectLineDescription(profilePortfolio.getProjectLineDescription())
-            .projectSize(profilePortfolio.getProjectSize())
-            .projectHeadCount(profilePortfolio.getProjectHeadCount())
-            .projectTeamComposition(profilePortfolio.getProjectTeamComposition())
-            .projectStartDate(profilePortfolio.getProjectStartDate())
-            .projectEndDate(profilePortfolio.getProjectEndDate())
-            .isProjectInProgress(profilePortfolio.isProjectInProgress())
-            .projectRoleAndContributions(projectRoleAndContributions)
-            .projectSkillNames(projectSkillNames)
-            .projectDescription(profilePortfolio.getProjectDescription())
-            .projectLinkNameAndUrls(projectLinkNameAndUrls)
-            .portfolioImages(portfolioImages)
-            .build();
+            final ProfilePortfolio profilePortfolio,
+            final List<ProjectRoleAndContribution> projectRoleAndContributions,
+            final List<ProjectSkillName> projectSkillNames,
+            final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls,
+            final PortfolioImages portfolioImages) {
+        return AddProfilePortfolioResponse.builder()
+                .projectName(profilePortfolio.getProjectName())
+                .projectLineDescription(profilePortfolio.getProjectLineDescription())
+                .projectSize(profilePortfolio.getProjectSize())
+                .projectHeadCount(profilePortfolio.getProjectHeadCount())
+                .projectTeamComposition(profilePortfolio.getProjectTeamComposition())
+                .projectStartDate(profilePortfolio.getProjectStartDate())
+                .projectEndDate(profilePortfolio.getProjectEndDate())
+                .isProjectInProgress(profilePortfolio.isProjectInProgress())
+                .projectRoleAndContributions(projectRoleAndContributions)
+                .projectSkillNames(projectSkillNames)
+                .projectDescription(profilePortfolio.getProjectDescription())
+                .projectLinkNameAndUrls(projectLinkNameAndUrls)
+                .portfolioImages(portfolioImages)
+                .build();
     }
 
-    public ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse toUpdateProfilePortfolioResponse(
-        final ProfilePortfolio profilePortfolio,
-        final List<ProjectRoleAndContribution> projectRoleAndContributions,
-        final List<ProjectSkillName> projectSkillNames,
-        final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls,
-        final PortfolioImages portfolioImages
-    ) {
-        return UpdateProfilePortfolioResponse
-            .builder()
-            .projectName(profilePortfolio.getProjectName())
-            .projectLineDescription(profilePortfolio.getProjectLineDescription())
-            .projectSize(profilePortfolio.getProjectSize())
-            .projectHeadCount(profilePortfolio.getProjectHeadCount())
-            .projectTeamComposition(profilePortfolio.getProjectTeamComposition())
-            .projectStartDate(profilePortfolio.getProjectStartDate())
-            .projectEndDate(profilePortfolio.getProjectEndDate())
-            .isProjectInProgress(profilePortfolio.isProjectInProgress())
-            .projectRoleAndContributions(projectRoleAndContributions)
-            .projectSkillNames(projectSkillNames)
-            .projectDescription(profilePortfolio.getProjectDescription())
-            .projectLinkNameAndUrls(projectLinkNameAndUrls)
-            .portfolioImages(portfolioImages)
-            .build();
+    public ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse
+            toUpdateProfilePortfolioResponse(
+                    final ProfilePortfolio profilePortfolio,
+                    final List<ProjectRoleAndContribution> projectRoleAndContributions,
+                    final List<ProjectSkillName> projectSkillNames,
+                    final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls>
+                            projectLinkNameAndUrls,
+                    final PortfolioImages portfolioImages) {
+        return UpdateProfilePortfolioResponse.builder()
+                .projectName(profilePortfolio.getProjectName())
+                .projectLineDescription(profilePortfolio.getProjectLineDescription())
+                .projectSize(profilePortfolio.getProjectSize())
+                .projectHeadCount(profilePortfolio.getProjectHeadCount())
+                .projectTeamComposition(profilePortfolio.getProjectTeamComposition())
+                .projectStartDate(profilePortfolio.getProjectStartDate())
+                .projectEndDate(profilePortfolio.getProjectEndDate())
+                .isProjectInProgress(profilePortfolio.isProjectInProgress())
+                .projectRoleAndContributions(projectRoleAndContributions)
+                .projectSkillNames(projectSkillNames)
+                .projectDescription(profilePortfolio.getProjectDescription())
+                .projectLinkNameAndUrls(projectLinkNameAndUrls)
+                .portfolioImages(portfolioImages)
+                .build();
     }
 
     public ProfilePortfolioResponseDTO.ProfilePortfolioDetail toProfilePortfolioDetail(
-        final ProfilePortfolio profilePortfolio,
-        final List<ProjectRoleAndContribution> projectRoleAndContributions,
-        final List<ProjectSkillName> projectSkillNames,
-        final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls,
-        final PortfolioImages portfolioImages
-    ) {
+            final ProfilePortfolio profilePortfolio,
+            final List<ProjectRoleAndContribution> projectRoleAndContributions,
+            final List<ProjectSkillName> projectSkillNames,
+            final List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> projectLinkNameAndUrls,
+            final PortfolioImages portfolioImages) {
 
-        return ProfilePortfolioResponseDTO.ProfilePortfolioDetail
-            .builder()
-            .profilePortfolioId(profilePortfolio.getId())
-            .projectName(profilePortfolio.getProjectName())
-            .projectLineDescription(profilePortfolio.getProjectLineDescription())
-            .projectSize(profilePortfolio.getProjectSize())
-            .projectHeadCount(profilePortfolio.getProjectHeadCount())
-            .projectTeamComposition(profilePortfolio.getProjectTeamComposition())
-            .projectStartDate(profilePortfolio.getProjectStartDate())
-            .projectEndDate(profilePortfolio.getProjectEndDate())
-            .isProjectInProgress(profilePortfolio.isProjectInProgress())
-            .projectRoleAndContributions(projectRoleAndContributions)
-            .projectSkillNames(projectSkillNames)
-            .projectDescription(profilePortfolio.getProjectDescription())
-            .projectLinkNameAndUrls(projectLinkNameAndUrls)
-            .portfolioImages(portfolioImages)
-            .build();
+        return ProfilePortfolioResponseDTO.ProfilePortfolioDetail.builder()
+                .profilePortfolioId(profilePortfolio.getId())
+                .projectName(profilePortfolio.getProjectName())
+                .projectLineDescription(profilePortfolio.getProjectLineDescription())
+                .projectSize(profilePortfolio.getProjectSize())
+                .projectHeadCount(profilePortfolio.getProjectHeadCount())
+                .projectTeamComposition(profilePortfolio.getProjectTeamComposition())
+                .projectStartDate(profilePortfolio.getProjectStartDate())
+                .projectEndDate(profilePortfolio.getProjectEndDate())
+                .isProjectInProgress(profilePortfolio.isProjectInProgress())
+                .projectRoleAndContributions(projectRoleAndContributions)
+                .projectSkillNames(projectSkillNames)
+                .projectDescription(profilePortfolio.getProjectDescription())
+                .projectLinkNameAndUrls(projectLinkNameAndUrls)
+                .portfolioImages(portfolioImages)
+                .build();
     }
 
-    public ProfilePortfolioResponseDTO.ProfilePortfolioItem toProfilePortfolioItem(final ProfilePortfolio profilePortfolio, final List<String> projectRoles) {
+    public ProfilePortfolioResponseDTO.ProfilePortfolioItem toProfilePortfolioItem(
+            final ProfilePortfolio profilePortfolio, final List<String> projectRoles) {
         return ProfilePortfolioResponseDTO.ProfilePortfolioItem.builder()
-            .profilePortfolioId(profilePortfolio.getId())
-            .projectName(profilePortfolio.getProjectName())
-            .projectLineDescription(profilePortfolio.getProjectLineDescription())
-            .projectSize(profilePortfolio.getProjectSize())
-            .projectStartDate(profilePortfolio.getProjectStartDate())
-            .projectEndDate(profilePortfolio.getProjectEndDate())
-            .isProjectInProgress(profilePortfolio.isProjectInProgress())
-            .projectRoles(projectRoles)
-            .projectRepresentImagePath(profilePortfolio.getProjectRepresentImagePath())
-            .build();
+                .profilePortfolioId(profilePortfolio.getId())
+                .projectName(profilePortfolio.getProjectName())
+                .projectLineDescription(profilePortfolio.getProjectLineDescription())
+                .projectSize(profilePortfolio.getProjectSize())
+                .projectStartDate(profilePortfolio.getProjectStartDate())
+                .projectEndDate(profilePortfolio.getProjectEndDate())
+                .isProjectInProgress(profilePortfolio.isProjectInProgress())
+                .projectRoles(projectRoles)
+                .projectRepresentImagePath(profilePortfolio.getProjectRepresentImagePath())
+                .build();
     }
 
-    public ProfilePortfolioResponseDTO.ProfilePortfolioItems toProfilePortfolioItems(final List<ProfilePortfolio> profilePortfolios, final Map<Long, List<String>> projectRolesMap) {
-        List<ProfilePortfolioItem> items = profilePortfolios.stream()
-            .map(profilePortfolio -> {
-                List<String> projectRoles = projectRolesMap.getOrDefault(profilePortfolio.getId(), Collections.emptyList());
-                return toProfilePortfolioItem(profilePortfolio, projectRoles);
-            })
-            .collect(Collectors.toList());
+    public ProfilePortfolioResponseDTO.ProfilePortfolioItems toProfilePortfolioItems(
+            final List<ProfilePortfolio> profilePortfolios,
+            final Map<Long, List<String>> projectRolesMap) {
+        List<ProfilePortfolioItem> items =
+                profilePortfolios.stream()
+                        .map(
+                                profilePortfolio -> {
+                                    List<String> projectRoles =
+                                            projectRolesMap.getOrDefault(
+                                                    profilePortfolio.getId(),
+                                                    Collections.emptyList());
+                                    return toProfilePortfolioItem(profilePortfolio, projectRoles);
+                                })
+                        .collect(Collectors.toList());
 
         return ProfilePortfolioResponseDTO.ProfilePortfolioItems.builder()
-            .profilePortfolioItems(items)
-            .build();
+                .profilePortfolioItems(items)
+                .build();
     }
 
     public List<ProfilePortfolioItem> profilePortfoliosToProfileProfilePortfolioItems(
-        final List<ProfilePortfolio> profilePortfolios,
-        final Map<Long, List<String>> projectRolesMap
-    ) {
+            final List<ProfilePortfolio> profilePortfolios,
+            final Map<Long, List<String>> projectRolesMap) {
         return profilePortfolios.stream()
-            .map(profilePortfolio -> {
-                List<String> projectRoles = projectRolesMap.getOrDefault(
-                    profilePortfolio.getId(),
-                    Collections.emptyList()
-                );
-                return toProfilePortfolioItem(profilePortfolio, projectRoles);
-            })
-            .collect(Collectors.toList());
+                .map(
+                        profilePortfolio -> {
+                            List<String> projectRoles =
+                                    projectRolesMap.getOrDefault(
+                                            profilePortfolio.getId(), Collections.emptyList());
+                            return toProfilePortfolioItem(profilePortfolio, projectRoles);
+                        })
+                .collect(Collectors.toList());
     }
 
-    public List<ProjectRoleAndContribution> toProjectRoleAndContributions(final List<ProjectRoleContribution> projectRoleContributions) {
+    public List<ProjectRoleAndContribution> toProjectRoleAndContributions(
+            final List<ProjectRoleContribution> projectRoleContributions) {
         return projectRoleContributions.stream()
-            .map(prc -> ProjectRoleAndContribution.builder()
-                .projectRole(prc.getProjectRole())
-                .projectContribution(prc.getProjectContribution())
-                .build())
-            .collect(Collectors.toList());
+                .map(
+                        prc ->
+                                ProjectRoleAndContribution.builder()
+                                        .projectRole(prc.getProjectRole())
+                                        .projectContribution(prc.getProjectContribution())
+                                        .build())
+                .collect(Collectors.toList());
     }
 
-    public PortfolioImages toPortfolioImages(final String projectRepresentImagePath, final List<String> projectSubImagePaths) {
-        List<PortfolioSubImage> portfolioSubImages = projectSubImagePaths.stream()
-            .map(path -> PortfolioSubImage.builder()
-                .projectSubImagePath(path)
-                .build())
-            .collect(Collectors.toList());
+    public PortfolioImages toPortfolioImages(
+            final String projectRepresentImagePath, final List<String> projectSubImagePaths) {
+        List<PortfolioSubImage> portfolioSubImages =
+                projectSubImagePaths.stream()
+                        .map(path -> PortfolioSubImage.builder().projectSubImagePath(path).build())
+                        .collect(Collectors.toList());
 
         return PortfolioImages.builder()
-            .projectRepresentImagePath(projectRepresentImagePath)
-            .portfolioSubImages(portfolioSubImages)
-            .build();
+                .projectRepresentImagePath(projectRepresentImagePath)
+                .portfolioSubImages(portfolioSubImages)
+                .build();
     }
-
 
     public List<ProjectSkillName> toProjectSkillNames(final List<ProjectSkill> projectSkills) {
         return projectSkills.stream()
-            .map(ps -> ProjectSkillName.builder()
-                .projectSkillName(ps.getSkill().getSkillName())
-                .build()
-            ).collect(Collectors.toList());
+                .map(
+                        ps ->
+                                ProjectSkillName.builder()
+                                        .projectSkillName(ps.getSkill().getSkillName())
+                                        .build())
+                .collect(Collectors.toList());
     }
 
-    public List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> toProjectLinks(final List<ProjectLink> projectLinks) {
+    public List<ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls> toProjectLinks(
+            final List<ProjectLink> projectLinks) {
         return projectLinks.stream()
-            .map(pl -> ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls.builder()
-                .projectLinkName(pl.getProjectLinkName())
-                .projectLinkUrl(pl.getProjectLinkUrl())
-                .build())
-            .collect(Collectors.toList());
+                .map(
+                        pl ->
+                                ProfilePortfolioResponseDTO.ProjectLinkNameAndUrls.builder()
+                                        .projectLinkName(pl.getProjectLinkName())
+                                        .projectLinkUrl(pl.getProjectLinkUrl())
+                                        .build())
+                .collect(Collectors.toList());
     }
 
     public List<ProjectSkill> toAddProjectSkills(
-        final ProfilePortfolio profilePortfolio,
-        final List<Skill> skills
-    ) {
+            final ProfilePortfolio profilePortfolio, final List<Skill> skills) {
         return skills.stream()
-            .map(skill -> ProjectSkill.builder()
-                .id(null)
-                .portfolio(profilePortfolio)
-                .skill(skill)
-                .build())
-            .collect(Collectors.toList());
+                .map(
+                        skill ->
+                                ProjectSkill.builder()
+                                        .id(null)
+                                        .portfolio(profilePortfolio)
+                                        .skill(skill)
+                                        .build())
+                .collect(Collectors.toList());
     }
 
     public ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse toRemoveProfilePortfolio(
-        final Long profilePortfolioId
-    ) {
+            final Long profilePortfolioId) {
         return RemoveProfilePortfolioResponse.builder()
-            .profilePortfolioId(profilePortfolioId)
-            .build();
+                .profilePortfolioId(profilePortfolioId)
+                .build();
     }
 }

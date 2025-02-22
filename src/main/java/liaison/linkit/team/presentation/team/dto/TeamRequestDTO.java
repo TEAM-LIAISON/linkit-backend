@@ -1,11 +1,13 @@
 package liaison.linkit.team.presentation.team.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import java.util.List;
+
 import liaison.linkit.team.domain.teamMember.type.TeamMemberManagingTeamState;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -60,9 +62,8 @@ public class TeamRequestDTO {
 
         @NotBlank(message = "팀 아이디를 입력해주세요.")
         @Pattern(
-            regexp = "^[A-Za-z][A-Za-z0-9]*$",
-            message = "팀 아이디는 영어로 시작해야 하며, 영어 대소문자와 숫자만 사용할 수 있습니다."
-        )
+                regexp = "^[A-Za-z][A-Za-z0-9]*$",
+                message = "팀 아이디는 영어로 시작해야 하며, 영어 대소문자와 숫자만 사용할 수 있습니다.")
         private String teamCode;
 
         @NotBlank(message = "팀 한 줄 소개를 입력해주세요.")

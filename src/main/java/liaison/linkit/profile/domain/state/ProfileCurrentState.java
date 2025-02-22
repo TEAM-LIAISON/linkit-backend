@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.common.domain.ProfileState;
 import liaison.linkit.profile.domain.profile.Profile;
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ProfileCurrentState extends BaseDateTimeEntity {
-    
+
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

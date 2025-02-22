@@ -22,10 +22,11 @@ public class CsvSkillWriter implements ItemWriter<SkillCsvData> {
 
         Chunk<Skill> skills = new Chunk<>();
 
-        chunk.forEach(skillCsvData -> {
-            Skill skill = Skill.of(skillCsvData.getSkillName());
-            skills.add(skill);
-        });
+        chunk.forEach(
+                skillCsvData -> {
+                    Skill skill = Skill.of(skillCsvData.getSkillName());
+                    skills.add(skill);
+                });
 
         skillRepository.saveAll(skills);
     }

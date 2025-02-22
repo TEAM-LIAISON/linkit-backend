@@ -8,5 +8,4 @@ public class CannotRequestMyProfileException extends BaseCodeException {
     private CannotRequestMyProfileException() {
         super(MatchingErrorCode.CANNOT_REQUEST_MY_PROFILE);
     }
-
 }

@@ -2,6 +2,7 @@ package liaison.linkit.profile.presentation.profile.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO.ProfileActivityItem;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.ProfileAwardsItem;
@@ -31,16 +32,8 @@ public class ProfileResponseDTO {
         private ProfileCompletionMenu profileCompletionMenu = new ProfileCompletionMenu();
 
         @Builder.Default
-        private ProfileBooleanMenu profileBooleanMenu = new ProfileBooleanMenu(
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false,
-            false
-        );
+        private ProfileBooleanMenu profileBooleanMenu =
+                new ProfileBooleanMenu(false, false, false, false, false, false, false, false);
     }
 
     @Builder
@@ -83,11 +76,9 @@ public class ProfileResponseDTO {
         private String majorPosition;
         private String subPosition;
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
-        @Builder.Default
-        private List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
+        @Builder.Default private List<ProfileTeamInform> profileTeamInforms = new ArrayList<>();
     }
 
     @Builder
@@ -145,7 +136,8 @@ public class ProfileResponseDTO {
         private Boolean isMyProfile;
 
         @Builder.Default
-        private ProfileCompletionMenu profileCompletionMenu = new ProfileCompletionMenu(); // 프로필 완성도
+        private ProfileCompletionMenu profileCompletionMenu =
+                new ProfileCompletionMenu(); // 프로필 완성도
 
         @Builder.Default
         private ProfileInformMenu profileInformMenu = new ProfileInformMenu(); // 프로필 카드

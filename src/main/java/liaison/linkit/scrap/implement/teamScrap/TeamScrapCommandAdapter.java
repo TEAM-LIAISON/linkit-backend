@@ -1,6 +1,7 @@
 package liaison.linkit.scrap.implement.teamScrap;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.scrap.domain.TeamScrap;
 import liaison.linkit.scrap.domain.repository.teamScrap.TeamScrapRepository;

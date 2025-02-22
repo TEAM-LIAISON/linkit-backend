@@ -3,6 +3,7 @@ package liaison.linkit.team.presentation.team.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,9 +32,8 @@ public class TeamResponseDTO {
         // 팀 삭제 요청 상태
         private Boolean isTeamDeleteRequester;
 
-        @Builder.Default
-        private TeamInformMenu teamInformMenu = new TeamInformMenu();
-    
+        @Builder.Default private TeamInformMenu teamInformMenu = new TeamInformMenu();
+
         private Boolean isTeamPublic;
     }
 
@@ -52,14 +52,11 @@ public class TeamResponseDTO {
 
         private String teamShortDescription;
 
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+        @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem();
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
-        @Builder.Default
-        private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
+        @Builder.Default private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
 
         private Boolean isTeamPublic;
     }
@@ -79,14 +76,11 @@ public class TeamResponseDTO {
 
         private String teamShortDescription;
 
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+        @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem();
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
-        @Builder.Default
-        private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
+        @Builder.Default private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
 
         private Boolean isTeamPublic;
     }
@@ -106,8 +100,7 @@ public class TeamResponseDTO {
     @AllArgsConstructor
     public static class TeamInformMenu {
 
-        @Builder.Default
-        private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
+        @Builder.Default private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
 
         private Boolean isTeamScrap;
 
@@ -118,16 +111,12 @@ public class TeamResponseDTO {
         private String teamShortDescription;
         private String teamLogoImagePath;
 
-
         // 팀 규모 정보
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+        @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem();
 
         // 지역 정보
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
     }
-
 
     // 팀 현재 상태
     @Builder
@@ -153,8 +142,7 @@ public class TeamResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamItems {
-        @Builder.Default
-        final List<TeamInformMenu> teamInformMenus = new ArrayList<>();
+        @Builder.Default final List<TeamInformMenu> teamInformMenus = new ArrayList<>();
     }
 
     // 팀 삭제 요청 응답

@@ -1,10 +1,10 @@
 package liaison.linkit.team.implement.teamMember;
 
-
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberInvitationRepository;
+import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;
 import lombok.RequiredArgsConstructor;
 
@@ -30,11 +30,14 @@ public class TeamMemberInvitationQueryAdapter {
         return teamMemberInvitationRepository.getTeamMemberInvitationsInPending(teamId);
     }
 
-    public TeamMemberInvitation getTeamMemberInvitationInPendingState(final String email, final Team team) {
+    public TeamMemberInvitation getTeamMemberInvitationInPendingState(
+            final String email, final Team team) {
         return teamMemberInvitationRepository.getTeamMemberInvitationInPendingState(email, team);
     }
 
-    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(final String teamCode, final String email) {
-        return teamMemberInvitationRepository.getTeamMemberInvitationByTeamCodeAndEmail(teamCode, email);
+    public TeamMemberInvitation getTeamMemberInvitationByTeamCodeAndEmail(
+            final String teamCode, final String email) {
+        return teamMemberInvitationRepository.getTeamMemberInvitationByTeamCodeAndEmail(
+                teamCode, email);
     }
 }

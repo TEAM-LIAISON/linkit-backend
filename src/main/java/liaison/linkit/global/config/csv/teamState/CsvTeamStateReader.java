@@ -1,6 +1,5 @@
 package liaison.linkit.global.config.csv.teamState;
 
-import liaison.linkit.global.config.csv.profileState.ProfileStateCsvData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
@@ -12,11 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-
 @Configuration
 @RequiredArgsConstructor
 public class CsvTeamStateReader {
-    
+
     @Value("${teamState.csv-path}")
     private String teamStateCsv;
 
@@ -39,7 +37,8 @@ public class CsvTeamStateReader {
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
         // 매칭할 class 타입 지정(필드 지정)
-        BeanWrapperFieldSetMapper<TeamStateCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        BeanWrapperFieldSetMapper<TeamStateCsvData> beanWrapperFieldSetMapper =
+                new BeanWrapperFieldSetMapper<>();
         beanWrapperFieldSetMapper.setTargetType(TeamStateCsvData.class);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);

@@ -1,6 +1,7 @@
 package liaison.linkit.login.service;
 
 import java.util.Optional;
+
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
 import liaison.linkit.global.DeleteUtil;
 import liaison.linkit.login.business.AccountMapper;
@@ -54,15 +55,17 @@ public class LoginService {
     private final DiscordMemberReportService discordMemberReportService;
 
     // 회원이 로그인한다
-    public AccountResponseDTO.LoginServiceResponse login(final String providerName, final String code) {
+    public AccountResponseDTO.LoginServiceResponse login(
+            final String providerName, final String code) {
         final OauthProvider provider = oauthProviders.mapping(providerName);
 
         final OauthUserInfo oauthUserInfo = provider.getUserInfo(code);
 
-        final Member member = findOrCreateMember(
-            oauthUserInfo.getSocialLoginId(),
-            oauthUserInfo.getEmail(),
-            provider.getPlatform(providerName));
+        final Member member =
+                findOrCreateMember(
+                        oauthUserInfo.getSocialLoginId(),
+                        oauthUserInfo.getEmail(),
+                        provider.getPlatform(providerName));
 
         final boolean isMemberBasicInform = member.isCreateMemberBasicInform();
 
@@ -70,7 +73,8 @@ public class LoginService {
         final MemberTokens memberTokens = jwtProvider.generateLoginToken(member.getId().toString());
 
         // 생성한 토큰 중 refreshToken을 레디스에 저장한다
-        final RefreshToken savedRefreshToken = new RefreshToken(memberTokens.getRefreshToken(), member.getId());
+        final RefreshToken savedRefreshToken =
+                new RefreshToken(memberTokens.getRefreshToken(), member.getId());
         refreshTokenRepository.save(savedRefreshToken);
 
         // 1) memberName 가져오기 (null-safe)
@@ -81,37 +85,41 @@ public class LoginService {
         }
 
         return accountMapper.toLogin(
-            memberTokens,
-            member.getEmail(),
-            member.getEmailId(),
-            memberName,
-            isMemberBasicInform
-        );
+                memberTokens,
+                member.getEmail(),
+                member.getEmailId(),
+                memberName,
+                isMemberBasicInform);
     }
 
-    private Member findOrCreateMember(final String socialLoginId, final String email, final Platform platform) {
+    private Member findOrCreateMember(
+            final String socialLoginId, final String email, final Platform platform) {
         final Optional<Member> member = memberQueryAdapter.findBySocialLoginId(socialLoginId);
         return member.orElseGet(() -> createMember(socialLoginId, email, platform));
     }
 
     @Transactional
-    public Member createMember(final String socialLoginId, final String email, final Platform platform) {
+    public Member createMember(
+            final String socialLoginId, final String email, final Platform platform) {
         int tryCount = 0;
         while (tryCount < MAX_TRY_COUNT) {
             if (!memberQueryAdapter.existsByEmail(email)) {
-                final Member member = memberCommandAdapter
-                    .create(new Member(socialLoginId, email, null, null, platform));
+                final Member member =
+                        memberCommandAdapter.create(
+                                new Member(socialLoginId, email, null, null, platform));
 
-                memberBasicInformCommandAdapter.create(new MemberBasicInform(
-                    null, member, null, null, false, false, false, false));
+                memberBasicInformCommandAdapter.create(
+                        new MemberBasicInform(
+                                null, member, null, null, false, false, false, false));
 
                 profileCommandAdapter.create(Profile.builder().member(member).build());
 
-                MemberCreateReportDto memberCreateReportDto = MemberCreateReportDto.builder()
-                    .memberId(member.getId())
-                    .email(member.getEmail())
-                    .createdAt(member.getCreatedAt())
-                    .build();
+                MemberCreateReportDto memberCreateReportDto =
+                        MemberCreateReportDto.builder()
+                                .memberId(member.getId())
+                                .email(member.getEmail())
+                                .createdAt(member.getCreatedAt())
+                                .build();
 
                 discordMemberReportService.sendCreateMemberReport(memberCreateReportDto);
 
@@ -125,28 +133,32 @@ public class LoginService {
     }
 
     public AccountResponseDTO.RenewTokenResponse renewalAccessToken(
-        final String refreshTokenRequest, final String authorizationHeader) {
+            final String refreshTokenRequest, final String authorizationHeader) {
         // 기존에 사용하던 accessToken을 추출한다
         final String accessToken = bearerExtractor.extractAccessToken(authorizationHeader);
         return getRenewalToken(refreshTokenRequest);
     }
 
-    private AccountResponseDTO.RenewTokenResponse getRenewalToken(final String refreshTokenRequest) {
-        final RefreshToken refreshToken = refreshTokenRepository.findById(refreshTokenRequest)
-            .orElseThrow(() -> RefreshTokenExpiredException.EXCEPTION);
-        return accountMapper
-            .toRenewTokenResponse(jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()));
+    private AccountResponseDTO.RenewTokenResponse getRenewalToken(
+            final String refreshTokenRequest) {
+        final RefreshToken refreshToken =
+                refreshTokenRepository
+                        .findById(refreshTokenRequest)
+                        .orElseThrow(() -> RefreshTokenExpiredException.EXCEPTION);
+        return accountMapper.toRenewTokenResponse(
+                jwtProvider.regenerateAccessToken(refreshToken.getMemberId().toString()));
     }
 
     // 회원이 로그아웃한다
-    public AccountResponseDTO.LogoutResponse logout(final Long memberId, final String refreshToken) {
+    public AccountResponseDTO.LogoutResponse logout(
+            final Long memberId, final String refreshToken) {
         removeRefreshToken(refreshToken);
         return accountMapper.toLogout();
     }
 
-
     // 회원이 서비스를 탈퇴한다
-    public AccountResponseDTO.QuitAccountResponse quitAccount(final Long memberId, final String refreshToken) {
+    public AccountResponseDTO.QuitAccountResponse quitAccount(
+            final Long memberId, final String refreshToken) {
         deleteAccount(memberId, refreshToken);
         return accountMapper.toQuitAccount();
     }
@@ -156,7 +168,7 @@ public class LoginService {
         deleteUtil.quitAccount(memberId, refreshToken);
     }
 
-    public void removeRefreshToken(final String refreshToken) {    // 리프레시 토큰을 삭제한다
+    public void removeRefreshToken(final String refreshToken) { // 리프레시 토큰을 삭제한다
         refreshTokenRepository.deleteById(refreshToken);
     }
 }

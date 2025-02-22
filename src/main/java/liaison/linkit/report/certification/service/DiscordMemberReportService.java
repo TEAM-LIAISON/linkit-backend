@@ -17,10 +17,15 @@ public class DiscordMemberReportService implements MemberReportService {
 
     @Override
     public void sendCreateMemberReport(MemberCreateReportDto memberCreateReportDto) {
-        var msg = "## 회원 생성 알림"
-            + "\n\n**회원 생성 ID:** " + memberCreateReportDto.memberId()
-            + "\n**회원 생성 시간:** " + memberCreateReportDto.createdAt()
-            + "\n**회원 이메일:** " + memberCreateReportDto.email() + "님이 회원가입하셨습니다.";
+        var msg =
+                "## 회원 생성 알림"
+                        + "\n\n**회원 생성 ID:** "
+                        + memberCreateReportDto.memberId()
+                        + "\n**회원 생성 시간:** "
+                        + memberCreateReportDto.createdAt()
+                        + "\n**회원 이메일:** "
+                        + memberCreateReportDto.email()
+                        + "님이 회원가입하셨습니다.";
 
         discordService.sendMessages(url, msg);
     }

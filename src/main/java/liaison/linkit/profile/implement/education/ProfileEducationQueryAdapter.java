@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.education;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.education.ProfileEducation;
 import liaison.linkit.profile.domain.repository.education.ProfileEducationRepository;
@@ -18,7 +19,8 @@ public class ProfileEducationQueryAdapter {
     }
 
     public ProfileEducation getProfileEducation(final Long profileEducationId) {
-        return profileEducationRepository.findById(profileEducationId)
+        return profileEducationRepository
+                .findById(profileEducationId)
                 .orElseThrow(() -> ProfileEducationNotFoundException.EXCEPTION);
     }
 

@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Message {
     private StatusEnum status; // 응답 상태 (OK, ERROR, NOT_FOUND 등)
-    private String message;    // 응답 메시지
-    private Object data;       // 응답 데이터
+    private String message; // 응답 메시지
+    private Object data; // 응답 데이터
 }

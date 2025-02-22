@@ -1,10 +1,12 @@
 package liaison.linkit.mail.service;
 
+import java.io.UnsupportedEncodingException;
+
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,8 +26,11 @@ public class AsyncAuthCodeMailServiceImpl implements AsyncAuthCodeMailService {
     private String mailId;
 
     @Override
-    public void sendMailReAuthenticationCode(final String receiverName, final String receiverMailAddress, final String authcode) throws MessagingException, UnsupportedEncodingException {
-        final MimeMessage mimeMessage = createReAuthenticationCodeMail(receiverName, receiverMailAddress, authcode);
+    public void sendMailReAuthenticationCode(
+            final String receiverName, final String receiverMailAddress, final String authcode)
+            throws MessagingException, UnsupportedEncodingException {
+        final MimeMessage mimeMessage =
+                createReAuthenticationCodeMail(receiverName, receiverMailAddress, authcode);
 
         try {
             javaMailSender.send(mimeMessage);
@@ -35,13 +40,17 @@ public class AsyncAuthCodeMailServiceImpl implements AsyncAuthCodeMailService {
         }
     }
 
-    private MimeMessage createReAuthenticationCodeMail(final String receiverName, final String receiverMailAddress, final String authCode) throws MessagingException, UnsupportedEncodingException {
+    private MimeMessage createReAuthenticationCodeMail(
+            final String receiverName, final String receiverMailAddress, final String authCode)
+            throws MessagingException, UnsupportedEncodingException {
         final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverMailAddress);
         mimeMessage.setSubject("[링킷] 이메일 변경 인증 코드 발송");
 
-        final String msgg = String.format("""
+        final String msgg =
+                String.format(
+                        """
             <table border="0" cellpadding="0" cellspacing="0" width="100%%" style="border-collapse:collapse; background-color: #ffffff;">
                 <tbody>
                   <tr>
@@ -106,7 +115,8 @@ public class AsyncAuthCodeMailServiceImpl implements AsyncAuthCodeMailService {
                 </tr>
               </tbody>
             </table>
-            """, receiverName, authCode);
+            """,
+                        receiverName, authCode);
 
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
         mimeMessage.setFrom(new InternetAddress(mailId, "링킷(Linkit)", "UTF-8"));

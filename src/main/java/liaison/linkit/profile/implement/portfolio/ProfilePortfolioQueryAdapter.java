@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.portfolio;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.portfolio.ProfilePortfolio;
 import liaison.linkit.profile.domain.repository.portfolio.ProfilePortfolioRepository;
@@ -14,7 +15,8 @@ public class ProfilePortfolioQueryAdapter {
     private final ProfilePortfolioRepository profilePortfolioRepository;
 
     public ProfilePortfolio getProfilePortfolio(final Long profilePortfolioId) {
-        return profilePortfolioRepository.getProfilePortfolio(profilePortfolioId)
+        return profilePortfolioRepository
+                .getProfilePortfolio(profilePortfolioId)
                 .orElseThrow(() -> PortfolioNotFoundException.EXCEPTION);
     }
 

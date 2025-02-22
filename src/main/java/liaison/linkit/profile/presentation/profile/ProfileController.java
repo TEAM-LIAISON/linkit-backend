@@ -4,8 +4,8 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
-import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.business.service.ProfileService;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +25,7 @@ public class ProfileController {
     @GetMapping("/profile/left/menu")
     @MemberOnly
     public CommonResponse<ProfileResponseDTO.ProfileLeftMenu> getProfileLeftMenu(
-        @Auth final Accessor accessor
-    ) {
+            @Auth final Accessor accessor) {
         log.info("memberId = {}의 프로필 왼쪽 메뉴 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(profileService.getProfileLeftMenu(accessor.getMemberId()));
     }
@@ -34,11 +33,10 @@ public class ProfileController {
     // 내 프로필 조회
     @GetMapping("/profile/{emailId}")
     public CommonResponse<ProfileResponseDTO.ProfileDetail> getProfileDetail(
-        @PathVariable final String emailId,
-        @Auth final Accessor accessor
-    ) {
+            @PathVariable final String emailId, @Auth final Accessor accessor) {
         if (accessor.isMember()) {
-            return CommonResponse.onSuccess(profileService.getLoggedInProfileDetail(accessor.getMemberId(), emailId));
+            return CommonResponse.onSuccess(
+                    profileService.getLoggedInProfileDetail(accessor.getMemberId(), emailId));
         } else {
             return CommonResponse.onSuccess(profileService.getLoggedOutProfileDetail(emailId));
         }
@@ -47,12 +45,13 @@ public class ProfileController {
     // 홈화면에서 팀원 조회 (최대 6개)
     @GetMapping("/home/profile")
     public CommonResponse<ProfileResponseDTO.ProfileInformMenus> getHomeProfileInformMenus(
-        @Auth final Accessor accessor
-    ) {
+            @Auth final Accessor accessor) {
         if (accessor.isMember()) {
-            return CommonResponse.onSuccess(profileService.getHomeProfileInformMenusInLoginState(accessor.getMemberId()));
+            return CommonResponse.onSuccess(
+                    profileService.getHomeProfileInformMenusInLoginState(accessor.getMemberId()));
         } else {
-            return CommonResponse.onSuccess(profileService.getHomeProfileInformMenusInLogoutState());
+            return CommonResponse.onSuccess(
+                    profileService.getHomeProfileInformMenusInLogoutState());
         }
     }
 }

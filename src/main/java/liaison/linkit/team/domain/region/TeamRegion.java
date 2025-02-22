@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.profile.domain.region.Region;
 import liaison.linkit.team.domain.team.Team;
 import lombok.AllArgsConstructor;
@@ -34,4 +35,3 @@ public class TeamRegion {
     @JoinColumn(name = "region_id")
     private Region region;
 }
-

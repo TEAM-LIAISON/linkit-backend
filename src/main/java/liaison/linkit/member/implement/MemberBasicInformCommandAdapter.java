@@ -27,42 +27,40 @@ public class MemberBasicInformCommandAdapter {
 
     public MemberBasicInform updateMemberBasicInform(
             final Long memberId,
-            final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest request
-    ) {
+            final MemberBasicInformRequestDTO.UpdateMemberBasicInformRequest request) {
         log.info("memberId = {}의 회원 기본 정보 수정을 진행합니다.", memberId);
-        return memberBasicInformRepository.updateMemberBasicInform(memberId, request)
+        return memberBasicInformRepository
+                .updateMemberBasicInform(memberId, request)
                 .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
 
     public MemberBasicInform updateConsentServiceUse(
             final Long memberId,
-            final MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest request
-    ) {
-        return memberBasicInformRepository.updateConsentServiceUse(memberId, request)
+            final MemberBasicInformRequestDTO.UpdateConsentServiceUseRequest request) {
+        return memberBasicInformRepository
+                .updateConsentServiceUse(memberId, request)
                 .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
 
     public MemberBasicInform updateMemberName(
-            final Long memberId,
-            final UpdateMemberNameRequest request
-    ) {
-        return memberBasicInformRepository.updateMemberName(memberId, request)
+            final Long memberId, final UpdateMemberNameRequest request) {
+        return memberBasicInformRepository
+                .updateMemberName(memberId, request)
                 .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
 
     public MemberBasicInform updateMemberContact(
-            final Long memberId,
-            final UpdateMemberContactRequest request
-    ) {
-        return memberBasicInformRepository.updateMemberContact(memberId, request)
+            final Long memberId, final UpdateMemberContactRequest request) {
+        return memberBasicInformRepository
+                .updateMemberContact(memberId, request)
                 .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
 
     public MemberBasicInform updateConsentMarketing(
             final Long memberId,
-            final UpdateConsentMarketingRequest updateConsentServiceUseRequest
-    ) {
-        return memberBasicInformRepository.updateConsentMarketing(memberId, updateConsentServiceUseRequest)
+            final UpdateConsentMarketingRequest updateConsentServiceUseRequest) {
+        return memberBasicInformRepository
+                .updateConsentMarketing(memberId, updateConsentServiceUseRequest)
                 .orElseThrow(() -> MemberBasicInformBadRequestException.BAD_REQUEST_EXCEPTION);
     }
 }

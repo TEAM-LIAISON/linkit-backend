@@ -1,9 +1,10 @@
 package liaison.linkit.image.domain.repository;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.image.domain.Image;
 import liaison.linkit.image.domain.QImage;
 import liaison.linkit.profile.domain.log.QProfileLogImage;
@@ -21,13 +22,15 @@ public class ImageCustomRepositoryImpl implements ImageCustomRepository {
         QImage image = QImage.image;
         QProfileLogImage profileLogImage = QProfileLogImage.profileLogImage;
 
-        return jpaQueryFactory.selectFrom(image)
-                .leftJoin(profileLogImage).on(profileLogImage.image.eq(image))
+        return jpaQueryFactory
+                .selectFrom(image)
+                .leftJoin(profileLogImage)
+                .on(profileLogImage.image.eq(image))
                 .where(
-                        image.isTemporary.eq(true)
+                        image.isTemporary
+                                .eq(true)
                                 .and(image.createdAt.loe(threshold))
-                                .and(profileLogImage.id.isNull())
-                )
+                                .and(profileLogImage.id.isNull()))
                 .fetch();
     }
 
@@ -39,8 +42,6 @@ public class ImageCustomRepositoryImpl implements ImageCustomRepository {
 
         QImage qImage = QImage.image;
 
-        return jpaQueryFactory.selectFrom(qImage)
-                .where(qImage.imageUrl.in(imagePaths))
-                .fetch();
+        return jpaQueryFactory.selectFrom(qImage).where(qImage.imageUrl.in(imagePaths)).fetch();
     }
 }

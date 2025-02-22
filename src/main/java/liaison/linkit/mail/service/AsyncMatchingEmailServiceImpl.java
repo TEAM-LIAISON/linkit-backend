@@ -1,10 +1,12 @@
 package liaison.linkit.mail.service;
 
+import java.io.UnsupportedEncodingException;
+
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,56 +27,51 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
 
     @Override
     public void sendMatchingCompletedEmails(
-        final String senderMailTitle,
-        final String senderMailSubTitle,
-        final String senderMailSubText,
+            final String senderMailTitle,
+            final String senderMailSubTitle,
+            final String senderMailSubText,
+            final String receiverMailTitle,
+            final String receiverMailSubTitle,
+            final String receiverMailSubText,
+            final String matchingSenderEmail,
+            final String matchingSenderName,
+            final String matchingSenderLogoImagePath,
+            final String matchingSenderPositionOrTeamSIzeText,
+            final String matchingSenderPositionOrTeamSize,
+            final String matchingSenderRegionDetail,
+            final String matchingReceiverEmail,
+            final String matchingReceiverName,
+            final String matchingReceiverLogoImagePath,
+            final String matchingReceiverPositionOrTeamSIzeText,
+            final String matchingReceiverPositionOrTeamSize,
+            final String matchingReceiverRegionOrAnnouncementSkillText,
+            final String matchingReceiverRegionOrAnnouncementSkill)
+            throws MessagingException, UnsupportedEncodingException {
+        final MimeMessage matchingSenderMail =
+                createMatchingCompletedMail(
+                        senderMailTitle,
+                        senderMailSubTitle,
+                        senderMailSubText,
+                        matchingSenderEmail,
+                        matchingReceiverName,
+                        matchingReceiverLogoImagePath,
+                        matchingReceiverPositionOrTeamSIzeText,
+                        matchingReceiverPositionOrTeamSize,
+                        matchingReceiverRegionOrAnnouncementSkillText,
+                        matchingReceiverRegionOrAnnouncementSkill);
 
-        final String receiverMailTitle,
-        final String receiverMailSubTitle,
-        final String receiverMailSubText,
-
-        final String matchingSenderEmail,
-        final String matchingSenderName,
-        final String matchingSenderLogoImagePath,
-        final String matchingSenderPositionOrTeamSIzeText,
-        final String matchingSenderPositionOrTeamSize,
-        final String matchingSenderRegionDetail,
-
-        final String matchingReceiverEmail,
-        final String matchingReceiverName,
-        final String matchingReceiverLogoImagePath,
-        final String matchingReceiverPositionOrTeamSIzeText,
-        final String matchingReceiverPositionOrTeamSize,
-        final String matchingReceiverRegionOrAnnouncementSkillText,
-        final String matchingReceiverRegionOrAnnouncementSkill
-    ) throws MessagingException, UnsupportedEncodingException {
-        final MimeMessage matchingSenderMail = createMatchingCompletedMail(
-            senderMailTitle,
-            senderMailSubTitle,
-            senderMailSubText,
-
-            matchingSenderEmail,
-            matchingReceiverName,
-            matchingReceiverLogoImagePath,
-            matchingReceiverPositionOrTeamSIzeText,
-            matchingReceiverPositionOrTeamSize,
-            matchingReceiverRegionOrAnnouncementSkillText,
-            matchingReceiverRegionOrAnnouncementSkill
-        );
-
-        final MimeMessage matchingReceiverMail = createMatchingCompletedMail(
-            receiverMailTitle,
-            receiverMailSubTitle,
-            receiverMailSubText,
-
-            matchingReceiverEmail,
-            matchingSenderName,
-            matchingSenderLogoImagePath,
-            matchingSenderPositionOrTeamSIzeText,
-            matchingSenderPositionOrTeamSize,
-            "지역",
-            matchingSenderRegionDetail
-        );
+        final MimeMessage matchingReceiverMail =
+                createMatchingCompletedMail(
+                        receiverMailTitle,
+                        receiverMailSubTitle,
+                        receiverMailSubText,
+                        matchingReceiverEmail,
+                        matchingSenderName,
+                        matchingSenderLogoImagePath,
+                        matchingSenderPositionOrTeamSIzeText,
+                        matchingSenderPositionOrTeamSize,
+                        "지역",
+                        matchingSenderRegionDetail);
 
         try {
             javaMailSender.send(matchingSenderMail);
@@ -86,24 +83,25 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
     }
 
     private MimeMessage createMatchingCompletedMail(
-        final String mailTitle,
-        final String mailSubTitle,
-        final String mailSubText,
-
-        final String receiverEmail,
-        final String otherPartyName,
-        final String otherPartyLogoImagePath,
-        final String otherPartyPositionOrTeamSizeText,
-        final String otherPartyPositionOrTeamSize,
-        final String matchingReceiverRegionOrAnnouncementSkillText,
-        final String otherPartyRegionOrAnnouncementSkill
-    ) throws MessagingException, UnsupportedEncodingException {
+            final String mailTitle,
+            final String mailSubTitle,
+            final String mailSubText,
+            final String receiverEmail,
+            final String otherPartyName,
+            final String otherPartyLogoImagePath,
+            final String otherPartyPositionOrTeamSizeText,
+            final String otherPartyPositionOrTeamSize,
+            final String matchingReceiverRegionOrAnnouncementSkillText,
+            final String otherPartyRegionOrAnnouncementSkill)
+            throws MessagingException, UnsupportedEncodingException {
         final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
         mimeMessage.setSubject(String.format("[링킷] %s 알림입니다", mailTitle));
 
-        final String msgg = String.format("""
+        final String msgg =
+                String.format(
+                        """
                 <table border="0" cellpadding="0" cellspacing="0" width="100%%" style="border-collapse:collapse; background-color: #ffffff;">
                   <tbody>
                     <tr>
@@ -193,9 +191,17 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
                     </tr>
                   </tbody>
                 </table>
-                """, otherPartyName, mailSubTitle, mailSubText, otherPartyLogoImagePath, otherPartyName, otherPartyPositionOrTeamSizeText, otherPartyPositionOrTeamSize,
-            matchingReceiverRegionOrAnnouncementSkillText,
-            otherPartyRegionOrAnnouncementSkill, mailTitle);
+                """,
+                        otherPartyName,
+                        mailSubTitle,
+                        mailSubText,
+                        otherPartyLogoImagePath,
+                        otherPartyName,
+                        otherPartyPositionOrTeamSizeText,
+                        otherPartyPositionOrTeamSize,
+                        matchingReceiverRegionOrAnnouncementSkillText,
+                        otherPartyRegionOrAnnouncementSkill,
+                        mailTitle);
 
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
         mimeMessage.setFrom(new InternetAddress(mailId, "링킷(Linkit)", "UTF-8"));
@@ -205,29 +211,27 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
 
     @Override
     public void sendMatchingRequestedEmail(
-        final String receiverMailTitle,
-        final String receiverMailSubTitle,
-        final String receiverMailSubText,
-
-        final String matchingReceiverEmail,
-        final String matchingSenderName,
-        final String matchingSenderLogoImagePath,
-        final String positionOrTeamSize,
-        final String matchingSenderPositionOrTeamSize,
-        final String matchingSenderRegionDetail
-    ) throws MessagingException, UnsupportedEncodingException {
-        final MimeMessage matchingReceiverMail = createMatchingRequestedMail(
-            receiverMailTitle,
-            receiverMailSubTitle,
-            receiverMailSubText,
-
-            matchingReceiverEmail,
-            matchingSenderName,
-            matchingSenderLogoImagePath,
-            positionOrTeamSize,
-            matchingSenderPositionOrTeamSize,
-            matchingSenderRegionDetail
-        );
+            final String receiverMailTitle,
+            final String receiverMailSubTitle,
+            final String receiverMailSubText,
+            final String matchingReceiverEmail,
+            final String matchingSenderName,
+            final String matchingSenderLogoImagePath,
+            final String positionOrTeamSize,
+            final String matchingSenderPositionOrTeamSize,
+            final String matchingSenderRegionDetail)
+            throws MessagingException, UnsupportedEncodingException {
+        final MimeMessage matchingReceiverMail =
+                createMatchingRequestedMail(
+                        receiverMailTitle,
+                        receiverMailSubTitle,
+                        receiverMailSubText,
+                        matchingReceiverEmail,
+                        matchingSenderName,
+                        matchingSenderLogoImagePath,
+                        positionOrTeamSize,
+                        matchingSenderPositionOrTeamSize,
+                        matchingSenderRegionDetail);
 
         try {
             javaMailSender.send(matchingReceiverMail);
@@ -237,23 +241,24 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
     }
 
     private MimeMessage createMatchingRequestedMail(
-        final String receiverMailTitle,
-        final String receiverMailSubTitle,
-        final String receiverMailSubText,
-
-        final String receiverEmail,
-        final String otherPartyName,
-        final String otherPartyLogoImagePath,
-        final String positionOrTeamSize,
-        final String otherPartyPositionOrTeamSize,
-        final String otherPartyRegionDetail
-    ) throws MessagingException, UnsupportedEncodingException {
+            final String receiverMailTitle,
+            final String receiverMailSubTitle,
+            final String receiverMailSubText,
+            final String receiverEmail,
+            final String otherPartyName,
+            final String otherPartyLogoImagePath,
+            final String positionOrTeamSize,
+            final String otherPartyPositionOrTeamSize,
+            final String otherPartyRegionDetail)
+            throws MessagingException, UnsupportedEncodingException {
         final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverEmail);
         mimeMessage.setSubject(String.format("[링킷] %s 알림입니다", receiverMailTitle));
 
-        final String msgg = String.format("""
+        final String msgg =
+                String.format(
+                        """
                 <table border="0" cellpadding="0" cellspacing="0" width="100%%" style="border-collapse:collapse; background-color: #ffffff;">
                    <tbody>
                      <tr>
@@ -338,8 +343,17 @@ public class AsyncMatchingEmailServiceImpl implements AsyncMatchingEmailService 
                      </tr>
                    </tbody>
                  </table>
-                """, otherPartyName, receiverMailSubTitle, receiverMailSubText, otherPartyLogoImagePath, otherPartyName, positionOrTeamSize, otherPartyPositionOrTeamSize, otherPartyRegionDetail,
-            receiverMailTitle, receiverMailTitle);
+                """,
+                        otherPartyName,
+                        receiverMailSubTitle,
+                        receiverMailSubText,
+                        otherPartyLogoImagePath,
+                        otherPartyName,
+                        positionOrTeamSize,
+                        otherPartyPositionOrTeamSize,
+                        otherPartyRegionDetail,
+                        receiverMailTitle,
+                        receiverMailTitle);
 
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
         mimeMessage.setFrom(new InternetAddress(mailId, "링킷(Linkit)", "UTF-8"));

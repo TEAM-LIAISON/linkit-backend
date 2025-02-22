@@ -1,12 +1,14 @@
 package liaison.linkit.team.presentation.product.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,20 +37,16 @@ public class TeamProductRequestDTO {
         private String productField;
 
         @NotBlank(message = "팀 프로덕트 시작 기간을 입력해주세요.")
-        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
-                message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
+        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$", message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
         private String productStartDate;
 
-
-        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
-                message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
+        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$", message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
         private String productEndDate;
 
         @NotNull(message = "프로젝트 진행 여부를 입력해주세요.")
         private Boolean isProductInProgress;
 
-        @Valid
-        @Builder.Default
+        @Valid @Builder.Default
         private List<TeamProductLinkRequest> teamProductLinks = new ArrayList<>();
 
         private String productDescription;
@@ -69,24 +67,20 @@ public class TeamProductRequestDTO {
         private String productField;
 
         @NotBlank(message = "팀 프로덕트 시작 기간을 입력해주세요.")
-        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
-                message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
+        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$", message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
         private String productStartDate;
 
-        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$",
-                message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
+        @Pattern(regexp = "^\\d{4}\\.(0[1-9]|1[0-2])$", message = "날짜 형식이 올바르지 않습니다. (YYYY.MM)")
         private String productEndDate;
 
         private Boolean isProductInProgress;
 
-        @Valid
-        @Builder.Default
+        @Valid @Builder.Default
         private List<TeamProductLinkRequest> teamProductLinks = new ArrayList<>();
 
         private String productDescription;
 
-        @Builder.Default
-        private TeamProductImages teamProductImages = new TeamProductImages();
+        @Builder.Default private TeamProductImages teamProductImages = new TeamProductImages();
     }
 
     @Builder
@@ -109,8 +103,7 @@ public class TeamProductRequestDTO {
     public static class TeamProductImages {
         private String productRepresentImagePath; // 대표 이미지
 
-        @Builder.Default
-        private List<ProductSubImage> productSubImages = new ArrayList<>();
+        @Builder.Default private List<ProductSubImage> productSubImages = new ArrayList<>();
     }
 
     @Builder

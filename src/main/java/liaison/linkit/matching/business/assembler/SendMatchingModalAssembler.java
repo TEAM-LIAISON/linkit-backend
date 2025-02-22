@@ -2,6 +2,7 @@ package liaison.linkit.matching.business.assembler;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.matching.business.mapper.MatchingMapper;
 import liaison.linkit.matching.exception.NotAllowMatchingBadRequestException;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.SelectMatchingRequestToProfileMenu;
@@ -40,39 +41,45 @@ public class SendMatchingModalAssembler {
     private final TeamScaleMapper teamScaleMapper;
 
     public SelectMatchingRequestToProfileMenu assembleSelectMatchingRequestToProfileMenu(
-        final Long senderMemberId,
-        final String receiverEmailId
-    ) {
+            final Long senderMemberId, final String receiverEmailId) {
         final Profile senderProfile = getSenderProfile(senderMemberId);
         if (senderProfile.getMember().getEmailId().equals(receiverEmailId)) {
             throw NotAllowMatchingBadRequestException.EXCEPTION;
         }
 
         final ProfilePositionDetail senderPos = getProfilePositionDetail(senderProfile);
-        final boolean teamInfoExists = teamMemberQueryAdapter.existsTeamOwnerByMemberId(senderMemberId);
+        final boolean teamInfoExists =
+                teamMemberQueryAdapter.existsTeamOwnerByMemberId(senderMemberId);
         final List<SenderTeamInformation> senderTeamInfos = getSenderTeamInfos(senderMemberId);
         final Profile receiverProfile = profileQueryAdapter.findByEmailId(receiverEmailId);
         final ProfilePositionDetail receiverPos = getProfilePositionDetail(receiverProfile);
 
         return matchingMapper.toSelectMatchingRequestToProfileMenu(
-            teamInfoExists, senderProfile, senderPos, senderTeamInfos, receiverProfile, receiverPos
-        );
+                teamInfoExists,
+                senderProfile,
+                senderPos,
+                senderTeamInfos,
+                receiverProfile,
+                receiverPos);
     }
 
     public SelectMatchingRequestToTeamMenu assembleSelectMatchingRequestToTeamMenu(
-        final Long senderMemberId,
-        final String receiverTeamCode
-    ) {
+            final Long senderMemberId, final String receiverTeamCode) {
         final Profile senderProfile = getSenderProfile(senderMemberId);
         final ProfilePositionDetail senderPos = getProfilePositionDetail(senderProfile);
-        final boolean teamInfoExists = teamMemberQueryAdapter.existsTeamOwnerByMemberId(senderMemberId);
+        final boolean teamInfoExists =
+                teamMemberQueryAdapter.existsTeamOwnerByMemberId(senderMemberId);
         final List<SenderTeamInformation> senderTeamInfos = getSenderTeamInfos(senderMemberId);
         final Team receiverTeam = teamQueryAdapter.findByTeamCode(receiverTeamCode);
         final TeamScaleItem receiverScale = getTeamScale(receiverTeam);
 
         return matchingMapper.toSelectMatchingRequestTeamMenu(
-            teamInfoExists, senderProfile, senderPos, senderTeamInfos, receiverTeam, receiverScale
-        );
+                teamInfoExists,
+                senderProfile,
+                senderPos,
+                senderTeamInfos,
+                receiverTeam,
+                receiverScale);
     }
 
     // -- 헬퍼 메서드 --
@@ -83,10 +90,9 @@ public class SendMatchingModalAssembler {
 
     private ProfilePositionDetail getProfilePositionDetail(final Profile profile) {
         return profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())
-            ? profilePositionMapper.toProfilePositionDetail(
-            profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId())
-        )
-            : new ProfilePositionDetail();
+                ? profilePositionMapper.toProfilePositionDetail(
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId()))
+                : new ProfilePositionDetail();
     }
 
     private List<SenderTeamInformation> getSenderTeamInfos(final Long senderMemberId) {
@@ -95,18 +101,21 @@ public class SendMatchingModalAssembler {
         }
         List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(senderMemberId);
         return teams.stream()
-            .map(team -> SenderTeamInformation.builder()
-                .teamCode(team.getTeamCode())
-                .teamName(team.getTeamName())
-                .teamLogoImagePath(team.getTeamLogoImagePath())
-                .teamScaleItem(getTeamScale(team))
-                .build())
-            .toList();
+                .map(
+                        team ->
+                                SenderTeamInformation.builder()
+                                        .teamCode(team.getTeamCode())
+                                        .teamName(team.getTeamName())
+                                        .teamLogoImagePath(team.getTeamLogoImagePath())
+                                        .teamScaleItem(getTeamScale(team))
+                                        .build())
+                .toList();
     }
 
     private TeamScaleItem getTeamScale(final Team team) {
         return teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())
-            ? teamScaleMapper.toTeamScaleItem(teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId()))
-            : new TeamScaleItem();
+                ? teamScaleMapper.toTeamScaleItem(
+                        teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId()))
+                : new TeamScaleItem();
     }
 }

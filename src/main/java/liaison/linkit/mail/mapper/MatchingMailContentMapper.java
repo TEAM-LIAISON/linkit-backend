@@ -29,18 +29,13 @@ public class MatchingMailContentMapper {
         }
 
         return new MatchingEmailContent(
-            receiverMailTitle, receiverMailSubTitle, receiverMailSubText
-        );
+                receiverMailTitle, receiverMailSubTitle, receiverMailSubText);
     }
 
     // --- 매칭 성사에 대한 email_content ---
 
-    /**
-     * 이메일 제목, 소제목, 세부 내용을 생성하는 메서드
-     */
-    public MatchingEmailContent generateMatchingCompletedEmailContent(
-        final Matching matching
-    ) {
+    /** 이메일 제목, 소제목, 세부 내용을 생성하는 메서드 */
+    public MatchingEmailContent generateMatchingCompletedEmailContent(final Matching matching) {
         String senderMailTitle;
         String senderMailSubTitle;
         String senderMailSubText;
@@ -58,33 +53,35 @@ public class MatchingMailContentMapper {
             receiverMailSubText = "지원을 수락했어요";
         } else {
             senderMailTitle = "매칭 성사";
-            senderMailSubTitle = generateSubTitle(matching.getSenderType(), matching.getReceiverType(), true);
+            senderMailSubTitle =
+                    generateSubTitle(matching.getSenderType(), matching.getReceiverType(), true);
             senderMailSubText = "매칭이 성사되었어요";
 
             receiverMailTitle = "매칭 성사";
-            receiverMailSubTitle = generateSubTitle(matching.getSenderType(), matching.getReceiverType(), false);
+            receiverMailSubTitle =
+                    generateSubTitle(matching.getSenderType(), matching.getReceiverType(), false);
             receiverMailSubText = "매칭이 성사되었어요";
         }
 
         return new MatchingEmailContent(
-            senderMailTitle, senderMailSubTitle, senderMailSubText,
-            receiverMailTitle, receiverMailSubTitle, receiverMailSubText
-        );
+                senderMailTitle,
+                senderMailSubTitle,
+                senderMailSubText,
+                receiverMailTitle,
+                receiverMailSubTitle,
+                receiverMailSubText);
     }
 
-    /**
-     * 이메일 소제목 생성
-     */
+    /** 이메일 소제목 생성 */
     private String generateSubTitle(
-        final SenderType senderType,
-        final ReceiverType receiverType,
-        final boolean isSender
-    ) {
+            final SenderType senderType, final ReceiverType receiverType, final boolean isSender) {
         if (senderType.equals(SenderType.PROFILE) && receiverType.equals(ReceiverType.PROFILE)) {
             return "님과 매칭 성사";
-        } else if (senderType.equals(SenderType.PROFILE) && receiverType.equals(ReceiverType.TEAM)) {
+        } else if (senderType.equals(SenderType.PROFILE)
+                && receiverType.equals(ReceiverType.TEAM)) {
             return isSender ? "팀과 매칭 성사" : "님과 매칭 성사";
-        } else if (senderType.equals(SenderType.TEAM) && receiverType.equals(ReceiverType.PROFILE)) {
+        } else if (senderType.equals(SenderType.TEAM)
+                && receiverType.equals(ReceiverType.PROFILE)) {
             return isSender ? "님과 매칭 성사" : "팀과 매칭 성사";
         } else if (senderType.equals(SenderType.TEAM) && receiverType.equals(ReceiverType.TEAM)) {
             return "팀과 매칭 성사";

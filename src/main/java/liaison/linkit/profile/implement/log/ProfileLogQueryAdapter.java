@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.log;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.log.ProfileLog;
 import liaison.linkit.profile.domain.repository.log.ProfileLogRepository;
@@ -14,8 +15,9 @@ public class ProfileLogQueryAdapter {
     private final ProfileLogRepository profileLogRepository;
 
     public ProfileLog getProfileLog(final Long profileLogId) {
-        return profileLogRepository.findById(profileLogId)
-            .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
+        return profileLogRepository
+                .findById(profileLogId)
+                .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
     }
 
     public List<ProfileLog> getProfileLogs(final Long memberId) {
@@ -27,8 +29,9 @@ public class ProfileLogQueryAdapter {
     }
 
     public ProfileLog getRepresentativeProfileLog(final Long profileId) {
-        return profileLogRepository.findRepresentativeProfileLog(profileId)
-            .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
+        return profileLogRepository
+                .findRepresentativeProfileLog(profileId)
+                .orElseThrow(() -> ProfileLogNotFoundException.EXCEPTION);
     }
 
     public boolean existsProfileLogByProfileId(final Long profileId) {

@@ -3,6 +3,7 @@ package liaison.linkit.notification.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
+
 import liaison.linkit.notification.domain.type.NotificationReadStatus;
 import liaison.linkit.notification.domain.type.NotificationType;
 import liaison.linkit.notification.domain.type.SubNotificationType;
@@ -24,22 +25,21 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @NoArgsConstructor(access = PROTECTED)
 public class Notification {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     @Field("receiver_member_id")
     private Long receiverMemberId;
 
     @Field("notification_type")
-    private NotificationType notificationType;                  // 알림 타입
+    private NotificationType notificationType; // 알림 타입
 
     @Field("sub_notification_type")
-    private SubNotificationType subNotificationType;            // 알림 보조 타입
+    private SubNotificationType subNotificationType; // 알림 보조 타입
 
     @Field("notification_read_status")
-    private NotificationReadStatus notificationReadStatus;      // 알림 상태
+    private NotificationReadStatus notificationReadStatus; // 알림 상태
 
-    private LocalDateTime createdAt;                            // 생성 시간
+    private LocalDateTime createdAt; // 생성 시간
 
     private MatchingDetails matchingDetails;
     private AnnouncementDetails announcementDetails;
@@ -117,7 +117,6 @@ public class Notification {
         private String emailId;
         private String systemTitle;
     }
-
 
     public void setMatchingDetails(final MatchingDetails matchingDetails) {
         this.matchingDetails = matchingDetails;

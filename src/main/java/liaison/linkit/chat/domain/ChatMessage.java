@@ -3,6 +3,7 @@ package liaison.linkit.chat.domain;
 import static lombok.AccessLevel.PROTECTED;
 
 import java.time.LocalDateTime;
+
 import liaison.linkit.chat.domain.type.ParticipantType;
 import liaison.linkit.matching.domain.type.SenderType;
 import lombok.AllArgsConstructor;
@@ -21,8 +22,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @NoArgsConstructor(access = PROTECTED)
 public class ChatMessage {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     // 메시지가 속한 채팅방 ID (인덱싱)
     @Indexed
@@ -49,14 +49,13 @@ public class ChatMessage {
     private SenderType messageSenderType;
 
     @Field("message_receiver_member_id")
-    private Long messageReceiverMemberId;   // 채팅 읽었는지 안읽었는지 여부를 판단
+    private Long messageReceiverMemberId; // 채팅 읽었는지 안읽었는지 여부를 판단
 
     // 메시지 내용
     private String content;
 
     // 메시지 전송 시간 (인덱싱)
-    @Indexed
-    private LocalDateTime timestamp;
+    @Indexed private LocalDateTime timestamp;
 
     // 메시지 읽음 여부 (인덱싱)
     @Indexed

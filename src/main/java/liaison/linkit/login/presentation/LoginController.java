@@ -3,6 +3,7 @@ package liaison.linkit.login.presentation;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 import jakarta.servlet.http.HttpServletResponse;
+
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -35,52 +36,49 @@ public class LoginController {
     // 회원이 로그인한다
     @PostMapping("/login/{provider}")
     public CommonResponse<AccountResponseDTO.LoginResponse> login(
-        @PathVariable final String provider,
-        @RequestBody final AccountRequestDTO.LoginRequest loginRequest,
-        final HttpServletResponse response
-    ) {
-        final AccountResponseDTO.LoginServiceResponse loginResponse = loginService.login(provider, loginRequest.getCode());
+            @PathVariable final String provider,
+            @RequestBody final AccountRequestDTO.LoginRequest loginRequest,
+            final HttpServletResponse response) {
+        final AccountResponseDTO.LoginServiceResponse loginResponse =
+                loginService.login(provider, loginRequest.getCode());
         log.info("loginResponse = {}", loginResponse);
 
         // 1) refreshToken 쿠키 설정
-        final ResponseCookie cookie = ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
-            .maxAge(COOKIE_AGE_SECONDS)
-            .secure(true)
-            .sameSite("None")
-            .path("/")
-            .httpOnly(true)
-            .build();
+        final ResponseCookie cookie =
+                ResponseCookie.from("refreshToken", loginResponse.getRefreshToken())
+                        .maxAge(COOKIE_AGE_SECONDS)
+                        .secure(true)
+                        .sameSite("None")
+                        .path("/")
+                        .httpOnly(true)
+                        .build();
 
         response.addHeader(SET_COOKIE, cookie.toString());
 
         log.info("response 설정 = {}", response);
         return CommonResponse.onSuccess(
-            new AccountResponseDTO.LoginResponse(
-                loginResponse.getAccessToken(),
-                loginResponse.getEmail(),
-                loginResponse.getEmailId(),
-                loginResponse.getMemberName(),
-                loginResponse.getIsMemberBasicInform()
-            )
-        );
+                new AccountResponseDTO.LoginResponse(
+                        loginResponse.getAccessToken(),
+                        loginResponse.getEmail(),
+                        loginResponse.getEmailId(),
+                        loginResponse.getMemberName(),
+                        loginResponse.getIsMemberBasicInform()));
     }
 
     // accessToken을 재발행한다
     @PostMapping("/renew/token")
     public CommonResponse<AccountResponseDTO.RenewTokenResponse> renewToken(
-        @CookieValue("refreshToken") final String refreshToken,
-        @RequestHeader("Authorization") final String authorizationHeader
-    ) {
-        return CommonResponse.onSuccess(loginService.renewalAccessToken(refreshToken, authorizationHeader));
+            @CookieValue("refreshToken") final String refreshToken,
+            @RequestHeader("Authorization") final String authorizationHeader) {
+        return CommonResponse.onSuccess(
+                loginService.renewalAccessToken(refreshToken, authorizationHeader));
     }
 
     // 회원이 로그아웃을 한다
     @DeleteMapping("/logout")
     @MemberOnly
     public CommonResponse<AccountResponseDTO.LogoutResponse> logout(
-        @Auth final Accessor accessor,
-        @CookieValue("refreshToken") final String refreshToken
-    ) {
+            @Auth final Accessor accessor, @CookieValue("refreshToken") final String refreshToken) {
         return CommonResponse.onSuccess(loginService.logout(accessor.getMemberId(), refreshToken));
     }
 
@@ -88,9 +86,8 @@ public class LoginController {
     @DeleteMapping("/quit")
     @MemberOnly
     public CommonResponse<AccountResponseDTO.QuitAccountResponse> quitAccount(
-        @Auth final Accessor accessor,
-        @CookieValue("refreshToken") final String refreshToken
-    ) {
-        return CommonResponse.onSuccess(loginService.quitAccount(accessor.getMemberId(), refreshToken));
+            @Auth final Accessor accessor, @CookieValue("refreshToken") final String refreshToken) {
+        return CommonResponse.onSuccess(
+                loginService.quitAccount(accessor.getMemberId(), refreshToken));
     }
 }

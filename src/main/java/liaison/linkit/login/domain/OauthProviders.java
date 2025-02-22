@@ -1,9 +1,9 @@
 package liaison.linkit.login.domain;
 
+import java.util.List;
+
 import liaison.linkit.common.exception.NotSupportedOauthServiceException;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class OauthProviders {

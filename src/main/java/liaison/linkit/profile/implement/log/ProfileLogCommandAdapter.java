@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 public class ProfileLogCommandAdapter {
     private final ProfileLogRepository profileLogRepository;
 
-
     public ProfileLog addProfileLog(final ProfileLog profileLog) {
         return profileLogRepository.save(profileLog);
     }
@@ -24,17 +23,19 @@ public class ProfileLogCommandAdapter {
         profileLogRepository.updateProfileLogTypeRepresent(profileLog);
     }
 
-
     public void updateProfileLogTypeGeneral(final ProfileLog profileLog) {
         profileLogRepository.updateProfileLogTypeGeneral(profileLog);
     }
 
-    public ProfileLog updateProfileLog(final ProfileLog profileLog, final UpdateProfileLogRequest updateProfileLogRequest) {
+    public ProfileLog updateProfileLog(
+            final ProfileLog profileLog, final UpdateProfileLogRequest updateProfileLogRequest) {
         return profileLogRepository.updateProfileLog(profileLog, updateProfileLogRequest);
     }
 
-    public ProfileLog updateProfileLogPublicState(final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState) {
-        return profileLogRepository.updateProfileLogPublicState(profileLog, isProfileLogCurrentPublicState);
+    public ProfileLog updateProfileLogPublicState(
+            final ProfileLog profileLog, final boolean isProfileLogCurrentPublicState) {
+        return profileLogRepository.updateProfileLogPublicState(
+                profileLog, isProfileLogCurrentPublicState);
     }
 
     public void deleteAllProfileLogs(final Long profileId) {

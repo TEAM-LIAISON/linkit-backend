@@ -21,10 +21,14 @@ public class CsvPositionWriter implements ItemWriter<PositionCsvData> {
 
         Chunk<Position> positions = new Chunk<>();
 
-        chunk.forEach(positionCsvData -> {
-            Position position = Position.of(positionCsvData.getMajorPosition(), positionCsvData.getSubPosition());
-            positions.add(position);
-        });
+        chunk.forEach(
+                positionCsvData -> {
+                    Position position =
+                            Position.of(
+                                    positionCsvData.getMajorPosition(),
+                                    positionCsvData.getSubPosition());
+                    positions.add(position);
+                });
 
         positionRepository.saveAll(positions);
     }

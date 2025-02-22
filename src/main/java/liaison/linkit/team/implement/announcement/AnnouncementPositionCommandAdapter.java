@@ -11,7 +11,8 @@ public class AnnouncementPositionCommandAdapter {
     private final AnnouncementPositionRepository announcementPositionRepository;
 
     public void deleteAllByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
-        announcementPositionRepository.deleteAllByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+        announcementPositionRepository.deleteAllByTeamMemberAnnouncementId(
+                teamMemberAnnouncementId);
     }
 
     public AnnouncementPosition save(final AnnouncementPosition announcementPosition) {
