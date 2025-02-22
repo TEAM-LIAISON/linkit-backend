@@ -16,6 +16,7 @@ import java.util.List;
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.team.domain.region.TeamRegion;
 import liaison.linkit.team.domain.scale.TeamScale;
+import liaison.linkit.team.domain.state.TeamCurrentState;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +41,9 @@ public class Team extends BaseEntity {
 
     @OneToMany(mappedBy = "team")
     private List<TeamRegion> teamRegions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team")
+    private List<TeamCurrentState> teamCurrentStates = new ArrayList<>();
 
     @Column(nullable = false, length = 10)
     private String teamName;
