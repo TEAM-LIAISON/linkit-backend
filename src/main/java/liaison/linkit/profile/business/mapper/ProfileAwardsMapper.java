@@ -2,9 +2,10 @@ package liaison.linkit.profile.business.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import liaison.linkit.common.annotation.Mapper;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.awards.ProfileAwards;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsRequestDTO;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO;
 import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.AddProfileAwardsResponse;
@@ -14,9 +15,9 @@ import liaison.linkit.profile.presentation.awards.dto.ProfileAwardsResponseDTO.U
 @Mapper
 public class ProfileAwardsMapper {
 
-    public ProfileAwards toAddProfileAwards(final Profile profile, final ProfileAwardsRequestDTO.AddProfileAwardsRequest request) {
-        return ProfileAwards
-                .builder()
+    public ProfileAwards toAddProfileAwards(
+            final Profile profile, final ProfileAwardsRequestDTO.AddProfileAwardsRequest request) {
+        return ProfileAwards.builder()
                 .id(null)
                 .profile(profile)
                 .awardsName(request.getAwardsName())
@@ -32,8 +33,7 @@ public class ProfileAwardsMapper {
     }
 
     public AddProfileAwardsResponse toAddProfileAwardsResponse(final ProfileAwards profileAwards) {
-        return AddProfileAwardsResponse
-                .builder()
+        return AddProfileAwardsResponse.builder()
                 .profileAwardsId(profileAwards.getId())
                 .awardsName(profileAwards.getAwardsName())
                 .awardsRanking(profileAwards.getAwardsRanking())
@@ -43,9 +43,9 @@ public class ProfileAwardsMapper {
                 .build();
     }
 
-    public UpdateProfileAwardsResponse toUpdateProfileAwardsResponse(final ProfileAwards profileAwards) {
-        return UpdateProfileAwardsResponse
-                .builder()
+    public UpdateProfileAwardsResponse toUpdateProfileAwardsResponse(
+            final ProfileAwards profileAwards) {
+        return UpdateProfileAwardsResponse.builder()
                 .profileAwardsId(profileAwards.getId())
                 .awardsName(profileAwards.getAwardsName())
                 .awardsRanking(profileAwards.getAwardsRanking())
@@ -55,7 +55,8 @@ public class ProfileAwardsMapper {
                 .build();
     }
 
-    public ProfileAwardsResponseDTO.ProfileAwardsItem toProfileAwardsItem(final ProfileAwards profileAwards) {
+    public ProfileAwardsResponseDTO.ProfileAwardsItem toProfileAwardsItem(
+            final ProfileAwards profileAwards) {
         return ProfileAwardsResponseDTO.ProfileAwardsItem.builder()
                 .profileAwardsId(profileAwards.getId())
                 .awardsName(profileAwards.getAwardsName())
@@ -66,20 +67,21 @@ public class ProfileAwardsMapper {
                 .build();
     }
 
-    public ProfileAwardsResponseDTO.ProfileAwardsItems toProfileAwardsItems(final List<ProfileAwards> profileAwardsGroup) {
-        List<ProfileAwardsItem> items = profileAwardsGroup.stream()
-                .map(this::toProfileAwardsItem)
-                .collect(Collectors.toList());
+    public ProfileAwardsResponseDTO.ProfileAwardsItems toProfileAwardsItems(
+            final List<ProfileAwards> profileAwardsGroup) {
+        List<ProfileAwardsItem> items =
+                profileAwardsGroup.stream()
+                        .map(this::toProfileAwardsItem)
+                        .collect(Collectors.toList());
 
         return ProfileAwardsResponseDTO.ProfileAwardsItems.builder()
                 .profileAwardsItems(items)
                 .build();
     }
 
-
-    public ProfileAwardsResponseDTO.ProfileAwardsDetail toProfileAwardsDetail(final ProfileAwards profileAwards) {
-        return ProfileAwardsResponseDTO.ProfileAwardsDetail
-                .builder()
+    public ProfileAwardsResponseDTO.ProfileAwardsDetail toProfileAwardsDetail(
+            final ProfileAwards profileAwards) {
+        return ProfileAwardsResponseDTO.ProfileAwardsDetail.builder()
                 .profileAwardsId(profileAwards.getId())
                 .awardsName(profileAwards.getAwardsName())
                 .awardsRanking(profileAwards.getAwardsRanking())
@@ -88,37 +90,41 @@ public class ProfileAwardsMapper {
                 .awardsDescription(profileAwards.getAwardsDescription())
                 .isAwardsCertified(profileAwards.isAwardsCertified())
                 .isAwardsVerified(profileAwards.isAwardsVerified())
-                .awardsCertificationAttachFileName(profileAwards.getAwardsCertificationAttachFileName())
-                .awardsCertificationAttachFilePath(profileAwards.getAwardsCertificationAttachFilePath())
+                .awardsCertificationAttachFileName(
+                        profileAwards.getAwardsCertificationAttachFileName())
+                .awardsCertificationAttachFilePath(
+                        profileAwards.getAwardsCertificationAttachFilePath())
                 .build();
     }
 
-    public ProfileAwardsResponseDTO.ProfileAwardsCertificationResponse toAddProfileAwardsCertification(final ProfileAwards profileAwards) {
-        return ProfileAwardsResponseDTO.ProfileAwardsCertificationResponse
-                .builder()
+    public ProfileAwardsResponseDTO.ProfileAwardsCertificationResponse
+            toAddProfileAwardsCertification(final ProfileAwards profileAwards) {
+        return ProfileAwardsResponseDTO.ProfileAwardsCertificationResponse.builder()
                 .isAwardsCertified(profileAwards.isAwardsCertified())
                 .isAwardsVerified(profileAwards.isAwardsVerified())
-                .awardsCertificationAttachFileName(profileAwards.getAwardsCertificationAttachFileName())
-                .awardsCertificationAttachFilePath(profileAwards.getAwardsCertificationAttachFilePath())
+                .awardsCertificationAttachFileName(
+                        profileAwards.getAwardsCertificationAttachFileName())
+                .awardsCertificationAttachFilePath(
+                        profileAwards.getAwardsCertificationAttachFilePath())
                 .build();
     }
 
-
-    public ProfileAwardsResponseDTO.RemoveProfileAwardsCertificationResponse toRemoveProfileAwardsCertification(final Long profileAwardsId) {
-        return ProfileAwardsResponseDTO.RemoveProfileAwardsCertificationResponse
-                .builder()
+    public ProfileAwardsResponseDTO.RemoveProfileAwardsCertificationResponse
+            toRemoveProfileAwardsCertification(final Long profileAwardsId) {
+        return ProfileAwardsResponseDTO.RemoveProfileAwardsCertificationResponse.builder()
                 .profileAwardsId(profileAwardsId)
                 .build();
     }
 
-    public ProfileAwardsResponseDTO.RemoveProfileAwardsResponse toRemoveProfileAwards(final Long profileAwardsId) {
-        return ProfileAwardsResponseDTO.RemoveProfileAwardsResponse
-                .builder()
+    public ProfileAwardsResponseDTO.RemoveProfileAwardsResponse toRemoveProfileAwards(
+            final Long profileAwardsId) {
+        return ProfileAwardsResponseDTO.RemoveProfileAwardsResponse.builder()
                 .profileAwardsId(profileAwardsId)
                 .build();
     }
 
-    public List<ProfileAwardsItem> profileEducationsToProfileProfileEducationItems(final List<ProfileAwards> profileAwardsGroup) {
+    public List<ProfileAwardsItem> profileEducationsToProfileProfileEducationItems(
+            final List<ProfileAwards> profileAwardsGroup) {
         return profileAwardsGroup.stream()
                 .map(this::toProfileAwardsItem)
                 .collect(Collectors.toList());

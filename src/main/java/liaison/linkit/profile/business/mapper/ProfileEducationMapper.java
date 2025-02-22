@@ -2,10 +2,11 @@ package liaison.linkit.profile.business.mapper;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.domain.University;
-import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.education.ProfileEducation;
+import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.AddProfileEducationResponse;
@@ -14,9 +15,11 @@ import liaison.linkit.profile.presentation.education.dto.ProfileEducationRespons
 
 @Mapper
 public class ProfileEducationMapper {
-    public ProfileEducation toAddProfileEducation(final Profile profile, final University university, final ProfileEducationRequestDTO.AddProfileEducationRequest request) {
-        return ProfileEducation
-                .builder()
+    public ProfileEducation toAddProfileEducation(
+            final Profile profile,
+            final University university,
+            final ProfileEducationRequestDTO.AddProfileEducationRequest request) {
+        return ProfileEducation.builder()
                 .id(null)
                 .profile(profile)
                 .university(university)
@@ -32,9 +35,9 @@ public class ProfileEducationMapper {
                 .build();
     }
 
-    public AddProfileEducationResponse toAddProfileEducationResponse(final ProfileEducation profileEducation) {
-        return AddProfileEducationResponse
-                .builder()
+    public AddProfileEducationResponse toAddProfileEducationResponse(
+            final ProfileEducation profileEducation) {
+        return AddProfileEducationResponse.builder()
                 .profileEducationId(profileEducation.getId())
                 .universityName(profileEducation.getUniversity().getUniversityName())
                 .majorName(profileEducation.getMajorName())
@@ -45,9 +48,9 @@ public class ProfileEducationMapper {
                 .build();
     }
 
-    public UpdateProfileEducationResponse toUpdateProfileEducationResponse(final ProfileEducation profileEducation) {
-        return UpdateProfileEducationResponse
-                .builder()
+    public UpdateProfileEducationResponse toUpdateProfileEducationResponse(
+            final ProfileEducation profileEducation) {
+        return UpdateProfileEducationResponse.builder()
                 .profileEducationId(profileEducation.getId())
                 .universityName(profileEducation.getUniversity().getUniversityName())
                 .majorName(profileEducation.getMajorName())
@@ -58,7 +61,8 @@ public class ProfileEducationMapper {
                 .build();
     }
 
-    public ProfileEducationResponseDTO.ProfileEducationItem toProfileEducationItem(final ProfileEducation profileEducation) {
+    public ProfileEducationResponseDTO.ProfileEducationItem toProfileEducationItem(
+            final ProfileEducation profileEducation) {
         return ProfileEducationResponseDTO.ProfileEducationItem.builder()
                 .profileEducationId(profileEducation.getId())
                 .universityName(profileEducation.getUniversity().getUniversityName())
@@ -71,20 +75,21 @@ public class ProfileEducationMapper {
                 .build();
     }
 
-
-    public ProfileEducationResponseDTO.ProfileEducationItems toProfileEducationItems(final List<ProfileEducation> profileEducations) {
-        List<ProfileEducationItem> items = profileEducations.stream()
-                .map(this::toProfileEducationItem)
-                .collect(Collectors.toList());
+    public ProfileEducationResponseDTO.ProfileEducationItems toProfileEducationItems(
+            final List<ProfileEducation> profileEducations) {
+        List<ProfileEducationItem> items =
+                profileEducations.stream()
+                        .map(this::toProfileEducationItem)
+                        .collect(Collectors.toList());
 
         return ProfileEducationResponseDTO.ProfileEducationItems.builder()
                 .profileEducationItems(items)
                 .build();
     }
 
-    public ProfileEducationResponseDTO.ProfileEducationDetail toProfileEducationDetail(final ProfileEducation profileEducation) {
-        return ProfileEducationResponseDTO.ProfileEducationDetail
-                .builder()
+    public ProfileEducationResponseDTO.ProfileEducationDetail toProfileEducationDetail(
+            final ProfileEducation profileEducation) {
+        return ProfileEducationResponseDTO.ProfileEducationDetail.builder()
                 .profileEducationId(profileEducation.getId())
                 .universityName(profileEducation.getUniversity().getUniversityName())
                 .majorName(profileEducation.getMajorName())
@@ -94,38 +99,42 @@ public class ProfileEducationMapper {
                 .educationDescription(profileEducation.getEducationDescription())
                 .isEducationCertified(profileEducation.isEducationCertified())
                 .isEducationVerified(profileEducation.isEducationVerified())
-                .educationCertificationAttachFileName(profileEducation.getEducationCertificationAttachFileName())
-                .educationCertificationAttachFilePath(profileEducation.getEducationCertificationAttachFilePath())
+                .educationCertificationAttachFileName(
+                        profileEducation.getEducationCertificationAttachFileName())
+                .educationCertificationAttachFilePath(
+                        profileEducation.getEducationCertificationAttachFilePath())
                 .build();
     }
 
-    public ProfileEducationResponseDTO.ProfileEducationCertificationResponse toAddProfileEducationCertification(final ProfileEducation profileEducation) {
-        return ProfileEducationResponseDTO.ProfileEducationCertificationResponse
-                .builder()
+    public ProfileEducationResponseDTO.ProfileEducationCertificationResponse
+            toAddProfileEducationCertification(final ProfileEducation profileEducation) {
+        return ProfileEducationResponseDTO.ProfileEducationCertificationResponse.builder()
                 .isEducationCertified(profileEducation.isEducationCertified())
                 .isEducationVerified(profileEducation.isEducationVerified())
-                .educationCertificationAttachFileName(profileEducation.getEducationCertificationAttachFileName())
-                .educationCertificationAttachFilePath(profileEducation.getEducationCertificationAttachFilePath())
+                .educationCertificationAttachFileName(
+                        profileEducation.getEducationCertificationAttachFileName())
+                .educationCertificationAttachFilePath(
+                        profileEducation.getEducationCertificationAttachFilePath())
                 .build();
     }
 
-
-    public ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse toRemoveProfileEducationCertification(final Long profileEducationId) {
-        return ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse
-                .builder()
+    public ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse
+            toRemoveProfileEducationCertification(final Long profileEducationId) {
+        return ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse.builder()
                 .profileEducationId(profileEducationId)
                 .build();
     }
 
-
-    public ProfileEducationResponseDTO.RemoveProfileEducationResponse toRemoveProfileEducation(final Long profileEducationId) {
-        return ProfileEducationResponseDTO.RemoveProfileEducationResponse
-                .builder()
+    public ProfileEducationResponseDTO.RemoveProfileEducationResponse toRemoveProfileEducation(
+            final Long profileEducationId) {
+        return ProfileEducationResponseDTO.RemoveProfileEducationResponse.builder()
                 .profileEducationId(profileEducationId)
                 .build();
     }
 
-    public List<ProfileEducationResponseDTO.ProfileEducationItem> profileEducationsToProfileProfileEducationItems(final List<ProfileEducation> profileEducations) {
+    public List<ProfileEducationResponseDTO.ProfileEducationItem>
+            profileEducationsToProfileProfileEducationItems(
+                    final List<ProfileEducation> profileEducations) {
         return profileEducations.stream()
                 .map(this::toProfileEducationItem)
                 .collect(Collectors.toList());

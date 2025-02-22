@@ -1,6 +1,7 @@
 package liaison.linkit.team.implement.team;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.repository.currentState.TeamCurrentStateRepository;
 import liaison.linkit.team.domain.repository.team.TeamRepository;
@@ -30,8 +31,9 @@ public class TeamQueryAdapter {
     }
 
     public Team findByTeamCode(final String teamCode) {
-        return teamRepository.findByTeamCode(teamCode)
-            .orElseThrow(() -> TeamNotFoundException.EXCEPTION);
+        return teamRepository
+                .findByTeamCode(teamCode)
+                .orElseThrow(() -> TeamNotFoundException.EXCEPTION);
     }
 
     public List<TeamCurrentState> findTeamCurrentStatesByTeamId(final Long teamId) {
@@ -39,47 +41,40 @@ public class TeamQueryAdapter {
     }
 
     public Page<Team> findAllByFiltering(
-        List<String> scaleName,
-        List<String> cityName,
-        List<String> teamStateName,
-        Pageable pageable
-    ) {
+            List<String> scaleName,
+            List<String> cityName,
+            List<String> teamStateName,
+            Pageable pageable) {
         log.info("팀 필터링 요청 발생");
         return teamRepository.findAllByFiltering(scaleName, cityName, teamStateName, pageable);
     }
 
     public Page<Team> findAllExcludingIds(
-        final List<Long> excludeTeamIds,
-        final Pageable pageable
-    ) {
+            final List<Long> excludeTeamIds, final Pageable pageable) {
         return teamRepository.findAllExcludingIds(excludeTeamIds, pageable);
     }
 
     @Cacheable(
-        value = "homeTopTeams",
-        key = "'homeTopTeams'"  // 상수 키를 사용
-    )
+            value = "homeTopTeams",
+            key = "'homeTopTeams'" // 상수 키를 사용
+            )
     public List<Team> findHomeTopTeams(final int limit) {
         return teamRepository.findHomeTopTeams(limit);
     }
 
     @Cacheable(
-        value = "topVentureTeams",
-        key = "'topVentureTeams'"  // 상수 키를 사용
-    )
-    public Page<Team> findTopVentureTeams(
-        final Pageable pageable
-    ) {
+            value = "topVentureTeams",
+            key = "'topVentureTeams'" // 상수 키를 사용
+            )
+    public Page<Team> findTopVentureTeams(final Pageable pageable) {
         return teamRepository.findTopVentureTeams(pageable);
     }
 
     @Cacheable(
-        value = "supportProjectTeams",
-        key = "'supportProjectTeams'"  // 상수 키를 사용
-    )
-    public Page<Team> findSupportProjectTeams(
-        final Pageable pageable
-    ) {
+            value = "supportProjectTeams",
+            key = "'supportProjectTeams'" // 상수 키를 사용
+            )
+    public Page<Team> findSupportProjectTeams(final Pageable pageable) {
         return teamRepository.findSupportProjectTeams(pageable);
     }
 

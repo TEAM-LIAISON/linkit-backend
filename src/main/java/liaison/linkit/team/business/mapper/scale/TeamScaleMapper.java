@@ -7,12 +7,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 @Mapper
 public class TeamScaleMapper {
 
-    public TeamScaleItem toTeamScaleItem(
-            final TeamScale teamScale
-    ) {
-        return TeamScaleItem
-                .builder()
-                .teamScaleName(teamScale.getScale().getScaleName())
-                .build();
+    public TeamScaleItem toTeamScaleItem(final TeamScale teamScale) {
+        return TeamScaleItem.builder().teamScaleName(teamScale.getScale().getScaleName()).build();
     }
 }

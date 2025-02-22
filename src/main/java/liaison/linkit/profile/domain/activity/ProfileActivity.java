@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.profile.domain.profile.Profile;
 import lombok.AccessLevel;
@@ -55,8 +56,7 @@ public class ProfileActivity extends BaseDateTimeEntity {
             final boolean isActivityCertified,
             final boolean isActivityVerified,
             final String activityCertificationAttachFileName,
-            final String activityCertificationAttachFilePath
-    ) {
+            final String activityCertificationAttachFilePath) {
         this.isActivityCertified = isActivityCertified;
         this.isActivityVerified = isActivityVerified;
         this.activityCertificationAttachFileName = activityCertificationAttachFileName;

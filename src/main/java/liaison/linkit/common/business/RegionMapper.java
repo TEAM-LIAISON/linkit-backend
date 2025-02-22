@@ -12,5 +12,4 @@ public class RegionMapper {
                 .divisionName(region.getDivisionName())
                 .build();
     }
-    
 }

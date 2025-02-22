@@ -1,6 +1,7 @@
 package liaison.linkit.notification.implement;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.notification.domain.Notification;
 import liaison.linkit.notification.domain.repository.notification.NotificationRepository;
@@ -27,7 +28,8 @@ public class NotificationQueryAdapter {
     }
 
     public Notification findById(final String notificationId) {
-        return notificationRepository.findById(notificationId)
+        return notificationRepository
+                .findById(notificationId)
                 .orElseThrow(() -> NotificationNotFoundException.EXCEPTION);
     }
 }

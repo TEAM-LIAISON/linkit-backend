@@ -2,6 +2,7 @@ package liaison.linkit.team.presentation.announcement.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 import lombok.AccessLevel;
@@ -19,7 +20,8 @@ public class TeamMemberAnnouncementResponseDTO {
     @AllArgsConstructor
     public static class AnnouncementInformMenus {
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu> announcementInformMenus = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu>
+                announcementInformMenus = new ArrayList<>();
     }
 
     @Builder
@@ -33,25 +35,23 @@ public class TeamMemberAnnouncementResponseDTO {
         private String teamName;
         private String teamCode;
 
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+        @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem();
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
-        private int announcementDDay;           // 디데이
+        private int announcementDDay; // 디데이
         private Boolean isPermanentRecruitment; // 상시 모집 여부
-        private String announcementTitle;       // 공고 제목
+        private String announcementTitle; // 공고 제목
 
-        private Boolean isAnnouncementScrap;    // 공고 스크랩 여부
-        private int announcementScrapCount;     // 공고 스크랩 수
+        private Boolean isAnnouncementScrap; // 공고 스크랩 여부
+        private int announcementScrapCount; // 공고 스크랩 수
 
         @Builder.Default
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
-
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
     }
 
     @Builder
@@ -64,7 +64,7 @@ public class TeamMemberAnnouncementResponseDTO {
         private Boolean isAnnouncementScrap;
         private int announcementScrapCount;
 
-        private int announcementDDay;           // 디데이
+        private int announcementDDay; // 디데이
         private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;
 
@@ -72,7 +72,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
 
         private String announcementEndDate;
 
@@ -104,18 +105,19 @@ public class TeamMemberAnnouncementResponseDTO {
         private Long teamMemberAnnouncementId;
 
         private int announcementDDay;
-        private Boolean isPermanentRecruitment;     // 상시 모집 여부
+        private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;
         private String majorPosition;
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
 
-        private Boolean isAnnouncementPublic;       // 공고 공개/비공개 여부
-        private Boolean isAnnouncementInProgress;   // 공고 현재 진행 여부
+        private Boolean isAnnouncementPublic; // 공고 공개/비공개 여부
+        private Boolean isAnnouncementInProgress; // 공고 현재 진행 여부
 
-        private Boolean isAnnouncementScrap;        // 공고 스크랩 여부
-        private int announcementScrapCount;         // 공고의 전체 스크랩 개수
+        private Boolean isAnnouncementScrap; // 공고 스크랩 여부
+        private int announcementScrapCount; // 공고의 전체 스크랩 개수
     }
 
     @Builder
@@ -130,7 +132,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
 
         private String announcementEndDate;
 
@@ -160,7 +163,8 @@ public class TeamMemberAnnouncementResponseDTO {
         private AnnouncementPositionItem announcementPositionItem = new AnnouncementPositionItem();
 
         @Builder.Default
-        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = new ArrayList<>();
+        private List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                announcementSkillNames = new ArrayList<>();
 
         private String announcementEndDate;
         private Boolean isPermanentRecruitment;
@@ -210,5 +214,4 @@ public class TeamMemberAnnouncementResponseDTO {
         private Long teamMemberAnnouncementId;
         private Boolean isAnnouncementPublic;
     }
-
 }

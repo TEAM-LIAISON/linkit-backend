@@ -2,6 +2,7 @@ package liaison.linkit.profile.presentation.portfolio.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.profile.domain.portfolio.ProjectContribution;
 import liaison.linkit.profile.domain.portfolio.ProjectSize;
 import lombok.AccessLevel;
@@ -33,14 +34,14 @@ public class ProfilePortfolioRequestDTO {
         private List<ProjectRoleAndContribution> projectRoleAndContributions = new ArrayList<>();
 
         @Builder.Default
-        private List<ProfilePortfolioRequestDTO.ProjectSkillName> projectSkillNames = new ArrayList<>();
+        private List<ProfilePortfolioRequestDTO.ProjectSkillName> projectSkillNames =
+                new ArrayList<>();
 
         @Builder.Default
         private List<ProjectLinkNameAndUrls> projectLinkNameAndUrls = new ArrayList<>();
 
         private String projectDescription;
     }
-
 
     @Builder
     @Getter
@@ -62,15 +63,15 @@ public class ProfilePortfolioRequestDTO {
         private List<ProjectRoleAndContribution> projectRoleAndContributions = new ArrayList<>();
 
         @Builder.Default
-        private List<ProfilePortfolioRequestDTO.ProjectSkillName> projectSkillNames = new ArrayList<>();
+        private List<ProfilePortfolioRequestDTO.ProjectSkillName> projectSkillNames =
+                new ArrayList<>();
 
         @Builder.Default
         private List<ProjectLinkNameAndUrls> projectLinkNameAndUrls = new ArrayList<>();
 
         private String projectDescription;
 
-        @Builder.Default
-        private PortfolioImages portfolioImages = new PortfolioImages();
+        @Builder.Default private PortfolioImages portfolioImages = new PortfolioImages();
     }
 
     @Builder
@@ -110,8 +111,7 @@ public class ProfilePortfolioRequestDTO {
 
         private String projectRepresentImagePath; // 대표 이미지
 
-        @Builder.Default
-        private List<PortfolioSubImage> portfolioSubImages = new ArrayList<>();
+        @Builder.Default private List<PortfolioSubImage> portfolioSubImages = new ArrayList<>();
     }
 
     @Builder

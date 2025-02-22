@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,12 +27,7 @@ public class Scale {
     @Column(name = "scale_name")
     private String scaleName;
 
-    public static Scale of(
-            final String scaleName
-    ) {
-        return new Scale(
-                null,
-                scaleName
-        );
+    public static Scale of(final String scaleName) {
+        return new Scale(null, scaleName);
     }
 }

@@ -3,6 +3,7 @@ package liaison.linkit.team.presentation.history.dto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,8 @@ public class TeamHistoryResponseDTO {
     @AllArgsConstructor
     public static class TeamHistoryCalendarResponse {
         /**
-         * 최종 응답을 담을 필드. 예: [ { "2023" : [ { "01" : [ { ... }, { ... } ] }, { "02" : [ { ... }, { ... } ] } ] }, { "2024" : [...] } ]
+         * 최종 응답을 담을 필드. 예: [ { "2023" : [ { "01" : [ { ... }, { ... } ] }, { "02" : [ { ... }, {
+         * ... } ] } ] }, { "2024" : [...] } ]
          */
         private List<Map<String, List<Map<String, List<TeamHistoryViewItem>>>>> teamHistoryCalendar;
     }
@@ -66,8 +68,7 @@ public class TeamHistoryResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamHistoryItems {
-        @Builder.Default
-        private List<TeamHistoryItem> teamHistoryItems = new ArrayList<>();
+        @Builder.Default private List<TeamHistoryItem> teamHistoryItems = new ArrayList<>();
     }
 
     @Builder

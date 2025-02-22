@@ -1,5 +1,7 @@
 package liaison.linkit.login.infrastructure.oauthprovider;
 
+import java.util.Optional;
+
 import liaison.linkit.common.exception.NotSupportedOauthServiceException;
 import liaison.linkit.login.domain.OauthAccessToken;
 import liaison.linkit.login.domain.OauthProvider;
@@ -13,8 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Optional;
-
 @Component
 public class GoogleOauthProvider implements OauthProvider {
     private static final String PROVIDER_NAME = "google";
@@ -26,12 +26,17 @@ public class GoogleOauthProvider implements OauthProvider {
     protected final String userUri;
 
     public GoogleOauthProvider(
-            @Value("${spring.security.oauth2.client.registration.google.client-id}") final String clientId,
-            @Value("${spring.security.oauth2.client.registration.google.client-secret}") final String clientSecret,
-            @Value("${spring.security.oauth2.client.registration.google.redirect-uri}") final String redirectUri,
-            @Value("${spring.security.oauth2.client.provider.google.token-uri}") final String tokenUri, // Notice the path correction
-            @Value("${spring.security.oauth2.client.provider.google.user-info-uri}") final String userUri // Notice the path correction
-    ) {
+            @Value("${spring.security.oauth2.client.registration.google.client-id}")
+                    final String clientId,
+            @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+                    final String clientSecret,
+            @Value("${spring.security.oauth2.client.registration.google.redirect-uri}")
+                    final String redirectUri,
+            @Value("${spring.security.oauth2.client.provider.google.token-uri}")
+                    final String tokenUri, // Notice the path correction
+            @Value("${spring.security.oauth2.client.provider.google.user-info-uri}")
+                    final String userUri // Notice the path correction
+            ) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
@@ -54,14 +59,12 @@ public class GoogleOauthProvider implements OauthProvider {
         final String accessToken = requestAccessToken(code);
         final HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessToken);
-        final HttpEntity<MultiValueMap<String, String>> userInfoRequestEntity = new HttpEntity<>(headers);
+        final HttpEntity<MultiValueMap<String, String>> userInfoRequestEntity =
+                new HttpEntity<>(headers);
 
-        final ResponseEntity<GoogleUserInfo> response = restTemplate.exchange(
-                userUri,
-                HttpMethod.GET,
-                userInfoRequestEntity,
-                GoogleUserInfo.class
-        );
+        final ResponseEntity<GoogleUserInfo> response =
+                restTemplate.exchange(
+                        userUri, HttpMethod.GET, userInfoRequestEntity, GoogleUserInfo.class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
@@ -81,13 +84,14 @@ public class GoogleOauthProvider implements OauthProvider {
         params.add("redirect_uri", redirectUri);
         params.add("grant_type", "authorization_code");
 
-        final HttpEntity<MultiValueMap<String, String>> accessTokenRequestEntity = new HttpEntity<>(params, httpHeaders);
-        final ResponseEntity<OauthAccessToken> accessTokenResponse = restTemplate.exchange(
-                tokenUri,
-                HttpMethod.POST,
-                accessTokenRequestEntity,
-                OauthAccessToken.class
-        );
+        final HttpEntity<MultiValueMap<String, String>> accessTokenRequestEntity =
+                new HttpEntity<>(params, httpHeaders);
+        final ResponseEntity<OauthAccessToken> accessTokenResponse =
+                restTemplate.exchange(
+                        tokenUri,
+                        HttpMethod.POST,
+                        accessTokenRequestEntity,
+                        OauthAccessToken.class);
 
         return Optional.ofNullable(accessTokenResponse.getBody())
                 .orElseThrow(() -> AuthCodeBadRequestException.EXCEPTION)

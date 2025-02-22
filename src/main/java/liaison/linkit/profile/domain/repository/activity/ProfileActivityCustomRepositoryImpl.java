@@ -1,9 +1,11 @@
 package liaison.linkit.profile.domain.repository.activity;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.profile.domain.activity.ProfileActivity;
 import liaison.linkit.profile.domain.activity.QProfileActivity;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO.UpdateProfileActivityRequest;
@@ -16,8 +18,7 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
 
     private final JPAQueryFactory queryFactory;
 
-    @PersistenceContext
-    private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<ProfileActivity> getProfileActivities(final Long memberId) {
@@ -30,20 +31,31 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
     }
 
     @Override
-    public ProfileActivity updateProfileActivity(final Long profileActivityId, final UpdateProfileActivityRequest updateProfileActivity) {
+    public ProfileActivity updateProfileActivity(
+            final Long profileActivityId,
+            final UpdateProfileActivityRequest updateProfileActivity) {
         QProfileActivity qProfileActivity = QProfileActivity.profileActivity;
 
         // 프로필 활동 업데이트
-        long updatedCount = queryFactory
-                .update(qProfileActivity)
-                .set(qProfileActivity.activityName, updateProfileActivity.getActivityName())
-                .set(qProfileActivity.activityRole, updateProfileActivity.getActivityRole())
-                .set(qProfileActivity.activityStartDate, updateProfileActivity.getActivityStartDate())
-                .set(qProfileActivity.activityEndDate, updateProfileActivity.getActivityEndDate())
-                .set(qProfileActivity.isActivityInProgress, updateProfileActivity.getIsActivityInProgress())
-                .set(qProfileActivity.activityDescription, updateProfileActivity.getActivityDescription())
-                .where(qProfileActivity.id.eq(profileActivityId))
-                .execute();
+        long updatedCount =
+                queryFactory
+                        .update(qProfileActivity)
+                        .set(qProfileActivity.activityName, updateProfileActivity.getActivityName())
+                        .set(qProfileActivity.activityRole, updateProfileActivity.getActivityRole())
+                        .set(
+                                qProfileActivity.activityStartDate,
+                                updateProfileActivity.getActivityStartDate())
+                        .set(
+                                qProfileActivity.activityEndDate,
+                                updateProfileActivity.getActivityEndDate())
+                        .set(
+                                qProfileActivity.isActivityInProgress,
+                                updateProfileActivity.getIsActivityInProgress())
+                        .set(
+                                qProfileActivity.activityDescription,
+                                updateProfileActivity.getActivityDescription())
+                        .where(qProfileActivity.id.eq(profileActivityId))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -65,10 +77,11 @@ public class ProfileActivityCustomRepositoryImpl implements ProfileActivityCusto
         QProfileActivity qProfileActivity = QProfileActivity.profileActivity;
 
         return queryFactory
-                .selectOne()
-                .from(qProfileActivity)
-                .where(qProfileActivity.profile.id.eq(profileId))
-                .fetchFirst() != null;
+                        .selectOne()
+                        .from(qProfileActivity)
+                        .where(qProfileActivity.profile.id.eq(profileId))
+                        .fetchFirst()
+                != null;
     }
 
     @Override

@@ -1,9 +1,10 @@
 package liaison.linkit.search.presentation.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,8 +19,7 @@ public class LogResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LogInformMenus {
-        @Builder.Default
-        private List<LogInformMenu> logInformMenus = new ArrayList<>();
+        @Builder.Default private List<LogInformMenu> logInformMenus = new ArrayList<>();
     }
 
     @Builder
@@ -56,12 +56,10 @@ public class LogResponseDTO {
                 final Long teamLogId,
                 final String teamLogoImagePath,
                 final String teamName,
-
                 final String emailId,
                 final Long profileLogId,
                 final String memberName,
-                final String profileImagePath
-        ) {
+                final String profileImagePath) {
             this.teamCode = teamCode;
             this.teamLogId = teamLogId;
             this.teamLogoImagePath = teamLogoImagePath;
@@ -77,8 +75,7 @@ public class LogResponseDTO {
                 final String emailId,
                 final Long profileLogId,
                 final String memberName,
-                final String profileImagePath
-        ) {
+                final String profileImagePath) {
             return LogInformDetails.builder()
                     .emailId(emailId)
                     .profileLogId(profileLogId)
@@ -91,8 +88,7 @@ public class LogResponseDTO {
                 final String teamCode,
                 final Long teamLogId,
                 final String teamName,
-                final String teamLogoImagePath
-        ) {
+                final String teamLogoImagePath) {
             return LogInformDetails.builder()
                     .teamCode(teamCode)
                     .teamLogId(teamLogId)

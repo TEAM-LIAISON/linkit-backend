@@ -1,6 +1,7 @@
 package liaison.linkit.team.implement.announcement;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.announcement.AnnouncementSkill;
 import liaison.linkit.team.domain.repository.announcement.AnnouncementSkillRepository;
@@ -15,7 +16,9 @@ public class AnnouncementSkillQueryAdapter {
         return announcementSkillRepository.getAnnouncementSkills(teamMemberAnnouncementId);
     }
 
-    public boolean existsAnnouncementSkillsByTeamMemberAnnouncementId(final Long teamMemberAnnouncementId) {
-        return announcementSkillRepository.existsAnnouncementSkillsByTeamMemberAnnouncementId(teamMemberAnnouncementId);
+    public boolean existsAnnouncementSkillsByTeamMemberAnnouncementId(
+            final Long teamMemberAnnouncementId) {
+        return announcementSkillRepository.existsAnnouncementSkillsByTeamMemberAnnouncementId(
+                teamMemberAnnouncementId);
     }
 }

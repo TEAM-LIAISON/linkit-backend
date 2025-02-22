@@ -22,13 +22,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+
+import jakarta.servlet.http.Cookie;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.Cookie;
-import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
+import liaison.linkit.profile.business.service.ProfileEducationService;
 import liaison.linkit.profile.presentation.education.ProfileEducationController;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationRequestDTO.AddProfileEducationRequest;
@@ -41,7 +44,6 @@ import liaison.linkit.profile.presentation.education.dto.ProfileEducationRespons
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.RemoveProfileEducationResponse;
 import liaison.linkit.profile.presentation.education.dto.ProfileEducationResponseDTO.UpdateProfileEducationResponse;
-import liaison.linkit.profile.business.service.ProfileEducationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -61,14 +63,14 @@ import org.springframework.test.web.servlet.ResultActions;
 @MockBean(JpaMetamodelMappingContext.class)
 @AutoConfigureRestDocs
 public class ProfileEducationControllerTest extends ControllerTest {
-    private static final MemberTokens MEMBER_TOKENS = new MemberTokens("accessToken", "refreshToken");
-    private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
+    private static final MemberTokens MEMBER_TOKENS =
+            new MemberTokens("accessToken", "refreshToken");
+    private static final Cookie COOKIE =
+            new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private ProfileEducationService profileEducationService;
+    @MockBean private ProfileEducationService profileEducationService;
 
     @BeforeEach
     void setUp() {
@@ -81,19 +83,21 @@ public class ProfileEducationControllerTest extends ControllerTest {
         return mockMvc.perform(
                 get("/api/v1/profile/education")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-        );
+                        .cookie(COOKIE));
     }
 
-    private ResultActions performGetProfileEducationDetail(final Long profileEducationId) throws Exception {
+    private ResultActions performGetProfileEducationDetail(final Long profileEducationId)
+            throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/profile/education/{profileEducationId}", profileEducationId)
+                RestDocumentationRequestBuilders.get(
+                                "/api/v1/profile/education/{profileEducationId}",
+                                profileEducationId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-        );
+                        .cookie(COOKIE));
     }
 
-    private ResultActions performAddProfileEducation(final AddProfileEducationRequest request) throws Exception {
+    private ResultActions performAddProfileEducation(final AddProfileEducationRequest request)
+            throws Exception {
         return mockMvc.perform(
                 post("/api/v1/profile/education")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -102,7 +106,9 @@ public class ProfileEducationControllerTest extends ControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
     }
 
-    private ResultActions performUpdateProfileEducation(final Long profileEducationId, final UpdateProfileEducationRequest request) throws Exception {
+    private ResultActions performUpdateProfileEducation(
+            final Long profileEducationId, final UpdateProfileEducationRequest request)
+            throws Exception {
         return mockMvc.perform(
                 post("/api/v1/profile/education/{profileEducationId}", profileEducationId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
@@ -111,16 +117,20 @@ public class ProfileEducationControllerTest extends ControllerTest {
                         .content(objectMapper.writeValueAsString(request)));
     }
 
-    private ResultActions performRemoveProfileEducation(final Long profileEducationId) throws Exception {
+    private ResultActions performRemoveProfileEducation(final Long profileEducationId)
+            throws Exception {
         return mockMvc.perform(
                 delete("/api/v1/profile/education/{profileEducationId}", profileEducationId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
 
-    private ResultActions performRemoveEducationCertification(final Long profileEducationId) throws Exception {
+    private ResultActions performRemoveEducationCertification(final Long profileEducationId)
+            throws Exception {
         return mockMvc.perform(
-                delete("/api/v1/profile/education/certification/{profileEducationId}", profileEducationId)
+                delete(
+                                "/api/v1/profile/education/certification/{profileEducationId}",
+                                profileEducationId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE));
     }
@@ -129,78 +139,92 @@ public class ProfileEducationControllerTest extends ControllerTest {
     @Test
     void getProfileEducationItems() throws Exception {
         // given
-        final ProfileEducationResponseDTO.ProfileEducationItem firstProfileEducationItem
-                = new ProfileEducationItem(1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, true, "학력 설명 1");
+        final ProfileEducationResponseDTO.ProfileEducationItem firstProfileEducationItem =
+                new ProfileEducationItem(
+                        1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, true, "학력 설명 1");
 
-        final ProfileEducationResponseDTO.ProfileEducationItem secondProfileEducationItem
-                = new ProfileEducationItem(2L, "대학 이름 2", "전공 이름 2", "입학 연도 2", "졸업 연도 2", false, true, "학력 설명 2");
+        final ProfileEducationResponseDTO.ProfileEducationItem secondProfileEducationItem =
+                new ProfileEducationItem(
+                        2L, "대학 이름 2", "전공 이름 2", "입학 연도 2", "졸업 연도 2", false, true, "학력 설명 2");
 
-        final ProfileEducationResponseDTO.ProfileEducationItems profileEducationItems
-                = new ProfileEducationResponseDTO.ProfileEducationItems(Arrays.asList(firstProfileEducationItem, secondProfileEducationItem));
+        final ProfileEducationResponseDTO.ProfileEducationItems profileEducationItems =
+                new ProfileEducationResponseDTO.ProfileEducationItems(
+                        Arrays.asList(firstProfileEducationItem, secondProfileEducationItem));
 
         // when
-        when(profileEducationService.getProfileEducationItems(anyLong())).thenReturn(profileEducationItems);
+        when(profileEducationService.getProfileEducationItems(anyLong()))
+                .thenReturn(profileEducationItems);
 
         final ResultActions resultActions = performGetProfileEducationItems();
 
         // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        subsectionWithPath("result.profileEducationItems[]")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("프로필 학력 아이템 배열"),
-                                        fieldWithPath("result.profileEducationItems[].profileEducationId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("내 학력 ID"),
-
-                                        fieldWithPath("result.profileEducationItems[].universityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학교 이름"),
-                                        fieldWithPath("result.profileEducationItems[].majorName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("전공 이름"),
-                                        fieldWithPath("result.profileEducationItems[].admissionYear")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학 입학 연도"),
-                                        fieldWithPath("result.profileEducationItems[].graduationYear")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학 졸업 연도"),
-                                        fieldWithPath("result.profileEducationItems[].isAttendUniversity")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("대학 재학 여부 (true: 재학 중, false: 재학 X)"),
-                                        fieldWithPath("result.profileEducationItems[].isEducationVerified")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("학력 증명서 인증 여부")
-                                )
-                        )).andReturn();
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                subsectionWithPath("result.profileEducationItems[]")
+                                                        .type(JsonFieldType.ARRAY)
+                                                        .description("프로필 학력 아이템 배열"),
+                                                fieldWithPath(
+                                                                "result.profileEducationItems[].profileEducationId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("내 학력 ID"),
+                                                fieldWithPath(
+                                                                "result.profileEducationItems[].universityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학교 이름"),
+                                                fieldWithPath(
+                                                                "result.profileEducationItems[].majorName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("전공 이름"),
+                                                fieldWithPath(
+                                                                "result.profileEducationItems[].admissionYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 입학 연도"),
+                                                fieldWithPath(
+                                                                "result.profileEducationItems[].graduationYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 졸업 연도"),
+                                                fieldWithPath(
+                                                                "result.profileEducationItems[].isAttendUniversity")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description(
+                                                                "대학 재학 여부 (true: 재학 중, false: 재학 X)"),
+                                                fieldWithPath(
+                                                                "result.profileEducationItems[].isEducationVerified")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("학력 증명서 인증 여부"))))
+                        .andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<ProfileEducationResponseDTO.ProfileEducationItems> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<ProfileEducationResponseDTO.ProfileEducationItems>>() {
-                }
-        );
+        final CommonResponse<ProfileEducationResponseDTO.ProfileEducationItems> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<
+                                CommonResponse<
+                                        ProfileEducationResponseDTO.ProfileEducationItems>>() {});
 
-        final CommonResponse<ProfileEducationResponseDTO.ProfileEducationItems> expected = CommonResponse.onSuccess(profileEducationItems);
+        final CommonResponse<ProfileEducationResponseDTO.ProfileEducationItems> expected =
+                CommonResponse.onSuccess(profileEducationItems);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
@@ -210,85 +234,99 @@ public class ProfileEducationControllerTest extends ControllerTest {
     @Test
     void getProfileEducationDetail() throws Exception {
         // given
-        final ProfileEducationResponseDTO.ProfileEducationDetail profileEducationDetail
-                = new ProfileEducationResponseDTO.ProfileEducationDetail(1L, "대학 이름 1", "전공 이름 1", "입학 연도 1", "졸업 연도 1", false, "학력 설명", true, true, "증명서 파일 이름", "증명서 파일 경로");
+        final ProfileEducationResponseDTO.ProfileEducationDetail profileEducationDetail =
+                new ProfileEducationResponseDTO.ProfileEducationDetail(
+                        1L,
+                        "대학 이름 1",
+                        "전공 이름 1",
+                        "입학 연도 1",
+                        "졸업 연도 1",
+                        false,
+                        "학력 설명",
+                        true,
+                        true,
+                        "증명서 파일 이름",
+                        "증명서 파일 경로");
 
         // when
-        when(profileEducationService.getProfileEducationDetail(anyLong(), anyLong())).thenReturn(profileEducationDetail);
+        when(profileEducationService.getProfileEducationDetail(anyLong(), anyLong()))
+                .thenReturn(profileEducationDetail);
 
         final ResultActions resultActions = performGetProfileEducationDetail(1L);
 
         // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("profileEducationId")
-                                                .description("프로필 학력 ID")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.profileEducationId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("내 학력 ID"),
-                                        fieldWithPath("result.universityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학교 이름"),
-                                        fieldWithPath("result.majorName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("전공 이름"),
-                                        fieldWithPath("result.admissionYear")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학 입학 연도"),
-                                        fieldWithPath("result.graduationYear")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학 졸업 연도"),
-                                        fieldWithPath("result.isAttendUniversity")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("대학 재학 여부 (true: 재학 중, false: 재학 X)"),
-                                        fieldWithPath("result.educationDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학력 설명"),
-
-                                        fieldWithPath("result.isEducationCertified")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("학력 증명서 존재 여부"),
-                                        fieldWithPath("result.isEducationVerified")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("학력 증명서 인증 여부"),
-                                        fieldWithPath("result.educationCertificationAttachFileName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학력 증명서 파일 이름"),
-                                        fieldWithPath("result.educationCertificationAttachFilePath")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학력 증명서 파일 경로")
-                                )
-                        )).andReturn();
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        pathParameters(
+                                                parameterWithName("profileEducationId")
+                                                        .description("프로필 학력 ID")),
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.profileEducationId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("내 학력 ID"),
+                                                fieldWithPath("result.universityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학교 이름"),
+                                                fieldWithPath("result.majorName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("전공 이름"),
+                                                fieldWithPath("result.admissionYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 입학 연도"),
+                                                fieldWithPath("result.graduationYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 졸업 연도"),
+                                                fieldWithPath("result.isAttendUniversity")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description(
+                                                                "대학 재학 여부 (true: 재학 중, false: 재학 X)"),
+                                                fieldWithPath("result.educationDescription")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("학력 설명"),
+                                                fieldWithPath("result.isEducationCertified")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("학력 증명서 존재 여부"),
+                                                fieldWithPath("result.isEducationVerified")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("학력 증명서 인증 여부"),
+                                                fieldWithPath(
+                                                                "result.educationCertificationAttachFileName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("학력 증명서 파일 이름"),
+                                                fieldWithPath(
+                                                                "result.educationCertificationAttachFilePath")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("학력 증명서 파일 경로"))))
+                        .andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<ProfileEducationDetail> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<ProfileEducationDetail>>() {
-                }
-        );
+        final CommonResponse<ProfileEducationDetail> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<CommonResponse<ProfileEducationDetail>>() {});
 
-        final CommonResponse<ProfileEducationDetail> expected = CommonResponse.onSuccess(profileEducationDetail);
+        final CommonResponse<ProfileEducationDetail> expected =
+                CommonResponse.onSuccess(profileEducationDetail);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
@@ -298,91 +336,94 @@ public class ProfileEducationControllerTest extends ControllerTest {
     @Test
     void addProfileEducation() throws Exception {
         // given
-        final ProfileEducationRequestDTO.AddProfileEducationRequest addProfileEducationRequest
-                = new AddProfileEducationRequest("대학 이름", "전공 이름", "입학 연도", "졸업 연도", false, "학력 설명");
+        final ProfileEducationRequestDTO.AddProfileEducationRequest addProfileEducationRequest =
+                new AddProfileEducationRequest("대학 이름", "전공 이름", "입학 연도", "졸업 연도", false, "학력 설명");
 
-        final AddProfileEducationResponse addProfileEducationResponse
-                = new AddProfileEducationResponse(1L, "대학 이름", "전공 이름", "입학 연도", "졸업 연도", false, "학력 설명");
+        final AddProfileEducationResponse addProfileEducationResponse =
+                new AddProfileEducationResponse(
+                        1L, "대학 이름", "전공 이름", "입학 연도", "졸업 연도", false, "학력 설명");
 
         // when
-        when(profileEducationService.addProfileEducation(anyLong(), any())).thenReturn(addProfileEducationResponse);
+        when(profileEducationService.addProfileEducation(anyLong(), any()))
+                .thenReturn(addProfileEducationResponse);
 
         final ResultActions resultActions = performAddProfileEducation(addProfileEducationRequest);
 
         // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                requestFields(
-                                        fieldWithPath("universityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학 이름"),
-                                        fieldWithPath("majorName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("전공 이름"),
-                                        fieldWithPath("admissionYear")
-                                                .type(JsonFieldType.STRING)
-                                                .description("입학 연도"),
-                                        fieldWithPath("graduationYear")
-                                                .type(JsonFieldType.STRING)
-                                                .description("졸업 연도"),
-                                        fieldWithPath("isAttendUniversity")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("재학 여부"),
-                                        fieldWithPath("educationDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학력 설명")
-                                ),
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("result.profileEducationId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("프로필 학력 ID"),
-                                        fieldWithPath("result.universityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학교 이름"),
-                                        fieldWithPath("result.majorName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("전공 이름"),
-                                        fieldWithPath("result.admissionYear")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학 입학 연도"),
-                                        fieldWithPath("result.graduationYear")
-                                                .type(JsonFieldType.STRING)
-                                                .description("대학 졸업 연도"),
-                                        fieldWithPath("result.isAttendUniversity")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("대학 재학 여부 (true: 재학 중, false: 재학 X)"),
-                                        fieldWithPath("result.educationDescription")
-                                                .type(JsonFieldType.STRING)
-                                                .description("학력 설명")
-                                )
-                        )).andReturn();
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        requestFields(
+                                                fieldWithPath("universityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 이름"),
+                                                fieldWithPath("majorName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("전공 이름"),
+                                                fieldWithPath("admissionYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("입학 연도"),
+                                                fieldWithPath("graduationYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("졸업 연도"),
+                                                fieldWithPath("isAttendUniversity")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("재학 여부"),
+                                                fieldWithPath("educationDescription")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("학력 설명")),
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.profileEducationId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("프로필 학력 ID"),
+                                                fieldWithPath("result.universityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학교 이름"),
+                                                fieldWithPath("result.majorName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("전공 이름"),
+                                                fieldWithPath("result.admissionYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 입학 연도"),
+                                                fieldWithPath("result.graduationYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 졸업 연도"),
+                                                fieldWithPath("result.isAttendUniversity")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description(
+                                                                "대학 재학 여부 (true: 재학 중, false: 재학 X)"),
+                                                fieldWithPath("result.educationDescription")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("학력 설명"))))
+                        .andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<AddProfileEducationResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<AddProfileEducationResponse>>() {
-                }
-        );
+        final CommonResponse<AddProfileEducationResponse> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<CommonResponse<AddProfileEducationResponse>>() {});
 
-        final CommonResponse<AddProfileEducationResponse> expected = CommonResponse.onSuccess(addProfileEducationResponse);
+        final CommonResponse<AddProfileEducationResponse> expected =
+                CommonResponse.onSuccess(addProfileEducationResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -391,94 +432,100 @@ public class ProfileEducationControllerTest extends ControllerTest {
     @Test
     void updateProfileEducation() throws Exception {
         // given
-        final ProfileEducationRequestDTO.UpdateProfileEducationRequest updateProfileEducationRequest
-                = new UpdateProfileEducationRequest("수정 대학 이름", "수정 전공 이름", "수정 입학 연도", "수정 졸업 연도", false, "수정 학력 설명");
+        final ProfileEducationRequestDTO.UpdateProfileEducationRequest
+                updateProfileEducationRequest =
+                        new UpdateProfileEducationRequest(
+                                "수정 대학 이름", "수정 전공 이름", "수정 입학 연도", "수정 졸업 연도", false, "수정 학력 설명");
 
-        final UpdateProfileEducationResponse updateProfileActivityResponse
-                = new UpdateProfileEducationResponse(1L, "수정 대학 이름", "수정 전공 이름", "수정 입학 연도", "수정 졸업 연도", false, "수정 학력 설명");
+        final UpdateProfileEducationResponse updateProfileActivityResponse =
+                new UpdateProfileEducationResponse(
+                        1L, "수정 대학 이름", "수정 전공 이름", "수정 입학 연도", "수정 졸업 연도", false, "수정 학력 설명");
 
         // when
-        when(profileEducationService.updateProfileEducation(anyLong(), anyLong(), any())).thenReturn(updateProfileActivityResponse);
+        when(profileEducationService.updateProfileEducation(anyLong(), anyLong(), any()))
+                .thenReturn(updateProfileActivityResponse);
 
-        final ResultActions resultActions = performUpdateProfileEducation(1L, updateProfileEducationRequest);
+        final ResultActions resultActions =
+                performUpdateProfileEducation(1L, updateProfileEducationRequest);
 
         // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(restDocs.document(
-                        pathParameters(
-                                parameterWithName("profileEducationId")
-                                        .description("프로필 학력 ID")
-                        ),
-                        requestFields(
-                                fieldWithPath("universityName")
-                                        .type(JsonFieldType.STRING)
-                                        .description("대학 이름"),
-                                fieldWithPath("majorName")
-                                        .type(JsonFieldType.STRING)
-                                        .description("전공 이름"),
-                                fieldWithPath("admissionYear")
-                                        .type(JsonFieldType.STRING)
-                                        .description("입학 연도"),
-                                fieldWithPath("graduationYear")
-                                        .type(JsonFieldType.STRING)
-                                        .description("졸업 연도"),
-                                fieldWithPath("isAttendUniversity")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("재학 여부"),
-                                fieldWithPath("educationDescription")
-                                        .type(JsonFieldType.STRING)
-                                        .description("학력 설명")
-                        ),
-                        responseFields(
-                                fieldWithPath("isSuccess")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("요청 성공 여부")
-                                        .attributes(field("constraint", "boolean 값")),
-                                fieldWithPath("code")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 코드")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("message")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 메시지")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("result.profileEducationId")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("프로필 학력 ID"),
-                                fieldWithPath("result.universityName")
-                                        .type(JsonFieldType.STRING)
-                                        .description("대학교 이름"),
-                                fieldWithPath("result.majorName")
-                                        .type(JsonFieldType.STRING)
-                                        .description("전공 이름"),
-                                fieldWithPath("result.admissionYear")
-                                        .type(JsonFieldType.STRING)
-                                        .description("대학 입학 연도"),
-                                fieldWithPath("result.graduationYear")
-                                        .type(JsonFieldType.STRING)
-                                        .description("대학 졸업 연도"),
-                                fieldWithPath("result.isAttendUniversity")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("대학 재학 여부 (true: 재학 중, false: 재학 X)"),
-                                fieldWithPath("result.educationDescription")
-                                        .type(JsonFieldType.STRING)
-                                        .description("학력 설명")
-                        )
-                )).andReturn();
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        pathParameters(
+                                                parameterWithName("profileEducationId")
+                                                        .description("프로필 학력 ID")),
+                                        requestFields(
+                                                fieldWithPath("universityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 이름"),
+                                                fieldWithPath("majorName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("전공 이름"),
+                                                fieldWithPath("admissionYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("입학 연도"),
+                                                fieldWithPath("graduationYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("졸업 연도"),
+                                                fieldWithPath("isAttendUniversity")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("재학 여부"),
+                                                fieldWithPath("educationDescription")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("학력 설명")),
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.profileEducationId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("프로필 학력 ID"),
+                                                fieldWithPath("result.universityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학교 이름"),
+                                                fieldWithPath("result.majorName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("전공 이름"),
+                                                fieldWithPath("result.admissionYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 입학 연도"),
+                                                fieldWithPath("result.graduationYear")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("대학 졸업 연도"),
+                                                fieldWithPath("result.isAttendUniversity")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description(
+                                                                "대학 재학 여부 (true: 재학 중, false: 재학 X)"),
+                                                fieldWithPath("result.educationDescription")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("학력 설명"))))
+                        .andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<UpdateProfileEducationResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<UpdateProfileEducationResponse>>() {
-                }
-        );
+        final CommonResponse<UpdateProfileEducationResponse> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<CommonResponse<UpdateProfileEducationResponse>>() {});
 
-        final CommonResponse<UpdateProfileEducationResponse> expected = CommonResponse.onSuccess(updateProfileActivityResponse);
+        final CommonResponse<UpdateProfileEducationResponse> expected =
+                CommonResponse.onSuccess(updateProfileActivityResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -487,52 +534,55 @@ public class ProfileEducationControllerTest extends ControllerTest {
     @Test
     void removeProfileEducation() throws Exception {
         // given
-        final ProfileEducationResponseDTO.RemoveProfileEducationResponse removeProfileEducationResponse
-                = new RemoveProfileEducationResponse(1L);
+        final ProfileEducationResponseDTO.RemoveProfileEducationResponse
+                removeProfileEducationResponse = new RemoveProfileEducationResponse(1L);
 
         // when
-        when(profileEducationService.removeProfileEducation(anyLong(), anyLong())).thenReturn(removeProfileEducationResponse);
+        when(profileEducationService.removeProfileEducation(anyLong(), anyLong()))
+                .thenReturn(removeProfileEducationResponse);
 
         final ResultActions resultActions = performRemoveProfileEducation(1L);
 
         // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(restDocs.document(
-                        pathParameters(
-                                parameterWithName("profileEducationId")
-                                        .description("프로필 학력 ID")
-                        ),
-                        responseFields(fieldWithPath("isSuccess")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("요청 성공 여부")
-                                        .attributes(field("constraint", "boolean 값")),
-                                fieldWithPath("code")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 코드")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("message")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 메시지")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("result.profileEducationId")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("프로필 학력 ID")
-                        )
-                )).andReturn();
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        pathParameters(
+                                                parameterWithName("profileEducationId")
+                                                        .description("프로필 학력 ID")),
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.profileEducationId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("프로필 학력 ID"))))
+                        .andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<RemoveProfileEducationResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<RemoveProfileEducationResponse>>() {
-                }
-        );
+        final CommonResponse<RemoveProfileEducationResponse> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<CommonResponse<RemoveProfileEducationResponse>>() {});
 
-        final CommonResponse<RemoveProfileEducationResponse> expected = CommonResponse.onSuccess(removeProfileEducationResponse);
+        final CommonResponse<RemoveProfileEducationResponse> expected =
+                CommonResponse.onSuccess(removeProfileEducationResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -541,79 +591,90 @@ public class ProfileEducationControllerTest extends ControllerTest {
     @Test
     void addProfileEducationCertification() throws Exception {
         // given
-        final ProfileEducationCertificationResponse profileEducationCertificationResponse
-                = new ProfileEducationCertificationResponse(true, false, "증명서.pdf", "https://file.linkit.im/해시값.pdf");
+        final ProfileEducationCertificationResponse profileEducationCertificationResponse =
+                new ProfileEducationCertificationResponse(
+                        true, false, "증명서.pdf", "https://file.linkit.im/해시값.pdf");
 
-        final MockMultipartFile profileEducationCertificationFile = new MockMultipartFile(
-                "profileEducationCertificationFile",
-                "증명서.pdf",
-                "multipart/form-data",
-                "./src/test/resources/static/증명서.pdf".getBytes()
-        );
+        final MockMultipartFile profileEducationCertificationFile =
+                new MockMultipartFile(
+                        "profileEducationCertificationFile",
+                        "증명서.pdf",
+                        "multipart/form-data",
+                        "./src/test/resources/static/증명서.pdf".getBytes());
 
         final Long profileEducationId = 1L;
 
         // when
-        when(profileEducationService.addProfileEducationCertification(anyLong(), anyLong(), any())).thenReturn(profileEducationCertificationResponse);
+        when(profileEducationService.addProfileEducationCertification(anyLong(), anyLong(), any()))
+                .thenReturn(profileEducationCertificationResponse);
 
-        final ResultActions resultActions = mockMvc.perform(RestDocumentationRequestBuilders.multipart("/api/v1/profile/education/certification/{profileEducationId}", profileEducationId)
-                .file(profileEducationCertificationFile)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .characterEncoding("UTF-8")
-                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                .cookie(COOKIE));
+        final ResultActions resultActions =
+                mockMvc.perform(
+                        RestDocumentationRequestBuilders.multipart(
+                                        "/api/v1/profile/education/certification/{profileEducationId}",
+                                        profileEducationId)
+                                .file(profileEducationCertificationFile)
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                                .characterEncoding("UTF-8")
+                                .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
+                                .cookie(COOKIE));
 
         // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(restDocs.document(
-                        pathParameters(
-                                parameterWithName("profileEducationId")
-                                        .description("프로필 학력 ID")
-                        ),
-                        requestParts(
-                                partWithName("profileEducationCertificationFile").description("학력 증명 파일")
-                        ),
-                        responseFields(fieldWithPath("isSuccess")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("요청 성공 여부")
-                                        .attributes(field("constraint", "boolean 값")),
-                                fieldWithPath("code")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 코드")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("message")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 메시지")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("result.isEducationCertified")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("학력 증명서 존재 여부"),
-                                fieldWithPath("result.isEducationVerified")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("학력 증명서 인증 여부"),
-                                fieldWithPath("result.educationCertificationAttachFileName")
-                                        .type(JsonFieldType.STRING)
-                                        .description("학력 증명서 파일 이름"),
-                                fieldWithPath("result.educationCertificationAttachFilePath")
-                                        .type(JsonFieldType.STRING)
-                                        .description("학력 증명서 파일 경로")
-                        )
-                )).andReturn();
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        pathParameters(
+                                                parameterWithName("profileEducationId")
+                                                        .description("프로필 학력 ID")),
+                                        requestParts(
+                                                partWithName("profileEducationCertificationFile")
+                                                        .description("학력 증명 파일")),
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.isEducationCertified")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("학력 증명서 존재 여부"),
+                                                fieldWithPath("result.isEducationVerified")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("학력 증명서 인증 여부"),
+                                                fieldWithPath(
+                                                                "result.educationCertificationAttachFileName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("학력 증명서 파일 이름"),
+                                                fieldWithPath(
+                                                                "result.educationCertificationAttachFilePath")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("학력 증명서 파일 경로"))))
+                        .andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<ProfileEducationCertificationResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<ProfileEducationCertificationResponse>>() {
-                }
-        );
+        final CommonResponse<ProfileEducationCertificationResponse> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<
+                                CommonResponse<ProfileEducationCertificationResponse>>() {});
 
-        final CommonResponse<ProfileEducationCertificationResponse> expected = CommonResponse.onSuccess(profileEducationCertificationResponse);
+        final CommonResponse<ProfileEducationCertificationResponse> expected =
+                CommonResponse.onSuccess(profileEducationCertificationResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -622,52 +683,57 @@ public class ProfileEducationControllerTest extends ControllerTest {
     @Test
     void removeProfileEducationCertification() throws Exception {
         // given
-        final ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse removeProfileEducationCertificationResponse
-                = new RemoveProfileEducationCertificationResponse(1L);
+        final ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse
+                removeProfileEducationCertificationResponse =
+                        new RemoveProfileEducationCertificationResponse(1L);
 
         // when
-        when(profileEducationService.removeProfileEducationCertification(anyLong(), anyLong())).thenReturn(removeProfileEducationCertificationResponse);
+        when(profileEducationService.removeProfileEducationCertification(anyLong(), anyLong()))
+                .thenReturn(removeProfileEducationCertificationResponse);
 
         final ResultActions resultActions = performRemoveEducationCertification(1L);
 
         // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(restDocs.document(
-                        pathParameters(
-                                parameterWithName("profileEducationId")
-                                        .description("프로필 학력 ID")
-                        ),
-                        responseFields(fieldWithPath("isSuccess")
-                                        .type(JsonFieldType.BOOLEAN)
-                                        .description("요청 성공 여부")
-                                        .attributes(field("constraint", "boolean 값")),
-                                fieldWithPath("code")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 코드")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("message")
-                                        .type(JsonFieldType.STRING)
-                                        .description("요청 성공 메시지")
-                                        .attributes(field("constraint", "문자열")),
-                                fieldWithPath("result.profileEducationId")
-                                        .type(JsonFieldType.NUMBER)
-                                        .description("프로필 학력 ID")
-                        )
-                )).andReturn();
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        pathParameters(
+                                                parameterWithName("profileEducationId")
+                                                        .description("프로필 학력 ID")),
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.profileEducationId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("프로필 학력 ID"))))
+                        .andReturn();
 
         // JSON 응답에서 result 객체를 추출 및 검증
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<RemoveProfileEducationCertificationResponse> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<RemoveProfileEducationCertificationResponse>>() {
-                }
-        );
+        final CommonResponse<RemoveProfileEducationCertificationResponse> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<
+                                CommonResponse<RemoveProfileEducationCertificationResponse>>() {});
 
-        final CommonResponse<RemoveProfileEducationCertificationResponse> expected = CommonResponse.onSuccess(removeProfileEducationCertificationResponse);
+        final CommonResponse<RemoveProfileEducationCertificationResponse> expected =
+                CommonResponse.onSuccess(removeProfileEducationCertificationResponse);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }

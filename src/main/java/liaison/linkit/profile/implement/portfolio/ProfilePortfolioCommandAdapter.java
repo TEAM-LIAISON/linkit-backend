@@ -16,8 +16,11 @@ public class ProfilePortfolioCommandAdapter {
         return profilePortfolioRepository.save(profilePortfolio);
     }
 
-    public ProfilePortfolio updateProfilePortfolio(final ProfilePortfolio profilePortfolio, final UpdateProfilePortfolioRequest updateProfilePortfolioRequest) {
-        return profilePortfolioRepository.updateProfilePortfolio(profilePortfolio, updateProfilePortfolioRequest);
+    public ProfilePortfolio updateProfilePortfolio(
+            final ProfilePortfolio profilePortfolio,
+            final UpdateProfilePortfolioRequest updateProfilePortfolioRequest) {
+        return profilePortfolioRepository.updateProfilePortfolio(
+                profilePortfolio, updateProfilePortfolioRequest);
     }
 
     public void removeProfilePortfolio(final ProfilePortfolio profilePortfolio) {

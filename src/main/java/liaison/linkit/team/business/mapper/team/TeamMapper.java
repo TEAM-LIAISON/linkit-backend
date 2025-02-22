@@ -2,6 +2,7 @@ package liaison.linkit.team.business.mapper.team;
 
 import java.time.LocalDateTime;
 import java.util.List;
+
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.team.domain.team.Team;
@@ -18,9 +19,7 @@ import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
 @Mapper
 public class TeamMapper {
 
-    public Team toTeam(
-            final AddTeamRequest addTeamRequest
-    ) {
+    public Team toTeam(final AddTeamRequest addTeamRequest) {
         return Team.builder()
                 .teamName(addTeamRequest.getTeamName())
                 .teamCode(addTeamRequest.getTeamCode())
@@ -34,8 +33,7 @@ public class TeamMapper {
             final Team team,
             final TeamScaleItem teamScaleItem,
             final RegionDetail regionDetail,
-            final List<TeamCurrentStateItem> teamCurrentStateItems
-    ) {
+            final List<TeamCurrentStateItem> teamCurrentStateItems) {
         return TeamResponseDTO.AddTeamResponse.builder()
                 .teamId(team.getId())
                 .teamName(team.getTeamName())
@@ -51,8 +49,7 @@ public class TeamMapper {
             final Team team,
             final TeamScaleItem teamScaleItem,
             final RegionDetail regionDetail,
-            final List<TeamCurrentStateItem> teamCurrentStateItems
-    ) {
+            final List<TeamCurrentStateItem> teamCurrentStateItems) {
         return TeamResponseDTO.UpdateTeamResponse.builder()
                 .teamId(team.getId())
                 .teamName(team.getTeamName())
@@ -66,11 +63,8 @@ public class TeamMapper {
     }
 
     public TeamResponseDTO.TeamInformMenus toTeamInformMenus(
-            final List<TeamInformMenu> teamInformMenus
-    ) {
-        return TeamInformMenus.builder()
-                .teamInformMenus(teamInformMenus)
-                .build();
+            final List<TeamInformMenu> teamInformMenus) {
+        return TeamInformMenus.builder().teamInformMenus(teamInformMenus).build();
     }
 
     public TeamResponseDTO.TeamInformMenu toTeamInformMenu(
@@ -79,10 +73,8 @@ public class TeamMapper {
             final int teamScrapCount,
             final List<TeamCurrentStateItem> teamCurrentStateItems,
             final TeamScaleItem teamScaleItem,
-            final RegionDetail regionDetail
-    ) {
-        return TeamResponseDTO.TeamInformMenu
-                .builder()
+            final RegionDetail regionDetail) {
+        return TeamResponseDTO.TeamInformMenu.builder()
                 .teamCurrentStates(teamCurrentStateItems)
                 .isTeamScrap(isTeamScrap)
                 .teamScrapCount(teamScrapCount)
@@ -102,10 +94,8 @@ public class TeamMapper {
             final boolean isTeamDeleteInProgress,
             final boolean isTeamDeleteRequester,
             final TeamInformMenu teamInformMenu,
-            final boolean isTeamPublic
-    ) {
-        return TeamResponseDTO.TeamDetail
-                .builder()
+            final boolean isTeamPublic) {
+        return TeamResponseDTO.TeamDetail.builder()
                 .isMyTeam(isMyTeam)
                 .isTeamManager(isTeamManager)
                 .isTeamInvitationInProgress(isTeamInvitationInProgress)
@@ -116,14 +106,12 @@ public class TeamMapper {
                 .build();
     }
 
-
     public TeamResponseDTO.TeamItems toTeamItems(final List<TeamInformMenu> teamInformMenus) {
-        return TeamItems.builder()
-                .teamInformMenus(teamInformMenus)
-                .build();
+        return TeamItems.builder().teamInformMenus(teamInformMenus).build();
     }
 
-    public TeamResponseDTO.DeleteTeamResponse toDeleteTeam(final String teamCode, final Boolean isTeamLastDeleteRequester) {
+    public TeamResponseDTO.DeleteTeamResponse toDeleteTeam(
+            final String teamCode, final Boolean isTeamLastDeleteRequester) {
         return DeleteTeamResponse.builder()
                 .teamCode(teamCode)
                 .deletedRequestedAt(LocalDateTime.now())

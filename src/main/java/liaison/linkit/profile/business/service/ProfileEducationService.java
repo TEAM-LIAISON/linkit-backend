@@ -4,6 +4,7 @@ import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.List;
 import java.util.Objects;
+
 import liaison.linkit.common.domain.University;
 import liaison.linkit.common.validator.FileValidator;
 import liaison.linkit.file.domain.CertificationFile;
@@ -48,35 +49,44 @@ public class ProfileEducationService {
     private final DiscordProfileCertificationReportService discordProfileCertificationReportService;
 
     @Transactional(readOnly = true)
-    public ProfileEducationResponseDTO.ProfileEducationItems getProfileEducationItems(final Long memberId) {
+    public ProfileEducationResponseDTO.ProfileEducationItems getProfileEducationItems(
+            final Long memberId) {
         log.info("memberId = {}의 내 학력 Items 조회 요청 발생했습니다.", memberId);
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
-        final List<ProfileEducation> profileEducations = profileEducationQueryAdapter.getProfileEducations(profile.getId());
+        final List<ProfileEducation> profileEducations =
+                profileEducationQueryAdapter.getProfileEducations(profile.getId());
         log.info("profileEducations = {}가 성공적으로 조회되었습니다.", profileEducations);
 
         return profileEducationMapper.toProfileEducationItems(profileEducations);
     }
 
     @Transactional(readOnly = true)
-    public ProfileEducationResponseDTO.ProfileEducationDetail getProfileEducationDetail(final Long memberId, final Long profileEducationId) {
+    public ProfileEducationResponseDTO.ProfileEducationDetail getProfileEducationDetail(
+            final Long memberId, final Long profileEducationId) {
         log.info("memberId = {}의 내 학력 Detail 조회 요청이 서비스 계층에 발생했습니다.", memberId);
 
-        final ProfileEducation profileEducation = profileEducationQueryAdapter.getProfileEducation(profileEducationId);
+        final ProfileEducation profileEducation =
+                profileEducationQueryAdapter.getProfileEducation(profileEducationId);
         log.info("profileEducation = {}가 성공적으로 조회되었습니다.", profileEducation);
 
         return profileEducationMapper.toProfileEducationDetail(profileEducation);
     }
 
-    public AddProfileEducationResponse addProfileEducation(final Long memberId, final ProfileEducationRequestDTO.AddProfileEducationRequest request) {
+    public AddProfileEducationResponse addProfileEducation(
+            final Long memberId,
+            final ProfileEducationRequestDTO.AddProfileEducationRequest request) {
         log.info("memberId = {}의 프로필 학력 추가 요청이 서비스 계층에 발생했습니다.", memberId);
 
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
-        final University university = universityQueryAdapter.findUniversityByUniversityName(request.getUniversityName());
+        final University university =
+                universityQueryAdapter.findUniversityByUniversityName(request.getUniversityName());
 
-        final ProfileEducation profileEducation = profileEducationMapper.toAddProfileEducation(profile, university, request);
-        final ProfileEducation savedProfileEducation = profileEducationCommandAdapter.addProfileEducation(profileEducation);
+        final ProfileEducation profileEducation =
+                profileEducationMapper.toAddProfileEducation(profile, university, request);
+        final ProfileEducation savedProfileEducation =
+                profileEducationCommandAdapter.addProfileEducation(profileEducation);
 
         // 만약 존재하지 않았다가 생긴 경우라면 true 변환 필요
         if (!profile.isProfileEducation()) {
@@ -87,16 +97,25 @@ public class ProfileEducationService {
         return profileEducationMapper.toAddProfileEducationResponse(savedProfileEducation);
     }
 
-    public UpdateProfileEducationResponse updateProfileEducation(final Long memberId, final Long profileEducationId, final UpdateProfileEducationRequest updateProfileEducationRequest) {
+    public UpdateProfileEducationResponse updateProfileEducation(
+            final Long memberId,
+            final Long profileEducationId,
+            final UpdateProfileEducationRequest updateProfileEducationRequest) {
         log.info("memberId = {}의 프로필 학력 수정 요청이 서비스 계층에 발생했습니다.", memberId);
-        final University university = universityQueryAdapter.findUniversityByUniversityName(updateProfileEducationRequest.getUniversityName());
-        final ProfileEducation updatedProfileEducation = profileEducationCommandAdapter.updateProfileEducation(profileEducationId, university, updateProfileEducationRequest);
+        final University university =
+                universityQueryAdapter.findUniversityByUniversityName(
+                        updateProfileEducationRequest.getUniversityName());
+        final ProfileEducation updatedProfileEducation =
+                profileEducationCommandAdapter.updateProfileEducation(
+                        profileEducationId, university, updateProfileEducationRequest);
         return profileEducationMapper.toUpdateProfileEducationResponse(updatedProfileEducation);
     }
 
-    public RemoveProfileEducationResponse removeProfileEducation(final Long memberId, final Long profileEducationId) {
+    public RemoveProfileEducationResponse removeProfileEducation(
+            final Long memberId, final Long profileEducationId) {
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
-        final ProfileEducation profileEducation = profileEducationQueryAdapter.getProfileEducation(profileEducationId);
+        final ProfileEducation profileEducation =
+                profileEducationQueryAdapter.getProfileEducation(profileEducationId);
 
         if (profileEducation.getEducationCertificationAttachFilePath() != null) {
             s3Uploader.deleteS3File(profileEducation.getEducationCertificationAttachFilePath());
@@ -113,41 +132,56 @@ public class ProfileEducationService {
         return profileEducationMapper.toRemoveProfileEducation(profileEducationId);
     }
 
-    public ProfileEducationResponseDTO.ProfileEducationCertificationResponse addProfileEducationCertification(
-        final Long memberId,
-        final Long profileEducationId,
-        final MultipartFile profileEducationCertificationFile
-    ) {
+    public ProfileEducationResponseDTO.ProfileEducationCertificationResponse
+            addProfileEducationCertification(
+                    final Long memberId,
+                    final Long profileEducationId,
+                    final MultipartFile profileEducationCertificationFile) {
         String EducationCertificationAttachFileName = null;
         String EducationCertificationAttachFilePath = null;
 
-        final ProfileEducation profileEducation = profileEducationQueryAdapter.getProfileEducation(profileEducationId);
+        final ProfileEducation profileEducation =
+                profileEducationQueryAdapter.getProfileEducation(profileEducationId);
 
         // 프로필 이력 인증서를 업데이트한다.
         if (fileValidator.validatingFileUpload(profileEducationCertificationFile)) {
-            EducationCertificationAttachFileName = Normalizer.normalize(Objects.requireNonNull(profileEducationCertificationFile.getOriginalFilename()), Form.NFC);
-            EducationCertificationAttachFilePath = s3Uploader.uploadProfileEducationFile(new CertificationFile(profileEducationCertificationFile));
-            profileEducation.setProfileEducationCertification(true, false, EducationCertificationAttachFileName, EducationCertificationAttachFilePath);
+            EducationCertificationAttachFileName =
+                    Normalizer.normalize(
+                            Objects.requireNonNull(
+                                    profileEducationCertificationFile.getOriginalFilename()),
+                            Form.NFC);
+            EducationCertificationAttachFilePath =
+                    s3Uploader.uploadProfileEducationFile(
+                            new CertificationFile(profileEducationCertificationFile));
+            profileEducation.setProfileEducationCertification(
+                    true,
+                    false,
+                    EducationCertificationAttachFileName,
+                    EducationCertificationAttachFilePath);
         }
 
-        final ProfileEducationCertificationReportDto profileEducationCertificationReportDto = ProfileEducationCertificationReportDto.builder()
-            .profileEducationId(profileEducation.getId())
-            .emailId(profileEducation.getProfile().getMember().getEmailId())
-            .universityName(profileEducation.getUniversity().getUniversityName())
-            .educationCertificationAttachFileName(profileEducation.getEducationCertificationAttachFileName())
-            .educationCertificationAttachFilePath(profileEducation.getEducationCertificationAttachFilePath())
-            .build();
+        final ProfileEducationCertificationReportDto profileEducationCertificationReportDto =
+                ProfileEducationCertificationReportDto.builder()
+                        .profileEducationId(profileEducation.getId())
+                        .emailId(profileEducation.getProfile().getMember().getEmailId())
+                        .universityName(profileEducation.getUniversity().getUniversityName())
+                        .educationCertificationAttachFileName(
+                                profileEducation.getEducationCertificationAttachFileName())
+                        .educationCertificationAttachFilePath(
+                                profileEducation.getEducationCertificationAttachFilePath())
+                        .build();
 
-        discordProfileCertificationReportService.sendProfileEducationReport(profileEducationCertificationReportDto);
+        discordProfileCertificationReportService.sendProfileEducationReport(
+                profileEducationCertificationReportDto);
 
         return profileEducationMapper.toAddProfileEducationCertification(profileEducation);
     }
 
-    public ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse removeProfileEducationCertification(
-        final Long memberId,
-        final Long profileEducationId
-    ) {
-        final ProfileEducation profileEducation = profileEducationQueryAdapter.getProfileEducation(profileEducationId);
+    public ProfileEducationResponseDTO.RemoveProfileEducationCertificationResponse
+            removeProfileEducationCertification(
+                    final Long memberId, final Long profileEducationId) {
+        final ProfileEducation profileEducation =
+                profileEducationQueryAdapter.getProfileEducation(profileEducationId);
 
         // 업로드 파일 삭제
         s3Uploader.deleteS3File(profileEducation.getEducationCertificationAttachFilePath());

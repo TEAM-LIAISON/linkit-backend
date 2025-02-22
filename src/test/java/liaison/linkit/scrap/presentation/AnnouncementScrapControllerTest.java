@@ -16,10 +16,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.Arrays;
+
+import jakarta.servlet.http.Cookie;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.Cookie;
-import java.util.Arrays;
 import liaison.linkit.common.presentation.CommonResponse;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
@@ -51,101 +53,104 @@ import org.springframework.test.web.servlet.ResultActions;
 @AutoConfigureRestDocs
 public class AnnouncementScrapControllerTest extends ControllerTest {
 
-    private static final MemberTokens MEMBER_TOKENS = new MemberTokens("refreshToken", "accessToken");
-    private static final Cookie COOKIE = new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
+    private static final MemberTokens MEMBER_TOKENS =
+            new MemberTokens("refreshToken", "accessToken");
+    private static final Cookie COOKIE =
+            new Cookie("refreshToken", MEMBER_TOKENS.getRefreshToken());
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Autowired private ObjectMapper objectMapper;
 
-    @MockBean
-    private AnnouncementScrapService announcementScrapService;
+    @MockBean private AnnouncementScrapService announcementScrapService;
 
-    private ResultActions performUpdateAnnouncementScrap(final Long teamMemberAnnouncementId, final UpdateAnnouncementScrapRequest request) throws Exception {
+    private ResultActions performUpdateAnnouncementScrap(
+            final Long teamMemberAnnouncementId, final UpdateAnnouncementScrapRequest request)
+            throws Exception {
         return mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/v1/announcement/scrap/{teamMemberAnnouncementId}", teamMemberAnnouncementId)
+                RestDocumentationRequestBuilders.post(
+                                "/api/v1/announcement/scrap/{teamMemberAnnouncementId}",
+                                teamMemberAnnouncementId)
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
                         .cookie(COOKIE)
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding("UTF-8")
-                        .content(objectMapper.writeValueAsString(request))
-        );
+                        .content(objectMapper.writeValueAsString(request)));
     }
 
     private ResultActions performGetAnnouncementScraps() throws Exception {
         return mockMvc.perform(
                 get("/api/v1/announcement/scrap")
                         .header(AUTHORIZATION, MEMBER_TOKENS.getAccessToken())
-                        .cookie(COOKIE)
-        );
+                        .cookie(COOKIE));
     }
 
     @DisplayName("회원이 팀원 공고를 스크랩/스크랩취소를 진행한다.")
     @Test
     void updateAnnouncementScrap() throws Exception {
         // given
-        final UpdateAnnouncementScrapRequest updateTeamScrapRequest = UpdateAnnouncementScrapRequest.builder()
-                .changeScrapValue(true)
-                .build();
+        final UpdateAnnouncementScrapRequest updateTeamScrapRequest =
+                UpdateAnnouncementScrapRequest.builder().changeScrapValue(true).build();
 
-        final AnnouncementScrapResponseDTO.UpdateAnnouncementScrap updateAnnouncementScrap = UpdateAnnouncementScrap.builder()
-                .teamMemberAnnouncementId(1L)
-                .isAnnouncementScrap(true)
-                .build();
+        final AnnouncementScrapResponseDTO.UpdateAnnouncementScrap updateAnnouncementScrap =
+                UpdateAnnouncementScrap.builder()
+                        .teamMemberAnnouncementId(1L)
+                        .isAnnouncementScrap(true)
+                        .build();
 
         // when
-        when(announcementScrapService.updateAnnouncementScrap(anyLong(), any(), any())).thenReturn(updateAnnouncementScrap);
+        when(announcementScrapService.updateAnnouncementScrap(anyLong(), any(), any()))
+                .thenReturn(updateAnnouncementScrap);
 
-        final ResultActions resultActions = performUpdateAnnouncementScrap(1L, updateTeamScrapRequest);
+        final ResultActions resultActions =
+                performUpdateAnnouncementScrap(1L, updateTeamScrapRequest);
 
         // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                pathParameters(
-                                        parameterWithName("teamMemberAnnouncementId")
-                                                .description("팀원 공고 ID")
-                                ),
-                                requestFields(
-                                        fieldWithPath("changeScrapValue")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("변경하고자 하는 스크랩 상태 (스크랩하기 -> true, 스크랩취소 -> false)")
-                                ),
-
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부")
-                                                .attributes(field("constraint", "boolean 값")),
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드")
-                                                .attributes(field("constraint", "문자열")),
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지")
-                                                .attributes(field("constraint", "문자열")),
-
-                                        fieldWithPath("result.teamMemberAnnouncementId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 공고 ID"),
-                                        fieldWithPath("result.isAnnouncementScrap")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("변경된 팀원 공고 스크랩 여부 (true -> 스크랩한 상태 / false -> 스크랩하지 않은 상태)")
-                                )
-                        )).andReturn();
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        pathParameters(
+                                                parameterWithName("teamMemberAnnouncementId")
+                                                        .description("팀원 공고 ID")),
+                                        requestFields(
+                                                fieldWithPath("changeScrapValue")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description(
+                                                                "변경하고자 하는 스크랩 상태 (스크랩하기 -> true, 스크랩취소 -> false)")),
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부")
+                                                        .attributes(
+                                                                field("constraint", "boolean 값")),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지")
+                                                        .attributes(field("constraint", "문자열")),
+                                                fieldWithPath("result.teamMemberAnnouncementId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("팀원 공고 ID"),
+                                                fieldWithPath("result.isAnnouncementScrap")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description(
+                                                                "변경된 팀원 공고 스크랩 여부 (true -> 스크랩한 상태 / false -> 스크랩하지 않은 상태)"))))
+                        .andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<UpdateAnnouncementScrap> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<UpdateAnnouncementScrap>>() {
-                }
-        );
+        final CommonResponse<UpdateAnnouncementScrap> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<CommonResponse<UpdateAnnouncementScrap>>() {});
 
-        final CommonResponse<UpdateAnnouncementScrap> expected = CommonResponse.onSuccess(updateAnnouncementScrap);
+        final CommonResponse<UpdateAnnouncementScrap> expected =
+                CommonResponse.onSuccess(updateAnnouncementScrap);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
@@ -154,197 +159,205 @@ public class AnnouncementScrapControllerTest extends ControllerTest {
     @Test
     void getAnnouncementScraps() throws Exception {
         // given
-        final AnnouncementInformMenus announcementInformMenus = AnnouncementInformMenus.builder()
-                .announcementInformMenus(Arrays.asList(
-                        AnnouncementInformMenu.builder()
-                                .teamMemberAnnouncementId(1L)
-                                .teamLogoImagePath("팀 로고 이미지 경로")
-                                .teamName("팀 이름")
-                                .teamScaleItem(
-                                        TeamScaleItem.builder()
-                                                .teamScaleName("팀 규모 이름 (1인)")
-                                                .build()
-                                )
-                                .regionDetail(
-                                        RegionDetail.builder()
-                                                .cityName("팀 활동지역 (시/도)")
-                                                .divisionName("팀 활동지역 (시/군/구)")
-                                                .build()
-                                )
-                                .announcementDDay(20)
-                                .announcementTitle("공고 제목")
-                                .isAnnouncementScrap(true)
-                                .announcementScrapCount(100)
-                                .announcementPositionItem(
-                                        AnnouncementPositionItem.builder()
-                                                .majorPosition("포지션 대분류")
-                                                .subPosition("포지션 소분류")
-                                                .build()
-                                )
-                                .announcementSkillNames(
-                                        Arrays.asList(
-                                                AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 요구 스킬 1")
-                                                        .build(),
-                                                AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 요구 스킬 2")
-                                                        .build()
-                                        )
-                                )
-                                .build(),
-                        AnnouncementInformMenu.builder()
-                                .teamMemberAnnouncementId(2L)
-                                .teamLogoImagePath("팀 로고 이미지 경로")
-                                .teamName("팀 이름")
-                                .teamScaleItem(
-                                        TeamScaleItem.builder()
-                                                .teamScaleName("팀 규모 이름 (1인)")
-                                                .build()
-                                )
-                                .regionDetail(
-                                        RegionDetail.builder()
-                                                .cityName("팀 활동지역 (시/도)")
-                                                .divisionName("팀 활동지역 (시/군/구)")
-                                                .build()
-                                )
-                                .announcementDDay(20)
-                                .announcementTitle("공고 제목")
-                                .isAnnouncementScrap(true)
-                                .announcementScrapCount(100)
-                                .announcementPositionItem(
-                                        AnnouncementPositionItem.builder()
-                                                .majorPosition("포지션 대분류")
-                                                .subPosition("포지션 소분류")
-                                                .build()
-                                )
-                                .announcementSkillNames(
-                                        Arrays.asList(
-                                                AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 요구 스킬 1")
-                                                        .build(),
-                                                AnnouncementSkillName.builder()
-                                                        .announcementSkillName("공고 요구 스킬 2")
-                                                        .build()
-                                        )
-                                )
-                                .build()
-                ))
-                .build();
+        final AnnouncementInformMenus announcementInformMenus =
+                AnnouncementInformMenus.builder()
+                        .announcementInformMenus(
+                                Arrays.asList(
+                                        AnnouncementInformMenu.builder()
+                                                .teamMemberAnnouncementId(1L)
+                                                .teamLogoImagePath("팀 로고 이미지 경로")
+                                                .teamName("팀 이름")
+                                                .teamScaleItem(
+                                                        TeamScaleItem.builder()
+                                                                .teamScaleName("팀 규모 이름 (1인)")
+                                                                .build())
+                                                .regionDetail(
+                                                        RegionDetail.builder()
+                                                                .cityName("팀 활동지역 (시/도)")
+                                                                .divisionName("팀 활동지역 (시/군/구)")
+                                                                .build())
+                                                .announcementDDay(20)
+                                                .announcementTitle("공고 제목")
+                                                .isAnnouncementScrap(true)
+                                                .announcementScrapCount(100)
+                                                .announcementPositionItem(
+                                                        AnnouncementPositionItem.builder()
+                                                                .majorPosition("포지션 대분류")
+                                                                .subPosition("포지션 소분류")
+                                                                .build())
+                                                .announcementSkillNames(
+                                                        Arrays.asList(
+                                                                AnnouncementSkillName.builder()
+                                                                        .announcementSkillName(
+                                                                                "공고 요구 스킬 1")
+                                                                        .build(),
+                                                                AnnouncementSkillName.builder()
+                                                                        .announcementSkillName(
+                                                                                "공고 요구 스킬 2")
+                                                                        .build()))
+                                                .build(),
+                                        AnnouncementInformMenu.builder()
+                                                .teamMemberAnnouncementId(2L)
+                                                .teamLogoImagePath("팀 로고 이미지 경로")
+                                                .teamName("팀 이름")
+                                                .teamScaleItem(
+                                                        TeamScaleItem.builder()
+                                                                .teamScaleName("팀 규모 이름 (1인)")
+                                                                .build())
+                                                .regionDetail(
+                                                        RegionDetail.builder()
+                                                                .cityName("팀 활동지역 (시/도)")
+                                                                .divisionName("팀 활동지역 (시/군/구)")
+                                                                .build())
+                                                .announcementDDay(20)
+                                                .announcementTitle("공고 제목")
+                                                .isAnnouncementScrap(true)
+                                                .announcementScrapCount(100)
+                                                .announcementPositionItem(
+                                                        AnnouncementPositionItem.builder()
+                                                                .majorPosition("포지션 대분류")
+                                                                .subPosition("포지션 소분류")
+                                                                .build())
+                                                .announcementSkillNames(
+                                                        Arrays.asList(
+                                                                AnnouncementSkillName.builder()
+                                                                        .announcementSkillName(
+                                                                                "공고 요구 스킬 1")
+                                                                        .build(),
+                                                                AnnouncementSkillName.builder()
+                                                                        .announcementSkillName(
+                                                                                "공고 요구 스킬 2")
+                                                                        .build()))
+                                                .build()))
+                        .build();
 
         // when
-        when(announcementScrapService.getAnnouncementScraps(anyLong())).thenReturn(announcementInformMenus);
+        when(announcementScrapService.getAnnouncementScraps(anyLong()))
+                .thenReturn(announcementInformMenus);
 
         final ResultActions resultActions = performGetAnnouncementScraps();
         // then
-        final MvcResult mvcResult = resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.isSuccess").value("true"))
-                .andExpect(jsonPath("$.code").value("1000"))
-                .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
-                .andDo(
-                        restDocs.document(
-                                responseFields(
-                                        fieldWithPath("isSuccess")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("요청 성공 여부"),
+        final MvcResult mvcResult =
+                resultActions
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$.isSuccess").value("true"))
+                        .andExpect(jsonPath("$.code").value("1000"))
+                        .andExpect(jsonPath("$.message").value("요청에 성공하였습니다."))
+                        .andDo(
+                                restDocs.document(
+                                        responseFields(
+                                                fieldWithPath("isSuccess")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("요청 성공 여부"),
+                                                fieldWithPath("code")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 코드"),
+                                                fieldWithPath("message")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요청 성공 메시지"),
 
-                                        fieldWithPath("code")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 코드"),
+                                                // result
+                                                subsectionWithPath("result.announcementInformMenus")
+                                                        .type(JsonFieldType.ARRAY)
+                                                        .description("공고 정보 목록"),
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].teamMemberAnnouncementId")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("팀원 공고 ID"),
 
-                                        fieldWithPath("message")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요청 성공 메시지"),
+                                                // announcementInformMenus[].teamLogoImagePath
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].teamLogoImagePath")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("팀 로고 이미지 경로"),
 
-                                        // result
-                                        subsectionWithPath("result.announcementInformMenus")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고 정보 목록"),
+                                                // announcementInformMenus[].teamName
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].teamName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("팀 이름"),
 
-                                        fieldWithPath("result.announcementInformMenus[].teamMemberAnnouncementId")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("팀원 공고 ID"),
+                                                // announcementInformMenus[].teamScaleItem
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].teamScaleItem")
+                                                        .type(JsonFieldType.OBJECT)
+                                                        .description("팀 규모 정보 객체"),
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].teamScaleItem.teamScaleName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("팀 규모 이름"),
 
-                                        // announcementInformMenus[].teamLogoImagePath
-                                        fieldWithPath("result.announcementInformMenus[].teamLogoImagePath")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 로고 이미지 경로"),
+                                                // announcementInformMenus[].regionDetail
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].regionDetail")
+                                                        .type(JsonFieldType.OBJECT)
+                                                        .description("팀 활동지역 정보 객체"),
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].regionDetail.cityName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("팀 활동지역 (시/도)"),
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].regionDetail.divisionName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("팀 활동지역 (시/군/구)"),
 
-                                        // announcementInformMenus[].teamName
-                                        fieldWithPath("result.announcementInformMenus[].teamName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 이름"),
+                                                // announcementDDay
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].announcementDDay")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("공고 D-Day (마감까지 남은 일수)"),
 
-                                        // announcementInformMenus[].teamScaleItem
-                                        fieldWithPath("result.announcementInformMenus[].teamScaleItem")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("팀 규모 정보 객체"),
-                                        fieldWithPath("result.announcementInformMenus[].teamScaleItem.teamScaleName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 규모 이름"),
+                                                // announcementTitle
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].announcementTitle")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("공고 제목"),
 
-                                        // announcementInformMenus[].regionDetail
-                                        fieldWithPath("result.announcementInformMenus[].regionDetail")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("팀 활동지역 정보 객체"),
-                                        fieldWithPath("result.announcementInformMenus[].regionDetail.cityName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 활동지역 (시/도)"),
-                                        fieldWithPath("result.announcementInformMenus[].regionDetail.divisionName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("팀 활동지역 (시/군/구)"),
+                                                // isAnnouncementScrap
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].isAnnouncementScrap")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("공고 스크랩 여부"),
 
-                                        // announcementDDay
-                                        fieldWithPath("result.announcementInformMenus[].announcementDDay")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("공고 D-Day (마감까지 남은 일수)"),
+                                                // announcementScrapCount
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].announcementScrapCount")
+                                                        .type(JsonFieldType.NUMBER)
+                                                        .description("공고 스크랩된 총 횟수"),
 
-                                        // announcementTitle
-                                        fieldWithPath("result.announcementInformMenus[].announcementTitle")
-                                                .type(JsonFieldType.STRING)
-                                                .description("공고 제목"),
+                                                // announcementPositionItem
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].announcementPositionItem")
+                                                        .type(JsonFieldType.OBJECT)
+                                                        .description("공고 포지션 정보 객체"),
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].announcementPositionItem.majorPosition")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("포지션 대분류"),
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].announcementPositionItem.subPosition")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("포지션 소분류"),
 
-                                        // isAnnouncementScrap
-                                        fieldWithPath("result.announcementInformMenus[].isAnnouncementScrap")
-                                                .type(JsonFieldType.BOOLEAN)
-                                                .description("공고 스크랩 여부"),
-
-                                        // announcementScrapCount
-                                        fieldWithPath("result.announcementInformMenus[].announcementScrapCount")
-                                                .type(JsonFieldType.NUMBER)
-                                                .description("공고 스크랩된 총 횟수"),
-
-                                        // announcementPositionItem
-                                        fieldWithPath("result.announcementInformMenus[].announcementPositionItem")
-                                                .type(JsonFieldType.OBJECT)
-                                                .description("공고 포지션 정보 객체"),
-                                        fieldWithPath("result.announcementInformMenus[].announcementPositionItem.majorPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("포지션 대분류"),
-                                        fieldWithPath("result.announcementInformMenus[].announcementPositionItem.subPosition")
-                                                .type(JsonFieldType.STRING)
-                                                .description("포지션 소분류"),
-
-                                        // announcementSkillNames
-                                        fieldWithPath("result.announcementInformMenus[].announcementSkillNames")
-                                                .type(JsonFieldType.ARRAY)
-                                                .description("공고에 필요한 스킬 목록"),
-                                        fieldWithPath("result.announcementInformMenus[].announcementSkillNames[].announcementSkillName")
-                                                .type(JsonFieldType.STRING)
-                                                .description("요구 스킬 이름")
-                                )
-                        )
-                )
-                .andReturn();
+                                                // announcementSkillNames
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].announcementSkillNames")
+                                                        .type(JsonFieldType.ARRAY)
+                                                        .description("공고에 필요한 스킬 목록"),
+                                                fieldWithPath(
+                                                                "result.announcementInformMenus[].announcementSkillNames[].announcementSkillName")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("요구 스킬 이름"))))
+                        .andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<AnnouncementInformMenus> actual = objectMapper.readValue(
-                jsonResponse,
-                new TypeReference<CommonResponse<AnnouncementInformMenus>>() {
-                }
-        );
+        final CommonResponse<AnnouncementInformMenus> actual =
+                objectMapper.readValue(
+                        jsonResponse,
+                        new TypeReference<CommonResponse<AnnouncementInformMenus>>() {});
 
-        final CommonResponse<AnnouncementInformMenus> expected = CommonResponse.onSuccess(announcementInformMenus);
+        final CommonResponse<AnnouncementInformMenus> expected =
+                CommonResponse.onSuccess(announcementInformMenus);
 
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }

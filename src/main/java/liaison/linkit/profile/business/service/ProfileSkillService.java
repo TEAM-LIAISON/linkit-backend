@@ -2,6 +2,7 @@ package liaison.linkit.profile.business.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import liaison.linkit.profile.business.mapper.ProfileSkillMapper;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.skill.ProfileSkill;
@@ -35,13 +36,16 @@ public class ProfileSkillService {
     public ProfileSkillResponseDTO.ProfileSkillItems getProfileSkillItems(final Long memberId) {
         log.info("memberId = {}의 내 스킬 Items 조회 요청 발생했습니다.", memberId);
 
-        final List<ProfileSkill> profileSkills = profileSkillQueryAdapter.getProfileSkills(memberId);
+        final List<ProfileSkill> profileSkills =
+                profileSkillQueryAdapter.getProfileSkills(memberId);
         log.info("profileSkills = {}가 성공적으로 조회되었습니다.", profileSkills);
 
         return profileSkillMapper.toProfileSkillItems(profileSkills);
     }
 
-    public ProfileSkillResponseDTO.ProfileSkillItems updateProfileSkillItems(final Long memberId, final ProfileSkillRequestDTO.AddProfileSkillRequest addProfileSkillRequest) {
+    public ProfileSkillResponseDTO.ProfileSkillItems updateProfileSkillItems(
+            final Long memberId,
+            final ProfileSkillRequestDTO.AddProfileSkillRequest addProfileSkillRequest) {
         log.info("memberId = {}의 내 스킬 Items 수정 요청이 발생했습니다.", memberId);
         final Profile profile = profileQueryAdapter.findByMemberId(memberId);
 
@@ -54,15 +58,20 @@ public class ProfileSkillService {
         }
 
         // 새로운 스킬 이력 생성
-        List<ProfileSkill> profileSkills = addProfileSkillRequest.getProfileSkillItems().stream()
-                .map(requestItem -> {
-                    // Skill 엔티티 조회
-                    Skill skill = skillQueryAdapter.getSkillBySkillName(requestItem.getSkillName());
+        List<ProfileSkill> profileSkills =
+                addProfileSkillRequest.getProfileSkillItems().stream()
+                        .map(
+                                requestItem -> {
+                                    // Skill 엔티티 조회
+                                    Skill skill =
+                                            skillQueryAdapter.getSkillBySkillName(
+                                                    requestItem.getSkillName());
 
-                    // ProfileSkill 매핑
-                    return profileSkillMapper.toProfileSkill(profile, skill, requestItem);
-                })
-                .collect(Collectors.toList());
+                                    // ProfileSkill 매핑
+                                    return profileSkillMapper.toProfileSkill(
+                                            profile, skill, requestItem);
+                                })
+                        .collect(Collectors.toList());
 
         // ProfileSkill 저장
         profileSkillCommandAdapter.addProfileSkills(profileSkills);

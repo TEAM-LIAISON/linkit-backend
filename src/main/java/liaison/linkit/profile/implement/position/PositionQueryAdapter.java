@@ -11,8 +11,10 @@ import lombok.RequiredArgsConstructor;
 public class PositionQueryAdapter {
     final PositionRepository positionRepository;
 
-    public Position findByMajorPositionAndSubPosition(final String majorPosition, final String subPosition) {
-        return positionRepository.findByMajorPositionAndSubPosition(majorPosition, subPosition)
+    public Position findByMajorPositionAndSubPosition(
+            final String majorPosition, final String subPosition) {
+        return positionRepository
+                .findByMajorPositionAndSubPosition(majorPosition, subPosition)
                 .orElseThrow(() -> PositionNotFoundException.EXCEPTION);
     }
 }

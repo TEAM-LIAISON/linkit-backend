@@ -3,6 +3,7 @@ package liaison.linkit.scrap.business.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.member.domain.Member;
@@ -54,17 +55,20 @@ public class AnnouncementScrapService {
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
 
     public AnnouncementScrapResponseDTO.UpdateAnnouncementScrap updateAnnouncementScrap(
-        final Long memberId,
-        final Long teamMemberAnnouncementId,
-        final UpdateAnnouncementScrapRequest updateAnnouncementScrapRequest
-    ) {
+            final Long memberId,
+            final Long teamMemberAnnouncementId,
+            final UpdateAnnouncementScrapRequest updateAnnouncementScrapRequest) {
 
         boolean shouldAddScrap = updateAnnouncementScrapRequest.isChangeScrapValue();
 
-//        scrapValidator.validateSelfTeamMemberAnnouncementScrap(memberId, teamMemberAnnouncementId);     // 자기 자신의 프로필 선택에 대한 예외 처리
-//        scrapValidator.validateMemberMaxTeamMemberAnnouncementScrap(memberId);         // 최대 프로필 스크랩 개수에 대한 예외 처리
+        //        scrapValidator.validateSelfTeamMemberAnnouncementScrap(memberId,
+        // teamMemberAnnouncementId);     // 자기 자신의 프로필 선택에 대한 예외 처리
+        //        scrapValidator.validateMemberMaxTeamMemberAnnouncementScrap(memberId);         //
+        // 최대 프로필 스크랩 개수에 대한 예외 처리
 
-        boolean scrapExists = announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
+        boolean scrapExists =
+                announcementScrapQueryAdapter.existsByMemberIdAndTeamMemberAnnouncementId(
+                        memberId, teamMemberAnnouncementId);
 
         if (scrapExists) {
             handleExistingScrap(memberId, teamMemberAnnouncementId, shouldAddScrap);
@@ -72,44 +76,52 @@ public class AnnouncementScrapService {
             handleNonExistingScrap(memberId, teamMemberAnnouncementId, shouldAddScrap);
         }
 
-        return announcementScrapMapper.toUpdateAnnouncementScrap(teamMemberAnnouncementId, shouldAddScrap);
+        return announcementScrapMapper.toUpdateAnnouncementScrap(
+                teamMemberAnnouncementId, shouldAddScrap);
     }
 
-    public AnnouncementInformMenus getAnnouncementScraps(
-        final Long memberId
-    ) {
+    public AnnouncementInformMenus getAnnouncementScraps(final Long memberId) {
         // 1) memberId로 Announcement 목록 조회
-        final List<AnnouncementScrap> announcementScraps = announcementScrapQueryAdapter.findAllByMemberId(memberId);
+        final List<AnnouncementScrap> announcementScraps =
+                announcementScrapQueryAdapter.findAllByMemberId(memberId);
 
         // 2) TeamScrap -> Team 리스트 추출
-        final List<TeamMemberAnnouncement> teamMemberAnnouncements = announcementScraps.stream()
-            .map(AnnouncementScrap::getTeamMemberAnnouncement)
-            .toList();
+        final List<TeamMemberAnnouncement> teamMemberAnnouncements =
+                announcementScraps.stream()
+                        .map(AnnouncementScrap::getTeamMemberAnnouncement)
+                        .toList();
 
         final List<AnnouncementInformMenu> announcementInformMenus = new ArrayList<>();
 
         for (TeamMemberAnnouncement teamMemberAnnouncement : teamMemberAnnouncements) {
-            announcementInformMenus.add(announcementInformMenuAssembler.mapToAnnouncementInformMenu(teamMemberAnnouncement, Optional.ofNullable(memberId)));
+            announcementInformMenus.add(
+                    announcementInformMenuAssembler.mapToAnnouncementInformMenu(
+                            teamMemberAnnouncement, Optional.ofNullable(memberId)));
         }
 
         return announcementScrapMapper.toAnnouncementInformMenus(announcementInformMenus);
     }
 
     // 스크랩이 존재하는 경우 처리 메서드
-    private void handleExistingScrap(Long memberId, Long teamMemberAnnouncementId, boolean shouldAddScrap) {
+    private void handleExistingScrap(
+            Long memberId, Long teamMemberAnnouncementId, boolean shouldAddScrap) {
         if (!shouldAddScrap) {
-            announcementScrapCommandAdapter.deleteByMemberIdAndTeamMemberAnnouncementId(memberId, teamMemberAnnouncementId);
+            announcementScrapCommandAdapter.deleteByMemberIdAndTeamMemberAnnouncementId(
+                    memberId, teamMemberAnnouncementId);
         } else {
             throw AnnouncementScrapBadRequestException.EXCEPTION;
         }
     }
 
     // 스크랩이 존재하지 않는 경우 처리 메서드
-    private void handleNonExistingScrap(Long memberId, Long teamMemberAnnouncementId, boolean shouldAddScrap) {
+    private void handleNonExistingScrap(
+            Long memberId, Long teamMemberAnnouncementId, boolean shouldAddScrap) {
         if (shouldAddScrap) {
             Member member = memberQueryAdapter.findById(memberId);
-            TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.findById(teamMemberAnnouncementId);
-            AnnouncementScrap announcementScrap = new AnnouncementScrap(null, member, teamMemberAnnouncement);
+            TeamMemberAnnouncement teamMemberAnnouncement =
+                    teamMemberAnnouncementQueryAdapter.findById(teamMemberAnnouncementId);
+            AnnouncementScrap announcementScrap =
+                    new AnnouncementScrap(null, member, teamMemberAnnouncement);
             announcementScrapCommandAdapter.addAnnouncementScrap(announcementScrap);
         } else {
             throw ProfileScrapBadRequestException.EXCEPTION;

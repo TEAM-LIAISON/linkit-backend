@@ -2,6 +2,7 @@ package liaison.linkit.team.business.assembler;
 
 import java.util.List;
 import java.util.Optional;
+
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -48,7 +49,8 @@ public class TeamInformMenuAssembler {
     public RegionDetail assembleRegionDetail(final Team targetTeam) {
         RegionDetail regionDetail = new RegionDetail();
         if (regionQueryAdapter.existsTeamRegionByTeamId((targetTeam.getId()))) {
-            final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(targetTeam.getId());
+            final TeamRegion teamRegion =
+                    regionQueryAdapter.findTeamRegionByTeamId(targetTeam.getId());
             regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
         }
         log.info("팀 지역 정보 조회 성공");
@@ -64,7 +66,8 @@ public class TeamInformMenuAssembler {
     public TeamScaleItem assembleTeamScaleItem(final Team targetTeam) {
         TeamScaleItem teamScaleItem = new TeamScaleItem();
         if (teamScaleQueryAdapter.existsTeamScaleByTeamId(targetTeam.getId())) {
-            final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(targetTeam.getId());
+            final TeamScale teamScale =
+                    teamScaleQueryAdapter.findTeamScaleByTeamId(targetTeam.getId());
             teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
         }
         return teamScaleItem;
@@ -77,23 +80,25 @@ public class TeamInformMenuAssembler {
      * @return 조회된 TeamCurrentStateItem, 없으면 기본 인스턴스 반환
      */
     public List<TeamCurrentStateItem> assembleTeamCurrentStateItems(final Team targetTeam) {
-        final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
+        final List<TeamCurrentState> teamCurrentStates =
+                teamQueryAdapter.findTeamCurrentStatesByTeamId(targetTeam.getId());
         return teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
     }
 
     /**
      * 4. 스크랩 여부 조회 메서드 (로그인 상태인 경우)
      *
-     * @param targetTeam       조회 대상 팀
+     * @param targetTeam 조회 대상 팀
      * @param loggedInMemberId 로그인한 사용자의 memberId(Optional)
      * @return 스크랩 여부, 로그인 상태가 아니면 기본 false 반환
      */
-    public boolean assembleIsTeamScrap(final Team targetTeam, final Optional<Long> loggedInMemberId) {
+    public boolean assembleIsTeamScrap(
+            final Team targetTeam, final Optional<Long> loggedInMemberId) {
         boolean isTeamScrap = false;
         if (loggedInMemberId.isPresent()) {
-            isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(
-                loggedInMemberId.get(), targetTeam.getTeamCode()
-            );
+            isTeamScrap =
+                    teamScrapQueryAdapter.existsByMemberIdAndTeamCode(
+                            loggedInMemberId.get(), targetTeam.getTeamCode());
         }
         return isTeamScrap;
     }
@@ -111,27 +116,25 @@ public class TeamInformMenuAssembler {
     /**
      * 7. 최종 TeamInformMenu DTO 조립 메서드
      *
-     * @param targetTeam       조회 대상 팀
+     * @param targetTeam 조회 대상 팀
      * @param loggedInMemberId Optional 로그인한 사용자의 memberId. 값이 존재하면 로그인 상태, 없으면 로그아웃 상태로 처리
      * @return 최종 조립된 TeamInformMenu DTO
      */
     public TeamInformMenu assembleTeamInformMenu(
-        final Team targetTeam,
-        final Optional<Long> loggedInMemberId
-    ) {
+            final Team targetTeam, final Optional<Long> loggedInMemberId) {
         final boolean isTeamScrap = assembleIsTeamScrap(targetTeam, loggedInMemberId);
         final int teamScrapCount = assembleTeamScrapCount(targetTeam);
-        final List<TeamCurrentStateItem> teamCurrentStateItems = assembleTeamCurrentStateItems(targetTeam);
+        final List<TeamCurrentStateItem> teamCurrentStateItems =
+                assembleTeamCurrentStateItems(targetTeam);
         final TeamScaleItem teamScaleItem = assembleTeamScaleItem(targetTeam);
         final RegionDetail regionDetail = assembleRegionDetail(targetTeam);
 
         return teamMapper.toTeamInformMenu(
-            targetTeam,
-            isTeamScrap,
-            teamScrapCount,
-            teamCurrentStateItems,
-            teamScaleItem,
-            regionDetail
-        );
+                targetTeam,
+                isTeamScrap,
+                teamScrapCount,
+                teamCurrentStateItems,
+                teamScaleItem,
+                regionDetail);
     }
 }

@@ -1,6 +1,7 @@
 package liaison.linkit.member.presentation.dto;
 
 import java.time.LocalDateTime;
+
 import liaison.linkit.member.domain.type.Platform;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -63,7 +64,6 @@ public class MemberBasicInformResponseDTO {
         private String memberName;
     }
 
-
     @Builder
     @Getter
     @NoArgsConstructor
@@ -71,7 +71,6 @@ public class MemberBasicInformResponseDTO {
     public static class UpdateMemberContactResponse {
         private String contact;
     }
-
 
     @Builder
     @Getter

@@ -22,7 +22,8 @@ public class ChatMessageController {
     // ==============================
 
     /**
-     * 클라이언트가 /pub/chat/send/{chatRoomId} 로 메시지를 전송하면 서버가 이 메서드를 통해 메시지를 수신하고, 내부 로직 처리 후 /sub/chat/{chatRoomId} 경로로 메시지를 브로드캐스트한다.
+     * 클라이언트가 /pub/chat/send/{chatRoomId} 로 메시지를 전송하면 서버가 이 메서드를 통해 메시지를 수신하고, 내부 로직 처리 후
+     * /sub/chat/{chatRoomId} 경로로 메시지를 브로드캐스트한다.
      */
     @MessageMapping("/chat/send/{chatRoomId}")
     public void sendChatMessage(
@@ -30,8 +31,7 @@ public class ChatMessageController {
             @Header(name = "sessionId", required = true) String sessionId,
             @Header(name = "memberId", required = true) Long memberId,
             @Header(name = "chatRoomId", required = true) Long chatRoomId,
-            Message<?> message
-    ) {
+            Message<?> message) {
         log.info("Received chat message: {}", chatMessageRequest);
         log.info("Received message from session: {}, room: {}", sessionId, chatRoomId);
 
@@ -48,8 +48,7 @@ public class ChatMessageController {
     public void readChatMessages(
             @Header(name = "memberId", required = true) Long memberId,
             @Header(name = "chatRoomId", required = true) Long chatRoomId,
-            Message<?> message
-    ) {
+            Message<?> message) {
         try {
             chatService.handleReadChatMessage(memberId, chatRoomId);
         } catch (Exception e) {
@@ -57,5 +56,4 @@ public class ChatMessageController {
             throw e;
         }
     }
-
 }

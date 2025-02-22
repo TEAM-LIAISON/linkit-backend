@@ -8,5 +8,4 @@ public class CreateChatRoomBadRequestException extends BaseCodeException {
     private CreateChatRoomBadRequestException() {
         super(ChatErrorCode.CREATE_CHAT_ROOM_BAD_REQUEST);
     }
-
 }

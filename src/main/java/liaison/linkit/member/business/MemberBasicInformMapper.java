@@ -1,6 +1,7 @@
 package liaison.linkit.member.business;
 
 import java.time.LocalDateTime;
+
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.member.domain.MemberBasicInform;
 import liaison.linkit.member.domain.type.Platform;
@@ -16,8 +17,7 @@ public class MemberBasicInformMapper {
             final MemberBasicInform memberBasicInform,
             final String email,
             final String emailId,
-            final Platform platform
-    ) {
+            final Platform platform) {
         return MemberBasicInformResponseDTO.MemberBasicInformDetail.builder()
                 .memberBasicInformId(memberBasicInform.getId())
                 .memberName(memberBasicInform.getMemberName())
@@ -33,10 +33,7 @@ public class MemberBasicInformMapper {
     }
 
     public MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse toMemberBasicInformResponse(
-            final MemberBasicInform memberBasicInform,
-            final String email,
-            final String emailId
-    ) {
+            final MemberBasicInform memberBasicInform, final String email, final String emailId) {
         return MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse.builder()
                 .memberBasicInformId(memberBasicInform.getId())
                 .memberName(memberBasicInform.getMemberName())
@@ -46,9 +43,8 @@ public class MemberBasicInformMapper {
                 .build();
     }
 
-    public MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse toUpdateConsentServiceUseResponse(
-            final MemberBasicInform memberBasicInform
-    ) {
+    public MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse
+            toUpdateConsentServiceUseResponse(final MemberBasicInform memberBasicInform) {
         return MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse.builder()
                 .memberBasicInformId(memberBasicInform.getId())
                 .isServiceUseAgree(memberBasicInform.isServiceUseAgree())
@@ -61,26 +57,24 @@ public class MemberBasicInformMapper {
     }
 
     public MemberBasicInformResponseDTO.UpdateMemberNameResponse toUpdateMemberNameResponse(
-            final MemberBasicInform memberBasicInform
-    ) {
+            final MemberBasicInform memberBasicInform) {
         return MemberBasicInformResponseDTO.UpdateMemberNameResponse.builder()
                 .memberName(memberBasicInform.getMemberName())
                 .build();
     }
 
     public MemberBasicInformResponseDTO.UpdateMemberContactResponse toUpdateMemberContactResponse(
-            final MemberBasicInform memberBasicInform
-    ) {
+            final MemberBasicInform memberBasicInform) {
         return MemberBasicInformResponseDTO.UpdateMemberContactResponse.builder()
                 .contact(memberBasicInform.getContact())
                 .build();
     }
 
-    public MemberBasicInformResponseDTO.UpdateConsentMarketingResponse toUpdateConsentMarketingResponse(
-            final MemberBasicInform memberBasicInform
-    ) {
+    public MemberBasicInformResponseDTO.UpdateConsentMarketingResponse
+            toUpdateConsentMarketingResponse(final MemberBasicInform memberBasicInform) {
         return MemberBasicInformResponseDTO.UpdateConsentMarketingResponse.builder()
-                .isMarketingAgree(memberBasicInform.isMarketingAgree()).build();
+                .isMarketingAgree(memberBasicInform.isMarketingAgree())
+                .build();
     }
 
     public MailReAuthenticationResponse toReAuthenticationResponse() {
@@ -90,8 +84,7 @@ public class MemberBasicInformMapper {
     }
 
     public MailVerificationResponse toEmailVerificationResponse(final String email) {
-        return MailVerificationResponse
-                .builder()
+        return MailVerificationResponse.builder()
                 .changedEmail(email)
                 .verificationSuccessAt(LocalDateTime.now())
                 .build();

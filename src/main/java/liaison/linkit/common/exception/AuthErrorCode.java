@@ -5,6 +5,7 @@ import static liaison.linkit.common.consts.LinkitStatic.INTERNAL_SERVER;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
+
 import liaison.linkit.common.annotation.ExplainError;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum AuthErrorCode implements BaseErrorCode {
-
     ACCESS_TOKEN_EXPIRED(411, "AUTH_450_1", "AccessToken 인증 시간이 만료되었습니다. 인증토큰을 재발급 해주세요"),
     INVALID_ACCESS_TOKEN(411, "AUTH_450_2", "유효하지 않은 AccessToken입니다. 인증토큰을 재발급 해주세요"),
     INVALID_REFRESH_TOKEN(FORBIDDEN, "AUTH_403_3", "유효하지 않은 RefreshToken입니다. 재로그인 해주세요"),

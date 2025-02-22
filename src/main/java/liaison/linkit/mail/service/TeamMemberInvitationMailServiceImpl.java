@@ -1,10 +1,12 @@
 package liaison.linkit.mail.service;
 
+import java.io.UnsupportedEncodingException;
+
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +26,15 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
     private String mailId;
 
     @Override
-    public void sendMailTeamMemberInvitation(final String teamMemberInvitationEmail, final String teamLogoImagePath, final String teamName, final String teamCode)
-        throws MessagingException, UnsupportedEncodingException {
-        final MimeMessage mimeMessage = createTeamMemberInvitationMail(teamMemberInvitationEmail, teamLogoImagePath, teamName, teamCode);
+    public void sendMailTeamMemberInvitation(
+            final String teamMemberInvitationEmail,
+            final String teamLogoImagePath,
+            final String teamName,
+            final String teamCode)
+            throws MessagingException, UnsupportedEncodingException {
+        final MimeMessage mimeMessage =
+                createTeamMemberInvitationMail(
+                        teamMemberInvitationEmail, teamLogoImagePath, teamName, teamCode);
 
         try {
             javaMailSender.send(mimeMessage);
@@ -37,17 +45,19 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
     }
 
     private MimeMessage createTeamMemberInvitationMail(
-        final String teamMemberInvitationEmail,
-        final String teamLogoImagePath,
-        final String teamName,
-        final String teamCode
-    ) throws MessagingException, UnsupportedEncodingException {
+            final String teamMemberInvitationEmail,
+            final String teamLogoImagePath,
+            final String teamName,
+            final String teamCode)
+            throws MessagingException, UnsupportedEncodingException {
         final MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
         mimeMessage.addRecipients(Message.RecipientType.TO, teamMemberInvitationEmail);
         mimeMessage.setSubject("[링킷] 팀원 초대 코드 발송");
 
-        final String msgg = String.format("""
+        final String msgg =
+                String.format(
+                        """
                 <table border="0" cellpadding="0" cellspacing="0" width="100%%" style="border-collapse:collapse; background-color: #ffffff;">
                     <tbody>
                       <tr>
@@ -106,7 +116,8 @@ public class TeamMemberInvitationMailServiceImpl implements TeamMemberInvitation
                     </tr>
                   </tbody>
                 </table>
-            """, teamName, teamName, teamLogoImagePath, teamName, teamCode);
+            """,
+                        teamName, teamName, teamLogoImagePath, teamName, teamCode);
 
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
         mimeMessage.setFrom(new InternetAddress(mailId, "링킷(Linkit)", "UTF-8"));

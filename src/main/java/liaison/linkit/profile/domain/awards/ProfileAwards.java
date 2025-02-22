@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.profile.domain.profile.Profile;
 import lombok.AccessLevel;
@@ -61,8 +62,7 @@ public class ProfileAwards extends BaseDateTimeEntity {
             final boolean isAwardsCertified,
             final boolean isAwardsVerified,
             final String awardsCertificationAttachFileName,
-            final String awardsCertificationAttachFilePath
-    ) {
+            final String awardsCertificationAttachFilePath) {
         this.isAwardsCertified = isAwardsCertified;
         this.isAwardsVerified = isAwardsVerified;
         this.awardsCertificationAttachFileName = awardsCertificationAttachFileName;

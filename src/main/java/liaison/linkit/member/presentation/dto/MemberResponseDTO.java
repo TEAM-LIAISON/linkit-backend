@@ -13,9 +13,7 @@ public class MemberResponseDTO {
     private final String email;
 
     public static MemberResponseDTO getEmail(final Member member) {
-        return new MemberResponseDTO(
-                member.getEmail()
-        );
+        return new MemberResponseDTO(member.getEmail());
     }
 
     @Builder
@@ -25,5 +23,4 @@ public class MemberResponseDTO {
     public static class UpdateMemberUserIdResponse {
         private String emailId;
     }
-
 }

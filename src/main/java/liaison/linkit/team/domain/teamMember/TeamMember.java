@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.global.BaseEntity;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.team.domain.team.Team;
@@ -44,17 +45,19 @@ public class TeamMember extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(value = STRING)
-    private TeamMemberType teamMemberType;  // 팀원 권한
+    private TeamMemberType teamMemberType; // 팀원 권한
 
     @Column(nullable = false)
     @Enumerated(value = STRING)
-    private TeamMemberManagingTeamState teamMemberManagingTeamState;    // 팀원의 팀 관리 상태 (ACTIVE, DENY_DELETE, ALLOW_DELETE)
+    private TeamMemberManagingTeamState
+            teamMemberManagingTeamState; // 팀원의 팀 관리 상태 (ACTIVE, DENY_DELETE, ALLOW_DELETE)
 
     public void setTeamMemberType(final TeamMemberType teamMemberType) {
         this.teamMemberType = teamMemberType;
     }
 
-    public void setTeamMemberManagingTeamState(final TeamMemberManagingTeamState teamMemberManagingTeamState) {
+    public void setTeamMemberManagingTeamState(
+            final TeamMemberManagingTeamState teamMemberManagingTeamState) {
         this.teamMemberManagingTeamState = teamMemberManagingTeamState;
     }
 }

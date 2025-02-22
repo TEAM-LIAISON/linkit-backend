@@ -1,6 +1,7 @@
 package liaison.linkit.notification.domain.repository.emitter;
 
 import java.util.Map;
+
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 public interface EmitterRepository {

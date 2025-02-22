@@ -16,7 +16,8 @@ public class TeamHistoryCommandAdapter {
         return teamHistoryRepository.save(teamHistory);
     }
 
-    public TeamHistory updateTeamHistory(final Long teamHistoryId, final UpdateTeamHistoryRequest updateTeamHistoryRequest) {
+    public TeamHistory updateTeamHistory(
+            final Long teamHistoryId, final UpdateTeamHistoryRequest updateTeamHistoryRequest) {
         return teamHistoryRepository.updateTeamHistory(teamHistoryId, updateTeamHistoryRequest);
     }
 
@@ -26,6 +27,5 @@ public class TeamHistoryCommandAdapter {
 
     public void deleteAllTeamHistories(final Long teamId) {
         teamHistoryRepository.deleteAllTeamHistories(teamId);
-
     }
 }

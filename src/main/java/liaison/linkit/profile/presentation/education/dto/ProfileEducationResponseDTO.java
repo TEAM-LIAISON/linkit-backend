@@ -2,6 +2,7 @@ package liaison.linkit.profile.presentation.education.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +34,8 @@ public class ProfileEducationResponseDTO {
     @AllArgsConstructor
     public static class ProfileEducationItems {
         @Builder.Default
-        private List<ProfileEducationResponseDTO.ProfileEducationItem> profileEducationItems = new ArrayList<>();
+        private List<ProfileEducationResponseDTO.ProfileEducationItem> profileEducationItems =
+                new ArrayList<>();
     }
 
     @Builder

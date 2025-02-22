@@ -2,6 +2,7 @@ package liaison.linkit.scrap.business.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -41,7 +42,7 @@ public class TeamScrapService {
     private final MemberQueryAdapter memberQueryAdapter;
     private final TeamScrapQueryAdapter teamScrapQueryAdapter;
     private final TeamQueryAdapter teamQueryAdapter;
-//    private final ScrapValidator scrapValidator;
+    //    private final ScrapValidator scrapValidator;
 
     private final TeamScrapCommandAdapter teamScrapCommandAdapter;
 
@@ -55,10 +56,9 @@ public class TeamScrapService {
 
     // 회원이 팀 스크랩 버튼을 눌렀을 떄의 메서드
     public TeamScrapResponseDTO.UpdateTeamScrap updateTeamScrap(
-        final Long memberId,
-        final String teamCode,
-        final UpdateTeamScrapRequest updateTeamScrapRequest
-    ) {
+            final Long memberId,
+            final String teamCode,
+            final UpdateTeamScrapRequest updateTeamScrapRequest) {
         boolean shouldAddScrap = updateTeamScrapRequest.isChangeScrapValue();
         boolean scrapExists = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, teamCode);
 
@@ -80,9 +80,7 @@ public class TeamScrapService {
         final List<TeamScrap> teamScraps = teamScrapQueryAdapter.findAllByMemberId(memberId);
 
         // 2) TeamScrap -> Team 리스트 추출
-        final List<Team> teams = teamScraps.stream()
-            .map(TeamScrap::getTeam)
-            .toList();
+        final List<Team> teams = teamScraps.stream().map(TeamScrap::getTeam).toList();
 
         // 3) 각 팀에 대해 필요한 정보를 조회한 뒤, TeamInformMenu 형태로 매핑
         final List<TeamInformMenu> teamInformMenus = new ArrayList<>();
@@ -90,22 +88,34 @@ public class TeamScrapService {
         for (Team team : teams) {
             RegionDetail regionDetail = new RegionDetail();
             if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
-                final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+                final TeamRegion teamRegion =
+                        regionQueryAdapter.findTeamRegionByTeamId(team.getId());
                 regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
             }
             log.info("팀 지역 정보 조회 성공");
 
-            final List<TeamCurrentState> teamCurrentStates = teamQueryAdapter.findTeamCurrentStatesByTeamId(team.getId());
-            final List<TeamCurrentStateItem> teamCurrentStateItems = teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
+            final List<TeamCurrentState> teamCurrentStates =
+                    teamQueryAdapter.findTeamCurrentStatesByTeamId(team.getId());
+            final List<TeamCurrentStateItem> teamCurrentStateItems =
+                    teamCurrentStateMapper.toTeamCurrentStateItems(teamCurrentStates);
             log.info("팀 상태 정보 조회 성공");
 
             final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
             final TeamScaleItem teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
 
-            final boolean isTeamScrap = teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, team.getTeamCode());
-            final int teamScrapCount = teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamCode());
+            final boolean isTeamScrap =
+                    teamScrapQueryAdapter.existsByMemberIdAndTeamCode(memberId, team.getTeamCode());
+            final int teamScrapCount =
+                    teamScrapQueryAdapter.countTotalTeamScrapByTeamCode(team.getTeamCode());
 
-            final TeamInformMenu teamInformMenu = teamMapper.toTeamInformMenu(team, isTeamScrap, teamScrapCount, teamCurrentStateItems, teamScaleItem, regionDetail);
+            final TeamInformMenu teamInformMenu =
+                    teamMapper.toTeamInformMenu(
+                            team,
+                            isTeamScrap,
+                            teamScrapCount,
+                            teamCurrentStateItems,
+                            teamScaleItem,
+                            regionDetail);
             teamInformMenus.add(teamInformMenu);
         }
 
@@ -138,5 +148,4 @@ public class TeamScrapService {
             throw TeamScrapBadRequestException.EXCEPTION;
         }
     }
-
 }

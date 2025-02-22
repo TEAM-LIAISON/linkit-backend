@@ -8,5 +8,4 @@ public class ProfileStateNotFoundException extends BaseCodeException {
     private ProfileStateNotFoundException() {
         super(ProfileStateErrorCode.PROFILE_STATE_NOT_FOUND);
     }
-
 }

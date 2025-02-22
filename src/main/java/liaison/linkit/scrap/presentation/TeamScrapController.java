@@ -27,18 +27,19 @@ public class TeamScrapController {
     public CommonResponse<TeamScrapResponseDTO.UpdateTeamScrap> updateTeamScrap(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
-            @RequestBody final TeamScrapRequestDTO.UpdateTeamScrapRequest updateTeamScrapRequest  // 변경하고자 하는 boolean 상태
-    ) {
-        return CommonResponse.onSuccess(teamScrapService.updateTeamScrap(accessor.getMemberId(), teamCode, updateTeamScrapRequest));
+            @RequestBody
+                    final TeamScrapRequestDTO.UpdateTeamScrapRequest
+                            updateTeamScrapRequest // 변경하고자 하는 boolean 상태
+            ) {
+        return CommonResponse.onSuccess(
+                teamScrapService.updateTeamScrap(
+                        accessor.getMemberId(), teamCode, updateTeamScrapRequest));
     }
 
     // 내가 스크랩한 목록 전체 조회
     @GetMapping
     @MemberOnly
-    public CommonResponse<TeamInformMenus> getProfileScraps(
-            @Auth final Accessor accessor
-    ) {
+    public CommonResponse<TeamInformMenus> getProfileScraps(@Auth final Accessor accessor) {
         return CommonResponse.onSuccess(teamScrapService.getTeamScraps(accessor.getMemberId()));
     }
-
 }

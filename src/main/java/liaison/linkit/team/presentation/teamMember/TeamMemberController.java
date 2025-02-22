@@ -34,18 +34,16 @@ public class TeamMemberController {
     // 수락한 팀원만 뜨도록 (명세 완료)
     @GetMapping("/members/view")
     public CommonResponse<TeamMemberViewItems> getTeamMemberViewItems(
-            @PathVariable final String teamCode
-    ) {
+            @PathVariable final String teamCode) {
         return CommonResponse.onSuccess(teamMemberService.getTeamMemberViewItems(teamCode));
     }
 
     // 팀원 목록 조회 (명세 완료)
     @GetMapping("/members/edit")
     public CommonResponse<TeamMemberItems> getTeamMemberItems(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode
-    ) {
-        return CommonResponse.onSuccess(teamMemberService.getTeamMemberItems(accessor.getMemberId(), teamCode));
+            @Auth final Accessor accessor, @PathVariable final String teamCode) {
+        return CommonResponse.onSuccess(
+                teamMemberService.getTeamMemberItems(accessor.getMemberId(), teamCode));
     }
 
     // 뷰어 및 관리자를 선택해서 팀 구성원 추가하기 (명세 완료)
@@ -54,9 +52,11 @@ public class TeamMemberController {
     public CommonResponse<TeamMemberResponseDTO.AddTeamMemberResponse> addTeamMember(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
-            @RequestBody TeamMemberRequestDTO.AddTeamMemberRequest addTeamMemberRequest
-    ) throws Exception {
-        return CommonResponse.onSuccess(teamMemberService.addTeamMember(accessor.getMemberId(), teamCode, addTeamMemberRequest));
+            @RequestBody TeamMemberRequestDTO.AddTeamMemberRequest addTeamMemberRequest)
+            throws Exception {
+        return CommonResponse.onSuccess(
+                teamMemberService.addTeamMember(
+                        accessor.getMemberId(), teamCode, addTeamMemberRequest));
     }
 
     // 뷰어 및 관리자 변경 요청 (명세 완료)
@@ -66,19 +66,20 @@ public class TeamMemberController {
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
             @PathVariable final String emailId,
-            @RequestBody TeamMemberRequestDTO.UpdateTeamMemberTypeRequest updateTeamMemberTypeRequest
-    ) {
-        return CommonResponse.onSuccess(teamMemberService.updateTeamMemberType(accessor.getMemberId(), teamCode, emailId, updateTeamMemberTypeRequest));
+            @RequestBody
+                    TeamMemberRequestDTO.UpdateTeamMemberTypeRequest updateTeamMemberTypeRequest) {
+        return CommonResponse.onSuccess(
+                teamMemberService.updateTeamMemberType(
+                        accessor.getMemberId(), teamCode, emailId, updateTeamMemberTypeRequest));
     }
 
     // 팀 스스로 나가기 요청 (명세 완료)
     @DeleteMapping("/member/out")
     @MemberOnly
     public CommonResponse<TeamMemberResponseDTO.TeamOutResponse> getOutTeam(
-            @Auth final Accessor accessor,
-            @PathVariable final String teamCode
-    ) {
-        return CommonResponse.onSuccess(teamMemberService.getOutTeam(accessor.getMemberId(), teamCode));
+            @Auth final Accessor accessor, @PathVariable final String teamCode) {
+        return CommonResponse.onSuccess(
+                teamMemberService.getOutTeam(accessor.getMemberId(), teamCode));
     }
 
     // 팀 삭제 수락 또는 거절 (명세 완료)
@@ -87,9 +88,10 @@ public class TeamMemberController {
     public CommonResponse<UpdateManagingTeamStateResponse> updateManagingTeamState(
             @PathVariable final String teamCode,
             @Auth final Accessor accessor,
-            @RequestBody final UpdateManagingTeamStateRequest updateManagingTeamStateRequest
-    ) {
-        return CommonResponse.onSuccess(teamMemberService.updateManagingTeamState(accessor.getMemberId(), teamCode, updateManagingTeamStateRequest));
+            @RequestBody final UpdateManagingTeamStateRequest updateManagingTeamStateRequest) {
+        return CommonResponse.onSuccess(
+                teamMemberService.updateManagingTeamState(
+                        accessor.getMemberId(), teamCode, updateManagingTeamStateRequest));
     }
 
     // 팀원 삭제하기 요청 (오너 / 관리자)
@@ -98,9 +100,10 @@ public class TeamMemberController {
     public CommonResponse<TeamMemberResponseDTO.RemoveTeamMemberResponse> removeTeamMember(
             @PathVariable final String teamCode,
             @Auth final Accessor accessor,
-            @RequestBody final RemoveTeamMemberRequest removeTeamMemberRequest
-    ) {
-        return CommonResponse.onSuccess(teamMemberService.removeTeamMember(teamCode, accessor.getMemberId(), removeTeamMemberRequest));
+            @RequestBody final RemoveTeamMemberRequest removeTeamMemberRequest) {
+        return CommonResponse.onSuccess(
+                teamMemberService.removeTeamMember(
+                        teamCode, accessor.getMemberId(), removeTeamMemberRequest));
     }
 
     // 팀 초대 수락하기 (명세 완료)
@@ -109,8 +112,8 @@ public class TeamMemberController {
     public CommonResponse<TeamMemberResponseDTO.TeamJoinResponse> joinTeam(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
-            @RequestBody final TeamMemberRequestDTO.TeamJoinRequest teamJoinRequest
-    ) {
-        return CommonResponse.onSuccess(teamMemberService.joinTeam(accessor.getMemberId(), teamCode, teamJoinRequest));
+            @RequestBody final TeamMemberRequestDTO.TeamJoinRequest teamJoinRequest) {
+        return CommonResponse.onSuccess(
+                teamMemberService.joinTeam(accessor.getMemberId(), teamCode, teamJoinRequest));
     }
 }

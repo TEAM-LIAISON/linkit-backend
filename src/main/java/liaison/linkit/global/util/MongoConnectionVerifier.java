@@ -12,7 +12,12 @@ public class MongoConnectionVerifier {
 
     public void verifyConnection(String databaseName) {
         try {
-            boolean dbExists = mongoClient.getDatabase(databaseName).listCollectionNames().iterator().hasNext();
+            boolean dbExists =
+                    mongoClient
+                            .getDatabase(databaseName)
+                            .listCollectionNames()
+                            .iterator()
+                            .hasNext();
             if (dbExists) {
                 System.out.println("Successfully connected to the database: " + databaseName);
             } else {

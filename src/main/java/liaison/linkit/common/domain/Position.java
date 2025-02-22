@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,14 +30,7 @@ public class Position {
     @Column(name = "sub_position", nullable = false)
     private String subPosition;
 
-    public static Position of(
-            final String majorPosition,
-            final String subPosition
-    ) {
-        return new Position(
-                null,
-                majorPosition,
-                subPosition
-        );
+    public static Position of(final String majorPosition, final String subPosition) {
+        return new Position(null, majorPosition, subPosition);
     }
 }

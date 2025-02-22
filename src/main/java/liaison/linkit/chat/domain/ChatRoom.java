@@ -3,13 +3,15 @@ package liaison.linkit.chat.domain;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import java.time.LocalDateTime;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.matching.domain.type.SenderType;
@@ -52,7 +54,8 @@ public class ChatRoom extends BaseDateTimeEntity {
     @Column(name = "participant_a_status", nullable = false)
     private StatusType participantAStatus;
 
-    // 채팅방의 두 번째 참여자 ID (Profile의 경우 emailId, Team의 경우 teamCode, TeamMemberAnnouncement의 경우 AnnouncementId)
+    // 채팅방의 두 번째 참여자 ID (Profile의 경우 emailId, Team의 경우 teamCode, TeamMemberAnnouncement의 경우
+    // AnnouncementId)
     @Column(name = "participant_b_id", nullable = false)
     private String participantBId;
 

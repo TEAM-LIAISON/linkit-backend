@@ -34,5 +34,4 @@ public class ProfileActivityRequestDTO {
         private Boolean isActivityInProgress;
         private String activityDescription;
     }
-
 }

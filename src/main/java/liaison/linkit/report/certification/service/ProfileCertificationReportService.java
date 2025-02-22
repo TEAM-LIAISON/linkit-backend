@@ -7,11 +7,15 @@ import liaison.linkit.report.certification.dto.profile.license.ProfileLicenseCer
 
 public interface ProfileCertificationReportService {
 
-    void sendProfileActivityReport(ProfileActivityCertificationReportDto profileActivityCertificationReportDto);
+    void sendProfileActivityReport(
+            ProfileActivityCertificationReportDto profileActivityCertificationReportDto);
 
-    void sendProfileEducationReport(ProfileEducationCertificationReportDto profileEducationCertificationReportDto);
+    void sendProfileEducationReport(
+            ProfileEducationCertificationReportDto profileEducationCertificationReportDto);
 
-    void sendProfileAwardsReport(ProfileAwardsCertificationReportDto profileAwardsCertificationReportDto);
+    void sendProfileAwardsReport(
+            ProfileAwardsCertificationReportDto profileAwardsCertificationReportDto);
 
-    void sendProfileLicenseReport(ProfileLicenseCertificationReportDto profileLicenseCertificationReportDto);
+    void sendProfileLicenseReport(
+            ProfileLicenseCertificationReportDto profileLicenseCertificationReportDto);
 }

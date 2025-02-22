@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum CacheType {
-
     TOP_COMPLETION_PROFILES("topCompletionProfiles", 60000, 100),
     TOP_VENTURE_TEAMS("topVentureTeams", 60000, 100),
     SUPPORT_PROJECT_TEAMS("supportProjectTeams", 60000, 100),

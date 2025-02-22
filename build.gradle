@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.4'
     id 'io.spring.dependency-management' version '1.1.4'
+    id 'com.diffplug.spotless' version '6.21.0'
     id 'org.asciidoctor.jvm.convert' version "3.3.2"
     id 'jacoco'
 }
@@ -83,10 +84,26 @@ dependencies {
 
 //    implementation 'com.github.maricn:logback-slack-appender:1.6.1'
 
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // flyway
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-mysql'
 
     implementation 'org.mindrot:jbcrypt:0.4'
+}
+
+// 코드 포맷터 Spotless 설정
+spotless {
+    java {
+        target '**/*.java'
+        targetExclude 'src/main/generated/**', 'bin/generated-sources/**'
+        googleJavaFormat().aosp()
+        importOrder 'java', 'javax', 'jakarta'
+        removeUnusedImports()       // 사용하지 않는 import 제거
+        trimTrailingWhitespace()    // 각 라인 끝의 공백 제거
+        endWithNewline()            // 파일 끝에 새 줄 추가
+    }
 }
 
 test {

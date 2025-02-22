@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.portfolio;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.portfolio.ProjectSubImage;
 import liaison.linkit.profile.domain.repository.portfolio.ProjectSubImageRepository;

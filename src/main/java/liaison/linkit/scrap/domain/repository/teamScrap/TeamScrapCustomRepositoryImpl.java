@@ -1,7 +1,8 @@
 package liaison.linkit.scrap.domain.repository.teamScrap;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.scrap.domain.QTeamScrap;
 import liaison.linkit.scrap.domain.TeamScrap;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,6 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
                 .selectFrom(qTeamScrap)
                 .where(qTeamScrap.member.id.eq(memberId))
                 .fetch();
-
     }
 
     @Override
@@ -31,14 +31,14 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
 
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qTeamScrap)
-                .where(qTeamScrap.member.id.eq(memberId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qTeamScrap)
+                        .where(qTeamScrap.member.id.eq(memberId))
+                        .fetchFirst();
 
         return count != null;
-
     }
 
     @Override
@@ -49,21 +49,25 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
 
         jpaQueryFactory
                 .delete(qTeamScrap)
-                .where(qTeamScrap.member.id.eq(memberId)
-                        .and(qTeamScrap.team.teamCode.eq(teamCode)))
+                .where(qTeamScrap.member.id.eq(memberId).and(qTeamScrap.team.teamCode.eq(teamCode)))
                 .execute();
-
     }
 
     @Override
     public boolean existsByMemberIdAndTeamCode(final Long memberId, final String teamCode) {
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
-        Integer count = jpaQueryFactory.selectOne()
-                .from(qTeamScrap)
-                .where(qTeamScrap.member.id.eq(memberId)
-                        .and(qTeamScrap.team.teamCode.eq(teamCode)))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qTeamScrap)
+                        .where(
+                                qTeamScrap
+                                        .member
+                                        .id
+                                        .eq(memberId)
+                                        .and(qTeamScrap.team.teamCode.eq(teamCode)))
+                        .fetchFirst();
 
         return count != null;
     }
@@ -72,11 +76,12 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
     public int countTotalTeamScrapByTeamCode(final String teamCode) {
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
-        Long count = jpaQueryFactory
-                .select(qTeamScrap.count())
-                .from(qTeamScrap)
-                .where(qTeamScrap.team.teamCode.eq(teamCode))
-                .fetchOne();
+        Long count =
+                jpaQueryFactory
+                        .select(qTeamScrap.count())
+                        .from(qTeamScrap)
+                        .where(qTeamScrap.team.teamCode.eq(teamCode))
+                        .fetchOne();
 
         return count != null ? count.intValue() : 0;
     }
@@ -85,10 +90,11 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
     public void deleteAllByMemberId(final Long memberId) {
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
-        long deletedCount = jpaQueryFactory
-                .delete(qTeamScrap)
-                .where(qTeamScrap.member.id.eq(memberId))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory
+                        .delete(qTeamScrap)
+                        .where(qTeamScrap.member.id.eq(memberId))
+                        .execute();
 
         log.info("Deleted {} team scraps for memberId: {}", deletedCount, memberId);
     }
@@ -97,10 +103,8 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
     public void deleteAllByTeamIds(final List<Long> teamIds) {
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
-        long deletedCount = jpaQueryFactory
-                .delete(qTeamScrap)
-                .where(qTeamScrap.team.id.in(teamIds))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory.delete(qTeamScrap).where(qTeamScrap.team.id.in(teamIds)).execute();
 
         log.info("Deleted {} team scraps for teamIds: {}", deletedCount, teamIds);
     }
@@ -109,12 +113,9 @@ public class TeamScrapCustomRepositoryImpl implements TeamScrapCustomRepository 
     public void deleteAllByTeamId(final Long teamId) {
         QTeamScrap qTeamScrap = QTeamScrap.teamScrap;
 
-        long deletedCount = jpaQueryFactory
-                .delete(qTeamScrap)
-                .where(qTeamScrap.team.id.eq(teamId))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory.delete(qTeamScrap).where(qTeamScrap.team.id.eq(teamId)).execute();
 
         log.info("Deleted {} team scraps for teamId: {}", deletedCount, teamId);
-
     }
 }

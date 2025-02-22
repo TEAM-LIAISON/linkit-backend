@@ -1,6 +1,7 @@
 package liaison.linkit.matching.business.service;
 
 import java.util.List;
+
 import liaison.linkit.matching.business.mapper.MatchingMapper;
 import liaison.linkit.matching.implement.MatchingQueryAdapter;
 import liaison.linkit.matching.presentation.dto.MatchingResponseDTO.MatchingNotificationMenu;
@@ -34,42 +35,36 @@ public class MatchingService {
         int requestedMatchingNotificationCount = 0;
 
         // 내 프로필에 대한 수신함 우선 판단
-        /**
-         *  내가 가지고 있는 memberId에 대하여 Matching 엔티티에서 emailId와 동일한 값을 찾는다
-         *
-         */
+        /** 내가 가지고 있는 memberId에 대하여 Matching 엔티티에서 emailId와 동일한 값을 찾는다 */
         // 해당 회원이 오너인 팀이 존재한다면
         if (teamMemberQueryAdapter.existsTeamOwnerByMemberId(memberId)) {
             // 해당 회원이 오너로 등록된 팀들의 teamCode를 가져온다.
-            final List<Team> myTeams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+            final List<Team> myTeams =
+                    teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
 
             // 2. 팀 코드 목록 추출
-            List<String> myTeamCodes = myTeams.stream()
-                .map(Team::getTeamCode)
-                .toList();
+            List<String> myTeamCodes = myTeams.stream().map(Team::getTeamCode).toList();
 
             // "TEAM" 매칭(= 팀으로 수신) 건수
-            receivedMatchingNotificationCount += matchingQueryAdapter.countByReceiverTeamCodes(myTeamCodes);
+            receivedMatchingNotificationCount +=
+                    matchingQueryAdapter.countByReceiverTeamCodes(myTeamCodes);
 
             // 2-2) 팀 ID 목록
-            List<Long> myTeamIds = myTeams.stream()
-                .map(Team::getId)
-                .toList();
+            List<Long> myTeamIds = myTeams.stream().map(Team::getId).toList();
 
             // 3) 팀이 만든 공고 목록 -> 공고 ID 목록
             List<TeamMemberAnnouncement> announcements =
-                teamMemberAnnouncementQueryAdapter.getAllByTeamIds(myTeamIds);
+                    teamMemberAnnouncementQueryAdapter.getAllByTeamIds(myTeamIds);
 
-            List<Long> announcementIds = announcements.stream()
-                .map(TeamMemberAnnouncement::getId)
-                .toList();
+            List<Long> announcementIds =
+                    announcements.stream().map(TeamMemberAnnouncement::getId).toList();
 
             // "ANNOUNCEMENT" 매칭(= 공고로 수신) 건수
-            receivedMatchingNotificationCount += matchingQueryAdapter.countByReceiverAnnouncementIds(announcementIds);
+            receivedMatchingNotificationCount +=
+                    matchingQueryAdapter.countByReceiverAnnouncementIds(announcementIds);
         }
 
-        return matchingMapper.toMatchingMenuResponse(receivedMatchingNotificationCount, requestedMatchingNotificationCount);
+        return matchingMapper.toMatchingMenuResponse(
+                receivedMatchingNotificationCount, requestedMatchingNotificationCount);
     }
-
-
 }

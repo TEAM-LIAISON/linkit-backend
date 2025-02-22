@@ -18,7 +18,8 @@ public class MemberCommandAdapter {
     }
 
     public Member updateEmailId(final Long memberId, final String emailId) {
-        return memberRepository.updateEmailId(memberId, emailId)
+        return memberRepository
+                .updateEmailId(memberId, emailId)
                 .orElseThrow(() -> DuplicateEmailIdException.EXCEPTION);
     }
 

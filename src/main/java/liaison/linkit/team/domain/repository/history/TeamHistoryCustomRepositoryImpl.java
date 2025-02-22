@@ -1,16 +1,18 @@
 package liaison.linkit.team.domain.repository.history;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
+
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.util.List;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.team.domain.history.QTeamHistory;
 import liaison.linkit.team.domain.history.TeamHistory;
 import liaison.linkit.team.presentation.history.dto.TeamHistoryRequestDTO.UpdateTeamHistoryRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
@@ -18,10 +20,10 @@ public class TeamHistoryCustomRepositoryImpl implements TeamHistoryCustomReposit
 
     private final JPAQueryFactory queryFactory;
 
-    @PersistenceContext
-    private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
 
-    private static final Logger log = LoggerFactory.getLogger(TeamHistoryCustomRepositoryImpl.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(TeamHistoryCustomRepositoryImpl.class);
 
     @Override
     public List<TeamHistory> getTeamHistories(final String teamCode) {
@@ -34,20 +36,29 @@ public class TeamHistoryCustomRepositoryImpl implements TeamHistoryCustomReposit
     }
 
     @Override
-    public TeamHistory updateTeamHistory(final Long teamHistoryId,
-            final UpdateTeamHistoryRequest updateTeamHistoryRequest) {
+    public TeamHistory updateTeamHistory(
+            final Long teamHistoryId, final UpdateTeamHistoryRequest updateTeamHistoryRequest) {
         QTeamHistory qTeamHistory = QTeamHistory.teamHistory;
 
         // 프로필 활동 업데이트
-        long updatedCount = queryFactory
-                .update(qTeamHistory)
-                .set(qTeamHistory.historyName, updateTeamHistoryRequest.getHistoryName())
-                .set(qTeamHistory.historyStartDate, updateTeamHistoryRequest.getHistoryStartDate())
-                .set(qTeamHistory.historyEndDate, updateTeamHistoryRequest.getHistoryEndDate())
-                .set(qTeamHistory.isHistoryInProgress, updateTeamHistoryRequest.getIsHistoryInProgress())
-                .set(qTeamHistory.historyDescription, updateTeamHistoryRequest.getHistoryDescription())
-                .where(qTeamHistory.id.eq(teamHistoryId))
-                .execute();
+        long updatedCount =
+                queryFactory
+                        .update(qTeamHistory)
+                        .set(qTeamHistory.historyName, updateTeamHistoryRequest.getHistoryName())
+                        .set(
+                                qTeamHistory.historyStartDate,
+                                updateTeamHistoryRequest.getHistoryStartDate())
+                        .set(
+                                qTeamHistory.historyEndDate,
+                                updateTeamHistoryRequest.getHistoryEndDate())
+                        .set(
+                                qTeamHistory.isHistoryInProgress,
+                                updateTeamHistoryRequest.getIsHistoryInProgress())
+                        .set(
+                                qTeamHistory.historyDescription,
+                                updateTeamHistoryRequest.getHistoryDescription())
+                        .where(qTeamHistory.id.eq(teamHistoryId))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -66,10 +77,8 @@ public class TeamHistoryCustomRepositoryImpl implements TeamHistoryCustomReposit
     public void deleteAllTeamHistories(final Long teamId) {
         QTeamHistory qTeamHistory = QTeamHistory.teamHistory;
 
-        long deletedCount = queryFactory
-                .delete(qTeamHistory)
-                .where(qTeamHistory.team.id.eq(teamId))
-                .execute();
+        long deletedCount =
+                queryFactory.delete(qTeamHistory).where(qTeamHistory.team.id.eq(teamId)).execute();
 
         log.debug("Deleted {} team histories for team ID: {}", deletedCount, teamId);
 

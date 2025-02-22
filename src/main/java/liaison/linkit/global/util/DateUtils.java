@@ -7,8 +7,10 @@ import java.time.temporal.ChronoUnit;
 
 public class DateUtils {
 
-    private static final DateTimeFormatter DB_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter KOREAN_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
+    private static final DateTimeFormatter DB_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter KOREAN_DATE_FORMATTER =
+            DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
 
     // 디데이 계산
     public static int calculateDDay(String endDate) {
@@ -71,4 +73,3 @@ public class DateUtils {
         return dateTime.format(KOREAN_DATE_FORMATTER);
     }
 }
-

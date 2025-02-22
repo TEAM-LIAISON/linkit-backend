@@ -1,6 +1,7 @@
 package liaison.linkit.matching.business.validator;
 
 import java.util.Objects;
+
 import liaison.linkit.matching.domain.type.MatchingStatusType;
 import liaison.linkit.matching.domain.type.SenderType;
 import liaison.linkit.matching.exception.CannotRequestMyAnnouncementException;
@@ -30,38 +31,37 @@ public class MatchingValidator {
     private final MemberQueryAdapter memberQueryAdapter;
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
 
-    /**
-     * 요청 객체 검증: 요청 객체가 null이거나 REQUESTED 상태인 경우 예외 발생.
-     */
+    /** 요청 객체 검증: 요청 객체가 null이거나 REQUESTED 상태인 경우 예외 발생. */
     public void validateUpdateStatusRequest(final UpdateMatchingStatusTypeRequest request) {
-        if (request == null || MatchingStatusType.REQUESTED.equals(request.getMatchingStatusType())) {
+        if (request == null
+                || MatchingStatusType.REQUESTED.equals(request.getMatchingStatusType())) {
             throw MatchingStatusTypeBadRequestException.EXCEPTION;
         }
     }
 
-    /**
-     * 매칭 수신자가 요청을 보낸 회원과 일치하는지 확인.
-     */
+    /** 매칭 수신자가 요청을 보낸 회원과 일치하는지 확인. */
     public void ensureReceiverAuthorized(final Long memberId, final Long receiverMemberId) {
         if (!receiverMemberId.equals(memberId)) {
             throw UpdateMatchingStatusTypeBadRequestException.EXCEPTION;
         }
     }
 
-    /**
-     * 매칭 요청 발신에 대한 검증
-     */
-    public void validateAddMatching(final Long memberId, final MatchingRequestDTO.AddMatchingRequest req) {
+    /** 매칭 요청 발신에 대한 검증 */
+    public void validateAddMatching(
+            final Long memberId, final MatchingRequestDTO.AddMatchingRequest req) {
         validateSenderReceiverExclusivity(req);
         validateSender(req);
         validateReceiver(memberId, req);
     }
 
-    // -------------------------------------------- private methods --------------------------------------------
+    // -------------------------------------------- private methods
+    // --------------------------------------------
 
     // 팀으로 팀원 공고에 매칭 요청을 보낼 수 없음
-    private void validateSenderReceiverExclusivity(final MatchingRequestDTO.AddMatchingRequest req) {
-        if (Objects.nonNull(req.getSenderTeamCode()) && Objects.nonNull(req.getReceiverAnnouncementId())) {
+    private void validateSenderReceiverExclusivity(
+            final MatchingRequestDTO.AddMatchingRequest req) {
+        if (Objects.nonNull(req.getSenderTeamCode())
+                && Objects.nonNull(req.getReceiverAnnouncementId())) {
             throw MatchingRelationBadRequestException.EXCEPTION;
         }
     }
@@ -78,7 +78,8 @@ public class MatchingValidator {
     }
 
     // 수신자 검증
-    private void validateReceiver(final Long memberId, final MatchingRequestDTO.AddMatchingRequest req) {
+    private void validateReceiver(
+            final Long memberId, final MatchingRequestDTO.AddMatchingRequest req) {
         switch (req.getReceiverType()) {
             case PROFILE:
                 validateProfileReceiver(memberId, req.getReceiverEmailId());
@@ -111,24 +112,28 @@ public class MatchingValidator {
             throw MatchingReceiverBadRequestException.EXCEPTION;
         }
 
-        if (teamMemberQueryAdapter.findMembersByTeamCode(receiverTeamCode)
-            .contains(memberQueryAdapter.findById(memberId))) {
+        if (teamMemberQueryAdapter
+                .findMembersByTeamCode(receiverTeamCode)
+                .contains(memberQueryAdapter.findById(memberId))) {
             throw CannotRequestMyTeamException.EXCEPTION;
         }
     }
 
     // 공고로 수신된 경우 검증
-    private void validateAnnouncementReceiver(final Long memberId, final Long receiverAnnouncementId) {
+    private void validateAnnouncementReceiver(
+            final Long memberId, final Long receiverAnnouncementId) {
         if (Objects.isNull(receiverAnnouncementId)) {
             throw MatchingReceiverBadRequestException.EXCEPTION;
         }
 
-        final Team team = teamMemberAnnouncementQueryAdapter
-            .getTeamMemberAnnouncement(receiverAnnouncementId)
-            .getTeam();
+        final Team team =
+                teamMemberAnnouncementQueryAdapter
+                        .getTeamMemberAnnouncement(receiverAnnouncementId)
+                        .getTeam();
 
-        if (teamMemberQueryAdapter.findMembersByTeamCode(team.getTeamCode())
-            .contains(memberQueryAdapter.findById(memberId))) {
+        if (teamMemberQueryAdapter
+                .findMembersByTeamCode(team.getTeamCode())
+                .contains(memberQueryAdapter.findById(memberId))) {
             throw CannotRequestMyAnnouncementException.EXCEPTION;
         }
     }

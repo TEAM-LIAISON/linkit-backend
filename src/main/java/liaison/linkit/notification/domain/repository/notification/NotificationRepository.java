@@ -1,6 +1,7 @@
 package liaison.linkit.notification.domain.repository.notification;
 
 import java.util.List;
+
 import liaison.linkit.notification.domain.Notification;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -15,7 +16,9 @@ public interface NotificationRepository extends MongoRepository<Notification, St
     List<Notification> findAllByReceiverMemberIdOrderByCreatedAtDesc(Long memberId);
 
     // 수동 쿼리 + count
-    @Query(value = "{ 'receiver_member_id': ?0, 'notification_read_status': 'UNREAD' }", count = true)
+    @Query(
+            value = "{ 'receiver_member_id': ?0, 'notification_read_status': 'UNREAD' }",
+            count = true)
     long countUnreadMessages(Long memberId);
 
     // 특정 회원의 모든 알림 삭제

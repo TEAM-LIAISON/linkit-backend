@@ -1,11 +1,13 @@
 package liaison.linkit.matching.domain.repository;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.matching.domain.Matching;
 import liaison.linkit.matching.domain.QMatching;
@@ -27,17 +29,14 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @PersistenceContext
-    private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public Optional<Matching> findByMatchingId(final Long matchingId) {
         QMatching qMatching = QMatching.matching;
 
-        Matching result = jpaQueryFactory
-                .selectFrom(qMatching)
-                .where(qMatching.id.eq(matchingId))
-                .fetchOne();
+        Matching result =
+                jpaQueryFactory.selectFrom(qMatching).where(qMatching.id.eq(matchingId)).fetchOne();
 
         return Optional.ofNullable(result);
     }
@@ -46,39 +45,44 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     public List<Matching> findAllByIds(final List<Long> matchingIds) {
         QMatching qMatching = QMatching.matching;
 
-        return jpaQueryFactory
-                .selectFrom(qMatching)
-                .where(qMatching.id.in(matchingIds))
-                .fetch();
+        return jpaQueryFactory.selectFrom(qMatching).where(qMatching.id.in(matchingIds)).fetch();
     }
 
     @Override
-    public Page<Matching> findRequestedByProfile(
-            final String emailId,
-            final Pageable pageable
-    ) {
+    public Page<Matching> findRequestedByProfile(final String emailId, final Pageable pageable) {
         QMatching qMatching = QMatching.matching;
 
         try {
-            List<Matching> content = jpaQueryFactory
-                    .selectFrom(qMatching)
-                    .where(qMatching.senderEmailId.eq(emailId)
-                            .and(qMatching.senderDeleteStatus.eq(SenderDeleteStatus.REMAINING))
-                    )
-                    .offset(pageable.getOffset())
-                    .limit(pageable.getPageSize())
-                    .orderBy(qMatching.createdAt.desc())
-                    .fetch();
-
-            long total = Optional.ofNullable(
+            List<Matching> content =
                     jpaQueryFactory
-                            .select(qMatching.count())
-                            .from(qMatching)
-                            .where(qMatching.senderEmailId.eq(emailId)
-                                    .and(qMatching.senderDeleteStatus.eq(SenderDeleteStatus.REMAINING))
-                            )
-                            .fetchOne()
-            ).orElse(0L);
+                            .selectFrom(qMatching)
+                            .where(
+                                    qMatching
+                                            .senderEmailId
+                                            .eq(emailId)
+                                            .and(
+                                                    qMatching.senderDeleteStatus.eq(
+                                                            SenderDeleteStatus.REMAINING)))
+                            .offset(pageable.getOffset())
+                            .limit(pageable.getPageSize())
+                            .orderBy(qMatching.createdAt.desc())
+                            .fetch();
+
+            long total =
+                    Optional.ofNullable(
+                                    jpaQueryFactory
+                                            .select(qMatching.count())
+                                            .from(qMatching)
+                                            .where(
+                                                    qMatching
+                                                            .senderEmailId
+                                                            .eq(emailId)
+                                                            .and(
+                                                                    qMatching.senderDeleteStatus.eq(
+                                                                            SenderDeleteStatus
+                                                                                    .REMAINING)))
+                                            .fetchOne())
+                            .orElse(0L);
 
             return PageableExecutionUtils.getPage(content, pageable, () -> total);
         } catch (Exception e) {
@@ -87,143 +91,169 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     }
 
     @Override
-    public Page<Matching> findRequestedByTeam(
-            final List<Team> teams,
-            final Pageable pageable
-    ) {
+    public Page<Matching> findRequestedByTeam(final List<Team> teams, final Pageable pageable) {
         QMatching qMatching = QMatching.matching;
 
         if (teams == null || teams.isEmpty()) {
             return Page.empty(pageable);
         }
 
-        List<String> teamCodes = teams.stream()
-                .map(Team::getTeamCode)
-                .toList();
+        List<String> teamCodes = teams.stream().map(Team::getTeamCode).toList();
 
-        BooleanExpression condition = qMatching.senderTeamCode.in(teamCodes).and(qMatching.senderDeleteStatus.eq(SenderDeleteStatus.REMAINING));
+        BooleanExpression condition =
+                qMatching
+                        .senderTeamCode
+                        .in(teamCodes)
+                        .and(qMatching.senderDeleteStatus.eq(SenderDeleteStatus.REMAINING));
 
-        List<Matching> content = jpaQueryFactory
-                .selectFrom(qMatching)
-                .where(condition)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(qMatching.createdAt.desc())
-                .fetch();
-
-        long total = Optional.ofNullable(
+        List<Matching> content =
                 jpaQueryFactory
-                        .select(qMatching.count())
-                        .from(qMatching)
+                        .selectFrom(qMatching)
                         .where(condition)
-                        .fetchOne()
-        ).orElse(0L);
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(qMatching.createdAt.desc())
+                        .fetch();
+
+        long total =
+                Optional.ofNullable(
+                                jpaQueryFactory
+                                        .select(qMatching.count())
+                                        .from(qMatching)
+                                        .where(condition)
+                                        .fetchOne())
+                        .orElse(0L);
 
         return new PageImpl<>(content, pageable, total);
     }
 
     @Override
-    public Page<Matching> findReceivedToProfile(
-            final String emailId,
-            final Pageable pageable
-    ) {
+    public Page<Matching> findReceivedToProfile(final String emailId, final Pageable pageable) {
         QMatching qMatching = QMatching.matching;
 
         try {
-            List<Matching> content = jpaQueryFactory
-                    .selectFrom(qMatching)
-                    .where(qMatching.receiverEmailId.eq(emailId)
-                            .and(qMatching.receiverType.eq(ReceiverType.PROFILE)
-                                    .and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING))))
-                    .offset(pageable.getOffset())
-                    .limit(pageable.getPageSize())
-                    .orderBy(qMatching.createdAt.desc())
-                    .fetch();
-
-            long total = Optional.ofNullable(
+            List<Matching> content =
                     jpaQueryFactory
-                            .select(qMatching.count())
-                            .from(qMatching)
-                            .where(qMatching.receiverEmailId.eq(emailId))
-                            .fetchOne()
-            ).orElse(0L);
+                            .selectFrom(qMatching)
+                            .where(
+                                    qMatching
+                                            .receiverEmailId
+                                            .eq(emailId)
+                                            .and(
+                                                    qMatching
+                                                            .receiverType
+                                                            .eq(ReceiverType.PROFILE)
+                                                            .and(
+                                                                    qMatching.receiverDeleteStatus
+                                                                            .eq(
+                                                                                    ReceiverDeleteStatus
+                                                                                            .REMAINING))))
+                            .offset(pageable.getOffset())
+                            .limit(pageable.getPageSize())
+                            .orderBy(qMatching.createdAt.desc())
+                            .fetch();
+
+            long total =
+                    Optional.ofNullable(
+                                    jpaQueryFactory
+                                            .select(qMatching.count())
+                                            .from(qMatching)
+                                            .where(qMatching.receiverEmailId.eq(emailId))
+                                            .fetchOne())
+                            .orElse(0L);
 
             return PageableExecutionUtils.getPage(content, pageable, () -> total);
         } catch (Exception e) {
-            log.error("Error fetching matchings for emailId: {}, with pageable: {}", emailId, pageable, e);
+            log.error(
+                    "Error fetching matchings for emailId: {}, with pageable: {}",
+                    emailId,
+                    pageable,
+                    e);
             throw e;
         }
     }
 
-
     @Override
-    public Page<Matching> findReceivedToTeam(
-            final List<Team> teams,
-            final Pageable pageable
-    ) {
+    public Page<Matching> findReceivedToTeam(final List<Team> teams, final Pageable pageable) {
         QMatching qMatching = QMatching.matching;
 
         if (teams == null || teams.isEmpty()) {
             return Page.empty(pageable);
         }
 
-        List<String> teamCodes = teams.stream()
-                .map(Team::getTeamCode)
-                .toList();
+        List<String> teamCodes = teams.stream().map(Team::getTeamCode).toList();
 
-        BooleanExpression condition = qMatching.receiverTeamCode.in(teamCodes)
-                .and(qMatching.receiverType.eq(ReceiverType.TEAM)
-                        .and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING)));
+        BooleanExpression condition =
+                qMatching
+                        .receiverTeamCode
+                        .in(teamCodes)
+                        .and(
+                                qMatching
+                                        .receiverType
+                                        .eq(ReceiverType.TEAM)
+                                        .and(
+                                                qMatching.receiverDeleteStatus.eq(
+                                                        ReceiverDeleteStatus.REMAINING)));
 
-        List<Matching> content = jpaQueryFactory
-                .selectFrom(qMatching)
-                .where(condition)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(qMatching.createdAt.desc())
-                .fetch();
-
-        long total = Optional.ofNullable(
+        List<Matching> content =
                 jpaQueryFactory
-                        .select(qMatching.count())
-                        .from(qMatching)
+                        .selectFrom(qMatching)
                         .where(condition)
-                        .fetchOne()
-        ).orElse(0L);
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(qMatching.createdAt.desc())
+                        .fetch();
+
+        long total =
+                Optional.ofNullable(
+                                jpaQueryFactory
+                                        .select(qMatching.count())
+                                        .from(qMatching)
+                                        .where(condition)
+                                        .fetchOne())
+                        .orElse(0L);
 
         return new PageImpl<>(content, pageable, total);
     }
 
     @Override
     public Page<Matching> findReceivedToAnnouncement(
-            final List<Long> announcementIds,
-            final Pageable pageable
-    ) {
+            final List<Long> announcementIds, final Pageable pageable) {
         QMatching qMatching = QMatching.matching;
 
         if (announcementIds == null || announcementIds.isEmpty()) {
             return Page.empty(pageable);
         }
 
-        BooleanExpression condition = qMatching.receiverAnnouncementId.in(announcementIds)
-                .and(qMatching.receiverType.eq(ReceiverType.ANNOUNCEMENT)
-                        .and(qMatching.receiverDeleteStatus.eq(ReceiverDeleteStatus.REMAINING)));
+        BooleanExpression condition =
+                qMatching
+                        .receiverAnnouncementId
+                        .in(announcementIds)
+                        .and(
+                                qMatching
+                                        .receiverType
+                                        .eq(ReceiverType.ANNOUNCEMENT)
+                                        .and(
+                                                qMatching.receiverDeleteStatus.eq(
+                                                        ReceiverDeleteStatus.REMAINING)));
 
-        List<Matching> content = jpaQueryFactory
-                .selectFrom(qMatching)
-                .where(condition)
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .orderBy(qMatching.createdAt.desc())
-                .fetch();
-
-        long total = Optional.ofNullable(
+        List<Matching> content =
                 jpaQueryFactory
-                        .select(qMatching.count())
-                        .from(qMatching)
+                        .selectFrom(qMatching)
                         .where(condition)
-                        .fetchOne()
-        ).orElse(0L);
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(qMatching.createdAt.desc())
+                        .fetch();
+
+        long total =
+                Optional.ofNullable(
+                                jpaQueryFactory
+                                        .select(qMatching.count())
+                                        .from(qMatching)
+                                        .where(condition)
+                                        .fetchOne())
+                        .orElse(0L);
 
         return new PageImpl<>(content, pageable, total);
     }
@@ -233,14 +263,18 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
         QMatching qMatching = QMatching.matching;
 
         return jpaQueryFactory
-                .selectOne()
-                .from(qMatching)
-                .where(qMatching.id.eq(matchingId)
-                        .and(qMatching.matchingStatusType.eq(MatchingStatusType.COMPLETED))
-                )
-                .fetchFirst() != null;
+                        .selectOne()
+                        .from(qMatching)
+                        .where(
+                                qMatching
+                                        .id
+                                        .eq(matchingId)
+                                        .and(
+                                                qMatching.matchingStatusType.eq(
+                                                        MatchingStatusType.COMPLETED)))
+                        .fetchFirst()
+                != null;
     }
-
 
     @Override
     public int countByReceiverTeamCodes(final List<String> receiverTeamCodes) {
@@ -252,11 +286,12 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
         QMatching qMatching = QMatching.matching;
 
         // QueryDSL로 count 조회
-        Long count = jpaQueryFactory
-                .select(qMatching.count())
-                .from(qMatching)
-                .where(qMatching.receiverTeamCode.in(receiverTeamCodes))
-                .fetchOne();
+        Long count =
+                jpaQueryFactory
+                        .select(qMatching.count())
+                        .from(qMatching)
+                        .where(qMatching.receiverTeamCode.in(receiverTeamCodes))
+                        .fetchOne();
 
         // null이 반환될 수 있으므로 null 체크 후 int 변환
         return count != null ? count.intValue() : 0;
@@ -272,26 +307,29 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
         QMatching qMatching = QMatching.matching;
 
         // QueryDSL로 count 조회
-        Long count = jpaQueryFactory
-                .select(qMatching.count())
-                .from(qMatching)
-                .where(qMatching.receiverAnnouncementId.in(receiverAnnouncementIds))
-                .fetchOne();
+        Long count =
+                jpaQueryFactory
+                        .select(qMatching.count())
+                        .from(qMatching)
+                        .where(qMatching.receiverAnnouncementId.in(receiverAnnouncementIds))
+                        .fetchOne();
 
         // null이 반환될 수 있으므로 null 체크 후 int 변환
         return count != null ? count.intValue() : 0;
     }
 
     @Override
-    public void updateMatchingStatusType(final Matching matching, final MatchingStatusType matchingStatusType) {
+    public void updateMatchingStatusType(
+            final Matching matching, final MatchingStatusType matchingStatusType) {
         QMatching qMatching = QMatching.matching;
 
         // QueryDSL을 사용하여 데이터베이스에서 ProfileLog 엔티티를 업데이트
-        long updatedCount = jpaQueryFactory
-                .update(qMatching)
-                .set(qMatching.matchingStatusType, matchingStatusType)
-                .where(qMatching.id.eq(matching.getId()))
-                .execute();
+        long updatedCount =
+                jpaQueryFactory
+                        .update(qMatching)
+                        .set(qMatching.matchingStatusType, matchingStatusType)
+                        .where(qMatching.id.eq(matching.getId()))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -308,11 +346,12 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
         QMatching qMatching = QMatching.matching;
 
         // 상태 업데이트 실행
-        long updatedCount = jpaQueryFactory
-                .update(qMatching)
-                .set(qMatching.isChatRoomCreated, true) // 방 생성 상태로 업데이트
-                .where(qMatching.id.eq(matching.getId()))
-                .execute();
+        long updatedCount =
+                jpaQueryFactory
+                        .update(qMatching)
+                        .set(qMatching.isChatRoomCreated, true) // 방 생성 상태로 업데이트
+                        .where(qMatching.id.eq(matching.getId()))
+                        .execute();
 
         // EntityManager flush/clear를 통해 영속성 컨텍스트 동기화
         entityManager.flush();
@@ -323,8 +362,8 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
             matching.setIsChatRoomCreated(true);
         } else {
             throw new IllegalStateException(
-                    "Failed to update matching status to ROOM_CREATED for Matching ID: " + matching.getId()
-            );
+                    "Failed to update matching status to ROOM_CREATED for Matching ID: "
+                            + matching.getId());
         }
     }
 
@@ -332,11 +371,12 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     public void deleteAllBySenderProfile(final String emailId) {
         QMatching qMatching = QMatching.matching;
 
-        long deletedCount = jpaQueryFactory
-                .update(qMatching)
-                .set(qMatching.status, StatusType.DELETED)
-                .where(qMatching.senderEmailId.eq(emailId))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory
+                        .update(qMatching)
+                        .set(qMatching.status, StatusType.DELETED)
+                        .where(qMatching.senderEmailId.eq(emailId))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -348,10 +388,12 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     public void deleteAllBySenderTeamCodes(final List<String> senderTeamCodes) {
         QMatching qMatching = QMatching.matching;
 
-        long deletedCount = jpaQueryFactory.update(qMatching)
-                .set(qMatching.status, StatusType.DELETED)
-                .where(qMatching.senderTeamCode.in(senderTeamCodes))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory
+                        .update(qMatching)
+                        .set(qMatching.status, StatusType.DELETED)
+                        .where(qMatching.senderTeamCode.in(senderTeamCodes))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -363,10 +405,12 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     public void deleteAllBySenderTeamCode(final String senderTeamCode) {
         QMatching qMatching = QMatching.matching;
 
-        long deletedCount = jpaQueryFactory.update(qMatching)
-                .set(qMatching.status, StatusType.DELETED)
-                .where(qMatching.senderTeamCode.eq(senderTeamCode))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory
+                        .update(qMatching)
+                        .set(qMatching.status, StatusType.DELETED)
+                        .where(qMatching.senderTeamCode.eq(senderTeamCode))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -378,11 +422,12 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     public void deleteAllByReceiverProfile(final String emailId) {
         QMatching qMatching = QMatching.matching;
 
-        long deletedCount = jpaQueryFactory
-                .update(qMatching)
-                .set(qMatching.status, StatusType.DELETED)
-                .where(qMatching.receiverEmailId.eq(emailId))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory
+                        .update(qMatching)
+                        .set(qMatching.status, StatusType.DELETED)
+                        .where(qMatching.receiverEmailId.eq(emailId))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -394,10 +439,12 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     public void deleteAllByReceiverTeamCodes(final List<String> receiverTeamCodes) {
         QMatching qMatching = QMatching.matching;
 
-        long deletedCount = jpaQueryFactory.update(qMatching)
-                .set(qMatching.status, StatusType.DELETED)
-                .where(qMatching.receiverTeamCode.in(receiverTeamCodes))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory
+                        .update(qMatching)
+                        .set(qMatching.status, StatusType.DELETED)
+                        .where(qMatching.receiverTeamCode.in(receiverTeamCodes))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -409,10 +456,12 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     public void deleteAllByReceiverTeamCode(final String teamCode) {
         QMatching qMatching = QMatching.matching;
 
-        long deletedCount = jpaQueryFactory.update(qMatching)
-                .set(qMatching.status, StatusType.DELETED)
-                .where(qMatching.receiverTeamCode.eq(teamCode))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory
+                        .update(qMatching)
+                        .set(qMatching.status, StatusType.DELETED)
+                        .where(qMatching.receiverTeamCode.eq(teamCode))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
@@ -424,15 +473,19 @@ public class MatchingCustomRepositoryImpl implements MatchingCustomRepository {
     public void deleteAllByReceiverAnnouncements(final List<Long> teamMemberAnnouncementIds) {
         QMatching qMatching = QMatching.matching;
 
-        long deletedCount = jpaQueryFactory.update(qMatching)
-                .set(qMatching.status, StatusType.DELETED)
-                .where(qMatching.receiverAnnouncementId.in(teamMemberAnnouncementIds))
-                .execute();
+        long deletedCount =
+                jpaQueryFactory
+                        .update(qMatching)
+                        .set(qMatching.status, StatusType.DELETED)
+                        .where(qMatching.receiverAnnouncementId.in(teamMemberAnnouncementIds))
+                        .execute();
 
         entityManager.flush();
         entityManager.clear();
 
-        log.info("Deleted {} matching scraps for teamMemberAnnouncementIds: {}", deletedCount, teamMemberAnnouncementIds);
-
+        log.info(
+                "Deleted {} matching scraps for teamMemberAnnouncementIds: {}",
+                deletedCount,
+                teamMemberAnnouncementIds);
     }
 }

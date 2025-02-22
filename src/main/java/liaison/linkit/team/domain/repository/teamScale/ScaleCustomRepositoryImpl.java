@@ -1,7 +1,8 @@
 package liaison.linkit.team.domain.repository.teamScale;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.Scale;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ public class ScaleCustomRepositoryImpl implements ScaleCustomRepository {
                 jpaQueryFactory
                         .selectFrom(qScale)
                         .where(qScale.scaleName.eq(scaleName))
-                        .fetchOne()
-        );
+                        .fetchOne());
     }
 }

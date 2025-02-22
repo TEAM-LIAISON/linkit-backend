@@ -1,6 +1,7 @@
 package liaison.linkit.matching.business.mapper;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.global.util.DateUtils;
 import liaison.linkit.matching.domain.Matching;
@@ -44,296 +45,277 @@ public class MatchingMapper {
     public Matching toMatching(final MatchingRequestDTO.AddMatchingRequest addMatchingRequest) {
         log.info("Add matching request: {}", addMatchingRequest);
         return Matching.builder()
-            .id(null)
-            .senderType(addMatchingRequest.getSenderType())
-            .senderEmailId(addMatchingRequest.getSenderEmailId())
-            .senderTeamCode(addMatchingRequest.getSenderTeamCode())
-            .receiverType(addMatchingRequest.getReceiverType())
-            .receiverEmailId(addMatchingRequest.getReceiverEmailId())
-            .receiverTeamCode(addMatchingRequest.getReceiverTeamCode())
-            .receiverAnnouncementId(addMatchingRequest.getReceiverAnnouncementId())
-            .requestMessage(addMatchingRequest.getRequestMessage())
-            .matchingStatusType(MatchingStatusType.REQUESTED)
-            .senderDeleteStatus(SenderDeleteStatus.REMAINING)
-            .receiverDeleteStatus(ReceiverDeleteStatus.REMAINING)
-            .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
-            .build();
+                .id(null)
+                .senderType(addMatchingRequest.getSenderType())
+                .senderEmailId(addMatchingRequest.getSenderEmailId())
+                .senderTeamCode(addMatchingRequest.getSenderTeamCode())
+                .receiverType(addMatchingRequest.getReceiverType())
+                .receiverEmailId(addMatchingRequest.getReceiverEmailId())
+                .receiverTeamCode(addMatchingRequest.getReceiverTeamCode())
+                .receiverAnnouncementId(addMatchingRequest.getReceiverAnnouncementId())
+                .requestMessage(addMatchingRequest.getRequestMessage())
+                .matchingStatusType(MatchingStatusType.REQUESTED)
+                .senderDeleteStatus(SenderDeleteStatus.REMAINING)
+                .receiverDeleteStatus(ReceiverDeleteStatus.REMAINING)
+                .receiverReadStatus(ReceiverReadStatus.UNREAD_REQUESTED_MATCHING)
+                .build();
     }
 
     public SelectMatchingRequestToProfileMenu toSelectMatchingRequestToProfileMenu(
-        final Boolean isTeamInformationExists,
-        final Profile profile,
-        final ProfilePositionDetail senderProfilePositionDetail,
-        final List<SenderTeamInformation> senderTeamInformations,
-        final Profile receiverProfile,
-        final ProfilePositionDetail receiverProfilePositionDetail
-    ) {
+            final Boolean isTeamInformationExists,
+            final Profile profile,
+            final ProfilePositionDetail senderProfilePositionDetail,
+            final List<SenderTeamInformation> senderTeamInformations,
+            final Profile receiverProfile,
+            final ProfilePositionDetail receiverProfilePositionDetail) {
         return SelectMatchingRequestToProfileMenu.builder()
-            .isTeamInformationExists(isTeamInformationExists)
-            .senderProfileInformation(
-                SenderProfileInformation.builder()
-                    .profileImagePath(profile.getProfileImagePath())
-                    .memberName(profile.getMember().getMemberBasicInform().getMemberName())
-                    .emailId(profile.getMember().getEmailId())
-                    .profilePositionDetail(senderProfilePositionDetail)
-                    .build()
-            )
-            .senderTeamInformation(senderTeamInformations)
-            .receiverProfileInformation(
-                ReceiverProfileInformation.builder()
-                    .profileImagePath(receiverProfile.getProfileImagePath())
-                    .memberName(receiverProfile.getMember().getMemberBasicInform().getMemberName())
-                    .emailId(receiverProfile.getMember().getEmailId())
-                    .profilePositionDetail(receiverProfilePositionDetail)
-                    .build()
-            )
-            .build();
+                .isTeamInformationExists(isTeamInformationExists)
+                .senderProfileInformation(
+                        SenderProfileInformation.builder()
+                                .profileImagePath(profile.getProfileImagePath())
+                                .memberName(
+                                        profile.getMember().getMemberBasicInform().getMemberName())
+                                .emailId(profile.getMember().getEmailId())
+                                .profilePositionDetail(senderProfilePositionDetail)
+                                .build())
+                .senderTeamInformation(senderTeamInformations)
+                .receiverProfileInformation(
+                        ReceiverProfileInformation.builder()
+                                .profileImagePath(receiverProfile.getProfileImagePath())
+                                .memberName(
+                                        receiverProfile
+                                                .getMember()
+                                                .getMemberBasicInform()
+                                                .getMemberName())
+                                .emailId(receiverProfile.getMember().getEmailId())
+                                .profilePositionDetail(receiverProfilePositionDetail)
+                                .build())
+                .build();
     }
 
     public SelectMatchingRequestToTeamMenu toSelectMatchingRequestTeamMenu(
-        final Boolean isTeamInformationExists,
-        final Profile senderProfile,
-        final ProfilePositionDetail senderProfilePositionDetail,
-        final List<SenderTeamInformation> senderTeamInformations,
-        final Team receiverTeam,
-        final TeamScaleItem teamScaleItem
-    ) {
+            final Boolean isTeamInformationExists,
+            final Profile senderProfile,
+            final ProfilePositionDetail senderProfilePositionDetail,
+            final List<SenderTeamInformation> senderTeamInformations,
+            final Team receiverTeam,
+            final TeamScaleItem teamScaleItem) {
         return SelectMatchingRequestToTeamMenu.builder()
-            .isTeamInformationExists(isTeamInformationExists)
-            .senderProfileInformation(
-                SenderProfileInformation.builder()
-                    .profileImagePath(senderProfile.getProfileImagePath())
-                    .memberName(senderProfile.getMember().getMemberBasicInform().getMemberName())
-                    .emailId(senderProfile.getMember().getEmailId())
-                    .profilePositionDetail(senderProfilePositionDetail)
-                    .build()
-            )
-            .senderTeamInformation(senderTeamInformations)
-            .receiverTeamInformation(
-                ReceiverTeamInformation.builder()
-                    .teamLogoImagePath(receiverTeam.getTeamLogoImagePath())
-                    .teamName(receiverTeam.getTeamName())
-                    .teamCode(receiverTeam.getTeamCode())
-                    .teamScaleItem(teamScaleItem)
-                    .build()
-            )
-            .build();
+                .isTeamInformationExists(isTeamInformationExists)
+                .senderProfileInformation(
+                        SenderProfileInformation.builder()
+                                .profileImagePath(senderProfile.getProfileImagePath())
+                                .memberName(
+                                        senderProfile
+                                                .getMember()
+                                                .getMemberBasicInform()
+                                                .getMemberName())
+                                .emailId(senderProfile.getMember().getEmailId())
+                                .profilePositionDetail(senderProfilePositionDetail)
+                                .build())
+                .senderTeamInformation(senderTeamInformations)
+                .receiverTeamInformation(
+                        ReceiverTeamInformation.builder()
+                                .teamLogoImagePath(receiverTeam.getTeamLogoImagePath())
+                                .teamName(receiverTeam.getTeamName())
+                                .teamCode(receiverTeam.getTeamCode())
+                                .teamScaleItem(teamScaleItem)
+                                .build())
+                .build();
     }
 
     public RequestedMatchingMenu toMatchingRequestedMenu(
-        final Matching requestedMatchingItem,
-        final Long chatRoomId,
-        final SenderProfileInformation senderProfileInformation,
-        final SenderTeamInformation senderTeamInformation,
-        final ReceiverProfileInformation receiverProfileInformation,
-        final ReceiverTeamInformation receiverTeamInformation,
-        final ReceiverAnnouncementInformation receiverAnnouncementInformation
-    ) {
+            final Matching requestedMatchingItem,
+            final Long chatRoomId,
+            final SenderProfileInformation senderProfileInformation,
+            final SenderTeamInformation senderTeamInformation,
+            final ReceiverProfileInformation receiverProfileInformation,
+            final ReceiverTeamInformation receiverTeamInformation,
+            final ReceiverAnnouncementInformation receiverAnnouncementInformation) {
         return RequestedMatchingMenu.builder()
-            .matchingId(requestedMatchingItem.getId())
-            .senderType(requestedMatchingItem.getSenderType())
-            .receiverType(requestedMatchingItem.getReceiverType())
-            .isChatRoomCreated(requestedMatchingItem.isChatRoomCreated())
-            .chatRoomId(chatRoomId)
-            .senderProfileInformation(senderProfileInformation)
-            .senderTeamInformation(senderTeamInformation)
-            .receiverProfileInformation(receiverProfileInformation)
-            .receiverTeamInformation(receiverTeamInformation)
-            .receiverAnnouncementInformation(receiverAnnouncementInformation)
-            .requestMessage(requestedMatchingItem.getRequestMessage())
-            .modifiedAt(DateUtils.formatRelativeTime(requestedMatchingItem.getModifiedAt()))
-            .matchingStatusType(requestedMatchingItem.getMatchingStatusType())
-            .receiverReadStatus(requestedMatchingItem.getReceiverReadStatus())
-            .build();
+                .matchingId(requestedMatchingItem.getId())
+                .senderType(requestedMatchingItem.getSenderType())
+                .receiverType(requestedMatchingItem.getReceiverType())
+                .isChatRoomCreated(requestedMatchingItem.isChatRoomCreated())
+                .chatRoomId(chatRoomId)
+                .senderProfileInformation(senderProfileInformation)
+                .senderTeamInformation(senderTeamInformation)
+                .receiverProfileInformation(receiverProfileInformation)
+                .receiverTeamInformation(receiverTeamInformation)
+                .receiverAnnouncementInformation(receiverAnnouncementInformation)
+                .requestMessage(requestedMatchingItem.getRequestMessage())
+                .modifiedAt(DateUtils.formatRelativeTime(requestedMatchingItem.getModifiedAt()))
+                .matchingStatusType(requestedMatchingItem.getMatchingStatusType())
+                .receiverReadStatus(requestedMatchingItem.getReceiverReadStatus())
+                .build();
     }
 
-    public UpdateMatchingStatusTypeResponse toUpdateMatchingStatusTypeResponse(final Matching matching, final MatchingStatusType matchingStatusType) {
+    public UpdateMatchingStatusTypeResponse toUpdateMatchingStatusTypeResponse(
+            final Matching matching, final MatchingStatusType matchingStatusType) {
         return UpdateMatchingStatusTypeResponse.builder()
-            .matchingId(matching.getId())
-            .matchingStatusType(matchingStatusType)
-            .build();
+                .matchingId(matching.getId())
+                .matchingStatusType(matchingStatusType)
+                .build();
     }
 
     public ReceivedMatchingMenu toMatchingReceivedMenu(
-        final Matching receivedMatchingItem,
-        final Long chatRoomId,
-        final SenderProfileInformation senderProfileInformation,
-        final SenderTeamInformation senderTeamInformation,
-        final ReceiverProfileInformation receiverProfileInformation,
-        final ReceiverTeamInformation receiverTeamInformation,
-        final ReceiverAnnouncementInformation receiverAnnouncementInformation
-    ) {
+            final Matching receivedMatchingItem,
+            final Long chatRoomId,
+            final SenderProfileInformation senderProfileInformation,
+            final SenderTeamInformation senderTeamInformation,
+            final ReceiverProfileInformation receiverProfileInformation,
+            final ReceiverTeamInformation receiverTeamInformation,
+            final ReceiverAnnouncementInformation receiverAnnouncementInformation) {
         return ReceivedMatchingMenu.builder()
-            .matchingId(receivedMatchingItem.getId())
-            .senderType(receivedMatchingItem.getSenderType())
-            .receiverType(receivedMatchingItem.getReceiverType())
-            .isChatRoomCreated(receivedMatchingItem.isChatRoomCreated())
-            .chatRoomId(chatRoomId)
-            .senderProfileInformation(senderProfileInformation)
-            .senderTeamInformation(senderTeamInformation)
-            .receiverProfileInformation(receiverProfileInformation)
-            .receiverTeamInformation(receiverTeamInformation)
-            .receiverAnnouncementInformation(receiverAnnouncementInformation)
-            .requestMessage(receivedMatchingItem.getRequestMessage())
-            .modifiedAt(DateUtils.formatRelativeTime(receivedMatchingItem.getModifiedAt()))
-            .matchingStatusType(receivedMatchingItem.getMatchingStatusType())
-            .receiverReadStatus(receivedMatchingItem.getReceiverReadStatus())
-            .build();
+                .matchingId(receivedMatchingItem.getId())
+                .senderType(receivedMatchingItem.getSenderType())
+                .receiverType(receivedMatchingItem.getReceiverType())
+                .isChatRoomCreated(receivedMatchingItem.isChatRoomCreated())
+                .chatRoomId(chatRoomId)
+                .senderProfileInformation(senderProfileInformation)
+                .senderTeamInformation(senderTeamInformation)
+                .receiverProfileInformation(receiverProfileInformation)
+                .receiverTeamInformation(receiverTeamInformation)
+                .receiverAnnouncementInformation(receiverAnnouncementInformation)
+                .requestMessage(receivedMatchingItem.getRequestMessage())
+                .modifiedAt(DateUtils.formatRelativeTime(receivedMatchingItem.getModifiedAt()))
+                .matchingStatusType(receivedMatchingItem.getMatchingStatusType())
+                .receiverReadStatus(receivedMatchingItem.getReceiverReadStatus())
+                .build();
     }
 
     public MatchingResponseDTO.AddMatchingResponse toAddMatchingResponse(
-        final Matching matching,
-        final SenderProfileInformation senderProfileInformation,
-        final SenderTeamInformation senderTeamInformation,
-        final ReceiverProfileInformation receiverProfileInformation,
-        final ReceiverTeamInformation receiverTeamInformation,
-        final ReceiverAnnouncementInformation receiverAnnouncementInformation
-    ) {
+            final Matching matching,
+            final SenderProfileInformation senderProfileInformation,
+            final SenderTeamInformation senderTeamInformation,
+            final ReceiverProfileInformation receiverProfileInformation,
+            final ReceiverTeamInformation receiverTeamInformation,
+            final ReceiverAnnouncementInformation receiverAnnouncementInformation) {
 
         return AddMatchingResponse.builder()
-            .matchingId(matching.getId())
-            .senderType(matching.getSenderType())
-            .receiverType(matching.getReceiverType())
-            .isChatRoomCreated(matching.isChatRoomCreated())
-            .senderProfileInformation(senderProfileInformation)
-            .senderTeamInformation(senderTeamInformation)
-            .receiverProfileInformation(receiverProfileInformation)
-            .receiverTeamInformation(receiverTeamInformation)
-            .receiverAnnouncementInformation(receiverAnnouncementInformation)
-            .requestMessage(matching.getRequestMessage())
-            .matchingStatusType(matching.getMatchingStatusType())
-            .receiverReadStatus(matching.getReceiverReadStatus())
-            .build();
+                .matchingId(matching.getId())
+                .senderType(matching.getSenderType())
+                .receiverType(matching.getReceiverType())
+                .isChatRoomCreated(matching.isChatRoomCreated())
+                .senderProfileInformation(senderProfileInformation)
+                .senderTeamInformation(senderTeamInformation)
+                .receiverProfileInformation(receiverProfileInformation)
+                .receiverTeamInformation(receiverTeamInformation)
+                .receiverAnnouncementInformation(receiverAnnouncementInformation)
+                .requestMessage(matching.getRequestMessage())
+                .matchingStatusType(matching.getMatchingStatusType())
+                .receiverReadStatus(matching.getReceiverReadStatus())
+                .build();
     }
 
     public MatchingResponseDTO.SenderProfileInformation toSenderProfileInformation(
-        final Profile senderProfile,
-        final ProfilePositionDetail senderProfilePositionDetail
-    ) {
+            final Profile senderProfile, final ProfilePositionDetail senderProfilePositionDetail) {
         return SenderProfileInformation.builder()
-            .profileImagePath(senderProfile.getProfileImagePath())
-            .emailId(senderProfile.getMember().getEmailId())
-            .memberName(senderProfile.getMember().getMemberBasicInform().getMemberName())
-            .profilePositionDetail(senderProfilePositionDetail)
-            .build();
+                .profileImagePath(senderProfile.getProfileImagePath())
+                .emailId(senderProfile.getMember().getEmailId())
+                .memberName(senderProfile.getMember().getMemberBasicInform().getMemberName())
+                .profilePositionDetail(senderProfilePositionDetail)
+                .build();
     }
 
     public MatchingResponseDTO.SenderTeamInformation toSenderTeamInformation(
-        final Team senderTeam,
-        final TeamScaleItem senderTeamScaleItem
-    ) {
+            final Team senderTeam, final TeamScaleItem senderTeamScaleItem) {
         return SenderTeamInformation.builder()
-            .teamLogoImagePath(senderTeam.getTeamLogoImagePath())
-            .teamName(senderTeam.getTeamName())
-            .teamCode(senderTeam.getTeamCode())
-            .teamScaleItem(senderTeamScaleItem)
-            .build();
+                .teamLogoImagePath(senderTeam.getTeamLogoImagePath())
+                .teamName(senderTeam.getTeamName())
+                .teamCode(senderTeam.getTeamCode())
+                .teamScaleItem(senderTeamScaleItem)
+                .build();
     }
 
     public MatchingResponseDTO.ReceiverProfileInformation toReceiverProfileInformation(
-        final Profile receiverProfile,
-        final ProfilePositionDetail receiverProfilePositionDetail
-    ) {
+            final Profile receiverProfile,
+            final ProfilePositionDetail receiverProfilePositionDetail) {
         return ReceiverProfileInformation.builder()
-            .profileImagePath(receiverProfile.getProfileImagePath())
-            .emailId(receiverProfile.getMember().getEmailId())
-            .memberName(receiverProfile.getMember().getMemberBasicInform().getMemberName())
-            .profilePositionDetail(receiverProfilePositionDetail)
-            .build();
+                .profileImagePath(receiverProfile.getProfileImagePath())
+                .emailId(receiverProfile.getMember().getEmailId())
+                .memberName(receiverProfile.getMember().getMemberBasicInform().getMemberName())
+                .profilePositionDetail(receiverProfilePositionDetail)
+                .build();
     }
 
     public MatchingResponseDTO.ReceiverTeamInformation toReceiverTeamInformation(
-        final Team receiverTeam,
-        final TeamScaleItem receiverTeamScaleItem
-    ) {
+            final Team receiverTeam, final TeamScaleItem receiverTeamScaleItem) {
         return ReceiverTeamInformation.builder()
-            .teamLogoImagePath(receiverTeam.getTeamLogoImagePath())
-            .teamName(receiverTeam.getTeamName())
-            .teamCode(receiverTeam.getTeamCode())
-            .teamScaleItem(receiverTeamScaleItem)
-            .build();
+                .teamLogoImagePath(receiverTeam.getTeamLogoImagePath())
+                .teamName(receiverTeam.getTeamName())
+                .teamCode(receiverTeam.getTeamCode())
+                .teamScaleItem(receiverTeamScaleItem)
+                .build();
     }
 
     public MatchingResponseDTO.ReceiverAnnouncementInformation toReceiverAnnouncementInformation(
-        final TeamMemberAnnouncement teamMemberAnnouncement,
-        final AnnouncementPositionItem announcementPositionItem,
-        final List<AnnouncementSkillName> announcementSkillNames
-    ) {
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final AnnouncementPositionItem announcementPositionItem,
+            final List<AnnouncementSkillName> announcementSkillNames) {
         return ReceiverAnnouncementInformation.builder()
-            .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
-            .teamName(teamMemberAnnouncement.getTeam().getTeamName())
-            .teamLogoImagePath(teamMemberAnnouncement.getTeam().getTeamLogoImagePath())
-            .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
-            .announcementPositionItem(announcementPositionItem)
-            .announcementSkillNames(announcementSkillNames)
-            .build();
+                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
+                .teamName(teamMemberAnnouncement.getTeam().getTeamName())
+                .teamLogoImagePath(teamMemberAnnouncement.getTeam().getTeamLogoImagePath())
+                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+                .announcementPositionItem(announcementPositionItem)
+                .announcementSkillNames(announcementSkillNames)
+                .build();
     }
 
     public MatchingNotificationMenu toMatchingMenuResponse(
-        final int receivedMatchingNotificationCount,
-        final int requestedMatchingNotificationCount
-    ) {
+            final int receivedMatchingNotificationCount,
+            final int requestedMatchingNotificationCount) {
         return MatchingNotificationMenu.builder()
-            .receivedMatchingNotificationCount(receivedMatchingNotificationCount)
-            .requestedMatchingNotificationCount(requestedMatchingNotificationCount)
-            .build();
+                .receivedMatchingNotificationCount(receivedMatchingNotificationCount)
+                .requestedMatchingNotificationCount(requestedMatchingNotificationCount)
+                .build();
     }
 
-    public List<UpdateReceivedMatchingCompletedStateReadItem> toUpdateReceivedMatchingCompletedStateReadItems(
-        final List<Matching> matches
-    ) {
+    public List<UpdateReceivedMatchingCompletedStateReadItem>
+            toUpdateReceivedMatchingCompletedStateReadItems(final List<Matching> matches) {
         return matches.stream()
-            .map(m -> new UpdateReceivedMatchingCompletedStateReadItem(
-                m.getId(),
-                m.getReceiverReadStatus()
-            ))
-            .toList();
+                .map(
+                        m ->
+                                new UpdateReceivedMatchingCompletedStateReadItem(
+                                        m.getId(), m.getReceiverReadStatus()))
+                .toList();
     }
 
     public UpdateReceivedMatchingCompletedStateReadItems toUpdateMatchingCompletedToReadItems(
-        final List<UpdateReceivedMatchingCompletedStateReadItem> items
-    ) {
+            final List<UpdateReceivedMatchingCompletedStateReadItem> items) {
         return UpdateReceivedMatchingCompletedStateReadItems.builder()
-            .updateReceivedMatchingCompletedStateReadItems(items)
-            .build();
+                .updateReceivedMatchingCompletedStateReadItems(items)
+                .build();
     }
 
     public List<DeleteReceivedMatchingItem> toDeleteReceivedMatchingItemList(
-        final List<Matching> matchings
-    ) {
+            final List<Matching> matchings) {
         return matchings.stream()
-            .map(matching -> new DeleteReceivedMatchingItem(
-                matching.getId(),
-                matching.getReceiverDeleteStatus()
-            ))
-            .toList();
+                .map(
+                        matching ->
+                                new DeleteReceivedMatchingItem(
+                                        matching.getId(), matching.getReceiverDeleteStatus()))
+                .toList();
     }
 
     public DeleteReceivedMatchingItems toDeleteReceivedMatchingItems(
-        final List<DeleteReceivedMatchingItem> items
-    ) {
-        return DeleteReceivedMatchingItems.builder()
-            .deleteReceivedMatchingItems(items)
-            .build();
+            final List<DeleteReceivedMatchingItem> items) {
+        return DeleteReceivedMatchingItems.builder().deleteReceivedMatchingItems(items).build();
     }
 
-
     public List<DeleteRequestedMatchingItem> toDeleteRequestedMatchingItemList(
-        final List<Matching> matches
-    ) {
+            final List<Matching> matches) {
         return matches.stream()
-            .map(matching -> new DeleteRequestedMatchingItem(
-                matching.getId(),
-                matching.getSenderDeleteStatus()
-            ))
-            .toList();
+                .map(
+                        matching ->
+                                new DeleteRequestedMatchingItem(
+                                        matching.getId(), matching.getSenderDeleteStatus()))
+                .toList();
     }
 
     public DeleteRequestedMatchingItems toDeleteRequestedMatchingItems(
-        final List<DeleteRequestedMatchingItem> items
-    ) {
-        return DeleteRequestedMatchingItems.builder()
-            .deleteRequestedMatchingItems(items)
-            .build();
+            final List<DeleteRequestedMatchingItem> items) {
+        return DeleteRequestedMatchingItems.builder().deleteRequestedMatchingItems(items).build();
     }
 }

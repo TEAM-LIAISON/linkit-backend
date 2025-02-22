@@ -14,7 +14,7 @@ import org.springframework.core.io.ClassPathResource;
 @Configuration
 @RequiredArgsConstructor
 public class CsvProfileStateReader {
-    
+
     @Value("${profileState.csv-path}")
     private String profileStateCsv;
 
@@ -37,7 +37,8 @@ public class CsvProfileStateReader {
         defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
 
         // 매칭할 class 타입 지정(필드 지정)
-        BeanWrapperFieldSetMapper<ProfileStateCsvData> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
+        BeanWrapperFieldSetMapper<ProfileStateCsvData> beanWrapperFieldSetMapper =
+                new BeanWrapperFieldSetMapper<>();
         beanWrapperFieldSetMapper.setTargetType(ProfileStateCsvData.class);
 
         defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);

@@ -9,9 +9,10 @@ public class RedisTestConfig {
     private static final String REDIS_DOCKER_IMAGE = "redis:7.2.1-alpine";
 
     static {
-        GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse(REDIS_DOCKER_IMAGE))
-                .withExposedPorts(6379)
-                .withReuse(true);
+        GenericContainer<?> REDIS_CONTAINER =
+                new GenericContainer<>(DockerImageName.parse(REDIS_DOCKER_IMAGE))
+                        .withExposedPorts(6379)
+                        .withReuse(true);
 
         REDIS_CONTAINER.start();
 

@@ -24,17 +24,16 @@ public class NotificationController {
     @GetMapping("/notifications")
     @MemberOnly
     public CommonResponse<NotificationResponseDTO.NotificationItems> getNotificationItems(
-            @Auth final Accessor accessor
-    ) {
-        return CommonResponse.onSuccess(notificationService.getNotificationItems(accessor.getMemberId()));
+            @Auth final Accessor accessor) {
+        return CommonResponse.onSuccess(
+                notificationService.getNotificationItems(accessor.getMemberId()));
     }
 
     @PostMapping("/notification/read/{notificationId}")
     @MemberOnly
     public CommonResponse<NotificationResponseDTO.ReadNotificationResponse> readNotification(
-            @Auth final Accessor accessor,
-            @PathVariable final String notificationId
-    ) {
-        return CommonResponse.onSuccess(notificationService.readNotification(accessor.getMemberId(), notificationId));
+            @Auth final Accessor accessor, @PathVariable final String notificationId) {
+        return CommonResponse.onSuccess(
+                notificationService.readNotification(accessor.getMemberId(), notificationId));
     }
 }

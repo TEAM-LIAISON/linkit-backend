@@ -1,5 +1,10 @@
 package liaison.linkit.login.infrastructure;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
@@ -8,9 +13,6 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import javax.crypto.SecretKey;
 import liaison.linkit.common.exception.ExpiredAccessTokenException;
 import liaison.linkit.common.exception.InvalidAccessTokenException;
 import liaison.linkit.common.exception.InvalidRefreshTokenException;
@@ -33,15 +35,14 @@ public class JwtProvider {
     public JwtProvider(
             @Value("${jwt.secret}") final String secretKey,
             @Value("${jwt.access-expiration-time}") final Long accessExpirationTime,
-            @Value("${jwt.refresh-expiration-time}") final Long refreshExpirationTime
-    ) {
+            @Value("${jwt.refresh-expiration-time}") final Long refreshExpirationTime) {
         try {
             this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
             this.accessExpirationTime = accessExpirationTime;
             this.refreshExpirationTime = refreshExpirationTime;
         } catch (Exception e) {
             // 로그를 통해 예외 내용 확인
-            throw e;  // 여기서 재발생시켜 스택 트레이스를 확인할 수 있습니다.
+            throw e; // 여기서 재발생시켜 스택 트레이스를 확인할 수 있습니다.
         }
     }
 
@@ -92,7 +93,7 @@ public class JwtProvider {
 
     public void validateAccessToken(final String accessToken) {
         try {
-            parseToken(accessToken);  // JWT 토큰을 파싱
+            parseToken(accessToken); // JWT 토큰을 파싱
         } catch (final ExpiredJwtException e) {
             log.info("AccessToken 만료 = {}", e.getMessage());
             throw ExpiredAccessTokenException.EXCEPTION;
@@ -103,19 +104,15 @@ public class JwtProvider {
     }
 
     public String getSubject(final String token) {
-        return parseToken(token)
-                .getBody()
-                .getSubject();
+        return parseToken(token).getBody().getSubject();
     }
 
     private Jws<Claims> parseToken(final String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token);
+        return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
     }
 
-    public boolean isValidRefreshAndInvalidAccess(final String refreshToken, final String accessToken) {
+    public boolean isValidRefreshAndInvalidAccess(
+            final String refreshToken, final String accessToken) {
         validateRefreshToken(refreshToken);
         try {
             validateAccessToken(accessToken);
@@ -129,7 +126,8 @@ public class JwtProvider {
         return createToken(subject, accessExpirationTime);
     }
 
-    public boolean isValidRefreshAndValidAccess(final String refreshToken, final String accessToken) {
+    public boolean isValidRefreshAndValidAccess(
+            final String refreshToken, final String accessToken) {
         try {
             validateRefreshToken(refreshToken);
             validateAccessToken(accessToken);

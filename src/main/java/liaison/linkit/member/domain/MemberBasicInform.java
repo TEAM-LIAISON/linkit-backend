@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+
 import liaison.linkit.common.domain.BaseDateTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

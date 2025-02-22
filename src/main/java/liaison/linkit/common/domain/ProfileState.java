@@ -6,6 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,12 +27,7 @@ public class ProfileState {
     @Column(name = "profile_state_name", nullable = false)
     private String profileStateName;
 
-    public static ProfileState of(
-            final String profileStateName
-    ) {
-        return new ProfileState(
-                null,
-                profileStateName
-        );
+    public static ProfileState of(final String profileStateName) {
+        return new ProfileState(null, profileStateName);
     }
 }

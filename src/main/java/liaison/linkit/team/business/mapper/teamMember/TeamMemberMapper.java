@@ -1,8 +1,8 @@
 package liaison.linkit.team.business.mapper.teamMember;
 
-
 import java.util.List;
 import java.util.stream.Collectors;
+
 import liaison.linkit.common.annotation.Mapper;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.member.domain.Member;
@@ -29,7 +29,8 @@ import liaison.linkit.team.presentation.teamMember.dto.TeamMemberResponseDTO.Upd
 public class TeamMemberMapper {
 
     // 팀원 객체 생성 빌더
-    public TeamMember toTeamMember(final Member member, final Team team, final TeamMemberType teamMemberType) {
+    public TeamMember toTeamMember(
+            final Member member, final Team team, final TeamMemberType teamMemberType) {
         return TeamMember.builder()
                 .member(member)
                 .team(team)
@@ -38,17 +39,15 @@ public class TeamMemberMapper {
                 .build();
     }
 
-    public TeamMemberViewItems toTeamMemberItems(final List<AcceptedTeamMemberItem> acceptedTeamMemberItems) {
-        return TeamMemberViewItems
-                .builder()
+    public TeamMemberViewItems toTeamMemberItems(
+            final List<AcceptedTeamMemberItem> acceptedTeamMemberItems) {
+        return TeamMemberViewItems.builder()
                 .acceptedTeamMemberItems(acceptedTeamMemberItems)
                 .build();
     }
 
     public List<ProfileTeamInform> toProfileTeamInforms(final List<Team> teams) {
-        return teams.stream()
-                .map(this::toProfileTeamInform)
-                .collect(Collectors.toList());
+        return teams.stream().map(this::toProfileTeamInform).collect(Collectors.toList());
     }
 
     public ProfileTeamInform toProfileTeamInform(final Team team) {
@@ -60,8 +59,7 @@ public class TeamMemberMapper {
     }
 
     public TeamMemberResponseDTO.AddTeamMemberResponse toAddTeamMemberInvitation(
-            final TeamMemberInvitation teamMemberInvitation
-    ) {
+            final TeamMemberInvitation teamMemberInvitation) {
         return AddTeamMemberResponse.builder()
                 .invitedTeamMemberEmail(teamMemberInvitation.getTeamMemberInvitationEmail())
                 .teamCode(teamMemberInvitation.getTeam().getTeamCode())
@@ -69,8 +67,7 @@ public class TeamMemberMapper {
     }
 
     public TeamMemberResponseDTO.UpdateTeamMemberTypeResponse toUpdateTeamMemberTypeResponse(
-            final TeamMember teamMember
-    ) {
+            final TeamMember teamMember) {
         return UpdateTeamMemberTypeResponse.builder()
                 .emailId(teamMember.getMember().getEmailId())
                 .teamMemberType(teamMember.getTeamMemberType())
@@ -82,8 +79,7 @@ public class TeamMemberMapper {
             final ProfilePositionDetail profilePositionDetail,
             final RegionDetail regionDetail,
             final TeamMember teamMember,
-            final TeamMemberInviteState teamMemberInviteState
-    ) {
+            final TeamMemberInviteState teamMemberInviteState) {
         return AcceptedTeamMemberItem.builder()
                 .emailId(profile.getMember().getEmailId())
                 .profileImagePath(profile.getProfileImagePath())
@@ -95,33 +91,29 @@ public class TeamMemberMapper {
                 .build();
     }
 
-    public TeamMemberResponseDTO.TeamOutResponse toTeamOutResponse(final String teamCode, final String emailId) {
-        return TeamOutResponse.builder()
-                .teamCode(teamCode)
-                .emailId(emailId)
-                .build();
+    public TeamMemberResponseDTO.TeamOutResponse toTeamOutResponse(
+            final String teamCode, final String emailId) {
+        return TeamOutResponse.builder().teamCode(teamCode).emailId(emailId).build();
     }
 
-    public TeamMemberResponseDTO.TeamJoinResponse toTeamJoinResponse(final String teamCode, final String emailId) {
-        return TeamJoinResponse.builder()
-                .teamCode(teamCode)
-                .emailId(emailId)
-                .build();
+    public TeamMemberResponseDTO.TeamJoinResponse toTeamJoinResponse(
+            final String teamCode, final String emailId) {
+        return TeamJoinResponse.builder().teamCode(teamCode).emailId(emailId).build();
     }
 
-    public TeamMemberResponseDTO.UpdateManagingTeamStateResponse toUpdateManagingTeamStateResponse(final String teamCode, final boolean isTeamLastDeleteRequester) {
+    public TeamMemberResponseDTO.UpdateManagingTeamStateResponse toUpdateManagingTeamStateResponse(
+            final String teamCode, final boolean isTeamLastDeleteRequester) {
         return UpdateManagingTeamStateResponse.builder()
                 .teamCode(teamCode)
                 .isTeamLastDeleteRequester(isTeamLastDeleteRequester)
                 .build();
     }
 
-    public TeamMemberResponseDTO.RemoveTeamMemberResponse toRemoveTeamMemberResponse(final String teamCode, final String removeIdentifier) {
+    public TeamMemberResponseDTO.RemoveTeamMemberResponse toRemoveTeamMemberResponse(
+            final String teamCode, final String removeIdentifier) {
         return RemoveTeamMemberResponse.builder()
                 .teamCode(teamCode)
                 .removedIdentifier(removeIdentifier)
                 .build();
     }
 }
-
-

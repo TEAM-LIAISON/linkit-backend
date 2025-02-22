@@ -2,6 +2,7 @@ package liaison.linkit.team.domain.repository.announcement;
 
 import java.util.List;
 import java.util.Set;
+
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import org.springframework.data.domain.Page;
@@ -13,27 +14,29 @@ public interface TeamMemberAnnouncementCustomRepository {
 
     TeamMemberAnnouncement getTeamMemberAnnouncement(final Long teamMemberAnnouncementId);
 
-    TeamMemberAnnouncement updateTeamMemberAnnouncement(final TeamMemberAnnouncement teamMemberAnnouncement, final UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest);
+    TeamMemberAnnouncement updateTeamMemberAnnouncement(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final UpdateTeamMemberAnnouncementRequest updateTeamMemberAnnouncementRequest);
 
-    TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(final TeamMemberAnnouncement teamMemberAnnouncement, final boolean isTeamMemberAnnouncementCurrentPublicState);
+    TeamMemberAnnouncement updateTeamMemberAnnouncementPublicState(
+            final TeamMemberAnnouncement teamMemberAnnouncement,
+            final boolean isTeamMemberAnnouncementCurrentPublicState);
 
     Page<TeamMemberAnnouncement> findAll(
-        final List<String> subPosition,
-        final List<String> cityName,
-        final List<String> scaleName,
-        final Pageable pageable
-    );
+            final List<String> subPosition,
+            final List<String> cityName,
+            final List<String> scaleName,
+            final Pageable pageable);
 
     Page<TeamMemberAnnouncement> findHotAnnouncements(final Pageable pageable);
 
     Page<TeamMemberAnnouncement> findExcludedAnnouncements(
-        final List<Long> excludeAnnouncementIds,
-        final Pageable pageable
-    );
+            final List<Long> excludeAnnouncementIds, final Pageable pageable);
 
     List<TeamMemberAnnouncement> findHomeTopTeamMemberAnnouncements(final int limit);
 
-    Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(final List<Long> teamIds);
+    Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(
+            final List<Long> teamIds);
 
     Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamId(final Long teamId);
 

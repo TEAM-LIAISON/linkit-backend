@@ -1,6 +1,7 @@
 package liaison.linkit.profile.implement.license;
 
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.license.ProfileLicense;
 import liaison.linkit.profile.domain.repository.license.ProfileLicenseRepository;
@@ -17,7 +18,8 @@ public class ProfileLicenseQueryAdapter {
     }
 
     public ProfileLicense getProfileLicense(final Long profileLicenseId) {
-        return profileLicenseRepository.findById(profileLicenseId)
+        return profileLicenseRepository
+                .findById(profileLicenseId)
                 .orElseThrow(() -> ProfileLicenseNotFoundException.EXCEPTION);
     }
 

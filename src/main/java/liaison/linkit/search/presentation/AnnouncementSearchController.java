@@ -2,6 +2,7 @@ package liaison.linkit.search.presentation;
 
 import java.util.List;
 import java.util.Optional;
+
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
@@ -29,29 +30,29 @@ public class AnnouncementSearchController {
      * 공고 검색 엔드포인트
      *
      * @param subPosition 포지션 대분류 (선택적)
-     * @param skillName   보유 스킬 (선택적)
-     * @param cityName    활동 지역 (선택적)
-     * @param scaleName   규모 (선택적)
-     * @param page        페이지 번호 (기본값: 0)
-     * @param size        페이지 크기 (기본값: 20)
+     * @param skillName 보유 스킬 (선택적)
+     * @param cityName 활동 지역 (선택적)
+     * @param scaleName 규모 (선택적)
+     * @param page 페이지 번호 (기본값: 0)
+     * @param size 페이지 크기 (기본값: 20)
      * @return 팀원 목록과 페이지 정보
      */
-
     @GetMapping
     public CommonResponse<AnnouncementSearchResponseDTO> searchAnnouncements(
-        @Auth final Accessor accessor,
-        @RequestParam(value = "subPosition", required = false) List<String> subPosition,
-        @RequestParam(value = "cityName", required = false) List<String> cityName,
-        @RequestParam(value = "scaleName", required = false) List<String> scaleName,
-        @RequestParam(value = "page", defaultValue = "0") int page,
-        @RequestParam(value = "size", defaultValue = "80") int size) {
-        Optional<Long> optionalMemberId = accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
+            @Auth final Accessor accessor,
+            @RequestParam(value = "subPosition", required = false) List<String> subPosition,
+            @RequestParam(value = "cityName", required = false) List<String> cityName,
+            @RequestParam(value = "scaleName", required = false) List<String> scaleName,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "80") int size) {
+        Optional<Long> optionalMemberId =
+                accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
         Pageable pageable = PageRequest.of(page, 80, Sort.by("id").descending());
 
-        AnnouncementSearchResponseDTO announcementSearchResponseDTO = announcementSearchService
-            .searchAnnouncements(optionalMemberId, subPosition, cityName, scaleName, pageable);
+        AnnouncementSearchResponseDTO announcementSearchResponseDTO =
+                announcementSearchService.searchAnnouncements(
+                        optionalMemberId, subPosition, cityName, scaleName, pageable);
         return CommonResponse.onSuccess(announcementSearchResponseDTO);
-
     }
 }

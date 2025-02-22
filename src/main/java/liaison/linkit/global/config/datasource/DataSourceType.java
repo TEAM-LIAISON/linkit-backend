@@ -1,5 +1,5 @@
-//package liaison.linkit.global.config.datasource;
+// package liaison.linkit.global.config.datasource;
 //
-//public enum DataSourceType {
+// public enum DataSourceType {
 //    SOURCE, REPLICA
-//}
+// }

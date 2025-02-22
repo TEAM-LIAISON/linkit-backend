@@ -1,6 +1,7 @@
 package liaison.linkit.member.implement;
 
 import java.util.Optional;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.domain.repository.member.MemberRepository;
@@ -14,7 +15,9 @@ public class MemberQueryAdapter {
     private final MemberRepository memberRepository;
 
     public Member findByEmailId(final String emailId) {
-        return memberRepository.findByEmailId(emailId).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+        return memberRepository
+                .findByEmailId(emailId)
+                .orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 
     public boolean existsByEmailId(final String emailId) {
@@ -44,6 +47,8 @@ public class MemberQueryAdapter {
     }
 
     public Member findByEmail(final String email) {
-        return memberRepository.findByEmail(email).orElseThrow(() -> MemberNotFoundException.EXCEPTION);
+        return memberRepository
+                .findByEmail(email)
+                .orElseThrow(() -> MemberNotFoundException.EXCEPTION);
     }
 }

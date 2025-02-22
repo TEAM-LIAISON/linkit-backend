@@ -8,12 +8,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import liaison.linkit.common.exception.ExpiredAccessTokenException;
 import liaison.linkit.common.exception.InvalidAccessTokenException;
 import liaison.linkit.common.exception.InvalidRefreshTokenException;
@@ -33,19 +34,20 @@ class JwtProviderTest {
     private static final Long SAMPLE_EXPIRATION_TIME = 60000L;
     private static final Long SAMPLE_EXPIRED_TIME = 0L;
     private static final String SAMPLE_SUBJECT = "thisIsSampleSubject";
-    private static final String SAMPLE_INVALID_SECRET_KEY = "LJW25,jjongwa,mcodnjs,hgo641,waterricecake,Let'sGo";
+    private static final String SAMPLE_INVALID_SECRET_KEY =
+            "LJW25,jjongwa,mcodnjs,hgo641,waterricecake,Let'sGo";
 
     @Value("${jwt.secret}")
     private String realSecretKey;
 
-    @Autowired
-    JwtProvider jwtProvider;
+    @Autowired JwtProvider jwtProvider;
 
     private MemberTokens makeTestMemberTokens() {
         return jwtProvider.generateLoginToken(SAMPLE_SUBJECT);
     }
 
-    private String makeTestJwt(final Long expirationTime, final String subject, final String secretKey) {
+    private String makeTestJwt(
+            final Long expirationTime, final String subject, final String secretKey) {
         final Date now = new Date();
         final Date validity = new Date(now.getTime() + expirationTime);
 
@@ -56,8 +58,7 @@ class JwtProviderTest {
                 .setExpiration(validity)
                 .signWith(
                         Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8)),
-                        SignatureAlgorithm.HS256
-                )
+                        SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -87,7 +88,8 @@ class JwtProviderTest {
     void validateToken_ExpiredPeriodRefreshToken() {
         // given
         final String refreshToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, realSecretKey);
-        final String accessToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
+        final String accessToken =
+                makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
         final MemberTokens memberTokens = new MemberTokens(accessToken, refreshToken);
 
         // when & then
@@ -100,8 +102,10 @@ class JwtProviderTest {
     @Test
     void validateToken_InvalidRefreshToken() {
         // given
-        final String accessToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
-        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
+        final String accessToken =
+                makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
+        final String refreshToken =
+                makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
         final MemberTokens memberTokens = new MemberTokens(accessToken, refreshToken);
 
         // when & then
@@ -114,7 +118,8 @@ class JwtProviderTest {
     @Test
     void validateToken_ExpiredPeriodAccessToken() {
         // given
-        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
+        final String refreshToken =
+                makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
         final String accessToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, realSecretKey);
         final MemberTokens memberTokens = new MemberTokens(accessToken, refreshToken);
 
@@ -128,8 +133,10 @@ class JwtProviderTest {
     @Test
     void validateToken_InvalidAccessToken() {
         // given
-        final String accessToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
-        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
+        final String accessToken =
+                makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
+        final String refreshToken =
+                makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
         final MemberTokens memberTokens = new MemberTokens(accessToken, refreshToken);
 
         // when & then
@@ -142,11 +149,13 @@ class JwtProviderTest {
     @Test
     void isValidRefreshAndInvalidAccess() {
         // given
-        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
+        final String refreshToken =
+                makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
         final String accessToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, realSecretKey);
 
         // when & then
-        assertThatThrownBy(() -> jwtProvider.isValidRefreshAndInvalidAccess(refreshToken, accessToken))
+        assertThatThrownBy(
+                        () -> jwtProvider.isValidRefreshAndInvalidAccess(refreshToken, accessToken))
                 .isInstanceOf(ExpiredAccessTokenException.class)
                 .hasMessage(ACCESS_TOKEN_EXPIRED.getReason());
     }
@@ -156,10 +165,12 @@ class JwtProviderTest {
     void isValidRefreshAndInvalidAccess_InvalidRefreshToken() {
         // given
         final String accessToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, realSecretKey);
-        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
+        final String refreshToken =
+                makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
 
         // when & then
-        assertThatThrownBy(() -> jwtProvider.isValidRefreshAndInvalidAccess(refreshToken, accessToken))
+        assertThatThrownBy(
+                        () -> jwtProvider.isValidRefreshAndInvalidAccess(refreshToken, accessToken))
                 .isInstanceOf(InvalidRefreshTokenException.class)
                 .hasMessage(INVALID_REFRESH_TOKEN.getReason());
     }
@@ -168,8 +179,10 @@ class JwtProviderTest {
     @Test
     void isValidRefreshAndInvalidAccess_InvalidAccessToken() {
         // given
-        final String refreshToken = makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
-        final String accessToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
+        final String refreshToken =
+                makeTestJwt(SAMPLE_EXPIRATION_TIME, SAMPLE_SUBJECT, realSecretKey);
+        final String accessToken =
+                makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
 
         // when
         boolean result = jwtProvider.isValidRefreshAndInvalidAccess(refreshToken, accessToken);
@@ -183,10 +196,12 @@ class JwtProviderTest {
     void isValidRefreshAndInvalidAccess_ExpiredPeriodRefreshToken() {
         // given
         final String refreshToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, realSecretKey);
-        final String accessToken = makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
+        final String accessToken =
+                makeTestJwt(SAMPLE_EXPIRED_TIME, SAMPLE_SUBJECT, SAMPLE_INVALID_SECRET_KEY);
 
         // when & then
-        assertThatThrownBy(() -> jwtProvider.isValidRefreshAndInvalidAccess(refreshToken, accessToken))
+        assertThatThrownBy(
+                        () -> jwtProvider.isValidRefreshAndInvalidAccess(refreshToken, accessToken))
                 .isInstanceOf(RefreshTokenExpiredException.class)
                 .hasMessage(REFRESH_TOKEN_EXPIRED.getReason());
     }

@@ -1,6 +1,7 @@
 package liaison.linkit.matching.business.resolver;
 
 import java.util.List;
+
 import liaison.linkit.common.business.RegionMapper;
 import liaison.linkit.common.implement.RegionQueryAdapter;
 import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
@@ -62,19 +63,24 @@ public class MatchingInfoResolver {
 
     public Object resolveSenderInfo(final Matching matching) {
         if (matching.getSenderType() == SenderType.PROFILE) {
-            return matchingCommonAssembler.assembleSenderProfileInformation(matching.getSenderEmailId());
+            return matchingCommonAssembler.assembleSenderProfileInformation(
+                    matching.getSenderEmailId());
         } else {
-            return matchingCommonAssembler.assembleSenderTeamInformation(matching.getSenderTeamCode());
+            return matchingCommonAssembler.assembleSenderTeamInformation(
+                    matching.getSenderTeamCode());
         }
     }
 
     public Object resolveReceiverInfo(final Matching matching) {
         if (matching.getReceiverType() == ReceiverType.PROFILE) {
-            return matchingCommonAssembler.assembleReceiverProfileInformation(matching.getReceiverEmailId());
+            return matchingCommonAssembler.assembleReceiverProfileInformation(
+                    matching.getReceiverEmailId());
         } else if (matching.getReceiverType() == ReceiverType.TEAM) {
-            return matchingCommonAssembler.assembleReceiverTeamInformation(matching.getReceiverTeamCode());
+            return matchingCommonAssembler.assembleReceiverTeamInformation(
+                    matching.getReceiverTeamCode());
         } else if (matching.getReceiverType() == ReceiverType.ANNOUNCEMENT) {
-            return matchingCommonAssembler.assembleReceiverAnnouncementInformation(matching.getReceiverAnnouncementId());
+            return matchingCommonAssembler.assembleReceiverAnnouncementInformation(
+                    matching.getReceiverAnnouncementId());
         }
         return null;
     }
@@ -102,11 +108,13 @@ public class MatchingInfoResolver {
                 return team.getTeamName();
             }
             case ANNOUNCEMENT -> {
-                TeamMemberAnnouncement announcement = teamMemberAnnouncementQueryAdapter
-                    .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
+                TeamMemberAnnouncement announcement =
+                        teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
+                                matching.getReceiverAnnouncementId());
                 return announcement.getTeam().getTeamName();
             }
-            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+            default -> throw new IllegalStateException(
+                    "Unexpected receiver type: " + matching.getReceiverType());
         }
     }
 
@@ -118,15 +126,18 @@ public class MatchingInfoResolver {
                 return profile.getMember().getId();
             }
             case TEAM, ANNOUNCEMENT -> {
-                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
-                    ? matching.getReceiverTeamCode()
-                    : teamMemberAnnouncementQueryAdapter
-                        .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
-                        .getTeam()
-                        .getTeamCode();
+                String teamCode =
+                        matching.getReceiverType() == ReceiverType.TEAM
+                                ? matching.getReceiverTeamCode()
+                                : teamMemberAnnouncementQueryAdapter
+                                        .getTeamMemberAnnouncement(
+                                                matching.getReceiverAnnouncementId())
+                                        .getTeam()
+                                        .getTeamCode();
                 return teamMemberQueryAdapter.findTeamOwnerByTeamCode(teamCode).getId();
             }
-            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+            default -> throw new IllegalStateException(
+                    "Unexpected receiver type: " + matching.getReceiverType());
         }
     }
 
@@ -158,15 +169,18 @@ public class MatchingInfoResolver {
                 return profile.getProfileImagePath();
             }
             case TEAM, ANNOUNCEMENT -> {
-                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
-                    ? matching.getReceiverTeamCode()
-                    : teamMemberAnnouncementQueryAdapter
-                        .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
-                        .getTeam()
-                        .getTeamCode();
+                String teamCode =
+                        matching.getReceiverType() == ReceiverType.TEAM
+                                ? matching.getReceiverTeamCode()
+                                : teamMemberAnnouncementQueryAdapter
+                                        .getTeamMemberAnnouncement(
+                                                matching.getReceiverAnnouncementId())
+                                        .getTeam()
+                                        .getTeamCode();
                 return teamQueryAdapter.findByTeamCode(teamCode).getTeamLogoImagePath();
             }
-            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+            default -> throw new IllegalStateException(
+                    "Unexpected receiver type: " + matching.getReceiverType());
         }
     }
 
@@ -177,8 +191,10 @@ public class MatchingInfoResolver {
 
             ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
             if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
-                final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
-                senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                final ProfilePosition profilePosition =
+                        profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
+                senderProfilePositionDetail =
+                        profilePositionMapper.toProfilePositionDetail(profilePosition);
             }
 
             return senderProfilePositionDetail.getMajorPosition();
@@ -186,7 +202,8 @@ public class MatchingInfoResolver {
             final Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
             TeamScaleItem teamScaleItem = null;
             if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-                final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+                final TeamScale teamScale =
+                        teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
                 teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
             }
 
@@ -198,35 +215,42 @@ public class MatchingInfoResolver {
     public String getReceiverPositionOrTeamSize(final Matching matching) {
         switch (matching.getReceiverType()) {
             case PROFILE -> {
-                final Profile profile = profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
+                final Profile profile =
+                        profileQueryAdapter.findByEmailId(matching.getReceiverEmailId());
 
                 ProfilePositionDetail senderProfilePositionDetail = new ProfilePositionDetail();
 
                 if (profilePositionQueryAdapter.existsProfilePositionByProfileId(profile.getId())) {
-                    final ProfilePosition profilePosition = profilePositionQueryAdapter.findProfilePositionByProfileId(profile.getId());
-                    senderProfilePositionDetail = profilePositionMapper.toProfilePositionDetail(profilePosition);
+                    final ProfilePosition profilePosition =
+                            profilePositionQueryAdapter.findProfilePositionByProfileId(
+                                    profile.getId());
+                    senderProfilePositionDetail =
+                            profilePositionMapper.toProfilePositionDetail(profilePosition);
                 }
 
                 return senderProfilePositionDetail.getMajorPosition();
             }
             case TEAM, ANNOUNCEMENT -> {
-                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
-                    ? matching.getReceiverTeamCode()
-                    : teamMemberAnnouncementQueryAdapter
-                        .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
-                        .getTeam()
-                        .getTeamCode();
+                String teamCode =
+                        matching.getReceiverType() == ReceiverType.TEAM
+                                ? matching.getReceiverTeamCode()
+                                : teamMemberAnnouncementQueryAdapter
+                                        .getTeamMemberAnnouncement(
+                                                matching.getReceiverAnnouncementId())
+                                        .getTeam()
+                                        .getTeamCode();
                 final Team team = teamQueryAdapter.findByTeamCode(teamCode);
                 // 팀 규모 조회
                 TeamScaleItem teamScaleItem = null;
                 if (teamScaleQueryAdapter.existsTeamScaleByTeamId(team.getId())) {
-                    final TeamScale teamScale = teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
+                    final TeamScale teamScale =
+                            teamScaleQueryAdapter.findTeamScaleByTeamId(team.getId());
                     teamScaleItem = teamScaleMapper.toTeamScaleItem(teamScale);
                 }
                 return teamScaleItem.getTeamScaleName();
-
             }
-            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+            default -> throw new IllegalStateException(
+                    "Unexpected receiver type: " + matching.getReceiverType());
         }
     }
 
@@ -237,18 +261,22 @@ public class MatchingInfoResolver {
             // 팀 지역 조회
             RegionDetail regionDetail = new RegionDetail();
             if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
-                final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+                final ProfileRegion profileRegion =
+                        regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
                 regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
             }
-            return RegionUtil.buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
+            return RegionUtil.buildRegionString(
+                    regionDetail.getCityName(), regionDetail.getDivisionName());
         } else {
             final Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
             RegionDetail regionDetail = new RegionDetail();
             if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
-                final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+                final TeamRegion teamRegion =
+                        regionQueryAdapter.findTeamRegionByTeamId(team.getId());
                 regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
             }
-            return RegionUtil.buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
+            return RegionUtil.buildRegionString(
+                    regionDetail.getCityName(), regionDetail.getDivisionName());
         }
     }
 
@@ -260,11 +288,13 @@ public class MatchingInfoResolver {
                 // 팀 지역 조회
                 RegionDetail regionDetail = new RegionDetail();
                 if (regionQueryAdapter.existsProfileRegionByProfileId((profile.getId()))) {
-                    final ProfileRegion profileRegion = regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
+                    final ProfileRegion profileRegion =
+                            regionQueryAdapter.findProfileRegionByProfileId(profile.getId());
                     regionDetail = regionMapper.toRegionDetail(profileRegion.getRegion());
                 }
 
-                return RegionUtil.buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
+                return RegionUtil.buildRegionString(
+                        regionDetail.getCityName(), regionDetail.getDivisionName());
             }
             case TEAM -> {
                 String teamCode = matching.getReceiverTeamCode();
@@ -272,16 +302,25 @@ public class MatchingInfoResolver {
 
                 RegionDetail regionDetail = new RegionDetail();
                 if (regionQueryAdapter.existsTeamRegionByTeamId((team.getId()))) {
-                    final TeamRegion teamRegion = regionQueryAdapter.findTeamRegionByTeamId(team.getId());
+                    final TeamRegion teamRegion =
+                            regionQueryAdapter.findTeamRegionByTeamId(team.getId());
                     regionDetail = regionMapper.toRegionDetail(teamRegion.getRegion());
                 }
-                return RegionUtil.buildRegionString(regionDetail.getCityName(), regionDetail.getDivisionName());
+                return RegionUtil.buildRegionString(
+                        regionDetail.getCityName(), regionDetail.getDivisionName());
             }
             case ANNOUNCEMENT -> {
-                final TeamMemberAnnouncement teamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
+                final TeamMemberAnnouncement teamMemberAnnouncement =
+                        teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
+                                matching.getReceiverAnnouncementId());
                 // 스킬 조회
-                List<AnnouncementSkill> announcementSkills = announcementSkillQueryAdapter.getAnnouncementSkills(teamMemberAnnouncement.getId());
-                List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName> announcementSkillNames = announcementSkillMapper.toAnnouncementSkillNames(announcementSkills);
+                List<AnnouncementSkill> announcementSkills =
+                        announcementSkillQueryAdapter.getAnnouncementSkills(
+                                teamMemberAnnouncement.getId());
+                List<TeamMemberAnnouncementResponseDTO.AnnouncementSkillName>
+                        announcementSkillNames =
+                                announcementSkillMapper.toAnnouncementSkillNames(
+                                        announcementSkills);
 
                 // 리스트가 비어있지 않다면 첫 번째 값을 반환
                 if (!announcementSkillNames.isEmpty()) {
@@ -291,10 +330,10 @@ public class MatchingInfoResolver {
                 // 리스트가 비어 있다면 null 반환 또는 예외 처리
                 return null;
             }
-            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+            default -> throw new IllegalStateException(
+                    "Unexpected receiver type: " + matching.getReceiverType());
         }
     }
-
 
     // 발신자의 이메일 정보
     public String getSenderEmail(Matching matching) {
@@ -303,7 +342,8 @@ public class MatchingInfoResolver {
             return profile.getMember().getEmail();
         } else {
             final Team team = teamQueryAdapter.findByTeamCode(matching.getSenderTeamCode());
-            final Member member = teamMemberQueryAdapter.findTeamOwnerByTeamCode(team.getTeamCode());
+            final Member member =
+                    teamMemberQueryAdapter.findTeamOwnerByTeamCode(team.getTeamCode());
             return member.getEmail();
         }
     }
@@ -316,17 +356,21 @@ public class MatchingInfoResolver {
                 return profile.getMember().getEmail();
             }
             case TEAM, ANNOUNCEMENT -> {
-                String teamCode = matching.getReceiverType() == ReceiverType.TEAM
-                    ? matching.getReceiverTeamCode()
-                    : teamMemberAnnouncementQueryAdapter
-                        .getTeamMemberAnnouncement(matching.getReceiverAnnouncementId())
-                        .getTeam()
-                        .getTeamCode();
+                String teamCode =
+                        matching.getReceiverType() == ReceiverType.TEAM
+                                ? matching.getReceiverTeamCode()
+                                : teamMemberAnnouncementQueryAdapter
+                                        .getTeamMemberAnnouncement(
+                                                matching.getReceiverAnnouncementId())
+                                        .getTeam()
+                                        .getTeamCode();
                 final Team team = teamQueryAdapter.findByTeamCode(teamCode);
-                final Member member = teamMemberQueryAdapter.findTeamOwnerByTeamCode(team.getTeamCode());
+                final Member member =
+                        teamMemberQueryAdapter.findTeamOwnerByTeamCode(team.getTeamCode());
                 return member.getEmail();
             }
-            default -> throw new IllegalStateException("Unexpected receiver type: " + matching.getReceiverType());
+            default -> throw new IllegalStateException(
+                    "Unexpected receiver type: " + matching.getReceiverType());
         }
     }
 
@@ -358,8 +402,12 @@ public class MatchingInfoResolver {
     }
 
     public String getReceiverMajorPosition(final Matching matching) {
-        final TeamMemberAnnouncement targetTeamMemberAnnouncement = teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(matching.getReceiverAnnouncementId());
-        final AnnouncementPositionItem announcementPositionItem = announcementCommonAssembler.fetchAnnouncementPositionItem(targetTeamMemberAnnouncement);
+        final TeamMemberAnnouncement targetTeamMemberAnnouncement =
+                teamMemberAnnouncementQueryAdapter.getTeamMemberAnnouncement(
+                        matching.getReceiverAnnouncementId());
+        final AnnouncementPositionItem announcementPositionItem =
+                announcementCommonAssembler.fetchAnnouncementPositionItem(
+                        targetTeamMemberAnnouncement);
         return announcementPositionItem.getMajorPosition();
     }
 }

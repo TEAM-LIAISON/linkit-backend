@@ -8,5 +8,4 @@ public class TeamMemberNotFoundException extends BaseCodeException {
     private TeamMemberNotFoundException() {
         super(TeamMemberErrorCode.TEAM_MEMBER_NOT_FOUND);
     }
-
 }

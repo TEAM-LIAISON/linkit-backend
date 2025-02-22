@@ -1,7 +1,7 @@
 package liaison.linkit.team.implement.teamMember;
 
-
 import java.util.List;
+
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.team.domain.repository.teamMember.TeamMemberInvitationRepository;
 import liaison.linkit.team.domain.teamMember.TeamMemberInvitation;

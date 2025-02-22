@@ -1,10 +1,10 @@
 package liaison.linkit.global.config.csv.region;
 
-import lombok.Data;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class RegionCsvData {

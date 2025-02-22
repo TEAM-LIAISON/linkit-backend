@@ -1,6 +1,7 @@
 package liaison.linkit.global.config;
 
 import java.util.concurrent.Executor;
+
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
 import org.springframework.context.annotation.Configuration;
@@ -8,16 +9,14 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-/**
- * 비동기 작업을 위한 Spring 설정 클래스
- * @EnableAsync 어노테이션을 통해 비동기 기능 활성화
- */
+/** 비동기 작업을 위한 Spring 설정 클래스 @EnableAsync 어노테이션을 통해 비동기 기능 활성화 */
 @Configuration
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer {
 
     /**
      * 비동기 작업을 실행할 ThreadPool 설정
+     *
      * @return ThreadPoolTaskExecutor 인스턴스
      */
     @Override
@@ -37,6 +36,7 @@ public class AsyncConfig implements AsyncConfigurer {
 
     /**
      * 비동기 작업 중 발생한 예외를 처리하는 핸들러 설정
+     *
      * @return SimpleAsyncUncaughtExceptionHandler 인스턴스
      */
     @Override

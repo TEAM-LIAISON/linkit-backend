@@ -28,7 +28,8 @@ public class RegionQueryAdapter {
     }
 
     public ProfileRegion findProfileRegionByProfileId(final Long profileId) {
-        return profileRegionRepository.findProfileRegionByProfileId(profileId)
+        return profileRegionRepository
+                .findProfileRegionByProfileId(profileId)
                 .orElseThrow(() -> ProfileRegionNotFoundException.EXCEPTION);
     }
 
@@ -37,7 +38,8 @@ public class RegionQueryAdapter {
     }
 
     public TeamRegion findTeamRegionByTeamId(final Long teamId) {
-        return teamRegionRepository.findTeamRegionByTeamId(teamId)
+        return teamRegionRepository
+                .findTeamRegionByTeamId(teamId)
                 .orElseThrow(() -> TeamRegionNotFoundException.EXCEPTION);
     }
 }

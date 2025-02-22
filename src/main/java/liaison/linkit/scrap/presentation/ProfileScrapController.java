@@ -1,6 +1,5 @@
 package liaison.linkit.scrap.presentation;
 
-
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
@@ -30,17 +29,20 @@ public class ProfileScrapController {
     public CommonResponse<ProfileScrapResponseDTO.UpdateProfileScrap> updateProfileScrap(
             @Auth final Accessor accessor,
             @PathVariable final String emailId,
-            @RequestBody final ProfileScrapRequestDTO.UpdateProfileScrapRequest updateProfileScrapRequest  // 변경하고자 하는 boolean 상태
-    ) {
-        return CommonResponse.onSuccess(profileScrapService.updateProfileScrap(accessor.getMemberId(), emailId, updateProfileScrapRequest));
+            @RequestBody
+                    final ProfileScrapRequestDTO.UpdateProfileScrapRequest
+                            updateProfileScrapRequest // 변경하고자 하는 boolean 상태
+            ) {
+        return CommonResponse.onSuccess(
+                profileScrapService.updateProfileScrap(
+                        accessor.getMemberId(), emailId, updateProfileScrapRequest));
     }
 
     // 내가 스크랩한 목록 전체 조회
     @GetMapping
     @MemberOnly
-    public CommonResponse<ProfileInformMenus> getProfileScraps(
-            @Auth final Accessor accessor
-    ) {
-        return CommonResponse.onSuccess(profileScrapService.getProfileScraps(accessor.getMemberId()));
+    public CommonResponse<ProfileInformMenus> getProfileScraps(@Auth final Accessor accessor) {
+        return CommonResponse.onSuccess(
+                profileScrapService.getProfileScraps(accessor.getMemberId()));
     }
 }

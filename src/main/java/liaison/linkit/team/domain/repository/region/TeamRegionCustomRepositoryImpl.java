@@ -1,7 +1,8 @@
 package liaison.linkit.team.domain.repository.region;
 
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Optional;
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.region.TeamRegion;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +17,12 @@ public class TeamRegionCustomRepositoryImpl implements TeamRegionCustomRepositor
     public boolean existsTeamRegionByTeamId(final Long teamId) {
         QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
 
-        Integer count = jpaQueryFactory
-                .selectOne()
-                .from(qTeamRegion)
-                .where(qTeamRegion.team.id.eq(teamId))
-                .fetchFirst();
+        Integer count =
+                jpaQueryFactory
+                        .selectOne()
+                        .from(qTeamRegion)
+                        .where(qTeamRegion.team.id.eq(teamId))
+                        .fetchFirst();
 
         return count != null;
     }
@@ -29,11 +31,11 @@ public class TeamRegionCustomRepositoryImpl implements TeamRegionCustomRepositor
     public Optional<TeamRegion> findTeamRegionByTeamId(final Long teamId) {
         QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
 
-        TeamRegion teamRegion = jpaQueryFactory
-                .selectFrom(qTeamRegion)
-                .where(
-                        qTeamRegion.team.id.eq(teamId)
-                ).fetchOne();
+        TeamRegion teamRegion =
+                jpaQueryFactory
+                        .selectFrom(qTeamRegion)
+                        .where(qTeamRegion.team.id.eq(teamId))
+                        .fetchOne();
 
         return Optional.ofNullable(teamRegion);
     }
@@ -42,9 +44,6 @@ public class TeamRegionCustomRepositoryImpl implements TeamRegionCustomRepositor
     public void deleteAllByTeamId(final Long teamId) {
         QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
 
-        jpaQueryFactory
-                .delete(qTeamRegion)
-                .where(qTeamRegion.team.id.eq(teamId))
-                .execute();
+        jpaQueryFactory.delete(qTeamRegion).where(qTeamRegion.team.id.eq(teamId)).execute();
     }
 }

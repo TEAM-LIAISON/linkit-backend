@@ -1,5 +1,7 @@
 package liaison.linkit.login.infrastructure.oauthprovider;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import liaison.linkit.login.domain.OauthAccessToken;
@@ -16,8 +18,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Optional;
-
 @Component
 public class NaverOauthProvider implements OauthProvider {
     private static final String PROVIDER_NAME = "naver";
@@ -29,12 +29,15 @@ public class NaverOauthProvider implements OauthProvider {
     protected final String userUri;
 
     public NaverOauthProvider(
-            @Value("${spring.security.oauth2.client.registration.naver.client-id}") final String clientId,
-            @Value("${spring.security.oauth2.client.registration.naver.client-secret}") final String clientSecret,
-            @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}") String redirectUri,
+            @Value("${spring.security.oauth2.client.registration.naver.client-id}")
+                    final String clientId,
+            @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
+                    final String clientSecret,
+            @Value("${spring.security.oauth2.client.registration.naver.redirect-uri}")
+                    String redirectUri,
             @Value("${spring.security.oauth2.client.provider.naver.token-uri}") String tokenUri,
-            @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}") String userUri
-    ) {
+            @Value("${spring.security.oauth2.client.provider.naver.user-info-uri}")
+                    String userUri) {
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
@@ -63,12 +66,12 @@ public class NaverOauthProvider implements OauthProvider {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> responseUser;
         try {
-            responseUser = restTemplate.exchange(
-                    "https://openapi.naver.com/v1/nid/me",
-                    HttpMethod.GET,
-                    new HttpEntity<>(headers),
-                    String.class
-            );
+            responseUser =
+                    restTemplate.exchange(
+                            "https://openapi.naver.com/v1/nid/me",
+                            HttpMethod.GET,
+                            new HttpEntity<>(headers),
+                            String.class);
         } catch (HttpClientErrorException e) {
             throw new RuntimeException("Failed to retrieve user info", e);
         }
@@ -99,13 +102,14 @@ public class NaverOauthProvider implements OauthProvider {
         params.add("redirect_uri", redirectUri);
         params.add("grant_type", "authorization_code");
 
-        final HttpEntity<MultiValueMap<String, String>> accessTokenRequestEntity = new HttpEntity<>(params, httpHeaders);
-        final ResponseEntity<OauthAccessToken> accessTokenResponse = restTemplate.exchange(
-                tokenUri,
-                HttpMethod.POST,
-                accessTokenRequestEntity,
-                OauthAccessToken.class
-        );
+        final HttpEntity<MultiValueMap<String, String>> accessTokenRequestEntity =
+                new HttpEntity<>(params, httpHeaders);
+        final ResponseEntity<OauthAccessToken> accessTokenResponse =
+                restTemplate.exchange(
+                        tokenUri,
+                        HttpMethod.POST,
+                        accessTokenRequestEntity,
+                        OauthAccessToken.class);
 
         return Optional.ofNullable(accessTokenResponse.getBody())
                 .orElseThrow(() -> AuthCodeBadRequestException.EXCEPTION)

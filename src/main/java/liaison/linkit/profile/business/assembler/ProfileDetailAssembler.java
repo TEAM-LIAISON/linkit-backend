@@ -2,6 +2,7 @@ package liaison.linkit.profile.business.assembler;
 
 import java.util.List;
 import java.util.Map;
+
 import liaison.linkit.profile.business.mapper.ProfileActivityMapper;
 import liaison.linkit.profile.business.mapper.ProfileAwardsMapper;
 import liaison.linkit.profile.business.mapper.ProfileEducationMapper;
@@ -72,33 +73,31 @@ public class ProfileDetailAssembler {
     private final ProfileMapper profileMapper;
 
     public ProfileResponseDTO.ProfileDetail assembleProfileDetail(
-        final Profile targetProfile,
-        final boolean isMyProfile,
-        final ProfileCompletionMenu profileCompletionMenu,
-        final ProfileInformMenu profileInformMenu
-    ) {
+            final Profile targetProfile,
+            final boolean isMyProfile,
+            final ProfileCompletionMenu profileCompletionMenu,
+            final ProfileInformMenu profileInformMenu) {
         return profileMapper.toProfileDetail(
-            isMyProfile,
-            profileCompletionMenu,
-            profileInformMenu,
-            resolveProfileLogItem(targetProfile),
-            resolveProfileSkillItems(targetProfile.getMember().getId()),
-            resolveProfileActivityItems(targetProfile.getMember().getId()),
-            resolveProfilePortfolioItems(targetProfile),
-            resolveProfileEducationItems(targetProfile),
-            resolveProfileAwardsItems(targetProfile.getMember().getId()),
-            resolveProfileLicenseItems(targetProfile.getMember().getId()),
-            resolveProfileLinkItems(targetProfile)
-        );
+                isMyProfile,
+                profileCompletionMenu,
+                profileInformMenu,
+                resolveProfileLogItem(targetProfile),
+                resolveProfileSkillItems(targetProfile.getMember().getId()),
+                resolveProfileActivityItems(targetProfile.getMember().getId()),
+                resolveProfilePortfolioItems(targetProfile),
+                resolveProfileEducationItems(targetProfile),
+                resolveProfileAwardsItems(targetProfile.getMember().getId()),
+                resolveProfileLicenseItems(targetProfile.getMember().getId()),
+                resolveProfileLinkItems(targetProfile));
     }
-
 
     /* ─── 헬퍼 메서드들 ─────────────────────────────────────────────── */
 
     // 프로필 로그 정보를 조회하여 ProfileLogItem으로 매핑
     private ProfileLogItem resolveProfileLogItem(final Profile targetProfile) {
         if (profileLogQueryAdapter.existsProfileLogByProfileId(targetProfile.getId())) {
-            ProfileLog profileLog = profileLogQueryAdapter.getRepresentativeProfileLog(targetProfile.getId());
+            ProfileLog profileLog =
+                    profileLogQueryAdapter.getRepresentativeProfileLog(targetProfile.getId());
             return profileLogMapper.toProfileLogItem(profileLog);
         }
         return new ProfileLogItem();
@@ -112,38 +111,48 @@ public class ProfileDetailAssembler {
 
     // 이력 정보를 조회하여 ProfileActivityItem 리스트로 변환
     private List<ProfileActivityItem> resolveProfileActivityItems(Long memberId) {
-        List<ProfileActivity> profileActivities = profileActivityQueryAdapter.getProfileActivities(memberId);
+        List<ProfileActivity> profileActivities =
+                profileActivityQueryAdapter.getProfileActivities(memberId);
         return profileActivityMapper.profileActivitiesToProfileActivityItems(profileActivities);
     }
 
     // 포트폴리오 정보를 조회하여 ProfilePortfolioItem 리스트로 변환
     private List<ProfilePortfolioItem> resolveProfilePortfolioItems(Profile targetProfile) {
-        List<ProfilePortfolio> profilePortfolios = profilePortfolioQueryAdapter.getProfilePortfolios(targetProfile.getId());
-        Map<Long, List<String>> projectRolesMap = projectRoleContributionQueryAdapter.getProjectRolesByProfileId(targetProfile.getId());
-        return profilePortfolioMapper.profilePortfoliosToProfileProfilePortfolioItems(profilePortfolios, projectRolesMap);
+        List<ProfilePortfolio> profilePortfolios =
+                profilePortfolioQueryAdapter.getProfilePortfolios(targetProfile.getId());
+        Map<Long, List<String>> projectRolesMap =
+                projectRoleContributionQueryAdapter.getProjectRolesByProfileId(
+                        targetProfile.getId());
+        return profilePortfolioMapper.profilePortfoliosToProfileProfilePortfolioItems(
+                profilePortfolios, projectRolesMap);
     }
 
     // 학력 정보를 조회하여 ProfileEducationItem 리스트로 변환
     private List<ProfileEducationItem> resolveProfileEducationItems(Profile targetProfile) {
-        List<ProfileEducation> profileEducations = profileEducationQueryAdapter.getProfileEducations(targetProfile.getId());
-        return profileEducationMapper.profileEducationsToProfileProfileEducationItems(profileEducations);
+        List<ProfileEducation> profileEducations =
+                profileEducationQueryAdapter.getProfileEducations(targetProfile.getId());
+        return profileEducationMapper.profileEducationsToProfileProfileEducationItems(
+                profileEducations);
     }
 
     // 수상 정보를 조회하여 ProfileAwardsItem 리스트로 변환
     private List<ProfileAwardsItem> resolveProfileAwardsItems(Long memberId) {
-        List<ProfileAwards> profileAwards = profileAwardsQueryAdapter.getProfileAwardsGroup(memberId);
+        List<ProfileAwards> profileAwards =
+                profileAwardsQueryAdapter.getProfileAwardsGroup(memberId);
         return profileAwardsMapper.profileEducationsToProfileProfileEducationItems(profileAwards);
     }
 
     // 자격증 정보를 조회하여 ProfileLicenseItem 리스트로 변환
     private List<ProfileLicenseItem> resolveProfileLicenseItems(Long memberId) {
-        List<ProfileLicense> profileLicenses = profileLicenseQueryAdapter.getProfileLicenses(memberId);
+        List<ProfileLicense> profileLicenses =
+                profileLicenseQueryAdapter.getProfileLicenses(memberId);
         return profileLicenseMapper.profileLicensesToProfileLicenseItems(profileLicenses);
     }
 
     // 링크 정보를 조회하여 ProfileLinkItem 리스트로 변환
     private List<ProfileLinkItem> resolveProfileLinkItems(Profile targetProfile) {
-        List<ProfileLink> profileLinks = profileLinkQueryAdapter.getProfileLinks(targetProfile.getId());
+        List<ProfileLink> profileLinks =
+                profileLinkQueryAdapter.getProfileLinks(targetProfile.getId());
         return profileLinkMapper.profileLinksToProfileLinkItems(profileLinks);
     }
 }

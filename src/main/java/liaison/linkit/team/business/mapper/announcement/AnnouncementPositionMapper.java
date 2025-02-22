@@ -8,13 +8,10 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 public class AnnouncementPositionMapper {
 
     public AnnouncementPositionItem toAnnouncementPositionItem(
-        final AnnouncementPosition announcementPosition
-    ) {
-        return AnnouncementPositionItem
-            .builder()
-            .majorPosition(announcementPosition.getPosition().getMajorPosition())
-            .subPosition(announcementPosition.getPosition().getSubPosition())
-            .build();
+            final AnnouncementPosition announcementPosition) {
+        return AnnouncementPositionItem.builder()
+                .majorPosition(announcementPosition.getPosition().getMajorPosition())
+                .subPosition(announcementPosition.getPosition().getSubPosition())
+                .build();
     }
-
 }

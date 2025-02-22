@@ -1,6 +1,7 @@
 package liaison.linkit.scrap.domain.repository.teamScrap;
 
 import java.util.List;
+
 import liaison.linkit.scrap.domain.TeamScrap;
 
 public interface TeamScrapCustomRepository {

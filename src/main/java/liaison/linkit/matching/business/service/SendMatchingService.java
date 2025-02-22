@@ -1,9 +1,11 @@
 package liaison.linkit.matching.business.service;
 
-import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import jakarta.mail.MessagingException;
+
 import liaison.linkit.chat.implement.ChatRoomQueryAdapter;
 import liaison.linkit.mail.mapper.MatchingMailContentMapper;
 import liaison.linkit.mail.service.AsyncMatchingEmailService;
@@ -78,32 +80,37 @@ public class SendMatchingService {
 
     // 개인에게 매칭 요청 보낼 때 모달 정보 조회
     @Transactional(readOnly = true)
-    public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(final Long senderMemberId, final String receiverEmailId) {
-        return sendMatchingModalAssembler.assembleSelectMatchingRequestToProfileMenu(senderMemberId, receiverEmailId);
+    public SelectMatchingRequestToProfileMenu selectMatchingRequestToProfileMenu(
+            final Long senderMemberId, final String receiverEmailId) {
+        return sendMatchingModalAssembler.assembleSelectMatchingRequestToProfileMenu(
+                senderMemberId, receiverEmailId);
     }
 
     // 팀에게 매칭 요청 보낼 때 모달 정보 조회
     @Transactional(readOnly = true)
-    public SelectMatchingRequestToTeamMenu selectMatchingRequestToTeamMenu(final Long senderMemberId, final String receiverTeamCode) {
-        return sendMatchingModalAssembler.assembleSelectMatchingRequestToTeamMenu(senderMemberId, receiverTeamCode);
+    public SelectMatchingRequestToTeamMenu selectMatchingRequestToTeamMenu(
+            final Long senderMemberId, final String receiverTeamCode) {
+        return sendMatchingModalAssembler.assembleSelectMatchingRequestToTeamMenu(
+                senderMemberId, receiverTeamCode);
     }
 
     // ─── 매칭 발신함 삭제 처리 ─────────────────────────────────────────
 
-    public DeleteRequestedMatchingItems deleteRequestedMatchingItems(final MatchingRequestDTO.DeleteRequestedMatchingRequest req) {
+    public DeleteRequestedMatchingItems deleteRequestedMatchingItems(
+            final MatchingRequestDTO.DeleteRequestedMatchingRequest req) {
         List<Matching> matches = matchingQueryAdapter.findAllByIds(req.getMatchingIds());
         matches.forEach(matching -> matching.setSenderDeleteStatus(SenderDeleteStatus.DELETED));
         matchingCommandAdapter.updateAll(matches);
-        List<DeleteRequestedMatchingItem> items = matchingMapper.toDeleteRequestedMatchingItemList(matches);
+        List<DeleteRequestedMatchingItem> items =
+                matchingMapper.toDeleteRequestedMatchingItemList(matches);
         return matchingMapper.toDeleteRequestedMatchingItems(items);
     }
 
     // ─── 매칭 요청 발신 ─────────────────────────────────────────────
 
     public MatchingResponseDTO.AddMatchingResponse addMatching(
-        final Long memberId,
-        final MatchingRequestDTO.AddMatchingRequest request
-    ) throws MessagingException, UnsupportedEncodingException {
+            final Long memberId, final MatchingRequestDTO.AddMatchingRequest request)
+            throws MessagingException, UnsupportedEncodingException {
 
         // 1. 유효성 검사 및 매칭 저장
         matchingValidator.validateAddMatching(memberId, request);
@@ -119,40 +126,55 @@ public class SendMatchingService {
         // 5. 이메일 전송
         sendMatchingRequestEmail(savedMatching);
 
-        return matchingMapper.toAddMatchingResponse(matching,
-            (senderInfo instanceof SenderProfileInformation ? (SenderProfileInformation) senderInfo : null),
-            (senderInfo instanceof SenderTeamInformation ? (SenderTeamInformation) senderInfo : null),
-            (receiverInfo instanceof ReceiverProfileInformation ? (ReceiverProfileInformation) receiverInfo : null),
-            (receiverInfo instanceof ReceiverTeamInformation ? (ReceiverTeamInformation) receiverInfo : null),
-            (receiverInfo instanceof ReceiverAnnouncementInformation ? (ReceiverAnnouncementInformation) receiverInfo : null)
-        );
+        return matchingMapper.toAddMatchingResponse(
+                matching,
+                (senderInfo instanceof SenderProfileInformation
+                        ? (SenderProfileInformation) senderInfo
+                        : null),
+                (senderInfo instanceof SenderTeamInformation
+                        ? (SenderTeamInformation) senderInfo
+                        : null),
+                (receiverInfo instanceof ReceiverProfileInformation
+                        ? (ReceiverProfileInformation) receiverInfo
+                        : null),
+                (receiverInfo instanceof ReceiverTeamInformation
+                        ? (ReceiverTeamInformation) receiverInfo
+                        : null),
+                (receiverInfo instanceof ReceiverAnnouncementInformation
+                        ? (ReceiverAnnouncementInformation) receiverInfo
+                        : null));
     }
 
     // ─── 매칭 요청 발신함 메뉴 조회 ──────────────────────────────────────────
 
-    public Page<RequestedMatchingMenu> getRequestedMatchingMenuResponse(final Long memberId, final SenderType senderType, Pageable pageable) {
+    public Page<RequestedMatchingMenu> getRequestedMatchingMenuResponse(
+            final Long memberId, final SenderType senderType, Pageable pageable) {
         if (senderType != null) {
             return getMatchingPageBySenderType(memberId, senderType, pageable)
-                .map(this::toMatchingRequestedMenu);
+                    .map(this::toMatchingRequestedMenu);
         } else {
             List<Matching> combined = new ArrayList<>();
-            combined.addAll(getMatchingPageBySenderType(memberId, SenderType.PROFILE, pageable).getContent());
-            combined.addAll(getMatchingPageBySenderType(memberId, SenderType.TEAM, pageable).getContent());
-            List<RequestedMatchingMenu> menus = combined.stream()
-                .map(this::toMatchingRequestedMenu)
-                .toList();
+            combined.addAll(
+                    getMatchingPageBySenderType(memberId, SenderType.PROFILE, pageable)
+                            .getContent());
+            combined.addAll(
+                    getMatchingPageBySenderType(memberId, SenderType.TEAM, pageable).getContent());
+            List<RequestedMatchingMenu> menus =
+                    combined.stream().map(this::toMatchingRequestedMenu).toList();
             return new PageImpl<>(menus, pageable, menus.size());
         }
     }
 
-    private Page<Matching> getMatchingPageBySenderType(final Long memberId, final SenderType senderType, Pageable pageable) {
+    private Page<Matching> getMatchingPageBySenderType(
+            final Long memberId, final SenderType senderType, Pageable pageable) {
         return switch (senderType) {
             case PROFILE -> {
                 final String emailId = memberQueryAdapter.findEmailIdById(memberId);
                 yield matchingQueryAdapter.findRequestedByProfile(emailId, pageable);
             }
             case TEAM -> {
-                final List<Team> teams = teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
+                final List<Team> teams =
+                        teamMemberQueryAdapter.getAllTeamsInOwnerStateByMemberId(memberId);
                 yield matchingQueryAdapter.findRequestedByTeam(teams, pageable);
             }
             default -> Page.empty(pageable);
@@ -161,45 +183,62 @@ public class SendMatchingService {
 
     private RequestedMatchingMenu toMatchingRequestedMenu(final Matching matching) {
         // 채팅방 존재 여부 확인
-        Long chatRoomId = chatRoomQueryAdapter.existsChatRoomByMatchingId(matching.getId())
-            ? chatRoomQueryAdapter.getChatRoomIdByMatchingId(matching.getId())
-            : null;
+        Long chatRoomId =
+                chatRoomQueryAdapter.existsChatRoomByMatchingId(matching.getId())
+                        ? chatRoomQueryAdapter.getChatRoomIdByMatchingId(matching.getId())
+                        : null;
 
         Object senderInfo = matchingInfoResolver.resolveSenderInfo(matching);
         Object receiverInfo = matchingInfoResolver.resolveReceiverInfo(matching);
 
-        return matchingMapper.toMatchingRequestedMenu(matching, chatRoomId,
-            (senderInfo instanceof SenderProfileInformation ? (SenderProfileInformation) senderInfo : null),
-            (senderInfo instanceof SenderTeamInformation ? (SenderTeamInformation) senderInfo : null),
-            (receiverInfo instanceof ReceiverProfileInformation ? (ReceiverProfileInformation) receiverInfo : null),
-            (receiverInfo instanceof ReceiverTeamInformation ? (ReceiverTeamInformation) receiverInfo : null),
-            (receiverInfo instanceof ReceiverAnnouncementInformation ? (ReceiverAnnouncementInformation) receiverInfo : null)
-        );
+        return matchingMapper.toMatchingRequestedMenu(
+                matching,
+                chatRoomId,
+                (senderInfo instanceof SenderProfileInformation
+                        ? (SenderProfileInformation) senderInfo
+                        : null),
+                (senderInfo instanceof SenderTeamInformation
+                        ? (SenderTeamInformation) senderInfo
+                        : null),
+                (receiverInfo instanceof ReceiverProfileInformation
+                        ? (ReceiverProfileInformation) receiverInfo
+                        : null),
+                (receiverInfo instanceof ReceiverTeamInformation
+                        ? (ReceiverTeamInformation) receiverInfo
+                        : null),
+                (receiverInfo instanceof ReceiverAnnouncementInformation
+                        ? (ReceiverAnnouncementInformation) receiverInfo
+                        : null));
     }
 
     // ─── 매칭 요청 발신용 이메일 전송 ───────────────────────────────────────────
 
-    private void sendMatchingRequestEmail(final Matching matching) throws MessagingException, UnsupportedEncodingException {
-        MatchingEmailContent emailContent = matchingMailContentMapper.generateMatchingRequestedEmailContent(matching);
+    private void sendMatchingRequestEmail(final Matching matching)
+            throws MessagingException, UnsupportedEncodingException {
+        MatchingEmailContent emailContent =
+                matchingMailContentMapper.generateMatchingRequestedEmailContent(matching);
 
         asyncMatchingEmailService.sendMatchingRequestedEmail(
-            emailContent.getReceiverMailTitle(),
-            emailContent.getReceiverMailSubTitle(),
-            emailContent.getReceiverMailSubText(),
-            matchingInfoResolver.getReceiverEmail(matching),
-            matchingInfoResolver.getSenderName(matching),
-            matchingInfoResolver.getSenderLogoImagePath(matching),
-            matchingInfoResolver.getSenderPositionOrTeamSizeText(matching),
-            matchingInfoResolver.getSenderPositionOrTeamSize(matching),
-            matchingInfoResolver.getSenderRegionDetail(matching)
-        );
+                emailContent.getReceiverMailTitle(),
+                emailContent.getReceiverMailSubTitle(),
+                emailContent.getReceiverMailSubText(),
+                matchingInfoResolver.getReceiverEmail(matching),
+                matchingInfoResolver.getSenderName(matching),
+                matchingInfoResolver.getSenderLogoImagePath(matching),
+                matchingInfoResolver.getSenderPositionOrTeamSizeText(matching),
+                matchingInfoResolver.getSenderPositionOrTeamSize(matching),
+                matchingInfoResolver.getSenderRegionDetail(matching));
     }
 
     // ─── 알림 처리 (매칭 요청 상태) ─────────────────────────────────────────
 
     private void processRequestedNotification(final Matching savedMatching) {
-        NotificationDetails notificationDetails = notificationHandler.generateRequestedStateReceiverNotificationDetails(savedMatching);
-        notificationHandler.alertNewRequestedNotificationToReceiver(savedMatching, notificationDetails);
-        headerNotificationService.publishNotificationCount(matchingInfoResolver.getReceiverMemberId(savedMatching));
+        NotificationDetails notificationDetails =
+                notificationHandler.generateRequestedStateReceiverNotificationDetails(
+                        savedMatching);
+        notificationHandler.alertNewRequestedNotificationToReceiver(
+                savedMatching, notificationDetails);
+        headerNotificationService.publishNotificationCount(
+                matchingInfoResolver.getReceiverMemberId(savedMatching));
     }
 }
