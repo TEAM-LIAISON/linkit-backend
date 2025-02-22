@@ -3,6 +3,7 @@ package liaison.linkit.profile.domain.repository.profile;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import liaison.linkit.common.domain.QPosition;
@@ -18,6 +19,7 @@ import liaison.linkit.profile.domain.state.QProfileCurrentState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
@@ -263,29 +265,51 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     ) {
         QProfile qProfile = QProfile.profile;
 
-        List<Profile> content = jpaQueryFactory
-            .selectFrom(qProfile)
+        // 1. ID만 먼저 조회하는 서브쿼리
+        List<Long> profileIds = jpaQueryFactory
+            .select(qProfile.id)
+            .from(qProfile)
             .where(
                 qProfile.status.eq(StatusType.USABLE)
                     .and(qProfile.isProfilePublic.eq(true))
-                    .and(qProfile.id.notIn(excludeIds))
+                    .and(excludeIds.isEmpty() ? null : qProfile.id.notIn(excludeIds))
             )
             .orderBy(qProfile.createdAt.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
 
-        Long total = jpaQueryFactory
-            .selectDistinct(qProfile.count())
-            .from(qProfile)
-            .where(
-                qProfile.status.eq(StatusType.USABLE)
-                    .and(qProfile.isProfilePublic.eq(true))
-                    .and(qProfile.id.notIn(excludeIds))
-            )
-            .fetchOne();
+        if (profileIds.isEmpty()) {
+            return new PageImpl<>(Collections.emptyList(), pageable, 0L);
+        }
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+        // 2. 실제 데이터 조회 - 필요한 연관관계만 fetch join
+        List<Profile> content = jpaQueryFactory
+            .selectFrom(qProfile)
+            .where(qProfile.id.in(profileIds))
+            .orderBy(qProfile.createdAt.desc())
+            .distinct()
+            .fetch();
+
+        // 3. Count 쿼리 최적화
+        return PageableExecutionUtils.getPage(content, pageable, () -> {
+            // 마지막 페이지이거나 한 페이지 이하의 데이터만 있는 경우 카운트 쿼리 생략
+            if (content.size() < pageable.getPageSize()) {
+                return pageable.getOffset() + content.size();
+            }
+
+            Long count = jpaQueryFactory
+                .select(qProfile.count())
+                .from(qProfile)
+                .where(
+                    qProfile.status.eq(StatusType.USABLE)
+                        .and(qProfile.isProfilePublic.eq(true))
+                        .and(excludeIds.isEmpty() ? null : qProfile.id.notIn(excludeIds))
+                )
+                .fetchOne();
+
+            return count != null ? count : 0L;
+        });
     }
 
     private boolean isNotEmpty(List<?> list) {

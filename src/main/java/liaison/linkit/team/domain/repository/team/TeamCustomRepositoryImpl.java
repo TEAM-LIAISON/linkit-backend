@@ -1,11 +1,11 @@
 package liaison.linkit.team.domain.repository.team;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import liaison.linkit.global.type.StatusType;
@@ -21,9 +21,9 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Filter;
 import org.hibernate.Session;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
@@ -267,11 +267,14 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     @Override
     public Page<Team> findAllExcludingIds(
         final List<Long> excludeTeamIds,
-        final Pageable pageable) {
+        final Pageable pageable
+    ) {
         QTeam qTeam = QTeam.team;
 
-        List<Team> content = jpaQueryFactory
-            .selectFrom(qTeam)
+        // 1. ID만 먼저 조회하는 서브쿼리
+        List<Long> teamIds = jpaQueryFactory
+            .select(qTeam.id)
+            .from(qTeam)
             .where(
                 qTeam.status.eq(StatusType.USABLE)
                     .and(qTeam.isTeamPublic.eq(true))
@@ -281,16 +284,35 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             .limit(pageable.getPageSize())
             .fetch();
 
-        Long total = jpaQueryFactory
-            .selectDistinct(qTeam.count())
-            .from(qTeam)
-            .where(
-                qTeam.status.eq(StatusType.USABLE)
-                    .and(qTeam.isTeamPublic.eq(true))
-                    .and(qTeam.id.notIn(excludeTeamIds)))
-            .fetchOne();
+        if (teamIds.isEmpty()) {
+            return new PageImpl<>(Collections.emptyList(), pageable, 0L);
+        }
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+        List<Team> content = jpaQueryFactory
+            .selectFrom(qTeam)
+            .where(qTeam.id.in(teamIds))
+            .orderBy(qTeam.createdAt.desc())
+            .distinct()
+            .fetch();
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> {
+            // 마지막 페이지이거나 한 페이지 이하의 데이터만 있는 경우 카운트 쿼리 생략
+            if (content.size() < pageable.getPageSize()) {
+                return pageable.getOffset() + content.size();
+            }
+
+            Long count = jpaQueryFactory
+                .select(qTeam.count())
+                .from(qTeam)
+                .where(
+                    qTeam.status.eq(StatusType.USABLE)
+                        .and(qTeam.isTeamPublic.eq(true))
+                        .and(excludeTeamIds.isEmpty() ? null : qTeam.id.notIn(excludeTeamIds))
+                )
+                .fetchOne();
+
+            return count != null ? count : 0L;
+        });
     }
 
     private JPAQuery<Team> buildBaseQuery(QTeam qTeam) {

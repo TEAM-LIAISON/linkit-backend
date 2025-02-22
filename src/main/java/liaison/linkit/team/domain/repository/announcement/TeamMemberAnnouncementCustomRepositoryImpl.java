@@ -26,6 +26,7 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
@@ -195,31 +196,54 @@ public class TeamMemberAnnouncementCustomRepositoryImpl implements TeamMemberAnn
     }
 
     @Override
-    public Page<TeamMemberAnnouncement> findExcludedAnnouncements(final List<Long> excludeAnnouncementIds,
-        final Pageable pageable) {
+    public Page<TeamMemberAnnouncement> findExcludedAnnouncements(
+        final List<Long> excludeAnnouncementIds,
+        final Pageable pageable
+    ) {
         QTeamMemberAnnouncement qTeamMemberAnnouncement = QTeamMemberAnnouncement.teamMemberAnnouncement;
 
-        List<TeamMemberAnnouncement> content = jpaQueryFactory
-            .selectFrom(qTeamMemberAnnouncement)
+        List<Long> announcementIds = jpaQueryFactory
+            .select(qTeamMemberAnnouncement.id)
+            .from(qTeamMemberAnnouncement)
             .where(
                 qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
                     .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
-                    .and(qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds)))
+                    .and(excludeAnnouncementIds.isEmpty() ? null : qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds))
+            )
             .orderBy(qTeamMemberAnnouncement.createdAt.desc())
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
 
-        Long total = jpaQueryFactory
-            .selectDistinct(qTeamMemberAnnouncement.count())
-            .from(qTeamMemberAnnouncement)
-            .where(
-                qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
-                    .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
-                    .and(qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds)))
-            .fetchOne();
+        if (announcementIds.isEmpty()) {
+            return new PageImpl<>(Collections.emptyList(), pageable, 0L);
+        }
 
-        return PageableExecutionUtils.getPage(content, pageable, () -> total);
+        List<TeamMemberAnnouncement> content = jpaQueryFactory
+            .selectFrom(qTeamMemberAnnouncement)
+            .where(qTeamMemberAnnouncement.id.in(announcementIds))
+            .orderBy(qTeamMemberAnnouncement.createdAt.desc())
+            .distinct()
+            .fetch();
+
+        return PageableExecutionUtils.getPage(content, pageable, () -> {
+            // 마지막 페이지이거나 한 페이지 이하의 데이터만 있는 경우 카운트 쿼리 생략
+            if (content.size() < pageable.getPageSize()) {
+                return pageable.getOffset() + content.size();
+            }
+
+            Long count = jpaQueryFactory
+                .select(qTeamMemberAnnouncement.count())
+                .from(qTeamMemberAnnouncement)
+                .where(
+                    qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+                        .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
+                        .and(excludeAnnouncementIds.isEmpty() ? null : qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds))
+                )
+                .fetchOne();
+
+            return count != null ? count : 0L;
+        });
     }
 
     @Override

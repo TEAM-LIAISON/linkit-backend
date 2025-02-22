@@ -49,6 +49,13 @@ public class ProfileQueryAdapter {
         return profileRepository.findAll(subPosition, cityName, profileStateName, pageable);
     }
 
+    public Page<Profile> findAllExcludingIds(
+        final List<Long> excludeIds,
+        final Pageable pageable
+    ) {
+        return profileRepository.findAllExcludingIds(excludeIds, pageable);
+    }
+
     @Cacheable(
         value = "topCompletionProfiles",
         key = "'topCompletionProfiles'"  // 상수 키를 사용
@@ -57,13 +64,6 @@ public class ProfileQueryAdapter {
         final Pageable pageable
     ) {
         return profileRepository.findTopCompletionProfiles(pageable);
-    }
-
-    public Page<Profile> findAllExcludingIds(
-        final List<Long> excludeIds,
-        final Pageable pageable
-    ) {
-        return profileRepository.findAllExcludingIds(excludeIds, pageable);
     }
 
     @Cacheable(
