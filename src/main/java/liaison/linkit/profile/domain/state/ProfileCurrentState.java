@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class ProfileCurrentState extends BaseDateTimeEntity {
+    
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;

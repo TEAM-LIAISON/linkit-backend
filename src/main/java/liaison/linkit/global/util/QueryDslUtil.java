@@ -6,7 +6,6 @@ import java.util.List;
 import liaison.linkit.profile.domain.position.QProfilePosition;
 import liaison.linkit.profile.domain.profile.QProfile;
 import liaison.linkit.profile.domain.region.QProfileRegion;
-import liaison.linkit.profile.domain.skill.QProfileSkill;
 import liaison.linkit.profile.domain.state.QProfileCurrentState;
 import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
 import liaison.linkit.team.domain.announcement.QAnnouncementSkill;
@@ -88,8 +87,7 @@ public class QueryDslUtil {
         QProfile qProfile,
         QProfilePosition qProfilePosition,
         QProfileRegion qProfileRegion,
-        QProfileCurrentState qProfileCurrentState,
-        QProfileSkill qProfileSkill
+        QProfileCurrentState qProfileCurrentState
     ) {
         if (sort.isUnsorted()) {
             return new OrderSpecifier<?>[]{};
@@ -118,12 +116,6 @@ public class QueryDslUtil {
                     orderSpecifier = new OrderSpecifier<>(
                         order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
                         qProfilePosition.position.subPosition
-                    );
-                    break;
-                case "skillName":
-                    orderSpecifier = new OrderSpecifier<>(
-                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                        qProfileSkill.skill.skillName
                     );
                     break;
                 case "cityName":

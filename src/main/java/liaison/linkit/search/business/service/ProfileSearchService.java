@@ -78,7 +78,7 @@ public class ProfileSearchService {
                 .build();
         } else {
             // 필터 쿼리 파라미터가 존재하는 경우: 기존 검색 로직 적용
-            Page<Profile> profiles = profileQueryAdapter.findAll(subPosition, skillName, cityName, profileStateName, pageable);
+            Page<Profile> profiles = profileQueryAdapter.findAll(subPosition, cityName, profileStateName, pageable);
             Page<ProfileInformMenu> profileDTOs = profiles.map(profile ->
                 profileInformMenuAssembler.assembleProfileInformMenu(profile, optionalMemberId)
             );

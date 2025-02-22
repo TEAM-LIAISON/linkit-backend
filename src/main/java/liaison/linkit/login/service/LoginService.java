@@ -105,15 +105,14 @@ public class LoginService {
                 memberBasicInformCommandAdapter.create(new MemberBasicInform(
                     null, member, null, null, false, false, false, false));
 
-                profileCommandAdapter.create(new Profile(
-                    null, member, null, false, 0, false, false, false, false, false, false, false, false));
+                profileCommandAdapter.create(Profile.builder().member(member).build());
 
                 MemberCreateReportDto memberCreateReportDto = MemberCreateReportDto.builder()
                     .memberId(member.getId())
                     .email(member.getEmail())
                     .createdAt(member.getCreatedAt())
                     .build();
-                
+
                 discordMemberReportService.sendCreateMemberReport(memberCreateReportDto);
 
                 return member;

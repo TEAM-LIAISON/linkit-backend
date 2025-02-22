@@ -18,7 +18,6 @@ public interface ProfileCustomRepository {
 
     Page<Profile> findAll(
         final List<String> majorPosition,
-        final List<String> skillName,
         final List<String> cityName,
         final List<String> profileStateName,
         final Pageable pageable

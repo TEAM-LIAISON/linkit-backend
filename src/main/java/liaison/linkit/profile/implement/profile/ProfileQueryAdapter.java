@@ -42,12 +42,11 @@ public class ProfileQueryAdapter {
 
     public Page<Profile> findAll(
         final List<String> subPosition,
-        final List<String> skillName,
         final List<String> cityName,
         final List<String> profileStateName,
         final Pageable pageable
     ) {
-        return profileRepository.findAll(subPosition, skillName, cityName, profileStateName, pageable);
+        return profileRepository.findAll(subPosition, cityName, profileStateName, pageable);
     }
 
     @Cacheable(

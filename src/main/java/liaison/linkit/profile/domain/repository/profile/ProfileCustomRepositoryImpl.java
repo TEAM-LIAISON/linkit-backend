@@ -14,8 +14,6 @@ import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.profile.QProfile;
 import liaison.linkit.profile.domain.region.QProfileRegion;
 import liaison.linkit.profile.domain.region.QRegion;
-import liaison.linkit.profile.domain.skill.QProfileSkill;
-import liaison.linkit.profile.domain.skill.QSkill;
 import liaison.linkit.profile.domain.state.QProfileCurrentState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,21 +75,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             .execute();
     }
 
-//    @Override
-//    public List<Profile> findTopProfiles(final int limit) {
-//        QProfile qProfile = QProfile.profile;
-//
-//        return jpaQueryFactory
-//                .selectFrom(qProfile)
-//                .where(
-//                        qProfile.status.eq(StatusType.USABLE)
-//                                .and(qProfile.isProfilePublic.eq(true))
-//                )
-//                .orderBy(qProfile.createdAt.desc()) // 최신순으로 정렬
-//                .limit(limit)
-//                .fetch();
-//    }
-
     @Override
     public List<Profile> findHomeTopProfiles(final int limit) {
         QProfile qProfile = QProfile.profile;
@@ -120,30 +103,127 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     @Override
     public Page<Profile> findAll(
         final List<String> subPosition,
-        final List<String> skillName,
         final List<String> cityName,
         final List<String> profileStateName,
         final Pageable pageable
     ) {
+        log.info("subPosition: {}", subPosition);
+        log.info("cityName: {}", cityName);
+        log.info("profileStateName: {}", profileStateName);
+
         QProfile qProfile = QProfile.profile;
 
-        JPAQuery<Profile> query = buildBaseQuery(qProfile);
-        applyFilters(query, qProfile, subPosition, skillName, cityName, profileStateName);
-        applyDefaultConditions(query, qProfile);
-        applySort(query, qProfile, pageable);
+        JPAQuery<Long> profileIdQuery = jpaQueryFactory
+            .select(qProfile.id)
+            .distinct()
+            .from(qProfile)
+            .where(qProfile.status.eq(StatusType.USABLE)
+                .and(qProfile.isProfilePublic.eq(true)));
 
-        // Execute main query with pagination
-        List<Profile> content = query
+        // 2. 필터 조건에 따라 동적으로 조인 추가
+        if (isNotEmpty(subPosition)) {
+            QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+            QPosition qPosition = QPosition.position;
+
+            profileIdQuery
+                .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
+                .leftJoin(qPosition).on(qProfilePosition.position.eq(qPosition))
+                .where(qPosition.subPosition.in(subPosition));
+        }
+
+        if (isNotEmpty(cityName)) {
+            QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+            QRegion qRegion = QRegion.region;
+
+            profileIdQuery
+                .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
+                .leftJoin(qRegion).on(qProfileRegion.region.eq(qRegion))
+                .where(qRegion.cityName.in(cityName));
+        }
+
+        if (isNotEmpty(profileStateName)) {
+            QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+            QProfileState qProfileState = QProfileState.profileState;
+
+            profileIdQuery
+                .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
+                .leftJoin(qProfileState).on(qProfileCurrentState.profileState.eq(qProfileState))
+                .where(qProfileState.profileStateName.in(profileStateName));
+        }
+
+        // 3. 페이징 처리된 ID 목록 조회
+        List<Long> profileIds = profileIdQuery
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .fetch();
 
-        // Build and execute count query
-        JPAQuery<Long> countQuery = buildCountQuery(qProfile);
-        applyFilters(countQuery, qProfile, subPosition, skillName, cityName, profileStateName);
-        applyDefaultConditions(countQuery, qProfile);
+        // 2. 실제 데이터 조회 - OneToOne 관계는 fetch join 사용
+        List<Profile> content = jpaQueryFactory
+            .selectFrom(qProfile)
+            .leftJoin(qProfile.member).fetchJoin()
+            .leftJoin(qProfile.profileRegion).fetchJoin()  // OneToOne은 fetch join 안전
+            .leftJoin(qProfile.profilePositions)  // OneToMany는 fetch join 제한적 사용
+            .leftJoin(qProfile.profileCurrentStates)
+            .where(qProfile.id.in(profileIds))
+            .orderBy(QueryDslUtil.getOrderProfileSpecifier(
+                pageable.getSort(),
+                qProfile,
+                QProfilePosition.profilePosition,
+                QProfileRegion.profileRegion,
+                QProfileCurrentState.profileCurrentState
+            ))
+            .distinct()
+            .fetch();
+
+        // 3. Count 쿼리
+        JPAQuery<Long> countQuery = jpaQueryFactory
+            .select(qProfile.countDistinct())
+            .from(qProfile)
+            .where(qProfile.status.eq(StatusType.USABLE)
+                .and(qProfile.isProfilePublic.eq(true)));
+
+        applyFiltersToCountQuery(countQuery, qProfile, subPosition, cityName, profileStateName);
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
+    }
+
+    private void applyFiltersToCountQuery(
+        JPAQuery<Long> countQuery,
+        QProfile qProfile,
+        List<String> subPosition,
+        List<String> cityName,
+        List<String> profileStateName
+    ) {
+        // 2. 필터 조건에 따라 동적으로 조인 추가
+        if (isNotEmpty(subPosition)) {
+            QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
+            QPosition qPosition = QPosition.position;
+
+            countQuery
+                .leftJoin(qProfilePosition).on(qProfilePosition.profile.eq(qProfile))
+                .leftJoin(qPosition).on(qProfilePosition.position.eq(qPosition))
+                .where(qPosition.subPosition.in(subPosition));
+        }
+
+        if (isNotEmpty(cityName)) {
+            QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
+            QRegion qRegion = QRegion.region;
+
+            countQuery
+                .leftJoin(qProfileRegion).on(qProfileRegion.profile.eq(qProfile))
+                .leftJoin(qRegion).on(qProfileRegion.region.eq(qRegion))
+                .where(qRegion.cityName.in(cityName));
+        }
+
+        if (isNotEmpty(profileStateName)) {
+            QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
+            QProfileState qProfileState = QProfileState.profileState;
+
+            countQuery
+                .leftJoin(qProfileCurrentState).on(qProfileCurrentState.profile.eq(qProfile))
+                .leftJoin(qProfileState).on(qProfileCurrentState.profileState.eq(qProfileState))
+                .where(qProfileState.profileStateName.in(profileStateName));
+        }
     }
 
     @Override
@@ -206,118 +286,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             .fetchOne();
 
         return PageableExecutionUtils.getPage(content, pageable, () -> total);
-    }
-
-    private JPAQuery<Profile> buildBaseQuery(QProfile qProfile) {
-        return jpaQueryFactory
-            .selectFrom(qProfile)
-            .from(qProfile);
-    }
-
-    private JPAQuery<Long> buildCountQuery(QProfile qProfile) {
-        return jpaQueryFactory
-            .selectDistinct(qProfile.count())
-            .from(qProfile);
-    }
-
-    private void applyFilters(
-        JPAQuery<?> query,
-        QProfile qProfile,
-        List<String> subPosition,
-        List<String> skillName,
-        List<String> cityName,
-        List<String> profileStateName
-    ) {
-        applyPositionFilter(query, qProfile, subPosition);
-        applySkillFilter(query, qProfile, skillName);
-        applyRegionFilter(query, qProfile, cityName);
-        applyProfileStateFilter(query, qProfile, profileStateName);
-    }
-
-    private void applyPositionFilter(
-        JPAQuery<?> query,
-        QProfile qProfile,
-        List<String> subPosition
-    ) {
-        if (isNotEmpty(subPosition)) {
-            QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
-            QPosition qPosition = QPosition.position;
-
-            query.innerJoin(qProfilePosition)
-                .on(qProfilePosition.profile.eq(qProfile))
-                .innerJoin(qProfilePosition.position, qPosition)
-                .where(qPosition.subPosition.in(subPosition));
-        }
-    }
-
-    private void applySkillFilter(
-        JPAQuery<?> query,
-        QProfile qProfile,
-        List<String> skillName
-    ) {
-        if (isNotEmpty(skillName)) {
-            QProfileSkill qProfileSkill = QProfileSkill.profileSkill;
-            QSkill qSkill = QSkill.skill;
-
-            query.innerJoin(qProfileSkill)
-                .on(qProfileSkill.profile.eq(qProfile))
-                .innerJoin(qProfileSkill.skill, qSkill)
-                .where(qSkill.skillName.in(skillName));
-        }
-    }
-
-    private void applyRegionFilter(
-        JPAQuery<?> query,
-        QProfile qProfile,
-        List<String> cityName
-    ) {
-        if (isNotEmpty(cityName)) {
-            QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
-            QRegion qRegion = QRegion.region;
-
-            query.innerJoin(qProfileRegion)
-                .on(qProfileRegion.profile.eq(qProfile))
-                .innerJoin(qProfileRegion.region, qRegion)
-                .where(qRegion.cityName.in(cityName));
-        }
-    }
-
-    private void applyProfileStateFilter(
-        JPAQuery<?> query,
-        QProfile qProfile,
-        List<String> profileStateName
-    ) {
-        if (isNotEmpty(profileStateName)) {
-            QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
-            QProfileState qProfileState = QProfileState.profileState;
-
-            query.innerJoin(qProfileCurrentState)
-                .on(qProfileCurrentState.profile.eq(qProfile))
-                .innerJoin(qProfileCurrentState.profileState, qProfileState)
-                .where(qProfileState.profileStateName.in(profileStateName));
-        }
-    }
-
-    private void applyDefaultConditions(JPAQuery<?> query, QProfile qProfile) {
-        query.where(
-            qProfile.status.eq(StatusType.USABLE)
-                .and(qProfile.isProfilePublic.eq(true))
-        );
-    }
-
-    private void applySort(
-        JPAQuery<?> query,
-        QProfile qProfile,
-        Pageable pageable
-    ) {
-        query.orderBy(QueryDslUtil.getOrderProfileSpecifier(
-            pageable.getSort(),
-            qProfile,
-            QProfilePosition.profilePosition,
-            QProfileRegion.profileRegion,
-            QProfileCurrentState.profileCurrentState,
-            QProfileSkill.profileSkill
-        ));
     }
 
     private boolean isNotEmpty(List<?> list) {
