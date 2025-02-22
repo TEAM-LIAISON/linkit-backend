@@ -48,6 +48,21 @@ public class TeamQueryAdapter {
         return teamRepository.findAllByFiltering(scaleName, cityName, teamStateName, pageable);
     }
 
+    public Page<Team> findAllExcludingIds(
+        final List<Long> excludeTeamIds,
+        final Pageable pageable
+    ) {
+        return teamRepository.findAllExcludingIds(excludeTeamIds, pageable);
+    }
+
+    @Cacheable(
+        value = "homeTopTeams",
+        key = "'homeTopTeams'"  // 상수 키를 사용
+    )
+    public List<Team> findHomeTopTeams(final int limit) {
+        return teamRepository.findHomeTopTeams(limit);
+    }
+
     @Cacheable(
         value = "topVentureTeams",
         key = "'topVentureTeams'"  // 상수 키를 사용
@@ -66,21 +81,6 @@ public class TeamQueryAdapter {
         final Pageable pageable
     ) {
         return teamRepository.findSupportProjectTeams(pageable);
-    }
-
-    public Page<Team> findAllExcludingIds(
-        final List<Long> excludeTeamIds,
-        final Pageable pageable
-    ) {
-        return teamRepository.findAllExcludingIds(excludeTeamIds, pageable);
-    }
-
-    @Cacheable(
-        value = "homeTopTeams",
-        key = "'homeTopTeams'"  // 상수 키를 사용
-    )
-    public List<Team> findHomeTopTeams(final int limit) {
-        return teamRepository.findHomeTopTeams(limit);
     }
 
     public boolean isTeamDeleteInProgress(final String teamCode) {

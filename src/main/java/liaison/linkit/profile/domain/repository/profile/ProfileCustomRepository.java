@@ -22,15 +22,15 @@ public interface ProfileCustomRepository {
         final List<String> profileStateName,
         final Pageable pageable
     );
-
-    Page<Profile> findTopCompletionProfiles(
-        final Pageable pageable
-    );
-
+    
     Page<Profile> findAllExcludingIds(
         final List<Long> excludeIds,
         final Pageable pageable
     );
 
     List<Profile> findHomeTopProfiles(final int limit);
+
+    Page<Profile> findTopCompletionProfiles(
+        final Pageable pageable
+    );
 }
