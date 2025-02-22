@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import liaison.linkit.global.BaseEntity;
@@ -35,6 +36,9 @@ public class TeamMemberAnnouncement extends BaseEntity {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "team_id")
     private Team team;
+
+    @OneToOne(mappedBy = "teamMemberAnnouncement")
+    private AnnouncementPosition announcementPosition;
 
     @Column(nullable = false, length = 100)
     private String announcementTitle;                   // 공고 제목
@@ -74,7 +78,7 @@ public class TeamMemberAnnouncement extends BaseEntity {
     public void setIsAnnouncementPublic(final boolean isAnnouncementPublic) {
         this.isAnnouncementPublic = isAnnouncementPublic;
     }
-    
+
     @PrePersist
     @PreUpdate
     private void prePersistOrUpdate() {
