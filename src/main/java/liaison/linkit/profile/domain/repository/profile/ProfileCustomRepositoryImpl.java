@@ -109,10 +109,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         final List<String> profileStateName,
         final Pageable pageable
     ) {
-        log.info("subPosition: {}", subPosition);
-        log.info("cityName: {}", cityName);
-        log.info("profileStateName: {}", profileStateName);
-
         QProfile qProfile = QProfile.profile;
 
         JPAQuery<Long> profileIdQuery = jpaQueryFactory
@@ -162,7 +158,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         // 2. 실제 데이터 조회 - OneToOne 관계는 fetch join 사용
         List<Profile> content = jpaQueryFactory
             .selectFrom(qProfile)
-            .leftJoin(qProfile.member).fetchJoin()
             .leftJoin(qProfile.profileRegion).fetchJoin()  // OneToOne은 fetch join 안전
             .leftJoin(qProfile.profilePositions)  // OneToMany는 fetch join 제한적 사용
             .leftJoin(qProfile.profileCurrentStates)

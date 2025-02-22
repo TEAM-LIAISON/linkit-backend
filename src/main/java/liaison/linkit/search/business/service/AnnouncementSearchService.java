@@ -26,53 +26,51 @@ public class AnnouncementSearchService {
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
 
     public AnnouncementSearchResponseDTO searchAnnouncements(
-            final Optional<Long> optionalMemberId,
-            List<String> subPosition,
-            List<String> skillName,
-            List<String> cityName,
-            List<String> scaleName,
-            Pageable pageable) {
+        final Optional<Long> optionalMemberId,
+        List<String> subPosition,
+        List<String> cityName,
+        List<String> scaleName,
+        Pageable pageable) {
         // 쿼리 파라미터가 모두 비어있는 경우: 기본 검색
         boolean isDefaultSearch = (subPosition == null || subPosition.isEmpty())
-                && (skillName == null || skillName.isEmpty())
-                && (cityName == null || cityName.isEmpty())
-                && (scaleName == null || scaleName.isEmpty());
+            && (cityName == null || cityName.isEmpty())
+            && (scaleName == null || scaleName.isEmpty());
 
         if (isDefaultSearch) {
             Pageable hotPageable = PageRequest.of(0, 6);
             List<TeamMemberAnnouncement> hotAnnouncements = teamMemberAnnouncementQueryAdapter
-                    .findHotAnnouncements(hotPageable).getContent();
+                .findHotAnnouncements(hotPageable).getContent();
 
             List<AnnouncementInformMenu> hotAnnouncementDTOs = hotAnnouncements.stream()
-                    .map(teamMemberAnnouncement -> announcementInformMenuAssembler
-                            .mapToAnnouncementInformMenu(teamMemberAnnouncement, optionalMemberId))
-                    .toList();
+                .map(teamMemberAnnouncement -> announcementInformMenuAssembler
+                    .mapToAnnouncementInformMenu(teamMemberAnnouncement, optionalMemberId))
+                .toList();
 
             List<Long> excludeAnnouncementIds = hotAnnouncements.stream()
-                    .map(TeamMemberAnnouncement::getId)
-                    .toList();
+                .map(TeamMemberAnnouncement::getId)
+                .toList();
 
             Page<TeamMemberAnnouncement> remainingAnnouncements = teamMemberAnnouncementQueryAdapter
-                    .findExcludedAnnouncements(excludeAnnouncementIds, pageable);
+                .findExcludedAnnouncements(excludeAnnouncementIds, pageable);
             Page<AnnouncementInformMenu> remainingAnnouncementDTOs = remainingAnnouncements
-                    .map(teamMemberAnnouncement -> announcementInformMenuAssembler
-                            .mapToAnnouncementInformMenu(teamMemberAnnouncement, optionalMemberId));
+                .map(teamMemberAnnouncement -> announcementInformMenuAssembler
+                    .mapToAnnouncementInformMenu(teamMemberAnnouncement, optionalMemberId));
 
             return AnnouncementSearchResponseDTO.builder()
-                    .hotAnnouncements(hotAnnouncementDTOs)
-                    .defaultAnnouncements(remainingAnnouncementDTOs)
-                    .build();
+                .hotAnnouncements(hotAnnouncementDTOs)
+                .defaultAnnouncements(remainingAnnouncementDTOs)
+                .build();
         } else {
             Page<TeamMemberAnnouncement> announcements = teamMemberAnnouncementQueryAdapter.findAll(subPosition,
-                    skillName, cityName, scaleName, pageable);
+                cityName, scaleName, pageable);
             Page<AnnouncementInformMenu> announcementDTOs = announcements
-                    .map(teamMemberAnnouncement -> announcementInformMenuAssembler
-                            .mapToAnnouncementInformMenu(teamMemberAnnouncement, optionalMemberId));
+                .map(teamMemberAnnouncement -> announcementInformMenuAssembler
+                    .mapToAnnouncementInformMenu(teamMemberAnnouncement, optionalMemberId));
 
             return AnnouncementSearchResponseDTO.builder()
-                    .hotAnnouncements(Collections.emptyList())
-                    .defaultAnnouncements(announcementDTOs)
-                    .build();
+                .hotAnnouncements(Collections.emptyList())
+                .defaultAnnouncements(announcementDTOs)
+                .build();
         }
     }
 

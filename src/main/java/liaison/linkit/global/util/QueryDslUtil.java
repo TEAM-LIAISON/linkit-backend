@@ -8,7 +8,6 @@ import liaison.linkit.profile.domain.profile.QProfile;
 import liaison.linkit.profile.domain.region.QProfileRegion;
 import liaison.linkit.profile.domain.state.QProfileCurrentState;
 import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
-import liaison.linkit.team.domain.announcement.QAnnouncementSkill;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
 import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.scale.QTeamScale;
@@ -25,7 +24,6 @@ public class QueryDslUtil {
         Sort sort,
         QTeamMemberAnnouncement qTeamMemberAnnouncement,
         QAnnouncementPosition qAnnouncementPosition,
-        QAnnouncementSkill qAnnouncementSkill,
         QTeamRegion qTeamRegion,
         QTeamScale qTeamScale
     ) {
@@ -50,12 +48,6 @@ public class QueryDslUtil {
                     orderSpecifier = new OrderSpecifier<>(
                         order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
                         qAnnouncementPosition.position.subPosition
-                    );
-                    break;
-                case "skillName":
-                    orderSpecifier = new OrderSpecifier<>(
-                        order.isAscending() ? com.querydsl.core.types.Order.ASC : com.querydsl.core.types.Order.DESC,
-                        qAnnouncementSkill.skill.skillName
                     );
                     break;
                 case "cityName":

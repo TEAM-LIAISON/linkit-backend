@@ -10,7 +10,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import liaison.linkit.global.BaseEntity;
+import liaison.linkit.team.domain.region.TeamRegion;
+import liaison.linkit.team.domain.scale.TeamScale;
+import liaison.linkit.team.domain.state.TeamCurrentState;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,6 +35,15 @@ public class Team extends BaseEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "team")
+    private List<TeamScale> teamScales = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team")
+    private List<TeamRegion> teamRegions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "team")
+    private List<TeamCurrentState> teamCurrentStates = new ArrayList<>();
 
     @Column(nullable = false, length = 10)
     private String teamName;

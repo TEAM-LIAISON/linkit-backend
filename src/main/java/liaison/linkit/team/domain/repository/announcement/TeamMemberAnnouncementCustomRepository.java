@@ -19,7 +19,6 @@ public interface TeamMemberAnnouncementCustomRepository {
 
     Page<TeamMemberAnnouncement> findAll(
         final List<String> subPosition,
-        final List<String> skillName,
         final List<String> cityName,
         final List<String> scaleName,
         final Pageable pageable

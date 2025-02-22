@@ -171,7 +171,6 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
             any(),
             any(),
             any(),
-            any(),
             any(Pageable.class)
         )).thenReturn(announcementSearchResponseDTO);
 
