@@ -79,6 +79,9 @@ public class AnnouncementInformMenuAssembler {
         int announcementDDay =
                 announcementCommonAssembler.calculateAnnouncementDDay(teamMemberAnnouncement);
 
+        boolean isClosed =
+                announcementCommonAssembler.calculateAnnouncementIsClosed(teamMemberAnnouncement);
+
         // 4. 공고 스크랩 여부 조회
         boolean isAnnouncementScrap =
                 announcementCommonAssembler.checkAnnouncementScrap(
@@ -103,6 +106,7 @@ public class AnnouncementInformMenuAssembler {
                 regionDetail,
                 teamMemberAnnouncement,
                 announcementDDay,
+                isClosed,
                 isAnnouncementScrap,
                 announcementScrapCount,
                 announcementPositionItem,

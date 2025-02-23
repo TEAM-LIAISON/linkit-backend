@@ -17,8 +17,8 @@ import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAda
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.implement.teamMember.TeamMemberQueryAdapter;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncemenItems;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -41,16 +41,16 @@ public class AnnouncementViewItemsAssembler {
     private final AnnouncementCommonAssembler announcementCommonAssembler;
 
     /**
-     * 팀 코드를 기반으로, 로그인 상태(Optional memberId 존재 여부)에 따라 팀원 공고 목록(TeamMemberAnnouncemenItems)을 조립하여
+     * 팀 코드를 기반으로, 로그인 상태(Optional memberId 존재 여부)에 따라 팀원 공고 목록(TeamMemberAnnouncementItems)을 조립하여
      * 반환합니다.
      *
      * <p>로그인 상태인 경우 관리자(오너/매니저)라면 전체 공고, 그렇지 않으면 공개 공고만 조회합니다.
      *
      * @param optionalMemberId 로그인한 회원의 ID(Optional). 값이 있으면 로그인 상태, 없으면 로그아웃 상태로 처리합니다.
      * @param teamCode 조회할 팀의 코드.
-     * @return 조립된 TeamMemberAnnouncemenItems DTO.
+     * @return 조립된 TeamMemberAnnouncementItems DTO.
      */
-    public TeamMemberAnnouncemenItems assembleTeamMemberAnnouncementViewItems(
+    public TeamMemberAnnouncementItems assembleTeamMemberAnnouncementViewItems(
             final Optional<Long> optionalMemberId, final String teamCode) {
         // 1. 팀 정보 조회
         final Team targetTeam = teamQueryAdapter.findByTeamCode(teamCode);
@@ -63,8 +63,8 @@ public class AnnouncementViewItemsAssembler {
         List<TeamMemberAnnouncementItem> items =
                 convertAnnouncementsToItems(targetAnnouncements, optionalMemberId);
 
-        // 4. 최종적으로 TeamMemberAnnouncemenItems DTO를 생성하여 반환
-        return TeamMemberAnnouncemenItems.builder().teamMemberAnnouncementItems(items).build();
+        // 4. 최종적으로 TeamMemberAnnouncementItems DTO를 생성하여 반환
+        return TeamMemberAnnouncementItems.builder().teamMemberAnnouncementItems(items).build();
     }
 
     /**
@@ -139,10 +139,15 @@ public class AnnouncementViewItemsAssembler {
                                     announcementCommonAssembler.calculateAnnouncementDDay(
                                             announcement);
 
+                            boolean isClosed =
+                                    announcementCommonAssembler.calculateAnnouncementIsClosed(
+                                            announcement);
+
                             // 5. DTO 아이템으로 변환
                             return teamMemberAnnouncementMapper.toTeamMemberAnnouncementItem(
                                     announcement,
                                     dDay,
+                                    isClosed,
                                     majorPosition,
                                     announcementSkillNames,
                                     isAnnouncementScrap,

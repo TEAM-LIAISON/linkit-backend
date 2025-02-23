@@ -167,4 +167,14 @@ public class AnnouncementCommonAssembler {
         }
         return -1;
     }
+
+    public boolean calculateAnnouncementIsClosed(
+            final TeamMemberAnnouncement teamMemberAnnouncement) {
+        if (!teamMemberAnnouncement.isPermanentRecruitment()
+                && teamMemberAnnouncement.getAnnouncementEndDate() != null) {
+            return DateUtils.calculateAnnouncementClosed(
+                    teamMemberAnnouncement.getAnnouncementEndDate());
+        }
+        return false;
+    }
 }

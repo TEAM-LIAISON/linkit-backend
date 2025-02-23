@@ -12,6 +12,19 @@ public class DateUtils {
     private static final DateTimeFormatter KOREAN_DATE_FORMATTER =
             DateTimeFormatter.ofPattern("yyyy년 MM월 dd일");
 
+    // 공고 마감 계산
+    public static boolean calculateAnnouncementClosed(String endDate) {
+        if (endDate == null || endDate.isEmpty()) {
+            throw new IllegalArgumentException("endDate must not be null or empty");
+        }
+
+        // "yyyy-MM-dd" 형태를 LocalDate로 직접 파싱
+        LocalDate end = LocalDate.parse(endDate, DB_DATE_FORMATTER);
+
+        LocalDate today = LocalDate.now();
+        return today.isAfter(end);
+    }
+
     // 디데이 계산
     public static int calculateDDay(String endDate) {
         if (endDate == null || endDate.isEmpty()) {
@@ -27,6 +40,7 @@ public class DateUtils {
     }
 
     // 시간 변환기
+
     /**
      * 과거의 특정 시각(LocalDateTime)으로부터 현재 시각까지의 상대적 경과 시간을 문자열로 반환한다.
      *
