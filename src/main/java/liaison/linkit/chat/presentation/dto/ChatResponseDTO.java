@@ -76,6 +76,9 @@ public class ChatResponseDTO {
         private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
 
         @Builder.Default private RegionDetail regionDetail = new RegionDetail();
+
+        // 프로필 유저 아이디
+        private String emailId;
     }
 
     @Builder
@@ -89,6 +92,9 @@ public class ChatResponseDTO {
 
         // 지역 정보
         @Builder.Default private RegionDetail regionDetail = new RegionDetail();
+
+        // 팀 코드 정보
+        private String teamCode;
     }
 
     @Builder

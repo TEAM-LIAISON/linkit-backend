@@ -40,6 +40,7 @@ public class TeamMemberAnnouncementResponseDTO {
         @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
         private int announcementDDay; // 디데이
+        private Boolean isClosed;
         private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle; // 공고 제목
 
@@ -65,6 +66,7 @@ public class TeamMemberAnnouncementResponseDTO {
         private int announcementScrapCount;
 
         private int announcementDDay; // 디데이
+        private Boolean isClosed;
         private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;
 
@@ -92,7 +94,7 @@ public class TeamMemberAnnouncementResponseDTO {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class TeamMemberAnnouncemenItems {
+    public static class TeamMemberAnnouncementItems {
         @Builder.Default
         private List<TeamMemberAnnouncementItem> teamMemberAnnouncementItems = new ArrayList<>();
     }
@@ -105,6 +107,7 @@ public class TeamMemberAnnouncementResponseDTO {
         private Long teamMemberAnnouncementId;
 
         private int announcementDDay;
+        private Boolean isClosed;
         private Boolean isPermanentRecruitment; // 상시 모집 여부
         private String announcementTitle;
         private String majorPosition;

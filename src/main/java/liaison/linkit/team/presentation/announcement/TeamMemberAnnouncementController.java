@@ -10,7 +10,7 @@ import liaison.linkit.team.business.service.announcement.TeamMemberAnnouncementS
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncemenItems;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,7 +41,7 @@ public class TeamMemberAnnouncementController {
 
     // 팀원 공고 뷰어 전체 조회
     @GetMapping("/team/{teamCode}/announcement")
-    public CommonResponse<TeamMemberAnnouncemenItems> getTeamMemberAnnouncementItems(
+    public CommonResponse<TeamMemberAnnouncementItems> getTeamMemberAnnouncementItems(
             @Auth final Accessor accessor, @PathVariable final String teamCode) {
         Optional<Long> optionalMemberId =
                 accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();

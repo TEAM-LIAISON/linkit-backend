@@ -41,9 +41,9 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementSkillName;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncemenItems;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItem;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementPublicStateResponse;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;
@@ -374,13 +374,14 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
     @Test
     void getLoggedOutTeamMemberAnnouncementItems() throws Exception {
         // given
-        final TeamMemberAnnouncemenItems teamMemberAnnouncemenItems =
-                TeamMemberAnnouncemenItems.builder()
+        final TeamMemberAnnouncementItems teamMemberAnnouncementItems =
+                TeamMemberAnnouncementItems.builder()
                         .teamMemberAnnouncementItems(
                                 Arrays.asList(
                                         TeamMemberAnnouncementItem.builder()
                                                 .teamMemberAnnouncementId(1L)
                                                 .announcementDDay(19)
+                                                .isClosed(false)
                                                 .isPermanentRecruitment(false)
                                                 .announcementTitle("공고 제목")
                                                 .majorPosition("포지션 대분류")
@@ -406,6 +407,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         TeamMemberAnnouncementItem.builder()
                                                 .teamMemberAnnouncementId(2L)
                                                 .announcementDDay(20)
+                                                .isClosed(false)
                                                 .isPermanentRecruitment(false)
                                                 .announcementTitle("공고 제목 2")
                                                 .majorPosition("포지션 대분류")
@@ -432,7 +434,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
 
         // when
         when(teamMemberAnnouncementService.getTeamMemberAnnouncementViewItems(any(), any()))
-                .thenReturn(teamMemberAnnouncemenItems);
+                .thenReturn(teamMemberAnnouncementItems);
 
         final ResultActions resultActions =
                 performGetLoggedOutTeamMemberAnnouncementViewItems("liaison");
@@ -478,6 +480,10 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("팀원 공고 마감 디데이"),
                                                 fieldWithPath(
+                                                                "result.teamMemberAnnouncementItems[].isClosed")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀원 공고 마감 여부 (Boolean)"),
+                                                fieldWithPath(
                                                                 "result.teamMemberAnnouncementItems[].isPermanentRecruitment")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀원 공고 상시 모집 여부"),
@@ -516,13 +522,13 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                         .andReturn();
 
         final String jsonResponse = mvcResult.getResponse().getContentAsString();
-        final CommonResponse<TeamMemberAnnouncemenItems> actual =
+        final CommonResponse<TeamMemberAnnouncementItems> actual =
                 objectMapper.readValue(
                         jsonResponse,
-                        new TypeReference<CommonResponse<TeamMemberAnnouncemenItems>>() {});
+                        new TypeReference<CommonResponse<TeamMemberAnnouncementItems>>() {});
 
-        final CommonResponse<TeamMemberAnnouncemenItems> expected =
-                CommonResponse.onSuccess(teamMemberAnnouncemenItems);
+        final CommonResponse<TeamMemberAnnouncementItems> expected =
+                CommonResponse.onSuccess(teamMemberAnnouncementItems);
 
         // then
         assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
@@ -644,6 +650,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                         .isAnnouncementScrap(true)
                         .announcementScrapCount(100)
                         .announcementDDay(20)
+                        .isClosed(false)
                         .isPermanentRecruitment(false)
                         .announcementTitle("팀원 공고 제목")
                         .announcementPositionItem(
@@ -718,6 +725,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("result.announcementDDay")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("팀원 공고 디데이"),
+                                                fieldWithPath("result.isClosed")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀원 공고 마감 여부 (Boolean)"),
                                                 fieldWithPath("result.isPermanentRecruitment")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀원 공고 상시 모집 여부"),

@@ -33,7 +33,7 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementInformMenus;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.AnnouncementPositionItem;
-import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncemenItems;
+import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementItems;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,7 +69,7 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
 
     @Transactional(readOnly = true)
-    public TeamMemberAnnouncemenItems getTeamMemberAnnouncementViewItems(
+    public TeamMemberAnnouncementItems getTeamMemberAnnouncementViewItems(
             final Optional<Long> optionalMemberId, final String teamCode) {
         return announcementViewItemsAssembler.assembleTeamMemberAnnouncementViewItems(
                 optionalMemberId, teamCode);
