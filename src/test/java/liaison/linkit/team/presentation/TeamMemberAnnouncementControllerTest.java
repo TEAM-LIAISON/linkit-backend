@@ -381,6 +381,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         TeamMemberAnnouncementItem.builder()
                                                 .teamMemberAnnouncementId(1L)
                                                 .announcementDDay(19)
+                                                .isClosed(false)
                                                 .isPermanentRecruitment(false)
                                                 .announcementTitle("공고 제목")
                                                 .majorPosition("포지션 대분류")
@@ -406,6 +407,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                         TeamMemberAnnouncementItem.builder()
                                                 .teamMemberAnnouncementId(2L)
                                                 .announcementDDay(20)
+                                                .isClosed(false)
                                                 .isPermanentRecruitment(false)
                                                 .announcementTitle("공고 제목 2")
                                                 .majorPosition("포지션 대분류")
@@ -477,6 +479,10 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                                 "result.teamMemberAnnouncementItems[].announcementDDay")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("팀원 공고 마감 디데이"),
+                                                fieldWithPath(
+                                                                "result.teamMemberAnnouncementItems[].isClosed")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀원 공고 마감 여부 (Boolean)"),
                                                 fieldWithPath(
                                                                 "result.teamMemberAnnouncementItems[].isPermanentRecruitment")
                                                         .type(JsonFieldType.BOOLEAN)
@@ -644,6 +650,7 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                         .isAnnouncementScrap(true)
                         .announcementScrapCount(100)
                         .announcementDDay(20)
+                        .isClosed(false)
                         .isPermanentRecruitment(false)
                         .announcementTitle("팀원 공고 제목")
                         .announcementPositionItem(
@@ -718,6 +725,9 @@ public class TeamMemberAnnouncementControllerTest extends ControllerTest {
                                                 fieldWithPath("result.announcementDDay")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("팀원 공고 디데이"),
+                                                fieldWithPath("result.isClosed")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("팀원 공고 마감 여부 (Boolean)"),
                                                 fieldWithPath("result.isPermanentRecruitment")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("팀원 공고 상시 모집 여부"),

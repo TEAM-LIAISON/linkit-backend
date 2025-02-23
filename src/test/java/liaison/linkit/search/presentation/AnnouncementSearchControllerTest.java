@@ -94,6 +94,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                         .divisionName("팀 활동지역 (시/군/구)")
                                         .build())
                         .announcementDDay(20)
+                        .isClosed(false)
                         .isPermanentRecruitment(false)
                         .announcementTitle("공고 제목")
                         .isAnnouncementScrap(true)
@@ -127,6 +128,7 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                         .divisionName("팀 활동지역 (시/군/구)")
                                         .build())
                         .announcementDDay(20)
+                        .isClosed(false)
                         .isPermanentRecruitment(false)
                         .announcementTitle("공고 제목 2")
                         .isAnnouncementScrap(true)
@@ -251,6 +253,9 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                                 "result.hotAnnouncements[].announcementDDay")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("공고 마감까지 남은 일수 (디데이)"),
+                                                fieldWithPath("result.hotAnnouncements[].isClosed")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("공고 마감 여부 (Boolean)"),
                                                 fieldWithPath(
                                                                 "result.hotAnnouncements[].isPermanentRecruitment")
                                                         .type(JsonFieldType.BOOLEAN)
@@ -322,6 +327,10 @@ public class AnnouncementSearchControllerTest extends ControllerTest {
                                                                 "result.defaultAnnouncements.content[].announcementDDay")
                                                         .type(JsonFieldType.NUMBER)
                                                         .description("공고 마감까지 남은 일수 (디데이)"),
+                                                fieldWithPath(
+                                                                "result.defaultAnnouncements.content[].isClosed")
+                                                        .type(JsonFieldType.BOOLEAN)
+                                                        .description("공고 마감 여부 (Boolean)"),
                                                 fieldWithPath(
                                                                 "result.defaultAnnouncements.content[].isPermanentRecruitment")
                                                         .type(JsonFieldType.BOOLEAN)
