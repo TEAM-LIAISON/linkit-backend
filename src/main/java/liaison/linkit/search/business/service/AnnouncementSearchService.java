@@ -75,11 +75,16 @@ public class AnnouncementSearchService {
             Page<TeamMemberAnnouncement> announcements =
                     teamMemberAnnouncementQueryAdapter.findAll(
                             subPosition, cityName, scaleName, pageable);
+
+            log.info("announcements: {}", announcements);
+
             Page<AnnouncementInformMenu> announcementDTOs =
                     announcements.map(
                             teamMemberAnnouncement ->
                                     announcementInformMenuAssembler.mapToAnnouncementInformMenu(
                                             teamMemberAnnouncement, optionalMemberId));
+
+            log.info("announcementDTOs: {}", announcementDTOs);
 
             return AnnouncementSearchResponseDTO.builder()
                     .hotAnnouncements(Collections.emptyList())

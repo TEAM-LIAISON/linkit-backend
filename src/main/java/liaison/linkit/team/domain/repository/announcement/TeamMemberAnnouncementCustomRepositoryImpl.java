@@ -39,7 +39,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public List<TeamMemberAnnouncement> getAllByTeamIds(final List<Long> teamIds) {
@@ -163,15 +164,11 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         .select(qTeamMemberAnnouncement.id)
                         .distinct()
                         .from(qTeamMemberAnnouncement)
-                        .leftJoin(qTeamMemberAnnouncement)
-                        .on(qTeamMemberAnnouncement.team.eq(qTeam))
+                        .leftJoin(qTeamMemberAnnouncement.team, qTeam)
                         .where(
-                                qTeamMemberAnnouncement
-                                        .status
-                                        .eq(StatusType.USABLE)
-                                        .and(
-                                                qTeamMemberAnnouncement.isAnnouncementPublic.eq(
-                                                        true)));
+                                qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+                                        .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
+                        );
 
         if (isNotEmpty(subPosition)) {
             QAnnouncementPosition qAnnouncementPosition =
@@ -186,15 +183,16 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                     .where(qPosition.subPosition.in(subPosition));
         }
 
+        // cityName 필터 처리: 팀의 지역 정보를 통해 필터링
         if (isNotEmpty(cityName)) {
             QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
             QRegion qRegion = QRegion.region;
 
+            // 이미 qTeamMemberAnnouncement.team과 qTeam은 조인된 상태이므로,
+            // qTeam에서 teamRegions를 조인하고, 그 안의 region을 조인하여 조건 적용
             announcementIdQuery
-                    .leftJoin(qTeamRegion)
-                    .on(qTeamRegion.team.eq(qTeam))
-                    .leftJoin(qRegion)
-                    .on(qTeamRegion.region.eq(qRegion))
+                    .leftJoin(qTeam.teamRegions, qTeamRegion)
+                    .leftJoin(qTeamRegion.region, qRegion)
                     .where(qRegion.cityName.in(cityName));
         }
 
@@ -216,39 +214,30 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         .limit(pageable.getPageSize())
                         .fetch();
 
-        // 2. 실제 데이터 조회 - OneToOne 관계는 fetch join 사용
-        List<TeamMemberAnnouncement> content =
-                jpaQueryFactory
-                        .selectFrom(qTeamMemberAnnouncement)
-                        .leftJoin(qTeamMemberAnnouncement.team, qTeam)
-                        .leftJoin(qTeamMemberAnnouncement.announcementPosition)
-                        .fetchJoin()
-                        .leftJoin(qTeam.teamScales)
-                        .leftJoin(qTeam.teamRegions)
-                        .where(qTeamMemberAnnouncement.id.in(announcementIds))
-                        .orderBy(
-                                QueryDslUtil.getOrderAnnouncementSpecifier(
-                                        pageable.getSort(),
-                                        qTeamMemberAnnouncement,
-                                        QAnnouncementPosition.announcementPosition,
-                                        QTeamRegion.teamRegion,
-                                        QTeamScale.teamScale))
-                        .distinct()
-                        .fetch();
+        // 2. 실제 데이터 조회 (fetch join으로 연관관계 로딩)
+        List<TeamMemberAnnouncement> content = jpaQueryFactory
+                .selectFrom(qTeamMemberAnnouncement)
+                .leftJoin(qTeamMemberAnnouncement.team, qTeam)
+                .leftJoin(qTeamMemberAnnouncement.announcementPosition).fetchJoin()
+                .leftJoin(qTeam.teamScales)
+                .leftJoin(qTeam.teamRegions)
+                .where(qTeamMemberAnnouncement.id.in(announcementIds))
+                .orderBy(QueryDslUtil.getOrderAnnouncementSpecifier(
+                        pageable.getSort(),
+                        qTeamMemberAnnouncement,
+                        QAnnouncementPosition.announcementPosition,
+                        QTeamRegion.teamRegion,
+                        QTeamScale.teamScale))
+                .distinct()
+                .fetch();
 
         // 3. Count 쿼리
-        JPAQuery<Long> countQuery =
-                jpaQueryFactory
-                        .select(qTeamMemberAnnouncement.countDistinct())
-                        .from(qTeamMemberAnnouncement)
-                        .leftJoin(qTeamMemberAnnouncement.team, qTeam)
-                        .where(
-                                qTeamMemberAnnouncement
-                                        .status
-                                        .eq(StatusType.USABLE)
-                                        .and(
-                                                qTeamMemberAnnouncement.isAnnouncementPublic.eq(
-                                                        true)));
+        JPAQuery<Long> countQuery = jpaQueryFactory
+                .select(qTeamMemberAnnouncement.countDistinct())
+                .from(qTeamMemberAnnouncement)
+                .leftJoin(qTeamMemberAnnouncement.team, qTeam)
+                .where(qTeamMemberAnnouncement.status.eq(StatusType.USABLE)
+                        .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true)));
 
         applyFiltersToCountQuery(
                 countQuery, qTeamMemberAnnouncement, qTeam, subPosition, cityName, scaleName);
@@ -483,7 +472,7 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         .selectFrom(qTeamMemberAnnouncement)
                         .where(
                                 qTeamMemberAnnouncement.team.id.eq(teamId) // 특정 팀 ID와 일치
-                                )
+                        )
                         .fetch());
     }
 
