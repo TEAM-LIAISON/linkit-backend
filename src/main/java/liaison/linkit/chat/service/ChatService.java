@@ -251,7 +251,9 @@ public class ChatService {
                 receiverMemberId, "/sub/chat/" + chatRoom.getId(), receiverResponse);
     }
 
-    /** 채팅방의 이전 메시지 내역 조회 */
+    /**
+     * 채팅방의 이전 메시지 내역 조회
+     */
     @Transactional(readOnly = true)
     public ChatMessageHistoryResponse getChatMessages(
             final Long chatRoomId, final Long memberId, final Pageable pageable) {
@@ -313,6 +315,7 @@ public class ChatService {
                                         PartnerProfileDetailInformation.builder()
                                                 .profilePositionDetail(profilePositionDetail)
                                                 .regionDetail(regionDetail)
+                                                .emailId(chatPartnerProfile.getMember().getEmailId())
                                                 .build())
                                 .lastMessage(chatRoom.getLastMessage())
                                 .lastMessageTime(chatRoom.getLastMessageTime())
@@ -351,6 +354,7 @@ public class ChatService {
                                         PartnerTeamDetailInformation.builder()
                                                 .teamScaleItem(teamScaleItem)
                                                 .regionDetail(regionDetail)
+                                                .teamCode(chatPartnerTeam.getTeamCode())
                                                 .build())
                                 .lastMessage(chatRoom.getLastMessage())
                                 .lastMessageTime(chatRoom.getLastMessageTime())
@@ -393,6 +397,7 @@ public class ChatService {
                                         PartnerTeamDetailInformation.builder()
                                                 .teamScaleItem(teamScaleItem)
                                                 .regionDetail(regionDetail)
+                                                .teamCode(chatPartnerTeam.getTeamCode())
                                                 .build())
                                 .lastMessage(chatRoom.getLastMessage())
                                 .lastMessageTime(chatRoom.getLastMessageTime())
@@ -438,6 +443,7 @@ public class ChatService {
                                         PartnerProfileDetailInformation.builder()
                                                 .profilePositionDetail(profilePositionDetail)
                                                 .regionDetail(regionDetail)
+                                                .emailId(chatPartnerProfile.getMember().getEmailId())
                                                 .build())
                                 .lastMessage(chatRoom.getLastMessage())
                                 .lastMessageTime(chatRoom.getLastMessageTime())
@@ -476,6 +482,7 @@ public class ChatService {
                                         PartnerTeamDetailInformation.builder()
                                                 .teamScaleItem(teamScaleItem)
                                                 .regionDetail(regionDetail)
+                                                .teamCode(chatPartnerTeam.getTeamCode())
                                                 .build())
                                 .lastMessage(chatRoom.getLastMessage())
                                 .lastMessageTime(chatRoom.getLastMessageTime())
@@ -518,6 +525,7 @@ public class ChatService {
                                         PartnerTeamDetailInformation.builder()
                                                 .teamScaleItem(teamScaleItem)
                                                 .regionDetail(regionDetail)
+                                                .teamCode(chatPartnerTeam.getTeamCode())
                                                 .build())
                                 .lastMessage(chatRoom.getLastMessage())
                                 .lastMessageTime(chatRoom.getLastMessageTime())
@@ -831,7 +839,9 @@ public class ChatService {
         return chatMapper.toChatLeftMenu(chatRoomSummaries);
     }
 
-    /** 읽지 않은 메시지 읽음 처리 */
+    /**
+     * 읽지 않은 메시지 읽음 처리
+     */
     private void updateUnreadMessages(final Long chatRoomId, final Long memberId) {
         List<ChatMessage> unreadMessages =
                 chatMessageRepository.findByChatRoomIdAndIsReadFalseAndReceiverParticipantId(
@@ -859,7 +869,9 @@ public class ChatService {
         return chatMapper.toLeaveChatRoom(chatRoomId, participantType);
     }
 
-    /** 특정 userId가 가진 모든 sessionId에 메시지를 전송하는 메서드 */
+    /**
+     * 특정 userId가 가진 모든 sessionId에 메시지를 전송하는 메서드
+     */
     private void sendMessageToAllSessions(Long userId, String destination, Object payload) {
         // userId가 가진 모든 sessionId 조회
         Set<String> sessionIds = sessionRegistry.getMemberSessions(userId);
@@ -881,16 +893,20 @@ public class ChatService {
                     destination, // "/sub/chat/{chatRoomId}"
                     payload,
                     createHeaders(sessionId) // sessionID 명시해 특정 세션만 받도록
-                    );
+            );
         }
     }
 
-    /** 회원이 화면에 표시 가능한 상태인지 여부를 판단합니다. 예: MemberState가 DELETED이면 false 반환. */
+    /**
+     * 회원이 화면에 표시 가능한 상태인지 여부를 판단합니다. 예: MemberState가 DELETED이면 false 반환.
+     */
     private boolean isMemberDisplayable(final Member member) {
         return !member.getMemberState().equals(MemberState.DELETED);
     }
 
-    /** 팀이 화면에 표시 가능한 상태인지 여부를 판단합니다. 예: 팀이 삭제 상태라면 false 반환. */
+    /**
+     * 팀이 화면에 표시 가능한 상태인지 여부를 판단합니다. 예: 팀이 삭제 상태라면 false 반환.
+     */
     private boolean isTeamDisplayable(final Team team) {
         return !team.isDeleted(); // 팀 엔티티에 삭제 상태를 나타내는 메서드나 플래그가 있다고 가정
     }

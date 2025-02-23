@@ -34,10 +34,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
+    // WebSocket
     implementation 'org.webjars:sockjs-client:1.1.2'
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
 
-
+    // Json Web Token
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.715'
