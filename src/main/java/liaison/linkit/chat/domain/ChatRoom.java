@@ -3,7 +3,6 @@ package liaison.linkit.chat.domain;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
-import jakarta.persistence.Lob;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -75,8 +74,7 @@ public class ChatRoom extends BaseDateTimeEntity {
     @Column(name = "participant_b_status", nullable = false)
     private StatusType participantBStatus;
 
-    @Lob
-    @Column(name = "last_message", columnDefinition = "TEXT")
+    @Column(name = "last_message")
     private String lastMessage;
 
     @Column(name = "last_message_time")
