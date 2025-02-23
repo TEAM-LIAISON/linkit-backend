@@ -24,8 +24,7 @@ public class ChatResponseDTO {
     @AllArgsConstructor
     public static class ChatLeftMenu {
 
-        @Builder.Default
-        private List<ChatRoomSummary> chatRoomSummaries = new ArrayList<>();
+        @Builder.Default private List<ChatRoomSummary> chatRoomSummaries = new ArrayList<>();
     }
 
     @Builder
@@ -76,8 +75,7 @@ public class ChatResponseDTO {
         @Builder.Default
         private ProfilePositionDetail profilePositionDetail = new ProfilePositionDetail();
 
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
         // 프로필 유저 아이디
         private String emailId;
@@ -90,12 +88,10 @@ public class ChatResponseDTO {
     public static class PartnerTeamDetailInformation {
 
         // 팀 규모 정보
-        @Builder.Default
-        private TeamScaleItem teamScaleItem = new TeamScaleItem();
+        @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem();
 
         // 지역 정보
-        @Builder.Default
-        private RegionDetail regionDetail = new RegionDetail();
+        @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 
         // 팀 코드 정보
         private String teamCode;
@@ -151,8 +147,7 @@ public class ChatResponseDTO {
         // 상대방의 온라인 여부
         private boolean isChatPartnerOnline;
 
-        @Builder.Default
-        private List<ChatMessageResponse> messages = new ArrayList<>();
+        @Builder.Default private List<ChatMessageResponse> messages = new ArrayList<>();
     }
 
     // 개별 메시지에 대한 응답

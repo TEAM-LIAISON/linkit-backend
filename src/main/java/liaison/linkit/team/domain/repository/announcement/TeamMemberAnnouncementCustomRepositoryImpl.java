@@ -163,7 +163,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
                         .select(qTeamMemberAnnouncement.id)
                         .distinct()
                         .from(qTeamMemberAnnouncement)
-                        .leftJoin(qTeamMemberAnnouncement.team, qTeam)
+                        .leftJoin(qTeamMemberAnnouncement)
+                        .on(qTeamMemberAnnouncement.team.eq(qTeam))
                         .where(
                                 qTeamMemberAnnouncement
                                         .status
