@@ -31,11 +31,10 @@ public class TeamMemberAnnouncement extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "team_member_announcement_id")
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @OneToOne(mappedBy = "teamMemberAnnouncement")

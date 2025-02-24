@@ -26,7 +26,6 @@ public class MemberBasicInform extends BaseDateTimeEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "member_basic_inform_id")
     private Long id;
 
     @OneToOne
