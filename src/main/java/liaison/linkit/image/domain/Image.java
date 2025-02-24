@@ -26,6 +26,7 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
     private boolean isTemporary;

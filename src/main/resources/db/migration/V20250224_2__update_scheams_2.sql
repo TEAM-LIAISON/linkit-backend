@@ -1,0 +1,20 @@
+ALTER TABLE image
+	MODIFY COLUMN image_url VARCHAR(255) NOT NULL;
+
+ALTER TABLE matching
+    MODIFY COLUMN matching_status enum ('REQUESTED', 'COMPLETED', 'DENIED') NOT NULL,
+    MODIFY COLUMN receiver_delete_status enum ('DELETED', 'REMAINING') NOT NULL,
+    MODIFY COLUMN receiver_read_status enum ('UNREAD_REQUESTED_MATCHING', 'READ_REQUESTED_MATCHING', 'UNREAD_COMPLETED_MATCHING', 'READ_COMPLETED_MATCHING') NOT NULL,
+    MODIFY COLUMN receiver_type enum ('PROFILE', 'TEAM', 'ANNOUNCEMENT') NOT NULL,
+    MODIFY COLUMN sender_delete_status enum ('DELETED', 'REMAINING') NOT NULL,
+    MODIFY COLUMN sender_type enum ('PROFILE', 'TEAM', 'ANNOUNCEMENT') NOT NULL,
+    MODIFY COLUMN request_message TEXT NOT NULL;
+
+ALTER TABLE team_product
+	MODIFY COLUMN team_id BIGINT NOT NULL;
+
+ALTER TABLE product_link
+	DROP COLUMN created_at,
+    DROP COLUMN modified_at,
+	MODIFY COLUMN team_product_id BIGINT NOT NULL;
+
