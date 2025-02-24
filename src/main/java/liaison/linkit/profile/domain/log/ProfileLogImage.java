@@ -26,10 +26,10 @@ public class ProfileLogImage {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "profile_log_id")
+    @JoinColumn(name = "profile_log_id", nullable = false)
     private ProfileLog profileLog;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
+    @JoinColumn(name = "image_id", nullable = false)
     private Image image;
 }

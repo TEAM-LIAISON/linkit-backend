@@ -33,7 +33,7 @@ public class ProfileLog extends BaseDateTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
     @Column(nullable = false, length = 100) // 제목 길이 제한 추가 (100자)

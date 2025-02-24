@@ -26,7 +26,7 @@ public class ProductSubImage {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "product_portfolio_id", nullable = false)
+    @JoinColumn(name = "team_product_id", nullable = false)
     private TeamProduct teamProduct;
 
     @Column(nullable = false)
