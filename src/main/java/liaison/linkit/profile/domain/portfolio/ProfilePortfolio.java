@@ -55,6 +55,7 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
     @Column(length = 50) // 제목 길이 제한 추가 (50자)
     private String projectTeamComposition; // 팀 구성
 
+    @Column(nullable = false)
     private String projectStartDate;
     private String projectEndDate;
     private boolean isProjectInProgress;
