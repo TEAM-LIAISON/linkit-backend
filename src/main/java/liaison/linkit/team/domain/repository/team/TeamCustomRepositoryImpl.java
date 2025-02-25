@@ -35,7 +35,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public Optional<Team> findByTeamCode(final String teamCode) {
@@ -55,10 +56,10 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         return jpaQueryFactory
-                        .selectOne()
-                        .from(qTeam)
-                        .where(qTeam.teamCode.eq(teamCode).and(qTeam.status.eq(StatusType.USABLE)))
-                        .fetchFirst()
+                .selectOne()
+                .from(qTeam)
+                .where(qTeam.teamCode.eq(teamCode).and(qTeam.status.eq(StatusType.USABLE)))
+                .fetchFirst()
                 != null;
     }
 
@@ -256,13 +257,13 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         return jpaQueryFactory
-                        .selectOne()
-                        .from(qTeam)
-                        .where(
-                                qTeam.teamCode
-                                        .eq(teamCode)
-                                        .and(qTeam.teamStatus.eq(TeamStatus.DELETE_PENDING)))
-                        .fetchFirst()
+                .selectOne()
+                .from(qTeam)
+                .where(
+                        qTeam.teamCode
+                                .eq(teamCode)
+                                .and(qTeam.teamStatus.eq(TeamStatus.DELETE_PENDING)))
+                .fetchFirst()
                 != null;
     }
 
@@ -292,8 +293,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     /**
-     * 주어진 teamCode로 팀을 조회하여, 팀의 기본 상태(status)가 DELETED 인지를 반환한다. 단, 엔티티에 걸려있는 SQL
-     * 제한(@SQLRestriction("status = 'USABLE'")) 를 우회하기 위해 해당 필터를 비활성화한 후 조회한다.
+     * 주어진 teamCode로 팀을 조회하여, 팀의 기본 상태(status)가 DELETED 인지를 반환한다. 단, 엔티티에 걸려있는 SQL 제한(@SQLRestriction("status = 'USABLE'")) 를 우회하기 위해 해당 필터를 비활성화한 후 조회한다.
      *
      * @param teamCode 팀 코드
      * @return 팀이 존재하지 않거나 status가 DELETED이면 true, 그렇지 않으면 false.
@@ -439,77 +439,6 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
                     return count != null ? count : 0L;
                 });
-    }
-
-    private JPAQuery<Team> buildBaseQuery(QTeam qTeam) {
-        return jpaQueryFactory.selectFrom(qTeam).where(qTeam.status.eq(StatusType.USABLE));
-    }
-
-    private JPAQuery<Long> buildCountQuery(QTeam qTeam) {
-        return jpaQueryFactory.selectDistinct(qTeam.count()).from(qTeam);
-    }
-
-    private void applyFilters(
-            JPAQuery<?> query,
-            QTeam qTeam,
-            List<String> scaleName,
-            List<String> cityName,
-            List<String> teamStateName) {
-        applyScaleFilter(query, qTeam, scaleName);
-        applyRegionFilter(query, qTeam, cityName);
-        applyTeamStateFilter(query, qTeam, teamStateName);
-    }
-
-    private void applyScaleFilter(JPAQuery<?> query, QTeam qTeam, List<String> scaleName) {
-        if (isNotEmpty(scaleName)) {
-            QTeamScale qTeamScale = QTeamScale.teamScale;
-            QScale qScale = QScale.scale;
-
-            query.innerJoin(qTeamScale)
-                    .on(qTeamScale.team.eq(qTeam))
-                    .innerJoin(qTeamScale.scale, qScale)
-                    .where(qScale.scaleName.in(scaleName));
-        }
-    }
-
-    private void applyRegionFilter(JPAQuery<?> query, QTeam qTeam, List<String> cityName) {
-        if (isNotEmpty(cityName)) {
-            QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
-            QRegion qRegion = QRegion.region;
-
-            query.innerJoin(qTeamRegion)
-                    .on(qTeamRegion.team.eq(qTeam))
-                    .innerJoin(qTeamRegion.region, qRegion)
-                    .where(qRegion.cityName.in(cityName));
-        }
-    }
-
-    private void applyTeamStateFilter(JPAQuery<?> query, QTeam qTeam, List<String> teamStateName) {
-        if (isNotEmpty(teamStateName)) {
-            QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
-            QTeamState qTeamState = QTeamState.teamState;
-
-            query.innerJoin(qTeamCurrentState)
-                    .on(qTeamCurrentState.team.eq(qTeam))
-                    .innerJoin(qTeamCurrentState.teamState, qTeamState)
-                    .where(qTeamState.teamStateName.in(teamStateName));
-        }
-    }
-
-    private void applyDefaultConditions(JPAQuery<?> query, QTeam qTeam) {
-        query.where(qTeam.isTeamPublic.eq(true).and(qTeam.status.eq(StatusType.USABLE)));
-    }
-
-    private void applySort(JPAQuery<?> query, QTeam qTeam, Pageable pageable) {
-        if (pageable.getSort().isSorted()) {
-            query.orderBy(
-                    QueryDslUtil.getOrderTeamSpecifier(
-                            pageable.getSort(),
-                            qTeam,
-                            QTeamScale.teamScale,
-                            QTeamRegion.teamRegion,
-                            QTeamCurrentState.teamCurrentState));
-        }
     }
 
     private boolean isNotEmpty(List<?> list) {
