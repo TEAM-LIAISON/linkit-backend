@@ -31,11 +31,11 @@ public class ProfileScrap extends BaseDateTimeEntity {
 
     // 스크랩 주체 회원
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
     // 스크랩 대상 프로필
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 }

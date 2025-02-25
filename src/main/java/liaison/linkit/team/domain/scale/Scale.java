@@ -24,7 +24,7 @@ public class Scale {
     private Long id;
 
     // 규모 이름
-    @Column(name = "scale_name")
+    @Column(name = "scale_name", nullable = false)
     private String scaleName;
 
     public static Scale of(final String scaleName) {
