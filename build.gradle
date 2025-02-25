@@ -51,7 +51,6 @@ dependencies {
     // cache
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.1'
 
-    // p6spy 자리
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     testImplementation 'io.rest-assured:rest-assured:5.3.1'

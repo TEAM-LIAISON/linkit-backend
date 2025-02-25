@@ -1,8 +1,9 @@
 package liaison.linkit.global.util;
 
-import com.querydsl.core.types.OrderSpecifier;
 import java.util.Map;
 import java.util.Objects;
+
+import com.querydsl.core.types.OrderSpecifier;
 import liaison.linkit.profile.domain.position.QProfilePosition;
 import liaison.linkit.profile.domain.profile.QProfile;
 import liaison.linkit.profile.domain.region.QProfileRegion;
@@ -31,22 +32,23 @@ public class QueryDslUtil {
 
     // 공통 OrderSpecifier 생성 로직
     private static OrderSpecifier<?>[] createOrderSpecifiers(
-            Sort sort,
-            Map<String, OrderSpecifierFactory> propertyFactories) {
+            Sort sort, Map<String, OrderSpecifierFactory> propertyFactories) {
 
         if (sort.isUnsorted()) {
-            return new OrderSpecifier<?>[]{};
+            return new OrderSpecifier<?>[] {};
         }
 
         return sort.stream()
-                .map(order -> {
-                    OrderSpecifierFactory factory = propertyFactories.get(order.getProperty());
-                    if (factory == null) {
-                        throw new IllegalArgumentException(
-                                "Unknown sort property: " + order.getProperty());
-                    }
-                    return factory.create(getOrder(order.isAscending()));
-                })
+                .map(
+                        order -> {
+                            OrderSpecifierFactory factory =
+                                    propertyFactories.get(order.getProperty());
+                            if (factory == null) {
+                                throw new IllegalArgumentException(
+                                        "Unknown sort property: " + order.getProperty());
+                            }
+                            return factory.create(getOrder(order.isAscending()));
+                        })
                 .filter(Objects::nonNull)
                 .toArray(OrderSpecifier<?>[]::new);
     }
@@ -59,12 +61,17 @@ public class QueryDslUtil {
             QTeamRegion qTeamRegion,
             QTeamScale qTeamScale) {
 
-        Map<String, OrderSpecifierFactory> factories = Map.of(
-                "id", order -> new OrderSpecifier<>(order, qTeamMemberAnnouncement.id),
-                "subPosition", order -> new OrderSpecifier<>(order, qAnnouncementPosition.position.subPosition),
-                "cityName", order -> new OrderSpecifier<>(order, qTeamRegion.region.cityName),
-                "scaleName", order -> new OrderSpecifier<>(order, qTeamScale.scale.scaleName)
-        );
+        Map<String, OrderSpecifierFactory> factories =
+                Map.of(
+                        "id", order -> new OrderSpecifier<>(order, qTeamMemberAnnouncement.id),
+                        "subPosition",
+                                order ->
+                                        new OrderSpecifier<>(
+                                                order, qAnnouncementPosition.position.subPosition),
+                        "cityName",
+                                order -> new OrderSpecifier<>(order, qTeamRegion.region.cityName),
+                        "scaleName",
+                                order -> new OrderSpecifier<>(order, qTeamScale.scale.scaleName));
 
         return createOrderSpecifiers(sort, factories);
     }
@@ -77,13 +84,28 @@ public class QueryDslUtil {
             QProfileRegion qProfileRegion,
             QProfileCurrentState qProfileCurrentState) {
 
-        Map<String, OrderSpecifierFactory> factories = Map.of(
-                "id", order -> new OrderSpecifier<>(order, qProfile.id),
-                "memberName", order -> new OrderSpecifier<>(order, qProfile.member.memberBasicInform.memberName),
-                "subPosition", order -> new OrderSpecifier<>(order, qProfilePosition.position.subPosition),
-                "cityName", order -> new OrderSpecifier<>(order, qProfileRegion.region.cityName),
-                "profileStateName", order -> new OrderSpecifier<>(order, qProfileCurrentState.profileState.profileStateName)
-        );
+        Map<String, OrderSpecifierFactory> factories =
+                Map.of(
+                        "id", order -> new OrderSpecifier<>(order, qProfile.id),
+                        "memberName",
+                                order ->
+                                        new OrderSpecifier<>(
+                                                order,
+                                                qProfile.member.memberBasicInform.memberName),
+                        "subPosition",
+                                order ->
+                                        new OrderSpecifier<>(
+                                                order, qProfilePosition.position.subPosition),
+                        "cityName",
+                                order ->
+                                        new OrderSpecifier<>(order, qProfileRegion.region.cityName),
+                        "profileStateName",
+                                order ->
+                                        new OrderSpecifier<>(
+                                                order,
+                                                qProfileCurrentState
+                                                        .profileState
+                                                        .profileStateName));
 
         return createOrderSpecifiers(sort, factories);
     }
@@ -96,12 +118,17 @@ public class QueryDslUtil {
             QTeamRegion qTeamRegion,
             QTeamCurrentState qTeamCurrentState) {
 
-        Map<String, OrderSpecifierFactory> factories = Map.of(
-                "id", order -> new OrderSpecifier<>(order, qTeam.id),
-                "scaleName", order -> new OrderSpecifier<>(order, qTeamScale.scale.scaleName),
-                "cityName", order -> new OrderSpecifier<>(order, qTeamRegion.region.cityName),
-                "teamStateName", order -> new OrderSpecifier<>(order, qTeamCurrentState.teamState.teamStateName)
-        );
+        Map<String, OrderSpecifierFactory> factories =
+                Map.of(
+                        "id", order -> new OrderSpecifier<>(order, qTeam.id),
+                        "scaleName",
+                                order -> new OrderSpecifier<>(order, qTeamScale.scale.scaleName),
+                        "cityName",
+                                order -> new OrderSpecifier<>(order, qTeamRegion.region.cityName),
+                        "teamStateName",
+                                order ->
+                                        new OrderSpecifier<>(
+                                                order, qTeamCurrentState.teamState.teamStateName));
 
         return createOrderSpecifiers(sort, factories);
     }
