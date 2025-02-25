@@ -41,6 +41,7 @@ public class ProfileActivity extends BaseDateTimeEntity {
 
     @Column(nullable = false)
     private String activityStartDate;
+
     private String activityEndDate;
     private boolean isActivityInProgress;
 

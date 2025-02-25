@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+
 import liaison.linkit.profile.domain.profile.Profile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

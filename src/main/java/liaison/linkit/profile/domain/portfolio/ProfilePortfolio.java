@@ -57,6 +57,7 @@ public class ProfilePortfolio extends BaseDateTimeEntity {
 
     @Column(nullable = false)
     private String projectStartDate;
+
     private String projectEndDate;
     private boolean isProjectInProgress;
 
