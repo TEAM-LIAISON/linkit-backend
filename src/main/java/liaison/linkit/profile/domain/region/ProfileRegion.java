@@ -30,10 +30,10 @@ public class ProfileRegion {
     private Long id;
 
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "profile_id", unique = true)
+    @JoinColumn(name = "profile_id", unique = true, nullable = false)
     private Profile profile;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "region_id")
+    @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 }

@@ -28,10 +28,10 @@ public class TeamRegion {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "region_id")
+    @JoinColumn(name = "region_id", nullable = false)
     private Region region;
 }

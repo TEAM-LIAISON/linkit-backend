@@ -20,10 +20,9 @@ public class Skill {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "skill_id")
     private Long id;
 
-    @Column(name = "skill_name")
+    @Column(name = "skill_name", nullable = false)
     private String skillName;
 
     public static Skill of(final String skillName) {

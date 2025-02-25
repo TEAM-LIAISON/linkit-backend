@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,11 +27,12 @@ public class ProjectLink {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_portfolio_id")
+    @JoinColumn(name = "profile_portfolio_id", nullable = false)
     private ProfilePortfolio profilePortfolio;
 
-    @Column(length = 5)
+    @Column(length = 5, nullable = false)
     private String projectLinkName;
 
+    @Column(nullable = false)
     private String projectLinkUrl;
 }

@@ -36,7 +36,7 @@ public class TeamMemberInvitation extends BaseEntity {
     private String teamMemberInvitationEmail;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @Column(nullable = false)

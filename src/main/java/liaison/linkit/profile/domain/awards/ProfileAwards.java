@@ -30,7 +30,7 @@ public class ProfileAwards extends BaseDateTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
     // 대회 이름

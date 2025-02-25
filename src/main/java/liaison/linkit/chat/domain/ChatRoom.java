@@ -35,13 +35,13 @@ public class ChatRoom extends BaseDateTimeEntity {
     private Long matchingId;
 
     // 채팅방의 첫 번째 참여자 ID (Profile의 경우 emailId, Team의 경우 teamCode)
-    @Column(nullable = false)
+    @Column(name = "participant_a_id", nullable = false)
     private String participantAId;
 
-    @Column(nullable = false)
+    @Column(name = "participant_a_member_id", nullable = false)
     private Long participantAMemberId;
 
-    @Column(nullable = false)
+    @Column(name = "participant_a_name", nullable = false)
     private String participantAName;
 
     // 첫 번째 참여자의 유형 (PROFILE 또는 TEAM)

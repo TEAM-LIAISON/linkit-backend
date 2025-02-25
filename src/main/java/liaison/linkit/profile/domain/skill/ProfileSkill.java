@@ -2,6 +2,7 @@ package liaison.linkit.profile.domain.skill;
 
 import static jakarta.persistence.FetchType.LAZY;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,12 +30,13 @@ public class ProfileSkill extends BaseDateTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
+    @Column(nullable = false)
     private String skillLevel;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "skill_id")
+    @JoinColumn(name = "skill_id", nullable = false)
     private Skill skill;
 }

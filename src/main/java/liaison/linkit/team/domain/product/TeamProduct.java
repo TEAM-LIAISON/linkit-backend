@@ -30,7 +30,7 @@ public class TeamProduct extends BaseDateTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @Column(nullable = false, length = 50)
@@ -40,6 +40,8 @@ public class TeamProduct extends BaseDateTimeEntity {
     private String productLineDescription; // 프로덕트 한줄소개
 
     private String productField; // 프로덕트 분야
+    
+    @Column(nullable = false)
     private String productStartDate; // 프로덕트 시작 날짜
     private String productEndDate; // 프로덕트 종료 날짜
     private boolean isProductInProgress; // 프로덕트 진행 중 여부

@@ -30,7 +30,7 @@ public class ProfileActivity extends BaseDateTimeEntity {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "profile_id")
+    @JoinColumn(name = "profile_id", nullable = false)
     private Profile profile;
 
     @Column(nullable = false, length = 50)
@@ -39,6 +39,7 @@ public class ProfileActivity extends BaseDateTimeEntity {
     @Column(nullable = false, length = 50)
     private String activityRole;
 
+    @Column(nullable = false)
     private String activityStartDate;
     private String activityEndDate;
     private boolean isActivityInProgress;

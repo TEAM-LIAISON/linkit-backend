@@ -21,15 +21,14 @@ public class Region {
     // 활동 지역 데이터 시/도 + 시/군/구
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "region_id")
     private Long id;
 
     // 시/도 이름
-    @Column(name = "city_name")
+    @Column(name = "city_name", nullable = false)
     private String cityName;
 
     // 시/군/구 이름
-    @Column(name = "division_name")
+    @Column(name = "division_name", nullable = false)
     private String divisionName;
 
     public static Region of(final String cityName, final String divisionName) {

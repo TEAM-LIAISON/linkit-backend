@@ -46,7 +46,7 @@ public class Profile extends BaseEntity {
     private Long id;
 
     @OneToOne(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "member_id", unique = true)
+    @JoinColumn(name = "member_id", unique = true, nullable = false)
     private Member member;
 
     @OneToMany(mappedBy = "profile")
