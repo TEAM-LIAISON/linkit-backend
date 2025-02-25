@@ -28,10 +28,10 @@ public class TeamScale {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "scale_id")
+    @JoinColumn(name = "scale_id", nullable = false)
     private Scale scale;
 }

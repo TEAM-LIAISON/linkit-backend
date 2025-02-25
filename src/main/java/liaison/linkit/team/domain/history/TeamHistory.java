@@ -29,12 +29,13 @@ public class TeamHistory {
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "team_id")
+    @JoinColumn(name = "team_id", nullable = false)
     private Team team;
 
     @Column(nullable = false, length = 50)
     private String historyName;
 
+    @Column(nullable = false)
     private String historyStartDate;
     private String historyEndDate;
     private boolean isHistoryInProgress;
