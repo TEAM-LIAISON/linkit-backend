@@ -50,7 +50,7 @@ public class NotificationMapper {
 
         // 알림 타입에 따라 세부 정보 설정
         switch (notificationType) {
-            // 매칭 케이스
+                // 매칭 케이스
             case MATCHING -> {
                 switch (subNotificationType) {
                     case MATCHING_REQUESTED, MATCHING_REJECTED, MATCHING_ACCEPTED -> notification
@@ -66,12 +66,12 @@ public class NotificationMapper {
                 }
             }
 
-            // 공고 케이스
+                // 공고 케이스
             case ANNOUNCEMENT -> {
                 switch (subNotificationType) {
                     case ANNOUNCEMENT_REQUESTED,
-                         ANNOUNCEMENT_ACCEPTED,
-                         ANNOUNCEMENT_REJECTED -> notification.setAnnouncementDetails(
+                            ANNOUNCEMENT_ACCEPTED,
+                            ANNOUNCEMENT_REJECTED -> notification.setAnnouncementDetails(
                             Notification.AnnouncementDetails.builder()
                                     .matchingId(notificationDetails.getMatchingId())
                                     .matchingTargetImagePath(
@@ -82,7 +82,7 @@ public class NotificationMapper {
                 }
             }
 
-            // 채팅 케이스
+                // 채팅 케이스
             case CHATTING -> {
                 switch (subNotificationType) {
                     case NEW_CHAT -> notification.setChatDetails(
@@ -166,7 +166,7 @@ public class NotificationMapper {
         NotificationDetails notificationDetails = null;
 
         switch (type) {
-            // 1) MATCHING 타입
+                // 1) MATCHING 타입
             case MATCHING -> {
                 switch (subType) {
                     case MATCHING_REQUESTED -> notificationDetails =
@@ -187,7 +187,7 @@ public class NotificationMapper {
                 }
             }
 
-            // 2) ANNOUNCEMENT 타입
+                // 2) ANNOUNCEMENT 타입
             case ANNOUNCEMENT -> {
                 switch (subType) {
                     case ANNOUNCEMENT_REQUESTED -> notificationDetails =
@@ -217,7 +217,7 @@ public class NotificationMapper {
                 }
             }
 
-            // 3) CHATTING 타입
+                // 3) CHATTING 타입
             case CHATTING -> {
                 if (subType == SubNotificationType.NEW_CHAT) {
                     notificationDetails =
@@ -228,7 +228,7 @@ public class NotificationMapper {
                 }
             }
 
-            // 4) TEAM_INVITATION 타입
+                // 4) TEAM_INVITATION 타입
             case TEAM_INVITATION -> {
                 switch (subType) {
                     case TEAM_INVITATION_REQUESTED -> {
@@ -259,7 +259,7 @@ public class NotificationMapper {
                 }
             }
 
-            // 5) TEAM 타입
+                // 5) TEAM 타입
             case TEAM -> {
                 switch (subType) {
                     case REMOVE_TEAM_REQUESTED -> {
@@ -297,7 +297,7 @@ public class NotificationMapper {
                 }
             }
 
-            // 6) SYSTEM 타입
+                // 6) SYSTEM 타입
             case SYSTEM -> {
                 switch (subType) {
                     case WELCOME_LINKIT -> notificationDetails =
