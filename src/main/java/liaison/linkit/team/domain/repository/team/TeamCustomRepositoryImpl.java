@@ -1,15 +1,13 @@
 package liaison.linkit.team.domain.repository.team;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
@@ -23,7 +21,6 @@ import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +32,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    @PersistenceContext private EntityManager entityManager; // EntityManager 주입
+    @PersistenceContext
+    private EntityManager entityManager; // EntityManager 주입
 
     @Override
     public Optional<Team> findByTeamCode(final String teamCode) {
@@ -55,10 +53,10 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         return jpaQueryFactory
-                        .selectOne()
-                        .from(qTeam)
-                        .where(qTeam.teamCode.eq(teamCode).and(qTeam.status.eq(StatusType.USABLE)))
-                        .fetchFirst()
+                .selectOne()
+                .from(qTeam)
+                .where(qTeam.teamCode.eq(teamCode).and(qTeam.status.eq(StatusType.USABLE)))
+                .fetchFirst()
                 != null;
     }
 
@@ -256,13 +254,13 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
         QTeam qTeam = QTeam.team;
 
         return jpaQueryFactory
-                        .selectOne()
-                        .from(qTeam)
-                        .where(
-                                qTeam.teamCode
-                                        .eq(teamCode)
-                                        .and(qTeam.teamStatus.eq(TeamStatus.DELETE_PENDING)))
-                        .fetchFirst()
+                .selectOne()
+                .from(qTeam)
+                .where(
+                        qTeam.teamCode
+                                .eq(teamCode)
+                                .and(qTeam.teamStatus.eq(TeamStatus.DELETE_PENDING)))
+                .fetchFirst()
                 != null;
     }
 
@@ -292,34 +290,25 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
     }
 
     /**
-     * 주어진 teamCode로 팀을 조회하여, 팀의 기본 상태(status)가 DELETED 인지를 반환한다. 단, 엔티티에 걸려있는 SQL
-     * 제한(@SQLRestriction("status = 'USABLE'")) 를 우회하기 위해 해당 필터를 비활성화한 후 조회한다.
+     * 주어진 teamCode로 팀을 조회하여, 팀의 기본 상태(status)가 DELETED 인지를 반환한다. 단, 엔티티에 걸려있는 SQL 제한(@SQLRestriction("status = 'USABLE'")) 를 우회하기 위해 해당 필터를 비활성화한 후 조회한다.
      *
      * @param teamCode 팀 코드
      * @return 팀이 존재하지 않거나 status가 DELETED이면 true, 그렇지 않으면 false.
      */
     @Override
     public boolean isTeamDeleted(final String teamCode) {
-        // Hibernate 세션을 얻어 SQL 제한 필터를 비활성화
-        Session session = entityManager.unwrap(Session.class);
-        session.getEnabledFilter("hibernateFilter"); // 만약 필터 이름이 있다면 사용 (필요에 따라)
-        // 또는 @SQLRestriction으로 인해 적용된 글로벌 제한은 Hibernate의 "where" 절에 자동 포함되므로,
-        // 이를 우회하기 위해 native query 또는 Hibernate의 세션 API를 활용할 수 있다.
-        // 여기서는 native query 예시로 구현하겠습니다.
+        QTeam qTeam = QTeam.team;
 
-        String sql = "SELECT t.* FROM team t WHERE t.team_code = :teamCode";
+        Team team = jpaQueryFactory
+                .selectFrom(qTeam)
+                .where(qTeam.teamCode.eq(teamCode))
+                .fetchOne();
 
-        List<Team> teams =
-                session.createNativeQuery(sql, Team.class)
-                        .setParameter("teamCode", teamCode)
-                        .getResultList();
-
-        Team team = teams.isEmpty() ? null : teams.get(0);
+        // 6) 팀이 아예 없으면 => 이미 삭제되었거나 존재하지 않는 것으로 간주 => true
         if (team == null) {
-            // 팀이 존재하지 않으면 삭제된 것으로 간주
             return true;
         }
-        // BaseEntity의 status 필드가 DELETED 인지 확인 (StatusType은 DELETED, USABLE 등)
+        
         return team.getStatus() == StatusType.DELETED;
     }
 
