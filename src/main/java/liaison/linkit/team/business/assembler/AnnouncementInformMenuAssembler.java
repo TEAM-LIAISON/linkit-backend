@@ -45,6 +45,7 @@ public class AnnouncementInformMenuAssembler {
         List<TeamMemberAnnouncement> announcements =
                 teamMemberAnnouncementQueryAdapter.findHomeTopTeamMemberAnnouncements(9);
 
+        log.info("홈 화면 공고 목록 조회 성공");
         // 각 공고를 AnnouncementInformMenu DTO로 매핑
         List<AnnouncementInformMenu> announcementInformMenus =
                 announcements.stream()
@@ -53,6 +54,7 @@ public class AnnouncementInformMenuAssembler {
                                         mapToAnnouncementInformMenu(announcement, optionalMemberId))
                         .toList();
 
+        log.info("공고 목록 DTO로 변환 성공");
         // 최종 목록 DTO로 변환하여 반환
         return teamMemberAnnouncementMapper.toAnnouncementInformMenus(announcementInformMenus);
     }

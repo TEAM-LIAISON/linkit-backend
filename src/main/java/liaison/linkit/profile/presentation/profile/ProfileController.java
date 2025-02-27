@@ -47,9 +47,11 @@ public class ProfileController {
     public CommonResponse<ProfileResponseDTO.ProfileInformMenus> getHomeProfileInformMenus(
             @Auth final Accessor accessor) {
         if (accessor.isMember()) {
+            log.info("memberId = {}의 홈 프로필 정보 메뉴 조회 요청이 발생했습니다.", accessor.getMemberId());
             return CommonResponse.onSuccess(
                     profileService.getHomeProfileInformMenusInLoginState(accessor.getMemberId()));
         } else {
+            log.info("비로그인 상태의 홈 프로필 정보 메뉴 조회 요청이 발생했습니다.");
             return CommonResponse.onSuccess(
                     profileService.getHomeProfileInformMenusInLogoutState());
         }
