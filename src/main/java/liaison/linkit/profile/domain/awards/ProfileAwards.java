@@ -42,6 +42,7 @@ public class ProfileAwards extends BaseDateTimeEntity {
     private String awardsRanking;
 
     // 수상 시기
+    @Column(nullable = false)
     private String awardsDate;
 
     // 주최 및 주관

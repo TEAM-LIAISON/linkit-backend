@@ -339,8 +339,8 @@ public class TeamService {
                         NotificationDetails.removeTeamRequested(
                                 teamCode,
                                 targetTeam.getTeamLogoImagePath(),
-                                targetTeam.getTeamName(),
                                 member.getMemberBasicInform().getMemberName(),
+                                targetTeam.getTeamName(),
                                 false);
 
                 notificationService.alertNewNotification(

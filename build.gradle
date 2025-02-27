@@ -34,6 +34,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 
+    // p6spy for query logging
+    implementation 'p6spy:p6spy:3.9.1'
+    implementation 'com.github.gavlyukovskiy:datasource-decorator-spring-boot-autoconfigure:1.9.2'
+
     // WebSocket
     implementation 'org.webjars:sockjs-client:1.1.2'
     implementation 'org.webjars:stomp-websocket:2.3.3-1'
@@ -51,7 +55,6 @@ dependencies {
     // cache
     implementation 'com.github.ben-manes.caffeine:caffeine:3.1.1'
 
-    // p6spy 자리
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     testImplementation 'io.rest-assured:rest-assured:5.3.1'

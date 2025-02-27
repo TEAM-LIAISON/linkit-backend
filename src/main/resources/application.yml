@@ -43,7 +43,7 @@ spring:
         show_sql: false
         use_sql_comments: false
         default_batch_fetch_size: 100
-        generate_statistics: true   # 성능 모니터링 설정
+        generate_statistics: false   # 성능 모니터링 설정
         jdbc:
           batch_size: 50
         order_inserts: true
@@ -77,11 +77,13 @@ spring:
       max-file-size: 10MB # 한 개 파일의 최대 사이즈
       max-request-size: 10MB # 한 개 요청의 최대 사이즈
 
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      multiline: true
+      logging: slf4j
 
 logging:
   level:
-    root: INFO
     org.springframework.web: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.hibernate.stat: DEBUG

@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+
 import liaison.linkit.profile.domain.skill.Skill;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

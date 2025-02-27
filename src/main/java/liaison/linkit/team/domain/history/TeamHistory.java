@@ -37,6 +37,7 @@ public class TeamHistory {
 
     @Column(nullable = false)
     private String historyStartDate;
+
     private String historyEndDate;
     private boolean isHistoryInProgress;
 

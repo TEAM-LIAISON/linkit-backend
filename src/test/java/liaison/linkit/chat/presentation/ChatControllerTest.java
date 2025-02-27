@@ -148,6 +148,8 @@ public class ChatControllerTest extends ControllerTest {
                                                                                                 .divisionName(
                                                                                                         "프로필 지역 시/군/구")
                                                                                                 .build())
+                                                                                .emailId(
+                                                                                        "프로필 유저 아이디")
                                                                                 .build())
                                                                 .partnerTeamDetailInformation(
                                                                         PartnerTeamDetailInformation
@@ -166,6 +168,7 @@ public class ChatControllerTest extends ControllerTest {
                                                                                                 .divisionName(
                                                                                                         "팀 활동 지역 시/군/구")
                                                                                                 .build())
+                                                                                .teamCode("팀 코드")
                                                                                 .build())
                                                                 .lastMessage("해당 채팅방에서의 마지막 메시지")
                                                                 .lastMessageTime(
@@ -200,6 +203,8 @@ public class ChatControllerTest extends ControllerTest {
                                                                                                 .divisionName(
                                                                                                         "프로필 지역 시/군/구")
                                                                                                 .build())
+                                                                                .emailId(
+                                                                                        "프로필 유저 아이디")
                                                                                 .build())
                                                                 .partnerTeamDetailInformation(
                                                                         PartnerTeamDetailInformation
@@ -218,6 +223,7 @@ public class ChatControllerTest extends ControllerTest {
                                                                                                 .divisionName(
                                                                                                         "팀 활동 지역 시/군/구")
                                                                                                 .build())
+                                                                                .teamCode("팀 코드")
                                                                                 .build())
                                                                 .lastMessage("해당 채팅방에서의 마지막 메시지")
                                                                 .lastMessageTime(
@@ -279,6 +285,10 @@ public class ChatControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.STRING)
                                                         .description("프로필 포지션 소분류"),
                                                 fieldWithPath(
+                                                                "result.chatRoomSummaries[].chatPartnerInformation.partnerProfileDetailInformation.emailId")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("프로필 유저 아이디"),
+                                                fieldWithPath(
                                                                 "result.chatRoomSummaries[].chatPartnerInformation.partnerProfileDetailInformation.regionDetail.cityName")
                                                         .type(JsonFieldType.STRING)
                                                         .description("프로필 지역 시/도"),
@@ -298,6 +308,10 @@ public class ChatControllerTest extends ControllerTest {
                                                                 "result.chatRoomSummaries[].chatPartnerInformation.partnerTeamDetailInformation.regionDetail.divisionName")
                                                         .type(JsonFieldType.STRING)
                                                         .description("팀 활동 지역 시/군/구"),
+                                                fieldWithPath(
+                                                                "result.chatRoomSummaries[].chatPartnerInformation.partnerTeamDetailInformation.teamCode")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("팀의 팀 코드"),
                                                 fieldWithPath(
                                                                 "result.chatRoomSummaries[].chatPartnerInformation.lastMessage")
                                                         .type(JsonFieldType.STRING)
@@ -344,6 +358,7 @@ public class ChatControllerTest extends ControllerTest {
                                                                         .divisionName(
                                                                                 "프로필 지역 시/군/구")
                                                                         .build())
+                                                        .emailId("프로필 유저 아이디")
                                                         .build())
                                         .partnerTeamDetailInformation(
                                                 PartnerTeamDetailInformation.builder()
@@ -358,6 +373,7 @@ public class ChatControllerTest extends ControllerTest {
                                                                         .divisionName(
                                                                                 "팀 활동 지역 시/군/구")
                                                                         .build())
+                                                        .teamCode("팀 코드")
                                                         .build())
                                         .lastMessage("해당 채팅방에서의 마지막 메시지")
                                         .lastMessageTime(LocalDateTime.now())
@@ -511,6 +527,10 @@ public class ChatControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.STRING)
                                                         .description("채팅 파트너 포지션 소분류"),
                                                 fieldWithPath(
+                                                                "result.chatPartnerInformation.partnerProfileDetailInformation.emailId")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("채팅 파트너 프로필 유저 아이디"),
+                                                fieldWithPath(
                                                                 "result.chatPartnerInformation.partnerProfileDetailInformation.regionDetail")
                                                         .type(JsonFieldType.OBJECT)
                                                         .description("채팅 파트너 지역 정보"),
@@ -546,6 +566,10 @@ public class ChatControllerTest extends ControllerTest {
                                                                 "result.chatPartnerInformation.partnerTeamDetailInformation.regionDetail.divisionName")
                                                         .type(JsonFieldType.STRING)
                                                         .description("채팅 파트너 팀의 구/도 정보"),
+                                                fieldWithPath(
+                                                                "result.chatPartnerInformation.partnerTeamDetailInformation.teamCode")
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("채팅 파트너 팀의 팀 코드"),
                                                 fieldWithPath(
                                                                 "result.chatPartnerInformation.lastMessage")
                                                         .type(JsonFieldType.STRING)
