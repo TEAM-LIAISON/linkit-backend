@@ -33,6 +33,7 @@ public class TeamMemberAnnouncementController {
     @GetMapping("/home/announcement")
     public CommonResponse<AnnouncementInformMenus> getHomeAnnouncementInformMenus(
             @Auth final Accessor accessor) {
+        ;
         Optional<Long> optionalMemberId =
                 accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
         return CommonResponse.onSuccess(
