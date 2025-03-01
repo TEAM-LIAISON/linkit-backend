@@ -21,7 +21,7 @@ import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.search.business.service.TeamSearchService;
 import liaison.linkit.search.presentation.dto.CursorRequest;
 import liaison.linkit.search.presentation.dto.CursorResponse;
-import liaison.linkit.search.presentation.dto.TeamSearchResponseDTO;
+import liaison.linkit.search.presentation.dto.team.TeamSearchResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamScaleItem;

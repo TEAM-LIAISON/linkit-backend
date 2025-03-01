@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-/**
- * 커서 기반 페이지네이션 요청 DTO
- */
+/** 커서 기반 페이지네이션 요청 DTO */
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,9 +19,7 @@ public class CursorRequest {
         return cursor != null;
     }
 
-    /**
-     * 다음 커서 값과 함께 새로운 CursorRequest 객체를 생성합니다.
-     */
+    /** 다음 커서 값과 함께 새로운 CursorRequest 객체를 생성합니다. */
     public CursorRequest next(String nextCursor) {
         return new CursorRequest(nextCursor, size);
     }

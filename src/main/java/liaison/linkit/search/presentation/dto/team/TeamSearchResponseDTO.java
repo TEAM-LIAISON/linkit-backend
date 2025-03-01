@@ -1,7 +1,8 @@
-package liaison.linkit.search.presentation.dto;
+package liaison.linkit.search.presentation.dto.team;
 
 import java.util.List;
 
+import liaison.linkit.search.presentation.dto.CursorResponse;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

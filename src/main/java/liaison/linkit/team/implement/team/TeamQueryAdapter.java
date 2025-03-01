@@ -42,16 +42,6 @@ public class TeamQueryAdapter {
         return teamCurrentStateRepository.findTeamCurrentStatesByTeamId(teamId);
     }
 
-    //    public Page<Team> findAllByFiltering(
-    //            List<String> scaleName,
-    //            List<String> cityName,
-    //            List<String> teamStateName,
-    //            CursorRequest cursorRequest) {
-    //        log.info("팀 필터링 요청 발생");
-    //        return teamRepository.findAllByFiltering(scaleName, cityName, teamStateName,
-    // cursorRequest);
-    //    }
-
     public CursorResponse<Team> findAllExcludingIdsWithCursor(
             final List<Long> excludeTeamIds, final CursorRequest cursorRequest) {
         log.debug(
