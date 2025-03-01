@@ -510,94 +510,102 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
         QTeam qTeam = QTeam.team;
 
-        // 1. 필터링된 팀 ID를 조회
-        JPAQuery<Long> teamIdQuery =
-                jpaQueryFactory
-                        .select(qTeam.id)
-                        .distinct()
-                        .from(qTeam)
-                        .where(qTeam.status.eq(USABLE).and(qTeam.isTeamPublic.eq(true)));
+        try {
+            // 1. 필터링된 팀 ID를 조회
+            JPAQuery<Long> teamIdQuery =
+                    jpaQueryFactory
+                            .select(qTeam.id)
+                            .distinct()
+                            .from(qTeam)
+                            .where(qTeam.status.eq(USABLE).and(qTeam.isTeamPublic.eq(true)));
 
-        // 커서 조건 추가
-        if (cursorRequest.hasNext()) {
-            teamIdQuery = teamIdQuery.where(qTeam.id.lt(cursorRequest.getCursor()));
-        }
+            // 커서 조건 추가
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.getCursor() != null) {
+                teamIdQuery = teamIdQuery.where(qTeam.id.lt(cursorRequest.getCursor()));
+            }
 
-        // 규모 필터링
-        if (isNotEmpty(scaleName)) {
-            QTeamScale qTeamScale = QTeamScale.teamScale;
-            QScale qScale = QScale.scale;
+            // 규모 필터링
+            if (isNotEmpty(scaleName)) {
+                QTeamScale qTeamScale = QTeamScale.teamScale;
+                QScale qScale = QScale.scale;
 
-            teamIdQuery
-                    .leftJoin(qTeamScale)
-                    .on(qTeamScale.team.eq(qTeam))
-                    .leftJoin(qScale)
-                    .on(qTeamScale.scale.eq(qScale))
-                    .where(qScale.scaleName.in(scaleName));
-        }
-
-        // 지역 필터링
-        if (isNotEmpty(cityName)) {
-            QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
-            QRegion qRegion = QRegion.region;
-
-            teamIdQuery
-                    .leftJoin(qTeamRegion)
-                    .on(qTeamRegion.team.eq(qTeam))
-                    .leftJoin(qRegion)
-                    .on(qTeamRegion.region.eq(qRegion))
-                    .where(qRegion.cityName.in(cityName));
-        }
-
-        // 상태 필터링
-        if (isNotEmpty(teamStateName)) {
-            QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
-            QTeamState qTeamState = QTeamState.teamState;
-
-            teamIdQuery
-                    .leftJoin(qTeamCurrentState)
-                    .on(qTeamCurrentState.team.eq(qTeam))
-                    .leftJoin(qTeamState)
-                    .on(qTeamCurrentState.teamState.eq(qTeamState))
-                    .where(qTeamState.teamStateName.in(teamStateName));
-        }
-
-        // ID 내림차순 정렬 및 제한
-        List<Long> teamIds =
                 teamIdQuery
-                        .orderBy(qTeam.id.desc())
-                        .limit(cursorRequest.getSize() + 1) // 다음 페이지 확인을 위해 +1
-                        .fetch();
+                        .leftJoin(qTeamScale)
+                        .on(qTeamScale.team.eq(qTeam))
+                        .leftJoin(qScale)
+                        .on(qTeamScale.scale.eq(qScale))
+                        .where(qScale.scaleName.in(scaleName));
+            }
 
-        // 조회할 팀이 없는 경우 빈 응답 반환
-        if (teamIds.isEmpty()) {
+            // 지역 필터링
+            if (isNotEmpty(cityName)) {
+                QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+                QRegion qRegion = QRegion.region;
+
+                teamIdQuery
+                        .leftJoin(qTeamRegion)
+                        .on(qTeamRegion.team.eq(qTeam))
+                        .leftJoin(qRegion)
+                        .on(qTeamRegion.region.eq(qRegion))
+                        .where(qRegion.cityName.in(cityName));
+            }
+
+            // 상태 필터링
+            if (isNotEmpty(teamStateName)) {
+                QTeamCurrentState qTeamCurrentState = QTeamCurrentState.teamCurrentState;
+                QTeamState qTeamState = QTeamState.teamState;
+
+                teamIdQuery
+                        .leftJoin(qTeamCurrentState)
+                        .on(qTeamCurrentState.team.eq(qTeam))
+                        .leftJoin(qTeamState)
+                        .on(qTeamCurrentState.teamState.eq(qTeamState))
+                        .where(qTeamState.teamStateName.in(teamStateName));
+            }
+
+            // ID 내림차순 정렬 및 제한
+            int pageSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            List<Long> teamIds =
+                    teamIdQuery
+                            .orderBy(qTeam.id.desc())
+                            .limit(pageSize + 1) // 다음 페이지 확인을 위해 +1
+                            .fetch();
+
+            // 조회할 팀이 없는 경우 빈 응답 반환
+            if (teamIds.isEmpty()) {
+                return CursorResponse.of(List.of(), null);
+            }
+
+            // 다음 커서 계산
+            boolean hasNext = teamIds.size() > pageSize;
+            Long nextCursor = null;
+
+            // 다음 페이지가 있는 경우
+            if (hasNext) {
+                nextCursor = teamIds.get(teamIds.size() - 1);
+                teamIds.remove(teamIds.size() - 1); // 마지막 요소 제거
+            }
+
+            // 2. 실제 데이터 조회 - fetch join을 하나만 적용하거나 제거
+            // 방법 1: fetch join 없이 조회 (가장 안전한 방법)
+            List<Team> content =
+                    jpaQueryFactory
+                            .selectFrom(qTeam)
+                            .where(qTeam.id.in(teamIds))
+                            .orderBy(qTeam.id.desc())
+                            .fetch();
+
+            // 또는 방법 2: EntityGraph를 사용 (TeamRepository에 추가된 메서드 활용)
+            // List<Team> content = teamRepository.findAllByIdIn(teamIds);
+            // 필요한 경우 ID 정렬
+            // content.sort(Comparator.comparing(Team::getId, Comparator.reverseOrder()));
+
+            return CursorResponse.of(content, nextCursor);
+        } catch (Exception e) {
+            log.error("Error in findAllByFilteringWithCursor: {}", e.getMessage(), e);
             return CursorResponse.of(List.of(), null);
         }
-
-        // 다음 커서 계산
-        boolean hasNext = teamIds.size() > cursorRequest.getSize();
-        Long nextCursor = null;
-
-        // 다음 페이지가 있는 경우
-        if (hasNext) {
-            nextCursor = teamIds.get(teamIds.size() - 1);
-            teamIds.remove(teamIds.size() - 1); // 마지막 요소 제거
-        }
-
-        // 2. 실제 데이터 조회 - OneToOne 관계는 fetch join 사용
-        List<Team> content =
-                jpaQueryFactory
-                        .selectFrom(qTeam)
-                        .leftJoin(qTeam.teamScales)
-                        .fetchJoin()
-                        .leftJoin(qTeam.teamRegions)
-                        .fetchJoin()
-                        .leftJoin(qTeam.teamCurrentStates)
-                        .fetchJoin()
-                        .where(qTeam.id.in(teamIds))
-                        .orderBy(qTeam.id.desc())
-                        .fetch();
-
-        return CursorResponse.of(content, nextCursor);
     }
 }

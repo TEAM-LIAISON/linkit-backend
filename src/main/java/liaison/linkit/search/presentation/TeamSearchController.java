@@ -38,7 +38,7 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
     public CommonResponse<TeamSearchResponseDTO> searchTeams(
             @Auth final Accessor accessor,
             @RequestParam(value = "cursor", required = false) Long cursor,
-            @RequestParam(value = "size", defaultValue = "20") int size,
+            @RequestParam(value = "size", defaultValue = "100") int size,
             @RequestParam(value = "scaleName", required = false) List<String> scaleName,
             @RequestParam(value = "cityName", required = false) List<String> cityName,
             @RequestParam(value = "teamStateName", required = false) List<String> teamStateName) {

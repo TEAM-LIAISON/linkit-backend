@@ -19,6 +19,8 @@ import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.search.business.service.TeamSearchService;
+import liaison.linkit.search.presentation.dto.CursorRequest;
+import liaison.linkit.search.presentation.dto.CursorResponse;
 import liaison.linkit.search.presentation.dto.TeamSearchResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
@@ -29,16 +31,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
-import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 @WebMvcTest(TeamSearchController.class)
 @MockBean(JpaMetamodelMappingContext.class)
@@ -54,25 +52,38 @@ public class TeamSearchControllerTest extends ControllerTest {
 
     @MockBean private TeamSearchService teamSearchService;
 
+    // 테스트 헬퍼 메서드도 업데이트 필요
     private ResultActions performSearchTeams(
-            List<String> scaleName,
-            List<String> cityName,
-            List<String> teamStateName,
-            int page,
+            List<String> scaleNames,
+            List<String> cityNames,
+            List<String> teamStateNames,
+            Long cursor, // 커서로 변경
             int size)
             throws Exception {
-        return mockMvc.perform(
-                RestDocumentationRequestBuilders.get("/api/v1/team/search")
-                        .param("scaleName", scaleName.toArray(new String[0]))
-                        .param("cityName", cityName.toArray(new String[0]))
-                        .param("teamStateName", teamStateName.toArray(new String[0]))
-                        .param("page", String.valueOf(page))
-                        .param("size", String.valueOf(size))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding("UTF-8"));
-    }
 
-    // ...
+        MockHttpServletRequestBuilder requestBuilder =
+                RestDocumentationRequestBuilders.get("/api/v1/team/search")
+                        .param("size", String.valueOf(size));
+
+        if (cursor != null) {
+            requestBuilder.param("cursor", String.valueOf(cursor));
+        }
+
+        if (scaleNames != null && !scaleNames.isEmpty()) {
+            scaleNames.forEach(scaleName -> requestBuilder.param("scaleName", scaleName));
+        }
+
+        if (cityNames != null && !cityNames.isEmpty()) {
+            cityNames.forEach(cityName -> requestBuilder.param("cityName", cityName));
+        }
+
+        if (teamStateNames != null && !teamStateNames.isEmpty()) {
+            teamStateNames.forEach(
+                    teamStateName -> requestBuilder.param("teamStateName", teamStateName));
+        }
+
+        return mockMvc.perform(requestBuilder);
+    }
 
     @DisplayName("회원/비회원이 팀을 검색할 수 있다. (필터링 가능)")
     @Test
@@ -127,16 +138,24 @@ public class TeamSearchControllerTest extends ControllerTest {
                         .build();
 
         List<TeamInformMenu> teams = Arrays.asList(teamInformMenu1, teamInformMenu2);
-        Page<TeamInformMenu> teamPage = new PageImpl<>(teams, PageRequest.of(0, 20), teams.size());
+
+        // 커서 기반 페이지네이션으로 변경
+        CursorResponse<TeamInformMenu> teamCursorResponse =
+                CursorResponse.<TeamInformMenu>builder()
+                        .content(teams)
+                        .nextCursor(123L) // 다음 커서 값 설정
+                        .hasNext(true) // 다음 페이지가 있음
+                        .build();
 
         TeamSearchResponseDTO teamSearchResponseDTO =
                 TeamSearchResponseDTO.builder()
                         .ventureTeams(teams)
                         .supportProjectTeams(teams)
-                        .defaultTeams(teamPage)
+                        .defaultTeams(teamCursorResponse)
                         .build();
 
-        when(teamSearchService.searchTeams(any(), any(), any(), any(), any(Pageable.class)))
+        // CursorRequest로 변경
+        when(teamSearchService.searchTeams(any(), any(), any(), any(), any(CursorRequest.class)))
                 .thenReturn(teamSearchResponseDTO);
 
         // when
@@ -145,8 +164,8 @@ public class TeamSearchControllerTest extends ControllerTest {
                         Arrays.asList("1인", "2~5인"),
                         Arrays.asList("서울특별시", "부산광역시"),
                         Arrays.asList("팀원 찾는 중", "투자 유치 중"),
-                        0,
-                        20);
+                        123L, // cursor 값 사용
+                        20); // size는 그대로 유지
 
         // then
         final MvcResult mvcResult =
@@ -167,9 +186,9 @@ public class TeamSearchControllerTest extends ControllerTest {
                                                 parameterWithName("teamStateName")
                                                         .optional()
                                                         .description("팀 상태 이름 (선택적)"),
-                                                parameterWithName("page")
+                                                parameterWithName("cursor")
                                                         .optional()
-                                                        .description("페이지 번호 (기본값: 0)"),
+                                                        .description("마지막으로 조회한 팀의 ID (선택적)"),
                                                 parameterWithName("size")
                                                         .optional()
                                                         .description("페이지 크기 (기본값: 20)")),
@@ -294,10 +313,13 @@ public class TeamSearchControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.STRING)
                                                         .description("지역 시/군/구 이름"),
 
-                                                // ✅ 하단: 나머지 팀 리스트
+                                                // ✅ 하단: 나머지 팀 리스트 (커서 기반 페이지네이션으로 필드 변경)
                                                 fieldWithPath("result.defaultTeams")
                                                         .type(JsonFieldType.OBJECT)
-                                                        .description("나머지 팀 목록 (최대 4팀)"),
+                                                        .description("나머지 팀 목록"),
+                                                fieldWithPath("result.defaultTeams.content")
+                                                        .type(JsonFieldType.ARRAY)
+                                                        .description("팀 목록 내용"),
                                                 fieldWithPath(
                                                                 "result.defaultTeams.content[].teamCurrentStates")
                                                         .type(JsonFieldType.ARRAY)
@@ -351,83 +373,13 @@ public class TeamSearchControllerTest extends ControllerTest {
                                                         .type(JsonFieldType.STRING)
                                                         .description("지역 시/군/구 이름"),
 
-                                                // ✅ 페이지네이션 관련 필드 추가 (📢 여기에서 오류가 발생했었음)
-                                                fieldWithPath("result.defaultTeams.pageable")
-                                                        .type(JsonFieldType.OBJECT)
-                                                        .description("페이지네이션 정보"),
-                                                fieldWithPath(
-                                                                "result.defaultTeams.pageable.pageNumber")
+                                                // ✅ 커서 기반 페이지네이션 정보 필드
+                                                fieldWithPath("result.defaultTeams.nextCursor")
                                                         .type(JsonFieldType.NUMBER)
-                                                        .description("현재 페이지 번호"),
-                                                fieldWithPath(
-                                                                "result.defaultTeams.pageable.pageSize")
-                                                        .type(JsonFieldType.NUMBER)
-                                                        .description("페이지 크기"),
-                                                fieldWithPath("result.defaultTeams.pageable.offset")
-                                                        .type(JsonFieldType.NUMBER)
-                                                        .description("오프셋"),
-                                                fieldWithPath("result.defaultTeams.pageable.paged")
+                                                        .description("다음 페이지 조회를 위한 커서 값"),
+                                                fieldWithPath("result.defaultTeams.hasNext")
                                                         .type(JsonFieldType.BOOLEAN)
-                                                        .description("페이징 여부"),
-                                                fieldWithPath(
-                                                                "result.defaultTeams.pageable.unpaged")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("페이징 미적용 여부"),
-
-                                                // ✅ `sort`가 `defaultProfiles` 바로 아래에 존재하는 경우 (📢 기존
-                                                // pageable.sort가 아닌 구조)
-                                                fieldWithPath("result.defaultTeams.sort")
-                                                        .type(JsonFieldType.OBJECT)
-                                                        .description("정렬 정보"),
-                                                fieldWithPath("result.defaultTeams.sort.sorted")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("정렬 여부"),
-                                                fieldWithPath("result.defaultTeams.sort.unsorted")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("비정렬 여부"),
-                                                fieldWithPath("result.defaultTeams.sort.empty")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("정렬 정보 존재 여부"),
-                                                fieldWithPath(
-                                                                "result.defaultTeams.pageable.sort.sorted")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("정렬 여부"),
-                                                fieldWithPath(
-                                                                "result.defaultTeams.pageable.sort.unsorted")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("비정렬 여부"),
-                                                fieldWithPath(
-                                                                "result.defaultTeams.pageable.sort.empty")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("정렬 정보 없음 여부"),
-
-                                                // ✅ 전체 페이지네이션 정보 추가 (📢 기존 result.last ->
-                                                // result.defaultProfiles.last)
-                                                fieldWithPath("result.defaultTeams.last")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("마지막 페이지 여부"),
-                                                fieldWithPath("result.defaultTeams.totalPages")
-                                                        .type(JsonFieldType.NUMBER)
-                                                        .description("총 페이지 수"),
-                                                fieldWithPath("result.defaultTeams.totalElements")
-                                                        .type(JsonFieldType.NUMBER)
-                                                        .description("총 요소 수"),
-                                                fieldWithPath("result.defaultTeams.size")
-                                                        .type(JsonFieldType.NUMBER)
-                                                        .description("페이지 크기"),
-                                                fieldWithPath("result.defaultTeams.number")
-                                                        .type(JsonFieldType.NUMBER)
-                                                        .description("현재 페이지 번호"),
-                                                fieldWithPath("result.defaultTeams.first")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("첫 페이지 여부"),
-                                                fieldWithPath(
-                                                                "result.defaultTeams.numberOfElements")
-                                                        .type(JsonFieldType.NUMBER)
-                                                        .description("현재 페이지의 요소 수"),
-                                                fieldWithPath("result.defaultTeams.empty")
-                                                        .type(JsonFieldType.BOOLEAN)
-                                                        .description("페이지가 비어있는지 여부"))))
+                                                        .description("다음 페이지 존재 여부"))))
                         .andReturn();
     }
 }
