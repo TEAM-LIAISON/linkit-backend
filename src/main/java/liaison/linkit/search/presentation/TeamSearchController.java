@@ -27,17 +27,17 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
     /**
      * 팀원 검색 엔드포인트 (커서 기반 페이지네이션)
      *
-     * @param cursor 마지막으로 조회한 팀의 ID (선택적)
-     * @param size 페이지 크기 (기본값: 20)
-     * @param scaleName 팀 규모 (선택적)
-     * @param cityName 활동 지역 (시/도) (선택적)
+     * @param cursor        마지막으로 조회한 팀의 ID (선택적)
+     * @param size          페이지 크기 (기본값: 20)
+     * @param scaleName     팀 규모 (선택적)
+     * @param cityName      활동 지역 (시/도) (선택적)
      * @param teamStateName 팀 현재 상태 (선택적)
      * @return 팀원 목록과 커서 정보
      */
     @GetMapping
     public CommonResponse<TeamSearchResponseDTO> searchTeams(
             @Auth final Accessor accessor,
-            @RequestParam(value = "cursor", required = false) Long cursor,
+            @RequestParam(value = "cursor", required = false) String cursor,
             @RequestParam(value = "size", defaultValue = "100") int size,
             @RequestParam(value = "scaleName", required = false) List<String> scaleName,
             @RequestParam(value = "cityName", required = false) List<String> cityName,
