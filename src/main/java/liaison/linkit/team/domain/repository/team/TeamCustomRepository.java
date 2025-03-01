@@ -3,6 +3,8 @@ package liaison.linkit.team.domain.repository.team;
 import java.util.List;
 import java.util.Optional;
 
+import liaison.linkit.search.presentation.dto.CursorRequest;
+import liaison.linkit.search.presentation.dto.CursorResponse;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import org.springframework.data.domain.Page;
@@ -14,11 +16,11 @@ public interface TeamCustomRepository {
 
     boolean existsByTeamCode(final String teamCode);
 
-    Page<Team> findAllByFiltering(
-            final List<String> scaleName,
-            final List<String> cityName,
-            final List<String> teamStateName,
-            final Pageable pageable);
+    //    Page<Team> findAllByFiltering(
+    //            final List<String> scaleName,
+    //            final List<String> cityName,
+    //            final List<String> teamStateName,
+    //            final CursorRequest cursorRequest);
 
     void deleteTeamByTeamCode(final String teamCode);
 
@@ -37,4 +39,13 @@ public interface TeamCustomRepository {
     boolean isTeamDeleteInProgress(final String teamCode);
 
     boolean isTeamDeleted(final String teamCode);
+
+    CursorResponse<Team> findAllExcludingIdsWithCursor(
+            List<Long> excludeTeamIds, CursorRequest cursorRequest);
+
+    CursorResponse<Team> findAllByFilteringWithCursor(
+            List<String> scaleName,
+            List<String> cityName,
+            List<String> teamStateName,
+            CursorRequest cursorRequest);
 }

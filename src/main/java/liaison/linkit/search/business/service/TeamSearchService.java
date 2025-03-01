@@ -1,10 +1,11 @@
 package liaison.linkit.search.business.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import liaison.linkit.search.presentation.dto.CursorRequest;
+import liaison.linkit.search.presentation.dto.CursorResponse;
 import liaison.linkit.search.presentation.dto.TeamSearchResponseDTO;
 import liaison.linkit.team.business.assembler.TeamInformMenuAssembler;
 import liaison.linkit.team.domain.team.Team;
@@ -12,7 +13,6 @@ import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,12 +32,23 @@ public class TeamSearchService {
             final List<String> scaleName,
             final List<String> cityName,
             final List<String> teamStateName,
-            final Pageable pageable) {
+            final CursorRequest cursorRequest) {
         if (isDefaultSearch(scaleName, cityName, teamStateName)) {
-            return buildDefaultTeamSearchResponse(optionalMemberId, pageable);
+            log.info(
+                    "기본 팀 검색 요청: cursor={}, size={}",
+                    cursorRequest.getCursor(),
+                    cursorRequest.getSize());
+            return buildDefaultTeamSearchResponse(optionalMemberId, cursorRequest);
         } else {
+            log.info(
+                    "팀 필터링 검색 요청: cursor={}, size={}, scaleName={}, cityName={}, teamStateName={}",
+                    cursorRequest.getCursor(),
+                    cursorRequest.getSize(),
+                    scaleName,
+                    cityName,
+                    teamStateName);
             return buildFilteredTeamSearchResponse(
-                    optionalMemberId, scaleName, cityName, teamStateName, pageable);
+                    optionalMemberId, scaleName, cityName, teamStateName, cursorRequest);
         }
     }
 
@@ -51,7 +62,7 @@ public class TeamSearchService {
 
     /** 기본 검색일 경우의 응답 DTO를 구성합니다. - 벤처 팀과 지원 프로젝트 팀을 조회하고, 해당 팀 ID들을 제외한 나머지 팀을 페이지네이션합니다. */
     private TeamSearchResponseDTO buildDefaultTeamSearchResponse(
-            Optional<Long> optionalMemberId, Pageable pageable) {
+            Optional<Long> optionalMemberId, CursorRequest cursorRequest) {
         // 벤처 팀 조회 (최대 4팀)
         Pageable venturePageable = PageRequest.of(0, 4);
         List<Team> ventureTeamEntities =
@@ -81,40 +92,52 @@ public class TeamSearchService {
         excludeTeamIds.addAll(ventureTeamEntities.stream().map(Team::getId).toList());
         excludeTeamIds.addAll(supportTeamEntities.stream().map(Team::getId).toList());
 
-        // 제외된 팀을 제외한 나머지 팀을 페이지네이션하여 조회
-        Page<Team> remainingTeams = teamQueryAdapter.findAllExcludingIds(excludeTeamIds, pageable);
-        Page<TeamInformMenu> remainingTeamDTOs =
-                remainingTeams.map(
-                        team ->
-                                teamInformMenuAssembler.assembleTeamInformMenu(
-                                        team, optionalMemberId));
+        log.info("excludeTeamIds: {}", excludeTeamIds);
 
-        return TeamSearchResponseDTO.builder()
-                .ventureTeams(ventureTeamDTOs)
-                .supportProjectTeams(supportTeamDTOs)
-                .defaultTeams(remainingTeamDTOs)
-                .build();
+        // 제외된 팀을 제외한 나머지 팀을 커서 기반으로 조회
+        CursorResponse<Team> remainingTeams =
+                teamQueryAdapter.findAllExcludingIdsWithCursor(excludeTeamIds, cursorRequest);
+
+        // Team 엔티티를 DTO로 변환
+        List<TeamInformMenu> remainingTeamDTOs =
+                remainingTeams.getContent().stream()
+                        .map(
+                                team ->
+                                        teamInformMenuAssembler.assembleTeamInformMenu(
+                                                team, optionalMemberId))
+                        .toList();
+
+        // 변환된 DTO로 새로운 CursorResponse 생성
+        CursorResponse<TeamInformMenu> cursorResponse =
+                CursorResponse.of(remainingTeamDTOs, remainingTeams.getNextCursor());
+
+        return TeamSearchResponseDTO.ofDefault(ventureTeamDTOs, supportTeamDTOs, cursorResponse);
     }
 
-    /** 필터링 조건이 있는 경우의 응답 DTO를 구성합니다. */
+    /** 필터링 조건이 있는 경우의 응답 DTO를 구성합니다. - 커서 기반 페이지네이션 적용 */
     private TeamSearchResponseDTO buildFilteredTeamSearchResponse(
             Optional<Long> optionalMemberId,
             List<String> scaleName,
             List<String> cityName,
             List<String> teamStateName,
-            Pageable pageable) {
-        Page<Team> teams =
-                teamQueryAdapter.findAllByFiltering(scaleName, cityName, teamStateName, pageable);
-        Page<TeamInformMenu> teamDTOs =
-                teams.map(
-                        team ->
-                                teamInformMenuAssembler.assembleTeamInformMenu(
-                                        team, optionalMemberId));
+            CursorRequest cursorRequest) {
+        CursorResponse<Team> teams =
+                teamQueryAdapter.findAllByFilteringWithCursor(
+                        scaleName, cityName, teamStateName, cursorRequest);
 
-        return TeamSearchResponseDTO.builder()
-                .ventureTeams(Collections.emptyList())
-                .supportProjectTeams(Collections.emptyList())
-                .defaultTeams(teamDTOs)
-                .build();
+        // Team 엔티티를 DTO로 변환
+        List<TeamInformMenu> teamDTOs =
+                teams.getContent().stream()
+                        .map(
+                                team ->
+                                        teamInformMenuAssembler.assembleTeamInformMenu(
+                                                team, optionalMemberId))
+                        .toList();
+
+        // 변환된 DTO로 새로운 CursorResponse 생성
+        CursorResponse<TeamInformMenu> cursorResponse =
+                CursorResponse.of(teamDTOs, teams.getNextCursor());
+
+        return TeamSearchResponseDTO.ofFiltered(cursorResponse);
     }
 }
