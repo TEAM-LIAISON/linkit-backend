@@ -1,5 +1,6 @@
 package liaison.linkit.chat.domain.repository.chatMessage;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import liaison.linkit.chat.domain.ChatMessage;
@@ -27,4 +28,8 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
             value = "{ 'chat_room_id': ?0, 'message_receiver_member_id': ?1, 'is_read': false }",
             count = true)
     long countUnreadMessagesInRoomForMember(Long chatRoomId, Long memberId);
+
+    // 읽지 않은 메시지 중 특정 시간 이전에 보내진 메시지 조회
+    @Query("{'isRead': false, 'timestamp': {$lte: ?0}}")
+    List<ChatMessage> findUnreadMessagesOlderThan(LocalDateTime timeThreshold);
 }

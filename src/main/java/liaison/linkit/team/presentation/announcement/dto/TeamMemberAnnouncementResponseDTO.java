@@ -208,7 +208,7 @@ public class TeamMemberAnnouncementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementSkillName {
-        private String announcementSkillName;
+        @Builder.Default private String announcementSkillName = "";
     }
 
     @Builder
