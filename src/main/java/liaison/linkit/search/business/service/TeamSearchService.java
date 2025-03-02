@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import liaison.linkit.search.presentation.dto.CursorRequest;
-import liaison.linkit.search.presentation.dto.CursorResponse;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.presentation.dto.team.TeamListResponseDTO;
 import liaison.linkit.search.presentation.dto.team.TeamSearchResponseDTO;
 import liaison.linkit.team.business.assembler.TeamInformMenuAssembler;
@@ -126,23 +126,18 @@ public class TeamSearchService {
         return CursorResponse.of(teamDTOs, teams.getNextCursor());
     }
 
-    /** 제외할 팀 ID 목록 가져오기 (캐싱 적용) */
+    /** 제외할 팀 ID 목록 가져오기 (강제 지정) */
     public List<Long> getExcludeTeamIds() {
-        List<Long> excludeTeamIds = new ArrayList<>();
+        // 큐닷 44L
+        // 애프터액션 10L
+        // 코지메이커스 36L
+        // 독스헌트 AI 4L
 
-        // 벤처 팀 ID
-        Pageable venturePageable = PageRequest.of(0, 4);
-        List<Team> ventureTeams =
-                teamQueryAdapter.findTopVentureTeams(venturePageable).getContent();
-        excludeTeamIds.addAll(ventureTeams.stream().map(Team::getId).toList());
-
-        // 지원 프로젝트 팀 ID
-        Pageable supportPageable = PageRequest.of(0, 4);
-        List<Team> supportTeams =
-                teamQueryAdapter.findSupportProjectTeams(supportPageable).getContent();
-        excludeTeamIds.addAll(supportTeams.stream().map(Team::getId).toList());
-
-        return excludeTeamIds;
+        // TFSolution 37L
+        // 일기 29L
+        // 글들 3L
+        // 마인더 19L
+        return List.of(44L, 10L, 36L, 4L, 37L, 29L, 3L, 19L);
     }
 
     /** 기본 검색 여부를 판단합니다. */
@@ -204,7 +199,7 @@ public class TeamSearchService {
         CursorResponse<TeamInformMenu> cursorResponse =
                 CursorResponse.of(remainingTeamDTOs, remainingTeams.getNextCursor());
 
-        return TeamSearchResponseDTO.ofDefault(ventureTeamDTOs, supportTeamDTOs, cursorResponse);
+        return TeamSearchResponseDTO.ofDefault(cursorResponse);
     }
 
     /** 기존 메서드 - 호환성을 위해 유지 */

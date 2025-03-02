@@ -3,8 +3,8 @@ package liaison.linkit.team.domain.repository.team;
 import java.util.List;
 import java.util.Optional;
 
-import liaison.linkit.search.presentation.dto.CursorRequest;
-import liaison.linkit.search.presentation.dto.CursorResponse;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.domain.team.type.TeamStatus;
 import org.springframework.data.domain.Page;

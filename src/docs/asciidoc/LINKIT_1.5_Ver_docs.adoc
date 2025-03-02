@@ -1476,6 +1476,17 @@ include::{snippets}/team-search-controller-test/search-teams/response-fields.ado
 
 == #[팀원 공고 찾기]#
 
+=== 팀원 공고 찾기 (정적 데이터)
+
+====
+*요청*
+include::{snippets}/announcement-search-controller-test/get-featured-announcements/http-request.adoc[]
+
+*응답*
+include::{snippets}/announcement-search-controller-test/get-featured-announcements/http-response.adoc[]
+include::{snippets}/announcement-search-controller-test/get-featured-announcements/response-fields.adoc[]
+====
+
 === 팀원 공고 찾기 (필터링 포함)
 
 ====

@@ -1,4 +1,4 @@
-package liaison.linkit.search.presentation.dto;
+package liaison.linkit.search.presentation.dto.cursor;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ public class CursorResponse<T> {
     private List<T> content;
 
     // 다음 커서 값
-    private Long nextCursor;
+    private String nextCursor;
 
     // 다음 페이지 존재 여부
     private boolean hasNext;
@@ -28,7 +28,7 @@ public class CursorResponse<T> {
      * @param content 페이지네이션된 데이터 목록
      * @param nextCursor 다음 커서 값
      */
-    public static <T> CursorResponse<T> of(List<T> content, Long nextCursor) {
+    public static <T> CursorResponse<T> of(List<T> content, String nextCursor) {
         return CursorResponse.<T>builder()
                 .content(content)
                 .nextCursor(nextCursor)

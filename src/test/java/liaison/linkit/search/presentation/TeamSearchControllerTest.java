@@ -19,8 +19,8 @@ import liaison.linkit.common.presentation.RegionResponseDTO.RegionDetail;
 import liaison.linkit.global.ControllerTest;
 import liaison.linkit.login.domain.MemberTokens;
 import liaison.linkit.search.business.service.TeamSearchService;
-import liaison.linkit.search.presentation.dto.CursorRequest;
-import liaison.linkit.search.presentation.dto.CursorResponse;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.search.presentation.dto.team.TeamListResponseDTO;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamCurrentStateItem;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
@@ -156,12 +156,12 @@ public class TeamSearchControllerTest extends ControllerTest {
         CursorResponse<TeamInformMenu> teamCursorResponse =
                 CursorResponse.<TeamInformMenu>builder()
                         .content(teams)
-                        .nextCursor(123L) // 다음 커서 값 설정
+                        .nextCursor("nextTeamId") // 다음 커서 값 설정
                         .hasNext(true) // 다음 페이지가 있음
                         .build();
 
         CursorResponse<TeamInformMenu> cursorResponse =
-                CursorResponse.of(teams, 123L); // CursorResponse로 변경
+                CursorResponse.of(teams, "nextTeamId"); // CursorResponse로 변경
 
         when(teamSearchService.searchTeamsWithCursor(
                         any(), any(), any(), any(), any(CursorRequest.class)))
@@ -264,8 +264,8 @@ public class TeamSearchControllerTest extends ControllerTest {
 
                                                 // ✅ 커서 기반 페이지네이션 정보
                                                 fieldWithPath("result.nextCursor")
-                                                        .type(JsonFieldType.NUMBER)
-                                                        .description("다음 페이지 조회를 위한 커서 값"),
+                                                        .type(JsonFieldType.STRING)
+                                                        .description("다음 페이지 조회를 위한 커서 값 (팀 코드)"),
                                                 fieldWithPath("result.hasNext")
                                                         .type(JsonFieldType.BOOLEAN)
                                                         .description("다음 페이지 존재 여부"))))

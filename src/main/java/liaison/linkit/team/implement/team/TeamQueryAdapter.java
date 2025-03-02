@@ -3,8 +3,8 @@ package liaison.linkit.team.implement.team;
 import java.util.List;
 
 import liaison.linkit.common.annotation.Adapter;
-import liaison.linkit.search.presentation.dto.CursorRequest;
-import liaison.linkit.search.presentation.dto.CursorResponse;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.team.domain.repository.currentState.TeamCurrentStateRepository;
 import liaison.linkit.team.domain.repository.team.TeamRepository;
 import liaison.linkit.team.domain.state.TeamCurrentState;

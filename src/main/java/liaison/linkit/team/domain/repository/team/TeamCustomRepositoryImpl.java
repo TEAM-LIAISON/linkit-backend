@@ -15,8 +15,8 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.profile.domain.region.QRegion;
-import liaison.linkit.search.presentation.dto.CursorRequest;
-import liaison.linkit.search.presentation.dto.CursorResponse;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.team.domain.region.QTeamRegion;
 import liaison.linkit.team.domain.scale.QScale;
 import liaison.linkit.team.domain.scale.QTeamScale;
@@ -478,11 +478,11 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             }
 
             // 다음 커서 계산
-            Long nextCursor = null;
+            String nextCursor = null;
             boolean hasNext = teamIds.size() > pageSize;
 
             if (hasNext) {
-                nextCursor = teamIds.get(teamIds.size() - 1);
+                nextCursor = String.valueOf(teamIds.get(teamIds.size() - 1));
                 teamIds.remove(teamIds.size() - 1);
             }
 
@@ -580,11 +580,11 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
             // 다음 커서 계산
             boolean hasNext = teamIds.size() > pageSize;
-            Long nextCursor = null;
+            String nextCursor = null;
 
             // 다음 페이지가 있는 경우
             if (hasNext) {
-                nextCursor = teamIds.get(teamIds.size() - 1);
+                nextCursor = String.valueOf(teamIds.get(teamIds.size() - 1));
                 teamIds.remove(teamIds.size() - 1); // 마지막 요소 제거
             }
 

@@ -1,4 +1,4 @@
-package liaison.linkit.search.presentation.dto;
+package liaison.linkit.search.presentation.dto.profile;
 
 import java.util.ArrayList;
 import java.util.List;

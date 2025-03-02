@@ -1,4 +1,4 @@
-package liaison.linkit.search.presentation.dto;
+package liaison.linkit.search.presentation.dto.cursor;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

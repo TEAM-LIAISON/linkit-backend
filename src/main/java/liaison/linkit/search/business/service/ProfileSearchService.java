@@ -9,7 +9,7 @@ import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
-import liaison.linkit.search.presentation.dto.ProfileSearchResponseDTO;
+import liaison.linkit.search.presentation.dto.profile.ProfileSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -22,7 +22,7 @@ import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDT
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileTeamInform;
 import liaison.linkit.search.business.service.ProfileSearchService;
-import liaison.linkit.search.presentation.dto.ProfileSearchResponseDTO;
+import liaison.linkit.search.presentation.dto.profile.ProfileSearchResponseDTO;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
