@@ -78,10 +78,14 @@ public class TeamMapper {
                 .teamCurrentStates(teamCurrentStateItems)
                 .isTeamScrap(isTeamScrap)
                 .teamScrapCount(teamScrapCount)
-                .teamName(team.getTeamName())
-                .teamCode(team.getTeamCode())
-                .teamShortDescription(team.getTeamShortDescription())
-                .teamLogoImagePath(team.getTeamLogoImagePath())
+                .teamName(team.getTeamName() != null ? team.getTeamName() : "")
+                .teamCode(team.getTeamCode() != null ? team.getTeamCode() : "")
+                .teamShortDescription(
+                        team.getTeamShortDescription() != null
+                                ? team.getTeamShortDescription()
+                                : "")
+                .teamLogoImagePath(
+                        team.getTeamLogoImagePath() != null ? team.getTeamLogoImagePath() : "")
                 .teamScaleItem(teamScaleItem)
                 .regionDetail(regionDetail)
                 .build();

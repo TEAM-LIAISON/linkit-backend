@@ -1,5 +1,6 @@
 package liaison.linkit.profile.business.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import liaison.linkit.common.annotation.Mapper;
@@ -61,17 +62,33 @@ public class ProfileMapper {
             final RegionDetail regionDetail,
             final List<ProfileTeamInform> profileTeamInforms) {
         return ProfileResponseDTO.ProfileInformMenu.builder()
-                .profileCurrentStates(profileCurrentStateItems)
+                .profileCurrentStates(
+                        profileCurrentStateItems != null
+                                ? profileCurrentStateItems
+                                : new ArrayList<>())
                 .isProfileScrap(isProfileScrap)
                 .profileScrapCount(profileScrapCount)
-                .profileImagePath(profile.getProfileImagePath())
-                .memberName(profile.getMember().getMemberBasicInform().getMemberName())
-                .emailId(profile.getMember().getEmailId())
-                .isProfilePublic(profile.isProfilePublic())
-                .majorPosition(profilePositionDetail.getMajorPosition())
-                .subPosition(profilePositionDetail.getSubPosition())
-                .regionDetail(regionDetail)
-                .profileTeamInforms(profileTeamInforms)
+                .profileImagePath(profile != null ? profile.getProfileImagePath() : "")
+                .memberName(
+                        profile != null
+                                        && profile.getMember() != null
+                                        && profile.getMember().getMemberBasicInform() != null
+                                ? profile.getMember().getMemberBasicInform().getMemberName()
+                                : "")
+                .emailId(
+                        profile != null && profile.getMember() != null
+                                ? profile.getMember().getEmailId()
+                                : "")
+                .isProfilePublic(profile != null && profile.isProfilePublic())
+                .majorPosition(
+                        profilePositionDetail != null
+                                ? profilePositionDetail.getMajorPosition()
+                                : "")
+                .subPosition(
+                        profilePositionDetail != null ? profilePositionDetail.getSubPosition() : "")
+                .regionDetail(regionDetail != null ? regionDetail : new RegionDetail())
+                .profileTeamInforms(
+                        profileTeamInforms != null ? profileTeamInforms : new ArrayList<>())
                 .build();
     }
 
