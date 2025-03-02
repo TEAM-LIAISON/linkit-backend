@@ -27,14 +27,14 @@ public class LogResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LogInformMenu {
-        private Long id;
-        private String domainType;
+        @Builder.Default private Long id = 0L;
+        @Builder.Default private String domainType = "";
 
-        private LocalDateTime createdAt;
-        private String logTitle;
-        private String logContent;
+        @Builder.Default private LocalDateTime createdAt = LocalDateTime.now();
+        @Builder.Default private String logTitle = "";
+        @Builder.Default private String logContent = "";
 
-        private LogInformDetails logInformDetails;
+        @Builder.Default private LogInformDetails logInformDetails = new LogInformDetails();
     }
 
     @Getter

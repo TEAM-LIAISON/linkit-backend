@@ -102,19 +102,15 @@ public class TeamResponseDTO {
 
         @Builder.Default private List<TeamCurrentStateItem> teamCurrentStates = new ArrayList<>();
 
-        private Boolean isTeamScrap;
+        @Builder.Default private Boolean isTeamScrap = false;
 
-        private int teamScrapCount;
+        @Builder.Default private int teamScrapCount = 0;
 
-        private String teamName;
-        private String teamCode;
-        private String teamShortDescription;
-        private String teamLogoImagePath;
-
-        // 팀 규모 정보
+        @Builder.Default private String teamName = "";
+        @Builder.Default private String teamCode = "";
+        @Builder.Default private String teamShortDescription = "";
+        @Builder.Default private String teamLogoImagePath = "";
         @Builder.Default private TeamScaleItem teamScaleItem = new TeamScaleItem();
-
-        // 지역 정보
         @Builder.Default private RegionDetail regionDetail = new RegionDetail();
     }
 
