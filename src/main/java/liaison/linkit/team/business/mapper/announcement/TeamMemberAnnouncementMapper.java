@@ -50,8 +50,7 @@ public class TeamMemberAnnouncementMapper {
                 .isClosed(isClosed)
                 .isPermanentRecruitment(
                         teamMemberAnnouncement != null
-                                ? teamMemberAnnouncement.isPermanentRecruitment()
-                                : false)
+                                && teamMemberAnnouncement.isPermanentRecruitment())
                 .announcementTitle(
                         teamMemberAnnouncement != null
                                 ? teamMemberAnnouncement.getAnnouncementTitle()

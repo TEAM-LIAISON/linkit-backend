@@ -198,8 +198,9 @@ public class TeamMemberAnnouncementResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AnnouncementPositionItem {
-        private String majorPosition;
-        private String subPosition;
+
+        @Builder.Default private String majorPosition = "";
+        @Builder.Default private String subPosition = "";
     }
 
     @Builder

@@ -129,7 +129,7 @@ public class TeamResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TeamScaleItem {
-        private String teamScaleName;
+        @Builder.Default private String teamScaleName = "";
     }
 
     // 팀 목록 정보

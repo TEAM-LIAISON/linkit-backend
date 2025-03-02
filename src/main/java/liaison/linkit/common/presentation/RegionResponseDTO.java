@@ -14,7 +14,7 @@ public class RegionResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class RegionDetail {
-        private String cityName;
-        private String divisionName;
+        @Builder.Default private String cityName = "";
+        @Builder.Default private String divisionName = "";
     }
 }
