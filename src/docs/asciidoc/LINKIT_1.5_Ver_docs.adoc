@@ -1451,6 +1451,17 @@ include::{snippets}/profile-search-controller-test/search-profiles/response-fiel
 
 == #[팀 찾기]#
 
+=== 팀 찾기 (정적 데이터)
+
+====
+*요청*
+include::{snippets}/team-search-controller-test/get-featured-teams/http-request.adoc[]
+
+*응답*
+include::{snippets}/team-search-controller-test/get-featured-teams/http-response.adoc[]
+include::{snippets}/team-search-controller-test/get-featured-teams/response-fields.adoc[]
+====
+
 === 팀 찾기 (필터링 포함)
 
 ====

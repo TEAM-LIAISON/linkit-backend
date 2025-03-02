@@ -54,7 +54,7 @@ public class TeamSearchController { // 팀 찾기 컨트롤러
      * @param teamStateName 팀 현재 상태 (선택적)
      * @return 팀 목록과 커서 정보
      */
-    @GetMapping("/search")
+    @GetMapping
     public CommonResponse<CursorResponse<TeamResponseDTO.TeamInformMenu>> searchTeams(
             @Auth final Accessor accessor,
             @RequestParam(value = "cursor", required = false) String cursor,
