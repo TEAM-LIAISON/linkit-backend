@@ -1,8 +1,6 @@
 package liaison.linkit.chat.domain.repository.chatMessage;
 
-import java.time.LocalDateTime;
 import java.util.List;
-
 import liaison.linkit.chat.domain.ChatMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,5 +29,5 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
 
     // 수정된 쿼리
     @Query("{'is_read': false, 'timestamp': {$lte: ?0}}")
-    List<ChatMessage> findUnreadMessagesOlderThan(LocalDateTime timeThreshold);
+    List<ChatMessage> findUnreadMessagesOlderThan(String timeThresholdStr);
 }
