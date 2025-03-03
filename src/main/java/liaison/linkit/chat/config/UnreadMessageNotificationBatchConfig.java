@@ -61,9 +61,9 @@ public class UnreadMessageNotificationBatchConfig {
     @Bean
     public ItemReader<ChatMessage> unreadMessageReader() {
         // 1시간 전에 전송된 읽지 않은 메시지 조회
-        LocalDateTime oneHourAgo = LocalDateTime.now().minusHours(1);
+        LocalDateTime oneMinutesAgo = LocalDateTime.now().minusMinutes(1);
         List<ChatMessage> unreadMessages =
-                chatMessageRepository.findUnreadMessagesOlderThan(oneHourAgo);
+                chatMessageRepository.findUnreadMessagesOlderThan(oneMinutesAgo);
 
         // 이미 알림을 보낸 메시지는 필터링
         List<ChatMessage> messagesToNotify = new ArrayList<>();

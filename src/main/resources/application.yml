@@ -87,3 +87,5 @@ decorator:
 logging:
   level:
     org.springframework.web: INFO
+    org.springframework.batch: DEBUG
+    org.springframework.scheduling: DEBUG
