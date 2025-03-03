@@ -1,6 +1,7 @@
 package liaison.linkit.chat.domain.repository.chatMessage;
 
 import java.util.List;
+
 import liaison.linkit.chat.domain.ChatMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
