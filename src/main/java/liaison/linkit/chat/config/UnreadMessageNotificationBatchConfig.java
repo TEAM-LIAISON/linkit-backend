@@ -30,15 +30,20 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @EnableBatchProcessing
 public class UnreadMessageNotificationBatchConfig {
-    @Autowired private JobRepository jobRepository;
+    @Autowired
+    private JobRepository jobRepository;
 
-    @Autowired private PlatformTransactionManager transactionManager;
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
-    @Autowired private ChatMessageRepository chatMessageRepository;
+    @Autowired
+    private ChatMessageRepository chatMessageRepository;
 
-    @Autowired private MemberQueryAdapter memberQueryAdapter;
+    @Autowired
+    private MemberQueryAdapter memberQueryAdapter;
 
-    @Autowired private ChatNotificationLogRepository notificationLogRepository;
+    @Autowired
+    private ChatNotificationLogRepository notificationLogRepository;
 
     @Bean
     public Job unreadMessageNotificationJob() {
@@ -61,9 +66,9 @@ public class UnreadMessageNotificationBatchConfig {
     @Bean
     public ItemReader<ChatMessage> unreadMessageReader() {
         // 1시간 전에 전송된 읽지 않은 메시지 조회
-        LocalDateTime oneMinutesAgo = LocalDateTime.now().minusMinutes(1);
+        LocalDateTime oneHourAgo = LocalDateTime.now().minusHours(1);
         List<ChatMessage> unreadMessages =
-                chatMessageRepository.findUnreadMessagesOlderThan(oneMinutesAgo);
+                chatMessageRepository.findUnreadMessagesOlderThan(oneHourAgo);
 
         // 이미 알림을 보낸 메시지는 필터링
         List<ChatMessage> messagesToNotify = new ArrayList<>();
