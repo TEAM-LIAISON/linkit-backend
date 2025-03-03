@@ -1,6 +1,7 @@
 package liaison.linkit.chat.scheduler;
 
 import java.util.UUID;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -14,19 +15,18 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 public class UnreadMessageNotificationScheduler {
 
-    @Autowired
-    private JobLauncher jobLauncher;
+    @Autowired private JobLauncher jobLauncher;
 
-    @Autowired
-    private Job unreadMessageNotificationJob;
+    @Autowired private Job unreadMessageNotificationJob;
 
     // 1분마다 실행
     @Scheduled(fixedRate = 60000)
     public void scheduleUnreadMessageNotificationJob() throws Exception {
-        JobParameters params = new JobParametersBuilder()
-                .addLong("time", System.currentTimeMillis())
-                .addString("uuid", UUID.randomUUID().toString())
-                .toJobParameters();
+        JobParameters params =
+                new JobParametersBuilder()
+                        .addLong("time", System.currentTimeMillis())
+                        .addString("uuid", UUID.randomUUID().toString())
+                        .toJobParameters();
 
         jobLauncher.run(unreadMessageNotificationJob, params);
     }

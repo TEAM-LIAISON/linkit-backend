@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import liaison.linkit.profile.domain.profile.Profile;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -24,6 +26,15 @@ public interface ProfileCustomRepository {
             final Pageable pageable);
 
     Page<Profile> findAllExcludingIds(final List<Long> excludeIds, final Pageable pageable);
+
+    CursorResponse<Profile> findAllExcludingIdsWithCursor(
+            final List<Long> excludeIds, final CursorRequest cursorRequest);
+
+    CursorResponse<Profile> findAllByFilteringWithCursor(
+            final List<String> subPosition,
+            final List<String> cityName,
+            final List<String> profileStateName,
+            final CursorRequest cursorRequest);
 
     List<Profile> findHomeTopProfiles(final int limit);
 
