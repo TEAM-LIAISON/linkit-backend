@@ -1436,6 +1436,17 @@ include::{snippets}/team-member-controller-test/update-managing-team-state/respo
 
 == #[팀원 찾기]#
 
+=== 팀원 찾기 (정적 데이터)
+
+====
+*요청*
+include::{snippets}/profile-search-controller-test/get-featured-profiles/http-request.adoc[]
+
+*응답*
+include::{snippets}/profile-search-controller-test/get-featured-profiles/http-response.adoc[]
+include::{snippets}/profile-search-controller-test/get-featured-profiles/response-fields.adoc[]
+====
+
 === 팀원 찾기 (필터링 포함)
 
 ====
