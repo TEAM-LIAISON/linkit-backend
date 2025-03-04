@@ -2,6 +2,8 @@ package liaison.linkit.profile.business.service;
 
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 
@@ -116,6 +118,7 @@ public class ProfileAwardsService {
         return profileAwardsMapper.toRemoveProfileAwards(profileAwardsId);
     }
 
+    @Transactional
     public ProfileAwardsResponseDTO.ProfileAwardsCertificationResponse
             addProfileAwardsCertification(
                     final Long memberId,
@@ -144,20 +147,18 @@ public class ProfileAwardsService {
                     awardsCertificationAttachFilePath);
         }
 
-        // 저장 후 다시 조회하여 최신 값 사용
-        ProfileAwards updatedProfileAwards =
-                profileAwardsQueryAdapter.getProfileAwards(profileAwardsId);
+        LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         final ProfileAwardsCertificationReportDto profileAwardsCertificationReportDto =
                 ProfileAwardsCertificationReportDto.builder()
-                        .profileAwardsId(updatedProfileAwards.getId())
-                        .emailId(updatedProfileAwards.getProfile().getMember().getEmailId())
-                        .awardsName(updatedProfileAwards.getAwardsName())
+                        .profileAwardsId(profileAwards.getId())
+                        .emailId(profileAwards.getProfile().getMember().getEmailId())
+                        .awardsName(profileAwards.getAwardsName())
                         .awardsCertificationAttachFileName(
-                                updatedProfileAwards.getAwardsCertificationAttachFileName())
+                                profileAwards.getAwardsCertificationAttachFileName())
                         .awardsCertificationAttachFilePath(
-                                updatedProfileAwards.getAwardsCertificationAttachFilePath())
-                        .uploadTime(updatedProfileAwards.getModifiedAt())
+                                profileAwards.getAwardsCertificationAttachFilePath())
+                        .uploadTime(nowInSeoul)
                         .build();
 
         discordProfileCertificationReportService.sendProfileAwardsReport(
