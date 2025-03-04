@@ -68,6 +68,7 @@ public class UnreadMessageNotificationBatchConfig {
         // 이미 알림을 보낸 메시지는 필터링
         List<ChatMessage> messagesToNotify = new ArrayList<>();
         for (ChatMessage message : unreadMessages) {
+            log.info("Message: " + message.getId());
             if (message != null && message.getId() != null) {
                 List<ChatNotificationLog> logs =
                         notificationLogRepository.findByChatMessageId(message.getId());

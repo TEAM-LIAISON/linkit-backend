@@ -82,7 +82,7 @@ logging:
   level:
     root: INFO                        # 기본 로그 레벨
     liaison.swagger_test: DEBUG       # 애플리케이션 패키지는 DEBUG로 설정
-    org.springframework.web: INFO     # 웹 요청 로그
+    #    org.springframework.web: INFO     # 웹 요청 로그
     org.springframework.batch: DEBUG  # 배치 작업 로그 (상세히)
     org.springframework.scheduling: DEBUG # 스케줄링 작업 로그 (상세히)
     org.hibernate.SQL: DEBUG          # SQL 쿼리 로그
