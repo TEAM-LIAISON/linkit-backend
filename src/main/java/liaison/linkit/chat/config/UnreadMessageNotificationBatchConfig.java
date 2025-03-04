@@ -1,6 +1,7 @@
 package liaison.linkit.chat.config;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -22,6 +24,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.support.ListItemReader;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -48,17 +51,26 @@ public class UnreadMessageNotificationBatchConfig {
     public Step unreadMessageNotificationStep() {
         return new StepBuilder("unreadMessageNotificationStep", jobRepository)
                 .<ChatMessage, UnreadMessageNotificationDTO>chunk(100, transactionManager)
-                .reader(unreadMessageReader())
+                .reader(unreadMessageReader(null)) // null은 StepScope에서 실제 값으로 대체됨
                 .processor(unreadMessageProcessor())
                 .writer(unreadMessageNotificationWriter())
                 .allowStartIfComplete(true)
                 .build();
     }
 
+    /**
+     * Step 실행마다 새로운 Reader 인스턴스 생성을 위해 @StepScope 적용 StepScope 빈은 Step 실행 시점에 생성되고 Step 실행 후 제거됨
+     */
     @Bean
-    public ItemReader<ChatMessage> unreadMessageReader() {
+    @StepScope
+    public ItemReader<ChatMessage> unreadMessageReader(
+            @Value("#{jobParameters['time']}") Long time) {
+        // time 파라미터를 사용하여 각 실행마다 다른 값임을 보장 (로깅용)
+        log.info("Creating new reader instance. Job execution time: {}", time);
+
         // 30분 전에 전송된 읽지 않은 메시지 조회
-        LocalDateTime thirtyMinutesAgo = LocalDateTime.now().minusMinutes(30);
+        LocalDateTime thirtyMinutesAgo =
+                LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusMinutes(30);
 
         log.info("Looking for unread messages older than: {}", thirtyMinutesAgo);
 
@@ -128,8 +140,10 @@ public class UnreadMessageNotificationBatchConfig {
     }
 
     @Bean
+    @StepScope // Writer도 StepScope로 변경하여 매번 새로 생성되도록 함
     public ItemWriter<UnreadMessageNotificationDTO> unreadMessageNotificationWriter() {
         return items -> {
+            log.info("Writing notifications for {} items", items.size());
             List<ChatNotificationLog> logs = new ArrayList<>();
 
             for (UnreadMessageNotificationDTO item : items) {
@@ -141,20 +155,22 @@ public class UnreadMessageNotificationBatchConfig {
                                         .chatMessageId(item.getMessageId())
                                         .chatRoomId(item.getChatRoomId())
                                         .receiverMemberId(item.getReceiverMemberId())
-                                        .sentAt(LocalDateTime.now())
+                                        .sentAt(LocalDateTime.now(ZoneId.of("Asia/Seoul")))
                                         .build();
 
                         logs.add(log);
                     } catch (Exception e) {
-                        // 로깅 등의 예외 처리
-                        System.err.println("Error sending notification: " + e.getMessage());
+                        log.error("Error preparing notification: {}", e.getMessage(), e);
                     }
                 }
             }
 
             // 알림 기록 저장
             if (!logs.isEmpty()) {
+                log.info("Saving {} notification logs", logs.size());
                 notificationLogRepository.saveAll(logs);
+            } else {
+                log.info("No notification logs to save");
             }
         };
     }
