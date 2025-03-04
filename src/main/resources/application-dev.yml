@@ -89,15 +89,15 @@ spring:
 decorator:
   datasource:
     p6spy:
-      enable-logging: true
-      multiline: true
+      enable-logging: false
+      multiline: false
       logging: slf4j
 
 logging:
   level:
     root: INFO
     liaison.swagger_test: INFO
-    org.springframework.web: INFO
+    #    org.springframework.web: INFO
     org.springframework.batch: INFO
     # 기타 로그 레벨 설정...
   pattern:
