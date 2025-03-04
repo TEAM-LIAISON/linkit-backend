@@ -29,6 +29,7 @@ public interface ChatMessageRepository extends MongoRepository<ChatMessage, Stri
             count = true)
     long countUnreadMessagesInRoomForMember(Long chatRoomId, Long memberId);
 
-    @Query("{'is_read': false, 'timestamp': {$lte: ?0}}")
+    // 읽지 않은 메시지 중 특정 시간보다 오래된 메시지 조회
+    @Query(value = "{ 'is_read': false, 'timestamp': {$lte: ?0} }")
     List<ChatMessage> findUnreadMessagesOlderThan(LocalDateTime timeThreshold);
 }

@@ -11,39 +11,35 @@ import liaison.linkit.chat.domain.repository.chatNotificationLog.ChatNotificatio
 import liaison.linkit.chat.presentation.dto.UnreadMessageNotificationDTO;
 import liaison.linkit.member.domain.Member;
 import liaison.linkit.member.implement.MemberQueryAdapter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.support.ListItemReader;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+@Slf4j
 @Configuration
-@EnableBatchProcessing
+@RequiredArgsConstructor
 public class UnreadMessageNotificationBatchConfig {
-    @Autowired private JobRepository jobRepository;
 
-    @Autowired private PlatformTransactionManager transactionManager;
-
-    @Autowired private ChatMessageRepository chatMessageRepository;
-
-    @Autowired private MemberQueryAdapter memberQueryAdapter;
-
-    @Autowired private ChatNotificationLogRepository notificationLogRepository;
+    private final JobRepository jobRepository;
+    private final PlatformTransactionManager transactionManager;
+    private final ChatMessageRepository chatMessageRepository;
+    private final MemberQueryAdapter memberQueryAdapter;
+    private final ChatNotificationLogRepository notificationLogRepository;
 
     @Bean
     public Job unreadMessageNotificationJob() {
         return new JobBuilder("unreadMessageNotificationJob", jobRepository)
-                .incrementer(new RunIdIncrementer())
                 .start(unreadMessageNotificationStep())
                 .build();
     }
@@ -55,6 +51,7 @@ public class UnreadMessageNotificationBatchConfig {
                 .reader(unreadMessageReader())
                 .processor(unreadMessageProcessor())
                 .writer(unreadMessageNotificationWriter())
+                .allowStartIfComplete(true)
                 .build();
     }
 
@@ -65,13 +62,19 @@ public class UnreadMessageNotificationBatchConfig {
         List<ChatMessage> unreadMessages =
                 chatMessageRepository.findUnreadMessagesOlderThan(oneHourAgo);
 
+        log.info("Unread messages: " + unreadMessages.size());
+
         // 이미 알림을 보낸 메시지는 필터링
         List<ChatMessage> messagesToNotify = new ArrayList<>();
         for (ChatMessage message : unreadMessages) {
-            List<ChatNotificationLog> logs =
-                    notificationLogRepository.findByChatMessageId(message.getId());
-            if (logs.isEmpty()) {
-                messagesToNotify.add(message);
+            if (message != null && message.getId() != null) {
+                List<ChatNotificationLog> logs =
+                        notificationLogRepository.findByChatMessageId(message.getId());
+                log.info("Notification logs: " + logs.size());
+                if (logs.isEmpty()) {
+                    messagesToNotify.add(message);
+                    log.info("Message to notify: " + message.getId());
+                }
             }
         }
 
@@ -120,7 +123,6 @@ public class UnreadMessageNotificationBatchConfig {
             for (UnreadMessageNotificationDTO item : items) {
                 if (item != null) {
                     try {
-
                         // 알림 기록 저장
                         ChatNotificationLog log =
                                 ChatNotificationLog.builder()

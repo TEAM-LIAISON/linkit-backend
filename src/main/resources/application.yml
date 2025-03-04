@@ -80,8 +80,8 @@ spring:
 decorator:
   datasource:
     p6spy:
-      enable-logging: true
-      multiline: true
+      enable-logging: false
+      multiline: false
       logging: slf4j
 
 logging:
