@@ -16,7 +16,7 @@ public class DiscordMemberReportService implements MemberReportService {
     private final DiscordService discordService;
 
     @Override
-    public void sendCreateMemberReport(MemberCreateReportDto memberCreateReportDto) {
+    public void sendCreateMemberReport(final MemberCreateReportDto memberCreateReportDto) {
         var msg =
                 "## 회원 생성 알림"
                         + "\n\n**회원 생성 ID:** "

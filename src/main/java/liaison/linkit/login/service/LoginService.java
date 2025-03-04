@@ -114,7 +114,7 @@ public class LoginService {
 
                 profileCommandAdapter.create(Profile.builder().member(member).build());
 
-                MemberCreateReportDto memberCreateReportDto =
+                final MemberCreateReportDto memberCreateReportDto =
                         MemberCreateReportDto.builder()
                                 .memberId(member.getId())
                                 .email(member.getEmail())
