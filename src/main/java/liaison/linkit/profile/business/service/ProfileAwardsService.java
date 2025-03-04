@@ -147,7 +147,7 @@ public class ProfileAwardsService {
                     awardsCertificationAttachFilePath);
         }
 
-        LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+        final LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
 
         final ProfileAwardsCertificationReportDto profileAwardsCertificationReportDto =
                 ProfileAwardsCertificationReportDto.builder()

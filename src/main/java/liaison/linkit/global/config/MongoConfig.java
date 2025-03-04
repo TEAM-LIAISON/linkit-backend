@@ -1,7 +1,5 @@
 package liaison.linkit.global.config;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ReadingConverter;
-import org.springframework.data.convert.WritingConverter;
 import org.springframework.data.mongodb.config.AbstractMongoClientConfiguration;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
@@ -63,31 +59,6 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     private void logConnectionDetails(String uri) {
         System.out.println("Connecting to MongoDB with URI: " + uri);
-    }
-
-    @WritingConverter
-    public static class LocalDateTimeToStringConverter implements Converter<LocalDateTime, String> {
-        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
-
-        @Override
-        public String convert(LocalDateTime source) {
-            return source.format(FORMATTER);
-        }
-    }
-
-    @ReadingConverter
-    public static class StringToLocalDateTimeConverter implements Converter<String, LocalDateTime> {
-        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
-
-        @Override
-        public LocalDateTime convert(String source) {
-            try {
-                return LocalDateTime.parse(source, FORMATTER);
-            } catch (Exception e) {
-                // Fallback for existing data that might be in a different format
-                return LocalDateTime.parse(source);
-            }
-        }
     }
 
     @Bean
