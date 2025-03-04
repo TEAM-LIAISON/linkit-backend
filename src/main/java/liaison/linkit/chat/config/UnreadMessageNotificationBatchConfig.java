@@ -47,7 +47,7 @@ public class UnreadMessageNotificationBatchConfig {
     @Bean
     public Step unreadMessageNotificationStep() {
         return new StepBuilder("unreadMessageNotificationStep", jobRepository)
-                .<ChatMessage, UnreadMessageNotificationDTO>chunk(10, transactionManager)
+                .<ChatMessage, UnreadMessageNotificationDTO>chunk(100, transactionManager)
                 .reader(unreadMessageReader())
                 .processor(unreadMessageProcessor())
                 .writer(unreadMessageNotificationWriter())
@@ -57,29 +57,39 @@ public class UnreadMessageNotificationBatchConfig {
 
     @Bean
     public ItemReader<ChatMessage> unreadMessageReader() {
-        // 1시간 전에 전송된 읽지 않은 메시지 조회
+        // 30분 전에 전송된 읽지 않은 메시지 조회
         LocalDateTime thirtyMinutesAgo = LocalDateTime.now().minusMinutes(30);
+
+        log.info("Looking for unread messages older than: {}", thirtyMinutesAgo);
 
         List<ChatMessage> unreadMessages =
                 chatMessageRepository.findUnreadMessagesOlderThan(thirtyMinutesAgo);
 
-        log.info("Unread messages: " + unreadMessages.size());
+        log.info("Found {} unread messages", unreadMessages.size());
 
         // 이미 알림을 보낸 메시지는 필터링
         List<ChatMessage> messagesToNotify = new ArrayList<>();
         for (ChatMessage message : unreadMessages) {
-            log.info("Message: " + message.getId());
+            // Debug logging to trace message processing
             if (message != null && message.getId() != null) {
+                log.debug(
+                        "Processing message ID: {}, timestamp: {}",
+                        message.getId(),
+                        message.getTimestamp());
+
                 List<ChatNotificationLog> logs =
                         notificationLogRepository.findByChatMessageId(message.getId());
-                log.info("Notification logs: " + logs.size());
+
                 if (logs.isEmpty()) {
                     messagesToNotify.add(message);
-                    log.info("Message to notify: " + message.getId());
+                    log.debug("Message added for notification: {}", message.getId());
+                } else {
+                    log.debug("Message already notified, skipping: {}", message.getId());
                 }
             }
         }
 
+        log.info("Total messages to notify: {}", messagesToNotify.size());
         return new ListItemReader<>(messagesToNotify);
     }
 

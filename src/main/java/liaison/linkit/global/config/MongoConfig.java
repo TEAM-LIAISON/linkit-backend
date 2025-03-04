@@ -1,6 +1,7 @@
 package liaison.linkit.global.config;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,26 +67,32 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
     @WritingConverter
     public static class LocalDateTimeToStringConverter implements Converter<LocalDateTime, String> {
+        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+
         @Override
         public String convert(LocalDateTime source) {
-            return source.toString();
+            return source.format(FORMATTER);
         }
     }
 
     @ReadingConverter
     public static class StringToLocalDateTimeConverter implements Converter<String, LocalDateTime> {
+        private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
+
         @Override
         public LocalDateTime convert(String source) {
-            return LocalDateTime.parse(source);
+            try {
+                return LocalDateTime.parse(source, FORMATTER);
+            } catch (Exception e) {
+                // Fallback for existing data that might be in a different format
+                return LocalDateTime.parse(source);
+            }
         }
     }
 
-    // MongoConfig에 등록
     @Bean
     public MongoCustomConversions customConversions() {
         List<Converter<?, ?>> converters = new ArrayList<>();
-        converters.add(new LocalDateTimeToStringConverter());
-        converters.add(new StringToLocalDateTimeConverter());
         return new MongoCustomConversions(converters);
     }
 }
