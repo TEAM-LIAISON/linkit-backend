@@ -127,7 +127,7 @@ public class ProfileAwardsService {
         final ProfileAwards profileAwards =
                 profileAwardsQueryAdapter.getProfileAwards(profileAwardsId);
 
-        // 프로필 이력 인증서를 업데이트한다.
+        // 프로필 수상 인증서를 업데이트한다.
         if (fileValidator.validatingFileUpload(profileAwardsCertificationFile)) {
             awardsCertificationAttachFileName =
                     Normalizer.normalize(
@@ -144,16 +144,20 @@ public class ProfileAwardsService {
                     awardsCertificationAttachFilePath);
         }
 
+        // 저장 후 다시 조회하여 최신 값 사용
+        ProfileAwards updatedProfileAwards =
+                profileAwardsQueryAdapter.getProfileAwards(profileAwardsId);
+
         final ProfileAwardsCertificationReportDto profileAwardsCertificationReportDto =
                 ProfileAwardsCertificationReportDto.builder()
-                        .profileAwardsId(profileAwards.getId())
-                        .emailId(profileAwards.getProfile().getMember().getEmailId())
-                        .awardsName(profileAwards.getAwardsName())
+                        .profileAwardsId(updatedProfileAwards.getId())
+                        .emailId(updatedProfileAwards.getProfile().getMember().getEmailId())
+                        .awardsName(updatedProfileAwards.getAwardsName())
                         .awardsCertificationAttachFileName(
-                                profileAwards.getAwardsCertificationAttachFileName())
+                                updatedProfileAwards.getAwardsCertificationAttachFileName())
                         .awardsCertificationAttachFilePath(
-                                profileAwards.getAwardsCertificationAttachFilePath())
-                        .uploadTime(profileAwards.getModifiedAt())
+                                updatedProfileAwards.getAwardsCertificationAttachFilePath())
+                        .uploadTime(updatedProfileAwards.getModifiedAt())
                         .build();
 
         discordProfileCertificationReportService.sendProfileAwardsReport(
