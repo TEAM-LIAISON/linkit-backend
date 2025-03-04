@@ -86,6 +86,23 @@ spring:
       max-file-size: 60MB # 한 개 파일의 최대 사이즈
       max-request-size: 60MB # 한 개 요청의 최대 사이즈
 
+
+logging:
+  level:
+    root: INFO
+    liaison.swagger_test: INFO
+    org.springframework.web: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] %-5level %logger{36} - %msg%n"
+  file:
+    name: ./logs/application-dev.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30
+      total-size-cap: 5GB
+
 decorator:
   datasource:
     p6spy:
@@ -93,9 +110,17 @@ decorator:
       multiline: true
       logging: slf4j
 
-logging:
-  level:
-    org.springframework.web: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.hibernate.stat: DEBUG
+springdoc:
+  webjars:
+    prefix:
+  api-docs:
+    path: /linkit/api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    urls:
+      - url: /linkit/api-docs
+        name: all
+    path: /linkit/swagger
+    configUrl: /linkit/api-docs/swagger-config
+    disable-swagger-default-url: true
