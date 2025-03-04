@@ -169,6 +169,7 @@ public class ProfileEducationService {
                                 profileEducation.getEducationCertificationAttachFileName())
                         .educationCertificationAttachFilePath(
                                 profileEducation.getEducationCertificationAttachFilePath())
+                        .uploadTime(profileEducation.getModifiedAt())
                         .build();
 
         discordProfileCertificationReportService.sendProfileEducationReport(

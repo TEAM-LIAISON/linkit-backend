@@ -157,6 +157,7 @@ public class ProfileLicenseService {
                                 profileLicense.getLicenseCertificationAttachFileName())
                         .licenseCertificationAttachFilePath(
                                 profileLicense.getLicenseCertificationAttachFilePath())
+                        .uploadTime(profileLicense.getModifiedAt())
                         .build();
 
         discordProfileCertificationReportService.sendProfileLicenseReport(

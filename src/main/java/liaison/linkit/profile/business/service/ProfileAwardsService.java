@@ -153,6 +153,7 @@ public class ProfileAwardsService {
                                 profileAwards.getAwardsCertificationAttachFileName())
                         .awardsCertificationAttachFilePath(
                                 profileAwards.getAwardsCertificationAttachFilePath())
+                        .uploadTime(profileAwards.getModifiedAt())
                         .build();
 
         discordProfileCertificationReportService.sendProfileAwardsReport(

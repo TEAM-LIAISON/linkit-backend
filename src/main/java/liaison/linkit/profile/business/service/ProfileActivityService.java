@@ -155,6 +155,7 @@ public class ProfileActivityService {
                                 profileActivity.getActivityCertificationAttachFileName())
                         .activityCertificationAttachFilePath(
                                 profileActivity.getActivityCertificationAttachFilePath())
+                        .uploadTime(profileActivity.getModifiedAt())
                         .build();
 
         discordProfileCertificationReportService.sendProfileActivityReport(
