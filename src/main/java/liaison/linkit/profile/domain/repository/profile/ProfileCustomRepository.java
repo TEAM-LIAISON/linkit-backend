@@ -19,14 +19,6 @@ public interface ProfileCustomRepository {
 
     void deleteByMemberId(final Long memberId);
 
-    Page<Profile> findAll(
-            final List<String> majorPosition,
-            final List<String> cityName,
-            final List<String> profileStateName,
-            final Pageable pageable);
-
-    Page<Profile> findAllExcludingIds(final List<Long> excludeIds, final Pageable pageable);
-
     CursorResponse<Profile> findAllExcludingIdsWithCursor(
             final List<Long> excludeIds, final CursorRequest cursorRequest);
 

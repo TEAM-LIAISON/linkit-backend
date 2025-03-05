@@ -69,13 +69,12 @@ public class UnreadMessageNotificationBatchConfig {
         log.info("Creating new reader instance. Job execution time: {}", time);
 
         // 30분 전에 전송된 읽지 않은 메시지 조회
-        LocalDateTime thirtyMinutesAgo =
-                LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusMinutes(30);
+        LocalDateTime oneHourAgo = LocalDateTime.now(ZoneId.of("Asia/Seoul")).minusHours(1);
 
-        log.info("Looking for unread messages older than: {}", thirtyMinutesAgo);
+        log.info("Looking for unread messages older than: {}", oneHourAgo);
 
         List<ChatMessage> unreadMessages =
-                chatMessageRepository.findUnreadMessagesOlderThan(thirtyMinutesAgo);
+                chatMessageRepository.findUnreadMessagesOlderThan(oneHourAgo);
 
         log.info("Found {} unread messages", unreadMessages.size());
 

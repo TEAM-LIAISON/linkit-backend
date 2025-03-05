@@ -46,18 +46,6 @@ public class ProfileQueryAdapter {
         return profileCurrentStateRepository.findProfileCurrentStatesByProfileId(profileId);
     }
 
-    public Page<Profile> findAll(
-            final List<String> subPosition,
-            final List<String> cityName,
-            final List<String> profileStateName,
-            final Pageable pageable) {
-        return profileRepository.findAll(subPosition, cityName, profileStateName, pageable);
-    }
-
-    public Page<Profile> findAllExcludingIds(final List<Long> excludeIds, final Pageable pageable) {
-        return profileRepository.findAllExcludingIds(excludeIds, pageable);
-    }
-
     public CursorResponse<Profile> findAllExcludingIdsWithCursor(
             final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
         log.debug(

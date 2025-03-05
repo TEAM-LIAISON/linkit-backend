@@ -2,7 +2,6 @@ package liaison.linkit.profile.domain.repository.profile;
 
 import static liaison.linkit.global.type.StatusType.USABLE;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +12,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import liaison.linkit.common.domain.QPosition;
 import liaison.linkit.common.domain.QProfileState;
 import liaison.linkit.global.type.StatusType;
-import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.position.QProfilePosition;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.domain.profile.QProfile;
@@ -25,7 +23,6 @@ import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
@@ -114,143 +111,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
     }
 
     @Override
-    public Page<Profile> findAll(
-            final List<String> subPosition,
-            final List<String> cityName,
-            final List<String> profileStateName,
-            final Pageable pageable) {
-        QProfile qProfile = QProfile.profile;
-
-        JPAQuery<Long> profileIdQuery =
-                jpaQueryFactory
-                        .select(qProfile.id)
-                        .distinct()
-                        .from(qProfile)
-                        .where(
-                                qProfile.status
-                                        .eq(StatusType.USABLE)
-                                        .and(qProfile.isProfilePublic.eq(true)));
-
-        // 2. 필터 조건에 따라 동적으로 조인 추가
-        if (isNotEmpty(subPosition)) {
-            QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
-            QPosition qPosition = QPosition.position;
-
-            profileIdQuery
-                    .leftJoin(qProfilePosition)
-                    .on(qProfilePosition.profile.eq(qProfile))
-                    .leftJoin(qPosition)
-                    .on(qProfilePosition.position.eq(qPosition))
-                    .where(qPosition.subPosition.in(subPosition));
-        }
-
-        if (isNotEmpty(cityName)) {
-            QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
-            QRegion qRegion = QRegion.region;
-
-            profileIdQuery
-                    .leftJoin(qProfileRegion)
-                    .on(qProfileRegion.profile.eq(qProfile))
-                    .leftJoin(qRegion)
-                    .on(qProfileRegion.region.eq(qRegion))
-                    .where(qRegion.cityName.in(cityName));
-        }
-
-        if (isNotEmpty(profileStateName)) {
-            QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
-            QProfileState qProfileState = QProfileState.profileState;
-
-            profileIdQuery
-                    .leftJoin(qProfileCurrentState)
-                    .on(qProfileCurrentState.profile.eq(qProfile))
-                    .leftJoin(qProfileState)
-                    .on(qProfileCurrentState.profileState.eq(qProfileState))
-                    .where(qProfileState.profileStateName.in(profileStateName));
-        }
-
-        // 3. 페이징 처리된 ID 목록 조회
-        List<Long> profileIds =
-                profileIdQuery.offset(pageable.getOffset()).limit(pageable.getPageSize()).fetch();
-
-        // 2. 실제 데이터 조회 - OneToOne 관계는 fetch join 사용
-        List<Profile> content =
-                jpaQueryFactory
-                        .selectFrom(qProfile)
-                        .leftJoin(qProfile.profileRegion)
-                        .fetchJoin() // OneToOne은 fetch join 안전
-                        .leftJoin(qProfile.profilePositions) // OneToMany는 fetch join 제한적 사용
-                        .leftJoin(qProfile.profileCurrentStates)
-                        .where(qProfile.id.in(profileIds))
-                        .orderBy(
-                                QueryDslUtil.getOrderProfileSpecifier(
-                                        pageable.getSort(),
-                                        qProfile,
-                                        QProfilePosition.profilePosition,
-                                        QProfileRegion.profileRegion,
-                                        QProfileCurrentState.profileCurrentState))
-                        .distinct()
-                        .fetch();
-
-        // 3. Count 쿼리
-        JPAQuery<Long> countQuery =
-                jpaQueryFactory
-                        .select(qProfile.countDistinct())
-                        .from(qProfile)
-                        .where(
-                                qProfile.status
-                                        .eq(StatusType.USABLE)
-                                        .and(qProfile.isProfilePublic.eq(true)));
-
-        applyFiltersToCountQuery(countQuery, qProfile, subPosition, cityName, profileStateName);
-
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
-    }
-
-    private void applyFiltersToCountQuery(
-            JPAQuery<Long> countQuery,
-            QProfile qProfile,
-            List<String> subPosition,
-            List<String> cityName,
-            List<String> profileStateName) {
-        // 2. 필터 조건에 따라 동적으로 조인 추가
-        if (isNotEmpty(subPosition)) {
-            QProfilePosition qProfilePosition = QProfilePosition.profilePosition;
-            QPosition qPosition = QPosition.position;
-
-            countQuery
-                    .leftJoin(qProfilePosition)
-                    .on(qProfilePosition.profile.eq(qProfile))
-                    .leftJoin(qPosition)
-                    .on(qProfilePosition.position.eq(qPosition))
-                    .where(qPosition.subPosition.in(subPosition));
-        }
-
-        if (isNotEmpty(cityName)) {
-            QProfileRegion qProfileRegion = QProfileRegion.profileRegion;
-            QRegion qRegion = QRegion.region;
-
-            countQuery
-                    .leftJoin(qProfileRegion)
-                    .on(qProfileRegion.profile.eq(qProfile))
-                    .leftJoin(qRegion)
-                    .on(qProfileRegion.region.eq(qRegion))
-                    .where(qRegion.cityName.in(cityName));
-        }
-
-        if (isNotEmpty(profileStateName)) {
-            QProfileCurrentState qProfileCurrentState = QProfileCurrentState.profileCurrentState;
-            QProfileState qProfileState = QProfileState.profileState;
-
-            countQuery
-                    .leftJoin(qProfileCurrentState)
-                    .on(qProfileCurrentState.profile.eq(qProfile))
-                    .leftJoin(qProfileState)
-                    .on(qProfileCurrentState.profileState.eq(qProfileState))
-                    .where(qProfileState.profileStateName.in(profileStateName));
-        }
-    }
-
-    @Override
     public Page<Profile> findTopCompletionProfiles(final Pageable pageable) {
         QProfile qProfile = QProfile.profile;
 
@@ -288,70 +148,6 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
         return PageableExecutionUtils.getPage(content, pageable, content::size);
     }
 
-    @Override
-    public Page<Profile> findAllExcludingIds(final List<Long> excludeIds, final Pageable pageable) {
-        QProfile qProfile = QProfile.profile;
-
-        // 1. ID만 먼저 조회하는 서브쿼리
-        List<Long> profileIds =
-                jpaQueryFactory
-                        .select(qProfile.id)
-                        .from(qProfile)
-                        .where(
-                                qProfile.status
-                                        .eq(StatusType.USABLE)
-                                        .and(qProfile.isProfilePublic.eq(true))
-                                        .and(
-                                                excludeIds.isEmpty()
-                                                        ? null
-                                                        : qProfile.id.notIn(excludeIds)))
-                        .orderBy(qProfile.createdAt.desc())
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .fetch();
-
-        if (profileIds.isEmpty()) {
-            return new PageImpl<>(Collections.emptyList(), pageable, 0L);
-        }
-
-        // 2. 실제 데이터 조회 - 필요한 연관관계만 fetch join
-        List<Profile> content =
-                jpaQueryFactory
-                        .selectFrom(qProfile)
-                        .where(qProfile.id.in(profileIds))
-                        .orderBy(qProfile.createdAt.desc())
-                        .distinct()
-                        .fetch();
-
-        // 3. Count 쿼리 최적화
-        return PageableExecutionUtils.getPage(
-                content,
-                pageable,
-                () -> {
-                    // 마지막 페이지이거나 한 페이지 이하의 데이터만 있는 경우 카운트 쿼리 생략
-                    if (content.size() < pageable.getPageSize()) {
-                        return pageable.getOffset() + content.size();
-                    }
-
-                    Long count =
-                            jpaQueryFactory
-                                    .select(qProfile.count())
-                                    .from(qProfile)
-                                    .where(
-                                            qProfile.status
-                                                    .eq(StatusType.USABLE)
-                                                    .and(qProfile.isProfilePublic.eq(true))
-                                                    .and(
-                                                            excludeIds.isEmpty()
-                                                                    ? null
-                                                                    : qProfile.id.notIn(
-                                                                            excludeIds)))
-                                    .fetchOne();
-
-                    return count != null ? count : 0L;
-                });
-    }
-
     // 방법 2: 개별 컬렉션 별도 로딩을 위한 추가 메서드
     public CursorResponse<Profile> findAllExcludingIdsWithCursor(
             final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
@@ -375,8 +171,9 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
                         baseCondition.and(qProfile.member.emailId.lt(cursorRequest.getCursor()));
             }
 
-            // 페이지 크기 안전하게 설정
-            int pageSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            // 페이지 크기 6의 배수로 설정
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
             // 1. ID만 먼저 조회
             List<Long> profileIds =
