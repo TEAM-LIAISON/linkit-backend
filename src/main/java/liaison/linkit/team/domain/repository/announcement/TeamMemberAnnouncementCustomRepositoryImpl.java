@@ -446,7 +446,8 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             }
 
             // 페이지 크기 안전하게 설정
-            int pageSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
             // 1. ID만 먼저 조회
             List<Long> announcementIds =
@@ -569,7 +570,9 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             }
 
             // ID 내림차순 정렬 및 제한
-            int pageSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
+
             List<Long> announcementIds =
                     announcementIdQuery
                             .orderBy(qTeamMemberAnnouncement.createdAt.desc())

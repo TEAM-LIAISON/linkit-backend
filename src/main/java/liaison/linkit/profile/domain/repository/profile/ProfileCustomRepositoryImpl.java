@@ -282,7 +282,9 @@ public class ProfileCustomRepositoryImpl implements ProfileCustomRepository {
             }
 
             // ID 내림차순 정렬 및 제한
-            int pageSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
+
             List<Long> profileIds =
                     profileIdQuery
                             .orderBy(qProfile.id.desc())

@@ -461,7 +461,8 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             }
 
             // 페이지 크기 안전하게 설정
-            int pageSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
 
             // 1. ID만 먼저 조회
             List<Long> teamIds =
@@ -566,7 +567,9 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
             }
 
             // ID 내림차순 정렬 및 제한
-            int pageSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
+
             List<Long> teamIds =
                     teamIdQuery
                             .orderBy(qTeam.id.desc())
