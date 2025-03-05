@@ -32,6 +32,9 @@ public interface TeamMemberAnnouncementCustomRepository {
 
     Page<TeamMemberAnnouncement> findHotAnnouncements(final Pageable pageable);
 
+    Page<TeamMemberAnnouncement> findExcludedAnnouncements(
+            final List<Long> excludeAnnouncementIds, final Pageable pageable);
+
     CursorResponse<TeamMemberAnnouncement> findAllExcludingIdsWithCursor(
             final List<Long> excludeAnnouncementIds, final CursorRequest cursorRequest);
 
@@ -40,6 +43,11 @@ public interface TeamMemberAnnouncementCustomRepository {
             final List<String> cityName,
             final List<String> scaleName,
             final CursorRequest cursorRequest);
+
+    List<TeamMemberAnnouncement> findHomeTopTeamMemberAnnouncements(final int limit);
+
+    Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(
+            final List<Long> teamIds);
 
     Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamId(final Long teamId);
 
