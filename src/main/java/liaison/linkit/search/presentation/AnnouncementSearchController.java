@@ -6,6 +6,7 @@ import java.util.Optional;
 import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.search.business.service.AnnouncementSearchService;
 import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
 import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
@@ -32,6 +33,10 @@ public class AnnouncementSearchController {
      * @return 지금 핫한 공고 목록
      */
     @GetMapping("/featured")
+    @Logging(
+            item = "Announcement_Search",
+            action = "GET_ANNOUNCEMENT_SEARCH_INFO",
+            includeResult = true)
     public CommonResponse<AnnouncementListResponseDTO> getFeaturedAnnouncements(
             @Auth final Accessor accessor) {
 
@@ -56,6 +61,10 @@ public class AnnouncementSearchController {
      * @return 팀원 목록과 페이지 정보
      */
     @GetMapping
+    @Logging(
+            item = "Announcement_Search_Filter",
+            action = "GET_ANNOUNCEMENT_SEARCH_FILTER_INFO",
+            includeResult = true)
     public CommonResponse<CursorResponse<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu>>
             searchAnnouncements(
                     @Auth final Accessor accessor,

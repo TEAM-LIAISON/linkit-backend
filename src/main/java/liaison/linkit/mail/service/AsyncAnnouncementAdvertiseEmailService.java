@@ -16,6 +16,7 @@ public interface AsyncAnnouncementAdvertiseEmailService {
             final String announcementMajorPositionName,
             final String teamLogoImagePath,
             final String teamName,
+            final String announcementTitle,
             final List<String> announcementSkillNames,
             final Long announcementId)
             throws MessagingException, UnsupportedEncodingException;

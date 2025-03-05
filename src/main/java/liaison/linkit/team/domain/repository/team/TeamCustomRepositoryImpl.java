@@ -462,7 +462,7 @@ public class TeamCustomRepositoryImpl implements TeamCustomRepository {
 
             // 페이지 크기 안전하게 설정
             int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
-            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
+            int pageSize = (requestedSize % 2 == 0) ? requestedSize : (requestedSize / 2 + 1) * 2;
 
             // 1. ID만 먼저 조회
             List<Long> teamIds =
