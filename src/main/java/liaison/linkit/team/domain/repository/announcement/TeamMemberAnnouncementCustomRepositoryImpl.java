@@ -29,7 +29,6 @@ import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementR
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
@@ -309,9 +308,14 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         QTeamMemberAnnouncement qTeamMemberAnnouncement =
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
 
+        // LazyInitializationException 이슈
         List<TeamMemberAnnouncement> content =
                 jpaQueryFactory
                         .selectFrom(qTeamMemberAnnouncement)
+                        // 연관관계를 fetch join으로 미리 가져오는 예 (OneToMany라면 leftJoin + fetchJoin)
+                        .leftJoin(qTeamMemberAnnouncement.team, QTeam.team)
+                        .fetchJoin()
+                        // 필요에 따라 다른 연관관계도 fetchJoin
                         .where(
                                 qTeamMemberAnnouncement
                                         .status
@@ -344,75 +348,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
 
         // Pageable 정보와 함께 Page 객체로 반환 (항상 최대 6개의 레코드)
         return PageableExecutionUtils.getPage(content, pageable, content::size);
-    }
-
-    @Override
-    public Page<TeamMemberAnnouncement> findExcludedAnnouncements(
-            final List<Long> excludeAnnouncementIds, final Pageable pageable) {
-        QTeamMemberAnnouncement qTeamMemberAnnouncement =
-                QTeamMemberAnnouncement.teamMemberAnnouncement;
-
-        List<Long> announcementIds =
-                jpaQueryFactory
-                        .select(qTeamMemberAnnouncement.id)
-                        .from(qTeamMemberAnnouncement)
-                        .where(
-                                qTeamMemberAnnouncement
-                                        .status
-                                        .eq(StatusType.USABLE)
-                                        .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true))
-                                        .and(
-                                                excludeAnnouncementIds.isEmpty()
-                                                        ? null
-                                                        : qTeamMemberAnnouncement.id.notIn(
-                                                                excludeAnnouncementIds)))
-                        .orderBy(qTeamMemberAnnouncement.createdAt.desc())
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .fetch();
-
-        if (announcementIds.isEmpty()) {
-            return new PageImpl<>(Collections.emptyList(), pageable, 0L);
-        }
-
-        List<TeamMemberAnnouncement> content =
-                jpaQueryFactory
-                        .selectFrom(qTeamMemberAnnouncement)
-                        .where(qTeamMemberAnnouncement.id.in(announcementIds))
-                        .orderBy(qTeamMemberAnnouncement.createdAt.desc())
-                        .distinct()
-                        .fetch();
-
-        return PageableExecutionUtils.getPage(
-                content,
-                pageable,
-                () -> {
-                    // 마지막 페이지이거나 한 페이지 이하의 데이터만 있는 경우 카운트 쿼리 생략
-                    if (content.size() < pageable.getPageSize()) {
-                        return pageable.getOffset() + content.size();
-                    }
-
-                    Long count =
-                            jpaQueryFactory
-                                    .select(qTeamMemberAnnouncement.count())
-                                    .from(qTeamMemberAnnouncement)
-                                    .where(
-                                            qTeamMemberAnnouncement
-                                                    .status
-                                                    .eq(StatusType.USABLE)
-                                                    .and(
-                                                            qTeamMemberAnnouncement
-                                                                    .isAnnouncementPublic.eq(true))
-                                                    .and(
-                                                            excludeAnnouncementIds.isEmpty()
-                                                                    ? null
-                                                                    : qTeamMemberAnnouncement.id
-                                                                            .notIn(
-                                                                                    excludeAnnouncementIds)))
-                                    .fetchOne();
-
-                    return count != null ? count : 0L;
-                });
     }
 
     @Override
@@ -612,61 +547,6 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
             log.error("Error in findAllByFilteringWithCursor: {}", e.getMessage(), e);
             return CursorResponse.of(List.of(), null);
         }
-    }
-
-    @Override
-    public List<TeamMemberAnnouncement> findHomeTopTeamMemberAnnouncements(final int limit) {
-        QTeamMemberAnnouncement qTeamMemberAnnouncement =
-                QTeamMemberAnnouncement.teamMemberAnnouncement;
-
-        return jpaQueryFactory
-                .selectFrom(qTeamMemberAnnouncement)
-                .where(
-                        qTeamMemberAnnouncement.isAnnouncementPublic.eq(true),
-                        qTeamMemberAnnouncement.status.eq(StatusType.USABLE))
-                .orderBy(
-                        // CASE WHEN 구문으로 지정한 순서대로 정렬
-                        new CaseBuilder()
-                                .when(qTeamMemberAnnouncement.id.eq(51L))
-                                .then(0)
-                                .when(qTeamMemberAnnouncement.id.eq(35L))
-                                .then(1)
-                                .when(qTeamMemberAnnouncement.id.eq(27L))
-                                .then(2)
-                                .when(qTeamMemberAnnouncement.id.eq(37L))
-                                .then(3)
-                                .when(qTeamMemberAnnouncement.id.eq(4L))
-                                .then(4)
-                                .when(qTeamMemberAnnouncement.id.eq(50L))
-                                .then(5)
-                                .when(qTeamMemberAnnouncement.id.eq(46L))
-                                .then(6)
-                                .when(qTeamMemberAnnouncement.id.eq(39L))
-                                .then(7)
-                                .when(qTeamMemberAnnouncement.id.eq(48L))
-                                .then(8)
-                                .otherwise(9)
-                                .asc())
-                .limit(limit)
-                .fetch();
-    }
-
-    @Override
-    public Set<TeamMemberAnnouncement> getAllDeletableTeamMemberAnnouncementsByTeamIds(
-            final List<Long> teamIds) {
-        QTeamMemberAnnouncement qTeamMemberAnnouncement =
-                QTeamMemberAnnouncement.teamMemberAnnouncement;
-
-        if (teamIds == null || teamIds.isEmpty()) {
-            log.info("No team IDs provided for fetching deletable announcements.");
-            return Collections.emptySet();
-        }
-
-        return new HashSet<>(
-                jpaQueryFactory
-                        .selectFrom(qTeamMemberAnnouncement)
-                        .where(qTeamMemberAnnouncement.team.id.in(teamIds))
-                        .fetch());
     }
 
     @Override
