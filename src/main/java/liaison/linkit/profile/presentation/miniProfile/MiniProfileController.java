@@ -6,6 +6,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.MiniProfileService;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileRequestDTO;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO;
@@ -30,6 +31,7 @@ public class MiniProfileController {
     // 미니 프로필 조회
     @GetMapping("/miniProfile")
     @MemberOnly
+    @Logging(item = "MiniProfile", action = "GET_MINI_PROFILE_DETAIL", includeResult = true)
     public CommonResponse<MiniProfileDetailResponse> getMiniProfileDetail(
             @Auth final Accessor accessor) {
         log.info("memberId = {}의 미니프로필 조회 요청이 발생했습니다.", accessor.getMemberId());
@@ -40,6 +42,7 @@ public class MiniProfileController {
     // 미니 프로필 업데이트
     @PostMapping("/miniProfile")
     @MemberOnly
+    @Logging(item = "MiniProfile", action = "POST_UPDATE_MINI_PROFILE", includeResult = true)
     public CommonResponse<MiniProfileResponseDTO.UpdateMiniProfileResponse> updateMiniProfile(
             @Auth final Accessor accessor,
             @RequestPart(required = false) MultipartFile profileImage,

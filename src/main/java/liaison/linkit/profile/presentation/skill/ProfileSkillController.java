@@ -36,6 +36,7 @@ public class ProfileSkillController {
 
     @PostMapping
     @MemberOnly
+    @Logging(item = "Profile_Skill", action = "POST_PROFILE_SKILL_ITEMS", includeResult = true)
     public CommonResponse<ProfileSkillResponseDTO.ProfileSkillItems> updateProfileSkillItems(
             @Auth final Accessor accessor,
             @RequestBody final ProfileSkillRequestDTO.AddProfileSkillRequest profileSkillRequest) {

@@ -6,6 +6,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfileActivityService;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
@@ -33,6 +34,7 @@ public class ProfileActivityController {
     // 이력 전체 조회 (명세 완료)
     @GetMapping
     @MemberOnly
+    @Logging(item = "Profile_Activity", action = "GET_PROFILE_ACTIVITY_ITEMS", includeResult = true)
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityItems> getProfileActivityItems(
             @Auth final Accessor accessor) {
         log.info("memberId = {}의 프로필 활동 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
