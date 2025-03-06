@@ -1,5 +1,6 @@
 package liaison.linkit.team.business.mapper.announcement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import liaison.linkit.common.annotation.Mapper;
@@ -38,20 +39,30 @@ public class TeamMemberAnnouncementMapper {
             final AnnouncementPositionItem announcementPositionItem,
             final List<AnnouncementSkillName> announcementSkillNames) {
         return AnnouncementInformMenu.builder()
-                .teamMemberAnnouncementId(teamMemberAnnouncement.getId())
-                .teamLogoImagePath(teamLogoImagePath)
-                .teamName(teamName)
-                .teamCode(teamCode)
-                .teamScaleItem(teamScaleItem)
-                .regionDetail(regionDetail)
+                .teamMemberAnnouncementId(
+                        teamMemberAnnouncement != null ? teamMemberAnnouncement.getId() : 0L)
+                .teamLogoImagePath(teamLogoImagePath != null ? teamLogoImagePath : "")
+                .teamName(teamName != null ? teamName : "")
+                .teamCode(teamCode != null ? teamCode : "")
+                .teamScaleItem(teamScaleItem != null ? teamScaleItem : new TeamScaleItem())
+                .regionDetail(regionDetail != null ? regionDetail : new RegionDetail())
                 .announcementDDay(announcementDDay)
                 .isClosed(isClosed)
-                .isPermanentRecruitment(teamMemberAnnouncement.isPermanentRecruitment())
-                .announcementTitle(teamMemberAnnouncement.getAnnouncementTitle())
+                .isPermanentRecruitment(
+                        teamMemberAnnouncement != null
+                                && teamMemberAnnouncement.isPermanentRecruitment())
+                .announcementTitle(
+                        teamMemberAnnouncement != null
+                                ? teamMemberAnnouncement.getAnnouncementTitle()
+                                : "")
                 .isAnnouncementScrap(isAnnouncementScrap)
                 .announcementScrapCount(announcementScrapCount)
-                .announcementPositionItem(announcementPositionItem)
-                .announcementSkillNames(announcementSkillNames)
+                .announcementPositionItem(
+                        announcementPositionItem != null
+                                ? announcementPositionItem
+                                : new AnnouncementPositionItem())
+                .announcementSkillNames(
+                        announcementSkillNames != null ? announcementSkillNames : new ArrayList<>())
                 .build();
     }
 

@@ -61,20 +61,20 @@ public class ProfileResponseDTO {
     @AllArgsConstructor
     public static class ProfileInformMenu {
 
-        private Boolean isProfilePublic;
+        @Builder.Default private Boolean isProfilePublic = false;
 
         @Builder.Default
         private List<ProfileCurrentStateItem> profileCurrentStates = new ArrayList<>();
 
-        private Boolean isProfileScrap;
-        private int profileScrapCount;
+        @Builder.Default private Boolean isProfileScrap = false;
+        @Builder.Default private int profileScrapCount = 0;
 
-        private String profileImagePath;
-        private String memberName;
-        private String emailId;
+        @Builder.Default private String profileImagePath = "";
+        @Builder.Default private String memberName = "";
+        @Builder.Default private String emailId = "";
 
-        private String majorPosition;
-        private String subPosition;
+        @Builder.Default private String majorPosition = "";
+        @Builder.Default private String subPosition = "";
 
         @Builder.Default private RegionDetail regionDetail = new RegionDetail();
 

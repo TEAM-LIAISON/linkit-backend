@@ -1,10 +1,11 @@
 package liaison.linkit.search.business.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import liaison.linkit.search.presentation.dto.AnnouncementSearchResponseDTO;
+import liaison.linkit.search.presentation.dto.announcement.AnnouncementListResponseDTO;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
@@ -26,70 +27,81 @@ public class AnnouncementSearchService {
     private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
     private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
 
-    public AnnouncementSearchResponseDTO searchAnnouncements(
+    public AnnouncementListResponseDTO getFeaturedAnnouncements(
+            final Optional<Long> optionalMemberId) {
+        Pageable pageable = PageRequest.of(0, 6);
+        Page<TeamMemberAnnouncement> hotAnnouncements =
+                teamMemberAnnouncementQueryAdapter.findHotAnnouncements(pageable);
+
+        List<AnnouncementInformMenu> hotAnnouncementDTOs =
+                hotAnnouncements.stream()
+                        .map(
+                                teamMemberAnnouncement ->
+                                        announcementInformMenuAssembler.mapToAnnouncementInformMenu(
+                                                teamMemberAnnouncement, optionalMemberId))
+                        .toList();
+
+        return AnnouncementListResponseDTO.of(hotAnnouncementDTOs);
+    }
+
+    public CursorResponse<AnnouncementInformMenu> searchAnnouncementsWithCursor(
             final Optional<Long> optionalMemberId,
             List<String> subPosition,
             List<String> cityName,
             List<String> scaleName,
-            Pageable pageable) {
-        // 쿼리 파라미터가 모두 비어있는 경우: 기본 검색
-        boolean isDefaultSearch =
-                (subPosition == null || subPosition.isEmpty())
-                        && (cityName == null || cityName.isEmpty())
-                        && (scaleName == null || scaleName.isEmpty());
+            CursorRequest cursorRequest) {
+        if (isDefaultSearch(subPosition, cityName, scaleName)) {
+            List<Long> excludeAnnouncementIds = getExcludeAnnouncementIds();
 
-        if (isDefaultSearch) {
-            Pageable hotPageable = PageRequest.of(0, 6);
-            List<TeamMemberAnnouncement> hotAnnouncements =
-                    teamMemberAnnouncementQueryAdapter
-                            .findHotAnnouncements(hotPageable)
-                            .getContent();
+            CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
+                    teamMemberAnnouncementQueryAdapter.findAllExcludingIdsWithCursor(
+                            excludeAnnouncementIds, cursorRequest);
 
-            List<AnnouncementInformMenu> hotAnnouncementDTOs =
-                    hotAnnouncements.stream()
-                            .map(
-                                    teamMemberAnnouncement ->
-                                            announcementInformMenuAssembler
-                                                    .mapToAnnouncementInformMenu(
-                                                            teamMemberAnnouncement,
-                                                            optionalMemberId))
-                            .toList();
-
-            List<Long> excludeAnnouncementIds =
-                    hotAnnouncements.stream().map(TeamMemberAnnouncement::getId).toList();
-
-            Page<TeamMemberAnnouncement> remainingAnnouncements =
-                    teamMemberAnnouncementQueryAdapter.findExcludedAnnouncements(
-                            excludeAnnouncementIds, pageable);
-            Page<AnnouncementInformMenu> remainingAnnouncementDTOs =
-                    remainingAnnouncements.map(
-                            teamMemberAnnouncement ->
-                                    announcementInformMenuAssembler.mapToAnnouncementInformMenu(
-                                            teamMemberAnnouncement, optionalMemberId));
-
-            return AnnouncementSearchResponseDTO.builder()
-                    .hotAnnouncements(hotAnnouncementDTOs)
-                    .defaultAnnouncements(remainingAnnouncementDTOs)
-                    .build();
+            return convertTeamMemberAnnouncementsToDTOs(teamMemberAnnouncements, optionalMemberId);
         } else {
-            Page<TeamMemberAnnouncement> announcements =
-                    teamMemberAnnouncementQueryAdapter.findAll(
-                            subPosition, cityName, scaleName, pageable);
+            // 필터링 검색
+            CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements =
+                    teamMemberAnnouncementQueryAdapter.findAllByFilteringWithCursor(
+                            subPosition, cityName, scaleName, cursorRequest);
 
-            log.info("announcements: {}", announcements);
-
-            Page<AnnouncementInformMenu> announcementDTOs =
-                    announcements.map(
-                            teamMemberAnnouncement ->
-                                    announcementInformMenuAssembler.mapToAnnouncementInformMenu(
-                                            teamMemberAnnouncement, optionalMemberId));
-
-            log.info("announcementDTOs: {}", announcementDTOs);
-
-            return AnnouncementSearchResponseDTO.builder()
-                    .hotAnnouncements(Collections.emptyList())
-                    .defaultAnnouncements(announcementDTOs)
-                    .build();
+            return convertTeamMemberAnnouncementsToDTOs(teamMemberAnnouncements, optionalMemberId);
         }
+    }
+
+    /** 기본 검색 여부를 판단합니다. */
+    private boolean isDefaultSearch(
+            List<String> subPosition, List<String> cityName, List<String> scaleName) {
+        return (subPosition == null || subPosition.isEmpty())
+                && (cityName == null || cityName.isEmpty())
+                && (scaleName == null || scaleName.isEmpty());
+    }
+
+    private CursorResponse<AnnouncementInformMenu> convertTeamMemberAnnouncementsToDTOs(
+            CursorResponse<TeamMemberAnnouncement> teamMemberAnnouncements,
+            Optional<Long> optionalMemberId) {
+        List<AnnouncementInformMenu> announcementDTOs =
+                teamMemberAnnouncements.getContent().stream()
+                        .map(
+                                announcement ->
+                                        announcementInformMenuAssembler.mapToAnnouncementInformMenu(
+                                                announcement, optionalMemberId))
+                        .toList();
+
+        return CursorResponse.of(announcementDTOs, teamMemberAnnouncements.getNextCursor());
+    }
+
+    /**
+     * 제외할 팀 ID 목록 (강제 지정)
+     *
+     * @return 제외할 팀 ID 목록
+     */
+    public List<Long> getExcludeAnnouncementIds() {
+        // 큐닷 51L
+        // 애프터액션 35L
+        // 하우스테이너 27L
+        // 코지메이커스 37L
+        // 독스헌트 4L
+        // 앤유 50L
+        return List.of(51L, 35L, 27L, 37L, 4L, 50L);
     }
 }

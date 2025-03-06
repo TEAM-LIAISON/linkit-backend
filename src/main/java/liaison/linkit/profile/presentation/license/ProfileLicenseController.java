@@ -6,6 +6,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfileLicenseService;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseRequestDTO;
 import liaison.linkit.profile.presentation.license.dto.ProfileLicenseResponseDTO;
@@ -34,6 +35,7 @@ public class ProfileLicenseController {
     // 자격증 전체 조회
     @GetMapping
     @MemberOnly
+    @Logging(item = "Profile_License", action = "GET_PROFILE_LICENSE_ITEMS", includeResult = true)
     public CommonResponse<ProfileLicenseItems> getProfileLicenseItems(
             @Auth final Accessor accessor) {
         log.info("memberId = {}의 프로필 자격증 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
@@ -44,6 +46,7 @@ public class ProfileLicenseController {
     // 자격증 단일 조회
     @GetMapping("/{profileLicenseId}")
     @MemberOnly
+    @Logging(item = "Profile_License", action = "GET_PROFILE_LICENSE_DETAIL", includeResult = true)
     public CommonResponse<ProfileLicenseResponseDTO.ProfileLicenseDetail> getProfileLicenseDetail(
             @Auth final Accessor accessor, @PathVariable final Long profileLicenseId) {
         log.info(
@@ -58,6 +61,7 @@ public class ProfileLicenseController {
     // 자격증 단일 생성
     @PostMapping
     @MemberOnly
+    @Logging(item = "Profile_License", action = "POST_ADD_PROFILE_LICENSE", includeResult = true)
     public CommonResponse<AddProfileLicenseResponse> addProfileLicense(
             @Auth final Accessor accessor,
             @RequestBody
@@ -72,6 +76,7 @@ public class ProfileLicenseController {
     // 자격증 단일 수정
     @PostMapping("/{profileLicenseId}")
     @MemberOnly
+    @Logging(item = "Profile_License", action = "POST_UPDATE_PROFILE_LICENSE", includeResult = true)
     public CommonResponse<ProfileLicenseResponseDTO.UpdateProfileLicenseResponse>
             updateProfileLicense(
                     @Auth final Accessor accessor,
@@ -88,6 +93,7 @@ public class ProfileLicenseController {
     // 자격증 단일 삭제
     @DeleteMapping("/{profileLicenseId}")
     @MemberOnly
+    @Logging(item = "Profile_License", action = "POST_REMOVE_PROFILE_LICENSE", includeResult = true)
     public CommonResponse<ProfileLicenseResponseDTO.RemoveProfileLicenseResponse>
             removeProfileLicense(
                     @Auth final Accessor accessor, @PathVariable final Long profileLicenseId) {
@@ -99,6 +105,10 @@ public class ProfileLicenseController {
     // 자격증 인증 단일 생성
     @PostMapping("/certification/{profileLicenseId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_License",
+            action = "POST_ADD_PROFILE_LICENSE_CERTIFICATION",
+            includeResult = true)
     public CommonResponse<ProfileLicenseResponseDTO.ProfileLicenseCertificationResponse>
             addProfileLicenseCertification(
                     @Auth final Accessor accessor,
@@ -112,6 +122,10 @@ public class ProfileLicenseController {
     // 자격증 인증 단일 삭제
     @DeleteMapping("/certification/{profileLicenseId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_License",
+            action = "DELETE_REMOVE_PROFILE_LICENSE_CERTIFICATION",
+            includeResult = true)
     public CommonResponse<ProfileLicenseResponseDTO.RemoveProfileLicenseCertificationResponse>
             removeProfileLicenseCertification(
                     @Auth final Accessor accessor, @PathVariable final Long profileLicenseId) {

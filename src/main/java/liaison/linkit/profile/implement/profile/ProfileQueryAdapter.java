@@ -4,10 +4,10 @@ import java.util.List;
 
 import liaison.linkit.common.annotation.Adapter;
 import liaison.linkit.profile.domain.profile.Profile;
-import liaison.linkit.profile.domain.repository.currentState.ProfileCurrentStateRepository;
 import liaison.linkit.profile.domain.repository.profile.ProfileRepository;
-import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import liaison.linkit.profile.exception.profile.ProfileNotFoundException;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 public class ProfileQueryAdapter {
 
     private final ProfileRepository profileRepository;
-    private final ProfileCurrentStateRepository profileCurrentStateRepository;
 
     public Profile findById(final Long profileId) {
         return profileRepository
@@ -40,20 +39,30 @@ public class ProfileQueryAdapter {
                 .orElseThrow(() -> ProfileNotFoundException.EXCEPTION);
     }
 
-    public List<ProfileCurrentState> findProfileCurrentStatesByProfileId(final Long profileId) {
-        return profileCurrentStateRepository.findProfileCurrentStatesByProfileId(profileId);
+    public CursorResponse<Profile> findAllExcludingIdsWithCursor(
+            final List<Long> excludeProfileIds, final CursorRequest cursorRequest) {
+        log.debug(
+                "커서 기반 팀 조회 요청: excludeProfileIds={}, cursor={}, size={}",
+                excludeProfileIds,
+                cursorRequest.getCursor(),
+                cursorRequest.getSize());
+        return profileRepository.findAllExcludingIdsWithCursor(excludeProfileIds, cursorRequest);
     }
 
-    public Page<Profile> findAll(
+    public CursorResponse<Profile> findAllByFilteringWithCursor(
             final List<String> subPosition,
             final List<String> cityName,
             final List<String> profileStateName,
-            final Pageable pageable) {
-        return profileRepository.findAll(subPosition, cityName, profileStateName, pageable);
-    }
-
-    public Page<Profile> findAllExcludingIds(final List<Long> excludeIds, final Pageable pageable) {
-        return profileRepository.findAllExcludingIds(excludeIds, pageable);
+            final CursorRequest cursorRequest) {
+        log.debug(
+                "필터링된 커서 기반 팀 조회 요청: subPosition={}, cityName={}, profileStateName={}, cursor={}, size={}",
+                subPosition,
+                cityName,
+                profileStateName,
+                cursorRequest.getCursor(),
+                cursorRequest.getSize());
+        return profileRepository.findAllByFilteringWithCursor(
+                subPosition, cityName, profileStateName, cursorRequest);
     }
 
     @Cacheable(

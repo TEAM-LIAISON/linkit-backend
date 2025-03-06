@@ -2,6 +2,8 @@ package liaison.linkit.profile.business.service;
 
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 
@@ -146,6 +148,8 @@ public class ProfileActivityService {
                     activityCertificationAttachFilePath);
         }
 
+        final LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
         final ProfileActivityCertificationReportDto profileActivityCertificationReportDto =
                 ProfileActivityCertificationReportDto.builder()
                         .profileActivityId(profileActivity.getId())
@@ -155,6 +159,7 @@ public class ProfileActivityService {
                                 profileActivity.getActivityCertificationAttachFileName())
                         .activityCertificationAttachFilePath(
                                 profileActivity.getActivityCertificationAttachFilePath())
+                        .uploadTime(nowInSeoul)
                         .build();
 
         discordProfileCertificationReportService.sendProfileActivityReport(

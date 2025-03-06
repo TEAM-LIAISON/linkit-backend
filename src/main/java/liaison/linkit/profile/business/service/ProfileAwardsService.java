@@ -2,6 +2,8 @@ package liaison.linkit.profile.business.service;
 
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 
@@ -116,6 +118,7 @@ public class ProfileAwardsService {
         return profileAwardsMapper.toRemoveProfileAwards(profileAwardsId);
     }
 
+    @Transactional
     public ProfileAwardsResponseDTO.ProfileAwardsCertificationResponse
             addProfileAwardsCertification(
                     final Long memberId,
@@ -127,7 +130,7 @@ public class ProfileAwardsService {
         final ProfileAwards profileAwards =
                 profileAwardsQueryAdapter.getProfileAwards(profileAwardsId);
 
-        // 프로필 이력 인증서를 업데이트한다.
+        // 프로필 수상 인증서를 업데이트한다.
         if (fileValidator.validatingFileUpload(profileAwardsCertificationFile)) {
             awardsCertificationAttachFileName =
                     Normalizer.normalize(
@@ -144,6 +147,8 @@ public class ProfileAwardsService {
                     awardsCertificationAttachFilePath);
         }
 
+        final LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
         final ProfileAwardsCertificationReportDto profileAwardsCertificationReportDto =
                 ProfileAwardsCertificationReportDto.builder()
                         .profileAwardsId(profileAwards.getId())
@@ -153,6 +158,7 @@ public class ProfileAwardsService {
                                 profileAwards.getAwardsCertificationAttachFileName())
                         .awardsCertificationAttachFilePath(
                                 profileAwards.getAwardsCertificationAttachFilePath())
+                        .uploadTime(nowInSeoul)
                         .build();
 
         discordProfileCertificationReportService.sendProfileAwardsReport(

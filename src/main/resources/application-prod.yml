@@ -82,17 +82,41 @@ spring:
       max-file-size: 60MB # 한 개 파일의 최대 사이즈
       max-request-size: 60MB # 한 개 요청의 최대 사이즈
 
+logging:
+  level:
+    root: WARN                     # 기본 WARN 레벨 (불필요한 정보 최소화)
+    liaison.swagger_test: INFO     # 애플리케이션 코드는 INFO 유지
+    org.springframework: WARN      # 프레임워크 로그는 WARN
+    org.springframework.security: INFO # 보안 관련 로그는 INFO
+    org.springframework.web: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=prod] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=prod] %-5level %logger{36} - %msg%n"
+  file:
+    name: /var/log/application/application.log  # 표준 리눅스 로그 경로
+  logback:
+    rollingpolicy:
+      max-file-size: 500MB         # 더 큰 파일 크기
+      file-name-pattern: /var/log/application/application-%d{yyyy-MM-dd}-%i.log
+      max-history: 90              # 분기별 보관 (약 3개월)
+      total-size-cap: 20GB         # 더 많은 로그 보관
+
 decorator:
   datasource:
     p6spy:
-      enable-logging: true
-      multiline: true
-      logging: slf4j
+      enable-logging: false
 
-logging:
-  level:
-    org.springframework.web: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.hibernate.stat: DEBUG
-
+springdoc:
+  webjars:
+    prefix:
+  api-docs:
+    path: /linkit/api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    urls:
+      - url: /linkit/api-docs
+        name: all
+    path: /linkit/swagger
+    configUrl: /linkit/api-docs/swagger-config
+    disable-swagger-default-url: true

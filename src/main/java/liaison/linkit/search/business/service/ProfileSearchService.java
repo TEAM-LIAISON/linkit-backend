@@ -1,18 +1,20 @@
 package liaison.linkit.search.business.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import liaison.linkit.profile.business.assembler.ProfileInformMenuAssembler;
 import liaison.linkit.profile.domain.profile.Profile;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
-import liaison.linkit.search.presentation.dto.ProfileSearchResponseDTO;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.profile.ProfileListResponseDTO;
+import liaison.linkit.team.business.assembler.AnnouncementInformMenuAssembler;
+import liaison.linkit.team.implement.announcement.TeamMemberAnnouncementQueryAdapter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,25 @@ public class ProfileSearchService {
 
     private final ProfileQueryAdapter profileQueryAdapter;
     private final ProfileInformMenuAssembler profileInformMenuAssembler;
+    private final TeamMemberAnnouncementQueryAdapter teamMemberAnnouncementQueryAdapter;
+    private final AnnouncementInformMenuAssembler announcementInformMenuAssembler;
+
+    public ProfileListResponseDTO getFeaturedProfiles(final Optional<Long> optionalMemberId) {
+        // 1. 상단 영역: 프로필 완성도가 높은 팀원 6명 (completionScore 내림차순)
+        Pageable topPageable = PageRequest.of(0, 6);
+        List<Profile> topProfiles =
+                profileQueryAdapter.findTopCompletionProfiles(topPageable).getContent();
+
+        List<ProfileInformMenu> topProfileDTOs =
+                topProfiles.stream()
+                        .map(
+                                profile ->
+                                        profileInformMenuAssembler.assembleProfileInformMenu(
+                                                profile, optionalMemberId))
+                        .toList();
+
+        return ProfileListResponseDTO.of(topProfileDTOs);
+    }
 
     /**
      * 팀원 찾기 화면의 검색 로직
@@ -36,69 +57,63 @@ public class ProfileSearchService {
      *
      * @param optionalMemberId 로그인한 회원의 ID(Optional)
      * @param subPosition 포지션 소분류 필터
-     * @param skillName 스킬 필터
      * @param cityName 시/도 필터
      * @param profileStateName 프로필 상태 필터
-     * @param pageable 페이징 정보 (예: PageRequest.of(page, 80, Sort.by("createdAt").descending()))
-     * @return ProfileSearchResponseDTO: 상단(topProfiles)과 하단(profiles)을 포함한 DTO
+     * @return ProfileInformMenu: 하단(profiles) DTO
      */
-    public ProfileSearchResponseDTO searchProfiles(
+    public CursorResponse<ProfileInformMenu> searchProfilesWithCursor(
             final Optional<Long> optionalMemberId,
             List<String> subPosition,
-            List<String> skillName,
             List<String> cityName,
             List<String> profileStateName,
-            Pageable pageable) {
-        // 쿼리 파라미터가 모두 비어있는 경우: 기본 검색
-        boolean isDefaultSearch =
-                (subPosition == null || subPosition.isEmpty())
-                        && (skillName == null || skillName.isEmpty())
-                        && (cityName == null || cityName.isEmpty())
-                        && (profileStateName == null || profileStateName.isEmpty());
+            CursorRequest cursorRequest) {
+        if (isDefaultSearch(subPosition, cityName, profileStateName)) {
+            List<Long> excludeProfileIds = getExcludeProfileIds();
 
-        if (isDefaultSearch) {
-            // 1. 상단 영역: 프로필 완성도가 높은 팀원 6명 (completionScore 내림차순)
-            Pageable topPageable = PageRequest.of(0, 6);
-            List<Profile> topProfiles =
-                    profileQueryAdapter.findTopCompletionProfiles(topPageable).getContent();
+            CursorResponse<Profile> profiles =
+                    profileQueryAdapter.findAllExcludingIdsWithCursor(
+                            excludeProfileIds, cursorRequest);
 
-            List<ProfileInformMenu> topProfileDTOs =
-                    topProfiles.stream()
-                            .map(
-                                    profile ->
-                                            profileInformMenuAssembler.assembleProfileInformMenu(
-                                                    profile, optionalMemberId))
-                            .collect(Collectors.toList());
-
-            // 2. 하단 영역: 상단에 포함된 프로필 제외 후 최신순(createdAt 내림차순) 페이지네이션
-            List<Long> excludeIds =
-                    topProfiles.stream().map(Profile::getId).collect(Collectors.toList());
-
-            Page<Profile> remainingProfiles =
-                    profileQueryAdapter.findAllExcludingIds(excludeIds, pageable);
-            Page<ProfileInformMenu> remainingProfileDTOs =
-                    remainingProfiles.map(
-                            profile ->
-                                    profileInformMenuAssembler.assembleProfileInformMenu(
-                                            profile, optionalMemberId));
-
-            return ProfileSearchResponseDTO.builder()
-                    .topCompletionProfiles(topProfileDTOs)
-                    .defaultProfiles(remainingProfileDTOs)
-                    .build();
+            return convertProfilesToDTOs(profiles, optionalMemberId);
         } else {
-            // 필터 쿼리 파라미터가 존재하는 경우: 기존 검색 로직 적용
-            Page<Profile> profiles =
-                    profileQueryAdapter.findAll(subPosition, cityName, profileStateName, pageable);
-            Page<ProfileInformMenu> profileDTOs =
-                    profiles.map(
-                            profile ->
-                                    profileInformMenuAssembler.assembleProfileInformMenu(
-                                            profile, optionalMemberId));
-            return ProfileSearchResponseDTO.builder()
-                    .topCompletionProfiles(Collections.emptyList())
-                    .defaultProfiles(profileDTOs)
-                    .build();
+            CursorResponse<Profile> profiles =
+                    profileQueryAdapter.findAllByFilteringWithCursor(
+                            subPosition, cityName, profileStateName, cursorRequest);
+
+            return convertProfilesToDTOs(profiles, optionalMemberId);
         }
+    }
+
+    /** 기본 검색 여부를 판단합니다. */
+    private boolean isDefaultSearch(
+            List<String> subPosition, List<String> cityName, List<String> profileStateName) {
+        return (subPosition == null || subPosition.isEmpty())
+                && (cityName == null || cityName.isEmpty())
+                && (profileStateName == null || profileStateName.isEmpty());
+    }
+
+    /** 제외할 팀 ID 목록 가져오기 (강제 지정) */
+    public List<Long> getExcludeProfileIds() {
+        // 박주혜 42L
+        // 최민호 58L
+        // 김태범 57L
+        // 최윤수 55L
+        // 박현진 73L
+        // 김시원 63L
+        return List.of(42L, 58L, 57L, 55L, 73L, 63L);
+    }
+
+    /** 팀 엔티티를 DTO로 변환하고 커서 응답으로 래핑 */
+    private CursorResponse<ProfileResponseDTO.ProfileInformMenu> convertProfilesToDTOs(
+            CursorResponse<Profile> profiles, Optional<Long> optionalMemberId) {
+        List<ProfileResponseDTO.ProfileInformMenu> profileDTOs =
+                profiles.getContent().stream()
+                        .map(
+                                profile ->
+                                        profileInformMenuAssembler.assembleProfileInformMenu(
+                                                profile, optionalMemberId))
+                        .toList();
+
+        return CursorResponse.of(profileDTOs, profiles.getNextCursor());
     }
 }

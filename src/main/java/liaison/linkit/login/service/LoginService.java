@@ -1,5 +1,7 @@
 package liaison.linkit.login.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 import liaison.linkit.common.exception.RefreshTokenExpiredException;
@@ -114,11 +116,13 @@ public class LoginService {
 
                 profileCommandAdapter.create(Profile.builder().member(member).build());
 
-                MemberCreateReportDto memberCreateReportDto =
+                final LocalDateTime nowInSeoul = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+
+                final MemberCreateReportDto memberCreateReportDto =
                         MemberCreateReportDto.builder()
                                 .memberId(member.getId())
                                 .email(member.getEmail())
-                                .createdAt(member.getCreatedAt())
+                                .createdAt(nowInSeoul)
                                 .build();
 
                 discordMemberReportService.sendCreateMemberReport(memberCreateReportDto);

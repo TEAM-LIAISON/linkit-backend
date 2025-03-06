@@ -55,7 +55,9 @@ public class ChatMessage {
     private String content;
 
     // 메시지 전송 시간 (인덱싱)
-    @Indexed private LocalDateTime timestamp;
+    @Indexed
+    @Field("timestamp")
+    private LocalDateTime timestamp;
 
     // 메시지 읽음 여부 (인덱싱)
     @Indexed

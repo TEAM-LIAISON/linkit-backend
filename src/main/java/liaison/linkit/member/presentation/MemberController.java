@@ -4,6 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.member.business.MemberService;
 import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO;
 import liaison.linkit.member.presentation.dto.MemberBasicInformRequestDTO.AuthCodeVerificationRequest;
@@ -73,6 +74,7 @@ public class MemberController {
     // 회원 기본 정보 조회
     @GetMapping("/basic-inform")
     @MemberOnly
+    @Logging(item = "Member", action = "GET_MEMBER_BASIC_INFO", includeResult = true)
     public CommonResponse<MemberBasicInformResponseDTO.MemberBasicInformDetail>
             getMemberBasicInform(@Auth final Accessor accessor) {
         log.info("memberId = {}의 회원 기본 정보 조회 요청 발생", accessor.getMemberId());

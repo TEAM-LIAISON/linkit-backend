@@ -1,18 +1,17 @@
 package liaison.linkit.search.business.service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import liaison.linkit.search.presentation.dto.TeamSearchResponseDTO;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
+import liaison.linkit.search.presentation.dto.team.TeamListResponseDTO;
 import liaison.linkit.team.business.assembler.TeamInformMenuAssembler;
 import liaison.linkit.team.domain.team.Team;
 import liaison.linkit.team.implement.team.TeamQueryAdapter;
 import liaison.linkit.team.presentation.team.dto.TeamResponseDTO.TeamInformMenu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,31 +26,9 @@ public class TeamSearchService {
     private final TeamQueryAdapter teamQueryAdapter;
     private final TeamInformMenuAssembler teamInformMenuAssembler;
 
-    public TeamSearchResponseDTO searchTeams(
-            final Optional<Long> optionalMemberId,
-            final List<String> scaleName,
-            final List<String> cityName,
-            final List<String> teamStateName,
-            final Pageable pageable) {
-        if (isDefaultSearch(scaleName, cityName, teamStateName)) {
-            return buildDefaultTeamSearchResponse(optionalMemberId, pageable);
-        } else {
-            return buildFilteredTeamSearchResponse(
-                    optionalMemberId, scaleName, cityName, teamStateName, pageable);
-        }
-    }
+    /** 주요 팀 목록만 조회하는 메서드 (캐싱 적용) */
+    public TeamListResponseDTO getFeaturedTeams(final Optional<Long> optionalMemberId) {
 
-    /** 기본 검색 여부를 판단합니다. */
-    private boolean isDefaultSearch(
-            List<String> scaleName, List<String> cityName, List<String> teamStateName) {
-        return (scaleName == null || scaleName.isEmpty())
-                && (cityName == null || cityName.isEmpty())
-                && (teamStateName == null || teamStateName.isEmpty());
-    }
-
-    /** 기본 검색일 경우의 응답 DTO를 구성합니다. - 벤처 팀과 지원 프로젝트 팀을 조회하고, 해당 팀 ID들을 제외한 나머지 팀을 페이지네이션합니다. */
-    private TeamSearchResponseDTO buildDefaultTeamSearchResponse(
-            Optional<Long> optionalMemberId, Pageable pageable) {
         // 벤처 팀 조회 (최대 4팀)
         Pageable venturePageable = PageRequest.of(0, 4);
         List<Team> ventureTeamEntities =
@@ -63,6 +40,7 @@ public class TeamSearchService {
                                         teamInformMenuAssembler.assembleTeamInformMenu(
                                                 team, optionalMemberId))
                         .toList();
+        log.info("ventureTeamDTOs: {}", ventureTeamDTOs);
 
         // 지원 프로젝트 팀 조회 (최대 4팀)
         Pageable supportPageable = PageRequest.of(0, 4);
@@ -75,46 +53,70 @@ public class TeamSearchService {
                                         teamInformMenuAssembler.assembleTeamInformMenu(
                                                 team, optionalMemberId))
                         .toList();
+        log.info("supportTeamDTOs: {}", supportTeamDTOs);
 
-        // 벤처팀과 지원팀의 ID를 제외할 리스트 생성
-        List<Long> excludeTeamIds = new ArrayList<>();
-        excludeTeamIds.addAll(ventureTeamEntities.stream().map(Team::getId).toList());
-        excludeTeamIds.addAll(supportTeamEntities.stream().map(Team::getId).toList());
-
-        // 제외된 팀을 제외한 나머지 팀을 페이지네이션하여 조회
-        Page<Team> remainingTeams = teamQueryAdapter.findAllExcludingIds(excludeTeamIds, pageable);
-        Page<TeamInformMenu> remainingTeamDTOs =
-                remainingTeams.map(
-                        team ->
-                                teamInformMenuAssembler.assembleTeamInformMenu(
-                                        team, optionalMemberId));
-
-        return TeamSearchResponseDTO.builder()
-                .ventureTeams(ventureTeamDTOs)
-                .supportProjectTeams(supportTeamDTOs)
-                .defaultTeams(remainingTeamDTOs)
-                .build();
+        return TeamListResponseDTO.of(ventureTeamDTOs, supportTeamDTOs);
     }
 
-    /** 필터링 조건이 있는 경우의 응답 DTO를 구성합니다. */
-    private TeamSearchResponseDTO buildFilteredTeamSearchResponse(
-            Optional<Long> optionalMemberId,
-            List<String> scaleName,
-            List<String> cityName,
-            List<String> teamStateName,
-            Pageable pageable) {
-        Page<Team> teams =
-                teamQueryAdapter.findAllByFiltering(scaleName, cityName, teamStateName, pageable);
-        Page<TeamInformMenu> teamDTOs =
-                teams.map(
-                        team ->
-                                teamInformMenuAssembler.assembleTeamInformMenu(
-                                        team, optionalMemberId));
+    /** 커서 기반 팀 검색만 수행하는 메서드 */
+    public CursorResponse<TeamInformMenu> searchTeamsWithCursor(
+            final Optional<Long> optionalMemberId,
+            final List<String> scaleName,
+            final List<String> cityName,
+            final List<String> teamStateName,
+            final CursorRequest cursorRequest) {
 
-        return TeamSearchResponseDTO.builder()
-                .ventureTeams(Collections.emptyList())
-                .supportProjectTeams(Collections.emptyList())
-                .defaultTeams(teamDTOs)
-                .build();
+        if (isDefaultSearch(scaleName, cityName, teamStateName)) {
+            // 벤처 팀과 지원 프로젝트 팀 ID를 제외하고 검색
+            List<Long> excludeTeamIds = getExcludeTeamIds();
+
+            CursorResponse<Team> teams =
+                    teamQueryAdapter.findAllExcludingIdsWithCursor(excludeTeamIds, cursorRequest);
+
+            return convertTeamsToDTOs(teams, optionalMemberId);
+        } else {
+            // 필터링 검색
+            CursorResponse<Team> teams =
+                    teamQueryAdapter.findAllByFilteringWithCursor(
+                            scaleName, cityName, teamStateName, cursorRequest);
+
+            return convertTeamsToDTOs(teams, optionalMemberId);
+        }
+    }
+
+    /** 팀 엔티티를 DTO로 변환하고 커서 응답으로 래핑 */
+    private CursorResponse<TeamInformMenu> convertTeamsToDTOs(
+            CursorResponse<Team> teams, Optional<Long> optionalMemberId) {
+        List<TeamInformMenu> teamDTOs =
+                teams.getContent().stream()
+                        .map(
+                                team ->
+                                        teamInformMenuAssembler.assembleTeamInformMenu(
+                                                team, optionalMemberId))
+                        .toList();
+
+        return CursorResponse.of(teamDTOs, teams.getNextCursor());
+    }
+
+    /** 제외할 팀 ID 목록 가져오기 (강제 지정) */
+    public List<Long> getExcludeTeamIds() {
+        // 큐닷 44L
+        // 애프터액션 10L
+        // 코지메이커스 36L
+        // 독스헌트 AI 4L
+
+        // TFSolution 37L
+        // 일기 29L
+        // 글들 3L
+        // 마인더 19L
+        return List.of(44L, 10L, 36L, 4L, 37L, 29L, 3L, 19L);
+    }
+
+    /** 기본 검색 여부를 판단합니다. */
+    private boolean isDefaultSearch(
+            List<String> scaleName, List<String> cityName, List<String> teamStateName) {
+        return (scaleName == null || scaleName.isEmpty())
+                && (cityName == null || cityName.isEmpty())
+                && (teamStateName == null || teamStateName.isEmpty());
     }
 }

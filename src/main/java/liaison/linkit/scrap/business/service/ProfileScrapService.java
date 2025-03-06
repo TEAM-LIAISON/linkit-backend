@@ -17,6 +17,7 @@ import liaison.linkit.profile.domain.region.ProfileRegion;
 import liaison.linkit.profile.domain.state.ProfileCurrentState;
 import liaison.linkit.profile.implement.position.ProfilePositionQueryAdapter;
 import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
+import liaison.linkit.profile.implement.state.ProfileCurrentStateQueryAdapter;
 import liaison.linkit.profile.presentation.miniProfile.dto.MiniProfileResponseDTO.ProfileCurrentStateItem;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenu;
 import liaison.linkit.profile.presentation.profile.dto.ProfileResponseDTO.ProfileInformMenus;
@@ -43,21 +44,22 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class ProfileScrapService {
 
+    // Adapters
     private final MemberQueryAdapter memberQueryAdapter;
     private final ProfileQueryAdapter profileQueryAdapter;
+    private final ProfileCurrentStateQueryAdapter profileCurrentStateQueryAdapter;
+    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
     private final ProfileScrapQueryAdapter profileScrapQueryAdapter;
     private final ProfileScrapCommandAdapter profileScrapCommandAdapter;
-
-    private final ProfileScrapMapper profileScrapMapper;
-
-    //    private final ScrapValidator scrapValidator;
-    private final ProfileMapper profileMapper;
     private final RegionQueryAdapter regionQueryAdapter;
+    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
+
+    // Mappers
+    private final ProfileScrapMapper profileScrapMapper;
+    private final ProfileMapper profileMapper;
     private final RegionMapper regionMapper;
     private final ProfileCurrentStateMapper profileCurrentStateMapper;
-    private final ProfilePositionQueryAdapter profilePositionQueryAdapter;
     private final ProfilePositionMapper profilePositionMapper;
-    private final TeamMemberQueryAdapter teamMemberQueryAdapter;
     private final TeamMemberMapper teamMemberMapper;
 
     // 회원이 프로필 스크랩 버튼을 눌렀을 떄의 메서드
@@ -104,7 +106,8 @@ public class ProfileScrapService {
             log.info("지역 정보 조회 성공");
 
             final List<ProfileCurrentState> profileCurrentStates =
-                    profileQueryAdapter.findProfileCurrentStatesByProfileId(profile.getId());
+                    profileCurrentStateQueryAdapter.findProfileCurrentStatesByProfileId(
+                            profile.getId());
             final List<ProfileCurrentStateItem> profileCurrentStateItems =
                     profileCurrentStateMapper.toProfileCurrentStateItems(profileCurrentStates);
             log.info("상태 정보 조회 성공");

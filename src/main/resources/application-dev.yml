@@ -89,13 +89,39 @@ spring:
 decorator:
   datasource:
     p6spy:
-      enable-logging: true
-      multiline: true
+      enable-logging: false
+      multiline: false
       logging: slf4j
 
 logging:
   level:
-    org.springframework.web: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    org.hibernate.stat: DEBUG
+    root: INFO
+    liaison.swagger_test: INFO
+    #    org.springframework.web: INFO
+    org.springframework.batch: INFO
+    # 기타 로그 레벨 설정...
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=${server.env}] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=${server.env}] %-5level %logger{36} - %msg%n"
+  file:
+    name: /app/logs/application-${server.env}.log  # 환경 변수 활용
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30
+      total-size-cap: 5GB
+
+springdoc:
+  webjars:
+    prefix:
+  api-docs:
+    path: /linkit/api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    urls:
+      - url: /linkit/api-docs
+        name: all
+    path: /linkit/swagger
+    configUrl: /linkit/api-docs/swagger-config
+    disable-swagger-default-url: true

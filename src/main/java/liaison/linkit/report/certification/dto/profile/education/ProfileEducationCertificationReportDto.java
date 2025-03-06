@@ -4,27 +4,11 @@ import java.time.LocalDateTime;
 
 import lombok.Builder;
 
+@Builder
 public record ProfileEducationCertificationReportDto(
         Long profileEducationId,
         String emailId,
         String universityName,
         String educationCertificationAttachFileName,
         String educationCertificationAttachFilePath,
-        LocalDateTime uploadTime) {
-
-    @Builder
-    public ProfileEducationCertificationReportDto(
-            Long profileEducationId,
-            String emailId,
-            String universityName,
-            String educationCertificationAttachFileName,
-            String educationCertificationAttachFilePath) {
-        this(
-                profileEducationId,
-                emailId,
-                universityName,
-                educationCertificationAttachFileName,
-                educationCertificationAttachFilePath,
-                LocalDateTime.now());
-    }
-}
+        LocalDateTime uploadTime) {}

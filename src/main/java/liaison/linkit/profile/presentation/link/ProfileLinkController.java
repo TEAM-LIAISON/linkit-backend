@@ -4,6 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfileLinkService;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkRequestDTO;
 import liaison.linkit.profile.presentation.link.dto.ProfileLinkResponseDTO;
@@ -25,6 +26,7 @@ public class ProfileLinkController {
 
     @GetMapping
     @MemberOnly
+    @Logging(item = "Profile_Link", action = "GET_PROFILE_LINK_ITEMS", includeResult = true)
     public CommonResponse<ProfileLinkResponseDTO.ProfileLinkItems> getProfileLinkItems(
             @Auth final Accessor accessor) {
         log.info("memberId = {}의 프로필 링크 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
@@ -34,6 +36,7 @@ public class ProfileLinkController {
 
     @PostMapping
     @MemberOnly
+    @Logging(item = "Profile_Link", action = "POST_UPDATE_PROFILE_LINK_ITEMS", includeResult = true)
     public CommonResponse<ProfileLinkResponseDTO.ProfileLinkItems> updateProfileLinkItems(
             @Auth final Accessor accessor,
             @RequestBody final ProfileLinkRequestDTO.AddProfileLinkRequest profileLinkRequest) {

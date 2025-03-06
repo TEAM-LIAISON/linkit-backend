@@ -6,6 +6,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfileActivityService;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityRequestDTO;
 import liaison.linkit.profile.presentation.activity.dto.ProfileActivityResponseDTO;
@@ -33,6 +34,7 @@ public class ProfileActivityController {
     // 이력 전체 조회 (명세 완료)
     @GetMapping
     @MemberOnly
+    @Logging(item = "Profile_Activity", action = "GET_PROFILE_ACTIVITY_ITEMS", includeResult = true)
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityItems> getProfileActivityItems(
             @Auth final Accessor accessor) {
         log.info("memberId = {}의 프로필 활동 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
@@ -43,6 +45,10 @@ public class ProfileActivityController {
     // 이력 단일 조회 (명세 완료)
     @GetMapping("/{profileActivityId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_Activity",
+            action = "GET_PROFILE_ACTIVITY_DETAIL",
+            includeResult = true)
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityDetail>
             getProfileActivityDetail(
                     @Auth final Accessor accessor, @PathVariable final Long profileActivityId) {
@@ -58,6 +64,7 @@ public class ProfileActivityController {
     // 이력 단일 생성 (명세 완료)
     @PostMapping
     @MemberOnly
+    @Logging(item = "Profile_Activity", action = "POST_ADD_PROFILE_ACTIVITY", includeResult = true)
     public CommonResponse<AddProfileActivityResponse> addProfileActivity(
             @Auth final Accessor accessor,
             @RequestBody
@@ -72,6 +79,10 @@ public class ProfileActivityController {
     // 이력 단일 수정 (명세 완료)
     @PostMapping("/{profileActivityId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_Activity",
+            action = "POST_UPDATE_PROFILE_ACTIVITY",
+            includeResult = true)
     public CommonResponse<ProfileActivityResponseDTO.UpdateProfileActivityResponse>
             updateProfileActivity(
                     @Auth final Accessor accessor,
@@ -88,6 +99,10 @@ public class ProfileActivityController {
     // 이력 단일 삭제 (명세 완료)
     @DeleteMapping("/{profileActivityId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_Activity",
+            action = "DELETE_REMOVE_PROFILE_ACTIVITY",
+            includeResult = true)
     public CommonResponse<ProfileActivityResponseDTO.RemoveProfileActivityResponse>
             removeProfileActivity(
                     @Auth final Accessor accessor, @PathVariable final Long profileActivityId) {
@@ -99,6 +114,10 @@ public class ProfileActivityController {
     // 이력 인증 단일 생성 (명세 완료)
     @PostMapping("/certification/{profileActivityId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_Activity",
+            action = "POST_ADD_PROFILE_ACTIVITY_CERTIFICATION",
+            includeResult = true)
     public CommonResponse<ProfileActivityResponseDTO.ProfileActivityCertificationResponse>
             addProfileActivityCertification(
                     @Auth final Accessor accessor,
@@ -114,6 +133,10 @@ public class ProfileActivityController {
     // 이력 인증 단일 삭제 (명세 완료)
     @DeleteMapping("/certification/{profileActivityId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_Activity",
+            action = "DELETE_REMOVE_PROFILE_ACTIVITY_CERTIFICATION",
+            includeResult = true)
     public CommonResponse<ProfileActivityResponseDTO.RemoveProfileActivityCertificationResponse>
             removeProfileActivityCertification(
                     @Auth final Accessor accessor, @PathVariable final Long profileActivityId) {

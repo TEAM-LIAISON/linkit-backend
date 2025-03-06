@@ -8,6 +8,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfilePortfolioService;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioRequestDTO;
 import liaison.linkit.profile.presentation.portfolio.dto.ProfilePortfolioResponseDTO;
@@ -34,6 +35,10 @@ public class ProfilePortfolioController {
     // 포트폴리오 전체 조회
     @GetMapping
     @MemberOnly
+    @Logging(
+            item = "Profile_Portfolio",
+            action = "GET_PROFILE_PORTFOLIO_ITEMS",
+            includeResult = true)
     public CommonResponse<ProfilePortfolioItems> getProfilePortfolioItems(
             @Auth final Accessor accessor) {
         log.info("memberId = {}의 개인 포트폴리오 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
@@ -43,6 +48,10 @@ public class ProfilePortfolioController {
 
     // 포트폴리오 뷰어 전체 조회
     @GetMapping("/view/{emailId}")
+    @Logging(
+            item = "Profile_Portfolio",
+            action = "GET_PROFILE_PORTFOLIO_VIEW_ITEMS",
+            includeResult = true)
     public CommonResponse<ProfilePortfolioItems> getProfilePortfolioViewItems(
             @PathVariable final String emailId) {
         return CommonResponse.onSuccess(
@@ -51,6 +60,10 @@ public class ProfilePortfolioController {
 
     // 포트폴리오 단일 조회
     @GetMapping("/{profilePortfolioId}")
+    @Logging(
+            item = "Profile_Portfolio",
+            action = "GET_PROFILE_PORTFOLIO_DETAIL",
+            includeResult = true)
     public CommonResponse<ProfilePortfolioResponseDTO.ProfilePortfolioDetail>
             getProfilePortfolioDetail(
                     @Auth final Accessor accessor, @PathVariable final Long profilePortfolioId) {
@@ -72,6 +85,10 @@ public class ProfilePortfolioController {
     // 포트폴리오 단일 생성
     @PostMapping
     @MemberOnly
+    @Logging(
+            item = "Profile_Portfolio",
+            action = "POST_ADD_PROFILE_PORTFOLIO",
+            includeResult = true)
     public CommonResponse<ProfilePortfolioResponseDTO.AddProfilePortfolioResponse>
             addProfilePortfolio(
                     @Auth final Accessor accessor,
@@ -92,6 +109,10 @@ public class ProfilePortfolioController {
     // 포트폴리오 단일 업데이트
     @PostMapping("/{profilePortfolioId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_Portfolio",
+            action = "POST_UPDATE_PROFILE_PORTFOLIO",
+            includeResult = true)
     public CommonResponse<ProfilePortfolioResponseDTO.UpdateProfilePortfolioResponse>
             updateProfilePortfolio(
                     @Auth final Accessor accessor,
@@ -116,6 +137,10 @@ public class ProfilePortfolioController {
 
     @DeleteMapping("/{profilePortfolioId}")
     @MemberOnly
+    @Logging(
+            item = "Profile_Portfolio",
+            action = "DELETE_REMOVE_PROFILE_PORTFOLIO",
+            includeResult = true)
     public CommonResponse<ProfilePortfolioResponseDTO.RemoveProfilePortfolioResponse>
             removeProfilePortfolio(
                     @Auth final Accessor accessor, @PathVariable final Long profilePortfolioId) {

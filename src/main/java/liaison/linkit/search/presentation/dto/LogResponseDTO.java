@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,28 +26,29 @@ public class LogResponseDTO {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class LogInformMenu {
-        private Long id;
-        private String domainType;
+        @Builder.Default private Long id = 0L;
+        @Builder.Default private String domainType = "";
 
-        private LocalDateTime createdAt;
-        private String logTitle;
-        private String logContent;
+        @Builder.Default private LocalDateTime createdAt = LocalDateTime.now();
+        @Builder.Default private String logTitle = "";
+        @Builder.Default private String logContent = "";
 
-        private LogInformDetails logInformDetails;
+        @Builder.Default private LogInformDetails logInformDetails = new LogInformDetails();
     }
 
     @Getter
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @Builder
+    @NoArgsConstructor // 기본 생성자 추가
     public static class LogInformDetails {
-        private String teamCode;
-        private Long teamLogId;
-        private String teamLogoImagePath;
-        private String teamName;
+        @Builder.Default private String teamCode = "";
+        @Builder.Default private Long teamLogId = 0L;
+        @Builder.Default private String teamLogoImagePath = "";
+        @Builder.Default private String teamName = "";
 
-        private String emailId;
-        private Long profileLogId;
-        private String memberName;
-        private String profileImagePath;
+        @Builder.Default private String emailId = "";
+        @Builder.Default private Long profileLogId = 0L;
+        @Builder.Default private String memberName = "";
+        @Builder.Default private String profileImagePath = "";
 
         @Builder
         private LogInformDetails(
@@ -60,15 +60,15 @@ public class LogResponseDTO {
                 final Long profileLogId,
                 final String memberName,
                 final String profileImagePath) {
-            this.teamCode = teamCode;
-            this.teamLogId = teamLogId;
-            this.teamLogoImagePath = teamLogoImagePath;
-            this.teamName = teamName;
+            this.teamCode = teamCode != null ? teamCode : "";
+            this.teamLogId = teamLogId != null ? teamLogId : 0L;
+            this.teamLogoImagePath = teamLogoImagePath != null ? teamLogoImagePath : "";
+            this.teamName = teamName != null ? teamName : "";
 
-            this.emailId = emailId;
-            this.profileLogId = profileLogId;
-            this.memberName = memberName;
-            this.profileImagePath = profileImagePath;
+            this.emailId = emailId != null ? emailId : "";
+            this.profileLogId = profileLogId != null ? profileLogId : 0L;
+            this.memberName = memberName != null ? memberName : "";
+            this.profileImagePath = profileImagePath != null ? profileImagePath : "";
         }
 
         public static LogInformDetails profileLogType(

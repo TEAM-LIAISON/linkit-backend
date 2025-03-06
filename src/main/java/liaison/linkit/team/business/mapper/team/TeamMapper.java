@@ -1,6 +1,7 @@
 package liaison.linkit.team.business.mapper.team;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import liaison.linkit.common.annotation.Mapper;
@@ -75,15 +76,22 @@ public class TeamMapper {
             final TeamScaleItem teamScaleItem,
             final RegionDetail regionDetail) {
         return TeamResponseDTO.TeamInformMenu.builder()
-                .teamCurrentStates(teamCurrentStateItems)
+                .teamCurrentStates(
+                        teamCurrentStateItems != null ? teamCurrentStateItems : new ArrayList<>())
                 .isTeamScrap(isTeamScrap)
                 .teamScrapCount(teamScrapCount)
-                .teamName(team.getTeamName())
-                .teamCode(team.getTeamCode())
-                .teamShortDescription(team.getTeamShortDescription())
-                .teamLogoImagePath(team.getTeamLogoImagePath())
-                .teamScaleItem(teamScaleItem)
-                .regionDetail(regionDetail)
+                .teamName(team != null && team.getTeamName() != null ? team.getTeamName() : "")
+                .teamCode(team != null && team.getTeamCode() != null ? team.getTeamCode() : "")
+                .teamShortDescription(
+                        team != null && team.getTeamShortDescription() != null
+                                ? team.getTeamShortDescription()
+                                : "")
+                .teamLogoImagePath(
+                        team != null && team.getTeamLogoImagePath() != null
+                                ? team.getTeamLogoImagePath()
+                                : "")
+                .teamScaleItem(teamScaleItem != null ? teamScaleItem : new TeamScaleItem())
+                .regionDetail(regionDetail != null ? regionDetail : new RegionDetail())
                 .build();
     }
 

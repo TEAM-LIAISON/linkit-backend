@@ -1,5 +1,6 @@
 package liaison.linkit.search.business.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,34 +79,48 @@ public class LogSearchService {
     // == ProfileLog -> LogInformMenu 변환 ==
     private LogInformMenu mapProfileLogToMenu(ProfileLog pl) {
         return LogInformMenu.builder()
-                .id(pl.getId())
+                .id(pl.getId() != null ? pl.getId() : 0L)
                 .domainType("PROFILE")
-                .logTitle(pl.getLogTitle())
-                .logContent(pl.getLogContent())
-                .createdAt(pl.getCreatedAt())
+                .logTitle(pl.getLogTitle() != null ? pl.getLogTitle() : "")
+                .logContent(pl.getLogContent() != null ? pl.getLogContent() : "")
+                .createdAt(pl.getCreatedAt() != null ? pl.getCreatedAt() : LocalDateTime.now())
                 .logInformDetails(
                         LogInformDetails.profileLogType(
-                                pl.getProfile().getMember().getEmailId(),
-                                pl.getId(),
-                                pl.getProfile().getMember().getMemberBasicInform().getMemberName(),
-                                pl.getProfile().getProfileImagePath()))
+                                pl.getProfile() != null && pl.getProfile().getMember() != null
+                                        ? pl.getProfile().getMember().getEmailId()
+                                        : "",
+                                pl.getId() != null ? pl.getId() : 0L,
+                                pl.getProfile() != null
+                                                && pl.getProfile().getMember() != null
+                                                && pl.getProfile()
+                                                                .getMember()
+                                                                .getMemberBasicInform()
+                                                        != null
+                                        ? pl.getProfile()
+                                                .getMember()
+                                                .getMemberBasicInform()
+                                                .getMemberName()
+                                        : "",
+                                pl.getProfile() != null
+                                        ? pl.getProfile().getProfileImagePath()
+                                        : ""))
                 .build();
     }
 
     // == TeamLog -> LogInformMenu 변환 ==
     private LogInformMenu mapTeamLogToMenu(TeamLog tl) {
         return LogInformMenu.builder()
-                .id(tl.getId())
+                .id(tl.getId() != null ? tl.getId() : 0L)
                 .domainType("TEAM")
-                .logTitle(tl.getLogTitle())
-                .logContent(tl.getLogContent())
-                .createdAt(tl.getCreatedAt())
+                .logTitle(tl.getLogTitle() != null ? tl.getLogTitle() : "")
+                .logContent(tl.getLogContent() != null ? tl.getLogContent() : "")
+                .createdAt(tl.getCreatedAt() != null ? tl.getCreatedAt() : LocalDateTime.now())
                 .logInformDetails(
                         LogInformDetails.teamLogType(
-                                tl.getTeam().getTeamCode(),
-                                tl.getId(),
-                                tl.getTeam().getTeamName(),
-                                tl.getTeam().getTeamLogoImagePath()))
+                                tl.getTeam() != null ? tl.getTeam().getTeamCode() : "",
+                                tl.getId() != null ? tl.getId() : 0L,
+                                tl.getTeam() != null ? tl.getTeam().getTeamName() : "",
+                                tl.getTeam() != null ? tl.getTeam().getTeamLogoImagePath() : ""))
                 .build();
     }
 }

@@ -8,6 +8,7 @@ import java.util.Set;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -15,6 +16,8 @@ import liaison.linkit.common.domain.QPosition;
 import liaison.linkit.global.type.StatusType;
 import liaison.linkit.global.util.QueryDslUtil;
 import liaison.linkit.profile.domain.region.QRegion;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.team.domain.announcement.QAnnouncementPosition;
 import liaison.linkit.team.domain.announcement.QTeamMemberAnnouncement;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
@@ -306,9 +309,14 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
         QTeamMemberAnnouncement qTeamMemberAnnouncement =
                 QTeamMemberAnnouncement.teamMemberAnnouncement;
 
+        // LazyInitializationException 이슈 해결
         List<TeamMemberAnnouncement> content =
                 jpaQueryFactory
                         .selectFrom(qTeamMemberAnnouncement)
+                        // 연관관계를 fetch join으로 미리 가져오는 예 (OneToMany라면 leftJoin + fetchJoin)
+                        .leftJoin(qTeamMemberAnnouncement.team, QTeam.team)
+                        .fetchJoin()
+                        // 필요에 따라 다른 연관관계도 fetchJoin
                         .where(
                                 qTeamMemberAnnouncement
                                         .status
@@ -410,6 +418,209 @@ public class TeamMemberAnnouncementCustomRepositoryImpl
 
                     return count != null ? count : 0L;
                 });
+    }
+
+    @Override
+    public CursorResponse<TeamMemberAnnouncement> findAllExcludingIdsWithCursor(
+            final List<Long> excludeAnnouncementIds, final CursorRequest cursorRequest) {
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+
+        try {
+            // 기본 쿼리 조건
+            BooleanExpression baseCondition =
+                    qTeamMemberAnnouncement
+                            .status
+                            .eq(StatusType.USABLE)
+                            .and(qTeamMemberAnnouncement.isAnnouncementPublic.eq(true));
+
+            // ID 제외 조건
+            if (excludeAnnouncementIds != null && !excludeAnnouncementIds.isEmpty()) {
+                baseCondition =
+                        baseCondition.and(qTeamMemberAnnouncement.id.notIn(excludeAnnouncementIds));
+            }
+
+            // 커서 조건
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.getCursor() != null) {
+                baseCondition =
+                        baseCondition.and(
+                                qTeamMemberAnnouncement.id.lt(
+                                        Long.valueOf(cursorRequest.getCursor())));
+            }
+
+            // 페이지 크기 안전하게 설정
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
+
+            // 1. ID만 먼저 조회
+            List<Long> announcementIds =
+                    jpaQueryFactory
+                            .select(qTeamMemberAnnouncement.id)
+                            .from(qTeamMemberAnnouncement)
+                            .where(baseCondition)
+                            .orderBy(qTeamMemberAnnouncement.createdAt.desc()) // 생성일 기준 내림차순 정렬
+                            .limit(pageSize + 1) // 다음 페이지 확인을 위해 +1
+                            .fetch();
+
+            if (announcementIds.isEmpty()) {
+                return CursorResponse.of(List.of(), null);
+            }
+
+            // 다음 커서 계산
+            String nextCursor = null;
+            boolean hasNext = announcementIds.size() > pageSize;
+
+            if (hasNext) {
+                nextCursor = String.valueOf(announcementIds.get(announcementIds.size() - 1));
+                announcementIds.remove(announcementIds.size() - 1); // 마지막 요소 제거
+            }
+
+            // 2. ID로 공고 엔터티 조회
+            List<TeamMemberAnnouncement> announcements =
+                    jpaQueryFactory
+                            .selectFrom(qTeamMemberAnnouncement)
+                            // 필요한 연관관계를 모두 fetch join
+                            .leftJoin(qTeamMemberAnnouncement.team, QTeam.team)
+                            .fetchJoin()
+                            .leftJoin(qTeamMemberAnnouncement.announcementPosition)
+                            .fetchJoin()
+                            .where(qTeamMemberAnnouncement.id.in(announcementIds))
+                            .orderBy(qTeamMemberAnnouncement.createdAt.desc())
+                            .distinct()
+                            .fetch();
+
+            return CursorResponse.of(announcements, nextCursor);
+        } catch (Exception e) {
+            log.error("Error in findAllExcludingIdsWithCursor: {}", e.getMessage(), e);
+            return CursorResponse.of(List.of(), null);
+        }
+    }
+
+    @Override
+    public CursorResponse<TeamMemberAnnouncement> findAllByFilteringWithCursor(
+            final List<String> subPosition,
+            final List<String> cityName,
+            final List<String> scaleName,
+            final CursorRequest cursorRequest) {
+
+        QTeamMemberAnnouncement qTeamMemberAnnouncement =
+                QTeamMemberAnnouncement.teamMemberAnnouncement;
+        QTeam qTeam = QTeam.team;
+
+        try {
+            // 1. 필터링된 공고 ID 조회
+            JPAQuery<Long> announcementIdQuery =
+                    jpaQueryFactory
+                            .select(qTeamMemberAnnouncement.id)
+                            .distinct()
+                            .from(qTeamMemberAnnouncement)
+                            .leftJoin(qTeamMemberAnnouncement.team, qTeam)
+                            .where(
+                                    qTeamMemberAnnouncement
+                                            .status
+                                            .eq(StatusType.USABLE)
+                                            .and(
+                                                    qTeamMemberAnnouncement.isAnnouncementPublic.eq(
+                                                            true)));
+
+            // 커서 조건 추가
+            if (cursorRequest != null
+                    && cursorRequest.hasNext()
+                    && cursorRequest.getCursor() != null) {
+                announcementIdQuery =
+                        announcementIdQuery.where(
+                                qTeamMemberAnnouncement.id.lt(
+                                        Long.valueOf(cursorRequest.getCursor())));
+            }
+
+            // subPosition 필터링
+            if (isNotEmpty(subPosition)) {
+                QAnnouncementPosition qAnnouncementPosition =
+                        QAnnouncementPosition.announcementPosition;
+                QPosition qPosition = QPosition.position;
+
+                announcementIdQuery
+                        .leftJoin(qAnnouncementPosition)
+                        .on(
+                                qAnnouncementPosition.teamMemberAnnouncement.eq(
+                                        qTeamMemberAnnouncement))
+                        .leftJoin(qPosition)
+                        .on(qAnnouncementPosition.position.eq(qPosition))
+                        .where(qPosition.subPosition.in(subPosition));
+            }
+
+            // cityName 필터링
+            if (isNotEmpty(cityName)) {
+                QTeamRegion qTeamRegion = QTeamRegion.teamRegion;
+                QRegion qRegion = QRegion.region;
+
+                announcementIdQuery
+                        .leftJoin(qTeam.teamRegions, qTeamRegion)
+                        .leftJoin(qTeamRegion.region, qRegion)
+                        .where(qRegion.cityName.in(cityName));
+            }
+
+            // scaleName 필터링
+            if (isNotEmpty(scaleName)) {
+                QTeamScale qTeamScale = QTeamScale.teamScale;
+                QScale qScale = QScale.scale;
+
+                announcementIdQuery
+                        .leftJoin(qTeamScale)
+                        .on(qTeamScale.team.eq(qTeam))
+                        .leftJoin(qScale)
+                        .on(qTeamScale.scale.eq(qScale))
+                        .where(qScale.scaleName.in(scaleName));
+            }
+
+            // ID 내림차순 정렬 및 제한
+            int requestedSize = (cursorRequest != null) ? Math.max(1, cursorRequest.getSize()) : 10;
+            int pageSize = (requestedSize % 6 == 0) ? requestedSize : (requestedSize / 6 + 1) * 6;
+
+            List<Long> announcementIds =
+                    announcementIdQuery
+                            .orderBy(qTeamMemberAnnouncement.createdAt.desc())
+                            .limit(pageSize + 1) // 다음 페이지 확인을 위해 +1
+                            .fetch();
+
+            // 조회할 공고가 없는 경우 빈 응답 반환
+            if (announcementIds.isEmpty()) {
+                return CursorResponse.of(List.of(), null);
+            }
+
+            // 다음 커서 계산
+            boolean hasNext = announcementIds.size() > pageSize;
+            String nextCursor = null;
+
+            // 다음 페이지가 있는 경우
+            if (hasNext) {
+                nextCursor = String.valueOf(announcementIds.get(announcementIds.size() - 1));
+                announcementIds.remove(announcementIds.size() - 1); // 마지막 요소 제거
+            }
+
+            // 2. 실제 데이터 조회
+            List<TeamMemberAnnouncement> announcements =
+                    jpaQueryFactory
+                            .selectFrom(qTeamMemberAnnouncement)
+                            // 필요한 연관관계를 모두 fetch join
+                            .leftJoin(qTeamMemberAnnouncement.team, QTeam.team)
+                            .fetchJoin()
+                            .leftJoin(qTeamMemberAnnouncement.announcementPosition)
+                            .fetchJoin()
+                            // 예) team -> teamRegions -> region, team -> teamScale -> scale 등
+                            //    팀에 필요한 다른 연관관계가 LAZY라면 추가로 fetch join
+                            .where(qTeamMemberAnnouncement.id.in(announcementIds))
+                            .orderBy(qTeamMemberAnnouncement.createdAt.desc())
+                            .distinct()
+                            .fetch();
+
+            return CursorResponse.of(announcements, nextCursor);
+        } catch (Exception e) {
+            log.error("Error in findAllByFilteringWithCursor: {}", e.getMessage(), e);
+            return CursorResponse.of(List.of(), null);
+        }
     }
 
     @Override

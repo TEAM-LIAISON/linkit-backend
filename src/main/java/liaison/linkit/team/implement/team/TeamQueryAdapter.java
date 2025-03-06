@@ -3,6 +3,8 @@ package liaison.linkit.team.implement.team;
 import java.util.List;
 
 import liaison.linkit.common.annotation.Adapter;
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.team.domain.repository.currentState.TeamCurrentStateRepository;
 import liaison.linkit.team.domain.repository.team.TeamRepository;
 import liaison.linkit.team.domain.state.TeamCurrentState;
@@ -40,13 +42,30 @@ public class TeamQueryAdapter {
         return teamCurrentStateRepository.findTeamCurrentStatesByTeamId(teamId);
     }
 
-    public Page<Team> findAllByFiltering(
-            List<String> scaleName,
-            List<String> cityName,
-            List<String> teamStateName,
-            Pageable pageable) {
-        log.info("팀 필터링 요청 발생");
-        return teamRepository.findAllByFiltering(scaleName, cityName, teamStateName, pageable);
+    public CursorResponse<Team> findAllExcludingIdsWithCursor(
+            final List<Long> excludeTeamIds, final CursorRequest cursorRequest) {
+        log.debug(
+                "커서 기반 팀 조회 요청: excludeTeamIds={}, cursor={}, size={}",
+                excludeTeamIds,
+                cursorRequest.getCursor(),
+                cursorRequest.getSize());
+        return teamRepository.findAllExcludingIdsWithCursor(excludeTeamIds, cursorRequest);
+    }
+
+    public CursorResponse<Team> findAllByFilteringWithCursor(
+            final List<String> scaleName,
+            final List<String> cityName,
+            final List<String> teamStateName,
+            final CursorRequest cursorRequest) {
+        log.debug(
+                "필터링된 커서 기반 팀 조회 요청: scaleName={}, cityName={}, teamStateName={}, cursor={}, size={}",
+                scaleName,
+                cityName,
+                teamStateName,
+                cursorRequest.getCursor(),
+                cursorRequest.getSize());
+        return teamRepository.findAllByFilteringWithCursor(
+                scaleName, cityName, teamStateName, cursorRequest);
     }
 
     public Page<Team> findAllExcludingIds(

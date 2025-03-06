@@ -77,6 +77,27 @@ spring:
       max-file-size: 10MB # 한 개 파일의 최대 사이즈
       max-request-size: 10MB # 한 개 요청의 최대 사이즈
 
+# 로컬 환경 로깅 설정
+logging:
+  level:
+    root: INFO                        # 기본 로그 레벨
+    liaison.swagger_test: DEBUG       # 애플리케이션 패키지는 DEBUG로 설정
+    #    org.springframework.web: INFO     # 웹 요청 로그
+    org.springframework.batch: DEBUG  # 배치 작업 로그 (상세히)
+    org.springframework.scheduling: DEBUG # 스케줄링 작업 로그 (상세히)
+    org.hibernate.SQL: DEBUG          # SQL 쿼리 로그
+    org.hibernate.type.descriptor.sql: TRACE # SQL 바인딩 파라미터 출력
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] %-5level %logger{36} - %msg%n"
+  file:
+    name: ./logs/application-local.log
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB          # 로그 파일 최대 크기
+      max-history: 7               # 로컬에서는 적은 기간만 보관
+      total-size-cap: 1GB          # 로컬에서는 적은 용량만 사용
+
 decorator:
   datasource:
     p6spy:
@@ -84,6 +105,19 @@ decorator:
       multiline: true
       logging: slf4j
 
-logging:
-  level:
-    org.springframework.web: INFO
+springdoc:
+  webjars:
+    prefix:
+  api-docs:
+    path: /linkit/api-docs
+    groups:
+      enabled: true
+  swagger-ui:
+    urls:
+      - url: /linkit/api-docs
+        name: all
+    path: /linkit/swagger
+    configUrl: /linkit/api-docs/swagger-config
+    disable-swagger-default-url: true
+
+swagger.version: "v0.1"

@@ -3,6 +3,8 @@ package liaison.linkit.team.domain.repository.announcement;
 import java.util.List;
 import java.util.Set;
 
+import liaison.linkit.search.presentation.dto.cursor.CursorRequest;
+import liaison.linkit.search.presentation.dto.cursor.CursorResponse;
 import liaison.linkit.team.domain.announcement.TeamMemberAnnouncement;
 import liaison.linkit.team.presentation.announcement.dto.TeamMemberAnnouncementRequestDTO.UpdateTeamMemberAnnouncementRequest;
 import org.springframework.data.domain.Page;
@@ -32,6 +34,15 @@ public interface TeamMemberAnnouncementCustomRepository {
 
     Page<TeamMemberAnnouncement> findExcludedAnnouncements(
             final List<Long> excludeAnnouncementIds, final Pageable pageable);
+
+    CursorResponse<TeamMemberAnnouncement> findAllExcludingIdsWithCursor(
+            final List<Long> excludeAnnouncementIds, final CursorRequest cursorRequest);
+
+    CursorResponse<TeamMemberAnnouncement> findAllByFilteringWithCursor(
+            final List<String> subPosition,
+            final List<String> cityName,
+            final List<String> scaleName,
+            final CursorRequest cursorRequest);
 
     List<TeamMemberAnnouncement> findHomeTopTeamMemberAnnouncements(final int limit);
 
