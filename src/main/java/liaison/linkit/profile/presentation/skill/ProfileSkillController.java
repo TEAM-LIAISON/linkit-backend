@@ -4,6 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.profile.business.service.ProfileSkillService;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillRequestDTO;
 import liaison.linkit.profile.presentation.skill.dto.ProfileSkillResponseDTO;
@@ -26,6 +27,7 @@ public class ProfileSkillController {
 
     @GetMapping
     @MemberOnly
+    @Logging(item = "Profile_Skill", action = "GET_PROFILE_SKILL_ITEMS", includeResult = true)
     public CommonResponse<ProfileSkillItems> getProfileSkillItems(@Auth final Accessor accessor) {
         log.info("memberId = {}의 프로필 스킬 전체 조회 요청이 발생했습니다.", accessor.getMemberId());
         return CommonResponse.onSuccess(

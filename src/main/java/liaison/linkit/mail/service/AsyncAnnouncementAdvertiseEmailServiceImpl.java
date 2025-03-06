@@ -29,9 +29,9 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
 
     @Override
     public void sendAnnouncementAdvertiseEmail(
-            final String receiverName,
             final String receiverMailAddress,
             final String announcementMajorPositionName,
+            final String teamCode,
             final String teamLogoImagePath,
             final String teamName,
             final String announcementTitle,
@@ -40,9 +40,9 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
             throws MessagingException, UnsupportedEncodingException {
         final MimeMessage mimeMessage =
                 createAnnouncementAdvertiseEmail(
-                        receiverName,
                         receiverMailAddress,
                         announcementMajorPositionName,
+                        teamCode,
                         teamLogoImagePath,
                         teamName,
                         announcementTitle,
@@ -58,9 +58,9 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
     }
 
     private MimeMessage createAnnouncementAdvertiseEmail(
-            final String receiverName,
             final String receiverMailAddress,
             final String announcementMajorPositionName,
+            final String teamCode,
             final String teamLogoImagePath,
             final String teamName,
             final String announcementTitle,
@@ -72,135 +72,163 @@ public class AsyncAnnouncementAdvertiseEmailServiceImpl
         mimeMessage.addRecipients(Message.RecipientType.TO, receiverMailAddress);
         mimeMessage.setSubject("[링킷] 신규 모집 공고 알림 발송");
 
+        // 팀 로고 이미지 처리 - NULL인 경우 기본 이미지 사용
+        final String logoImageUrl =
+                (teamLogoImagePath != null && !teamLogoImagePath.isEmpty())
+                        ? teamLogoImagePath
+                        : "https://image-prod.linkit.im/mail/linkit_grey_box_logo.png";
+
+        // 지원하기 버튼 URL 생성
+        final String recruitUrl =
+                String.format("https://www.linkit.im/team/%s/recruit/%d", teamCode, announcementId);
+
+        // 메인 홈페이지 URL
+        final String mainUrl = "https://www.linkit.im";
+
         // 스킬 태그 처리 로직
-        String firstSkill = "";
-        String remainingSkillsTag = "";
-        String moreTagStart = "<!-- %MORE_TAG_START% -->";
-        String moreTagEnd = "<!-- %MORE_TAG_END% -->";
+        String skillsSection = "";
 
         if (announcementSkillNames != null && !announcementSkillNames.isEmpty()) {
-            firstSkill = announcementSkillNames.get(0);
+            // 첫 번째 스킬
+            String firstSkill = announcementSkillNames.get(0);
 
-            // 2개 이상의 스킬이 있는 경우, 나머지 개수 표시
+            // 스킬이 2개 이상인 경우 추가 처리
             if (announcementSkillNames.size() > 1) {
                 int remainingCount = announcementSkillNames.size() - 1;
-                remainingSkillsTag =
+                skillsSection =
                         String.format(
-                                "%s\n<span style=\"display: inline-block; padding: 6px 12px; background-color: #EDF3FF; border-radius: 6px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;\">+%d</span>\n%s",
-                                moreTagStart, remainingCount, moreTagEnd);
+                                """
+                                <div style="margin-top: 16px;">
+                                  <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; margin-right: 8px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;">%s</span>
+                                  <!-- %%MORE_TAG_START%% -->
+                                  <span style="display: inline-block; padding: 6px 12px; background-color: #EDF3FF; border-radius: 6px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;">+%d</span>
+                                  <!-- %%MORE_TAG_END%% -->
+                                </div>
+                                """,
+                                firstSkill, remainingCount);
             } else {
-                // 스킬이 1개만 있는 경우 더보기 태그 제거
-                remainingSkillsTag = "";
+                // 스킬이 1개만 있는 경우
+                skillsSection =
+                        String.format(
+                                """
+                                <div style="margin-top: 16px;">
+                                  <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; margin-right: 8px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;">%s</span>
+                                </div>
+                                """,
+                                firstSkill);
             }
         }
+        // 스킬이 없는 경우 빈 문자열 유지 (스킬 섹션 표시 안 함)
 
         final String msgg =
                 String.format(
                         """
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%%" style="border-collapse:collapse; background-color: #ffffff;">
-                            <tbody>
-                              <tr>
-                                <td>
-                                  <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#F1F4F9" style="max-width: 642px; margin: 0 auto;">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%%" style="border-collapse:collapse; background-color: #ffffff;">
                                     <tbody>
                                       <tr>
-                                        <td align="left" style="padding: 20px; background-color: #FFFFFF;">
-                                          <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;">
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style="background-color: #CBD4E1; height: 1px;"></td>
-                                      </tr>
-                                      <tr>
-                                        <td style="padding: 30px 20px; text-align: center;">
-                                          <h1 style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 20px; font-weight: 600; margin: 0 0 16px 0; word-break: keep-all;"><span style="color: #2563EB;">%s</span> <span style="color: #27364B;">새로운 모집 공고</span></h1>
-                                          <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #64748B; line-height: 1.4; margin: 0; word-break: keep-all;">
-                                            %s 포지션의 공고가 업로드 되었어요<br/>
-                                            공고를 확인하고 지원해 보세요!
-                                          </p>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style="padding: 0 20px;">
-                                          <table align="center" border="0" cellpadding="0" cellspacing="0" width="90%%" bgcolor="#FFFFFF" style="border: 1px solid #2563EB; border-radius: 12px; max-width: 500px;">
-                                            <tr>
-                                              <td style="padding: 24px 24px;">
-                                                <table border="0" cellpadding="0" cellspacing="0" width="100%%">
-                                                  <tr>
-                                                    <td style="vertical-align: top;">
-                                                      <table border="0" cellpadding="0" cellspacing="0" width="100%%">
-                                                        <tr>
-                                                          <td width="40px" style="vertical-align: middle;">
-                                                            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
-                                                              <tr>
-                                                                <td style="width: 40px; height: 40px; background-color: #FFFFFF; border-radius: 6px; text-align: center; vertical-align: middle;">
-                                                                  <img src="%s" alt="팀 로고" style="width: 24px; height: 24px; display: inline-block;">
-                                                                </td>
-                                                              </tr>
-                                                            </table>
-                                                          </td>
-                                                          <td style="vertical-align: middle;">
-                                                            <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 16px; font-weight: 600; margin: 0; color: #27364B;">%s</p>
-                                                          </td>
-                                                        </tr>
-                                                      </table>
+                                        <td>
+                                          <table align="center" width="100%%" cellspacing="0" cellpadding="0" border="0" bgcolor="#F1F4F9" style="max-width: 642px; margin: 0 auto;">
+                                            <tbody>
+                                              <tr>
+                                                <td align="left" style="padding: 20px; background-color: #FFFFFF;">
+                                                  <a href="%s" target="_blank">
+                                                    <img src="https://image-prod.linkit.im/mail/linkit_color_logo.png" alt="Logo" style="display: block; width: 92px; height: auto;">
+                                                  </a>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td style="background-color: #CBD4E1; height: 1px;"></td>
+                                              </tr>
+                                              <tr>
+                                                <td style="padding: 30px 20px; text-align: center;">
+                                                  <h1 style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 20px; font-weight: 600; margin: 0 0 16px 0; word-break: keep-all;"><span style="color: #2563EB;">%s</span> <span style="color: #27364B;">새로운 모집 공고</span></h1>
+                                                  <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #64748B; line-height: 1.4; margin: 0; word-break: keep-all;">
+                                                    %s 포지션의 공고가 업로드 되었어요<br/>
+                                                    공고를 확인하고 지원해 보세요!
+                                                  </p>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td style="padding: 0 20px;">
+                                                  <table align="center" border="0" cellpadding="0" cellspacing="0" width="90%%" bgcolor="#FFFFFF" style="border: 1px solid #2563EB; border-radius: 12px; max-width: 500px;">
+                                                    <tr>
+                                                      <td style="padding: 24px 24px;">
+                                                        <table border="0" cellpadding="0" cellspacing="0" width="100%%">
+                                                          <tr>
+                                                            <td style="vertical-align: top;">
+                                                              <table border="0" cellpadding="0" cellspacing="0" width="100%%">
+                                                                <tr>
+                                                                  <td width="40px" style="vertical-align: middle;">
+                                                                    <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                                                                      <tr>
+                                                                        <td style="width: 40px; height: 40px; background-color: #FFFFFF; border-radius: 6px; text-align: center; vertical-align: middle;">
+                                                                          <img src="%s" alt="팀 로고" style="width: 24px; height: 24px; display: inline-block;">
+                                                                        </td>
+                                                                      </tr>
+                                                                    </table>
+                                                                  </td>
+                                                                  <td style="vertical-align: middle;">
+                                                                    <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 16px; font-weight: 600; margin: 0; color: #27364B;">%s</p>
+                                                                  </td>
+                                                                </tr>
+                                                              </table>
 
-                                                      <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 16px; font-weight: 600; color: #27364B; margin: 16px 0 0 0;">%s</p>
-                                                     \s
-                                                      <div style="margin-top: 16px;">
-                                                        <span style="display: inline-block; padding: 6px 12px; background-color: #D3E1FE; border-radius: 6px; margin-right: 8px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 12px; color: #2563EB;">%s</span>
-                                                        %s
-                                                      </div>
-                                                    </td>
-                                                  </tr>
-                                                </table>
-                                              </td>
-                                            </tr>
+                                                              <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 16px; font-weight: 600; color: #27364B; margin: 16px 0 0 0;">%s</p>
+                                                              %s
+                                                            </td>
+                                                          </tr>
+                                                        </table>
+                                                      </td>
+                                                    </tr>
+                                                  </table>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td style="padding: 30px 20px; text-align: center;">
+                                                  <a href="%s" style="display: inline-block; padding: 12px 24px; background-color: #2563EB; color: #FFFFFF; text-decoration: none; border-radius: 24px; min-width: 175px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-weight: 500; font-size: 16px;">
+                                                    공고 지원하기
+                                                  </a>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td style="padding: 0 20px 30px;">
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td style="background-color: #CBD4E1; height: 1px;"></td>
+                                              </tr>
+                                              <tr>
+                                                <td style="padding: 20px; background-color: #FFFFFF;">
+                                                  <a href="%s" target="_blank">
+                                                    <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto; margin-bottom: 20px;">
+                                                  </a>
+                                                  <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 11px; color: #94A3B8; line-height: 2.0; margin: 0; text-align: left; word-break: keep-all;">
+                                                    리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민<br/>
+                                                    주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
+                                                    Copyright ⓒ 2025. liaison All rights reserved.<br/>
+                                                    ※ 본 메일은 모집 공고 알림을 위해 발송되었습니다
+                                                  </p>
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td style="background-color: #CBD4E1; height: 1px;"></td>
+                                              </tr>
+                                            </tbody>
                                           </table>
                                         </td>
                                       </tr>
-                                      <tr>
-                                        <td style="padding: 30px 20px; text-align: center;">
-                                          <a href="https://www.linkit.im" style="display: inline-block; padding: 12px 24px; background-color: #2563EB; color: #FFFFFF; text-decoration: none; border-radius: 24px; min-width: 175px; font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-weight: 500; font-size: 16px;">
-                                            공고 지원하기
-                                          </a>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style="padding: 0 20px 30px;">
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style="background-color: #CBD4E1; height: 1px;"></td>
-                                      </tr>
-                                      <tr>
-                                        <td style="padding: 20px; background-color: #FFFFFF;">
-                                          <img src="https://image-prod.linkit.im/mail/linkit_grey_logo.png" alt="Logo" style="display: block; width: 92px; height: auto; margin-bottom: 20px;">
-                                          <p style="font-family: Pretendard, 'Apple SD Gothic Neo', 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif; font-size: 11px; color: #94A3B8; line-height: 2.0; margin: 0; text-align: left; word-break: keep-all;">
-                                            리에종 ㅣ 대표 : 주서영 ㅣ 개인정보관리책임자 : 권동민<br/>
-                                            주소 : 서울특별시 종로구 127 ㅣ메일 : linkit@linkit.im<br/>
-                                            Copyright ⓒ 2025. liaison All rights reserved.<br/>
-                                            ※ 본 메일은 모집 공고 알림을 위해 발송되었습니다
-                                          </p>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td style="background-color: #CBD4E1; height: 1px;"></td>
-                                      </tr>
                                     </tbody>
                                   </table>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        """,
+                                """,
+                        mainUrl,
                         teamName,
                         announcementMajorPositionName,
-                        teamLogoImagePath,
+                        logoImageUrl,
                         teamName,
                         announcementTitle,
-                        firstSkill,
-                        remainingSkillsTag);
+                        skillsSection,
+                        recruitUrl,
+                        mainUrl);
 
         mimeMessage.setContent(msgg, "text/html; charset=utf-8");
         mimeMessage.setFrom(new InternetAddress(mailId, "링킷(Linkit)", "UTF-8"));

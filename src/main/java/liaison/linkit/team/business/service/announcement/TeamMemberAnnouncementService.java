@@ -6,8 +6,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import liaison.linkit.common.domain.Position;
+import liaison.linkit.mail.service.AsyncAnnouncementAdvertiseEmailService;
 import liaison.linkit.profile.domain.skill.Skill;
 import liaison.linkit.profile.implement.position.PositionQueryAdapter;
+import liaison.linkit.profile.implement.profile.ProfileQueryAdapter;
 import liaison.linkit.profile.implement.skill.SkillQueryAdapter;
 import liaison.linkit.scrap.implement.announcementScrap.AnnouncementScrapCommandAdapter;
 import liaison.linkit.team.business.assembler.AnnouncementDetailAssembler;
@@ -45,6 +47,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class TeamMemberAnnouncementService {
 
+    private final ProfileQueryAdapter profileQueryAdapter;
+
     private final TeamQueryAdapter teamQueryAdapter;
 
     private final SkillQueryAdapter skillQueryAdapter;
@@ -67,6 +71,8 @@ public class TeamMemberAnnouncementService {
     private final AnnouncementDetailAssembler announcementDetailAssembler;
     private final AnnouncementViewItemsAssembler announcementViewItemsAssembler;
     private final AnnouncementScrapCommandAdapter announcementScrapCommandAdapter;
+
+    private final AsyncAnnouncementAdvertiseEmailService asyncAnnouncementAdvertiseEmailService;
 
     @Transactional(readOnly = true)
     public TeamMemberAnnouncementItems getTeamMemberAnnouncementViewItems(

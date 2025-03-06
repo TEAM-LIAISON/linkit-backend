@@ -9,11 +9,11 @@ import org.springframework.scheduling.annotation.Async;
 
 public interface AsyncAnnouncementAdvertiseEmailService {
     // 모집 공고 광고성 이메일 발송
-    @Async
+    @Async("announcementTaskExecutor")
     void sendAnnouncementAdvertiseEmail(
-            final String receiverName,
             final String receiverMailAddress,
             final String announcementMajorPositionName,
+            final String teamCode,
             final String teamLogoImagePath,
             final String teamName,
             final String announcementTitle,

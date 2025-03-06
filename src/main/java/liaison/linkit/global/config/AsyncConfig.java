@@ -4,6 +4,7 @@ import java.util.concurrent.Executor;
 
 import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
 import org.springframework.aop.interceptor.SimpleAsyncUncaughtExceptionHandler;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -30,6 +31,22 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setQueueCapacity(25);
         // 생성되는 Thread 접두사
         executor.setThreadNamePrefix("MatchingAsync-");
+        executor.initialize();
+        return executor;
+    }
+
+    /**
+     * 공고 알림 등 특정 비동기 작업에 사용할 전용 ThreadPool 설정 Bean 이름을 지정해두고, @Async(\"announcementTaskExecutor\")로
+     * 사용 가능
+     */
+    @Bean(name = "announcementTaskExecutor")
+    public Executor announcementTaskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        // 공고 알림의 특성에 맞게 풀 사이즈 등을 설정
+        executor.setCorePoolSize(3);
+        executor.setMaxPoolSize(6);
+        executor.setQueueCapacity(50);
+        executor.setThreadNamePrefix("AnnouncementAsync-");
         executor.initialize();
         return executor;
     }
