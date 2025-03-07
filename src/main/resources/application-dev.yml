@@ -109,7 +109,7 @@ logging:
     rollingpolicy:
       max-file-size: 100MB
       max-history: 30
-      total-size-cap: 5GB
+      total-size-cap: 1GB
 
 springdoc:
   webjars:
