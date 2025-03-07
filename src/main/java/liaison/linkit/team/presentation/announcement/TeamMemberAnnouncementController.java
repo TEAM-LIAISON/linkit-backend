@@ -35,7 +35,7 @@ public class TeamMemberAnnouncementController {
     @Logging(
             item = "Team_Member_Announcement",
             action = "GET_HOME_ANNOUNCEMENT_INFORM_MENUS",
-            includeResult = true)
+            includeResult = false)
     public CommonResponse<AnnouncementInformMenus> getHomeAnnouncementInformMenus(
             @Auth final Accessor accessor) {
         ;

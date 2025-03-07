@@ -4,6 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.scrap.business.service.TeamScrapService;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapRequestDTO;
 import liaison.linkit.scrap.presentation.dto.teamScrap.TeamScrapResponseDTO;
@@ -24,6 +25,7 @@ public class TeamScrapController {
 
     @PostMapping("/{teamCode}")
     @MemberOnly
+    @Logging(item = "Team_Scrap", action = "POST_UPDATE_TEAM_SCRAP", includeResult = true)
     public CommonResponse<TeamScrapResponseDTO.UpdateTeamScrap> updateTeamScrap(
             @Auth final Accessor accessor,
             @PathVariable final String teamCode,
@@ -39,6 +41,7 @@ public class TeamScrapController {
     // 내가 스크랩한 목록 전체 조회
     @GetMapping
     @MemberOnly
+    @Logging(item = "Team_Scrap", action = "GET_PROFILE_SCRAPS", includeResult = true)
     public CommonResponse<TeamInformMenus> getProfileScraps(@Auth final Accessor accessor) {
         return CommonResponse.onSuccess(teamScrapService.getTeamScraps(accessor.getMemberId()));
     }

@@ -47,7 +47,7 @@ public class ProfileController {
 
     // 홈화면에서 팀원 조회 (최대 6개)
     @GetMapping("/home/profile")
-    @Logging(item = "Profile", action = "GET_HOME_PROFILE_INFORM_MENUS", includeResult = true)
+    @Logging(item = "Profile", action = "GET_HOME_PROFILE_INFORM_MENUS", includeResult = false)
     public CommonResponse<ProfileResponseDTO.ProfileInformMenus> getHomeProfileInformMenus(
             @Auth final Accessor accessor) {
         if (accessor.isMember()) {

@@ -36,7 +36,7 @@ public class AnnouncementSearchController {
     @Logging(
             item = "Announcement_Search",
             action = "GET_ANNOUNCEMENT_SEARCH_INFO",
-            includeResult = true)
+            includeResult = false)
     public CommonResponse<AnnouncementListResponseDTO> getFeaturedAnnouncements(
             @Auth final Accessor accessor) {
 
@@ -64,7 +64,7 @@ public class AnnouncementSearchController {
     @Logging(
             item = "Announcement_Search_Filter",
             action = "GET_ANNOUNCEMENT_SEARCH_FILTER_INFO",
-            includeResult = true)
+            includeResult = false)
     public CommonResponse<CursorResponse<TeamMemberAnnouncementResponseDTO.AnnouncementInformMenu>>
             searchAnnouncements(
                     @Auth final Accessor accessor,

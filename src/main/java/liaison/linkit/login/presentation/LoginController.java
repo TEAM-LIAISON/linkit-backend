@@ -8,6 +8,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.login.presentation.dto.AccountRequestDTO;
 import liaison.linkit.login.presentation.dto.AccountResponseDTO;
 import liaison.linkit.login.service.LoginService;
@@ -35,6 +36,7 @@ public class LoginController {
 
     // 회원이 로그인한다
     @PostMapping("/login/{provider}")
+    @Logging(item = "Login", action = "POST_LOGIN", includeResult = true)
     public CommonResponse<AccountResponseDTO.LoginResponse> login(
             @PathVariable final String provider,
             @RequestBody final AccountRequestDTO.LoginRequest loginRequest,
@@ -67,6 +69,7 @@ public class LoginController {
 
     // accessToken을 재발행한다
     @PostMapping("/renew/token")
+    @Logging(item = "Login", action = "POST_RENEW_TOKEN", includeResult = true)
     public CommonResponse<AccountResponseDTO.RenewTokenResponse> renewToken(
             @CookieValue("refreshToken") final String refreshToken,
             @RequestHeader("Authorization") final String authorizationHeader) {
@@ -77,6 +80,7 @@ public class LoginController {
     // 회원이 로그아웃을 한다
     @DeleteMapping("/logout")
     @MemberOnly
+    @Logging(item = "Login", action = "DELETE_LOGOUT", includeResult = true)
     public CommonResponse<AccountResponseDTO.LogoutResponse> logout(
             @Auth final Accessor accessor, @CookieValue("refreshToken") final String refreshToken) {
         return CommonResponse.onSuccess(loginService.logout(accessor.getMemberId(), refreshToken));
@@ -85,6 +89,7 @@ public class LoginController {
     // 회원이 회원 탈퇴를 한다
     @DeleteMapping("/quit")
     @MemberOnly
+    @Logging(item = "Login", action = "DELETE_QUIT_ACCOUNT", includeResult = true)
     public CommonResponse<AccountResponseDTO.QuitAccountResponse> quitAccount(
             @Auth final Accessor accessor, @CookieValue("refreshToken") final String refreshToken) {
         return CommonResponse.onSuccess(

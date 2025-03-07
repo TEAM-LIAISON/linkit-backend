@@ -2,6 +2,7 @@ package liaison.linkit.chat.presentation;
 
 import liaison.linkit.chat.presentation.dto.ChatRequestDTO.ChatMessageRequest;
 import liaison.linkit.chat.service.ChatService;
+import liaison.linkit.global.config.log.Logging;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
@@ -26,6 +27,7 @@ public class ChatMessageController {
      * /sub/chat/{chatRoomId} 경로로 메시지를 브로드캐스트한다.
      */
     @MessageMapping("/chat/send/{chatRoomId}")
+    @Logging(item = "Chat", action = "SEND_CHAT_MESSAGE")
     public void sendChatMessage(
             @Payload ChatMessageRequest chatMessageRequest,
             @Header(name = "sessionId", required = true) String sessionId,
@@ -45,6 +47,7 @@ public class ChatMessageController {
     }
 
     @MessageMapping("/chat/read/{chatRoomId}")
+    @Logging(item = "Chat", action = "READ_CHAT_MESSAGE")
     public void readChatMessages(
             @Header(name = "memberId", required = true) Long memberId,
             @Header(name = "chatRoomId", required = true) Long chatRoomId,

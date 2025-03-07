@@ -33,6 +33,7 @@ public class MemberController {
     // [0.1.2] 기본 정보 01
     @PostMapping("/basic-inform")
     @MemberOnly
+    @Logging(item = "Member", action = "POST_UPDATE_MEMBER_BASIC_INFORM", includeResult = true)
     public CommonResponse<MemberBasicInformResponseDTO.UpdateMemberBasicInformResponse>
             updateMemberBasicInform(
                     @Auth final Accessor accessor,
@@ -47,6 +48,7 @@ public class MemberController {
     // 회원 유저 아이디 수정
     @PostMapping("/userId")
     @MemberOnly
+    @Logging(item = "Member", action = "POST_UPDATE_MEMBER_USER_ID", includeResult = true)
     public CommonResponse<MemberResponseDTO.UpdateMemberUserIdResponse> updateMemberUserId(
             @Auth final Accessor accessor,
             @RequestBody
@@ -59,6 +61,7 @@ public class MemberController {
     // 서비스 이용 동의 수정
     @PostMapping("/consent")
     @MemberOnly
+    @Logging(item = "Member", action = "POST_UPDATE_CONSENT_SERVICE_USE", includeResult = true)
     public CommonResponse<MemberBasicInformResponseDTO.UpdateConsentServiceUseResponse>
             updateConsentServiceUse(
                     @Auth final Accessor accessor,
@@ -84,6 +87,7 @@ public class MemberController {
     // 회원 이름 정보 수정
     @PostMapping("/name")
     @MemberOnly
+    @Logging(item = "Member", action = "POST_UPDATE_MEMBER_NAME", includeResult = true)
     public CommonResponse<MemberBasicInformResponseDTO.UpdateMemberNameResponse> updateMemberName(
             @Auth final Accessor accessor,
             @RequestBody
@@ -97,6 +101,7 @@ public class MemberController {
     // 회원 연락처 정보 수정
     @PostMapping("/contact")
     @MemberOnly
+    @Logging(item = "Member", action = "POST_UPDATE_MEMBER_CONTACT", includeResult = true)
     public CommonResponse<MemberBasicInformResponseDTO.UpdateMemberContactResponse>
             updateMemberContact(
                     @Auth final Accessor accessor,
@@ -112,6 +117,7 @@ public class MemberController {
     // 회원 광고성 정보 수신 동의 수정
     @PostMapping("/consent/marketing")
     @MemberOnly
+    @Logging(item = "Member", action = "POST_UPDATE_CONSENT_MARKETING", includeResult = true)
     public CommonResponse<UpdateConsentMarketingResponse> updateConsentMarketing(
             @Auth final Accessor accessor,
             @RequestBody final UpdateConsentMarketingRequest updateConsentMarketingRequest) {
@@ -124,6 +130,7 @@ public class MemberController {
     // 회원이 이메일 재인증을 한다
     @PostMapping("/email/re-authentication")
     @MemberOnly
+    @Logging(item = "Member", action = "POST_RE_AUTHENTICATION_EMAIL", includeResult = true)
     public CommonResponse<MemberBasicInformResponseDTO.MailReAuthenticationResponse>
             reAuthenticationEmail(
                     @Auth final Accessor accessor,
@@ -137,6 +144,7 @@ public class MemberController {
     // 회원이 수신한 재인증 코드를 입력한다.
     @PostMapping("/email/verification")
     @MemberOnly
+    @Logging(item = "Member", action = "POST_VERIFICATION_AUTH_CODE", includeResult = true)
     public CommonResponse<MemberBasicInformResponseDTO.MailVerificationResponse>
             verificationAuthCode(
                     @Auth final Accessor accessor,

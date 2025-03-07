@@ -4,6 +4,7 @@ import liaison.linkit.auth.Auth;
 import liaison.linkit.auth.MemberOnly;
 import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import liaison.linkit.notification.presentation.dto.NotificationResponseDTO;
 import liaison.linkit.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class NotificationController {
 
     @GetMapping("/notifications")
     @MemberOnly
+    @Logging(item = "Notification", action = "GET_NOTIFICATION_ITEMS")
     public CommonResponse<NotificationResponseDTO.NotificationItems> getNotificationItems(
             @Auth final Accessor accessor) {
         return CommonResponse.onSuccess(
@@ -31,6 +33,7 @@ public class NotificationController {
 
     @PostMapping("/notification/read/{notificationId}")
     @MemberOnly
+    @Logging(item = "Notification", action = "POST_READ_NOTIFICATION")
     public CommonResponse<NotificationResponseDTO.ReadNotificationResponse> readNotification(
             @Auth final Accessor accessor, @PathVariable final String notificationId) {
         return CommonResponse.onSuccess(
