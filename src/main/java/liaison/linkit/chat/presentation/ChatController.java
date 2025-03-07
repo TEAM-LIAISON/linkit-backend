@@ -6,6 +6,7 @@ import liaison.linkit.auth.domain.Accessor;
 import liaison.linkit.chat.presentation.dto.ChatResponseDTO;
 import liaison.linkit.chat.service.ChatService;
 import liaison.linkit.common.presentation.CommonResponse;
+import liaison.linkit.global.config.log.Logging;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +34,7 @@ public class ChatController {
      */
     @GetMapping("/api/v1/chat/room/{chatRoomId}/messages")
     @MemberOnly
+    @Logging(item = "Chat", action = "GET_CHAT_MESSAGES", includeResult = false)
     public CommonResponse<ChatResponseDTO.ChatMessageHistoryResponse> getChatMessages(
             @PathVariable final Long chatRoomId,
             @Auth final Accessor accessor,
@@ -47,6 +49,7 @@ public class ChatController {
     // ==============================
     @GetMapping("/api/v1/chat/left/menu")
     @MemberOnly
+    @Logging(item = "Chat", action = "GET_CHAT_LEFT_MENU")
     public CommonResponse<ChatResponseDTO.ChatLeftMenu> getChatLeftMenu(
             @Auth final Accessor accessor) {
         return CommonResponse.onSuccess(chatService.getChatLeftMenu(accessor.getMemberId()));

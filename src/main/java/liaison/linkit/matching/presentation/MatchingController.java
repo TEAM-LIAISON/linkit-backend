@@ -44,8 +44,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class MatchingController {
 
     private final MatchingService matchingService;
-
-    // 매칭 요청 발신 관리 서비스 계층
     private final SendMatchingService sendMatchingService;
     private final ReceiveMatchingService receiveMatchingService;
 
