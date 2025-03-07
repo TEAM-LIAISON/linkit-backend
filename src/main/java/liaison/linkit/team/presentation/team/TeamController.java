@@ -34,7 +34,7 @@ public class TeamController {
 
     // 홈화면에서 팀 조회하기 (최대 4개)
     @GetMapping("/home/team")
-    @Logging(item = "Team", action = "GET_HOME_TEAM_INFORM_MENUS", includeResult = true)
+    @Logging(item = "Team", action = "GET_HOME_TEAM_INFORM_MENUS", includeResult = false)
     public CommonResponse<TeamResponseDTO.TeamInformMenus> getHomeTeamInformMenus(
             @Auth final Accessor accessor) {
         Optional<Long> optionalMemberId =

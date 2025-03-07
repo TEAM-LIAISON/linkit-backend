@@ -35,7 +35,7 @@ public class TeamMemberAnnouncementController {
     @Logging(
             item = "Team_Member_Announcement",
             action = "GET_HOME_ANNOUNCEMENT_INFORM_MENUS",
-            includeResult = true)
+            includeResult = false)
     public CommonResponse<AnnouncementInformMenus> getHomeAnnouncementInformMenus(
             @Auth final Accessor accessor) {
         ;
@@ -68,10 +68,10 @@ public class TeamMemberAnnouncementController {
             action = "GET_TEAM_MEMBER_ANNOUNCEMENT_DETAIL",
             includeResult = true)
     public CommonResponse<TeamMemberAnnouncementResponseDTO.TeamMemberAnnouncementDetail>
-            getTeamMemberAnnouncementDetail(
-                    @Auth final Accessor accessor,
-                    @PathVariable final String teamCode,
-                    @PathVariable final Long teamMemberAnnouncementId) {
+    getTeamMemberAnnouncementDetail(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamCode,
+            @PathVariable final Long teamMemberAnnouncementId) {
         Optional<Long> optionalMemberId =
                 accessor.isMember() ? Optional.of(accessor.getMemberId()) : Optional.empty();
 
@@ -88,12 +88,11 @@ public class TeamMemberAnnouncementController {
             action = "POST_ADD_TEAM_MEMBER_ANNOUNCEMENT",
             includeResult = true)
     public CommonResponse<TeamMemberAnnouncementResponseDTO.AddTeamMemberAnnouncementResponse>
-            addTeamMemberAnnouncement(
-                    @Auth final Accessor accessor,
-                    @PathVariable final String teamCode,
-                    @RequestBody
-                            final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest
-                                    addTeamMemberAnnouncementRequest) {
+    addTeamMemberAnnouncement(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamCode,
+            @RequestBody final TeamMemberAnnouncementRequestDTO.AddTeamMemberAnnouncementRequest
+                    addTeamMemberAnnouncementRequest) {
         log.info(
                 "memberId = {}의 teamCode = {}에 대한 팀원 공고 단일 생성 요청이 발생했습니다.",
                 accessor.getMemberId(),
@@ -111,14 +110,13 @@ public class TeamMemberAnnouncementController {
             action = "POST_UPDATE_TEAM_MEMBER_ANNOUNCEMENT",
             includeResult = true)
     public CommonResponse<TeamMemberAnnouncementResponseDTO.UpdateTeamMemberAnnouncementResponse>
-            updateTeamMemberAnnouncement(
-                    @Auth final Accessor accessor,
-                    @PathVariable final String teamCode,
-                    @PathVariable final Long teamMemberAnnouncementId,
-                    @RequestBody
-                            final TeamMemberAnnouncementRequestDTO
-                                            .UpdateTeamMemberAnnouncementRequest
-                                    updateTeamMemberAnnouncementRequest) {
+    updateTeamMemberAnnouncement(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamCode,
+            @PathVariable final Long teamMemberAnnouncementId,
+            @RequestBody final TeamMemberAnnouncementRequestDTO
+                    .UpdateTeamMemberAnnouncementRequest
+                    updateTeamMemberAnnouncementRequest) {
         log.info(
                 "memberId = {}의 teamCode = {}에 대한 팀원 공고 단일 수정 요청이 발생했습니다.",
                 accessor.getMemberId(),
@@ -139,10 +137,10 @@ public class TeamMemberAnnouncementController {
             action = "DELETE_REMOVE_TEAM_MEMBER_ANNOUNCEMENT",
             includeResult = true)
     public CommonResponse<TeamMemberAnnouncementResponseDTO.RemoveTeamMemberAnnouncementResponse>
-            removeTeamMemberAnnouncement(
-                    @Auth final Accessor accessor,
-                    @PathVariable final String teamCode,
-                    @PathVariable final Long teamMemberAnnouncementId) {
+    removeTeamMemberAnnouncement(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamCode,
+            @PathVariable final Long teamMemberAnnouncementId) {
         return CommonResponse.onSuccess(
                 teamMemberAnnouncementService.removeTeamMemberAnnouncement(
                         accessor.getMemberId(), teamCode, teamMemberAnnouncementId));
@@ -156,12 +154,12 @@ public class TeamMemberAnnouncementController {
             action = "POST_UPDATE_TEAM_MEMBER_ANNOUNCEMENT_PUBLIC_STATE",
             includeResult = true)
     public CommonResponse<
-                    TeamMemberAnnouncementResponseDTO
-                            .UpdateTeamMemberAnnouncementPublicStateResponse>
-            updateTeamMemberAnnouncementPublicState(
-                    @Auth final Accessor accessor,
-                    @PathVariable final String teamCode,
-                    @PathVariable final Long teamMemberAnnouncementId) {
+            TeamMemberAnnouncementResponseDTO
+                    .UpdateTeamMemberAnnouncementPublicStateResponse>
+    updateTeamMemberAnnouncementPublicState(
+            @Auth final Accessor accessor,
+            @PathVariable final String teamCode,
+            @PathVariable final Long teamMemberAnnouncementId) {
         return CommonResponse.onSuccess(
                 teamMemberAnnouncementService.updateTeamMemberAnnouncementPublicState(
                         accessor.getMemberId(), teamCode, teamMemberAnnouncementId));

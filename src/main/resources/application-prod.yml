@@ -85,6 +85,8 @@ spring:
 logging:
   level:
     root: INFO
+    org.hibernate.SQL: INFO  # Hibernate SQL 로그 출력 비활성화
+    org.hibernate.type.descriptor.sql.BasicBinder: INFO  # SQL 파라미터 바인딩 로그 출력 비활성화
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=prod] %-5level %logger{36} - %msg%n"
     file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [request_id=%X{request_id}] [client_ip=%X{client_ip}] [user_id=%X{user_id}] [env=prod] %-5level %logger{36} - %msg%n"
